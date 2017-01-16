@@ -6,6 +6,7 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, Charles Schmidt <schmidtc@gmail.com>
 
 import pysal
 import copy
+from .weights import W, WSP
 from scipy.sparse import isspmatrix_csr
 from numpy import ones
 
@@ -70,7 +71,7 @@ def w_union(w1, w2, silent_island_warning=False):
             neighbors[i] = list(add_neigh)
         else:
             neighbors[i] = copy.copy(w2.neighbors[i])
-    return pysal.W(neighbors, silent_island_warning=silent_island_warning)
+    return W(neighbors, silent_island_warning=silent_island_warning)
 
 
 def w_intersection(w1, w2, w_shape='w1', silent_island_warning=False):
@@ -146,7 +147,7 @@ def w_intersection(w1, w2, w_shape='w1', silent_island_warning=False):
         else:
             neighbors[i] = []
 
-    return pysal.W(neighbors, silent_island_warning=silent_island_warning)
+    return W(neighbors, silent_island_warning=silent_island_warning)
 
 
 def w_difference(w1, w2, w_shape='w1', constrained=True, silent_island_warning=False):
@@ -247,7 +248,7 @@ def w_difference(w1, w2, w_shape='w1', constrained=True, silent_island_warning=F
             neighbors[i] = list(
                 set(neighbors[i]).intersection(constrained_keys))
 
-    return pysal.W(neighbors, silent_island_warning=silent_island_warning)
+    return W(neighbors, silent_island_warning=silent_island_warning)
 
 
 def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, silent_island_warning=False):
@@ -344,7 +345,7 @@ def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, silent_islan
             neighbors[i] = list(
                 set(neighbors[i]).intersection(constrained_keys))
 
-    return pysal.W(neighbors, silent_island_warning=silent_island_warning)
+    return W(neighbors, silent_island_warning=silent_island_warning)
 
 
 def w_subset(w1, ids, silent_island_warning=False):
@@ -402,7 +403,7 @@ def w_subset(w1, ids, silent_island_warning=False):
         else:
             neighbors[i] = []
 
-    return pysal.W(neighbors, id_order=list(ids), silent_island_warning=silent_island_warning)
+    return W(neighbors, id_order=list(ids), silent_island_warning=silent_island_warning)
 
 
 def w_clip(w1, w2, outSP=True, silent_island_warning=False):
@@ -416,17 +417,17 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
     Parameters
     ----------
     w1                      : W
-                              pysal.W, scipy.sparse.csr.csr_matrix
+                              W, scipy.sparse.csr.csr_matrix
                               Potentially continuous weights matrix to be clipped. The clipped
                               matrix wc will have at most the same elements as w1.
     w2                      : W
-                              pysal.W, scipy.sparse.csr.csr_matrix
+                              W, scipy.sparse.csr.csr_matrix
                               Weights matrix to use as shell to clip w1. Automatically
                               converted to binary format. Only non-zero elements in w2 will be
                               kept non-zero in wc. NOTE: assumed to be of the same shape as w1
     outSP                   : boolean
                               If True (default) return sparse version of the clipped W, if
-                              False, return pysal.W object of the clipped matrix
+                              False, return W object of the clipped matrix
     silent_island_warning   : boolean
                               Switch to turn off (default on) print statements
                               for every observation with islands
@@ -434,7 +435,7 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
     Returns
     -------
     wc      : W
-              pysal.W, scipy.sparse.csr.csr_matrix
+              W, scipy.sparse.csr.csr_matrix
               Clipped W object (sparse if outSP=Ture). It inherits
               ``id_order`` from w1.
 
@@ -525,9 +526,9 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
         w2 = w2.sparse
     w2.data = ones(w2.data.shape)
     wc = w1.multiply(w2)
-    wc = pysal.weights.WSP(wc, id_order=id_order)
+    wc = WSP(wc, id_order=id_order)
     if not outSP:
-        wc = pysal.weights.WSP2W(wc, silent_island_warning=silent_island_warning)
+        wc = WSP2W(wc, silent_island_warning=silent_island_warning)
     return wc
 
 

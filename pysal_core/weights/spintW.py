@@ -7,12 +7,11 @@ network based weights (netW), and distance-decay based vector weights (vecW).
 __author__ = "Taylor Oshan  <tayoshan@gmail.com> "
 
 from scipy.sparse import kron
-from pysal.weights import W, WSP
-from pysal.weights.util import WSP2W
-from pysal.weights.Distance import DistanceBand
+from .weights import W, WSP
+from .weights.Distance import DistanceBand
 from collections import OrderedDict
 
-def ODW(Wo, Wd, transform='r'):
+def ODW(Wo, Wd, transform='r' silent_island_warning=True):
     """
     Constructs an o*d by o*d origin-destination style spatial weight for o*d
     flows using standard spatial weights on o origins and d destinations. Input
@@ -67,7 +66,7 @@ def ODW(Wo, Wd, transform='r'):
     Wd.eliminate_zeros()
     Ww = kron(Wo, Wd, format='csr')
     Ww.eliminate_zeros()
-    Ww = WSP2W(WSP(Ww))
+    Ww = WSP(Ww).to_W(silent_island_warning=silent_island_warning)
     Ww.transform = transform
     return Ww
 

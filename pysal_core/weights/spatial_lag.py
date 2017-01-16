@@ -5,7 +5,6 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, David C. Folch <david.folch@asu.edu>
 __all__ = ['lag_spatial', 'lag_categorical']
 
 import numpy as np
-from pysal.common import iteritems as diter
 
 def lag_spatial(w, y):
     """
@@ -167,7 +166,7 @@ def lag_categorical(w, y, ties='tryself'):
        inty[y == key] = i
     for idx,neighbors in w:
         vals = np.zeros(keys.shape)
-        for neighb, weight in diter(neighbors):
+        for neighb, weight in neighbors.items():
             vals[inty[w.id2i[neighb]]] += weight
         outidx = _resolve_ties(idx,inty,vals,neighbors,ties, w)
         output[w.id2i[idx]] = keys[outidx]
