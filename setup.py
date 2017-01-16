@@ -12,8 +12,8 @@ import os
 with open('README.rst') as file:
     long_description = file.read()
 
-MAJOR = 1
-MINOR = 13
+MAJOR = 3
+MINOR = 0
 MICRO = 0
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
@@ -37,20 +37,6 @@ def _get_requirements_from_files(groups_files):
 def setup_package():
     # get all file endings and copy whole file names without a file suffix
     # assumes nested directories are only down one level
-    example_data_files = set()
-    for i in os.listdir("pysal/examples"):
-        if i.endswith(('py', 'pyc')):
-            continue
-        if not os.path.isdir("pysal/examples/" + i):
-            if "." in i:
-                glob_name = "examples/*." + i.split(".")[-1]
-            else:
-                glob_name = "examples/" + i
-        else:
-            glob_name = "examples/" + i + "/*"
-
-        example_data_files.add(glob_name)
-
     _groups_files = {
         'base': 'requirements.txt',
         'plus': 'requirements_plus.txt',
@@ -62,16 +48,16 @@ def setup_package():
     extras_reqs = reqs
 
     setup(
-        name='PySAL',
+        name='',
         version=VERSION,
-        description="A library of spatial analysis functions.",
+        description="Core components of PySAL A library of spatial analysis functions.",
         long_description=long_description,
         maintainer="PySAL Developers",
         maintainer_email='pysal-dev@googlegroups.com',
         url='http://pysal.org',
-        download_url='https://pypi.python.org/pypi/PySAL',
+        download_url='https://pypi.python.org/pypi/pysal_core',
         license='BSD',
-        py_modules=['pysal'],
+        py_modules=['pysal_core'],
         test_suite='nose.collector',
         tests_require=['nose'],
         keywords='spatial statistics',
@@ -91,7 +77,7 @@ def setup_package():
         ],
         packages=find_packages(exclude=[".meta", "*.meta.*", "meta.*",
                                         "meta"]),
-        package_data={'pysal': list(example_data_files)},
+        package_data={'pysal_core': list(example_data_files)},
         install_requires=install_reqs,
         extras_require=extras_reqs,
         cmdclass={'build_py': build_py}
