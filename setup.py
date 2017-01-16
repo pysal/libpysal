@@ -48,7 +48,7 @@ def setup_package():
     extras_reqs = reqs
 
     setup(
-        name='',
+        name='pysal_core',
         version=VERSION,
         description="Core components of PySAL A library of spatial analysis functions.",
         long_description=long_description,
@@ -75,9 +75,6 @@ def setup_package():
             'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.4'
         ],
-        packages=find_packages(exclude=[".meta", "*.meta.*", "meta.*",
-                                        "meta"]),
-        package_data={'pysal_core': list(example_data_files)},
         install_requires=install_reqs,
         extras_require=extras_reqs,
         cmdclass={'build_py': build_py}
