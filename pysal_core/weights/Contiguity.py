@@ -1,9 +1,7 @@
 from warnings import warn as Warn
 from ..cg import asShape
-from ..core.FileIO import FileIO
+from ..io.FileIO import FileIO
 from .weights import W, WSP
-from ._contW_binning import ContiguityWeightsPolygons
-from ._contW_rtree import ContiguityWeights_rtree
 from ._contW_lists import ContiguityWeightsLists
 from .util import get_ids
 WT_TYPE = {'rook': 2, 'queen': 1}  # for _contW_Binning
@@ -11,7 +9,7 @@ WT_TYPE = {'rook': 2, 'queen': 1}  # for _contW_Binning
 __author__ = "Sergio J. Rey <srey@asu.edu> , Levi John Wolf <levi.john.wolf@gmail.com>"
 
 class Rook(W):
-    def __init__(self, polygons, method='binning', **kw):
+    def __init__(self, polygons, **kw):
         """
         Construct a weights object from a collection of pysal polygons.
 
@@ -21,8 +19,6 @@ class Rook(W):
                       a collection of PySAL shapes to build weights from
         ids         : list
                       a list of names to use to build the weights
-        method      : string
-                      the algorithm to use to construct the method
         **kw        : keyword arguments
                       optional arguments for :class:`pysal.weights.W`
 
@@ -33,7 +29,7 @@ class Rook(W):
         criterion = 'rook'
         ids = kw.pop('ids', None) 
         neighbors, ids = _build(polygons, criterion=criterion, 
-                                ids=ids, method=method)
+                                ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
     
     @classmethod
@@ -82,7 +78,8 @@ class Rook(W):
             ids = get_ids(filepath, idVariable) 
         else:
             ids = None
-        w = cls(FileIO(filepath), ids=ids, **kwargs)
+        pgons = FileIO(filepath).read()
+        w = _build(pgons, ids=ids,criterion='rook',**kwargs)
         w.set_shapefile(filepath, idVariable=idVariable, full=full)
         if sparse:
             w = w.to_WSP()
@@ -160,7 +157,7 @@ class Rook(W):
                                  id_order=id_order, **kwargs)
 
 class Queen(W):
-    def __init__(self, polygons,method='binning', **kw):
+    def __init__(self, polygons, **kw):
         """
         Construct a weights object from a collection of pysal polygons.
 
@@ -170,8 +167,6 @@ class Queen(W):
                       a collection of PySAL shapes to build weights from
         ids         : list
                       a list of names to use to build the weights
-        method      : string
-                      the algorithm to use to construct the method
         **kw        : keyword arguments
                       optional arguments for :class:`pysal.weights.W`
 
@@ -182,7 +177,7 @@ class Queen(W):
         criterion = 'queen'
         ids = kw.pop('ids', None)
         neighbors, ids = _build(polygons, ids=ids, 
-                                criterion=criterion, method=method)
+                                criterion=criterion)
         W.__init__(self, neighbors, ids=ids, **kw)
     
     @classmethod
@@ -234,7 +229,6 @@ class Queen(W):
             ids = get_ids(filepath, idVariable) 
         else:
             ids = None
-        iterable = FileIO(filepath)
         w = cls(FileIO(filepath), ids=ids, **kwargs)
         w.set_shapefile(filepath, idVariable=idVariable, full=full)
         if sparse:
@@ -321,7 +315,7 @@ class Queen(W):
         w = cls.from_iterable(df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs)
         return w
 
-def _build(polygons, criterion="rook", ids=None, method='list'):
+def _build(polygons, criterion="rook", ids=None):
     """
     This is a developer-facing function to construct a spatial weights object. 
 
@@ -333,9 +327,6 @@ def _build(polygons, criterion="rook", ids=None, method='list'):
                   option of which kind of contiguity to build. Is either "rook" or "queen" 
     ids         : list
                   list of ids to use to index the neighbor dictionary
-    method      : string
-                  option of which driver to use to build contiguity. Three are
-                  supported: list, binning, & rtree
 
     Returns
     -------
@@ -356,12 +347,7 @@ def _build(polygons, criterion="rook", ids=None, method='list'):
     if issubclass(type(geo), FileIO):
         geo.seek(0)  # Make sure we read from the beginning of the file.
 
-    if method.lower().startswith('rtree'):
-        neighbor_data = ContiguityWeights_rtree(polygons, joinType=wttype).w
-    elif method.lower().startswith('list'):
-        neighbor_data = ContiguityWeightsLists(polygons, wttype=wttype).w
-    else:
-        neighbor_data = ContiguityWeightsPolygons(polygons, wttype=wttype).w
+    neighbor_data = ContiguityWeightsLists(polygons, wttype=wttype).w
 
     neighbors = {}
     #weights={}

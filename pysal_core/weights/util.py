@@ -1,7 +1,5 @@
-import pysal
-from pysal.cg import Polygon, Point
-from pysal.common import *
-import pysal.weights
+from ..cg import Polygon, Point
+from .weights import W, WSP
 import numpy as np
 from scipy import sparse, float32
 import scipy.spatial
@@ -103,7 +101,7 @@ def hexLat2W(nrows=5, ncols=5):
                     w[i] = w.get(i, []) + jnw
 
 
-    return pysal.weights.W(w)
+    return W(w)
 
 
 def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
@@ -198,7 +196,7 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
             alt_weights[key] = weights[i]
         w = alt_w
         weights = alt_weights
-    return pysal.weights.W(w, weights, ids=ids, id_order=ids[:])
+    return W(w, weights, ids=ids, id_order=ids[:])
 
 def regime_weights(regimes):
     """
@@ -309,11 +307,11 @@ def block_weights(regimes, ids=None, sparse=False):
         members = NPNZ(regimes == rid)[0]
         for member in members:
             neighbors[member] = members[NPNZ(members != member)[0]].tolist()
-    w = pysal.weights.W(neighbors)
+    w = W(neighbors)
     if ids is not None:
         w.remap_ids(ids)
     if sparse:
-        w = pysal.weights.WSP(w.sparse, id_order=ids)
+        w = WSP(w.sparse, id_order=ids)
     return w
 
 
@@ -467,7 +465,7 @@ def higher_order(w, k=2):
 
 def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
     """
-    Contiguity weights for either a sparse W or pysal.weights.W  for order k.
+    Contiguity weights for either a sparse W or W  for order k.
 
     Parameters
     ----------
@@ -560,7 +558,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
                 d[k].append(v)
             else:
                 d[k] = [v]
-        return pysal.weights.WSP(pysal.W(neighbors=d).sparse)
+        return WSP(pysal.W(neighbors=d).sparse)
 
 
 def w_local_cluster(w):
@@ -704,18 +702,7 @@ def full(w):
     >>> ids
     ['first', 'second', 'third']
     """
-    wfull = np.zeros([w.n, w.n], dtype=float)
-    keys = w.neighbors.keys()
-    if w.id_order:
-        keys = w.id_order
-    for i, key in enumerate(keys):
-        n_i = w.neighbors[key]
-        w_i = w.weights[key]
-        for j, wij in zip(n_i, w_i):
-            c = keys.index(j)
-            wfull[i, c] = wij
-    return (wfull, keys)
-
+    return w.full()
 
 def full2W(m, ids=None):
     '''
@@ -811,7 +798,7 @@ def WSP2W(wsp, silent_island_warning=False):
     (rook contiguity), then construct a PySAL sparse weights object (wsp).
 
     >>> sp = pysal.weights.lat2SW(2, 5)
-    >>> wsp = pysal.weights.WSP(sp)
+    >>> wsp = WSP(sp)
     >>> wsp.n
     10
     >>> print wsp.sparse[0].todense()
@@ -914,7 +901,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
         w_new.setdiag([val] * w.n)
     else:
         raise Exception("Invalid value passed to diagonal")
-    w_out = pysal.weights.WSP(w_new, copy.copy(w.id_order))
+    w_out = WSP(w_new, copy.copy(w.id_order))
     if wsp:
         return w_out
     else:
@@ -962,7 +949,7 @@ def remap_ids(w, old2new, id_order=[]):
 
     """
 
-    if not isinstance(w, pysal.weights.W):
+    if not isinstance(w, W):
         raise Exception("w must be a spatial weights object")
     new_neigh = {}
     new_weights = {}
@@ -972,13 +959,13 @@ def remap_ids(w, old2new, id_order=[]):
         new_neigh[new_key] = new_values
         new_weights[new_key] = copy.copy(w.weights[key])
     if id_order:
-        return pysal.weights.W(new_neigh, new_weights, id_order)
+        return W(new_neigh, new_weights, id_order)
     else:
         if w.id_order:
             id_order = [old2new[i] for i in w.id_order]
-            return pysal.weights.W(new_neigh, new_weights, id_order)
+            return W(new_neigh, new_weights, id_order)
         else:
-            return pysal.weights.W(new_neigh, new_weights)
+            return W(new_neigh, new_weights)
 
 
 def get_ids(shapefile, idVariable):

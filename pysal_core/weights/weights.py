@@ -8,18 +8,11 @@ import warnings
 import numpy as np
 import scipy.sparse
 from os.path import basename as BASENAME
-from .util import full, WSP2W
-from ..core.FileIO import FileIO as popen
-#from .contiguity import Rook, Queen
-#from .distance import Kernel, DistanceBand, KNN
+#from .util import full, WSP2W resolve import cycle by
+#forcing these into methods
+from ..io.FileIO import FileIO as popen
 
 __all__ = ['W', 'WSP']
-
-#dispatch_table = {'rook':Rook, 'queen':Queen, 'kernel':Kernel, 
-#                  'adaptive kernel': partial(Kernel, fixed=False),
-#                  'threshold continuous': partial(DistanceBand, binary=False),
-#                  'threshold binary': DistanceBand,
-#                  'distance band':DistanceBand, 'knn':KNN}
 
 class W(object):
     """
@@ -956,35 +949,45 @@ class W(object):
         """
         Generate a full numpy array.
 
+        Parameters
+        ----------
+        self        : W
+                   spatial weights object
+
         Returns
         -------
-
-        implicit : tuple
-                   first element being the full numpy array and second element
-                   keys being the ids associated with each row in the array.
+        (fullw, keys) : tuple
+                        first element being the full numpy array and second element
+                        keys being the ids associated with each row in the array.
 
         Examples
         --------
-        >>> from pysal import W
-        >>> neighbors={'first':['second'],'second':['first','third'],'third':['second']}
-        >>> weights={'first':[1],'second':[1,1],'third':[1]}
-        >>> w=W(neighbors,weights)
-        >>> wf,ids=w.full()
+        >>> from pysal import W, full
+        >>> neighbors = {'first':['second'],'second':['first','third'],'third':['second']}
+        >>> weights = {'first':[1],'second':[1,1],'third':[1]}
+        >>> w = W(neighbors, weights)
+        >>> wf, ids = full(w)
         >>> wf
         array([[ 0.,  1.,  0.],
                [ 1.,  0.,  1.],
                [ 0.,  1.,  0.]])
         >>> ids
         ['first', 'second', 'third']
-
-        See also
-        --------
-        full
-
         """
-        return full(self)
+        wfull = np.zeros([self.n, self.n], dtype=float)
+        keys = self.neighbors.keys()
+        if self.id_order:
+            keys = self.id_order
+        for i, key in enumerate(keys):
+            n_i = self.neighbors[key]
+            w_i = self.weights[key]
+            for j, wij in zip(n_i, w_i):
+                c = keys.index(j)
+                wfull[i, c] = wij
+        return (wfull, keys)
 
-    def towsp(self):
+
+    def to_WSP(self):
         '''
         Generate a WSP object.
 
@@ -1016,8 +1019,6 @@ class W(object):
         '''
         return WSP(self.sparse, self._id_order)
     
-    to_WSP = towsp
-
     def set_shapefile(self, shapefile, idVariable=None, full=False):
         """
         Adding meta data for writing headers of gal and gwt files.
@@ -1142,18 +1143,6 @@ class WSP(object):
             self._cache['diagWtW_WW'] = self._diagWtW_WW
         return self._diagWtW_WW
     
-    def to_W(self, silent_island_warning=True):
-        """
-        Construct a W object from the WSP's sparse matrix
-
-        Arguments
-        ---------
-        silence_island_warning  :   bool
-                                    a flag governing whether to state when
-                                    islands are encountered. 
-        """
-        return WSP2W(self, silent_island_warning=silent_island_warning)
-
     @classmethod
     def from_W(cls, W):
         """
@@ -1169,3 +1158,69 @@ class WSP(object):
         a WSP instance
         """
         return cls(W.sparse, id_order=W.id_order)
+    
+    def to_W(self, silent_island_warning=False):
+
+        """
+        Convert a pysal WSP object (thin weights matrix) to a pysal W object.
+
+        Parameters
+        ----------
+        self                     : WSP
+                                  PySAL sparse weights object
+        silent_island_warning   : boolean
+                                  Switch to turn off (default on) print statements
+                                  for every observation with islands
+
+        Returns
+        -------
+        w       : W
+                  PySAL weights object
+
+        Examples
+        --------
+        >>> import pysal
+
+        Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
+        (rook contiguity), then construct a PySAL sparse weights object (self).
+
+        >>> sp = pysal.weights.lat2SW(2, 5)
+        >>> self = WSP(sp)
+        >>> self.n
+        10
+        >>> print self.sparse[0].todense()
+        [[0 1 0 0 0 1 0 0 0 0]]
+
+        Convert this sparse weights object to a standard PySAL weights object.
+
+        >>> w = pysal.weights.WSP2W(self)
+        >>> w.n
+        10
+        >>> print w.full()[0][0]
+        [ 0.  1.  0.  0.  0.  1.  0.  0.  0.  0.]
+
+        """
+        self.sparse
+        indices = self.sparse.indices
+        data = self.sparse.data
+        indptr = self.sparse.indptr
+        id_order = self.id_order
+        if id_order:
+            # replace indices with user IDs
+            indices = [id_order[i] for i in indices]
+        else:
+            id_order = range(self.n)
+        neighbors, weights = {}, {}
+        start = indptr[0]
+        for i in xrange(self.n):
+            oid = id_order[i]
+            end = indptr[i + 1]
+            neighbors[oid] = indices[start:end]
+            weights[oid] = data[start:end]
+            start = end
+        ids = copy.copy(self.id_order)
+        w = W(neighbors, weights, ids,
+                    silent_island_warning=silent_island_warning)
+        w._sparse = copy.deepcopy(self.sparse)
+        w._cache['sparse'] = w._sparse
+        return w

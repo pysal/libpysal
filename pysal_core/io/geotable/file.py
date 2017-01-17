@@ -1,4 +1,6 @@
 import pysal as ps
+from ...weights.Contiguity import Rook, Queen
+from .utils import insert_metadata
 import os
 from shp import shp2series, series2shp
 from dbf import dbf2df, df2dbf
@@ -20,13 +22,15 @@ def read_files(filepath, **kwargs):
     if weights != '' and isinstance(weights, str):
         if weights.lower() in ['rook', 'queen']:
             if weights.lower() == 'rook':
-                df.W = ps.rook_from_shapefile(shp_path)
+                W = Rook.from_dataframe(df, geometr)
             else:
-                df.W = ps.queen_from_shapefile(shp_path)
+                W = Queen.from_dataframe(df)
+            insert_metadata(df, W, name='W', inplace=True)
         else:
             try:
                 W_path = os.path.splitext(dbf_path)[0] + '.' + weights
-                df.W = ps.open(W_path).read()
+                W = ps.open(W_path).read()
+                insert_metadata(df, W, name='W', inplace=True)
             except IOError:
                 print('Weights construction failed! Passing on weights')
     

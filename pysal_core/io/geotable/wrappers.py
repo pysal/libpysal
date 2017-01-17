@@ -1,11 +1,8 @@
-from pysal.common import simport, requires
-from pysal.cg import asShape
-from pysal.contrib import pdutilities as pdio
-from pysal.core import FileIO
+from ...common import simport, requires
+from ...cg import asShape
+import pdio
+from .. import FileIO
 import pandas as pd
-
-class Namespace(object):
-    pass
 
 @requires('geopandas')
 def geopandas(filename, **kw):
@@ -33,6 +30,3 @@ _writers = {'to_shapefile':pdio.write_files}
 
 _pandas_readers = {k:v for k,v in pd.io.api.__dict__.items() if k.startswith('read_')}
 
-readers = Namespace()
-readers.__dict__.update(_readers)
-readers.__dict__.update(_pandas_readers)
