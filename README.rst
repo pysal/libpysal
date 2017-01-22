@@ -1,9 +1,6 @@
 
-**This is not production ready. Code undergoing major refactoring**
-PySAL Core consists of the core modules to PySAL and is not intended for
-stand-alone installation.
 
-
+This module is pre-alpha and is part of a [refactoring of PySAL](https://github.com/pysal/pysal/wiki/PEP-13:-Refactor-PySAL-Using-Submodules).
 
 
 pysal_core modules
