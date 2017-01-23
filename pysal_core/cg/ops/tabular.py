@@ -1,11 +1,11 @@
-from ....common import requires as _requires
+from ...common import requires as _requires
 from ..utils import to_gdf, to_df
 from warnings import warn as _Warn
 import functools as _f
 import sys as _sys
 
 @_requires("geopandas")
-def spatial_join(df1, df2, left_geom_col='geometry', 
+def spatial_join(df1, df2, left_geom_col='geometry',
           right_geom_col='geometry', **kwargs):
     """
     Spatial join of two Pandas DataFrames. Calls out to Geopandas.
@@ -16,17 +16,17 @@ def spatial_join(df1, df2, left_geom_col='geometry',
     right_df: pandas.DataFrames
     how     : string, default 'inner'
               The type of join:
-              * 'left': use keys from left_df; retain only 
+              * 'left': use keys from left_df; retain only
                 left_df geometry column
-              * 'right': use keys from right_df; retain only 
+              * 'right': use keys from right_df; retain only
                 right_df geometry column
-              * 'inner': use intersection of keys from both dfs; 
+              * 'inner': use intersection of keys from both dfs;
                 retain only left_df geometry column
     op      : string, default 'intersection'
               One of {'intersects', 'contains', 'within'}.
               See http://toblerity.org/shapely/manual.html#binary-predicates.
     lsuffix : string, default 'left'
-              Suffix to apply to overlapping column names 
+              Suffix to apply to overlapping column names
               (left GeoDataFrame).
     rsuffix : string, default 'right'
               Suffix to apply to overlapping column namei
@@ -48,29 +48,29 @@ except ImportError:
     pass
 
 @_requires("geopandas")
-def spatial_overlay(df1, df2, how, left_geom_col='geometry', 
+def spatial_overlay(df1, df2, how, left_geom_col='geometry',
             right_geom_col='geometry', **kwargs):
     """
-    Perform spatial overlay between two polygonal datasets. 
+    Perform spatial overlay between two polygonal datasets.
     Calls out to geopandas.
-    
+
     Currently only supports data pandas.DataFrames with polygons.
     Implements several methods that are all effectively subsets of
     the union.
-    
+
     Parameters
     ----------
-    df1 : pandas.DataFrame 
+    df1 : pandas.DataFrame
           must have MultiPolygon or Polygon geometry column
-    df2 : pandas.DataFrame 
+    df2 : pandas.DataFrame
           must have MultiPolygon or Polygon geometry column
     how : string
           Method of spatial overlay: 'intersection', 'union',
           'identity', 'symmetric_difference' or 'difference'.
     use_sindex : boolean, default True
-                 Use the spatial index to speed up operation 
+                 Use the spatial index to speed up operation
                  if available.
-    
+
     Returns
     -------
     df : pandas.DataFrame
@@ -95,13 +95,13 @@ def clip(return_exterior=False):
 
 def erase(return_interior=True):
     # return modified entries of the df that are outside of an envelope
-    # provide an option to null out the geometries instead of not returning 
+    # provide an option to null out the geometries instead of not returning
     raise NotImplementedError
 
 @_requires('shapely')
 def union(df, **kws):
     if 'by' in kws:
-        warn('when a "by" argument is provided, you should be using "dissolve"') 
+        warn('when a "by" argument is provided, you should be using "dissolve"')
         return dissolve(df, **kws)
     from ._shapely import cascaded_union as union
     return union(df)
@@ -109,7 +109,7 @@ def union(df, **kws):
 @_requires('shapely')
 def intersection(df, **kws):
     from ._shapely import cascaded_intersection as intersection
-    return intersection(df, **kws) 
+    return intersection(df, **kws)
 
 def symmetric_difference():
     raise NotImplementedError

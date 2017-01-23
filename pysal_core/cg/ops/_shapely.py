@@ -1,6 +1,6 @@
 import functools as _f
-from warnings import warn 
-from ....common import requires as _requires
+from warnings import warn
+from ...common import requires as _requires
 
 __all__ = ["to_wkb", "to_wkt", "area", "distance", "length", "boundary", "bounds", "centroid", "representative_point", "convex_hull", "envelope", "buffer", "simplify", "difference", "intersection", "symmetric_difference", "union", "has_z", "is_empty", "is_ring", "is_simple", "is_valid", "relate", "contains", "crosses", "disjoint", "equals", "intersects", "overlaps", "touches", "within", "equals_exact", "almost_equals", "project", "interpolate"]
 
@@ -12,10 +12,10 @@ def _atomic_op(df, geom_col='geometry', inplace=False, _func=None, **kwargs):
         new = df.copy()
         new[outcol] = outval
         return new
-    df[outcol] = outval 
+    df[outcol] = outval
 
 _doc_template =\
-""" 
+"""
 Tabular version of pysal.contrib.shapely_ext.{n}
 
 Arguments
@@ -36,7 +36,7 @@ Returns
 If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
 returns a series.
 
-Note that some atomic operations require an 'other' argument. 
+Note that some atomic operations require an 'other' argument.
 
 See Also
 --------
@@ -140,7 +140,7 @@ def _cascaded_intersection(shapes):
     return outshape
 
 @_requires('shapely')
-def cascaded_intersection(df, geom_col='geometry', **groupby_kws): 
+def cascaded_intersection(df, geom_col='geometry', **groupby_kws):
     """
     Returns the cascaded union of a possibly-grouped dataframe
 

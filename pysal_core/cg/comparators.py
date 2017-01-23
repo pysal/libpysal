@@ -1,5 +1,5 @@
 import numpy as np
-from pysal.common import RTOL
+from ..common import RTOL
 from .shapes import Point, Chain, Polygon, Geometry
 
 #### This approach is invalid :(
@@ -11,7 +11,7 @@ from .shapes import Point, Chain, Polygon, Geometry
 # p2 = geom.Polygon([(0,0),(0,1),(.5,.5),(1,0)])
 # p1.equals(p2) #is true
 # no relationship on point set (without simplifying boundaries) will make these
-# approaches work. 
+# approaches work.
 
 ATOL = 1e-12
 
@@ -27,29 +27,29 @@ def _point_almost_equal(a,b, rtol=RTOL, atol=ATOL):
     test that one point is equal to another point, up to a specified relative or
     absolute tolerance.
     """
-    return np.allclose(a._Point__loc, b._Point__loc, 
+    return np.allclose(a._Point__loc, b._Point__loc,
                        rtol=rtol, atol=atol)
 
 def _chain_equal(a,b):
     """
     Test that two chains are equal. This considers reversed-incident chains,
-    chains with the same pointset but in reverse order, as different chains. 
+    chains with the same pointset but in reverse order, as different chains.
     """
     for a_part, b_part in zip(a.parts, b.parts):
         for a_seg, b_seg in zip(a_part, b_part):
             if not np.array_equal(a_seg, b_seg):
                 return False
-    return True 
+    return True
 
 def _chain_almost_equal(a,b, rtol=RTOL, atol=ATOL):
     """
     Test that two chains are equal, up to a specified relative or absolute
     tolerance. This considers reversed-incident chains,
-    chains with the same pointset but in reverse order, as different chains. 
+    chains with the same pointset but in reverse order, as different chains.
     """
     for a_part, b_part in zip(a.parts, b.parts):
         for a_seg, b_seg in zip(a_part, b_part):
-            if not np.allclose(a_seg, b_seg, 
+            if not np.allclose(a_seg, b_seg,
                                rtol=RTOL, atol=ATOL):
                 return False
     return True
@@ -74,8 +74,8 @@ def _poly_exactly_equal(a,b):
 
 def _poly_exactly_coincident(a,b):
     """
-    Check that two polygons have coincident boundaries 
-    
+    Check that two polygons have coincident boundaries
+
     Thus, this returns True when two polygons have the same holes & parts in any
     order with potentially-reversed path directions
     """
@@ -107,7 +107,7 @@ def _poly_exactly_coincident(a,b):
 def _coincident(a,b):
     """
     Check if two vertex lists are equal, either forwards or backwards. Thus,
-    this checks for equality of the path or equality when one path is reversed. 
+    this checks for equality of the path or equality when one path is reversed.
     """
     return np.array_equal(a, b) or np.array_equal(np.flipud(a),b)
 
@@ -115,9 +115,9 @@ def _almost_coincident(a,b, rtol=RTOL, atol=ATOL):
     """
     Check if two vertex lists are equal to within a given relative and absolute
     tolernance, either forwards or backwards. Thus,
-    this checks for equality of the path or equality when one path is reversed. 
+    this checks for equality of the path or equality when one path is reversed.
     """
-    return (np.allclose(a, b, rtol=RTOL, atol=ATOL) 
+    return (np.allclose(a, b, rtol=RTOL, atol=ATOL)
             or np.allclose(np.flipud(a),b, rtol=RTOL, atol=ATOL))
 
 def _poly_almost_equal(a,b, rtol=RTOL, atol=ATOL):
@@ -126,14 +126,14 @@ def _poly_almost_equal(a,b, rtol=RTOL, atol=ATOL):
         is_equal &= np.allclose(a_hole, b_hole,
                                 rtol=rtol, atol=atol)
     for a_part, b_part in zip(a.parts, b.parts):
-        is_equal &= np.allclose(a_part, b_part, 
+        is_equal &= np.allclose(a_part, b_part,
                                 rtol=rtol, atol=atol)
     return is_equal
 
-_EQ_MAP = {Point:_point_equal, 
+_EQ_MAP = {Point:_point_equal,
            Polygon:_poly_equal,
            Chain: _chain_equal}
-_AEQ_MAP = {Point:_point_almost_equal, 
+_AEQ_MAP = {Point:_point_almost_equal,
             Polygon:_poly_almost_equal,
             Chain: _chain_almost_equal}
 

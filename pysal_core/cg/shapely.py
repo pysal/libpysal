@@ -2,7 +2,7 @@ import shapely
 import shapely.geometry
 import shapely.ops
 _basegeom = shapely.geometry.base.BaseGeometry
-import pysal
+from .shapes import asShape
 __all__ = ["to_wkb", "to_wkt", "area", "distance", "length", "boundary", "bounds", "centroid", "representative_point", "convex_hull", "envelope", "buffer", "simplify", "difference", "intersection", "symmetric_difference", "union", "unary_union", "cascaded_union", "has_z", "is_empty", "is_ring", "is_simple", "is_valid", "relate", "contains", "crosses", "disjoint", "equals", "intersects", "overlaps", "touches", "within", "equals_exact", "almost_equals", "project", "interpolate"]
 
 
@@ -41,7 +41,7 @@ def boundary(shape):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
     o = shapely.geometry.asShape(shape)
     res = o.boundary
-    return pysal.cg.shapes.asShape(res)
+    return .shapes.asShape(res)
 
 def bounds(shape):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
@@ -52,38 +52,38 @@ def centroid(shape):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
     o = shapely.geometry.asShape(shape)
     res = o.centroid
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def representative_point(shape):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
     o = shapely.geometry.asShape(shape)
     res = o.representative_point()
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def convex_hull(shape):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
     o = shapely.geometry.asShape(shape)
     res = o.convex_hull
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def envelope(shape):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
     o = shapely.geometry.asShape(shape)
     res = o.envelope
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def buffer(shape, radius, resolution=16):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
     o = shapely.geometry.asShape(shape)
     res = o.buffer(radius, resolution)
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def simplify(shape, tolerance, preserve_topology=True):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
     o = shapely.geometry.asShape(shape)
     res = o.simplify(tolerance, preserve_topology)
-    return pysal.cg.shapes.asShape(res)
-    
+    return asShape(res)
+
 # Binary operations
 # -----------------
 def difference(shape, other):
@@ -92,7 +92,7 @@ def difference(shape, other):
     o = shapely.geometry.asShape(shape)
     o2 = shapely.geometry.asShape(other)
     res = o.difference(o2)
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def intersection(shape, other):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
@@ -100,7 +100,7 @@ def intersection(shape, other):
     o = shapely.geometry.asShape(shape)
     o2 = shapely.geometry.asShape(other)
     res = o.intersection(o2)
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def symmetric_difference(shape, other):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
@@ -108,7 +108,7 @@ def symmetric_difference(shape, other):
     o = shapely.geometry.asShape(shape)
     o2 = shapely.geometry.asShape(other)
     res = o.symmetric_difference(o2)
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def union(shape, other):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
@@ -116,7 +116,7 @@ def union(shape, other):
     o = shapely.geometry.asShape(shape)
     o2 = shapely.geometry.asShape(other)
     res = o.union(o2)
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def cascaded_union(shapes):
     o = []
@@ -124,7 +124,7 @@ def cascaded_union(shapes):
         if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
         o.append(shapely.geometry.asShape(shape))
     res = shapely.ops.cascaded_union(o)
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 def unary_union(shapes):
     # seems to be the same as cascade_union except that it handles multipart polygons
@@ -135,7 +135,7 @@ def unary_union(shapes):
         if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
         o.append(shapely.geometry.asShape(shape))
     res = shapely.ops.unary_union(o)
-    return pysal.cg.shapes.asShape(res)
+    return asShape(res)
 
 # Unary predicates
 # ----------------
@@ -257,45 +257,10 @@ def interpolate(shape, distance, normalized=False):
     if not hasattr(shape,'__geo_interface__'): raise TypeError, "%r does not appear to be a shape"%shape
     o = shapely.geometry.asShape(shape)
     res = o.interpolate(distance, normalized)
-    return pysal.cg.shapes.asShape(res)
-    
+    return asShape(res)
+
 
 # Copy doc strings from shapely
 for method in __all__:
     if hasattr(_basegeom, method):
         locals()[method].__doc__ = getattr(_basegeom,method).__doc__
-
-if __name__=='__main__':
-    #step 0, create 2 points
-    pt1 = pysal.cg.shapes.Point((0,0))
-    pt2 = pysal.cg.shapes.Point((10,10))
-    o = pysal.open('step0.shp','w')
-    o.write(pt1)
-    o.write(pt2)
-    o.close()
-
-    #step 1, buffer 2 points
-    b1 = buffer(pt1,10)
-    b2 = buffer(pt2,10)
-    o = pysal.open('step1.shp','w')
-    o.write(b1)
-    o.write(b2)
-    o.close()
-
-    #step 2, intersect 2 buffers
-    i = intersection(b1,b2)
-    o = pysal.open('step2.shp','w')
-    o.write(i)
-    o.close()
-    
-    #step 3, union 2 buffers
-    u = union(b1, b2)
-    o = pysal.open('step3.shp','w')
-    o.write(u)
-    o.close()
-    
-    #step 4, find convex_hull of union
-    c = convex_hull(u)
-    o = pysal.open('step4.shp','w')
-    o.write(c)
-    o.close()
