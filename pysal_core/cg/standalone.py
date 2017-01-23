@@ -9,10 +9,10 @@ __credits__ = "Copyright (c) 2005-2009 Sergio J. Rey"
 import doctest
 import math
 import copy
-from shapes import *
+from .shapes import *
 from itertools import islice
 import scipy.spatial
-from pysal.common import *
+from ..common import *
 
 EPSILON_SCALER = 3
 

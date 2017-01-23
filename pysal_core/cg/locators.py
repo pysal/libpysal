@@ -8,9 +8,9 @@ __credits__ = "Copyright (c) 2005-2011 Sergio J. Rey"
 import math
 import copy
 import doctest
-from rtree import *
-from standalone import *
-from shapes import *
+from .rtree import *
+from .standalone import *
+from .shapes import *
 
 __all__ = ["IntervalTree", "Grid", "BruteForcePointLocator",
            "PointLocator", "PolygonLocator"]

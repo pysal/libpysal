@@ -9,7 +9,7 @@ __credits__ = "Copyright (c) 2005-2009 Sergio J. Rey"
 import doctest
 import math
 from warnings import warn
-from sphere import arcdist
+from .sphere import arcdist
 import numpy as np
 
 __all__ = ['Point', 'LineSegment', 'Line', 'Ray', 'Chain', 'Polygon',
@@ -405,7 +405,7 @@ class LineSegment(Geometry):
 
     def __str__(self):
         return "LineSegment(" + str(self._p1) + ", " + str(self._p2) + ")"
-        return "LINESTRING ({} {}, {} {})".format(self._p1[0], self._p1[1], 
+        return "LINESTRING ({} {}, {} {})".format(self._p1[0], self._p1[1],
                                                   self._p2[0], self._p2[1])
 
     def __eq__(self, other):
@@ -637,7 +637,7 @@ class LineSegment(Geometry):
         -1 if the points are collinear and self.p1 is in the middle
         1 if the points are collinear and self.p2 is in the middle
         0 if the points are collinear and pt is in the middle
-        
+
         """
 
         p0 = self.p1
@@ -1026,7 +1026,7 @@ class Chain(Geometry):
         else:
             self._vertices = [vertices]
         self._reset_props()
-    
+
     @classmethod
     def __from_geo_interface__(cls, geo):
         if geo['type'].lower() == 'linestring':

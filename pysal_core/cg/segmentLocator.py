@@ -1,8 +1,8 @@
 import math
 import scipy
 import numpy
-from pysal.cg.shapes import Rectangle, Point, LineSegment
-from pysal.cg.standalone import get_segment_point_dist, get_bounding_box
+from .shapes import Rectangle, Point, LineSegment
+from .standalone import get_segment_point_dist, get_bounding_box
 import random
 import time
 
