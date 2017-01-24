@@ -14,7 +14,7 @@ __all__ = ['FileIO']
 import os.path
 import struct
 from warnings import warn
-import pysal
+from ..common import MISSINGVALUE
 
 
 class FileIO_MetaCls(type):
@@ -239,8 +239,8 @@ class FileIO(object):  # should be a type?
                             raise ValueError
                         r.append(f(v))
                     except ValueError:
-                        warn("Value '%r' could not be cast to %s, value set to pysal.MISSINGVALUE" % (v, str(f)), RuntimeWarning)
-                        r.append(pysal.MISSINGVALUE)
+                        warn("Value '%r' could not be cast to %s, value set to MISSINGVALUE" % (v, str(f)), RuntimeWarning)
+                        r.append(MISSINGVALUE)
                 return r
 
         else:

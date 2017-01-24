@@ -1,6 +1,6 @@
 import unittest
 import pysal
-from pysal.core.IOHandlers.wkt import WKTReader
+from ..wkt import WKTReader
 
 
 class test_WKTReader(unittest.TestCase):

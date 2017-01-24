@@ -1,7 +1,7 @@
 '''GeoDa Text File Reader Unit Tests'''
 import unittest
 import pysal
-from pysal.core.IOHandlers.geoda_txt import GeoDaTxtReader as GTR
+from ..geoda_txt import GeoDaTxtReader as GTR
 
 
 class test_GeoDaTxtReader(unittest.TestCase):

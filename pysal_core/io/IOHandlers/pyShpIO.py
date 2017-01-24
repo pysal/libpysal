@@ -7,10 +7,9 @@ __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __credits__ = "Copyright (c) 2009 Charles R. Schmidt"
 __all__ = ['PurePyShpWrapper']
 
-#import pysal
-import pysal.core.FileIO  # as FileIO
-from pysal.core.util import shp_file
-import pysal.cg as cg
+from .. import FileIO
+from ..util import shp_file
+from ... import cg
 from warnings import warn
 import unittest
 
@@ -22,7 +21,7 @@ TYPE_TO_STRING = {cg.Polygon: 'POLYGON', cg.Point: 'POINT', cg.Chain:
 #    TYPE_TO_STRING[value] = key
 
 
-class PurePyShpWrapper(pysal.core.FileIO.FileIO):
+class PurePyShpWrapper(FileIO.FileIO):
     """
     FileIO handler for ESRI ShapeFiles.
 
@@ -62,7 +61,7 @@ class PurePyShpWrapper(pysal.core.FileIO.FileIO):
     MODES = ['w', 'r', 'wb', 'rb']
 
     def __init__(self, *args, **kwargs):
-        pysal.core.FileIO.FileIO.__init__(self, *args, **kwargs)
+        FileIO.FileIO.__init__(self, *args, **kwargs)
         self.dataObj = None
         if self.mode == 'r' or self.mode == 'rb':
             self.__open()
@@ -156,7 +155,7 @@ class PurePyShpWrapper(pysal.core.FileIO.FileIO):
                 parts = [rec['Vertices'][partsIndex[i]:partsIndex[
                     i + 1]] for i in xrange(rec['NumParts'])]
                 if self.dataObj.type() == 'POLYGON':
-                    is_cw = [pysal.cg.is_clockwise(part) for part in parts]
+                    is_cw = [cg.is_clockwise(part) for part in parts]
                     vertices = [part for part, cw in zip(parts, is_cw) if cw]
                     holes = [part for part, cw in zip(parts, is_cw) if not cw]
                     if not holes:
@@ -167,7 +166,7 @@ class PurePyShpWrapper(pysal.core.FileIO.FileIO):
                     shp = self.type(vertices)
             elif rec['NumParts'] == 1:
                 vertices = rec['Vertices']
-                if self.dataObj.type() == 'POLYGON' and not pysal.cg.is_clockwise(vertices):
+                if self.dataObj.type() == 'POLYGON' and not cg.is_clockwise(vertices):
                     ### SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)
                     warn("SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)" % (self.pos), RuntimeWarning)
                     print "SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)" % (self.pos)
@@ -185,5 +184,5 @@ class PurePyShpWrapper(pysal.core.FileIO.FileIO):
 
     def close(self):
         self.dataObj.close()
-        pysal.core.FileIO.FileIO.close(self)
+        FileIO.FileIO.close(self)
 

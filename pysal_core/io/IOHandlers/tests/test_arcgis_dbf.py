@@ -1,6 +1,7 @@
 import unittest
-import pysal
-from pysal.core.IOHandlers.arcgis_dbf import ArcGISDbfIO
+from ...FileIO import FileIO as psopen
+import pysal_examples
+from ..arcgis_dbf import ArcGISDbfIO
 import tempfile
 import os
 import warnings
@@ -8,7 +9,7 @@ import warnings
 
 class test_ArcGISDbfIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal.examples.get_path('arcgis_ohio.dbf')
+        self.test_file = test_file = pysal_examples.get_path('arcgis_ohio.dbf')
         self.obj = ArcGISDbfIO(test_file, 'r')
 
     def test_close(self):
@@ -41,13 +42,13 @@ class test_ArcGISDbfIO(unittest.TestCase):
                 assert issubclass(warn[0].category, RuntimeWarning)
                 assert "Missing Value Found, setting value to pysal.MISSINGVALUE" in str(warn[0].message)
         f = tempfile.NamedTemporaryFile(
-            suffix='.dbf', dir=pysal.examples.get_path(''))
+            suffix='.dbf', dir=pysal_examples.get_path(''))
         fname = f.name
         f.close()
-        o = pysal.open(fname, 'w', 'arcgis_dbf')
+        o = psopen(fname, 'w', 'arcgis_dbf')
         o.write(w)
         o.close()
-        f = pysal.open(fname, 'r', 'arcgis_dbf')
+        f = psopen(fname, 'r', 'arcgis_dbf')
         wnew = f.read()
         f.close()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)

@@ -1,9 +1,9 @@
-import pysal.core.Tables
+from .. import Tables
+from ...common import MISSINGVALUE
 import datetime
 import struct
 import itertools
 from warnings import warn
-import pysal
 import os
 import time
 
@@ -11,7 +11,7 @@ __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ['DBF']
 
 
-class DBF(pysal.core.Tables.DataTable):
+class DBF(Tables.DataTable):
     """
     PySAL DBF Reader/Writer
 
@@ -53,7 +53,7 @@ class DBF(pysal.core.Tables.DataTable):
         dataPath -- str -- Path to file, including file.
         mode -- str -- 'r' or 'w'
         """
-        pysal.core.Tables.DataTable.__init__(self, *args, **kwargs)
+        Tables.DataTable.__init__(self, *args, **kwargs)
         if self.mode == 'r':
             self.f = f = open(self.dataPath, 'rb')
             numrec, lenheader = struct.unpack('<xxxxLH22x', f.read(32)) #from dbf file standards
@@ -124,30 +124,30 @@ class DBF(pysal.core.Tables.DataTable):
             if typ == 'N':
                 value = value.replace('\0', '').lstrip()
                 if value == '':
-                    value = pysal.MISSINGVALUE
+                    value = MISSINGVALUE
                 elif deci:
                     try:
                         value = float(value)
                     except ValueError:
-                        value = pysal.MISSINGVALUE
+                        value = MISSINGVALUE
                 else:
                     try:
                         value = int(value)
                     except ValueError:
-                        value = pysal.MISSINGVALUE
+                        value = MISSINGVALUE
             elif typ == 'D':
                 try:
                     y, m, d = int(value[:4]), int(value[4:6]), int(value[6:8])
                     value = datetime.date(y, m, d)
                 except ValueError:
-                    value = pysal.MISSINGVALUE
+                    value = MISSINGVALUE
             elif typ == 'L':
                 value = (value in 'YyTt' and 'T') or (
                     value in 'NnFf' and 'F') or '?'
             elif typ == 'F':
                 value = value.replace('\0', '').lstrip()
                 if value == '':
-                    value = pysal.MISSINGVALUE
+                    value = MISSINGVALUE
                 else:
                     value = float(value)
             if isinstance(value, str) or isinstance(value, unicode):
@@ -170,31 +170,31 @@ class DBF(pysal.core.Tables.DataTable):
             if typ == 'N':
                 value = value.replace('\0', '').lstrip()
                 if value == '':
-                    value = pysal.MISSINGVALUE
+                    value = MISSINGVALUE
                 elif deci:
                     try:
                         value = float(value)
                     except ValueError:
-                        value = pysal.MISSINGVALUE
+                        value = MISSINGVALUE
                 else:
                     try:
                         value = int(value)
                     except ValueError:
-                        value = pysal.MISSINGVALUE
+                        value = MISSINGVALUE
             elif typ == 'D':
                 try:
                     y, m, d = int(value[:4]), int(value[4:6]), int(value[6:8])
                     value = datetime.date(y, m, d)
                 except ValueError:
                     #value = datetime.date.min#NULL Date: See issue 114
-                    value = pysal.MISSINGVALUE
+                    value = MISSINGVALUE
             elif typ == 'L':
                 value = (value in 'YyTt' and 'T') or (
                     value in 'NnFf' and 'F') or '?'
             elif typ == 'F':
                 value = value.replace('\0', '').lstrip()
                 if value == '':
-                    value = pysal.MISSINGVALUE
+                    value = MISSINGVALUE
                 else:
                     value = float(value)
             if isinstance(value, str) or isinstance(value, unicode):
@@ -259,7 +259,7 @@ class DBF(pysal.core.Tables.DataTable):
             # End of file
             self.f.write('\x1A'.encode())
         self.f.close()
-        pysal.core.Tables.DataTable.close(self)
+        Tables.DataTable.close(self)
 
     def _firstWrite(self, obj):
         if not self.header:

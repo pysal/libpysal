@@ -1,6 +1,7 @@
 import unittest
-import pysal
-from pysal.core.IOHandlers.mtx import MtxIO
+from ..mtx import MtxIO
+from ...FileIO import FileIO as psopen
+import pysal_examples
 import tempfile
 import os
 import warnings
@@ -9,7 +10,7 @@ import scipy.sparse as SP
 
 class test_MtxIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal.examples.get_path('wmat.mtx')
+        self.test_file = test_file = pysal_examples.get_path('wmat.mtx')
         self.obj = MtxIO(test_file, 'r')
 
     def test_close(self):
@@ -40,13 +41,13 @@ class test_MtxIO(unittest.TestCase):
             self.obj.seek(0)
             w = self.obj.read(sparse=i)
             f = tempfile.NamedTemporaryFile(
-                suffix='.mtx', dir=pysal.examples.get_path(''))
+                suffix='.mtx', dir=pysal_examples.get_path(''))
             fname = f.name
             f.close()
-            o = pysal.open(fname, 'w')
+            o = psopen(fname, 'w')
             o.write(w)
             o.close()
-            wnew = pysal.open(fname, 'r').read(sparse=i)
+            wnew = psopen(fname, 'r').read(sparse=i)
             if i:
                 self.assertEqual(wnew.s0, w.s0)
             else:

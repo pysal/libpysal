@@ -1,4 +1,4 @@
-from ...cg import asShape as pShape
+from ...cg.shapes import asShape as pShape
 from ...common import requires as _requires
 from warnings import warn
 

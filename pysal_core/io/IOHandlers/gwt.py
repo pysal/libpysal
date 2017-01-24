@@ -1,7 +1,6 @@
-import pysal
 import os.path
-import pysal.core.FileIO as FileIO
-from pysal.weights import W
+from .. import FileIO as FileIO
+from ...weights.weights import W
 from warnings import warn
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
@@ -138,7 +137,7 @@ class GwtIO(FileIO.FileIO):
             base = os.path.split(self.dataPath)[0]
             dbf = os.path.join(base, self.shpName.replace('.shp', '') + '.dbf')
             if os.path.exists(dbf):
-                db = pysal.open(dbf, 'r')
+                db = FileIO.FileIO(dbf, 'r')
                 if id_var in db.header:
                     id_order = db.by_col(id_var)
                     id_type = type(id_order[0])

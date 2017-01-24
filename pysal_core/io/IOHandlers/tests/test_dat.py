@@ -1,13 +1,14 @@
 import unittest
-import pysal
-from pysal.core.IOHandlers.dat import DatIO
+from ...FileIO import FileIO as psopen
+from ..dat import DatIO
+import pysal_examples
 import tempfile
 import os
 
 
 class test_DatIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal.examples.get_path('wmat.dat')
+        self.test_file = test_file = pysal_examples.get_path('wmat.dat')
         self.obj = DatIO(test_file, 'r')
 
     def test_close(self):
@@ -30,13 +31,13 @@ class test_DatIO(unittest.TestCase):
     def test_write(self):
         w = self.obj.read()
         f = tempfile.NamedTemporaryFile(
-            suffix='.dat', dir=pysal.examples.get_path(''))
+            suffix='.dat', dir=pysal_examples.get_path(''))
         fname = f.name
         f.close()
-        o = pysal.open(fname, 'w')
+        o = psopen(fname, 'w')
         o.write(w)
         o.close()
-        wnew = pysal.open(fname, 'r').read()
+        wnew = psopen(fname, 'r').read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
         os.remove(fname)
 

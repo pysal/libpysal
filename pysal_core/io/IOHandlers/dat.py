@@ -1,7 +1,6 @@
-import pysal
 import os.path
 import gwt
-from pysal.weights import W
+from ...weights import W
 from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
