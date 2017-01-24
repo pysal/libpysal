@@ -5,10 +5,12 @@ contiguity and distance criteria.
 
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
-import pysal
 from Contiguity import buildContiguity, Queen, Rook
 from Distance import knnW, Kernel, DistanceBand
 from util import get_ids, get_points_array_from_shapefile, min_threshold_distance
+from ..io.FileIO import FileIO as ps_open
+import ..cg
+from weights import WSP
 import numpy as np
 
 __all__ = ['queen_from_shapefile', 'rook_from_shapefile', 'knnW_from_array',
@@ -66,7 +68,7 @@ def queen_from_shapefile(shapefile, idVariable=None, sparse=False):
 
     w = Queen.from_shapefile(shapefile, idVariable=idVariable)
     if sparse:
-        w = pysal.weights.WSP(w.sparse, id_order=w.id_order)
+        w = WSP(w.sparse, id_order=w.id_order)
     return w
 
 
@@ -115,7 +117,7 @@ def rook_from_shapefile(shapefile, idVariable=None, sparse=False):
 
     w = Rook.from_shapefile(shapefile, idVariable=idVariable)
     if sparse:
-        w = pysal.weights.WSP(w.sparse, id_order=w.id_order)
+        w = WSP(w.sparse, id_order=w.id_order)
     return w
 
 def spw_from_gal(galfile):
@@ -146,7 +148,7 @@ def spw_from_gal(galfile):
 
     """
 
-    return pysal.open(galfile, 'r').read(sparse=True)
+    return ps_open(galfile, 'r').read(sparse=True)
 
 # Distance based weights
 
@@ -216,9 +218,9 @@ def knnW_from_array(array, k=2, p=2, ids=None, radius=None):
 
     """
     if radius is not None:
-        kdtree = pysal.cg.KDTree(array, distance_metric='Arc', radius=radius)
+        kdtree = cg.KDTree(array, distance_metric='Arc', radius=radius)
     else:
-        kdtree = pysal.cg.KDTree(array)
+        kdtree = cg.KDTree(array)
     return knnW(kdtree, k=k, p=p, ids=ids)
 
 
@@ -306,9 +308,9 @@ def knnW_from_shapefile(shapefile, k=2, p=2, idVariable=None, radius=None):
     data = get_points_array_from_shapefile(shapefile)
 
     if radius is not None:
-        kdtree = pysal.cg.KDTree(data, distance_metric='Arc', radius=radius)
+        kdtree = cg.KDTree(data, distance_metric='Arc', radius=radius)
     else:
-        kdtree = pysal.cg.KDTree(data)
+        kdtree = cg.KDTree(data)
     if idVariable:
         ids = get_ids(shapefile, idVariable)
         return knnW(kdtree, k=k, p=p, ids=ids)
@@ -358,7 +360,7 @@ def threshold_binaryW_from_array(array, threshold, p=2, radius=None):
     >>>
     """
     if radius is not None:
-        array = pysal.cg.KDTree(array, distance_metric='Arc', radius=radius)
+        array = cg.KDTree(array, distance_metric='Arc', radius=radius)
     return DistanceBand(array, threshold=threshold, p=p)
 
 
@@ -408,7 +410,7 @@ def threshold_binaryW_from_shapefile(shapefile, threshold, p=2, idVariable=None,
 
     data = get_points_array_from_shapefile(shapefile)
     if radius is not None:
-        data = pysal.cg.KDTree(data, distance_metric='Arc', radius=radius)
+        data = cg.KDTree(data, distance_metric='Arc', radius=radius)
     if idVariable:
         ids = get_ids(shapefile, idVariable)
         w = DistanceBand(data, threshold=threshold, p=p)
@@ -472,7 +474,7 @@ def threshold_continuousW_from_array(array, threshold, p=2,
     """
 
     if radius is not None:
-        array = pysal.cg.KDTree(array, distance_metric='Arc', radius=radius)
+        array = cg.KDTree(array, distance_metric='Arc', radius=radius)
     w = DistanceBand(
         array, threshold=threshold, p=p, alpha=alpha, binary=False)
     return w
@@ -528,7 +530,7 @@ def threshold_continuousW_from_shapefile(shapefile, threshold, p=2,
 
     data = get_points_array_from_shapefile(shapefile)
     if radius is not None:
-        data = pysal.cg.KDTree(data, distance_metric='Arc', radius=radius)
+        data = cg.KDTree(data, distance_metric='Arc', radius=radius)
     if idVariable:
         ids = get_ids(shapefile, idVariable)
         w = DistanceBand(data, threshold=threshold, p=p, alpha=alpha, binary=False)
@@ -665,7 +667,7 @@ def kernelW(points, k=2, function='triangular', fixed=True,
     """
 
     if radius is not None:
-        points = pysal.cg.KDTree(points, distance_metric='Arc', radius=radius)
+        points = cg.KDTree(points, distance_metric='Arc', radius=radius)
     return Kernel(points, function=function, k=k, fixed=fixed,
             diagonal=diagonal)
 
@@ -780,7 +782,7 @@ def kernelW_from_shapefile(shapefile, k=2, function='triangular',
 
     points = get_points_array_from_shapefile(shapefile)
     if radius is not None:
-        points = pysal.cg.KDTree(points, distance_metric='Arc', radius=radius)
+        points = cg.KDTree(points, distance_metric='Arc', radius=radius)
     if idVariable:
         ids = get_ids(shapefile, idVariable)
         return Kernel(points, function=function, k=k, ids=ids, fixed=fixed,
@@ -925,7 +927,7 @@ def adaptive_kernelW(points, bandwidths=None, k=2, function='triangular',
 
     """
     if radius is not None:
-        points = pysal.cg.KDTree(points, distance_metric='Arc', radius=radius)
+        points = cg.KDTree(points, distance_metric='Arc', radius=radius)
     return Kernel(points, bandwidth=bandwidths, fixed=False, k=k,
             function=function, diagonal=diagonal)
 
@@ -1027,7 +1029,7 @@ def adaptive_kernelW_from_shapefile(shapefile, bandwidths=None, k=2, function='t
     """
     points = get_points_array_from_shapefile(shapefile)
     if radius is not None:
-        points = pysal.cg.KDTree(points, distance_metric='Arc', radius=radius)
+        points = cg.KDTree(points, distance_metric='Arc', radius=radius)
     if idVariable:
         ids = get_ids(shapefile, idVariable)
         return Kernel(points, bandwidth=bandwidths, fixed=False, k=k,
@@ -1078,7 +1080,7 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     """
     points = get_points_array_from_shapefile(shapefile)
     if radius is not None:
-        kdt = pysal.cg.kdtree.Arc_KDTree(points, radius=radius)
+        kdt = cg.kdtree.Arc_KDTree(points, radius=radius)
         nn = kdt.query(kdt.data, k=2)
         nnd = nn[0].max(axis=0)[1]
         return nnd
@@ -1106,9 +1108,9 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
     """
     if not outFileName.endswith('.shp'):
         raise ValueError("outFileName must end with .shp")
-    o = pysal.open(outFileName, 'w')
+    o = ps_open(outFileName, 'w')
     dbf_name = outFileName.split(".")[0] + ".dbf"
-    d = pysal.open(dbf_name, 'w')
+    d = ps_open(dbf_name, 'w')
     d.header = [ 'ID' ]
     d.field_spec = [ ('N', 8, 0) ]
     c = 0
@@ -1118,7 +1120,7 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
             ul = i, j + 1
             ur = i + 1, j + 1
             lr = i + 1, j
-            o.write(pysal.cg.Polygon([ll, ul, ur, lr, ll]))
+            o.write(cg.Polygon([ll, ul, ur, lr, ll]))
             d.write([c])
             c += 1
     d.close()

@@ -19,8 +19,8 @@ weights
     Tools for creating and manipulating weights
 """
 import cg
-import weights
 import io
+import weights
 import common
 
 try:
@@ -29,12 +29,10 @@ try:
     common.pandas = pandas
 except ImportError:
     common.pandas = None
-    
-# Load the IOHandlers
-from io import IOHandlers
+
+from io import IOHandlers    
 # Assign pysal.open to dispatcher
 open = io.FileIO.FileIO
 
 from version import version
-
-MISSINGVALUE = None  # used by fileIO to flag missing values.
+MISSINGVALUE = common.MISSINGVALUE

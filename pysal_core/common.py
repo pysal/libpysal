@@ -27,11 +27,12 @@ import time
 import unittest
 from warnings import warn as Warn
 from functools import wraps
-from pysal.core.FileIO import FileIO as popen
 try:
     from patsy import PatsyError
 except ImportError:
     PatsyError = Exception
+
+MISSINGVALUE = None
 
 #################
 # Compatibility #

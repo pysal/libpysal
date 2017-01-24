@@ -1,4 +1,4 @@
-import pysal as ps
+from ..cg.shapes import Polygon
 import collections
 QUEEN = 1
 ROOK = 2
@@ -21,13 +21,15 @@ class ContiguityWeightsLists:
                 1: Queen
                 2: Rook
         """
-        self.collection = collection
+        self.collection = list(collection)
         self.wttype = wttype
         self.jcontiguity()
 
     def jcontiguity(self):
-        if not isinstance(self.collection[0], ps.cg.Polygon):
-            return False
+        if not isinstance(self.collection[0], Polygon):
+        #    return False
+            raise Exception('Input collection is of type {}, must instead'
+                    ' be a cg.Polygon'.format(type(self.collection[0])))
 
         numPoly = len(self.collection)
 
@@ -87,4 +89,6 @@ class ContiguityWeightsLists:
                         w[v].remove(v)
                     except:
                         pass
+        else:
+            raise Exception('Weight type {} Not Understood!'.format(self.wttype))
         self.w = w

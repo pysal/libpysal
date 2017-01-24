@@ -12,7 +12,7 @@ import copy
 from .shapes import *
 from itertools import islice
 import scipy.spatial
-from ..common import *
+#from ..common import *
 
 EPSILON_SCALER = 3
 

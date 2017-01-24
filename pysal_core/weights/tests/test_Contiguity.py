@@ -1,17 +1,24 @@
-from pysal.weights import Contiguity as c
-import pysal as ps
+from .. import Contiguity as c
+from .. import util
+from ...common import pandas
+from ...io.FileIO import FileIO as ps_open
+from ...io import geotable as pdio
+
+#import pysal_examples
+import pysal.examples
+pysal_examples = pysal.examples
 import unittest as ut
 from warnings import warn as Warn
 
-PANDAS_EXTINCT = ps.common.pandas is None
+PANDAS_EXTINCT = pandas is None
 class Mock(object):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
 class Contiguity_Mixin(object):
-    polygon_path = ps.examples.get_path('columbus.shp')
-    point_path = ps.examples.get_path('baltim.shp')
-    f = ps.open(polygon_path) # our file handler
+    polygon_path = pysal_examples.get_path('columbus.shp')
+    point_path = pysal_examples.get_path('baltim.shp')
+    f = ps_open(polygon_path) # our file handler
     polygons = f.read() # our iterable
     f.seek(0) #go back to head of file
     # Without requiring users to have GDAL to run tests, 
@@ -45,7 +52,7 @@ class Contiguity_Mixin(object):
         #ids = ps.weights2.utils.get_ids(self.polygon_path, self.idVariable)
 
         # named
-        ids = ps.weights.util.get_ids(self.polygon_path, self.idVariable)
+        ids = util.get_ids(self.polygon_path, self.idVariable)
         w = self.cls(self.polygons, ids = ids)
         self.assertEqual(w[self.known_name], self.known_namedw)
 
@@ -79,7 +86,7 @@ class Contiguity_Mixin(object):
     @ut.skipIf(PANDAS_EXTINCT, 'Missing pandas')
     def test_from_dataframe(self):
         # basic
-        df = ps.pdio.read_files(self.polygon_path)
+        df = pdio.read_files(self.polygon_path)
         w = self.cls.from_dataframe(df)
         self.assertEqual(w[self.known_wi], self.known_w)
 

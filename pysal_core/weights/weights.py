@@ -7,6 +7,7 @@ import math
 import warnings
 import numpy as np
 import scipy.sparse
+import copy
 from os.path import basename as BASENAME
 #from .util import full, WSP2W resolve import cycle by
 #forcing these into methods
