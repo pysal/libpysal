@@ -9,7 +9,7 @@ from Contiguity import buildContiguity, Queen, Rook
 from Distance import knnW, Kernel, DistanceBand
 from util import get_ids, get_points_array_from_shapefile, min_threshold_distance
 from ..io.FileIO import FileIO as ps_open
-import ..cg
+from .. import cg
 from weights import WSP
 import numpy as np
 

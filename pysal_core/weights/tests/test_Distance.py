@@ -6,12 +6,9 @@ from ... import cg
 from ... import weights
 from .. import Distance as d, Contiguity as c
 from ...io import geotable as pdio
+from ...io.FileIO import FileIO as psopen
 import numpy as np
-#import pysal as ps
-#import pysal_examples
-import pysal as __pysal
-ps_open = __pysal.open
-pysal_examples = __pysal.examples
+import pysal_examples
 import unittest as ut
 
 PANDAS_EXTINCT = pandas is None
@@ -25,11 +22,11 @@ class Distance_Mixin(object):
               (15, 20), (30, 20), (30, 30)]
     euclidean_kdt = KDTree(points, distance_metric='euclidean')
     
-    polygon_f = ps_open(polygon_path) # our file handler
+    polygon_f = psopen(polygon_path) # our file handler
     poly_centroids = get_points_array(polygon_f) # our iterable
     polygon_f.seek(0) #go back to head of file
     
-    arc_f = ps_open(arc_path)
+    arc_f = psopen(arc_path)
     arc_points = get_points_array(arc_f)
     arc_f.seek(0)
     arc_kdt = KDTree(arc_points, distance_metric='Arc',
@@ -118,7 +115,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         Distance_Mixin.setUp(self)
         self.grid_path =  pysal_examples.get_path('lattice10x10.shp')
         self.grid_rook_w = c.Rook.from_shapefile(self.grid_path)
-        self.grid_f = ps_open(self.grid_path)
+        self.grid_f = psopen(self.grid_path)
         self.grid_points = get_points_array(self.grid_f)
         self.grid_f.seek(0)
 
@@ -182,7 +179,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     def test_dense(self):
         w_rook = c.Rook.from_shapefile(
                 pysal_examples.get_path('lattice10x10.shp'))
-        polys = ps_open(pysal_examples.get_path('lattice10x10.shp'))
+        polys = psopen(pysal_examples.get_path('lattice10x10.shp'))
         centroids = [p.centroid for p in polys]
         w_db = d.DistanceBand(centroids, 1, build_sp=False)
 

@@ -4,9 +4,7 @@ from ...common import pandas
 from ...io.FileIO import FileIO as ps_open
 from ...io import geotable as pdio
 
-#import pysal_examples
-import pysal.examples
-pysal_examples = pysal.examples
+import pysal_examples
 import unittest as ut
 from warnings import warn as Warn
 

@@ -1,6 +1,7 @@
 """Unit test for Wsets module."""
 import unittest
-import pysal
+from ..util import lat2W
+from .. import Wsets
 
 
 class TestWsets(unittest.TestCase):
@@ -8,9 +9,9 @@ class TestWsets(unittest.TestCase):
 
     def test_w_union(self):
         """Unit test"""
-        w1 = pysal.lat2W(4, 4)
-        w2 = pysal.lat2W(6, 4)
-        w3 = pysal.weights.Wsets.w_union(w1, w2)
+        w1 = lat2W(4, 4)
+        w2 = lat2W(6, 4)
+        w3 = Wsets.w_union(w1, w2)
         self.assertEqual(w1[0], w3[0])
         self.assertEqual(set(w1.neighbors[15]), set([11, 14]))
         self.assertEqual(set(w2.neighbors[15]), set([11, 14, 19]))
@@ -18,9 +19,9 @@ class TestWsets(unittest.TestCase):
 
     def test_w_intersection(self):
         """Unit test"""
-        w1 = pysal.lat2W(4, 4)
-        w2 = pysal.lat2W(6, 4)
-        w3 = pysal.weights.Wsets.w_union(w1, w2)
+        w1 = lat2W(4, 4)
+        w2 = lat2W(6, 4)
+        w3 = Wsets.w_union(w1, w2)
         self.assertEqual(w1[0], w3[0])
         self.assertEqual(set(w1.neighbors[15]), set([11, 14]))
         self.assertEqual(set(w2.neighbors[15]), set([11, 14, 19]))
@@ -28,9 +29,9 @@ class TestWsets(unittest.TestCase):
 
     def test_w_difference(self):
         """Unit test"""
-        w1 = pysal.lat2W(4, 4, rook=False)
-        w2 = pysal.lat2W(4, 4, rook=True)
-        w3 = pysal.weights.Wsets.w_difference(w1, w2, constrained=False)
+        w1 = lat2W(4, 4, rook=False)
+        w2 = lat2W(4, 4, rook=True)
+        w3 = Wsets.w_difference(w1, w2, constrained=False)
         self.assertNotEqual(w1[0], w3[0])
         self.assertEqual(set(w1.neighbors[15]), set([10, 11, 14]))
         self.assertEqual(set(w2.neighbors[15]), set([11, 14]))
@@ -38,9 +39,9 @@ class TestWsets(unittest.TestCase):
 
     def test_w_symmetric_difference(self):
         """Unit test"""
-        w1 = pysal.lat2W(4, 4, rook=False)
-        w2 = pysal.lat2W(6, 4, rook=True)
-        w3 = pysal.weights.Wsets.w_symmetric_difference(
+        w1 = lat2W(4, 4, rook=False)
+        w2 = lat2W(6, 4, rook=True)
+        w3 = Wsets.w_symmetric_difference(
             w1, w2, constrained=False)
         self.assertNotEqual(w1[0], w3[0])
         self.assertEqual(set(w1.neighbors[15]), set([10, 11, 14]))
@@ -49,9 +50,9 @@ class TestWsets(unittest.TestCase):
 
     def test_w_subset(self):
         """Unit test"""
-        w1 = pysal.lat2W(6, 4)
+        w1 = lat2W(6, 4)
         ids = range(16)
-        w2 = pysal.weights.Wsets.w_subset(w1, ids)
+        w2 = Wsets.w_subset(w1, ids)
         self.assertEqual(w1[0], w2[0])
         self.assertEqual(set(w1.neighbors[15]), set([11, 14, 19]))
         self.assertEqual(set(w2.neighbors[15]), set([11, 14]))

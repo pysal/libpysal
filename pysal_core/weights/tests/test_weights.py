@@ -1,5 +1,10 @@
 import unittest
-import pysal
+from ..weights import W, WSP
+from .. import util
+from ..util import WSP2W, lat2W
+from ..user import rook_from_shapefile
+from ...io.FileIO import FileIO as psopen
+import pysal_examples
 import numpy as np
 
 NPTA3E = np.testing.assert_array_almost_equal
@@ -7,8 +12,7 @@ NPTA3E = np.testing.assert_array_almost_equal
 
 class TestW(unittest.TestCase):
     def setUp(self):
-        from pysal import rook_from_shapefile
-        self.w = rook_from_shapefile(pysal.examples.get_path('10740.shp'))
+        self.w = rook_from_shapefile(pysal_examples.get_path('10740.shp'))
 
         self.neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4],
                           4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7],
@@ -17,10 +21,10 @@ class TestW(unittest.TestCase):
                         4: [1, 1, 1, 1], 5: [1, 1, 1], 6: [1, 1],
                         7: [1, 1, 1], 8: [1, 1]}
 
-        self.w3x3 = pysal.lat2W(3, 3)
+        self.w3x3 = util.lat2W(3, 3)
 
     def test_W(self):
-        w = pysal.W(self.neighbors, self.weights)
+        w = W(self.neighbors, self.weights)
         self.assertEqual(w.pct_nonzero, 29.62962962962963)
 
     def test___getitem__(self):
@@ -28,11 +32,11 @@ class TestW(unittest.TestCase):
             self.w[0], {1: 1.0, 4: 1.0, 101: 1.0, 85: 1.0, 5: 1.0})
 
     def test___init__(self):
-        w = pysal.W(self.neighbors, self.weights)
+        w = W(self.neighbors, self.weights)
         self.assertEqual(w.pct_nonzero, 29.62962962962963)
 
     def test___iter__(self):
-        w = pysal.lat2W(3, 3)
+        w = lat2W(3, 3)
         res = {}
         for i, wi in enumerate(w):
             res[i] = wi
@@ -40,7 +44,7 @@ class TestW(unittest.TestCase):
         self.assertEqual(res[8], (8, {5: 1.0, 7: 1.0}))
 
     def test_asymmetries(self):
-        w = pysal.lat2W(3, 3)
+        w = lat2W(3, 3)
         w.transform = 'r'
         result = w.asymmetry()
         self.assertEqual(result, [(0, 1), (0, 3), (1, 0), (1, 2),
@@ -51,13 +55,13 @@ class TestW(unittest.TestCase):
                                   (7, 6), (7, 8), (8, 5), (8, 7)])
 
     def test_asymmetry(self):
-        w = pysal.lat2W(3, 3)
+        w = lat2W(3, 3)
         self.assertEqual(w.asymmetry(), [])
         w.transform = 'r'
         self.assertFalse(w.asymmetry() == [])
 
     def test_cardinalities(self):
-        w = pysal.lat2W(3, 3)
+        w = lat2W(3, 3)
         self.assertEqual(w.cardinalities, {0: 2, 1: 3, 2: 2, 3: 3, 4: 4, 5: 3,
                                            6: 2, 7: 3, 8: 2})
 
@@ -105,7 +109,7 @@ class TestW(unittest.TestCase):
                      8: [6, 2, 4]}
         wneighbs = {k: {neighb: weights[k][i] for i, neighb in enumerate(v)}
                     for k, v in neighbors.iteritems()}
-        w2 = pysal.higher_order(self.w3x3, 2)
+        w2 = util.higher_order(self.w3x3, 2)
         test_wneighbs = {k: {ne: weights[k][i] for i, ne in enumerate(v)}
                          for k, v in w2.neighbors.iteritems()}
         self.assertEqual(test_wneighbs, wneighbs)
@@ -121,31 +125,31 @@ class TestW(unittest.TestCase):
         self.assertEqual(self.w3x3.id2i, id2i)
 
     def test_id_order_set(self):
-        w = pysal.W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c': ['b']})
+        w = W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c': ['b']})
         self.assertFalse(w.id_order_set)
 
     def test_islands(self):
-        w = pysal.W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
+        w = W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
                                ['b'], 'd': []})
         self.assertEqual(w.islands, ['d'])
         self.assertEqual(self.w3x3.islands, [])
 
     def test_max_neighbors(self):
-        w = pysal.W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
+        w = W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
                                ['b'], 'd': []})
         self.assertEqual(w.max_neighbors, 2)
         self.assertEqual(self.w3x3.max_neighbors, 4)
 
     def test_mean_neighbors(self):
-        w = pysal.lat2W()
+        w = util.lat2W()
         self.assertEqual(w.mean_neighbors, 3.2)
 
     def test_min_neighbors(self):
-        w = pysal.lat2W()
+        w = util.lat2W()
         self.assertEqual(w.min_neighbors, 2)
 
     def test_n(self):
-        w = pysal.lat2W()
+        w = util.lat2W()
         self.assertEqual(w.n, 25)
 
     def test_neighbor_offsets(self):
@@ -165,7 +169,7 @@ class TestW(unittest.TestCase):
         self.assertEquals(self.w3x3.nonzero, 24)
 
     def test_order(self):
-        w = pysal.lat2W(3, 3)
+        w = util.lat2W(3, 3)
         o = {0: [-1, 1, 2, 1, 2, 3, 2, 3, 0],
              1: [1, -1, 1, 2, 1, 2, 3, 2, 3],
              2: [2, 1, -1, 3, 2, 1, 0, 3, 2],
@@ -175,7 +179,7 @@ class TestW(unittest.TestCase):
              6: [2, 3, 0, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [0, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(pysal.order(w), o)
+        self.assertEquals(util.order(w), o)
 
     def test_pct_nonzero(self):
         self.assertEqual(self.w3x3.pct_nonzero, 29.62962962962963)
@@ -198,7 +202,7 @@ class TestW(unittest.TestCase):
         self.assertEquals(self.w3x3.sd, 0.66666666666666663)
 
     def test_set_transform(self):
-        w = pysal.lat2W(2, 2)
+        w = util.lat2W(2, 2)
         self.assertEqual(w.transform, 'O')
         self.assertEquals(w.weights[0], [1.0, 1.0])
         w.transform = 'r'
@@ -214,7 +218,7 @@ class TestW(unittest.TestCase):
              6: [2, 3, 4, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [4, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(pysal.shimbel(self.w3x3), d)
+        self.assertEquals(util.shimbel(self.w3x3), d)
 
     def test_sparse(self):
         self.assertEqual(self.w3x3.sparse.nnz, 24)
@@ -232,8 +236,7 @@ class TestW(unittest.TestCase):
 class Test_WSP_Back_To_W(unittest.TestCase):
     # Test to make sure we get back to the same W functionality
     def setUp(self):
-        from pysal import rook_from_shapefile
-        self.w = rook_from_shapefile(pysal.examples.get_path('10740.shp'))
+        self.w = rook_from_shapefile(pysal_examples.get_path('10740.shp'))
         wsp = self.w.to_WSP()
         self.w = wsp.to_W()
 
@@ -244,12 +247,12 @@ class Test_WSP_Back_To_W(unittest.TestCase):
                         4: [1, 1, 1, 1], 5: [1, 1, 1], 6: [1, 1], 7: [1, 1, 1],
                         8: [1, 1]}
 
-        self.w3x3 = pysal.lat2W(3, 3)
-        w3x3 = pysal.weights.WSP(self.w3x3.sparse, self.w3x3.id_order)
-        self.w3x3 = pysal.weights.WSP2W(w3x3)
+        self.w3x3 = util.lat2W(3, 3)
+        w3x3 = WSP(self.w3x3.sparse, self.w3x3.id_order)
+        self.w3x3 = WSP2W(w3x3)
 
     def test_W(self):
-        w = pysal.W(self.neighbors, self.weights)
+        w = W(self.neighbors, self.weights)
         self.assertEqual(w.pct_nonzero, 29.62962962962963)
 
     def test___getitem__(self):
@@ -257,11 +260,11 @@ class Test_WSP_Back_To_W(unittest.TestCase):
             self.w[0], {1: 1.0, 4: 1.0, 101: 1.0, 85: 1.0, 5: 1.0})
 
     def test___init__(self):
-        w = pysal.W(self.neighbors, self.weights)
+        w = W(self.neighbors, self.weights)
         self.assertEqual(w.pct_nonzero, 29.62962962962963)
 
     def test___iter__(self):
-        w = pysal.lat2W(3, 3)
+        w = util.lat2W(3, 3)
         res = {}
         for i, wi in enumerate(w):
             res[i] = wi
@@ -269,7 +272,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEqual(res[8], (8, {5: 1.0, 7: 1.0}))
 
     def test_asymmetries(self):
-        w = pysal.lat2W(3, 3)
+        w = util.lat2W(3, 3)
         w.transform = 'r'
         result = w.asymmetry()
         self.assertEqual(result, [(0, 1), (0, 3), (1, 0), (1, 2), (1, 4),
@@ -279,13 +282,13 @@ class Test_WSP_Back_To_W(unittest.TestCase):
                                   (7, 6), (7, 8), (8, 5), (8, 7)])
 
     def test_asymmetry(self):
-        w = pysal.lat2W(3, 3)
+        w = util.lat2W(3, 3)
         self.assertEqual(w.asymmetry(), [])
         w.transform = 'r'
         self.assertFalse(w.asymmetry() == [])
 
     def test_cardinalities(self):
-        w = pysal.lat2W(3, 3)
+        w = util.lat2W(3, 3)
         self.assertEqual(w.cardinalities, {0: 2, 1: 3, 2: 2, 3: 3, 4: 4, 5: 3,
                                            6: 2, 7: 3, 8: 2})
 
@@ -333,7 +336,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
                      8: [6, 2, 4]}
         wneighbs = {k: {neighb: weights[k][i] for i, neighb in enumerate(v)}
                     for k, v in neighbors.iteritems()}
-        w2 = pysal.higher_order(self.w3x3, 2)
+        w2 = util.higher_order(self.w3x3, 2)
         test_wneighbs = {k: {ne: w2.weights[k][i] for i, ne in enumerate(v)}
                          for k, v in w2.neighbors.iteritems()}
         self.assertEqual(test_wneighbs, wneighbs)
@@ -349,38 +352,38 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEqual(self.w3x3.id2i, id2i)
 
     def test_id_order_set(self):
-        w = pysal.W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c': ['b']})
+        w = W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c': ['b']})
         self.assertFalse(w.id_order_set)
 
     def test_islands(self):
-        w = pysal.W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
+        w = W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
                                ['b'], 'd': []})
         self.assertEqual(w.islands, ['d'])
         self.assertEqual(self.w3x3.islands, [])
 
     def test_max_neighbors(self):
-        w = pysal.W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
+        w = W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
                                ['b'], 'd': []})
         self.assertEqual(w.max_neighbors, 2)
         self.assertEqual(self.w3x3.max_neighbors, 4)
 
     def test_mean_neighbors(self):
-        w = pysal.lat2W()
+        w = util.lat2W()
         self.assertEqual(w.mean_neighbors, 3.2)
 
     def test_min_neighbors(self):
-        w = pysal.lat2W()
+        w = util.lat2W()
         self.assertEqual(w.min_neighbors, 2)
 
     def test_n(self):
-        w = pysal.lat2W()
+        w = util.lat2W()
         self.assertEqual(w.n, 25)
 
     def test_nonzero(self):
         self.assertEquals(self.w3x3.nonzero, 24)
 
     def test_order(self):
-        w = pysal.lat2W(3, 3)
+        w = util.lat2W(3, 3)
         o = {0: [-1, 1, 2, 1, 2, 3, 2, 3, 0],
              1: [1, -1, 1, 2, 1, 2, 3, 2, 3],
              2: [2, 1, -1, 3, 2, 1, 0, 3, 2],
@@ -390,7 +393,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
              6: [2, 3, 0, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [0, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(pysal.order(w), o)
+        self.assertEquals(util.order(w), o)
 
     def test_pct_nonzero(self):
         self.assertEqual(self.w3x3.pct_nonzero, 29.62962962962963)
@@ -413,7 +416,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEquals(self.w3x3.sd, 0.66666666666666663)
 
     def test_set_transform(self):
-        w = pysal.lat2W(2, 2)
+        w = util.lat2W(2, 2)
         self.assertEqual(w.transform, 'O')
         self.assertEquals(w.weights[0], [1.0, 1.0])
         w.transform = 'r'
@@ -429,7 +432,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
              6: [2, 3, 4, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [4, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(pysal.shimbel(self.w3x3), d)
+        self.assertEquals(util.shimbel(self.w3x3), d)
 
     def test_sparse(self):
         self.assertEqual(self.w3x3.sparse.nnz, 24)
@@ -446,10 +449,10 @@ class Test_WSP_Back_To_W(unittest.TestCase):
 
 class TestWSP(unittest.TestCase):
     def setUp(self):
-        self.w = pysal.open(pysal.examples.get_path("sids2.gal")).read()
-        self.wsp = pysal.weights.WSP(self.w.sparse, self.w.id_order)
-        w3x3 = pysal.lat2W(3, 3)
-        self.w3x3 = pysal.weights.WSP(w3x3.sparse)
+        self.w = psopen(pysal_examples.get_path("sids2.gal")).read()
+        self.wsp = WSP(self.w.sparse, self.w.id_order)
+        w3x3 = util.lat2W(3, 3)
+        self.w3x3 = WSP(w3x3.sparse)
 
     def test_WSP(self):
         self.assertEquals(self.w.id_order, self.wsp.id_order)

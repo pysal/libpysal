@@ -4,15 +4,13 @@ from .._contW_lists import ContiguityWeightsLists, ROOK, QUEEN
 from ..weights import W
 from ...io.FileIO import FileIO as ps_open
 
-import pysal.examples
-#import pysal_examples
-pysal_examples = pysal.examples
+import pysal_examples
 
 
 class TestContiguityWeights(unittest.TestCase):
     def setUp(self):
         """ Setup the binning contiguity weights"""
-        shpObj = ps_open(pysal.examples.get_path('virginia.shp'), 'r')
+        shpObj = ps_open(pysal_examples.get_path('virginia.shp'), 'r')
         self.binningW = ContiguityWeightsLists(shpObj, QUEEN)
         shpObj.close()
 
@@ -47,9 +45,9 @@ class TestContiguityWeights(unittest.TestCase):
 
     def test_true_rook(self):
         # load queen gal file created using Open Geoda.
-        geodaW = ps_open(pysal.examples.get_path('rook31.gal'), 'r').read()
+        geodaW = ps_open(pysal_examples.get_path('rook31.gal'), 'r').read()
         # build matching W with pysal
-        #pysalW = pysal.rook_from_shapefile(pysal.examples.get_path('rook31.shp'),','POLY_ID')
+        #pysalW = pysal.rook_from_shapefile(pysal_examples.get_path('rook31.shp'),','POLY_ID')
         pysalWb = self.build_W(
             pysal_examples.get_path('rook31.shp'), ROOK, 'POLY_ID')
         # compare output.
@@ -63,9 +61,9 @@ class TestContiguityWeights(unittest.TestCase):
     def test_true_rook2(self):
         # load queen gal file created using Open Geoda.
         geodaW = ps_open(
-            pysal.examples.get_path('stl_hom_rook.gal'), 'r').read()
+            pysal_examples.get_path('stl_hom_rook.gal'), 'r').read()
         # build matching W with pysal
-        pysalWb = self.build_W(pysal.examples.get_path(
+        pysalWb = self.build_W(pysal_examples.get_path(
             'stl_hom.shp'), ROOK, 'POLY_ID_OG')
         # compare output.
         for key in geodaW.neighbors:
@@ -80,7 +78,7 @@ class TestContiguityWeights(unittest.TestCase):
         geodaW = ps_open(
             pysal_examples.get_path('sacramentot2.gal'), 'r').read()
         # build matching W with pysal
-        pysalWb = self.build_W(pysal.examples.get_path(
+        pysalWb = self.build_W(pysal_examples.get_path(
             'sacramentot2.shp'), ROOK, 'POLYID')
         # compare output.
         for key in geodaW.neighbors:
@@ -96,7 +94,7 @@ class TestContiguityWeights(unittest.TestCase):
             pysal_examples.get_path('virginia_rook.gal'), 'r').read()
         # build matching W with pysal
         pysalWb = self.build_W(
-            pysal.examples.get_path('virginia.shp'), ROOK, 'POLY_ID')
+            pysal_examples.get_path('virginia.shp'), ROOK, 'POLY_ID')
         # compare output.
         for key in geodaW.neighbors:
             geoda_neighbors = map(int, geodaW.neighbors[key])
