@@ -2,8 +2,8 @@ import unittest
 import numpy as np
 import math
 
-from pysal.cg.shapes import *
-from pysal.cg.standalone import *
+from ..shapes import *
+from ..standalone import *
 
 
 class TestBbcommon(unittest.TestCase):

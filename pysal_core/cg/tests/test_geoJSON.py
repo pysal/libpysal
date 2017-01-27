@@ -1,5 +1,6 @@
-import pysal
-from pysal.cg.shapes import Point, Chain
+from ..shapes import Point, Chain, asShape
+from ...io.FileIO import FileIO as psopen
+import pysal_examples
 import doctest
 import unittest
 
@@ -11,12 +12,12 @@ class test_MultiPloygon(unittest.TestCase):
         Tests conversion of polygons with multiple shells to 
         geoJSON multipolygons. and back.
         """
-        shp = pysal.open(pysal.examples.get_path("NAT.shp"),'r')
+        shp = psopen(pysal_examples.get_path("NAT.shp"),'r')
         multipolygons = [p for p in shp if len(p.parts) > 1]
         geoJSON = [p.__geo_interface__ for p in multipolygons]
         for poly in multipolygons:
             json = poly.__geo_interface__
-            shape = pysal.cg.asShape(json)
+            shape = asShape(json)
             self.assertEquals(json['type'],'MultiPolygon')
             self.assertEquals(str(shape.holes), str(poly.holes))
             self.assertEquals(str(shape.parts), str(poly.parts))
@@ -44,7 +45,7 @@ class test_MultiLineString(unittest.TestCase):
         self.assertEquals(json['type'], 'MultiLineString')
         self.assertEquals(len(json['coordinates']), 2)
 
-        chain3 = pysal.cg.asShape(json)
+        chain3 = asShape(json)
         self.assertEquals(chain2.parts, chain3.parts)
 
 

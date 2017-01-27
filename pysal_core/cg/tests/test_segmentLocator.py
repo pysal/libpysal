@@ -1,6 +1,6 @@
 """Segment Locator Unittest."""
-from pysal.cg import *
-from pysal.cg.segmentLocator import *
+from ..shapes import *
+from ..segmentLocator import *
 import unittest
 
 

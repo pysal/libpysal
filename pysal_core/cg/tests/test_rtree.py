@@ -1,6 +1,6 @@
 
 """pyrtree Unittest."""
-from pysal.cg import RTree, Rect
+from ..rtree import RTree, Rect
 import unittest
 
 
