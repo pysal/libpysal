@@ -177,8 +177,10 @@ class W(object):
         if self.islands and not self.silent_island_warning:
             ni = len(self.islands)
             if ni == 1:
-                warnings.warn("There is one disconnected observation (no neighbors)")
-                warnings.warn("Island id: %s" % str(self.islands[0]))
+                warnings.warn("There is one disconnected observation"
+                              " (no neighbors).\nIsland id: {}"
+                              .format(str(self.islands[0])), 
+                              stacklevel=2)
             else:
                 warnings.warn("There are %d disconnected observations" % ni)
                 warnings.warn("Island ids: %s" % ', '.join(str(island) for island in self.islands))
