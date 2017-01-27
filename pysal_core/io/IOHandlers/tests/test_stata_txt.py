@@ -1,5 +1,4 @@
 import unittest
-import pysal
 import pysal_examples
 from ..stata_txt import StataTextIO
 from ...FileIO import FileIO as psopen

@@ -1,6 +1,5 @@
 import os
-import pysal
-
+from ..FileIO import FileIO as psopen
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["weight_convert"]
 
@@ -53,9 +52,9 @@ class WeightConverter(object):
         """
         try:
             if self.inputDataFormat:
-                f = pysal.open(self.inputPath, 'r', self.inputDataFormat)
+                f = psopen(self.inputPath, 'r', self.inputDataFormat)
             else:
-                f = pysal.open(self.inputPath, 'r')
+                f = psopen(self.inputPath, 'r')
         except:
             raise IOError('A problem occurred while reading the input file.')
         else:
@@ -125,7 +124,7 @@ class WeightConverter(object):
 
         Create a new weights object from the converted dbf file
 
-        >>> wnew = pysal.open(fname, 'r', 'arcgis_dbf').read()
+        >>> wnew = psopen(fname, 'r', 'arcgis_dbf').read()
 
         Compare the number of observations in two W objects
 
@@ -147,9 +146,9 @@ class WeightConverter(object):
 
         try:
             if dataFormat:
-                o = pysal.open(outputPath, 'w', dataFormat)
+                o = psopen(outputPath, 'w', dataFormat)
             else:
-                o = pysal.open(outputPath, 'w')
+                o = psopen(outputPath, 'w')
         except:
             raise IOError('A problem occurred while creating the output file.')
         else:

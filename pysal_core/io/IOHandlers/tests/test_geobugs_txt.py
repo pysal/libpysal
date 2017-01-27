@@ -1,5 +1,4 @@
 import unittest
-import pysal
 from ..geobugs_txt import GeoBUGSTextIO
 import pysal_examples
 from ...FileIO import FileIO as psopen

@@ -1,6 +1,5 @@
 """Unit tests for gal.py"""
 import unittest
-import pysal
 import tempfile
 import os
 from ..gal import GalIO

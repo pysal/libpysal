@@ -1,7 +1,8 @@
 import os
-import pysal as ps
 from ... import geotable as pdio
+from ...FileIO import FileIO as psopen
 import unittest as ut
+import pysal_examples
 
 try:
     import sqlalchemy
@@ -29,7 +30,7 @@ def to_wkb_point(c):
 class Test_sqlite_reader(ut.TestCase):
 
     def setUp(self):
-        df = pdio.read_files(ps.examples.get_path('new_haven_merged.dbf'))
+        df = pdio.read_files(pysal_examples.get_path('new_haven_merged.dbf'))
         df['GEOMETRY'] = df['geometry'].apply(to_wkb_point)
         del df['geometry'] # This is a hack to not have to worry about a custom point type in the DB
         engine = sqlalchemy.create_engine('sqlite:///test.db')
@@ -43,7 +44,7 @@ class Test_sqlite_reader(ut.TestCase):
                       'GEOMETRY': sqlalchemy.types.BLOB})  # This is converted to TEXT as lowest type common sqlite
 
     def test_deserialize(self):
-        db = ps.open('sqlite:///test.db')
+        db = psopen('sqlite:///test.db')
         self.assertEqual(db.tables, [u'newhaven'])
 
         gj = db._get_gjson('newhaven')

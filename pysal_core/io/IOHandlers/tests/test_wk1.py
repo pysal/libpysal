@@ -1,5 +1,4 @@
 import unittest
-import pysal
 from ..wk1 import Wk1IO
 import pysal_examples
 from ...FileIO import FileIO as psopen
