@@ -1,9 +1,43 @@
 from ..cg.shapes import Polygon
+import itertools as it
+from sys import version_info
 import collections
 QUEEN = 1
 ROOK = 2
+if version_info[0] == 2:
+    zip = it.izip
+    range = xrange
 
 __author__ = "Jay Laura jlaura@asu.edu"
+
+def _get_verts(pgon):
+    if isinstance(pgon, Polygon):
+        return pgon.vertices
+    else:
+        return _get_boundary_points(pgon)
+
+def _get_boundary_points(pgon):
+    """
+    Recursively handle polygons vs. multipolygons to
+    extract the boundary point set from each. 
+    """
+    if pgon.type.lower() == 'polygon':
+        bounds = pgon.boundary
+        if bounds.type.lower() == 'linestring':
+            return list(map(tuple, zip(*bounds.coords.xy)))
+        elif bounds.type.lower() == 'multilinestring':
+            return list(it.chain(*(zip(*bound.coords.xy)
+                                     for bound in bounds)))
+        else:
+            raise TypeError('Input Polygon has unrecognized boundary type: {}'
+                            ''.format(bounds.type))
+    elif pgon.type.lower() == 'multipolygon':
+        return list(it.chain(*(_get_boundary_points(part) 
+                               for part in pgon)))
+    else:
+        raise TypeError('Input shape must be Polygon or Multipolygon and was '
+                        'instead: {}'.format(pgon.type))
+
 
 class ContiguityWeightsLists:
     """
@@ -26,11 +60,6 @@ class ContiguityWeightsLists:
         self.jcontiguity()
 
     def jcontiguity(self):
-        if not isinstance(self.collection[0], Polygon):
-        #    return False
-            raise Exception('Input collection is of type {}, must instead'
-                    ' be a cg.Polygon'.format(type(self.collection[0])))
-
         numPoly = len(self.collection)
 
         w = {}
@@ -43,7 +72,7 @@ class ContiguityWeightsLists:
 
         if self.wttype == QUEEN:
             for n in range(numPoly):
-                    verts = self.collection[n].vertices
+                    verts = _get_verts(self.collection[n])
                     offsets += [c] * len(verts)
                     geoms += (verts)
                     c += 1
@@ -67,7 +96,7 @@ class ContiguityWeightsLists:
 
         elif self.wttype == ROOK:
             for n in range(numPoly):
-                verts = self.collection[n].vertices
+                verts = _get_verts(self.collection[n])
                 for v in range(len(verts) - 1):
                     geoms.append(tuple(sorted([verts[v], verts[v + 1]])))
                 offsets += [c] * (len(verts) - 1)
