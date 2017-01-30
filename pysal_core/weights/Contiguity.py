@@ -357,10 +357,10 @@ def _build(polygons, criterion="rook", ids=None):
                 neighbors[ida] = set()
             neighbors[ida].update([ids[x] for x in neighbor_data[key]])
         for key in neighbors:
-            neighbors[key] = list(neighbors[key])
+            neighbors[key] = set(neighbors[key])
     else:
         for key in neighbor_data:
-            neighbors[key] = list(neighbor_data[key])
+            neighbors[key] = set(neighbor_data[key])
     return neighbors, ids
 
 def buildContiguity(polygons, criterion="rook", ids=None):

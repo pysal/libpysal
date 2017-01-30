@@ -1,7 +1,8 @@
 from ...common import simport, requires
 from ...cg import asShape
-import pdio
 from .. import FileIO
+from .file import read_files, write_files 
+import shapely.geometry as sgeom
 import pandas as pd
 
 @requires('geopandas')
@@ -10,7 +11,13 @@ def geopandas(filename, **kw):
     return geopandas.read_file(filename, **kw)
 
 @requires('fiona')
-def fiona(filename, **kw):
+def fiona(filename, geom_type='shapely', **kw):
+    if geom_type == 'shapely':
+        converter = sgeom.shape
+    elif geom_type is None:
+        converter = lambda x: x
+    else:
+        converter = asShape
     import fiona
     props = {}
     with fiona.open(filename, **kw) as f:
@@ -21,12 +28,11 @@ def fiona(filename, **kw):
             except ValueError:
                 pass
             props.update({idx:feat.get('properties', dict())})
-            props[idx].update({'geometry':asShape(feat['geometry'])})
+            props[idx].update({'geometry':converter(feat['geometry'])})
     return pd.DataFrame().from_dict(props).T
 
-_readers = {'read_shapefile':pdio.read_files, 
+_readers = {'read_shapefile':read_files, 
             'read_fiona':fiona}
-_writers = {'to_shapefile':pdio.write_files}
+_writers = {'to_shapefile':write_files}
 
 _pandas_readers = {k:v for k,v in pd.io.api.__dict__.items() if k.startswith('read_')}
-
