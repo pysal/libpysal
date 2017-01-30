@@ -1,20 +1,21 @@
 import unittest
-import pysal
-from pysal.core.util.weight_converter import WeightConverter
-from pysal.core.util.weight_converter import weight_convert
+from ..weight_converter import WeightConverter
+from ..weight_converter import weight_convert
+from ...FileIO import FileIO as psopen
 import tempfile
 import os
 import warnings
+import pysal_examples
 
 
 class test_WeightConverter(unittest.TestCase):
     def setUp(self):
-        self.base_dir = pysal.examples.get_path('')
+        self.base_dir = pysal_examples.get_path('')
         test_files = ['arcgis_ohio.dbf', 'arcgis_txt.txt', 'ohio.swm',
                            'wmat.dat', 'wmat.mtx', 'sids2.gal', 'juvenile.gwt',
                            'geobugs_scot', 'stata_full.txt', 'stata_sparse.txt',
                            'spat-sym-us.mat', 'spat-sym-us.wk1']
-        self.test_files = [pysal.examples.get_path(f) for f in test_files]
+        self.test_files = [pysal_examples.get_path(f) for f in test_files]
         dataformats = ['arcgis_dbf', 'arcgis_text', None, None, None, None, None,
                        'geobugs_text', 'stata_text', 'stata_text', None, None]
         ns = [88, 3, 88, 49, 49, 100, 168, 56, 56, 56, 46, 46]
@@ -75,9 +76,9 @@ class test_WeightConverter(unittest.TestCase):
                     #       are tested in their specific readers
                     warnings.simplefilter("always")
                     if dataformat is None:
-                        wnew = pysal.open(temp_fname, 'r').read()
+                        wnew = psopen(temp_fname, 'r').read()
                     else:
-                        wnew = pysal.open(temp_fname, 'r', dataformat).read()
+                        wnew = psopen(temp_fname, 'r', dataformat).read()
 
                 if (ext in ['dbf', 'swm', 'dat', 'wk1', 'gwt'] or dataformat == 'arcgis_text'):
                     self.assertEqual(wnew.n, wc.w.n - len(wc.w.islands))
@@ -94,9 +95,9 @@ class test_WeightConverter(unittest.TestCase):
                 #       are tested in their specific readers
                 warnings.simplefilter("always")
                 if inDataFormat is None:
-                    in_file = pysal.open(inFile, 'r')
+                    in_file = psopen(inFile, 'r')
                 else:
-                    in_file = pysal.open(inFile, 'r', inDataFormat)
+                    in_file = psopen(inFile, 'r', inDataFormat)
                 wold = in_file.read()
                 in_file.close()
 
@@ -124,9 +125,9 @@ class test_WeightConverter(unittest.TestCase):
                     #       are tested in their specific readers
                     warnings.simplefilter("always")
                     if dataformat is None:
-                        wnew = pysal.open(outFile, 'r').read()
+                        wnew = psopen(outFile, 'r').read()
                     else:
-                        wnew = pysal.open(outFile, 'r', dataformat).read()
+                        wnew = psopen(outFile, 'r', dataformat).read()
 
                 if (ext in ['dbf', 'swm', 'dat', 'wk1', 'gwt'] or dataformat == 'arcgis_text'):
                     self.assertEqual(wnew.n, wold.n - len(wold.islands))

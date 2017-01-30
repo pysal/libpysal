@@ -1,5 +1,6 @@
 import unittest
-import pysal
+from ..wkt import WKTParser
+from ....cg.shapes import Point, Chain, Polygon
 
 
 class test_WKTParser(unittest.TestCase):
@@ -15,23 +16,23 @@ class test_WKTParser(unittest.TestCase):
                             'POINT ZM (1 1 5 60)',
                             'POINT M (1 1 80)']
         self.empty = ['POINT EMPTY', 'MULTIPOLYGON EMPTY']
-        self.parser = pysal.core.util.WKTParser()
+        self.parser = WKTParser()
 
     def test_Point(self):
         pt = self.parser(self.wktPOINT)
-        self.assert_(issubclass(type(pt), pysal.cg.Point))
+        self.assert_(issubclass(type(pt), Point))
         self.assertEquals(pt[:], (6.0, 10.0))
 
     def test_LineString(self):
         line = self.parser(self.wktLINESTRING)
-        self.assert_(issubclass(type(line), pysal.cg.Chain))
+        self.assert_(issubclass(type(line), Chain))
         parts = [[pt[:] for pt in part] for part in line.parts]
         self.assertEquals(parts, [[(3.0, 4.0), (10.0, 50.0), (20.0, 25.0)]])
         self.assertEquals(line.len, 73.455384532199886)
 
     def test_Polygon(self):
         poly = self.parser(self.wktPOLYGON)
-        self.assert_(issubclass(type(poly), pysal.cg.Polygon))
+        self.assert_(issubclass(type(poly), Polygon))
         parts = [[pt[:] for pt in part] for part in poly.parts]
         self.assertEquals(parts, [[(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0,
                                                                         1.0), (1.0, 1.0)], [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0),

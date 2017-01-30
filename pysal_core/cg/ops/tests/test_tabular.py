@@ -1,10 +1,10 @@
 import unittest as ut
 from .. import tabular as ta
-from pysal.common import RTOL, ATOL, pandas, requires as _requires
-from pysal.examples import get_path
-from pysal.cg import Polygon
-import pysal.contrib.pdio as pdio
-from pysal.contrib.geotable import ops as GIS
+from ....common import RTOL, ATOL, pandas, requires as _requires
+from pysal_examples import get_path
+from ...shapes import Polygon
+from ....io import geotable as pdio
+from ... import ops as GIS
 import numpy as np
 
 PANDAS_EXTINCT = pandas is None

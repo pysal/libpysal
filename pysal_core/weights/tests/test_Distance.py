@@ -1,33 +1,36 @@
-from pysal.weights import Distance as d
-from pysal.weights.util import get_points_array
-from pysal.weights import Contiguity as c
-from pysal.common import RTOL, ATOL
-from pysal.cg.kdtree import KDTree
+
+from ...common import RTOL, ATOL, pandas
+from ...cg.kdtree import KDTree
+from ..util import get_points_array
+from ... import cg
+from ... import weights
+from .. import Distance as d, Contiguity as c
+from ...io import geotable as pdio
+from ...io.FileIO import FileIO as psopen
 import numpy as np
-import pysal as ps
+import pysal_examples
 import unittest as ut
 
-PANDAS_EXTINCT = ps.common.pandas is None
+PANDAS_EXTINCT = pandas is None
 # All instances should test these four methods, and define their own functional
 # tests based on common codepaths/estimated weights use cases. 
 
 class Distance_Mixin(object):
-    polygon_path = ps.examples.get_path('columbus.shp')
-    arc_path = ps.examples.get_path('stl_hom.shp')
+    polygon_path = pysal_examples.get_path('columbus.shp')
+    arc_path = pysal_examples.get_path('stl_hom.shp')
     points = [(10, 10), (20, 10), (40, 10), 
               (15, 20), (30, 20), (30, 30)]
-    euclidean_kdt = ps.cg.KDTree(points, distance_metric='euclidean')
+    euclidean_kdt = KDTree(points, distance_metric='euclidean')
     
-    polygon_f = ps.open(polygon_path) # our file handler
+    polygon_f = psopen(polygon_path) # our file handler
     poly_centroids = get_points_array(polygon_f) # our iterable
     polygon_f.seek(0) #go back to head of file
     
-    arc_f = ps.open(arc_path)
-    ps.cg.sphere.arcdist
+    arc_f = psopen(arc_path)
     arc_points = get_points_array(arc_f)
     arc_f.seek(0)
-    arc_kdt = ps.cg.KDTree(arc_points, distance_metric='Arc',
-                           radius=ps.cg.sphere.RADIUS_EARTH_KM)
+    arc_kdt = KDTree(arc_points, distance_metric='Arc',
+                     radius=cg.sphere.RADIUS_EARTH_KM)
     
     cls = object # class constructor
     known_wi = None #index of known w entry to compare
@@ -82,7 +85,7 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
 
     @ut.skipIf(PANDAS_EXTINCT, 'Missing pandas')
     def test_from_dataframe(self):
-        df = ps.pdio.read_files(self.polygon_path)
+        df = pdio.read_files(self.polygon_path)
         w = d.KNN.from_dataframe(df, k=4)
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
@@ -110,9 +113,9 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
 class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     def setUp(self):
         Distance_Mixin.setUp(self)
-        self.grid_path =  ps.examples.get_path('lattice10x10.shp')
+        self.grid_path =  pysal_examples.get_path('lattice10x10.shp')
         self.grid_rook_w = c.Rook.from_shapefile(self.grid_path)
-        self.grid_f = ps.open(self.grid_path)
+        self.grid_f = psopen(self.grid_path)
         self.grid_points = get_points_array(self.grid_f)
         self.grid_f.seek(0)
 
@@ -140,7 +143,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     @ut.skipIf(PANDAS_EXTINCT, 'Missing pandas')
     def test_from_dataframe(self):
         import pandas as pd
-        geom_series = ps.pdio.shp.shp2series(self.grid_path)
+        geom_series = pdio.shp.shp2series(self.grid_path)
         random_data = np.random.random(size=len(geom_series))
         df = pd.DataFrame({'obs':random_data, 'geometry':geom_series})
         w = d.DistanceBand.from_dataframe(df, 1)
@@ -162,9 +165,9 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
             self.assertEquals(v, self.grid_rook_w[k])
 
     def test_arcdist(self):
-        arc = ps.cg.sphere.arcdist
+        arc = cg.sphere.arcdist
         kdt = KDTree(self.arc_points, distance_metric='Arc',
-                     radius=ps.cg.sphere.RADIUS_EARTH_KM)
+                     radius=cg.sphere.RADIUS_EARTH_KM)
         npoints = self.arc_points.shape[0]
         full = np.matrix([[arc(self.arc_points[i], self.arc_points[j])
                           for j in xrange(npoints)] 
@@ -174,9 +177,9 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         np.testing.assert_allclose(w.sparse.todense(), full)
 
     def test_dense(self):
-        w_rook = ps.weights.Rook.from_shapefile(
-                ps.examples.get_path('lattice10x10.shp'))
-        polys = ps.open(ps.examples.get_path('lattice10x10.shp'))
+        w_rook = c.Rook.from_shapefile(
+                pysal_examples.get_path('lattice10x10.shp'))
+        polys = psopen(pysal_examples.get_path('lattice10x10.shp'))
         centroids = [p.centroid for p in polys]
         w_db = d.DistanceBand(centroids, 1, build_sp=False)
 
@@ -248,7 +251,7 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
     
     @ut.skipIf(PANDAS_EXTINCT, 'Missing pandas')
     def test_from_dataframe(self):
-        df = ps.pdio.read_files(self.polygon_path)
+        df = pdio.read_files(self.polygon_path)
         w = d.Kernel.from_dataframe(df)
         for k,v in w[self.known_wi5-1].items():
             np.testing.assert_allclose(v, self.known_w5[k+1], rtol=RTOL)

@@ -1,4 +1,4 @@
-import pysal.core.FileIO as FileIO
+from .. import FileIO
 errmsg = ''
 try:
     try:

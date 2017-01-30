@@ -1,14 +1,15 @@
 
 
 import unittest
-import pysal
+import pysal_examples
+from ..pyDbfIO import DBF
 import tempfile
 import os
 
 class test_DBF(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal.examples.get_path('10740.dbf')
-        self.dbObj = pysal.core.IOHandlers.pyDbfIO.DBF(test_file, 'r')
+        self.test_file = test_file = pysal_examples.get_path('10740.dbf')
+        self.dbObj = DBF(test_file, 'r')
 
     def test_len(self):
         self.assertEqual(len(self.dbObj), 195)
@@ -67,7 +68,7 @@ class test_DBF(unittest.TestCase):
         fname = f.name
         f.close()
         self.dbfcopy = fname
-        self.out = pysal.core.IOHandlers.pyDbfIO.DBF(fname, 'w')
+        self.out = DBF(fname, 'w')
         self.dbObj.seek(0)
         self.out.header = self.dbObj.header
         self.out.field_spec = self.dbObj.field_spec
@@ -95,7 +96,7 @@ class test_DBF(unittest.TestCase):
             suffix='.dbf')
         fname = f.name
         f.close()
-        db = pysal.core.IOHandlers.pyDbfIO.DBF(fname, 'w')
+        db = DBF(fname, 'w')
         db.header = ["recID", "date", "strID", "aFloat"]
         db.field_spec = [('N', 10, 0), ('D', 8, 0), ('C', 10, 0), ('N', 5, 5)]
         records = []
@@ -108,7 +109,7 @@ class test_DBF(unittest.TestCase):
         for rec in records:
             db.write(rec)
         db.close()
-        db2 = pysal.core.IOHandlers.pyDbfIO.DBF(fname, 'r')
+        db2 = DBF(fname, 'r')
         self.assertEqual(records, db2.read())
 
         os.remove(fname)

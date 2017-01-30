@@ -1,6 +1,6 @@
-import pysal.core.FileIO as FileIO
-from pysal.core.util import WKTParser
-from pysal import cg
+from .. import FileIO
+from ..util import WKTParser
+from ... import cg
 import re
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"

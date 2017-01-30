@@ -1,14 +1,15 @@
 import unittest
-import pysal
+import pysal_examples 
+from ..pyShpIO import PurePyShpWrapper
 import tempfile
 import os
 
 
 class test_PurePyShpWrapper(unittest.TestCase):
     def setUp(self):
-        test_file = pysal.examples.get_path('10740.shp')
+        test_file = pysal_examples.get_path('10740.shp')
         self.test_file = test_file
-        self.shpObj = pysal.core.IOHandlers.pyShpIO.PurePyShpWrapper(
+        self.shpObj = PurePyShpWrapper(
             test_file, 'r')
         f = tempfile.NamedTemporaryFile(suffix='.shp')
         shpcopy = f.name
@@ -60,7 +61,7 @@ class test_PurePyShpWrapper(unittest.TestCase):
         self.assertEquals(self.shpObj.read(1)[0].vertices, shp32.vertices)
 
     def test_write(self):
-        out = pysal.core.IOHandlers.pyShpIO.PurePyShpWrapper(self.shpcopy, 'w')
+        out = PurePyShpWrapper(self.shpcopy, 'w')
         self.shpObj.seek(0)
         for shp in self.shpObj:
             out.write(shp)

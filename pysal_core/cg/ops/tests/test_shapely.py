@@ -2,9 +2,9 @@ import unittest as ut
 from .. import _shapely as sht
 from ...shapes import Point, Chain, Polygon
 #from ... import  comparators as comp
-from pysal.contrib import shapely_ext as she
-from pysal.contrib.pdio import read_files as rf
-from pysal.examples import get_path
+#from ... import shapely as she
+from ....io.geotable import read_files as rf
+from pysal_examples import get_path
 import numpy as np
 from warnings import warn
 

@@ -1,6 +1,7 @@
 
 """locators Unittest."""
-from pysal.cg import *
+from ..shapes import *
+from ..locators import *
 import unittest
 
 

@@ -1,9 +1,8 @@
-import pysal
 import os.path
 import scipy.io as sio
-import pysal.core.FileIO as FileIO
-from pysal.weights import W, WSP
-from pysal.weights.util import full, full2W
+from .. import FileIO
+from ...weights.weights import W, WSP
+from ...weights.util import full, full2W
 from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
@@ -134,7 +133,7 @@ class MtxIO(FileIO.FileIO):
         if self._sparse:
             w = wsp
         else:
-            w = pysal.weights.WSP2W(wsp)
+            w = wsp.to_W()
         self.pos += 1
         return w
 

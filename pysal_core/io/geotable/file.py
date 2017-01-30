@@ -1,5 +1,5 @@
-import pysal as ps
 from ...weights.Contiguity import Rook, Queen
+from ..FileIO import FileIO as ps_open
 from .utils import insert_metadata
 import os
 from shp import shp2series, series2shp
@@ -29,7 +29,7 @@ def read_files(filepath, **kwargs):
         else:
             try:
                 W_path = os.path.splitext(dbf_path)[0] + '.' + weights
-                W = ps.open(W_path).read()
+                W = ps_open(W_path).read()
                 insert_metadata(df, W, name='W', inplace=True)
             except IOError:
                 print('Weights construction failed! Passing on weights')
@@ -53,7 +53,7 @@ def write_files(df, filepath, **kwargs):
         dbf_out = df2dbf(df[not_geom], dbf_path, **kwargs)
         if hasattr(df, 'W'):
             W_path = os.path.splitext(filepath)[0] + '.' + weights
-            ps.open(W_path, 'w').write(df.W)
+            ps_open(W_path, 'w').write(df.W)
         else:
             W_path = 'no weights written'
         return dbf_out, shp_out, W_path

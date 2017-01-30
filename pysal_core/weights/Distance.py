@@ -1,23 +1,17 @@
-from ..cg.kdtree import KDTree
-from .weights import W
-from .util import isKDTree, get_ids, get_points_array_from_shapefile, get_points_array
-import copy
-from warnings import warn as Warn
-import numpy as np
-
 __all__ = ["KNN", "Kernel", "DistanceBand"]
 __author__ = "Sergio J. Rey <srey@asu.edu>, Levi John Wolf <levi.john.wolf@gmail.com>"
 
-import pysal
-import scipy.spatial
-from pysal.common import KDTree
-from pysal.weights import W, WSP
-from pysal.weights.util import WSP2W
-import scipy.stats
+
+from ..cg.kdtree import KDTree
+from ..common import KDTree
+from .weights import W, WSP
+from .util import isKDTree, get_ids, get_points_array_from_shapefile,\
+                  get_points_array, WSP2W
+import copy
+from warnings import warn as Warn
 from scipy.spatial import distance_matrix
 import scipy.sparse as sp
 import numpy as np
-from util import isKDTree
 
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
     """

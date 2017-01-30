@@ -1,8 +1,7 @@
-import pysal
 import os.path
-import pysal.core.FileIO as FileIO
-from pysal.weights import W
-from pysal.weights.util import remap_ids
+from .. import FileIO
+from ...weights.weights import W
+from ...weights.util import remap_ids
 from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
@@ -60,7 +59,7 @@ class ArcGISDbfIO(FileIO.FileIO):
         self._varName = 'Unknown'
         args = args[:2]
         FileIO.FileIO.__init__(self, *args, **kwargs)
-        self.file = pysal.open(self.dataPath, self.mode)
+        self.file = FileIO.FileIO(self.dataPath, self.mode)
 
     def _set_varName(self, val):
         if issubclass(type(val), basestring):

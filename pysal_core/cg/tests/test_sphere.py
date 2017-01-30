@@ -1,5 +1,6 @@
-from pysal.cg import sphere
-import pysal
+from .. import sphere
+from ...io.FileIO import FileIO as psopen
+import pysal_examples
 import math
 import unittest
 
@@ -9,7 +10,7 @@ class Sphere(unittest.TestCase):
     def setUp(self):
         self.pt0 = (0, 0)
         self.pt1 = (180, 0)
-        f = pysal.open(pysal.examples.get_path('stl_hom.shp'), 'r')
+        f = psopen(pysal_examples.get_path('stl_hom.shp'), 'r')
         self.shapes = f.read()
         self.p0 = (-87.893517, 41.981417)
         self.p1 = (-87.519295, 41.657498)

@@ -1,13 +1,14 @@
 import unittest
-import pysal
-from pysal.core.IOHandlers.wk1 import Wk1IO
+from ..wk1 import Wk1IO
+import pysal_examples
+from ...FileIO import FileIO as psopen
 import tempfile
 import os
 
 
 class test_Wk1IO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal.examples.get_path('spat-sym-us.wk1')
+        self.test_file = test_file = pysal_examples.get_path('spat-sym-us.wk1')
         self.obj = Wk1IO(test_file, 'r')
 
     def test_close(self):
@@ -30,13 +31,13 @@ class test_Wk1IO(unittest.TestCase):
     def test_write(self):
         w = self.obj.read()
         f = tempfile.NamedTemporaryFile(
-            suffix='.wk1', dir=pysal.examples.get_path(''))
+            suffix='.wk1', dir=pysal_examples.get_path(''))
         fname = f.name
         f.close()
-        o = pysal.open(fname, 'w')
+        o = psopen(fname, 'w')
         o.write(w)
         o.close()
-        wnew = pysal.open(fname, 'r').read()
+        wnew = psopen(fname, 'r').read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
         os.remove(fname)
 

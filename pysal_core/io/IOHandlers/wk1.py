@@ -1,8 +1,7 @@
-import pysal
 import os.path
 import struct
-import pysal.core.FileIO as FileIO
-from pysal.weights import W
+from .. import FileIO
+from ...weights import W
 from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"

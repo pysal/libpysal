@@ -1,5 +1,5 @@
 from warnings import warn as Warn
-from ..cg import asShape
+from ..cg.shapes import asShape
 from ..io.FileIO import FileIO
 from .weights import W, WSP
 from ._contW_lists import ContiguityWeightsLists
@@ -78,8 +78,7 @@ class Rook(W):
             ids = get_ids(filepath, idVariable) 
         else:
             ids = None
-        pgons = FileIO(filepath).read()
-        w = _build(pgons, ids=ids,criterion='rook',**kwargs)
+        w = cls(FileIO(filepath), ids=ids,**kwargs)
         w.set_shapefile(filepath, idVariable=idVariable, full=full)
         if sparse:
             w = w.to_WSP()
@@ -358,10 +357,10 @@ def _build(polygons, criterion="rook", ids=None):
                 neighbors[ida] = set()
             neighbors[ida].update([ids[x] for x in neighbor_data[key]])
         for key in neighbors:
-            neighbors[key] = list(neighbors[key])
+            neighbors[key] = set(neighbors[key])
     else:
         for key in neighbor_data:
-            neighbors[key] = list(neighbor_data[key])
+            neighbors[key] = set(neighbor_data[key])
     return neighbors, ids
 
 def buildContiguity(polygons, criterion="rook", ids=None):

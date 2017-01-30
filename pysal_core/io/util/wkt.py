@@ -1,4 +1,4 @@
-from pysal import cg
+from ... import cg
 import re
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"

@@ -8,10 +8,10 @@ __author__ = "Taylor Oshan  <tayoshan@gmail.com> "
 
 from scipy.sparse import kron
 from .weights import W, WSP
-from .weights.Distance import DistanceBand
+from .Distance import DistanceBand
 from collections import OrderedDict
 
-def ODW(Wo, Wd, transform='r' silent_island_warning=True):
+def ODW(Wo, Wd, transform='r', silent_island_warning=True):
     """
     Constructs an o*d by o*d origin-destination style spatial weight for o*d
     flows using standard spatial weights on o origins and d destinations. Input

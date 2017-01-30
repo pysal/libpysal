@@ -1,10 +1,9 @@
-import pysal
 import os.path
 import numpy as np
 from struct import pack, unpack
-import pysal.core.FileIO as FileIO
-from pysal.weights import W
-from pysal.weights.util import remap_ids
+from .. import FileIO as FileIO
+from ...weights import W
+from ...weights.util import remap_ids
 from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"

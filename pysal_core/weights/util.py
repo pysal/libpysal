@@ -1,7 +1,11 @@
-from ..cg import Polygon, Point
+from ..cg.shapes import Polygon, Point
+from ..io.FileIO import FileIO as psopen
 from .weights import W, WSP
+from .Wsets import w_subset
 import numpy as np
 from scipy import sparse, float32
+from scipy.spatial import KDTree
+import copy
 import scipy.spatial
 import os
 import operator
@@ -521,7 +525,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
 
     tw = type(w)
     id_order = None
-    if tw == pysal.weights.weights.W:
+    if issubclass(tw,W):
         id_order = w.id_order
         w = w.sparse
     elif tw != scipy.sparse.csr.csr_matrix:
@@ -549,7 +553,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
             k = id_order[k]
             v = id_order[v]
             d[k].append(v)
-        return pysal.W(neighbors=d)
+        return W(neighbors=d)
     else:
         d = {}
         for pair in sk:
@@ -558,7 +562,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
                 d[k].append(v)
             else:
                 d[k] = [v]
-        return WSP(pysal.W(neighbors=d).sparse)
+        return WSP(W(neighbors=d).sparse)
 
 
 def w_local_cluster(w):
@@ -614,7 +618,7 @@ def w_local_cluster(w):
     for i, id in enumerate(w.id_order):
         ki = max(w.cardinalities[id], 1)  # deal with islands
         Ni = w.neighbors[id]
-        wi = pysal.w_subset(w, Ni).full()[0]
+        wi = w_subset(w, Ni).full()[0]
         c[i] = wi.sum() / (ki * (ki - 1))
     return c
 
@@ -769,7 +773,7 @@ def full2W(m, ids=None):
         if ids:
             ngh = [ids[j] for j in ngh]
         neighbors[i] = ngh
-    return pysal.W(neighbors, weights, id_order=ids)
+    return W(neighbors, weights, id_order=ids)
 
 
 def WSP2W(wsp, silent_island_warning=False):
@@ -832,7 +836,7 @@ def WSP2W(wsp, silent_island_warning=False):
         weights[oid] = data[start:end]
         start = end
     ids = copy.copy(wsp.id_order)
-    w = pysal.W(neighbors, weights, ids,
+    w = W(neighbors, weights, ids,
                 silent_island_warning=silent_island_warning)
     w._sparse = copy.deepcopy(wsp.sparse)
     w._cache['sparse'] = w._sparse
@@ -994,7 +998,7 @@ def get_ids(shapefile, idVariable):
 
     try:
         dbname = os.path.splitext(shapefile)[0] + '.dbf'
-        db = pysal.open(dbname)
+        db = psopen(dbname)
         var = db.by_col[idVariable]
         db.close()
         return var
@@ -1074,7 +1078,7 @@ def get_points_array_from_shapefile(shapefile):
            [  9.01226541,  13.81971908]])
     """
 
-    f = pysal.open(shapefile)
+    f = psopen(shapefile)
     data = get_points_array(f)
     return data
 

@@ -1,5 +1,5 @@
 from ...common import requires as _requires
-from ..utils import to_gdf, to_df
+from ...io.geotable.utils import to_gdf, to_df
 from warnings import warn as _Warn
 import functools as _f
 import sys as _sys

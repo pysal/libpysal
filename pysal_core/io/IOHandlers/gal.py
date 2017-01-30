@@ -1,5 +1,5 @@
-import pysal.core.FileIO as FileIO
-from pysal.weights import W, WSP
+from .. import FileIO
+from ...weights.weights import W, WSP
 from scipy import sparse
 import numpy as np
 

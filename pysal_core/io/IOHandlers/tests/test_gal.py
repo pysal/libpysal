@@ -1,14 +1,15 @@
 """Unit tests for gal.py"""
 import unittest
-import pysal
 import tempfile
 import os
-from pysal.core.IOHandlers.gal import GalIO
+from ..gal import GalIO
+from ...FileIO import FileIO as psopen
+import pysal_examples
 
 
 class test_GalIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal.examples.get_path('sids2.gal')
+        self.test_file = test_file = pysal_examples.get_path('sids2.gal')
         self.obj = GalIO(test_file, 'r')
 
     def test___init__(self):
@@ -38,10 +39,10 @@ class test_GalIO(unittest.TestCase):
         f = tempfile.NamedTemporaryFile(suffix='.gal')
         fname = f.name
         f.close()
-        o = pysal.open(fname, 'w')
+        o = psopen(fname, 'w')
         o.write(w)
         o.close()
-        wnew = pysal.open(fname, 'r').read()
+        wnew = psopen(fname, 'r').read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
 
 

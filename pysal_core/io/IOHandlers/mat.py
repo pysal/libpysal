@@ -1,9 +1,8 @@
-import pysal
 import os.path
 import scipy.io as sio
-import pysal.core.FileIO as FileIO
-from pysal.weights import W
-from pysal.weights.util import full, full2W
+from .. import FileIO
+from ...weights import W
+from ...weights.util import full, full2W
 from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"

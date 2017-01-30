@@ -1,4 +1,4 @@
-import pysal.core.Tables as Tables
+from .. import Tables 
 import csv
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"

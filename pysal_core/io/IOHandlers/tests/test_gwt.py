@@ -1,6 +1,7 @@
 import unittest
-import pysal
-from pysal.core.IOHandlers.gwt import GwtIO
+from ..gwt import GwtIO
+from ...FileIO import FileIO as psopen
+import pysal_examples
 import tempfile
 import os
 import warnings
@@ -8,7 +9,7 @@ import warnings
 
 class test_GwtIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal.examples.get_path('juvenile.gwt')
+        self.test_file = test_file = pysal_examples.get_path('juvenile.gwt')
         self.obj = GwtIO(test_file, 'r')
 
     def test_close(self):
@@ -35,17 +36,17 @@ class test_GwtIO(unittest.TestCase):
     def test_write(self):
         w = self.obj.read()
         f = tempfile.NamedTemporaryFile(
-            suffix='.gwt', dir=pysal.examples.get_path(''))
+            suffix='.gwt', dir=pysal_examples.get_path(''))
         fname = f.name
         f.close()
-        o = pysal.open(fname, 'w')
+        o = psopen(fname, 'w')
         #copy the shapefile and ID variable names from the old gwt.
         # this is only available after the read() method has been called.
         #o.shpName = self.obj.shpName
         #o.varName = self.obj.varName
         o.write(w)
         o.close()
-        wnew = pysal.open(fname, 'r').read()
+        wnew = psopen(fname, 'r').read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
         os.remove(fname)
 

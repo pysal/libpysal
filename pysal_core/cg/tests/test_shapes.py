@@ -1,4 +1,4 @@
-from pysal.cg import Point, LineSegment, Line, Ray, Chain, Rectangle, Polygon
+from ..shapes import Point, LineSegment, Line, Ray, Chain, Rectangle, Polygon
 import doctest
 import unittest
 

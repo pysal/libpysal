@@ -1,12 +1,12 @@
 import unittest
-import pysal
 import numpy as np
-from pysal.weights.spintW import ODW, netW, mat2L, vecW
+from ..spintW import ODW, netW, mat2L, vecW
+from ..util import lat2W
 
 class TestODWeights(unittest.TestCase):
     def setUp(self):
-        self.O = pysal.weights.lat2W(2,2)
-        self.D = pysal.weights.lat2W(2,2)
+        self.O = lat2W(2,2)
+        self.D = lat2W(2,2)
         self.ODW =  np.array(
                 [[ 0.  ,  0.  ,  0.  ,  0.  ,  0.  ,  0.25,  0.25,  0.  ,  0.  ,
                 0.25,  0.25,  0.  ,  0.  ,  0.  ,  0.  ,  0.  ],
