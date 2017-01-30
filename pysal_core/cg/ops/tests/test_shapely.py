@@ -4,7 +4,7 @@ from ...shapes import Point, Chain, Polygon
 #from ... import  comparators as comp
 #from ... import shapely as she
 from ....io.geotable import read_files as rf
-from pysal_examples import get_path
+from ....examples import get_path
 import numpy as np
 from warnings import warn
 

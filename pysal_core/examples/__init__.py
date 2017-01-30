@@ -1,21 +1,18 @@
-__author__ = 'Serge Rey sjsrey@gmail.com'
-from pysal_examples._version import version as _version
-
 import os
+import _version
 
-__all__ = ['get_path']
-
-_abpath = os.path.abspath(__file__)
-example_dir = os.path.split(_abpath)[0]
-base = example_dir
-dirs = next(os.walk(base))[1]
+base = os.path.abspath(os.path.dirname(_version.__file__))
+__all__ = ['get_path', 'available', 'explain']
 file_2_dir = {}
+example_dir = base
 
-for d in dirs:
-    tmp = os.path.join(example_dir, d)
-    files_in_tmp = os.listdir(tmp)
-    for f in files_in_tmp:
-        file_2_dir[f] = tmp
+dirs = []
+for root, subdirs, files in os.walk(example_dir, topdown=False):
+    for f in files:
+        file_2_dir[f] = root
+    head, tail = os.path.split(root)
+    if tail != 'examples':
+        dirs.append(tail)
 
 
 def get_path(example_name):
@@ -28,31 +25,24 @@ def get_path(example_name):
         except:
             raise KeyError('Cannot coerce requested example name to string')
     if example_name in dirs:
-        return os.path.join(example_dir, example_name)
+        return os.path.join(example_dir, example_name, example_name)
     elif example_name in file_2_dir:
         d = file_2_dir[example_name]
         return os.path.join(d, example_name)
     elif example_name == "":
-        return os.path.join(base,  example_name)
+        return os.path.join(base, 'examples', example_name)
     else:
-        raise KeyError(example_name + ' not found in built-in examples.')
+        raise KeyError(example_name + ' not found in PySAL built-in examples.')
 
 
 def available(verbose=False):
     """
     List available datasets
     """
-    base = get_path('')
-    examples = [os.path.join(get_path(''), d) for d in os.listdir(base)]
-    examples = [d for d in examples if os.path.isdir(d) and '__' not in d]
+
+    examples = [os.path.join(base, d) for d in dirs]
     if not verbose:
-        tmp = [os.path.split(d)[-1] for d in examples]
-        try:
-            tmp.remove('tests') # don't include unit tests
-        except:
-            pass
-        tmp.sort()
-        return tmp
+        return [os.path.split(d)[-1] for d in examples]
     examples = [os.path.join(dty, 'README.md') for dty in examples]
     descs = [_read_example(path) for path in examples]
     return [{desc['name']:desc['description'] for desc in descs}]
@@ -81,6 +71,6 @@ def explain(name):  # would be nice to use pandas for display here
     """
     Explain a dataset by name
     """
-    path = get_path(name)
+    path = os.path.split(get_path(name))[0]
     fpath = os.path.join(path, 'README.md')
     return _read_example(fpath)

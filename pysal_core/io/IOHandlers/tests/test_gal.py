@@ -4,7 +4,7 @@ import tempfile
 import os
 from ..gal import GalIO
 from ...FileIO import FileIO as psopen
-import pysal_examples
+from .... import examples as pysal_examples
 
 
 class test_GalIO(unittest.TestCase):
