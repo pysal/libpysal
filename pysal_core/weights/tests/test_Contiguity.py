@@ -9,9 +9,6 @@ import unittest as ut
 from warnings import warn as Warn
 
 PANDAS_EXTINCT = pandas is None
-class Mock(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
 
 class Contiguity_Mixin(object):
     polygon_path = pysal_examples.get_path('columbus.shp')
@@ -19,10 +16,6 @@ class Contiguity_Mixin(object):
     f = ps_open(polygon_path) # our file handler
     polygons = f.read() # our iterable
     f.seek(0) #go back to head of file
-    # Without requiring users to have GDAL to run tests, 
-    # we can mock a shapely object by an object with a geo_interface
-    mocks = [Mock(__geo_interface__=p.__geo_interface__) 
-                  for p in polygons] 
     cls = object # class constructor
     known_wi = None #index of known w entry to compare
     known_w = dict() #actual w entry
@@ -59,9 +52,6 @@ class Contiguity_Mixin(object):
         self.f.seek(0)
         self.assertEqual(w[self.known_wi], self.known_w)
         
-        w = self.cls.from_iterable(self.mocks)
-        self.assertEqual(w[self.known_wi], self.known_w)
-
     def test_from_shapefile(self):
         # basic
         w = self.cls.from_shapefile(self.polygon_path)
