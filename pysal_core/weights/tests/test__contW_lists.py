@@ -4,6 +4,11 @@ from .._contW_lists import ContiguityWeightsLists, ROOK, QUEEN
 from ..weights import W
 from ...io.FileIO import FileIO as ps_open
 
+try:
+    import geopandas as gpd
+except ImportError:
+    gpd = None
+
 import pysal_examples
 
 
@@ -102,6 +107,18 @@ class TestContiguityWeights(unittest.TestCase):
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
             self.assertEqual(geoda_neighbors, pysalb_neighbors)
+
+    @unittest.skipIf(gpd is None, 'geopandas is missing in the testing environment')
+    def test_shapely(self):
+        pysalneighbs = ContiguityWeightsLists(ps_open(
+            pysal_examples.get_path('virginia.shp')), ROOK)
+        gdf = gpd.read_file(pysal_examples.get_path('virginia.shp')) 
+        shplyneighbs = ContiguityWeightsLists(gdf.geometry.tolist(), ROOK)
+        self.assertEqual(pysalneighbs.w, shplyneighbs.w)
+        pysalneighbs = ContiguityWeightsLists(ps_open(
+            pysal_examples.get_path('virginia.shp')), QUEEN)
+        shplyneighbs = ContiguityWeightsLists(gdf.geometry.tolist(), QUEEN)
+        self.assertEqual(pysalneighbs.w, shplyneighbs.w)
 
     def build_W(self, shapefile, type, idVariable=None):
         """ Building 2 W's the hard way.  We need to do this so we can test both rtree and binning """
