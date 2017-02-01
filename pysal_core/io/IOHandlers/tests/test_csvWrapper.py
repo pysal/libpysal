@@ -1,5 +1,5 @@
 import unittest
-import pysal_examples
+from .... import examples as pysal_examples
 from .. import csvWrapper
 from ...util import WKTParser
 import tempfile

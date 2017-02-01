@@ -4,7 +4,7 @@ from .. import util
 from ..util import WSP2W, lat2W
 from ..user import rook_from_shapefile
 from ...io.FileIO import FileIO as psopen
-import pysal_examples
+from ... import examples as pysal_examples
 import numpy as np
 
 NPTA3E = np.testing.assert_array_almost_equal

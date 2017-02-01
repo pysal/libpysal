@@ -4,7 +4,7 @@ import numpy as np
 from ..util import neighbor_equality
 from ..weights import W
 from .. import user
-import pysal_examples
+from ... import examples as pysal_examples
 
 
 class Testuser(unittest.TestCase):

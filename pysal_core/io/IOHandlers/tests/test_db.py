@@ -2,7 +2,7 @@ import os
 from ... import geotable as pdio
 from ...FileIO import FileIO as psopen
 import unittest as ut
-import pysal_examples
+from .... import examples as pysal_examples
 
 try:
     import sqlalchemy

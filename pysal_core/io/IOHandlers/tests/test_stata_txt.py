@@ -1,5 +1,5 @@
 import unittest
-import pysal_examples
+from .... import examples as pysal_examples
 from ..stata_txt import StataTextIO
 from ...FileIO import FileIO as psopen
 import tempfile

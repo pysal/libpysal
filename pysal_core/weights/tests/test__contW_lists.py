@@ -4,12 +4,15 @@ from .._contW_lists import ContiguityWeightsLists, ROOK, QUEEN
 from ..weights import W
 from ...io.FileIO import FileIO as ps_open
 
+
 try:
     import geopandas as gpd
 except ImportError:
     gpd = None
 
-import pysal_examples
+
+from ... import examples as pysal_examples
+
 
 
 class TestContiguityWeights(unittest.TestCase):

@@ -1,7 +1,7 @@
 import unittest as ut
 from .. import tabular as ta
 from ....common import RTOL, ATOL, pandas, requires as _requires
-from pysal_examples import get_path
+from ....examples import get_path
 from ...shapes import Polygon
 from ....io import geotable as pdio
 from ... import ops as GIS
@@ -14,16 +14,16 @@ class Test_Tabular(ut.TestCase):
     def setUp(self):
         import pandas as pd
         self.columbus = pdio.read_files(get_path('columbus.shp'))
-        grid = [Polygon([(0,0),(0,1),(1,1),(1,0)]), 
-                Polygon([(0,1),(0,2),(1,2),(1,1)]), 
-                Polygon([(1,2),(2,2),(2,1),(1,1)]), 
+        grid = [Polygon([(0,0),(0,1),(1,1),(1,0)]),
+                Polygon([(0,1),(0,2),(1,2),(1,1)]),
+                Polygon([(1,2),(2,2),(2,1),(1,1)]),
                 Polygon([(1,1),(2,1),(2,0),(1,0)])]
         regime = [0,0,1,1]
         ids = range(4)
         data = np.array((regime, ids)).T
         self.exdf = pd.DataFrame(data, columns=['regime', 'ids'])
         self.exdf['geometry'] = grid
-    
+
     @_requires('geopandas')
     def test_round_trip(self):
         import geopandas as gpd
@@ -54,7 +54,7 @@ class Test_Tabular(ut.TestCase):
 
     def test_clip(self):
         pass
-    
+
     def test_erase(self):
         pass
 
