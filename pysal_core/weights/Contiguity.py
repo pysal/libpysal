@@ -1,5 +1,4 @@
 from warnings import warn as Warn
-from ..cg.shapes import asShape
 from ..io.FileIO import FileIO
 from .weights import W, WSP
 from ._contW_lists import ContiguityWeightsLists
@@ -85,7 +84,7 @@ class Rook(W):
         return w
     
     @classmethod
-    def from_iterable(cls, iterable, **kwargs):
+    def from_iterable(cls, iterable, sparse=False, **kwargs):
         """
         Construct a weights object from a collection of arbitrary polygons. This
         will cast the polygons to PySAL polygons, then build the W.
@@ -94,9 +93,7 @@ class Rook(W):
         ---------
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
-                      support iteration. Contents should at least implement a
-                      `__geo_interface__` attribute or be able to be coerced to
-                      geometries using pysal.cg.asShape
+                      support iteration. Can be either Shapely or PySAL shapes.
         **kw        : keyword arguments
                       optional arguments for  :class:`pysal.weights.W`
         See Also
@@ -104,8 +101,11 @@ class Rook(W):
         :class:`pysal.weights.W`
         :class:`pysal.weights.Rook`
         """
-        new_iterable = [asShape(shape) for shape in iterable]
-        return cls(new_iterable, **kwargs)
+        new_iterable = iter(iterable)
+        w = cls(new_iterable, **kwargs)
+        if sparse:
+            w = WSP.from_W(w)
+        return w
     
     @classmethod
     def from_dataframe(cls, df, geom_col='geometry', 
@@ -244,9 +244,7 @@ class Queen(W):
         ---------
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
-                      support iteration. Contents should at least implement a
-                      `__geo_interface__` attribute or be able to be coerced to
-                      geometries using pysal.cg.asShape
+                      support iteration. Contents may either be a shapely or PySAL shape.
         **kw        : keyword arguments
                       optional arguments for  :class:`pysal.weights.W`
         See Also
@@ -254,12 +252,10 @@ class Queen(W):
         :class:`pysal.weights.W`
         :class:`pysal.weights.Queen`
         """
-        new_iterable = [asShape(shape) for shape in iterable]
-        
+        new_iterable = iter(iterable) 
         w = cls(new_iterable, **kwargs) 
         if sparse:
             w = WSP.from_W(w)
-        
         return w
 
     @classmethod
