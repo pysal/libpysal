@@ -1,4 +1,13 @@
+Python Spatial Analysis Library Core
+====================================
 
+.. image:: https://travis-ci.org/pysal/pysal_core.svg
+   :target: https://travis-ci.org/pysal_core
+
+.. image:: https://badges.gitter.im/pysal/pysal.svg
+   :target: https://gitter.im/pysal/pysal
+
+https://travis-ci.org/pysal/pysal_core.svg?branch=master
 
 This module is pre-alpha and is part of a [refactoring of PySAL](https://github.com/pysal/pysal/wiki/PEP-13:-Refactor-PySAL-Using-Submodules).
 
@@ -9,6 +18,7 @@ pysal_core modules
 * pysal_core.cg  Computational geometry
 * pysal_core.io  Input and output
 * pysal_core.weights  Spatial weights
+* pysal_core.examples  Built-in example datasets
 
 Documentation
 =============
