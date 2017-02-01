@@ -1,7 +1,8 @@
 import unittest
 
 import sys
-import pysal_examples
+#import pysal_examples
+from .... import examples as  pysal_examples
 PY3 = int(sys.version[0]) > 2
 if PY3:
     import io

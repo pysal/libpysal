@@ -13,6 +13,8 @@ Available sub-packages
 
 cg
     Basic data structures and tools for Computational Geometry
+examples
+    Example data sets for testing and documentation
 io
     Basic functions used by several sub-packages
 weights
@@ -22,6 +24,7 @@ import cg
 import io
 import weights
 import common
+import examples
 
 try:
     import pandas
@@ -30,7 +33,7 @@ try:
 except ImportError:
     common.pandas = None
 
-from io import IOHandlers    
+from io import IOHandlers
 # Assign pysal.open to dispatcher
 open = io.FileIO.FileIO
 

@@ -2,7 +2,7 @@ from ....io.geotable.file import read_files as rf
 from .. import _accessors as to_test
 from ...shapes import Point, Chain, Polygon, Rectangle, LineSegment
 from ....common import pandas, RTOL, ATOL
-from pysal_examples import get_path
+from ....examples import get_path
 import numpy as np
 import unittest as ut
 

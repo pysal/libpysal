@@ -4,7 +4,7 @@ from ..util import lat2W
 from .. import util
 from ..weights import W, WSP
 from ...io.FileIO import FileIO as psopen
-import pysal_examples
+from ... import examples as pysal_examples
 import numpy as np
 import unittest
 

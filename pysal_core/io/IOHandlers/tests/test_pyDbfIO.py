@@ -1,7 +1,7 @@
 
 
 import unittest
-import pysal_examples
+from .... import examples as pysal_examples
 from ..pyDbfIO import DBF
 import tempfile
 import os

@@ -5,7 +5,8 @@ from ...FileIO import FileIO as psopen
 import tempfile
 import os
 import warnings
-import pysal_examples
+#import pysal_examples
+from .... import examples as pysal_examples
 
 
 class test_WeightConverter(unittest.TestCase):

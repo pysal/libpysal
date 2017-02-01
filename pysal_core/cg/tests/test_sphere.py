@@ -1,6 +1,6 @@
 from .. import sphere
 from ...io.FileIO import FileIO as psopen
-import pysal_examples
+from ... import examples as pysal_examples
 import math
 import unittest
 

@@ -1,5 +1,5 @@
 import unittest
-import pysal_examples 
+from .... import examples as pysal_examples 
 from ..pyShpIO import PurePyShpWrapper
 import tempfile
 import os

@@ -8,7 +8,7 @@ from .. import Distance as d, Contiguity as c
 from ...io import geotable as pdio
 from ...io.FileIO import FileIO as psopen
 import numpy as np
-import pysal_examples
+from ... import examples as pysal_examples
 import unittest as ut
 
 PANDAS_EXTINCT = pandas is None

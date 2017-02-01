@@ -4,7 +4,7 @@ from .._contW_lists import ContiguityWeightsLists, ROOK, QUEEN
 from ..weights import W
 from ...io.FileIO import FileIO as ps_open
 
-import pysal_examples
+from ... import examples as pysal_examples
 
 
 class TestContiguityWeights(unittest.TestCase):

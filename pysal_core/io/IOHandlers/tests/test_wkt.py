@@ -1,6 +1,7 @@
 import unittest
 from ..wkt import WKTReader
-import pysal_examples
+from .... import examples as pysal_examples
+
 
 
 class test_WKTReader(unittest.TestCase):
