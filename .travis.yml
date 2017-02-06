@@ -5,8 +5,8 @@ only:
   - master
 python:
   - "2.7"
-  - "3.4"
   - "3.5"
+  - "3.6"
 
 env:
   - PYSAL_PLUS=false
@@ -21,7 +21,7 @@ before_install:
   - conda config --add channels conda-forge
   - conda create -y -q -n test-env python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
-  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then 2to3 -nw pysal_core/ > /dev/null; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then 2to3 -nw libpysal/ > /dev/null; fi
 
 install:
   - conda install --yes pip
@@ -33,8 +33,8 @@ install:
 
 script:
   - python setup.py sdist >/dev/null
-  - echo "check_stable=False" >pysal_core/config.py
-  - nosetests --with-coverage --cover-package=pysal_core;
+  - echo "check_stable=False" >libpysal/config.py
+  - nosetests --with-coverage --cover-package=libpysal;
   #- cd doc; make pickle; make doctest
 notifications:
     email:

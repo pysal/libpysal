@@ -48,16 +48,16 @@ def setup_package():
     extras_reqs = reqs
 
     setup(
-        name='pysal_core',
+        name='libpysal',
         version=VERSION,
         description="Core components of PySAL A library of spatial analysis functions.",
         long_description=long_description,
         maintainer="PySAL Developers",
         maintainer_email='pysal-dev@googlegroups.com',
         url='http://pysal.org',
-        download_url='https://pypi.python.org/pypi/pysal_core',
+        download_url='https://pypi.python.org/pypi/libpysal',
         license='BSD',
-        py_modules=['pysal_core'],
+        py_modules=['libpysal'],
         test_suite='nose.collector',
         tests_require=['nose'],
         keywords='spatial statistics',
