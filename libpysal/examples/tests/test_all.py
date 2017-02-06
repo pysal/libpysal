@@ -1,8 +1,8 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 TestCase.maxDiff = None
 from ...examples import available, explain
 
-
+@skip
 class TestHelpers(TestCase):
     def test_available(self):
         examples = available()
