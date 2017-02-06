@@ -6,7 +6,7 @@ from ...examples import available, explain
 class TestHelpers(TestCase):
     def test_available(self):
         examples = available()
-        self.assertEqual(len(examples), 33)
+        self.assertEqual(len(examples), 31)
         self.assertEqual(examples[0], 'arcgis')
         self.assertEqual(examples[-1], 'nat')
 
