@@ -58,6 +58,7 @@ def setup_package():
         download_url='https://pypi.python.org/pypi/libpysal',
         license='BSD',
         py_modules=['libpysal'],
+        packages=find_packages(),
         test_suite='nose.collector',
         tests_require=['nose'],
         keywords='spatial statistics',
