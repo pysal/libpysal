@@ -3,7 +3,7 @@ Computational geometry code for PySAL: Python Spatial Analysis Library.
 
 """
 
-__author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow"
+__author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow, Hu Shao"
 __credits__ = "Copyright (c) 2005-2009 Sergio J. Rey"
 
 import doctest
@@ -1216,6 +1216,9 @@ class Ring(Geometry):
                       area enclosed by the ring
     centroid        : tuple
                       The centroid of the ring defined by the 'center of gravity' or 'center or mass'
+    _quad_tree_structure
+                    : object
+                      The quad tree structure for the ring. This structure could help test if a point is inside the ring
     """
     def __init__(self, vertices):
         if vertices[0] != vertices[-1]:
@@ -1226,6 +1229,7 @@ class Ring(Geometry):
         self._bounding_box = None
         self._area = None
         self._centroid = None
+        self._quad_tree_structure = None
 
     def __len__(self):
         return len(self.vertices)
@@ -1340,6 +1344,13 @@ class Ring(Geometry):
             self._centroid = Point((cx, cy))
         return self._centroid
 
+    def build_quad_tree_structure(self):
+        """
+        Build the quad tree structure for this ring. Once the structure is built, speed for testing if a point is inside the ring will be inscreased significantly.
+        :return:
+        """
+        self._quad_tree_structure = QuadTreeStructureSingleRing(self)
+		
     def contains_point(self, point):
         """
         Point containment using winding number
@@ -1347,49 +1358,51 @@ class Ring(Geometry):
         Implementation based on: http://www.engr.colostate.edu/~dga/dga/papers/point_in_polygon.pdf
         """
 
-        x, y = point
+        if self._quad_tree_structure is None:
+            x, y = point
 
-        # bbox check
-        if x < self.bounding_box.left:
-            return False
-        if x > self.bounding_box.right:
-            return False
-        if y < self.bounding_box.lower:
-            return False
-        if y > self.bounding_box.upper:
-            return False
+            # bbox check
+            if x < self.bounding_box.left:
+                return False
+            if x > self.bounding_box.right:
+                return False
+            if y < self.bounding_box.lower:
+                return False
+            if y > self.bounding_box.upper:
+                return False
 
-
-        rn = len(self.vertices)
-        xs = [ self.vertices[i][0] - point[0] for i in xrange(rn) ]
-        ys = [ self.vertices[i][1] - point[1] for i in xrange(rn) ]
-        w = 0
-        for i in xrange(len(self.vertices) - 1):
-            yi = ys[i]
-            yj = ys[i+1]
-            xi = xs[i]
-            xj = xs[i+1]
-            if yi*yj < 0:
-                r = xi + yi * (xj-xi) / (yi - yj)
-                if r > 0:
-                    if yi < 0:
-                        w += 1
+            rn = len(self.vertices)
+            xs = [ self.vertices[i][0] - point[0] for i in xrange(rn) ]
+            ys = [ self.vertices[i][1] - point[1] for i in xrange(rn) ]
+            w = 0
+            for i in xrange(len(self.vertices) - 1):
+                yi = ys[i]
+                yj = ys[i+1]
+                xi = xs[i]
+                xj = xs[i+1]
+                if yi*yj < 0:
+                    r = xi + yi * (xj-xi) / (yi - yj)
+                    if r > 0:
+                        if yi < 0:
+                            w += 1
+                        else:
+                            w -= 1
+                elif yi==0 and xi > 0:
+                    if yj > 0:
+                        w += 0.5
                     else:
-                        w -= 1
-            elif yi==0 and xi > 0:
-                if yj > 0:
-                    w += 0.5
-                else:
-                    w -= 0.5
-            elif yj == 0 and xj > 0:
-                if yi < 0:
-                    w += 0.5
-                else:
-                    w -= 0.5
-        if w==0:
-            return False
+                        w -= 0.5
+                elif yj == 0 and xj > 0:
+                    if yi < 0:
+                        w += 0.5
+                    else:
+                        w -= 0.5
+            if w==0:
+                return False
+            else:
+                return True
         else:
-            return True
+            return self._quad_tree_structure.contains_point(point)
 
 
 
@@ -1427,7 +1440,9 @@ class Polygon(Geometry):
         ----------
         vertices : list -- a list of vertices or a list of lists of vertices.
         holes    : list -- a list of sub-polygons to be considered as holes.
-
+        is_quad_tree_structure_built
+                 : bool -- record if the quad tree structure has been built for this polygon. This quad tree structure could help speed up the contains_point test
+				 
         Attributes
         ----------
 
@@ -1717,6 +1732,17 @@ class Polygon(Geometry):
         cx = sum([pt[0] * area for pt, area in zip(CP + CH, A)]) / sum(A)
         cy = sum([pt[1] * area for pt, area in zip(CP + CH, A)]) / sum(A)
         return cx, cy
+	
+    def build_quad_tree_structure(self):
+        """
+        Build the quad tree structure for this polygon. Once the structure is built, speed for testing if a point is inside the ring will be inscreased significantly.
+        :return:
+        """
+        for ring in self._part_rings:
+            ring.build_quad_tree_structure()
+        for ring in self._hole_rings:
+            ring.build_quad_tree_structure()
+        self.is_quad_tree_structure_built = True
 
     def contains_point(self, point):
         """
@@ -1970,5 +1996,5 @@ class Rectangle(Geometry):
 _geoJSON_type_to_Pysal_type = {'point': Point, 'linestring': Chain, 'multilinestring': Chain,
                                'polygon': Polygon, 'multipolygon': Polygon}
 import standalone  # moving this to top breaks unit tests !
-
+from .polygonQuadTreeStructure import QuadTreeStructureSingleRing
 
