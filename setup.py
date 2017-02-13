@@ -47,6 +47,22 @@ def setup_package():
     install_reqs = reqs.pop('base')
     extras_reqs = reqs
 
+    # get all file endings and copy whole file names without a file suffix
+    # assumes nested directories are only down one level
+    example_data_files = set()
+    for i in os.listdir("libpysal/examples"):
+        if i.endswith(('py', 'pyc')):
+            continue
+        if not os.path.isdir("libpysal/examples/" + i):
+            if "." in i:
+                glob_name = "examples/*." + i.split(".")[-1]
+            else:
+                glob_name = "examples/" + i
+        else:
+            glob_name = "examples/" + i + "/*"
+
+        example_data_files.add(glob_name)
+
     setup(
         name='libpysal',
         version=VERSION,
@@ -76,6 +92,7 @@ def setup_package():
             'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.4'
         ],
+        package_data={'libpysal':list(example_data_files)},
         install_requires=install_reqs,
         extras_require=extras_reqs,
         cmdclass={'build_py': build_py}
