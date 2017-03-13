@@ -7,9 +7,15 @@ from ....io import geotable as pdio
 from ... import ops as GIS
 import numpy as np
 
-PANDAS_EXTINCT = pandas is None
+try:
+    import shapely as shp
+except ImportError:
+    shp = None
 
-@ut.skipIf(PANDAS_EXTINCT, 'missing pandas')
+PANDAS_EXTINCT = pandas is None
+SHAPELY_EXTINCT = shp is None
+
+@ut.skipIf(PANDAS_EXTINCT or SHAPELY_EXTINCT, 'missing pandas or shapely')
 class Test_Tabular(ut.TestCase):
     def setUp(self):
         import pandas as pd
@@ -40,7 +46,7 @@ class Test_Tabular(ut.TestCase):
 
     def test_spatial_overlay(self):
         pass
-
+    
     def test_dissolve(self):
         out = GIS.tabular.dissolve(self.exdf, by='regime')
         self.assertEqual(out[0].area, 2.0)

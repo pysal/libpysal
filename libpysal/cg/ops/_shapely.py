@@ -46,13 +46,12 @@ pysal.contrib.shapely_ext.{n}
 # ensure that the construction of atomics is done only if we can use shapely
 _shapely_atomics = {}
 try:
-    from ...cg import shapely_ext as _s
+    from .. import shapely_ext as _s
     for k in __all__:
         _shapely_atomics.update({k:_f.partial(_atomic_op, _func=_s.__dict__[k])})
         _shapely_atomics[k].__doc__ = _doc_template.format(n=_s.__dict__[k].__name__)
 except ImportError:
     pass
-
 globals().update(_shapely_atomics)
 
 ##############
