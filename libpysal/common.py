@@ -31,6 +31,10 @@ try:
     from patsy import PatsyError
 except ImportError:
     PatsyError = Exception
+try:
+    import pandas 
+except ImportError:
+    pandas = None
 
 MISSINGVALUE = None
 
