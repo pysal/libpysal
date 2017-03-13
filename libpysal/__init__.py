@@ -26,14 +26,11 @@ import weights
 import common
 import examples
 
-try:
-    import pandas
-    from io import pdio
-    common.pandas = pandas
-except ImportError:
-    common.pandas = None
-
 from io import IOHandlers
+
+if common.pandas is not None:
+    from io import geotable 
+
 # Assign pysal.open to dispatcher
 open = io.FileIO.FileIO
 
