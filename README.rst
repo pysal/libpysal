@@ -1,8 +1,8 @@
 Python Spatial Analysis Library Core
 ====================================
 
-.. image:: https://travis-ci.org/pysal/pysal_core.svg
-   :target: https://travis-ci.org/pysal/pysal_core
+.. image:: https://travis-ci.org/pysal/libpysal.svg
+   :target: https://travis-ci.org/pysal/libpysal
 .. image:: https://badges.gitter.im/pysal/pysal.svg
    :target: https://gitter.im/pysal/pysal
 
