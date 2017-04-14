@@ -1,7 +1,6 @@
 from .cg.kdtree import DISTANCE_METRICS, FLOAT_EPS, KDTree, Arc_KDTree
 from .cg.rtree import RTree, Rect, Rtree
 from .cg.segmentLocator import SegmentGrid, SegmentLocator, Polyline_Shapefile_SegmentLocator
-from .cg.shapely_ext import to_wkb, to_wkt, area, distance, length, boundary, bounds, centroid, representative_point, convex_hull, envelope, buffer, simplify, difference, intersection, symmetric_difference, union, unary_union, cascaded_union, has_z, is_empty, is_ring, is_simple, is_valid, relate, contains, crosses, disjoint, equals, intersects, overlaps, touches, within, equals_exact, almost_equals, project, interpolate
 from .cg.shapes import Point, LineSegment, Line, Ray, Chain, Polygon, Rectangle, asShape
 from .cg.sphere import RADIUS_EARTH_KM, RADIUS_EARTH_MILES, arcdist, arcdist2linear, brute_knn, fast_knn, fast_threshold, linear2arcdist, toLngLat, toXYZ, lonlat,harcdist,geointerpolate,geogrid
 from .cg.standalone import bbcommon, get_bounding_box, get_angle_between, is_collinear, get_segments_intersect, get_segment_point_intersect, get_polygon_point_intersect, get_rectangle_point_intersect, get_ray_segment_intersect, get_rectangle_rectangle_intersection, get_polygon_point_dist, get_points_dist, get_segment_point_dist, get_point_at_angle_and_dist, convex_hull, is_clockwise, point_touches_rectangle, get_shared_segments, distance_matrix
@@ -21,3 +20,7 @@ from .weights.Contiguity import Rook, Queen
 from .weights.Distance import KNN, Kernel, DistanceBand
 from .weights.Wsets import w_union, w_intersection, w_difference, w_symmetric_difference, w_subset, w_clip
 from .weights.spintW import ODW, netW, vecW
+try:
+    from .cg.shapely_ext import to_wkb, to_wkt, area, distance, length, boundary, bounds, centroid, representative_point, convex_hull, envelope, buffer, simplify, difference, intersection, symmetric_difference, union, unary_union, cascaded_union, has_z, is_empty, is_ring, is_simple, is_valid, relate, contains, crosses, disjoint, equals, intersects, overlaps, touches, within, equals_exact, almost_equals, project, interpolate
+except ImportError:
+    pass
