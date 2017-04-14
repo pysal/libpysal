@@ -3,19 +3,21 @@ Python Spatial Analysis Library Core
 
 .. image:: https://travis-ci.org/pysal/libpysal.svg
    :target: https://travis-ci.org/pysal/libpysal
+
 .. image:: https://badges.gitter.im/pysal/pysal.svg
    :target: https://gitter.im/pysal/pysal
 
-This code is pre-alpha and is part of a `refactoring of PySAL <https://github.com/pysal/pysal/wiki/PEP-13:-Refactor-PySAL-Using-Submodules>`_.
+This code is pre-alpha and is part of a `refactoring of PySAL
+<https://github.com/pysal/pysal/wiki/PEP-13:-Refactor-PySAL-Using-Submodules>`_.
 
 
-pysal_core modules
-=============
+libpysal modules
+================
 
-* pysal_core.cg  Computational geometry
-* pysal_core.io  Input and output
-* pysal_core.weights  Spatial weights
-* pysal_core.examples  Built-in example datasets
+* libpysal.cg  Computational geometry
+* libpysal.io  Input and output
+* libpysal.weights  Spatial weights
+* libpysal.examples  Built-in example datasets
 
 Documentation
 =============
@@ -32,9 +34,9 @@ For help on using PySAL, check out the following resources:
 Development
 ===========
 
-pysal_core development is hosted on github_.
+libpysal development is hosted on github_.
 
-.. _github : https://github.com/pysal/pysal_core
+.. _github : https://github.com/pysal/libpysal
 
 Discussions of development occurs on the
 `developer list <http://groups.google.com/group/pysal-dev>`_
@@ -51,9 +53,9 @@ If you are interested in contributing to PySAL please see our
 
 Bug reports
 ===========
-To search for or report bugs, please see PySAL's issues_.
+To search for or report bugs, please see libpysal's issues_.
 
-.. _issues :  http://github.com/pysal/pysal_core/issues
+.. _issues :  http://github.com/pysal/libpysal/issues
 
 License information
 ===================
