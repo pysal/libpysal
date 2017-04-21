@@ -29,7 +29,7 @@ import examples
 from io import IOHandlers
 
 if common.pandas is not None:
-    from io import geotable 
+    from io import geotable
 
 # Assign pysal.open to dispatcher
 open = io.FileIO.FileIO
