@@ -7,17 +7,18 @@ Python Spatial Analysis Library Core
 .. image:: https://badges.gitter.im/pysal/pysal.svg
    :target: https://gitter.im/pysal/pysal
 
-This package is is part of a `refactoring of PySAL
+This package is part of a `refactoring of PySAL
 <https://github.com/pysal/pysal/wiki/PEP-13:-Refactor-PySAL-Using-Submodules>`_.
 
 
+****************
 libpysal modules
-================
+****************
 
-* libpysal.cg  Computational geometry
-* libpysal.io  Input and output
-* libpysal.weights  Spatial weights
-* libpysal.examples  Built-in example datasets
+- libpysal.cg  Computational geometry
+- libpysal.io  Input and output
+- libpysal.weights  Spatial weights
+- libpysal.examples  Built-in example datasets
 
 
 Mimicing parts of the original PySAL api can be done with
@@ -25,8 +26,9 @@ Mimicing parts of the original PySAL api can be done with
 ``import libpysal.api as ps``
 
 
+***********
 Development
-===========
+***********
 
 libpysal development is hosted on github_.
 
@@ -38,21 +40,25 @@ as well as gitter_.
 
 .. _gitter : https://gitter.im/pysal/pysal?
 
+****************
 Getting Involved
-================
+****************
 
 If you are interested in contributing to PySAL please see our
 `development guidelines <http://pysal.readthedocs.org/en/latest/developers/index.html>`_.
 
 
+***********
 Bug reports
-===========
+***********
+
 To search for or report bugs, please see libpysal's issues_.
 
 .. _issues :  http://github.com/pysal/libpysal/issues
 
+*******************
 License information
-===================
+*******************
 
 See the file "LICENSE.txt" for information on the history of this
 software, terms & conditions for usage, and a DISCLAIMER OF ALL
