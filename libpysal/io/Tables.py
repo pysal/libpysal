@@ -206,8 +206,8 @@ class DataTable(FileIO.FileIO):
             if read_shp is True or self.dataPath.endswith('.dbf'):
                 read_shp = self.dataPath[:-3] + 'shp'
             try:
-                import pysal.contrib.pdio.shp as shp
-                df['geometry'] = shp.shp2series(self.dataPath[:-3] + 'shp')
+                from geotable.shp import shp2series
+                df['geometry'] = shp2series(self.dataPath[:-3] + 'shp')
             except IOError as e:
                 warn('Encountered the following error in attempting to read'
                      ' the shapefile {}. Proceeding with read, but the error'
