@@ -11,6 +11,7 @@ import copy
 from os.path import basename as BASENAME
 #from .util import full, WSP2W resolve import cycle by
 #forcing these into methods
+from . import adjtools
 from ..io.FileIO import FileIO as popen
 
 __all__ = ['W', 'WSP']
@@ -211,6 +212,66 @@ class W(object):
     @classmethod
     def from_WSP(cls, WSP, silent_island_warning=True):
         return WSP2W(WSP, silent_island_warning=silent_island_warning)
+
+    @classmethod
+    def from_adjlist(cls, adjlist, focal_col='focal', 
+                     neighbor_col='neighbor', weight_col=None):
+        """
+        Return an adjacency list representation of a weights object. 
+
+        Parameters
+        ----------
+        adjlist         :   pandas DataFrame
+                            adjacency list with a minimum of two columns
+        focal_col       :   string
+                            name of the column with the "source" node ids
+        neighbor_col    :   string
+                            name of the column with the "destination" node ids
+        weight_col      :   string
+                            name of the column with the weight information. If not provided and
+                            the dataframe has no column named "weight" then all weights
+                            are assumed to be 1.
+        """
+        if weight_col is None:
+           weight_col = 'weight' 
+        try_weightcol = getattr(adjlist, weight_col) 
+        if try_weightcol is None:
+            adjlist = adjlist.copy(deep=True)
+            adjlist['weight'] = 1
+        grouper = adjlist.groupby(focal_col)
+        neighbors = grouper[neighbor_col].apply(list)
+        weights = grouper[weight_col].apply(list)
+        return cls(neighbors=neighbors.to_dict(), weights=weights.to_dict())
+
+    def to_adjlist(self, remove_symmetric=False, 
+                   focal_col='focal', neighbor_col='neighbor', weight_col='weight'):
+        """
+        Compute an adjacency list representation of a weights object.
+
+        Parameters
+        -----------
+        remove_symmetric    :   bool
+                            whether or not to remove ``symmetric'' entries. If the W is symmetric,
+                            a standard ``directed'' adjacency list will contain both the forward and
+                            backward links by default because adjacency lists are a directed
+                            graph representation. If this is True, a W created from this adjacency list
+                            **MAY NOT BE THE SAME** as the original W. If you would like to 
+                            consider (1,2) and (2,1), set this to True. 
+        focal_col       :   string
+                            name of the column in which to store "source" node ids.
+        neighbor_col    :   string
+                            name of the column in which to store "destination" node ids.
+        weight_col      :   string
+                            name of the column in which to store weight information. 
+        """
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ImportError('pandas must be installed to use this method')
+        adjlist = pd.DataFrame(((idx, n,w) for idx, neighb in self 
+                                           for n,w in neighb.items()),
+                               columns = ('focal', 'neighbor', 'weight'))
+        return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
 
     @property
     def sparse(self):
