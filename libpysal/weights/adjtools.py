@@ -22,8 +22,8 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
                 function should take two arrays and provide a single scalar in 
                 return.
                 Example scalars include: lambda x,y: x < y, np.subtract
-                Example multivariates: lambda x,y: np.all(x < y)''
-                                       lambda x,y: np.diagonal(np.dot(x,y)).sum()
+                Example multivariates: lambda (x,y): np.all(x < y)''
+                                       lambda (x,y): np.sum((x-y)**2)
                                        sklearn.metrics.euclidean_distance
     skip_verify: bool
                 Whether or not to skip verifying that the W is the same as an adjacency list. 
@@ -155,7 +155,7 @@ def adjlist_map(data, funcs=(np.subtract,), W=None, alist=None,
     W, alist = _get_W_and_alist(W,alist)
     fnames = set([f.__name__ for f in funcs])
     for i, (column, function) in enumerate(zip(data.T, funcs)):
-        alist = adjlist_apply(vec=column, W=W, alist=alist, skip_verify=True)
+        alist = adjlist_apply(X=column, W=W, alist=alist, skip_verify=True)
         alist.drop(['att_focal', 'att_neighbor'], axis=1, inplace=True)
         alist = alist.rename(columns={function.__name__ :'_'.join((function.__name__, names[i]))})
         fnames.update((function.__name__,))

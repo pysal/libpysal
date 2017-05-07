@@ -49,6 +49,31 @@ class Test_Adjlist(ut.TestCase):
     def test_apply(self):
         self.apply_and_compare_columbus('HOVAL')
 
+    def test_mvapply(self):
+        df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
+        W = ps.Queen.from_dataframe(df)
+        ssq = lambda (x,y): np.sum((x-y)**2).item()
+        ssq.__name__ = 'sum_of_squares'
+        alist = adj.adjlist_apply(df[['HOVAL', 'CRIME', 'INC']], W=W, 
+                                  func=ssq)
+        known_ssq = [1301.1639302990804,
+                     3163.46450914361,
+                     1301.1639302990804,
+                     499.52656498472993,
+                     594.518273032036,
+                     3163.46450914361,
+                     499.52656498472993,
+                     181.79100173844196,
+                     436.09336916344097,
+                     594.518273032036,
+                     181.79100173844196,
+                     481.89443401250094,
+                     436.09336916344097,
+                     481.89443401250094] #ugh I hate doing this, but how else?
+        np.testing.assert_allclose(alist.sum_of_squares.values,
+                                   np.asarray(known_ssq),
+                                   rtol=RTOL, atol=ATOL)
+
     def test_map(self):
         atts = ['HOVAL', 'CRIME', 'INC'] 
         df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
