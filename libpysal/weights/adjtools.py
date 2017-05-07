@@ -1,21 +1,30 @@
 import numpy as np
 
-def adjlist_apply(vec, W=None, alist=None, func=np.subtract, skip_verify=False):
+def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     """
     apply a function to an adajcency list, getting an adjacency list and result.
 
     Parameters
     -----------
-    vec     :   iterable
-                an N-length iterable to apply ``func'' to. 
+    X       :   iterable
+                an (N,P)-length iterable to apply ``func'' to. If (N,1), then `func`
+                must take 2 arguments and return a single reduction. If P>1, then
+                func must take two P-length arrays and return a single 
+                reduction of them. 
     W       :   pysal.weights.W object
                 a weights object that provides adjacency information
     alist   :   pandas DataFrame
                 a table containing an adajacency list representation of a W matrix
     func    :   callable
-                a function taking two arguments and returning a single argument. This will be
-                evaluated for every (focal, neighbor) pair, or each row of the adjacency list. 
-                Examples include: ``lambda x,y: x < y'', ``np.subtract''
+                a function taking two arguments and returning a single argument. 
+                This will be evaluated for every (focal, neighbor) pair, or each 
+                row of the adjacency list. If `X` has more than one column, this
+                function should take two arrays and provide a single scalar in 
+                return.
+                Example scalars include: lambda x,y: x < y, np.subtract
+                Example multivariates: lambda x,y: np.all(x < y)''
+                                       lambda x,y: np.diagonal(np.dot(x,y)).sum()
+                                       sklearn.metrics.euclidean_distance
     skip_verify: bool
                 Whether or not to skip verifying that the W is the same as an adjacency list. 
                 Do this if you are certain the adjacency list and W agree and would like to
@@ -30,15 +39,50 @@ def adjlist_apply(vec, W=None, alist=None, func=np.subtract, skip_verify=False):
     except ImportError:
         raise ImportError('pandas must be installed to use this function')
     W,alist = _get_W_and_alist(W, alist, skip_verify=skip_verify)
-    vec = np.asarray(vec).flatten()
-    table = pd.DataFrame(np.vstack((W.id_order, vec)).T, columns=('id', 'att'))
+    if len(X.shape) > 1:
+        if X.shape[-1] > 1:
+            return _adjlist_mvapply(X, W=W, alist=alist, func=func,
+                             skip_verify=skip_verify)
+    else:
+        vec = np.asarray(X).flatten()
+    ids = np.asarray(W.id_order)[:,None]
+    table = pd.DataFrame(ids, columns=['id'])
+    table = pd.concat((table, pd.DataFrame(vec[:,None], columns=('att',))), 
+                      axis=1)
     alist_atts = pd.merge(alist, table, how='left', 
                           left_on='focal', right_on='id')
     alist_atts = pd.merge(alist_atts, table, how='left', 
-                          left_on='neighbor', right_on='id', suffixes=('_focal','_neighbor'))
+                          left_on='neighbor', right_on='id', 
+                          suffixes=('_focal','_neighbor'))
     alist_atts.drop(['id_focal', 'id_neighbor'], axis=1, inplace=True)
     alist_atts[func.__name__] = alist_atts[['att_focal', 'att_neighbor']].apply(lambda x: func(x.att_focal, 
                                                                                                x.att_neighbor), axis=1)
+    return alist_atts
+
+def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
+    try:
+        import pandas as pd
+    except ImportError:
+        raise ImportError('pandas must be installed to use this function')
+    assert len(X.shape) == 2, "data is not two-dimensional"
+    W, alist = _get_W_and_alist(W=W, alist=alist, skip_verify=skip_verify)
+    assert X.shape[0] == W.n, "number of samples in X does not match W"
+    try:
+        names = X.columns.tolist()
+    except AttributeError:
+        names = list(map(str, range(X.shape[1])))
+    ids = np.asarray(W.id_order)[:,None]
+    table = pd.DataFrame(ids, columns=['id'])
+    table = pd.concat((table, pd.DataFrame(X, columns=names)), axis=1)
+    alist_atts = pd.merge(alist, table, how='left', 
+                          left_on='focal', right_on='id')
+    alist_atts = pd.merge(alist_atts, table, how='left', 
+                          left_on='neighbor', right_on='id', 
+                          suffixes=('_focal','_neighbor'))
+    alist_atts.drop(['id_focal', 'id_neighbor'], axis=1, inplace=True)
+    alist_atts[func.__name__] = map(func, 
+                                    zip(alist_atts.filter(like='_focal').values,
+                                        alist_atts.filter(like='_neighbor').values))
     return alist_atts
 
 def _get_W_and_alist(W, alist, skip_verify=False):
