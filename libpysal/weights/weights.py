@@ -262,7 +262,7 @@ class W(object):
                             backward links by default because adjacency lists are a directed
                             graph representation. If this is True, a W created from this adjacency list
                             **MAY NOT BE THE SAME** as the original W. If you would like to 
-                            consider (1,2) and (2,1), set this to True. 
+                            consider (1,2) and (2,1) as distinct links, leave this as "False". 
         focal_col       :   string
                             name of the column in which to store "source" node ids.
         neighbor_col    :   string
