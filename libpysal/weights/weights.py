@@ -280,6 +280,17 @@ class W(object):
         return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
 
     def to_nx(self):
+        """
+        Convert a weights object to a networkx graph
+        
+        Arguments
+        ---------
+        None
+
+        Returns
+        --------
+        a networkx graph representation of the W object
+        """
         try:
             import networkx as nx
         except ImportError:
@@ -294,6 +305,22 @@ class W(object):
     
     @classmethod
     def from_nx(cls, graph, weight_col='weight'):
+        """
+        Convert a networkx graph to a PySAL W object.
+
+        Arguments
+        ----------
+        graph       :   networkx graph
+                        the graph to convert to a W
+        weight_col  :   string
+                        if the graph is labeled, this should be the
+                        name of the field to use as the weight for
+                        the W.
+        Returns
+        --------
+        a pysal.weights.W object containing the same graph
+        as the networkx graph
+        """
         neighbors = dict()
         weights = dict()
         for focal in graph.nodes():
