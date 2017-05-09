@@ -286,7 +286,7 @@ class W(object):
             raise ImportError("NetworkX is required to use this function.")
         tuple_list = []
         for k,nw in self:
-            n,w in nw.items():
+            for n,w in nw.items():
                 tuple_list.append((k,n,w))
         G = nx.Graph()
         G.add_weighted_edges_from(ebunch = tuple_list)
@@ -296,16 +296,16 @@ class W(object):
     def from_nx(cls, graph, weight_col='weight'):
         neighbors = dict()
         weights = dict()
-        for focal in reg.nodes():
-            links = reg[focal]
+        for focal in graph.nodes():
+            links = graph[focal]
             neighbors.update({focal:[]})
             weights.update({focal:[]})
-        for neighbor, weight in links.items():
-               neighbors[focal].append(neighbor)
-               if weight == {}:
-                   weights[focal].append(1)
-               else:
-                   weights[focal].append(weight[weight_col])
+            for neighbor, weight in links.items():
+                   neighbors[focal].append(neighbor)
+                   if weight == {}:
+                       weights[focal].append(1)
+                   else:
+                       weights[focal].append(weight[weight_col])
         return cls(neighbors=neighbors, weights=weights)
 
     @property
