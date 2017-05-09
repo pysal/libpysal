@@ -194,5 +194,5 @@ def filter_adjlist(adjlist, focal_col = 'focal', neighbor_col = 'neighbor'):
             undirected.update((tupe,))
             undirected.update((tuple(reversed(tupe),)))
             continue
-        adjlist.drop(to_drop.index, inplace=True)
+        adjlist = adjlist.drop(to_drop.index)
     return adjlist

@@ -1283,42 +1283,6 @@ def isKDTree(obj):
     """
     return any([issubclass(type(obj), KDTYPE) for KDTYPE in KDTREE_TYPES])
 
-def filter_adjlist(adjlist, focal_col = 'focal', neighbor_col = 'neighbor'):
-    """
-    This dedupes an adjacency list by examining both (a,b) and (b,a) when (a,b) is enountered.
-    The removal is done in order of the iteration order of the input adjacency list. So, if a 
-    special order of removal is desired, you need to sort the list before this function. 
-
-    Arguments
-    ----------
-    adjlist     :   pandas DataFrame
-                    a dataframe that contains focal and neighbor columns
-    focal_col   :   string
-                    the name of the column with the focal observation id
-    neighbor_col:   string
-                    the name of the column with the neighbor observation id
-
-    Returns
-    -------
-    an adjacency table with reversible entries removed. 
-    """
-    directed = set(map(tuple, adjlist[['focal', 'neighbor']].values))
-    undirected = set()
-    for tupe in directed:
-        #print(tupe)
-        if (tupe in undirected):
-            to_drop = adjlist.query('focal == {} and neighbor == {}'
-                                    .format(*tupe))
-        elif (tuple(reversed(tupe)) in undirected):
-            to_drop = adjlist.query('focal == {} and neighbor == {}'
-                                    .format(*tuple(reversed(tupe))))
-        else:
-            undirected.update((tupe,))
-            undirected.update((tuple(reversed(tupe),)))
-            continue
-        adjlist.drop(to_drop.index, inplace=True)
-    return adjlist
-
 if __name__ == "__main__":
     from pysal import lat2W
 

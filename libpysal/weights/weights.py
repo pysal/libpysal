@@ -279,7 +279,7 @@ class W(object):
                                columns = ('focal', 'neighbor', 'weight'))
         return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
 
-    def to_nx(self):
+    def to_networkx(self):
         """
         Convert a weights object to a networkx graph
         
@@ -304,7 +304,7 @@ class W(object):
         return G
     
     @classmethod
-    def from_nx(cls, graph, weight_col='weight'):
+    def from_networkx(cls, graph, weight_col='weight'):
         """
         Convert a networkx graph to a PySAL W object.
 
