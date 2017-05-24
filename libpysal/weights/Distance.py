@@ -323,26 +323,6 @@ class KNN(W):
             self.__init__(data, ids=ids, k=k, p=p)
         else:
             return KNN(data, ids=ids, k=k, p=p)
-        
-        def symmetrize(self):
-            """
-            Construct a symmetric KNN weight.
-
-            This ensures that the neighbors of each focal observation
-            consider the focal observation itself as a neighbor. 
-
-            This returns a generic W object, since the object is no
-            longer guaranteed to have k neighbors for each observation.
-            """
-            neighbors = copy.deepcopy(self.neighbors)
-            weights = copy.deepcopy(self.weights)
-            for focal, fneighbs in self.neighbors.items():
-                for neighbor in fneighbs:
-                    neighb_neighbors = neighbors[neighbor]
-                    if focal not in neighb_neighbors:
-                        neighbors[neighbor].append(focal)
-                        weights[neighbor].append(1)
-            return W(neighbors=neighbors, weights=weights)
 
 class Kernel(W):
     """
