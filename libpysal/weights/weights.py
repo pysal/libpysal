@@ -1071,7 +1071,7 @@ class W(object):
             ijs.sort()
             return ijs
 
-    def symmetrize(self):
+    def symmetrize(self, inplace=False):
         """
         Construct a symmetric KNN weight.
 
@@ -1081,15 +1081,21 @@ class W(object):
         This returns a generic W object, since the object is no
         longer guaranteed to have k neighbors for each observation.
         """
-        neighbors = copy.deepcopy(self.neighbors)
-        weights = copy.deepcopy(self.weights)
-        for focal, fneighbs in neighbors.items():
-            for j, neighbor in enumerate(fneighbs):
-                neighb_neighbors = neighbors[neighbor]
-                if focal not in neighb_neighbors:
-                    neighbors[neighbor].append(focal)
-                    weights[neighbor].append(weights[focal][j])
-        return W(neighbors, weights)
+        if not inplace:
+            neighbors = copy.deepcopy(self.neighbors)
+            weights = copy.deepcopy(self.weights)
+            out_W = W(neighbors, weights)
+            out_W.symmetrize(inplace=True)
+            return out_W
+        else:
+            for focal, fneighbs in self.neighbors.items():
+                for j, neighbor in enumerate(fneighbs):
+                    neighb_neighbors = self.neighbors[neighbor]
+                    if focal not in neighb_neighbors:
+                        self.neighbors[neighbor].append(focal)
+                        self.weights[neighbor].append(self.weights[focal][j])
+            self._cache = dict()
+            return
 
     def full(self):
         """
