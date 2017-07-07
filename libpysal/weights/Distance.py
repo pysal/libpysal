@@ -756,7 +756,8 @@ class DistanceBand(W):
         See detail in pysal issue #126.
 
         """
-        ids = list(ids)
+        if ids is not None:
+            ids = list(ids)
         self.p = p
         self.threshold = threshold
         self.binary = binary
