@@ -185,6 +185,15 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
 
         for k in w_db.id_order:
             np.testing.assert_equal(w_db[k], w_rook[k])
+    
+    @ut.skipIf(PANDAS_EXTINCT, 'Missing pandas')
+    def test_named(self):
+        import pandas as pd
+        geom_series = pdio.shp.shp2series(self.grid_path)
+        random_data = np.random.random(size=len(geom_series))
+        names = [chr(x) for x in range(60,160)]
+        df = pd.DataFrame({'obs':random_data, 'geometry':geom_series, 'names':names})
+        w = d.DistanceBand.from_dataframe(df, 1, ids=df.names)
 
 class Test_Kernel(ut.TestCase, Distance_Mixin):
     def setUp(self):
