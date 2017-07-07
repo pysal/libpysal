@@ -3,6 +3,8 @@ from .. import user
 from ..util import lat2W
 from .. import util
 from ..weights import W, WSP
+from ..Distance import DistanceBand, KNN
+from ..Contiguity import Queen, Rook
 from ...io.FileIO import FileIO as psopen
 from ... import examples as pysal_examples
 import numpy as np
@@ -89,6 +91,27 @@ class Testutil(unittest.TestCase):
         w5_2 = util.higher_order(w5, 2)
         w5_20 = {2: 1.0, 10: 1.0, 6: 1.0}
         self.assertEquals(w5_20, w5_2[0])
+    
+    def test_higher_order_classes(self):
+        wdb = DistanceBand.from_shapefile(pysal_examples.get_path('baltim.shp'), 34)
+        wknn = KNN.from_shapefile(pysal_examples.get_path('baltim.shp'), 10)
+        wrook = Rook.from_shapefile(pysal_examples.get_path('columbus.shp'))
+        wqueen = Queen.from_shapefile(pysal_examples.get_path('columbus.shp'))
+        wsparse = wqueen.sparse
+        ww = W(wknn.neighbors, wknn.weights)
+        util.higher_order(wdb, 2)
+        util.higher_order(wknn, 3)
+        util.higher_order(wrook, 4)
+        util.higher_order(wqueen, 5)
+        util.higher_order(wsparse, 2)
+        util.higher_order(ww, 2)
+        ww.transform = 'r'
+        wsparse_notbinary = wrook.sparse
+        with self.assertRaises(ValueError):
+            util.higher_order(wsparse, 2)
+            util.higher_order(ww, 3)
+
+
 
     def test_shimbel(self):
         w5 = lat2W()

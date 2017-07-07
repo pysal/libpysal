@@ -522,15 +522,19 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
     {1: 1.0, 3: 1.0, 5: 1.0, 7: 1.0, 11: 1.0, 15: 1.0}
 
     """
-
-    tw = type(w)
     id_order = None
-    if issubclass(tw,W):
-        id_order = w.id_order
-        w = w.sparse
-    elif tw != scipy.sparse.csr.csr_matrix:
-        print "Unsupported sparse argument."
-        return None
+    if issubclass(type(w), W) or isinstance(w, W):
+        if np.unique(np.hstack(w.weights.values())) == np.array([1.0]):
+            id_order = w.id_order
+            w = w.sparse
+        else:
+            raise ValueError('Weights are not binary (0,1)')
+    elif scipy.sparse.isspmatrix_csr(w):
+        if not np.unique(w.data) == np.array([1.0]):
+            raise ValueError('Sparse weights matrix is not binary (0,1) weights matrix.')
+    else:
+        raise TypeError("Weights provided are neither a binary W object nor "
+                        "a scipy.sparse.csr_matrix")
 
     wk = w**k
     rk, ck = wk.nonzero()
