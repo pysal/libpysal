@@ -5,6 +5,7 @@ from ..util import WSP2W, lat2W
 from ..user import rook_from_shapefile
 from ...io.FileIO import FileIO as psopen
 from ... import examples as pysal_examples
+from ..Distance import KNN
 import numpy as np
 
 NPTA3E = np.testing.assert_array_almost_equal
@@ -232,6 +233,16 @@ class TestW(unittest.TestCase):
     def test_trcWtW_WW(self):
         self.assertEqual(self.w3x3.trcWtW_WW, 48.)
 
+    def test_symmetrize(self):
+        symm = self.w.symmetrize() 
+        np.testing.assert_allclose(symm.sparse.toarray(), self.w.sparse.toarray())
+        knn = KNN.from_shapefile(pysal_examples.get_path('baltim.shp'), k=10)
+        sknn = knn.symmetrize()
+        assert (not np.allclose(knn.sparse.toarray(), sknn.sparse.toarray()))
+        np.testing.assert_allclose(sknn.sparse.toarray(), sknn.sparse.toarray().T)
+        knn.symmetrize(inplace=True)
+        np.testing.assert_allclose(sknn.sparse.toarray(), knn.sparse.toarray())
+        np.testing.assert_allclose(knn.sparse.toarray().T, knn.sparse.toarray())
 
 class Test_WSP_Back_To_W(unittest.TestCase):
     # Test to make sure we get back to the same W functionality
