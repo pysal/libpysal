@@ -240,6 +240,9 @@ class TestW(unittest.TestCase):
         sknn = knn.symmetrize()
         assert (not np.allclose(knn.sparse.toarray(), sknn.sparse.toarray()))
         np.testing.assert_allclose(sknn.sparse.toarray(), sknn.sparse.toarray().T)
+        knn.symmetrize(inplace=True)
+        np.testing.assert_allclose(sknn.sparse.toarray(), knn.sparse.toarray())
+        np.testing.assert_allclose(knn.sparse.toarray().T, knn.sparse.toarray())
 
 class Test_WSP_Back_To_W(unittest.TestCase):
     # Test to make sure we get back to the same W functionality
