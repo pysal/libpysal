@@ -110,7 +110,7 @@ class KNN(W):
         W.__init__(self, neighbors, id_order=ids)
     
     @classmethod
-    def from_shapefile(cls, filepath, **kwargs):
+    def from_shapefile(cls, filepath, *args, **kwargs):
         """
         Nearest neighbor weights from a shapefile.
 
@@ -183,10 +183,10 @@ class KNN(W):
         :class:`pysal.weights.KNN`
         :class:`pysal.weights.W`
         """
-        return cls(get_points_array_from_shapefile(filepath), **kwargs)
+        return cls(get_points_array_from_shapefile(filepath), *args, **kwargs)
     
     @classmethod
-    def from_array(cls, array, **kwargs):
+    def from_array(cls, array, *args, **kwargs):
         """
         Creates nearest neighbor weights matrix based on k nearest
         neighbors.
@@ -240,10 +240,10 @@ class KNN(W):
         :class: `pysal.weights.KNN`
         :class:`pysal.weights.W`
         """
-        return cls(array, **kwargs)
+        return cls(array, *args, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, geom_col='geometry', ids=None, **kwargs):
+    def from_dataframe(cls, df, geom_col='geometry', ids=None, *args, **kwargs):
         """
         Make KNN weights from a dataframe.
 
@@ -269,7 +269,7 @@ class KNN(W):
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
-        return cls(pts, ids=ids, **kwargs)
+        return cls(pts, *args, ids=ids, **kwargs)
 
     def reweight(self, k=None, p=None, new_data=None, new_ids=None, inplace=True):
         """
