@@ -190,8 +190,15 @@ def _resolve_ties(i,inty,vals,neighbors,method,w):
         return np.argmax(vals)
     elif method.lower() == 'random':
         ties = np.where(vals == vals.max())
-        return np.random.choice(vals[ties])
+        return np.random.choice(np.squeeze(ties))
     elif method.lower() == 'tryself':
         vals[inty[w.id2i[i]]] += np.mean(neighbors.values())
         return _resolve_ties(i,inty,vals,neighbors,'random', w)
-
+    elif method.lower() == 'lowest':
+        ties = np.where(vals == vals.max())
+        return ties[0]
+    elif method.lower() == 'highest':
+        ties = np.where(vals == vals.max())
+        return ties[-1]
+    else:
+        raise KeyError('Tie-breaking method for categorical lag not recognized')
