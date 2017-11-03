@@ -1,3 +1,3 @@
 import datetime
-version = "1.14.0dev"
+version = "3.0.2dev"
 stable_release_date = datetime.date(2016, 12, 9)
