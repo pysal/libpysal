@@ -17,7 +17,7 @@ def lag_spatial(w, y):
     ----------
 
     w                   : W
-                          PySAL spatial weightsobject
+                          libpysal spatial weightsobject
     y                   : array
                           numpy array with dimensionality conforming to w (see examples)
 
@@ -33,18 +33,18 @@ def lag_spatial(w, y):
     Setup a 9x9 binary spatial weights matrix and vector of data; compute the
     spatial lag of the vector.
 
-    >>> import pysal
+    >>> import libpysal.api as ps
     >>> import numpy as np
-    >>> w = pysal.lat2W(3, 3)
+    >>> w = ps.lat2W(3, 3)
     >>> y = np.arange(9)
-    >>> yl = pysal.lag_spatial(w, y)
+    >>> yl = ps.lag_spatial(w, y)
     >>> yl
     array([  4.,   6.,   6.,  10.,  16.,  14.,  10.,  18.,  12.])
 
     Row standardize the weights matrix and recompute the spatial lag
 
     >>> w.transform = 'r'
-    >>> yl = pysal.lag_spatial(w, y)
+    >>> yl = ps.lag_spatial(w, y)
     >>> yl
     array([ 2.        ,  2.        ,  3.        ,  3.33333333,  4.        ,
             4.66666667,  5.        ,  6.        ,  6.        ])
@@ -52,7 +52,7 @@ def lag_spatial(w, y):
     Explicitly define data vector as 9x1 and recompute the spatial lag
 
     >>> y.shape = (9, 1)
-    >>> yl = pysal.lag_spatial(w, y)
+    >>> yl = ps.lag_spatial(w, y)
     >>> yl
     array([[ 2.        ],
            [ 2.        ],
@@ -69,7 +69,7 @@ def lag_spatial(w, y):
     >>> yr = np.arange(8, -1, -1)
     >>> yr.shape = (9, 1)
     >>> x = np.hstack((y, yr))
-    >>> yl = pysal.lag_spatial(w, x)
+    >>> yl = ps.lag_spatial(w, x)
     >>> yl
     array([[ 2.        ,  6.        ],
            [ 2.        ,  6.        ],
@@ -125,19 +125,20 @@ def lag_categorical(w, y, ties='tryself'):
     Set up a 9x9 weights matrix describing a 3x3 regular lattice. Lag one list of
     categorical variables with no ties.
 
-    >>> import pysal
+    >>> import libpysal.api as ps
+    >>> import libpysal
     >>> import numpy as np
     >>> np.random.seed(12345)
-    >>> w = pysal.lat2W(3, 3)
+    >>> w = ps.lat2W(3, 3)
     >>> y = ['a','b','a','b','c','b','c','b','c']
-    >>> y_l = pysal.weights.spatial_lag.lag_categorical(w, y)
+    >>> y_l = libpysal.weights.spatial_lag.lag_categorical(w, y)
     >>> np.array_equal(y_l, np.array(['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b']))
     True
 
     Explicitly reshape y into a (9x1) array and calculate lag again
 
     >>> yvect = np.array(y).reshape(9,1)
-    >>> yvect_l = pysal.weights.spatial_lag.lag_categorical(w,yvect)
+    >>> yvect_l = libpysal.weights.spatial_lag.lag_categorical(w,yvect)
     >>> check = np.array( [ [i] for i in  ['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b']] )
     >>> np.array_equal(yvect_l, check)
     True
@@ -146,8 +147,8 @@ def lag_categorical(w, y, ties='tryself'):
 
     >>> y2 = ['a', 'c', 'c', 'd', 'b', 'a', 'd', 'd', 'c']
     >>> ym = np.vstack((y,y2)).T
-    >>> ym_lag = pysal.weights.spatial_lag.lag_categorical(w,ym)
-    >>> check = np.array([['b', 'b'], ['a', 'c'], ['b', 'c'], ['c', 'd'], ['b', 'd'], ['c', 'c'], ['b', 'd'], ['c', 'd'], ['b', 'b']])
+    >>> ym_lag = libpysal.weights.spatial_lag.lag_categorical(w,ym)
+    >>> check = np.array([['b', 'd'], ['a', 'c'], ['b', 'c'], ['c', 'd'], ['b', 'd'], ['c', 'c'], ['b', 'd'], ['c', 'd'], ['b', 'c']])
     >>> np.array_equal(check, ym_lag)
     True
 

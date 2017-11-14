@@ -50,7 +50,7 @@ def hexLat2W(nrows=5, ncols=5):
     Examples
     --------
 
-    >>> import pysal as ps
+    >>> import libpysal.api as ps
     >>> w = ps.lat2W()
     >>> w.neighbors[1]
     [0, 6, 2]
@@ -140,8 +140,8 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
     Examples
     --------
 
-    >>> from pysal import lat2W
-    >>> w9 = lat2W(3,3)
+    >>> import libpysal.api as ps
+    >>> w9 = ps.lat2W(3,3)
     >>> "%.3f"%w9.pct_nonzero
     '29.630'
     >>> w9[0]
@@ -224,7 +224,7 @@ def regime_weights(regimes):
     Examples
     --------
 
-    >>> from pysal import regime_weights
+    >>> import libpysal.api as ps
     >>> import numpy as np
     >>> regimes = np.ones(25)
     >>> regimes[range(10,20)] = 2
@@ -232,7 +232,7 @@ def regime_weights(regimes):
     >>> regimes
     array([ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  2.,  2.,  2.,
             2.,  2.,  2.,  2.,  2.,  2.,  2.,  1.,  3.,  3.,  3.,  3.])
-    >>> w = regime_weights(regimes)
+    >>> w = ps.regime_weights(regimes)
     PendingDepricationWarning: regime_weights will be renamed to block_weights in PySAL 2.0
     >>> w.weights[0]
     [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -240,7 +240,7 @@ def regime_weights(regimes):
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
     >>> regimes = ['n','n','s','s','e','e','w','w','e']
     >>> n = len(regimes)
-    >>> w = regime_weights(regimes)
+    >>> w = ps.regime_weights(regimes)
     PendingDepricationWarning: regime_weights will be renamed to block_weights in PySAL 2.0
     >>> w.neighbors
     {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
@@ -284,7 +284,7 @@ def block_weights(regimes, ids=None, sparse=False):
     Examples
     --------
 
-    >>> from pysal import block_weights
+    >>> import libpysal.api as ps
     >>> import numpy as np
     >>> regimes = np.ones(25)
     >>> regimes[range(10,20)] = 2
@@ -292,14 +292,14 @@ def block_weights(regimes, ids=None, sparse=False):
     >>> regimes
     array([ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  2.,  2.,  2.,
             2.,  2.,  2.,  2.,  2.,  2.,  2.,  1.,  3.,  3.,  3.,  3.])
-    >>> w = block_weights(regimes)
+    >>> w = ps.block_weights(regimes)
     >>> w.weights[0]
     [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
     >>> w.neighbors[0]
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
     >>> regimes = ['n','n','s','s','e','e','w','w','e']
     >>> n = len(regimes)
-    >>> w = block_weights(regimes)
+    >>> w = ps.block_weights(regimes)
     >>> w.neighbors
     {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
     """
@@ -390,8 +390,10 @@ def order(w, kmax=3):
 
     Examples
     --------
-    >>> from pysal import rook_from_shapefile as rfs
-    >>> w = rfs(pysal.examples.get_path('10740.shp'))
+    >>> import libpysal.api as ps
+    >>> import libpysal
+    >>> w = ps.rook_from_shapefile(libpysal.examples.get_path('10740.shp'))
+
     WARNING: there is one disconnected observation (no neighbors)
     Island id:  [163]
     >>> w3 = order(w, kmax = 3)
@@ -399,7 +401,7 @@ def order(w, kmax=3):
     [1, -1, 1, 2, 1]
 
     """
-    #ids = w.neighbors.keys()
+
     ids = w.id_order
     info = {}
     for id_ in ids:
@@ -450,17 +452,17 @@ def higher_order(w, k=2):
 
     Examples
     --------
-    >>> from pysal import lat2W, higher_order
-    >>> w10 = lat2W(10, 10)
-    >>> w10_2 = higher_order(w10, 2)
+    >>> import libpysal.api as ps
+    >>> w10 = ps.lat2W(10, 10)
+    >>> w10_2 = ps.higher_order(w10, 2)
     >>> w10_2[0]
     {2: 1.0, 11: 1.0, 20: 1.0}
-    >>> w5 = lat2W()
+    >>> w5 = ps.lat2W()
     >>> w5[0]
     {1: 1.0, 5: 1.0}
     >>> w5[1]
     {0: 1.0, 2: 1.0, 6: 1.0}
-    >>> w5_2 = higher_order(w5,2)
+    >>> w5_2 = ps.higher_order(w5,2)
     >>> w5_2[0]
     {10: 1.0, 2: 1.0, 6: 1.0}
     """
@@ -502,22 +504,23 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
     Examples
     --------
 
-    >>> import pysal
-    >>> w25 = pysal.lat2W(5,5)
+    >>> import libpysal.api as ps
+    >>> import libpysal
+    >>> w25 = ps.lat2W(5,5)
     >>> w25.n
     25
     >>> w25[0]
     {1: 1.0, 5: 1.0}
-    >>> w25_2 = pysal.weights.util.higher_order_sp(w25, 2)
+    >>> w25_2 = libpysal.weights.util.higher_order_sp(w25, 2)
     >>> w25_2[0]
     {10: 1.0, 2: 1.0, 6: 1.0}
-    >>> w25_2 = pysal.weights.util.higher_order_sp(w25, 2, diagonal=True)
+    >>> w25_2 = libpysal.weights.util.higher_order_sp(w25, 2, diagonal=True)
     >>> w25_2[0]
     {0: 1.0, 10: 1.0, 2: 1.0, 6: 1.0}
-    >>> w25_3 = pysal.weights.util.higher_order_sp(w25, 3)
+    >>> w25_3 = libpysal.weights.util.higher_order_sp(w25, 3)
     >>> w25_3[0]
     {15: 1.0, 3: 1.0, 11: 1.0, 7: 1.0}
-    >>> w25_3 = pysal.weights.util.higher_order_sp(w25, 3, shortest_path=False)
+    >>> w25_3 = libpysal.weights.util.higher_order_sp(w25, 3, shortest_path=False)
     >>> w25_3[0]
     {1: 1.0, 3: 1.0, 5: 1.0, 7: 1.0, 11: 1.0, 15: 1.0}
 
@@ -602,8 +605,8 @@ def w_local_cluster(w):
 
     Examples
     --------
-
-    >>> w = pysal.lat2W(3,3, rook=False)
+    >>> import libpysal.api as ps
+    >>> w = ps.lat2W(3,3, rook=False)
     >>> w_local_cluster(w)
     array([[ 1.        ],
            [ 0.6       ],
@@ -645,9 +648,9 @@ def shimbel(w):
 
     Examples
     --------
-    >>> from pysal import lat2W, shimbel
-    >>> w5 = lat2W()
-    >>> w5_shimbel = shimbel(w5)
+    >>> import libpysal.api as ps
+    >>> w5 = ps.lat2W()
+    >>> w5_shimbel = ps.shimbel(w5)
     >>> w5_shimbel[0][24]
     8
     >>> w5_shimbel[0][0:4]
@@ -698,11 +701,11 @@ def full(w):
 
     Examples
     --------
-    >>> from pysal import W, full
+    >>> import libpysal.api as ps
     >>> neighbors = {'first':['second'],'second':['first','third'],'third':['second']}
     >>> weights = {'first':[1],'second':[1,1],'third':[1]}
-    >>> w = W(neighbors, weights)
-    >>> wf, ids = full(w)
+    >>> w = ps.W(neighbors, weights)
+    >>> wf, ids = ps.full(w)
     >>> wf
     array([[ 0.,  1.,  0.],
            [ 1.,  0.,  1.],
@@ -730,7 +733,7 @@ def full2W(m, ids=None):
 
     Examples
     --------
-    >>> import pysal as ps
+    >>> import libpysal
     >>> import numpy as np
 
     Create an array of zeros
@@ -746,7 +749,7 @@ def full2W(m, ids=None):
 
     Create W object
 
-    >>> w = ps.weights.util.full2W(a)
+    >>> w = libpysal.weights.util.full2W(a)
     >>> w.full()[0] == a
     array([[ True,  True,  True,  True],
            [ True,  True,  True,  True],
@@ -756,7 +759,7 @@ def full2W(m, ids=None):
     Create list of user ids
 
     >>> ids = ['myID0', 'myID1', 'myID2', 'myID3']
-    >>> w = ps.weights.util.full2W(a, ids=ids)
+    >>> w = libpysal.weights.util.full2W(a, ids=ids)
     >>> w.full()[0] == a
     array([[ True,  True,  True,  True],
            [ True,  True,  True,  True],
@@ -800,13 +803,13 @@ def WSP2W(wsp, silent_island_warning=False):
 
     Examples
     --------
-    >>> import pysal
+    >>> import libpysal.api as ps
 
     Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
     (rook contiguity), then construct a PySAL sparse weights object (wsp).
 
-    >>> sp = pysal.weights.lat2SW(2, 5)
-    >>> wsp = WSP(sp)
+    >>> sp = ps.lat2SW(2, 5)
+    >>> wsp = ps.WSP(sp)
     >>> wsp.n
     10
     >>> print wsp.sparse[0].todense()
@@ -814,7 +817,7 @@ def WSP2W(wsp, silent_island_warning=False):
 
     Convert this sparse weights object to a standard PySAL weights object.
 
-    >>> w = pysal.weights.WSP2W(wsp)
+    >>> w = ps.WSP2W(wsp)
     >>> w.n
     10
     >>> print w.full()[0][0]
@@ -877,14 +880,14 @@ def fill_diagonal(w, val=1.0, wsp=False):
 
     Examples
     --------
-    >>> import pysal
+    >>> import libpysal.api as ps
     >>> import numpy as np
 
     Build a basic rook weights matrix, which has zeros on the diagonal, then
     insert ones along the diagonal.
 
-    >>> w = pysal.lat2W(5, 5, id_type='string')
-    >>> w_const = pysal.weights.insert_diagonal(w)
+    >>> w = ps.lat2W(5, 5, id_type='string')
+    >>> w_const = ps.insert_diagonal(w)
     >>> w['id0']
     {'id5': 1.0, 'id1': 1.0}
     >>> w_const['id0']
@@ -893,7 +896,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
     Insert different values along the main diagonal.
 
     >>> diag = np.arange(100, 125)
-    >>> w_var = pysal.weights.insert_diagonal(w, diag)
+    >>> w_var = ps.insert_diagonal(w, diag)
     >>> w_var['id0']
     {'id5': 1.0, 'id0': 100.0, 'id1': 1.0}
 
@@ -942,14 +945,14 @@ def remap_ids(w, old2new, id_order=[]):
 
     Examples
     --------
-    >>> from pysal import lat2W, remap_ids
-    >>> w = lat2W(3,2)
+    >>> import libpysal.api as ps
+    >>> w = ps.lat2W(3,2)
     >>> w.id_order
     [0, 1, 2, 3, 4, 5]
     >>> w.neighbors[0]
     [2, 1]
     >>> old_to_new = {0:'a', 1:'b', 2:'c', 3:'d', 4:'e', 5:'f'}
-    >>> w_new = remap_ids(w, old_to_new)
+    >>> w_new = ps.remap_ids(w, old_to_new)
     >>> w_new.id_order
     ['a', 'b', 'c', 'd', 'e', 'f']
     >>> w_new.neighbors['a']
@@ -994,8 +997,9 @@ def get_ids(shapefile, idVariable):
 
     Examples
     --------
-    >>> from pysal.weights.util import get_ids
-    >>> polyids = get_ids(pysal.examples.get_path("columbus.shp"), "POLYID")
+    >>> from libpysal.weights.util import get_ids
+    >>> import libpysal
+    >>> polyids = get_ids(libpysal.examples.get_path("columbus.shp"), "POLYID")
     >>> polyids[:5]
     [1, 2, 3, 4, 5]
     """
@@ -1066,8 +1070,9 @@ def get_points_array_from_shapefile(shapefile):
     --------
     Point shapefile
 
-    >>> from pysal.weights.util import get_points_array_from_shapefile
-    >>> xy = get_points_array_from_shapefile(pysal.examples.get_path('juvenile.shp'))
+    >>> import libpysal
+    >>> from libpysal.weights.util import get_points_array_from_shapefile
+    >>> xy = get_points_array_from_shapefile(libpysal.examples.get_path('juvenile.shp'))
     >>> xy[:3]
     array([[ 94.,  93.],
            [ 80.,  95.],
@@ -1075,7 +1080,7 @@ def get_points_array_from_shapefile(shapefile):
 
     Polygon shapefile
 
-    >>> xy = get_points_array_from_shapefile(pysal.examples.get_path('columbus.shp'))
+    >>> xy = get_points_array_from_shapefile(libpysal.examples.get_path('columbus.shp'))
     >>> xy[:3]
     array([[  8.82721847,  14.36907602],
            [  8.33265837,  14.03162401],
@@ -1110,7 +1115,7 @@ def min_threshold_distance(data, p=2):
 
     Examples
     --------
-    >>> from pysal.weights.util import min_threshold_distance
+    >>> from libpysal.weights.util import min_threshold_distance
     >>> import numpy as np
     >>> x, y = np.indices((5, 5))
     >>> x.shape = (25, 1)
@@ -1162,13 +1167,13 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     Examples
     --------
 
-    >>> from pysal import weights
-    >>> w9 = weights.lat2SW(3,3)
+    >>> import libpysal.api as ps
+    >>> w9 = ps.lat2SW(3,3)
     >>> w9[0,1]
     1
     >>> w9[3,6]
     1
-    >>> w9r = weights.lat2SW(3,3, row_st=True)
+    >>> w9r = ps.lat2SW(3,3, row_st=True)
     >>> w9r[3,6]
     0.33333333333333331
     """
@@ -1246,25 +1251,26 @@ def neighbor_equality(w1, w2):
 
     Examples
     --------
-    >>> from pysal.weights.util import neighbor_equality
-    >>> w1 = pysal.lat2W(3,3)
-    >>> w2 = pysal.lat2W(3,3)
+    >>> from libpysal.weights.util import neighbor_equality
+    >>> import libpysal.api as ps
+    >>> w1 = ps.lat2W(3,3)
+    >>> w2 = ps.lat2W(3,3)
     >>> neighbor_equality(w1, w2)
     True
-    >>> w3 = pysal.lat2W(5,5)
+    >>> w3 = ps.lat2W(5,5)
     >>> neighbor_equality(w1, w3)
     False
     >>> n4 = w1.neighbors.copy()
     >>> n4[0] = [1]
     >>> n4[1] = [4, 2]
-    >>> w4 = pysal.W(n4)
+    >>> w4 = ps.W(n4)
     >>> neighbor_equality(w1, w4)
     False
     >>> n5 = w1.neighbors.copy()
     >>> n5[0]
     [3, 1]
     >>> n5[0] = [1, 3]
-    >>> w5 = pysal.W(n5)
+    >>> w5 = ps.W(n5)
     >>> neighbor_equality(w1, w5)
     True
 

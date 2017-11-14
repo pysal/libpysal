@@ -22,26 +22,26 @@ class W(object):
 
     Parameters
     ----------
-    neighbors       : dictionary
-                      key is region ID, value is a list of neighbor IDS
-                      Example:  {'a':['b'],'b':['a','c'],'c':['b']}
-    weights : dictionary
-                      key is region ID, value is a list of edge weights
-                      If not supplied all edge weights are assumed to have a weight of 1.
-                      Example: {'a':[0.5],'b':[0.5,1.5],'c':[1.5]}
-    id_order : list
-                      An ordered list of ids, defines the order of
-                      observations when iterating over W if not set,
-                      lexicographical ordering is used to iterate and the
-                      id_order_set property will return False.  This can be
-                      set after creation by setting the 'id_order' property.
-    silent_island_warning   : boolean
-                            By default PySAL will print a warning if the
-                            dataset contains any disconnected observations or
-                            islands. To silence this warning set this
-                            parameter to True.
-    ids : list
-                      values to use for keys of the neighbors and weights dicts
+    neighbors            : dictionary
+                           Key is region ID, value is a list of neighbor IDS.
+                           Example:  {'a':['b'],'b':['a','c'],'c':['b']}
+    weights              : dictionary
+                           Key is region ID, value is a list of edge weights.
+                           If not supplied all edge weights are assumed to have a weight of 1.
+                           Example: {'a':[0.5],'b':[0.5,1.5],'c':[1.5]}
+    id_order             : list
+                           An ordered list of ids, defines the order of
+                           observations when iterating over W if not set,
+                           lexicographical ordering is used to iterate and the
+                           id_order_set property will return False. This can be
+                           set after creation by setting the 'id_order' property.
+    silent_island_warning: boolean
+                           By default libpysal will print a warning if the
+                           dataset contains any disconnected observations or
+                           islands. To silence this warning set this
+                           parameter to True.
+    ids                  : list
+                           Values to use for keys of the neighbors and weights dicts.
 
     Attributes
     ----------
@@ -107,7 +107,8 @@ class W(object):
 
     Examples
     --------
-    >>> from pysal import W, lat2W
+    >>> from libpysal.api import W, lat2W
+    >>> import libpysal.api as ps
     >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4], 4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7], 7: [4, 6, 8], 8: [5, 7]}
     >>> weights = {0: [1, 1], 1: [1, 1, 1], 2: [1, 1], 3: [1, 1, 1], 4: [1, 1, 1, 1], 5: [1, 1, 1], 6: [1, 1], 7: [1, 1, 1], 8: [1, 1]}
     >>> w = W(neighbors, weights)
@@ -116,8 +117,8 @@ class W(object):
 
     Read from external gal file
 
-    >>> import pysal
-    >>> w = pysal.open(pysal.examples.get_path("stl.gal")).read()
+    >>> import libpysal
+    >>> w = libpysal.open(libpysal.examples.get_path("stl.gal")).read()
     >>> w.n
     78
     >>> "%.3f"%w.pct_nonzero
@@ -141,14 +142,15 @@ class W(object):
     2533.667
 
     Cardinality Histogram
-
-    >>> w=pysal.rook_from_shapefile(pysal.examples.get_path("sacramentot2.shp"))
+    >>> import libpysal.api as ps
+    >>> w=ps.rook_from_shapefile(libpysal.examples.get_path("sacramentot2.shp"))
     >>> w.histogram
     [(1, 1), (2, 6), (3, 33), (4, 103), (5, 114), (6, 73), (7, 35), (8, 17), (9, 9), (10, 4), (11, 4), (12, 3), (13, 0), (14, 1)]
 
     Disconnected observations (islands)
 
-    >>> w = pysal.W({1:[0],0:[1],2:[], 3:[]})
+    >>> w = ps.W({1:[0],0:[1],2:[], 3:[]})
+
     WARNING: there are 2 disconnected observations
     Island ids:  [2, 3]
 
@@ -642,14 +644,16 @@ class W(object):
 
         Examples
         --------
-        >>> from pysal import rook_from_shapefile as rfs
-        >>> w = rfs(pysal.examples.get_path("10740.shp"))
+        >>> import libpysal.api as ps
+        >>> import libpysal
+        >>> w = ps.rook_from_shapefile(libpysal.examples.get_path("10740.shp"))
+
         WARNING: there is one disconnected observation (no neighbors)
         Island id:  [163]
         >>> w[163]
         {}
         >>> w[0]
-        {1: 1.0, 4: 1.0, 101: 1.0, 85: 1.0, 5: 1.0}
+        {1: 1.0, 5: 1.0, 4: 1.0, 101: 1.0, 85: 1.0}
         """
         return dict(zip(self.neighbors[key], self.weights[key]))
 
@@ -659,8 +663,8 @@ class W(object):
 
         Examples
         --------
-        >>> import pysal
-        >>> w=pysal.lat2W(3,3)
+        >>> import libpysal.api as ps
+        >>> w=ps.lat2W(3,3)
         >>> for i,wi in enumerate(w):
         ...     print i,wi
         ...
@@ -698,7 +702,7 @@ class W(object):
         Example
         -------
 
-        >>> import pysal as ps
+        >>> import libpysal.api as ps
         >>> w = ps.lat2W(3, 3)
         >>> w.id_order
         [0, 1, 2, 3, 4, 5, 6, 7, 8]
@@ -763,8 +767,8 @@ class W(object):
         Examples
         --------
 
-        >>> import pysal
-        >>> w=pysal.lat2W(3,3)
+        >>> import libpysal.api as ps
+        >>> w=ps.lat2W(3,3)
         >>> for i,wi in enumerate(w):
         ...     print i,wi
         ...
@@ -821,7 +825,7 @@ class W(object):
 
         Examples
         --------
-        >>> from pysal import lat2W
+        >>> from libpysal.api import lat2W
         >>> w=lat2W()
         >>> w.id_order_set
         True
@@ -841,7 +845,7 @@ class W(object):
 
         Examples
         --------
-        >>> from pysal import W
+        >>> from libpysal.api import W
         >>> neighbors={'c': ['b'], 'b': ['c', 'a'], 'a': ['b']}
         >>> weights ={'c': [1.0], 'b': [1.0, 1.0], 'a': [1.0]}
         >>> w=W(neighbors,weights)
@@ -871,7 +875,7 @@ class W(object):
 
         Examples
         --------
-        >>> from pysal import lat2W
+        >>> from libpysal.api import lat2W
         >>> w=lat2W()
         >>> w.weights[0]
         [1.0, 1.0]
@@ -921,7 +925,7 @@ class W(object):
 
         Examples
         --------
-        >>> from pysal import lat2W
+        >>> from libpysal.api import lat2W
         >>> w=lat2W()
         >>> w.weights[0]
         [1.0, 1.0]
@@ -1038,7 +1042,7 @@ class W(object):
         Examples
         --------
 
-        >>> from pysal import lat2W
+        >>> from libpysal.api import lat2W
         >>> w=lat2W(3,3)
         >>> w.asymmetry()
         []
@@ -1114,7 +1118,7 @@ class W(object):
 
         Examples
         --------
-        >>> from pysal import W, full
+        >>> from libpysal.api import W, full
         >>> neighbors = {'first':['second'],'second':['first','third'],'third':['second']}
         >>> weights = {'first':[1],'second':[1,1],'third':[1]}
         >>> w = W(neighbors, weights)
@@ -1151,12 +1155,12 @@ class W(object):
 
         Examples
         --------
-        >>> import pysal as ps
-        >>> from pysal import W
+        >>> import libpysal as ps
+        >>> from libpysal.api import W
         >>> neighbors={'first':['second'],'second':['first','third'],'third':['second']}
         >>> weights={'first':[1],'second':[1,1],'third':[1]}
         >>> w=W(neighbors,weights)
-        >>> wsp=w.towsp()
+        >>> wsp=w.to_WSP()
         >>> isinstance(wsp, ps.weights.weights.WSP)
         True
         >>> wsp.n
@@ -1229,12 +1233,12 @@ class WSP(object):
     From GAL information
 
     >>> import scipy.sparse
-    >>> import pysal
+    >>> import libpysal.api as ps
     >>> rows = [0, 1, 1, 2, 2, 3]
     >>> cols = [1, 0, 2, 1, 3, 3]
     >>> weights =  [1, 0.75, 0.25, 0.9, 0.1, 1]
     >>> sparse = scipy.sparse.csr_matrix((weights, (rows, cols)), shape=(4,4))
-    >>> w = pysal.weights.WSP(sparse)
+    >>> w = ps.WSP(sparse)
     >>> w.s0
     4.0
     >>> w.trcWtW_WW
@@ -1302,7 +1306,7 @@ class WSP(object):
 
         Arguments
         ---------
-        W       :   pysal.weights.W
+        W       :   libpysal.weights.W
                     a pysal weights object with a sparse form and ids
 
         Returns
@@ -1331,12 +1335,12 @@ class WSP(object):
 
         Examples
         --------
-        >>> import pysal
+        >>> import libpysal.api as ps
 
         Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
-        (rook contiguity), then construct a PySAL sparse weights object (self).
+        (rook contiguity), then construct a libpysal sparse weights object (self).
 
-        >>> sp = pysal.weights.lat2SW(2, 5)
+        >>> sp = ps.lat2SW(2, 5)
         >>> self = WSP(sp)
         >>> self.n
         10
@@ -1345,7 +1349,7 @@ class WSP(object):
 
         Convert this sparse weights object to a standard PySAL weights object.
 
-        >>> w = pysal.weights.WSP2W(self)
+        >>> w = ps.WSP2W(self)
         >>> w.n
         10
         >>> print w.full()[0][0]

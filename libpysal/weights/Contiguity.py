@@ -53,10 +53,11 @@ class Rook(W):
 
         Examples
         --------
-        >>> wr=rook_from_shapefile(pysal.examples.get_path("columbus.shp"), "POLYID")
+        >>> import libpysal
+        >>> wr=Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), "POLYID")
         >>> "%.3f"%wr.pct_nonzero
         '8.330'
-        >>> wr=rook_from_shapefile(pysal.examples.get_path("columbus.shp"), sparse=True)
+        >>> wr=Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
         >>> pct_sp = wr.sparse.nnz *1. / wr.n**2
         >>> "%.3f"%pct_sp
         '0.083'
@@ -202,13 +203,14 @@ class Queen(W):
 
         Examples
         --------
-        >>> wq=Queen.from_shapefile(pysal.examples.get_path("columbus.shp"))
+        >>> import libpysal
+        >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"))
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        >>> wq=Queen.from_shapefile(pysal.examples.get_path("columbus.shp"),"POLYID")
+        >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"),"POLYID")
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        >>> wq=Queen.from_shapefile(pysal.examples.get_path("columbus.shp"), sparse=True)
+        >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
         >>> pct_sp = wq.sparse.nnz *1. / wq.n**2
         >>> "%.3f"%pct_sp
         '0.098'
