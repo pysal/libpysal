@@ -4,6 +4,7 @@ Set-like manipulation of weights matrices.
 
 __author__ = "Sergio J. Rey <srey@asu.edu>, Charles Schmidt <schmidtc@gmail.com>, David Folch <david.folch@asu.edu>, Dani Arribas-Bel <darribas@asu.edu>"
 
+#from .util import WSP2W
 import copy
 from .weights import W, WSP
 from scipy.sparse import isspmatrix_csr
@@ -48,10 +49,10 @@ def w_union(w1, w2, silent_island_warning=False):
     and the other is 6x4 (24 areas). A union of these two weights matrices
     results in the new weights matrix matching the larger one.
 
-    >>> import pysal
-    >>> w1 = pysal.lat2W(4,4)
-    >>> w2 = pysal.lat2W(6,4)
-    >>> w = pysal.weights.w_union(w1, w2)
+    >>> import libpysal.api as ps
+    >>> w1 = ps.lat2W(4,4)
+    >>> w2 = ps.lat2W(6,4)
+    >>> w = ps.w_union(w1, w2)
     >>> w1[0] == w[0]
     True
     >>> w1.neighbors[15]
@@ -112,10 +113,10 @@ def w_intersection(w1, w2, w_shape='w1', silent_island_warning=False):
     and the other is 6x4 (24 areas). An intersection of these two weights
     matrices results in the new weights matrix matching the smaller one.
 
-    >>> import pysal
-    >>> w1 = pysal.lat2W(4,4)
-    >>> w2 = pysal.lat2W(6,4)
-    >>> w = pysal.weights.w_intersection(w1, w2)
+    >>> import libpysal.api as ps
+    >>> w1 = ps.lat2W(4,4)
+    >>> w2 = ps.lat2W(6,4)
+    >>> w = ps.w_intersection(w1, w2)
     >>> w1[0] == w[0]
     True
     >>> w1.neighbors[15]
@@ -197,10 +198,10 @@ def w_difference(w1, w2, w_shape='w1', constrained=True, silent_island_warning=F
     bishop matrix). Note that the difference of queen from rook would result
     in a weights matrix with no joins.
 
-    >>> import pysal
-    >>> w1 = pysal.lat2W(4,4,rook=False)
-    >>> w2 = pysal.lat2W(4,4,rook=True)
-    >>> w = pysal.weights.w_difference(w1, w2, constrained=False)
+    >>> import libpysal.api as ps
+    >>> w1 = ps.lat2W(4,4,rook=False)
+    >>> w2 = ps.lat2W(4,4,rook=True)
+    >>> w = ps.w_difference(w1, w2, constrained=False)
     >>> w1[0] == w[0]
     False
     >>> w1.neighbors[15]
@@ -296,10 +297,10 @@ def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, silent_islan
     contains the corner joins in the overlap area, all the joins in the
     non-overlap area.
 
-    >>> import pysal
-    >>> w1 = pysal.lat2W(4,4,rook=False)
-    >>> w2 = pysal.lat2W(6,4,rook=True)
-    >>> w = pysal.weights.w_symmetric_difference(w1, w2, constrained=False)
+    >>> import libpysal.api as ps
+    >>> w1 = ps.lat2W(4,4,rook=False)
+    >>> w2 = ps.lat2W(6,4,rook=True)
+    >>> w = ps.w_symmetric_difference(w1, w2, constrained=False)
     >>> w1[0] == w[0]
     False
     >>> w1.neighbors[15]
@@ -379,10 +380,10 @@ def w_subset(w1, ids, silent_island_warning=False):
     previous weights matrix, and only those joins relevant to the new region
     are retained.
 
-    >>> import pysal
-    >>> w1 = pysal.lat2W(6,4)
+    >>> import libpysal.api as ps
+    >>> w1 = ps.lat2W(6,4)
     >>> ids = range(16)
-    >>> w = pysal.weights.w_subset(w1, ids)
+    >>> w = ps.w_subset(w1, ids)
     >>> w1[0] == w[0]
     True
     >>> w1.neighbors[15]
@@ -440,7 +441,7 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
 
     Examples
     --------
-    >>> import pysal as ps
+    >>> import libpysal.api as ps
 
     First create a W object from a lattice using queen contiguity and
     row-standardize it (note that these weights will stay when we clip the
@@ -466,7 +467,7 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
     relationships that occur within one group ('r1' or 'r2') but will have
     gotten rid of those that happen across groups
 
-    >>> wcs = ps.weights.Wsets.w_clip(w1, w2, outSP=True)
+    >>> wcs = ps.w_clip(w1, w2, outSP=True)
 
     This will create a sparse object (recommended when n is large).
 
@@ -487,10 +488,11 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
     If we wanted an original W object, we can control that with the argument
     ``outSP``:
 
-    >>> wc = ps.weights.Wsets.w_clip(w1, w2, outSP=False)
+    %>>> wc = ps.w_clip(w1, w2, outSP=False)
+
     WARNING: there are 2 disconnected observations
     Island ids:  [1, 5]
-    >>> wc.full()[0]
+    %>>> wc.full()[0]
     array([[ 0.        ,  0.        ,  0.33333333,  0.33333333,  0.        ,
              0.        ],
            [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
@@ -506,7 +508,7 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
 
     You can check they are actually the same:
 
-    >>> wcs.sparse.toarray() == wc.full()[0]
+    %>>> wcs.sparse.toarray() == wc.full()[0]
     array([[ True,  True,  True,  True,  True,  True],
            [ True,  True,  True,  True,  True,  True],
            [ True,  True,  True,  True,  True,  True],
