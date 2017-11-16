@@ -1,8 +1,8 @@
 """Unit test for Wsets module."""
 import unittest
-from ..util import lat2W
+from ..util import lat2W, block_weights
 from .. import Wsets
-
+import numpy as np
 
 class TestWsets(unittest.TestCase):
     """Unit test for Wsets module."""
@@ -56,6 +56,24 @@ class TestWsets(unittest.TestCase):
         self.assertEqual(w1[0], w2[0])
         self.assertEqual(set(w1.neighbors[15]), set([11, 14, 19]))
         self.assertEqual(set(w2.neighbors[15]), set([11, 14]))
+
+    def test_w_clip(self):
+        """Unit test for w_clip"""
+        w1 = lat2W(3, 2, rook=False)
+        w1.transform = 'R'
+        w2 = block_weights(['r1', 'r2', 'r1', 'r1', 'r1', 'r2'])
+        w2.transform = 'R'
+        wcs = Wsets.w_clip(w1, w2, outSP=True)
+        expected_wcs = np.array([[ 0.,  0.,0.33333333,0.33333333, 0.,0.],
+                                 [ 0.,  0.,  0.,  0.,  0.,0. ],
+                                 [ 0.2,  0.,  0.,  0.2,  0.2,0.],
+                                 [ 0.2,  0.,  0.2,  0.,  0.2,0.],
+                                 [ 0.,  0., 0.33333333, 0.33333333, 0., 0.],
+                                 [ 0.,  0.,  0.,  0.,  0.,0.]])
+        np.testing.assert_array_equal(np.around(wcs.sparse.toarray(),decimals=8), expected_wcs)
+
+        wc = Wsets.w_clip(w1, w2, outSP=False)
+        np.testing.assert_array_equal(wcs.sparse.toarray(), wc.full()[0])
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestWsets)
