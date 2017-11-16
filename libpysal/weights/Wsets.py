@@ -4,7 +4,6 @@ Set-like manipulation of weights matrices.
 
 __author__ = "Sergio J. Rey <srey@asu.edu>, Charles Schmidt <schmidtc@gmail.com>, David Folch <david.folch@asu.edu>, Dani Arribas-Bel <darribas@asu.edu>"
 
-#from .util import WSP2W
 import copy
 from .weights import W, WSP
 from scipy.sparse import isspmatrix_csr
@@ -488,11 +487,11 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
     If we wanted an original W object, we can control that with the argument
     ``outSP``:
 
-    %>>> wc = ps.w_clip(w1, w2, outSP=False)
+    >>> wc = ps.w_clip(w1, w2, outSP=False)
 
     WARNING: there are 2 disconnected observations
     Island ids:  [1, 5]
-    %>>> wc.full()[0]
+    >>> wc.full()[0]
     array([[ 0.        ,  0.        ,  0.33333333,  0.33333333,  0.        ,
              0.        ],
            [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ,
@@ -508,7 +507,7 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
 
     You can check they are actually the same:
 
-    %>>> wcs.sparse.toarray() == wc.full()[0]
+    >>> wcs.sparse.toarray() == wc.full()[0]
     array([[ True,  True,  True,  True,  True,  True],
            [ True,  True,  True,  True,  True,  True],
            [ True,  True,  True,  True,  True,  True],
@@ -517,7 +516,8 @@ def w_clip(w1, w2, outSP=True, silent_island_warning=False):
            [ True,  True,  True,  True,  True,  True]], dtype=bool)
 
     '''
-    
+
+    from .util import WSP2W
     if not w1.id_order:
         w1.id_order = None
     id_order = w1.id_order
