@@ -16,7 +16,7 @@ __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
            'insert_diagonal', 'get_ids', 'get_points_array_from_shapefile',
            'min_threshold_distance', 'lat2SW', 'w_local_cluster',
-           'higher_order_sp', 'hexLat2W', 'regime_weights']
+           'higher_order_sp', 'hexLat2W', 'regime_weights', 'attach_islands']
 
 
 KDTREE_TYPES = [scipy.spatial.KDTree, scipy.spatial.cKDTree]
@@ -1292,6 +1292,53 @@ def isKDTree(obj):
     KDTree, since KDTree and cKDTree have no common parent type
     """
     return any([issubclass(type(obj), KDTYPE) for KDTYPE in KDTREE_TYPES])
+
+def attach_islands(w, w_knn1):
+    """
+    Attach nearest neighbor to islands in spatial weight w.
+
+    Parameters
+    ----------
+
+    w            : libpysal.weights.W
+                   pysal spatial weight object (unstandardized).
+    w_knn1       : libpysal.weights.W
+                   Nearest neighbor pysal spatial weight object (k=1).
+
+    Returns
+    -------
+                 : libpysal.weights.W
+                   pysal spatial weight object w without islands.
+
+    Examples
+    --------
+    >>> import libpysal.api as ps
+    >>> import libpysal
+    >>> w = ps.rook_from_shapefile(libpysal.examples.get_path('10740.shp'))
+    >>> w.islands
+    [163]
+    >>> w_knn1 = ps.knnW_from_shapefile(libpysal.examples.get_path('10740.shp'),k=1)
+    >>> w_attach = attach_islands(w, w_knn1)
+    >>> w_attach.islands
+    []
+    >>> w_attach[w.islands[0]]
+    {166: 1.0}
+
+    """
+
+    neighbors, weights = copy.deepcopy(w.neighbors), copy.deepcopy(w.weights)
+    if not len(w.islands):
+        print("There are no disconnected observations (no islands)!")
+        return w
+    else:
+        for island in w.islands:
+            nb = w_knn1.neighbors[island][0]
+            neighbors[island] = {nb}
+            weights[island] = w_knn1.weights[nb]
+            neighbors[nb] = list(neighbors[nb]) + [island]
+            weights[nb] = weights[nb] + w_knn1.weights[nb]
+        return W(neighbors, weights, id_order=w.id_order)
+
 
 if __name__ == "__main__":
     from pysal import lat2W

@@ -209,6 +209,13 @@ class Testutil(unittest.TestCase):
         self.assertEquals(
             mint, util.min_threshold_distance(data))
 
+    def test_attach_islands(self):
+        w = user.rook_from_shapefile(pysal_examples.get_path('10740.shp'))
+        w_knn1 = user.knnW_from_shapefile(pysal_examples.get_path('10740.shp'), k=1)
+        w_attach = util.attach_islands(w, w_knn1)
+        self.assertEquals(w_attach.islands, [])
+        self.assertEquals(w_attach[w.islands[0]], {166: 1.0})
+
 suite = unittest.TestLoader().loadTestsFromTestCase(Testutil)
 
 if __name__ == '__main__':
