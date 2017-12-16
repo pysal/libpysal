@@ -161,20 +161,24 @@ def lag_categorical(w, y, ties='tryself'):
             return np.vstack([lag_categorical(w,col) for col in y.T]).T
     y = y.flatten()
     output = np.zeros_like(y)
-    keys = np.unique(y)
-    inty = np.zeros(y.shape, dtype=np.int)
-    for i,key in enumerate(keys):
-       inty[y == key] = i
-    for idx,neighbors in w:
-        vals = np.zeros(keys.shape)
-        for neighb, weight in neighbors.items():
-            vals[inty[w.id2i[neighb]]] += weight
-        outidx = _resolve_ties(idx,inty,vals,neighbors,ties, w)
-        output[w.id2i[int(idx)]] = keys[int(outidx)]
+    labels = np.unique(y)
+    normalized_labels = np.zeros(y.shape, dtype=np.int)
+    for i,label in enumerate(labels):
+       normalized_labels[y == label] = i
+    for focal_name,neighbors in w:
+        focal_idx = w.id2i[focal_name]
+        neighborhood_tally = np.zeros(labels.shape)
+        for neighb_name, weight in neighbors.items():
+            neighb_idx = w.id2i[neighb_name]
+            neighb_label = normalized_labels[neighb_idx]
+            neighborhood_tally[neighb_label] += weight
+        out_label_idx = _resolve_ties(focal_idx, normalized_labels,
+                               neighborhood_tally, neighbors, ties, w)
+        output[focal_idx] = labels[out_label_idx]
     return output.reshape(orig_shape)
 
 
-def _resolve_ties(i,inty,vals,neighbors,method,w):
+def _resolve_ties(idx,normalized_labels,tally,neighbors,method,w):
     """
     Helper function to resolve ties if lag is multimodal
 
@@ -186,20 +190,47 @@ def _resolve_ties(i,inty,vals,neighbors,method,w):
     if 'tryself' is selected, then the observation's own value will be used in
     an attempt to break the tie, but if it fails, a random tiebreaker will be
     selected.
+
+    Arguments
+    ---------
+    idx                 : int
+                          index (aligned with `normalized_labels`) of the 
+                          current observation being resolved.
+    normalized_labels   : (n,) array of ints
+                          normalized array of labels for each observation
+    tally               : (p,) array of floats
+                          current tally of neighbors' labels around `idx` to resolve.
+    neighbors           : dict of (neighbor_name : weight)
+                          the elements of the weights object, identical to w[idx]
+    method              : string
+                          configuration option to use a specific tiebreaking method. 
+                          supported options are:
+                          1. tryself: Use the focal observation's label to tiebreak.
+                                      If this doesn't successfully break the tie, 
+                                      (which only occurs if it induces a new tie),
+                                      decide randomly. 
+                          2. random: Resolve the tie randomly amongst winners.
+                          3. lowest: Pick the lowest-value label amongst winners.
+                          4. highest: Pick the highest-value label amongst winners.
+    w                   : pysal.W object
+                          a PySAL weights object aligned with normalized_labels. 
+
+    Returns
+    -------
+    integer denoting which label to use to label the observation.
     """
-    if len(vals[vals==vals.max()]) <= 1:
-        return np.argmax(vals).astype(int)
-    elif method.lower() == 'random':
-        ties = np.where(vals == vals.max())
+    ties, = np.where(tally == tally.max()) #returns a tuple for flat arrays
+    if len(tally[tally==tally.max()]) <= 1: #no tie, pick the highest
+        return np.argmax(tally).astype(int)
+    elif method.lower() == 'random': #choose randomly from tally
         return np.random.choice(np.squeeze(ties)).astype(int)
-    elif method.lower() == 'tryself':
-        vals[inty[w.id2i[i]]] += np.mean(neighbors.values())
-        return _resolve_ties(i,inty,vals,neighbors,'random', w)
-    elif method.lower() == 'lowest':
-        ties = np.where(vals == vals.max())
+    elif method.lower() == 'lowest': # pick lowest tied value
         return ties[0].astype(int)
-    elif method.lower() == 'highest':
-        ties = np.where(vals == vals.max())
+    elif method.lower() == 'highest': #pick highest tied value
         return ties[-1].astype(int)
+    elif method.lower() == 'tryself': # add self-label as observation, try again, random if fail
+        mean_neighbor_value = np.mean(list(neighbors.values()))
+        tally[normalized_labels[idx]] += mean_neighbor_value
+        return _resolve_ties(idx,normalized_labels,tally,neighbors,'random', w)
     else:
         raise KeyError('Tie-breaking method for categorical lag not recognized')
