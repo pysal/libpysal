@@ -359,7 +359,7 @@ def _build(polygons, criterion="rook", ids=None):
     else:
         for key in neighbor_data:
             neighbors[key] = set(neighbor_data[key])
-    return neighbors, ids
+    return dict(zip(neighbors.keys(),map(list, neighbors.values()))), ids
 
 def buildContiguity(polygons, criterion="rook", ids=None):
     """
