@@ -1333,10 +1333,12 @@ def attach_islands(w, w_knn1):
     else:
         for island in w.islands:
             nb = w_knn1.neighbors[island][0]
-            neighbors[island] = {nb}
-            weights[island] = w_knn1.weights[nb]
-            neighbors[nb] = list(neighbors[nb]) + [island]
-            weights[nb] = weights[nb] + w_knn1.weights[nb]
+            if type(island) is float:
+                nb = float(nb)
+            neighbors[island] = [nb]
+            weights[island] = [1.0]
+            neighbors[nb] = neighbors[nb] + [island]
+            weights[nb] = weights[nb] + [1.0]
         return W(neighbors, weights, id_order=w.id_order)
 
 
