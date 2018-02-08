@@ -14,7 +14,7 @@ with open('README.rst') as file:
 
 MAJOR = 3
 MINOR = 0
-MICRO = 2
+MICRO = 3 
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
@@ -90,7 +90,9 @@ def setup_package():
             'Programming Language :: Python :: 2.5',
             'Programming Language :: Python :: 2.6',
             'Programming Language :: Python :: 2.7',
-            'Programming Language :: Python :: 3.4'
+            'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6'
         ],
         package_data={'libpysal':list(example_data_files)},
         install_requires=install_reqs,
