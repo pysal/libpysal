@@ -7,8 +7,6 @@ Adapted from https://gist.github.com/pv/8036995
 """
 import numpy as np
 from scipy.spatial import Voronoi
-import geopandas as gpd
-from shapely.geometry import Polygon, Point
 
 
 __author__ = "Serge Rey <sjsrey@gmail.com"
@@ -119,9 +117,19 @@ def voronoi_regions(vor, radius=None):
 
     return new_regions, np.asarray(new_vertices)
 
+try:
+    import geopandas as gpd
+except ImportError:
+    g = None
+
+try:
+    from shapely.geometry import Polygon, Point
+except ImportError:
+    from .shapes import Polygon, Point
+
 def as_dataframes(regions, vertices, points):
     """
-    Helper function to store finite Voronoi regions and originator points as geopandas data frames
+    Helper function to store finite Voronoi regions and originator points as geopandas (or pandas) data frames
 
 
     Parameters
@@ -148,9 +156,20 @@ def as_dataframes(regions, vertices, points):
                   Originator points as geometries
     """
 
-    region_df = gpd.GeoDataFrame()
-    region_df['geometry'] = [Polygon(vertices[region]) for region in regions]
+    if g is not None:
 
-    point_df = gpd.GeoDataFrame()
-    point_df['geometry'] = gpd.GeoSeries(Point(pnt) for pnt in points)
-    return region_df, point_df
+        region_df = gpd.GeoDataFrame()
+        region_df['geometry'] = [Polygon(vertices[region]) for region in regions]
+
+        point_df = gpd.GeoDataFrame()
+        point_df['geometry'] = gpd.GeoSeries(Point(pnt) for pnt in points)
+        return region_df, point_df
+
+    else:
+        import pandas as pd
+        region_df = pd.DataFrame()
+        region_df['geometry'] = [Polygon(vertices[region]) for region in regions]
+        point_df = pd.DataFrame()
+        point_df['geometry'] = [Point(pnt) for pnt in points]
+        return region_df, point_df
+
