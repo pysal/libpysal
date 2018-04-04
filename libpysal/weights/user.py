@@ -10,6 +10,7 @@ from Distance import knnW, Kernel, DistanceBand
 from util import get_ids, get_points_array_from_shapefile, min_threshold_distance
 from ..io.FileIO import FileIO as ps_open
 from .. import cg
+from ..cg.voronoi import voronoi, as_dataframes
 from weights import WSP
 import numpy as np
 
@@ -18,7 +19,43 @@ __all__ = ['queen_from_shapefile', 'rook_from_shapefile', 'knnW_from_array',
            'threshold_binaryW_from_shapefile', 'threshold_continuousW_from_array',
            'threshold_continuousW_from_shapefile', 'kernelW', 'kernelW_from_shapefile',
            'adaptive_kernelW', 'adaptive_kernelW_from_shapefile',
-           'min_threshold_dist_from_shapefile', 'build_lattice_shapefile']
+           'min_threshold_dist_from_shapefile', 'build_lattice_shapefile', 'voronoiW']
+
+
+def voronoiW(points):
+    """
+    Voronoi weights for a 2-d point set
+
+
+    Points are Voronoi neighbors if their polygons share an edge or vetex.
+
+
+    Parameters
+    ----------
+
+    points      : array
+                  (n,2)
+                  coordinates for point locations
+
+    Returns
+    -------
+
+    w           : W
+                  instance of spatial weights
+
+    Examples
+    --------
+    >>> np.random.seed(12345)
+    >>> points= np.random.random((5,2))*10 + 10
+    >>> w = voronoiW(points)
+    >>> w.neighbors
+    {0: [1, 2, 3, 4], 1: [0, 2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
+
+    """
+
+    regions, vertices = voronoi(points)
+    region_df, _ = as_dataframes(regions, vertices, points)
+    return Queen.from_dataframe(region_df)
 
 
 def queen_from_shapefile(shapefile, idVariable=None, sparse=False):
