@@ -117,15 +117,6 @@ def voronoi_regions(vor, radius=None):
 
     return new_regions, np.asarray(new_vertices)
 
-try:
-    import geopandas as gpd
-except ImportError:
-    g = None
-
-try:
-    from shapely.geometry import Polygon, Point
-except ImportError:
-    from .shapes import Polygon, Point
 
 def as_dataframes(regions, vertices, points):
     """
@@ -155,8 +146,17 @@ def as_dataframes(regions, vertices, points):
     points_df   : GeoDataFrame
                   Originator points as geometries
     """
+    try:
+        import geopandas as gpd
+    except ImportError:
+        gpd = None
 
-    if g is not None:
+    try:
+        from shapely.geometry import Polygon, Point
+    except ImportError:
+        from .shapes import Polygon, Point
+
+    if gpd is not None:
 
         region_df = gpd.GeoDataFrame()
         region_df['geometry'] = [Polygon(vertices[region]) for region in regions]
