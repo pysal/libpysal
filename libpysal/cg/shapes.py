@@ -4,7 +4,6 @@ Computational geometry code for PySAL: Python Spatial Analysis Library.
 """
 
 __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow, Hu Shao"
-__credits__ = "Copyright (c) 2005-2009 Sergio J. Rey"
 
 import doctest
 import math

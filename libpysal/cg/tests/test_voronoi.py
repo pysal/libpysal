@@ -1,4 +1,5 @@
-from ..voronoi import voronoi
+from ..voronoi import voronoi, voronoi_frames
+from ... import cg
 import unittest
 import numpy as np
 
@@ -18,6 +19,17 @@ class Voronoi(unittest.TestCase):
                                     [9, 0, 8]])
 
         self.assertTrue(vertices.tolist() == self.vertices)
+
+    def test_voronoi_frames(self):
+        r_df, p_df = voronoi_frames(self.points)
+        region = r_df.iloc[0]['geometry']
+        try:
+            import geopandas as df
+            self.assertFalse(isinstance(region, cg.shapes.Polygon))
+        except ImportError:
+            self.assertTrue(isinstance(region, cg.shapes.Polygon))
+
+
 
 if __name__ == '__main__':
     unittest.main()
