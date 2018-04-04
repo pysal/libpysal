@@ -168,7 +168,7 @@ def as_dataframes(regions, vertices, points):
     else:
         import pandas as pd
         region_df = pd.DataFrame()
-        region_df['geometry'] = [Polygon(vertices[region]) for region in regions]
+        region_df['geometry'] = [Polygon(vertices[region].tolist()) for region in regions]
         point_df = pd.DataFrame()
         point_df['geometry'] = [Point(pnt) for pnt in points]
         return region_df, point_df
