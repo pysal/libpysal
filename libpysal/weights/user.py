@@ -10,7 +10,7 @@ from Distance import knnW, Kernel, DistanceBand
 from util import get_ids, get_points_array_from_shapefile, min_threshold_distance
 from ..io.FileIO import FileIO as ps_open
 from .. import cg
-from ..cg.voronoi import voronoi, as_dataframes
+from ..cg.voronoi import voronoi_frames
 from weights import WSP
 import numpy as np
 
@@ -53,8 +53,7 @@ def voronoiW(points):
 
     """
 
-    regions, vertices = voronoi(points)
-    region_df, _ = as_dataframes(regions, vertices, points)
+    region_df, _ = voronoi_frames(points)
     return Queen.from_dataframe(region_df)
 
 

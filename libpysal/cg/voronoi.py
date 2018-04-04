@@ -9,7 +9,7 @@ import numpy as np
 from scipy.spatial import Voronoi
 
 
-__author__ = "Serge Rey <sjsrey@gmail.com"
+__author__ = "Serge Rey <sjsrey@gmail.com>"
 
 __all__ = ['voronoi']
 
