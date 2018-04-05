@@ -161,6 +161,15 @@ class Testuser(unittest.TestCase):
         os.remove('lattice.shp')
         os.remove('lattice.shx')
 
+    def test_voronoiW(self):
+        np.random.seed(12345)
+        points = np.random.random((5,2))*10 + 10
+        w = user.voronoiW(points)
+        self.assertEquals(w.n, 5)
+        self.assertEquals(w.neighbors, {0: [1, 2, 3, 4],
+                                        1: [0, 2], 2: [0, 1, 4],
+                                        3: [0, 4], 4: [0, 2, 3]})
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testuser)
 
