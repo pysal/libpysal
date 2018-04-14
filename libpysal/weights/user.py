@@ -27,7 +27,7 @@ def voronoiW(points):
     Voronoi weights for a 2-d point set
 
 
-    Points are Voronoi neighbors if their polygons share an edge or vetex.
+    Points are Voronoi neighbors if their polygons share an edge or vertex.
 
 
     Parameters

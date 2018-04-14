@@ -869,9 +869,9 @@ class DistanceBand(W):
         """Find all pairs within threshold.
 
         """
-        if self.build_sp:    
+        if self.build_sp:
             self.dmat = self.kd.sparse_distance_matrix(
-                    self.kd, max_distance=self.threshold).tocsr()
+                    self.kd, max_distance=self.threshold, p=self.p).tocsr()
         else:
             if str(self.kd).split('.')[-1][0:10] == 'Arc_KDTree':
             	raise TypeError('Unable to calculate dense arc distance matrix;'
