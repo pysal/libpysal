@@ -1201,6 +1201,96 @@ class W(object):
 
         self._varName = idVariable
 
+    def plot(self, gdf, indexed_on=None, ax=None, color='k',
+             node_kws=None, edge_kws=None):
+        """
+        Plot spatial weights objects.
+        NOTE: Requires matplotlib, and implicitly requires geopandas 
+        dataframe as input.
+
+        Arguments
+        ---------
+        gdf         : geopandas geodataframe 
+                      the original shapes whose topological relations are 
+                      modelled in W. 
+        indexed_on  : str 
+                      column of gdf which the weights object uses as an index.
+                      (Default: None, so the geodataframe's index is used)
+        ax          : matplotlib axis
+                      axis on which to plot the weights. 
+                      (Default: None, so plots on the current figure)
+        color       : string
+                      matplotlib color string, will color both nodes and edges
+                      the same by default. 
+        node_kws    : keyword argument dictionary
+                      dictionary of keyword arguments to send to pyplot.scatter,
+                      which provide fine-grained control over the aesthetics
+                      of the nodes in the plot
+        edge_kws    : keyword argument dictionary
+                      dictionary of keyword arguments to send to pyplot.plot,
+                      which provide fine-grained control over the aesthetics
+                      of the edges in the plot
+
+        Returns
+        -------
+        f,ax : matplotlib figure,axis on which the plot is made. 
+
+        NOTE: if you'd like to overlay the actual shapes from the 
+              geodataframe, call gdf.plot(ax=ax) after this. To plot underneath,
+              adjust the z-order of the geopandas plot: gdf.plot(ax=ax,zorder=0)
+
+        Usage
+        -----
+
+        >>> shapes = geopandas.read_file(libpysal.examples.get_path("columbus.shp"))
+        >>> weights = libpysal.weights.Contigutiy.from_dataframe(geodataframe)
+        >>> weights.plot(shapes, color='firebrickred', 
+                         node_kws=dict(marker='*', color='k'))
+        """
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError:
+            raise ImportError("W.plot depends on matplotlib.pyplot, and this was"
+                              "not able to be imported. \nInstall matplotlib to"
+                              "plot spatial weights.")
+        if ax is None:
+            f = plt.figure()
+            ax = plt.gca()
+        else:
+            f = plt.gcf()
+        if node_kws is not None:
+            if 'color' not in node_kws:
+                node_kws['color'] = color
+        else:
+            node_kws=dict(color=color)
+        if edge_kws is not None:
+            if 'color' not in edge_kws:
+                edge_kws['color'] = color
+        else:
+            edge_kws=dict(color=color) 
+
+        for idx, neighbors in self:
+            if idx in self.islands:
+                continue
+            if indexed_on is not None:
+                neighbors = gdf[gdf[indexed_on].isin(neighbors)].index.tolist()
+                idx = gdf[gdf[indexed_on] == idx].index.tolist()[0]
+            centroids = gdf.loc[neighbors].centroid.apply(lambda p: (p.x, p.y))
+            centroids = np.vstack(centroids.values)
+            focal = np.hstack(gdf.loc[idx].geometry.centroid.xy)
+            seen = set()
+            for nidx, neighbor in zip(neighbors, centroids):
+                if (idx,nidx) in seen:
+                    continue
+                ax.plot(*list(zip(focal, neighbor)), marker=None,
+                        **edge_kws)
+                seen.update((idx,nidx))
+                seen.update((nidx,idx))
+        ax.scatter(gdf.centroid.apply(lambda p: p.x),
+                   gdf.centroid.apply(lambda p: p.y),
+                   **node_kws)
+        return f,ax
+
 
 class WSP(object):
 
