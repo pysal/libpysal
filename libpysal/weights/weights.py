@@ -302,7 +302,7 @@ class W(object):
             for n,w in nw.items():
                 tuple_list.append((k,n,w))
         G = nx.Graph()
-        G.add_weighted_edges_from(ebunch = tuple_list)
+        G.add_weighted_edges_from(tuple_list)
         return G
     
     @classmethod
