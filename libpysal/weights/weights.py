@@ -297,13 +297,8 @@ class W(object):
             import networkx as nx
         except ImportError:
             raise ImportError("NetworkX is required to use this function.")
-        tuple_list = []
-        for k,nw in self:
-            for n,w in nw.items():
-                tuple_list.append((k,n,w))
-        G = nx.Graph()
-        G.add_weighted_edges_from(ebunch = tuple_list)
-        return G
+        G = nx.DiGraph() if len(self.asymmetries)>0 else nx.Graph()
+        return nx.from_scipy_sparse_matrix(self.sparse, create_using=G)
     
     @classmethod
     def from_networkx(cls, graph, weight_col='weight'):
@@ -323,6 +318,12 @@ class W(object):
         a pysal.weights.W object containing the same graph
         as the networkx graph
         """
+        try:
+            import networkx as nx
+        except ImportError:
+            raise ImportError("NetworkX is required to use this function.")
+        sparse_matrix = nx.to_scipy_sparse_matrix(graph)
+        return WSP(sparse_matrix).to_W()
         neighbors = dict()
         weights = dict()
         for focal in graph.nodes():
@@ -1458,7 +1459,7 @@ class WSP(object):
             id_order = range(self.n)
         neighbors, weights = {}, {}
         start = indptr[0]
-        for i in xrange(self.n):
+        for i in range(self.n):
             oid = id_order[i]
             end = indptr[i + 1]
             neighbors[oid] = indices[start:end]
