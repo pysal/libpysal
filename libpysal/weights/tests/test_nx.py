@@ -7,7 +7,6 @@ try:
 except ImportError:
     nx = None
 
-@ut.skipIf(nx is None, "Missing networkx")
 class Test_NetworkXConverter(ut.TestCase):
     def setUp(self):
         self.known_nx = nx.random_regular_graph(4,10,seed=8879) 
