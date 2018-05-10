@@ -2,10 +2,7 @@
 
 from setuptools import setup, find_packages
 
-try:
-    from distutils.command.build_py import build_py_2to3 as build_py
-except ImportError:
-    from distutils.command.build_py import build_py
+from distutils.command.build_py import build_py
 
 import os
 
@@ -87,17 +84,14 @@ def setup_package():
             'Topic :: Scientific/Engineering :: GIS',
             'License :: OSI Approved :: BSD License',
             'Programming Language :: Python',
-            'Programming Language :: Python :: 2.5',
-            'Programming Language :: Python :: 2.6',
-            'Programming Language :: Python :: 2.7',
-            'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6'
         ],
         package_data={'libpysal':list(example_data_files)},
         install_requires=install_reqs,
         extras_require=extras_reqs,
-        cmdclass={'build_py': build_py}
+        cmdclass={'build_py': build_py},
+        python_requires='>3.4'
     )
 
 
