@@ -77,7 +77,7 @@ class GwtIO(FileIO.FileIO):
         _read function by Myunghwa Hwang.
         """
         data = [row.strip().split() for row in self.file.readlines()]
-        ids = filter(unique_filter(), [x[0] for x in data])
+        ids = list(filter(unique_filter(), [x[0] for x in data]))
         ids = list(map(id_type, ids))
         WN = {}
         for id in ids:  # note: fromkeys is no good here, all keys end up sharing the say dict value

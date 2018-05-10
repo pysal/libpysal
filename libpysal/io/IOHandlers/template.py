@@ -46,7 +46,7 @@ class TemplateWriter(FileIO):
                     return True
                 else:
                     return False
-            result = filter(foobar, obj)  # e.g.   'foobara' == filter(foobar,'my little foobar example')
+            result = list(filter(foobar, obj))  # e.g.   'foobara' == filter(foobar,'my little foobar example')
 
             #do the actual writing...
             self.fileObj.write(result + '\n')
@@ -83,7 +83,7 @@ class TemplateReaderWriter(FileIO):
                 return True
             else:
                 return False
-        return filter(foobar, st)  # e.g.   'foobara' == filter(foobar,'my little foobar example')
+        return list(filter(foobar, st))  # e.g.   'foobara' == filter(foobar,'my little foobar example')
 
     def _read(self):
         """ the _read method should return only ONE object and raise StopIteration at the EOF."""
