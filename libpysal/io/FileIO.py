@@ -246,7 +246,7 @@ class FileIO(object):  # should be a type?
         else:
             return row
 
-    def next(self):
+    def __next__(self):
         """A FileIO object is its own iterator, see StringIO"""
         self._complain_ifclosed(self.closed)
         r = self.__read()

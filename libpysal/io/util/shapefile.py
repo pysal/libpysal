@@ -323,7 +323,7 @@ class shp_file:
     def type(self):
         return self.shape.String_Type
 
-    def next(self):
+    def __next__(self):
         """returns the next Shape in the shapeFile
 
         Example:

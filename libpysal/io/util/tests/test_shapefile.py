@@ -108,10 +108,10 @@ class test_shp_file(unittest.TestCase):
         points = [pt for pt in shp]
         expected = {'Y': -0.25904661905760773, 'X': -
                     0.00068176617532103578, 'Shape Type': 1}
-        self.assertEqual(expected, shp.next())
+        self.assertEqual(expected, next(shp))
         expected = {'Y': -0.25630328607387354, 'X':
                     0.11697145363360706, 'Shape Type': 1}
-        self.assertEqual(expected, shp.next())
+        self.assertEqual(expected, next(shp))
 
     def test_type(self):
         shp = shp_file(pysal_examples.get_path('Point.shp'))
