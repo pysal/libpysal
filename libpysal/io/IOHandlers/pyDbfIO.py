@@ -164,7 +164,7 @@ class DBF(Tables.DataTable):
         if rec[0] != ' ':
             return self.read_record(i + 1)
         result = []
-        for (name, typ, size, deci), value in itertools.izip(self.field_info, rec):
+        for (name, typ, size, deci), value in zip(self.field_info, rec):
             if name == 'DeletionFlag':
                 continue
             if typ == 'N':
@@ -222,7 +222,7 @@ class DBF(Tables.DataTable):
             raise TypeError("Rows must contains %d fields" % len(self.header))
         self.numrec += 1
         self.f.write(' '.encode())                        # deletion flag
-        for (typ, size, deci), value in itertools.izip(self.field_spec, obj):
+        for (typ, size, deci), value in zip(self.field_spec, obj):
             if value is None:
                 if typ == 'C':
                     value = ' ' * size
@@ -286,7 +286,7 @@ class DBF(Tables.DataTable):
                           lenheader, lenrecord)
         self.f.write(hdr)
         # field specs
-        for name, (typ, size, deci) in itertools.izip(self.header, self.field_spec):
+        for name, (typ, size, deci) in zip(self.header, self.field_spec):
             typ = typ.encode()
             name = name.ljust(11, '\x00')
             name = name.encode()
