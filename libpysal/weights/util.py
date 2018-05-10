@@ -70,13 +70,13 @@ def hexLat2W(nrows=5, ncols=5):
         return lat2W(nrows, ncols)
 
     n = nrows * ncols
-    rid = [i // ncols for i in xrange(n)]
-    cid = [i % ncols for i in xrange(n)]
+    rid = [i // ncols for i in range(n)]
+    cid = [i % ncols for i in range(n)]
     r1 = nrows - 1
     c1 = ncols - 1
 
     w = lat2W(nrows, ncols).neighbors
-    for i in xrange(n):
+    for i in range(n):
         odd = cid[i] % 2
         if odd:
             if rid[i] < r1:  # odd col index above last row
@@ -153,11 +153,11 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
     n = nrows * ncols
     r1 = nrows - 1
     c1 = ncols - 1
-    rid = [i // ncols for i in xrange(n)] #must be floor!
-    cid = [i % ncols for i in xrange(n)]
+    rid = [i // ncols for i in range(n)] #must be floor!
+    cid = [i % ncols for i in range(n)]
     w = {}
     r = below = 0
-    for i in xrange(n - 1):
+    for i in range(n - 1):
         if rid[i] < r1:
             below = rid[i] + 1
             r = below * ncols + cid[i]
@@ -184,13 +184,13 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
     weights = {}
     for key in w:
         weights[key] = [1.] * len(w[key])
-    ids = range(n)
+    ids = list(range(n))
     if id_type == 'string':
         ids = ['id' + str(i) for i in ids]
     elif id_type == 'float':
         ids = [i * 1. for i in ids]
     if id_type == 'string' or id_type == 'float':
-        id_dict = dict(list(zip(range(n), ids)))
+        id_dict = dict(list(zip(list(range(n)), ids)))
         alt_w = {}
         alt_weights = {}
         for i in w:
@@ -769,7 +769,7 @@ def full2W(m, ids=None):
     if m.shape[0] != m.shape[1]:
         raise ValueError('Your array is not square')
     neighbors, weights = {}, {}
-    for i in xrange(m.shape[0]):
+    for i in range(m.shape[0]):
     # for i, row in enumerate(m):
         row = m[i]
         if ids:
@@ -833,10 +833,10 @@ def WSP2W(wsp, silent_island_warning=False):
         # replace indices with user IDs
         indices = [id_order[i] for i in indices]
     else:
-        id_order = range(wsp.n)
+        id_order = list(range(wsp.n))
     neighbors, weights = {}, {}
     start = indptr[0]
-    for i in xrange(wsp.n):
+    for i in range(wsp.n):
         oid = id_order[i]
         end = indptr[i + 1]
         neighbors[oid] = indices[start:end]
@@ -1217,7 +1217,7 @@ def write_gal(file, k=10):
     f = open(file, 'w')
     n = k * k
     f.write("0 %d" % n)
-    for i in xrange(n):
+    for i in range(n):
         row = i / k
         col = i % k
         neighs = [i - i, i + 1, i - k, i + k]

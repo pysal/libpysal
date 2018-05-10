@@ -153,7 +153,7 @@ class PurePyShpWrapper(FileIO.FileIO):
                 partsIndex = list(rec['Parts Index'])
                 partsIndex.append(None)
                 parts = [rec['Vertices'][partsIndex[i]:partsIndex[
-                    i + 1]] for i in xrange(rec['NumParts'])]
+                    i + 1]] for i in range(rec['NumParts'])]
                 if self.dataObj.type() == 'POLYGON':
                     is_cw = [cg.is_clockwise(part) for part in parts]
                     vertices = [part for part, cw in zip(parts, is_cw) if cw]

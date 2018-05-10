@@ -283,7 +283,7 @@ def get_polygon_point_intersect(poly, pt):
         return filter(
             lambda i: get_segment_point_dist(LineSegment(
                 vertices[i], vertices[i + 1]), pt)[0] == 0,
-            xrange(-1, len(vertices) - 1)) != []
+            range(-1, len(vertices) - 1)) != []
 
     ret = None
     if get_rectangle_point_intersect(poly.bounding_box, pt) is None:  # Weed out points that aren't even close
@@ -451,7 +451,7 @@ def get_polygon_point_dist(poly, pt):
     part_prox = []
     for vertices in poly._vertices:
         part_prox.append(min([get_segment_point_dist(LineSegment(vertices[i], vertices[i + 1]), pt)[0]
-                              for i in xrange(-1, len(vertices) - 1)]))
+                              for i in range(-1, len(vertices) - 1)]))
     return min(part_prox)
 
 
@@ -723,7 +723,7 @@ def _point_in_vertices(pt, vertices):
         pt = (pt[0], pt[1] + -1e-14 + random.random(
         ) * 2e-14)  # Perturb the location very slightly
     inters = 0
-    for i in xrange(-1, len(vertices) - 1):
+    for i in range(-1, len(vertices) - 1):
         v1 = vertices[i]
         v2 = vertices[i + 1]
         if neg_ray_intersect(v1, v2, pt):

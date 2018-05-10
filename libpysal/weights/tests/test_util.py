@@ -41,8 +41,8 @@ class Testutil(unittest.TestCase):
 
     def test_block_weights(self):
         regimes = np.ones(25)
-        regimes[range(10, 20)] = 2
-        regimes[range(21, 25)] = 3
+        regimes[list(range(10, 20))] = 2
+        regimes[list(range(21, 25))] = 3
         regimes = np.array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1.,
                             2., 2., 2., 2., 2., 2., 2., 2., 2., 2., 1., 3., 3.,
                             3., 3.])
@@ -66,7 +66,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w['id-0'], w0)
 
     def test_comb(self):
-        x = range(4)
+        x = list(range(4))
         l = []
         for i in util.comb(x, 2):
             l.append(i)

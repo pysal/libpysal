@@ -467,7 +467,7 @@ class shx_file:
         fmt = '>%di' % (2 * numRecords)
         size = calcsize(fmt)
         dat = unpack(fmt, self.fileObj.read(size))
-        self.index = [(dat[i] * 2, dat[i + 1] * 2) for i in xrange(
+        self.index = [(dat[i] * 2, dat[i + 1] * 2) for i in range(
             0, len(dat), 2)]
 
     def _create_shx_file(self):

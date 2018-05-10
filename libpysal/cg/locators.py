@@ -358,8 +358,8 @@ class Grid:
         items = []
         lower_left = self.__grid_loc((x_range[0], y_range[0]))
         upper_right = self.__grid_loc((x_range[1], y_range[1]))
-        for i in xrange(lower_left[0], upper_right[0] + 1):
-            for j in xrange(lower_left[1], upper_right[1] + 1):
+        for i in range(lower_left[0], upper_right[0] + 1):
+            for j in range(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
                     items.extend([item[1] for item in filter(lambda item: x_range[0] <= item[0][0] <= x_range[1] and y_range[0] <= item[0][1] <= y_range[1], self.hash[(i, j)])])
         return items
@@ -392,8 +392,8 @@ class Grid:
         items = []
         lower_left = self.__grid_loc((pt[0] - r, pt[1] - r))
         upper_right = self.__grid_loc((pt[0] + r, pt[1] + r))
-        for i in xrange(lower_left[0], upper_right[0] + 1):
-            for j in xrange(lower_left[1], upper_right[1] + 1):
+        for i in range(lower_left[0], upper_right[0] + 1):
+            for j in range(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
                     items.extend([item[1] for item in filter(lambda item: get_points_dist(pt, item[0]) <= r, self.hash[(i, j)])])
         return items
@@ -432,8 +432,8 @@ class Grid:
             (pt[0] - search_size, pt[1] - search_size))
         upper_right = self.__grid_loc(
             (pt[0] + search_size, pt[1] + search_size))
-        for i in xrange(lower_left[0], upper_right[0] + 1):
-            for j in xrange(lower_left[1], upper_right[1] + 1):
+        for i in range(lower_left[0], upper_right[0] + 1):
+            for j in range(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
                     items.extend([(get_points_dist(pt, item[
                         0]), item[1]) for item in self.hash[(i, j)]])

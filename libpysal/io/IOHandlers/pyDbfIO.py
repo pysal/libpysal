@@ -65,7 +65,7 @@ class DBF(Tables.DataTable):
             fmt = 's' #each record is a string
             self._col_index = {}
             idx = 0
-            for fieldno in xrange(numfields):
+            for fieldno in range(numfields):
                 name, typ, size, deci = struct.unpack(
                     '<11sc4xBB14x', f.read(32)) #again, check struct for fmt def.
                 name = name.decode() #forces to unicode in 2, to str in 3
@@ -117,7 +117,7 @@ class DBF(Tables.DataTable):
         f = self.f
         f.seek(self.header_size + offset)
         col = [0] * self.n_records
-        for i in xrange(self.n_records):
+        for i in range(self.n_records):
             value = f.read(size)
             value = value.decode()
             f.seek(gap, 1)

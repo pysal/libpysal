@@ -170,8 +170,8 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
                      radius=cg.sphere.RADIUS_EARTH_KM)
         npoints = self.arc_points.shape[0]
         full = np.matrix([[arc(self.arc_points[i], self.arc_points[j])
-                          for j in xrange(npoints)] 
-                          for i in xrange(npoints)])
+                          for j in range(npoints)] 
+                          for i in range(npoints)])
         maxdist = full.max()
         w = d.DistanceBand(kdt, maxdist, binary=False, alpha=1.0)
         np.testing.assert_allclose(w.sparse.todense(), full)

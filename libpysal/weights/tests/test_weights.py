@@ -88,7 +88,7 @@ class TestW(unittest.TestCase):
                        [0., 0., 0., 1., 0., 0., 0., 1., 0.],
                        [0., 0., 0., 0., 1., 0., 1., 0., 1.],
                        [0., 0., 0., 0., 0., 1., 0., 1., 0.]])
-        ids = range(9)
+        ids = list(range(9))
 
         wf1, ids1 = self.w3x3.full()
         NPTA3E(wf1, wf)
@@ -325,7 +325,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
                        [0., 0., 0., 1., 0., 0., 0., 1., 0.],
                        [0., 0., 0., 0., 1., 0., 1., 0., 1.],
                        [0., 0., 0., 0., 0., 1., 0., 1., 0.]])
-        ids = range(9)
+        ids = list(range(9))
 
         wf1, ids1 = self.w3x3.full()
         NPTA3E(wf1, wf)

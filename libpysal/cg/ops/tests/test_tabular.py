@@ -25,7 +25,7 @@ class Test_Tabular(ut.TestCase):
                 Polygon([(1,2),(2,2),(2,1),(1,1)]),
                 Polygon([(1,1),(2,1),(2,0),(1,0)])]
         regime = [0,0,1,1]
-        ids = range(4)
+        ids = list(range(4))
         data = np.array((regime, ids)).T
         self.exdf = pd.DataFrame(data, columns=['regime', 'ids'])
         self.exdf['geometry'] = grid

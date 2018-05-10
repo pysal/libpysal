@@ -114,7 +114,7 @@ class ArcGISSwmIO(FileIO.FileIO):
 
         neighbors = {}
         weights = {}
-        for i in xrange(no_obs):
+        for i in range(no_obs):
             origin, no_nghs = tuple(unpack('<2l', self.file.read(8)))
             neighbors[origin] = []
             weights[origin] = []

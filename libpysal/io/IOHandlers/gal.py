@@ -99,7 +99,7 @@ class GalIO(FileIO.FileIO):
             append = col.append
             counter = 0
             typ = self.data_type
-            for i in xrange(n):
+            for i in range(n):
                 id, n_neighbors = self.file.readline().strip().split()
                 id = typ(id)
                 n_neighbors = int(n_neighbors)

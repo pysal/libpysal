@@ -70,7 +70,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
     try:
         names = X.columns.tolist()
     except AttributeError:
-        names = list(map(str, range(X.shape[1])))
+        names = list(map(str, list(range(X.shape[1]))))
     ids = np.asarray(W.id_order)[:,None]
     table = pd.DataFrame(ids, columns=['id'])
     table = pd.concat((table, pd.DataFrame(X, columns=names)), axis=1)

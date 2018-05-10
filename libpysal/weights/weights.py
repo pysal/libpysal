@@ -635,7 +635,7 @@ class W(object):
         """
         if 'histogram' not in self._cache:
             ct, bin = np.histogram(list(self.cardinalities.values()),
-                                   range(self.min_neighbors, self.max_neighbors + 2))
+                                   list(range(self.min_neighbors, self.max_neighbors + 2)))
             self._histogram = list(zip(bin, ct))
             self._cache['histogram'] = self._histogram
         return self._histogram
@@ -1456,7 +1456,7 @@ class WSP(object):
             # replace indices with user IDs
             indices = [id_order[i] for i in indices]
         else:
-            id_order = range(self.n)
+            id_order = list(range(self.n))
         neighbors, weights = {}, {}
         start = indptr[0]
         for i in range(self.n):

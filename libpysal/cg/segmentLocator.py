@@ -19,7 +19,7 @@ class BruteSegmentLocator(object):
     def nearest(self, pt):
         d = self.data
         distances = [get_segment_point_dist(
-            d[i], pt)[0] for i in xrange(self.n)]
+            d[i], pt)[0] for i in range(self.n)]
         return numpy.argmin(distances)
 
 
@@ -188,13 +188,13 @@ class SegmentGrid(object):
         res = self.res
         line = segment.line
         tiny = res / 1000.
-        for i in xrange(1 + min(i, I), max(i, I)):
+        for i in range(1 + min(i, I), max(i, I)):
             #print 'i',i
             x = self.x_range[0] + (i * res)
             y = line.y(x)
             self.bin_loc((x - tiny, y), id)
             self.bin_loc((x + tiny, y), id)
-        for j in xrange(1 + min(j, J), max(j, J)):
+        for j in range(1 + min(j, J), max(j, J)):
             #print 'j',j
             y = self.y_range[0] + (j * res)
             x = line.x(y)
@@ -293,7 +293,7 @@ class SegmentGrid(object):
 
 def random_segments(n):
     segs = []
-    for i in xrange(n):
+    for i in range(n):
         a, b, c, d = [random.random() for x in [1, 2, 3, 4]]
         seg = LineSegment(Point((a, b)), Point((c, d)))
         segs.append(seg)
@@ -301,7 +301,7 @@ def random_segments(n):
 
 
 def random_points(n):
-    return [Point((random.random(), random.random())) for x in xrange(n)]
+    return [Point((random.random(), random.random())) for x in range(n)]
 
 
 def combo_check(bins, segments, qpoints):
@@ -370,8 +370,8 @@ def binSizeTest():
     minB = 250
     maxB = 2000
     stepB = 250
-    sizes = range(minN, maxN, stepN)
-    binSizes = range(minB, maxB, stepB)
+    sizes = list(range(minN, maxN, stepN))
+    binSizes = list(range(minB, maxB, stepB))
     results = numpy.zeros((len(sizes), len(binSizes)))
     for row, n in enumerate(sizes):
         segs = random_segments(n)
