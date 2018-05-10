@@ -15,12 +15,12 @@ def set_preference(pkg):
     """
     if pkg.lower() == 'shapely':
         ops.atomic.__dict__.update({k:v for k,v in
-                                    ops.atomic._s.__dict__.items() 
+                                    list(ops.atomic._s.__dict__.items()) 
                                     if not k.startswith('_')})
         ops.atomic._preferred = ops.atomic._s
     elif pkg.lower().startswith('att'):
         ops.atomic.__dict__.update({k:v for k,v in
-                                    ops.atomic._a.__dict__.items() 
+                                    list(ops.atomic._a.__dict__.items()) 
                                     if not k.startswith('_')})
         ops.atomic._preferred = ops.atomic._a
     else:

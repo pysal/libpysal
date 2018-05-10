@@ -78,7 +78,7 @@ class Test_Adjlist(ut.TestCase):
         atts = ['HOVAL', 'CRIME', 'INC'] 
         df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
         W = ps.Queen.from_dataframe(df)
-        hoval, crime, inc = map(self.apply_and_compare_columbus, atts) 
+        hoval, crime, inc = list(map(self.apply_and_compare_columbus, atts)) 
         mapped = adj.adjlist_map(df[atts], W=W)
         for name,data in zip(atts, (hoval, crime, inc)):
             np.testing.assert_allclose(data, 

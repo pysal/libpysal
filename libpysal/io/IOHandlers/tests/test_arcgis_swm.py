@@ -20,7 +20,7 @@ class test_ArcGISSwmIO(unittest.TestCase):
         w = self.obj.read()
         self.assertEqual(88, w.n)
         self.assertEqual(5.25, w.mean_neighbors)
-        self.assertEqual([1.0, 1.0, 1.0, 1.0], w[1].values())
+        self.assertEqual([1.0, 1.0, 1.0, 1.0], list(w[1].values()))
 
     def test_seek(self):
         self.test_read()

@@ -45,7 +45,7 @@ class TestContiguityWeights(unittest.TestCase):
             pysal_examples.get_path('virginia.shp'), QUEEN, 'POLY_ID')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
@@ -60,7 +60,7 @@ class TestContiguityWeights(unittest.TestCase):
             pysal_examples.get_path('rook31.shp'), ROOK, 'POLY_ID')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
@@ -75,7 +75,7 @@ class TestContiguityWeights(unittest.TestCase):
             'stl_hom.shp'), ROOK, 'POLY_ID_OG')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
@@ -90,7 +90,7 @@ class TestContiguityWeights(unittest.TestCase):
             'sacramentot2.shp'), ROOK, 'POLYID')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
@@ -105,7 +105,7 @@ class TestContiguityWeights(unittest.TestCase):
             pysal_examples.get_path('virginia.shp'), ROOK, 'POLY_ID')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()

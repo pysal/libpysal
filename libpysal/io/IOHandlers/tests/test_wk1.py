@@ -20,7 +20,7 @@ class test_Wk1IO(unittest.TestCase):
         w = self.obj.read()
         self.assertEqual(46, w.n)
         self.assertEqual(4.0869565217391308, w.mean_neighbors)
-        self.assertEqual([1.0, 1.0, 1.0, 1.0], w[1].values())
+        self.assertEqual([1.0, 1.0, 1.0, 1.0], list(w[1].values()))
 
     def test_seek(self):
         self.test_read()

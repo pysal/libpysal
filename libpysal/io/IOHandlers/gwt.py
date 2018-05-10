@@ -78,7 +78,7 @@ class GwtIO(FileIO.FileIO):
         """
         data = [row.strip().split() for row in self.file.readlines()]
         ids = filter(unique_filter(), [x[0] for x in data])
-        ids = map(id_type, ids)
+        ids = list(map(id_type, ids))
         WN = {}
         for id in ids:  # note: fromkeys is no good here, all keys end up sharing the say dict value
             WN[id] = {}
@@ -89,8 +89,8 @@ class GwtIO(FileIO.FileIO):
         weights = {}
         neighbors = {}
         for i in WN:
-            weights[i] = WN[i].values()
-            neighbors[i] = WN[i].keys()
+            weights[i] = list(WN[i].values())
+            neighbors[i] = list(WN[i].keys())
         if ret_ids:
             return weights, neighbors, ids
         else:
@@ -174,7 +174,7 @@ class GwtIO(FileIO.FileIO):
         write function by Myunghwa Hwang.
         """
         for id in obj.id_order:
-            neighbors = zip(obj.neighbors[id], obj.weights[id])
+            neighbors = list(zip(obj.neighbors[id], obj.weights[id]))
             str_id = "_".join(str(id).split())
             for neighbor, weight in neighbors:
                 neighbor = "_".join(str(neighbor).split())
@@ -262,7 +262,7 @@ class GwtIO(FileIO.FileIO):
     @staticmethod
     def __zero_offset(neighbors, weights, original_ids=None):
         if not original_ids:
-            original_ids = neighbors.keys()
+            original_ids = list(neighbors.keys())
         old_weights = weights
         new_weights = {}
         new_ids = {}

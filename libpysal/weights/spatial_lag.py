@@ -168,7 +168,7 @@ def lag_categorical(w, y, ties='tryself'):
     for focal_name,neighbors in w:
         focal_idx = w.id2i[focal_name]
         neighborhood_tally = np.zeros(labels.shape)
-        for neighb_name, weight in neighbors.items():
+        for neighb_name, weight in list(neighbors.items()):
             neighb_idx = w.id2i[neighb_name]
             neighb_label = normalized_labels[neighb_idx]
             neighborhood_tally[neighb_label] += weight

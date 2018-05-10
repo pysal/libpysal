@@ -89,7 +89,7 @@ def get_bounding_box(items):
         else:  # Point
             return o[1]
 
-    return Rectangle(min(map(left, items)), min(map(lower, items)), max(map(right, items)), max(map(upper, items)))
+    return Rectangle(min(list(map(left, items))), min(list(map(lower, items))), max(list(map(right, items))), max(list(map(upper, items))))
 
 
 def get_angle_between(ray1, ray2):

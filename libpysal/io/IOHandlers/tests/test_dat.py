@@ -20,7 +20,7 @@ class test_DatIO(unittest.TestCase):
         w = self.obj.read()
         self.assertEqual(49, w.n)
         self.assertEqual(4.7346938775510203, w.mean_neighbors)
-        self.assertEqual([0.5, 0.5], w[5.0].values())
+        self.assertEqual([0.5, 0.5], list(w[5.0].values()))
 
     def test_seek(self):
         self.test_read()

@@ -1031,7 +1031,7 @@ class Chain(Geometry):
         if geo['type'].lower() == 'linestring':
             verts = [Point(pt) for pt in geo['coordinates']]
         elif geo['type'].lower() == 'multilinestring':
-            verts = [map(Point, part) for part in geo['coordinates']]
+            verts = [list(map(Point, part)) for part in geo['coordinates']]
         else:
             raise TypeError('%r is not a Chain'%geo)
         return cls(verts)
@@ -1459,14 +1459,14 @@ class Polygon(Geometry):
                 return part[::-1]
 
         if isinstance(vertices[0], list):
-            self._part_rings = map(Ring, vertices)
+            self._part_rings = list(map(Ring, vertices))
             self._vertices = [clockwise(part) for part in vertices]
         else:
             self._part_rings = [Ring(vertices)]
             self._vertices = [clockwise(vertices)]
         if holes is not None and holes != []:
             if isinstance(holes[0], list):
-                self._hole_rings = map(Ring, holes)
+                self._hole_rings = list(map(Ring, holes))
                 self._holes = [clockwise(hole) for hole in holes]
             else:
                 self._hole_rings = [Ring(holes)]

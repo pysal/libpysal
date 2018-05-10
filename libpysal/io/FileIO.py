@@ -112,8 +112,8 @@ class FileIO(object):  # should be a type?
     def check(cls):
         """ Prints the contents of the registry """
         print("PySAL File I/O understands the following file extensions:")
-        for key, val in cls.__registry.iteritems():
-            print("Ext: '.%s', Modes: %r" % (key, val.keys()))
+        for key, val in cls.__registry.items():
+            print("Ext: '.%s', Modes: %r" % (key, list(val.keys())))
 
     @classmethod
     def open(cls, *args, **kwargs):
@@ -128,7 +128,7 @@ class FileIO(object):  # should be a type?
             if not self.p.ids:
                 return "keys: range(0,n)"
             else:
-                return "keys: " + self.p.ids.keys().__repr__()
+                return "keys: " + list(self.p.ids.keys()).__repr__()
 
         def __getitem__(self, key):
             if type(key) == list:
@@ -190,7 +190,7 @@ class FileIO(object):  # should be a type?
         elif isinstance(ids, dict):
             self.__ids = ids
             self.__rIds = {}
-            for id, n in ids.iteritems():
+            for id, n in ids.items():
                 self.__rIds[n] = id
         elif not ids:
             self.__ids = None

@@ -115,7 +115,7 @@ class SegmentGrid(object):
     @property
     def hashKeys(self):
         if self._hashKeys is None:
-            self._hashKeys = numpy.array(self.hash.keys(),dtype=float)
+            self._hashKeys = numpy.array(list(self.hash.keys()),dtype=float)
         return self._hashKeys
 
     @property
@@ -331,7 +331,7 @@ def brute_check(segments, qpoints):
     t1 = time.time()
     print("Created Brute in %0.4f seconds" % (t1 - t0))
     t2 = time.time()
-    q = map(G2.nearest, qpoints)
+    q = list(map(G2.nearest, qpoints))
     t3 = time.time()
     print("Brute Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2))
     print("Total Brute Time:", t3 - t0)
@@ -352,7 +352,7 @@ def grid_check(bins, segments, qpoints, visualize=False):
                           extent=G.grid.x_range + G.grid.y_range)
 
     t2 = time.time()
-    q = map(G.nearest, qpoints)
+    q = list(map(G.nearest, qpoints))
     t3 = time.time()
     print("Grid Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2))
     print("Total Grid Time:", t3 - t0)

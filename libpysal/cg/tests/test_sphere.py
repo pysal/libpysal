@@ -105,7 +105,7 @@ class Sphere(unittest.TestCase):
               [70, 74, 73, 69]}
 
         pts = [shape.centroid for shape in self.shapes]
-        pts = map(sphere.toXYZ, pts)
+        pts = list(map(sphere.toXYZ, pts))
         self.assertAlmostEqual(sphere.brute_knn(pts, 4, 'xyz'), w2)
 
 if __name__ == '__main__':

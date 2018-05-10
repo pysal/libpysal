@@ -190,7 +190,7 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
     elif id_type == 'float':
         ids = [i * 1. for i in ids]
     if id_type == 'string' or id_type == 'float':
-        id_dict = dict(zip(range(n), ids))
+        id_dict = dict(list(zip(range(n), ids)))
         alt_w = {}
         alt_weights = {}
         for i in w:
@@ -527,7 +527,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
     """
     id_order = None
     if issubclass(type(w), W) or isinstance(w, W):
-        if np.unique(np.hstack(w.weights.values())) == np.array([1.0]):
+        if np.unique(np.hstack(list(w.weights.values()))) == np.array([1.0]):
             id_order = w.id_order
             w = w.sparse
         else:
@@ -964,7 +964,7 @@ def remap_ids(w, old2new, id_order=[]):
         raise Exception("w must be a spatial weights object")
     new_neigh = {}
     new_weights = {}
-    for key, value in w.neighbors.iteritems():
+    for key, value in w.neighbors.items():
         new_values = [old2new[i] for i in value]
         new_key = old2new[key]
         new_neigh[new_key] = new_values

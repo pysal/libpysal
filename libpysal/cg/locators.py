@@ -361,7 +361,7 @@ class Grid:
         for i in xrange(lower_left[0], upper_right[0] + 1):
             for j in xrange(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
-                    items.extend(map(lambda item: item[1], filter(lambda item: x_range[0] <= item[0][0] <= x_range[1] and y_range[0] <= item[0][1] <= y_range[1], self.hash[(i, j)])))
+                    items.extend([item[1] for item in filter(lambda item: x_range[0] <= item[0][0] <= x_range[1] and y_range[0] <= item[0][1] <= y_range[1], self.hash[(i, j)])])
         return items
 
     def proximity(self, pt, r):
@@ -395,7 +395,7 @@ class Grid:
         for i in xrange(lower_left[0], upper_right[0] + 1):
             for j in xrange(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
-                    items.extend(map(lambda item: item[1], filter(lambda item: get_points_dist(pt, item[0]) <= r, self.hash[(i, j)])))
+                    items.extend([item[1] for item in filter(lambda item: get_points_dist(pt, item[0]) <= r, self.hash[(i, j)])])
         return items
 
     def nearest(self, pt):
@@ -435,8 +435,8 @@ class Grid:
         for i in xrange(lower_left[0], upper_right[0] + 1):
             for j in xrange(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
-                    items.extend(map(lambda item: (get_points_dist(pt, item[
-                        0]), item[1]), self.hash[(i, j)]))
+                    items.extend([(get_points_dist(pt, item[
+                        0]), item[1]) for item in self.hash[(i, j)]])
         if items == []:
             return None
         return min(items)[1]

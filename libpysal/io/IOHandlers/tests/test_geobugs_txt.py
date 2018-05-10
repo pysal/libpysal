@@ -25,12 +25,12 @@ class test_GeoBUGSTextIO(unittest.TestCase):
         w_scot = self.obj_scot.read()
         self.assertEqual(56, w_scot.n)
         self.assertEqual(4.1785714285714288, w_scot.mean_neighbors)
-        self.assertEqual([1.0, 1.0, 1.0], w_scot[1].values())
+        self.assertEqual([1.0, 1.0, 1.0], list(w_scot[1].values()))
 
         w_col = self.obj_col.read()
         self.assertEqual(49, w_col.n)
         self.assertEqual(4.6938775510204085, w_col.mean_neighbors)
-        self.assertEqual([0.5, 0.5], w_col[1].values())
+        self.assertEqual([0.5, 0.5], list(w_col[1].values()))
 
     def test_seek(self):
         self.test_read()

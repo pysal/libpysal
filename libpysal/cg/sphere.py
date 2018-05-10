@@ -109,7 +109,7 @@ def toXYZ(pt):
     -------
     x, y, z
     """
-    phi, theta = map(math.radians, pt)
+    phi, theta = list(map(math.radians, pt))
     phi, theta = phi + pi, theta + (pi / 2)
     x = 1 * sin(theta) * cos(phi)
     y = 1 * sin(theta) * sin(phi)

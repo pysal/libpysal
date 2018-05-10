@@ -212,7 +212,7 @@ if __name__ == '__main__':
         if example.startswith('MULTIPOINT'):
             shape2 = shapely.geometry.asMultiPoint(shape1)
         elif example.startswith('GEOMETRYCOLLECTION'):
-            shape2 = shapely.geometry.collection.GeometryCollection(map(shapely.geometry.asShape,shape1))
+            shape2 = shapely.geometry.collection.GeometryCollection(list(map(shapely.geometry.asShape,shape1)))
         elif example == 'MULTIPOLYGON EMPTY':
             #Skip Test
             shape2 = None

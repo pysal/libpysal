@@ -77,7 +77,7 @@ class SQLConnection(FileIO.FileIO):
     @property
     def tables(self):
         if not hasattr(self, '_tables'):
-            self._tables = self.metadata.tables.keys()
+            self._tables = list(self.metadata.tables.keys())
         return self._tables
 
     @property
