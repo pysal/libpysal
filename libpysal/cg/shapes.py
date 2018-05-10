@@ -1842,7 +1842,7 @@ class Rectangle(Geometry):
         self.right = float(right)
         self.upper = float(upper)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """
         ___nonzero__ is used "to implement truth value testing and the built-in operation bool()" -- http://docs.python.org/reference/datamodel.html
 

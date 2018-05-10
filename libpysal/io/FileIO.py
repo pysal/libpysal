@@ -34,7 +34,7 @@ class FileIO_MetaCls(type):
         return cls
 
 
-class FileIO(object):  # should be a type?
+class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     """
     How this works:
     FileIO.open(\*args) == FileIO(\*args)
@@ -51,7 +51,6 @@ class FileIO(object):  # should be a type?
     ....for now we'll just return an instance of W on mode='r'
     .... on mode='w', .write will expect an instance of W
     """
-    __metaclass__ = FileIO_MetaCls
     __registry = {}  # {'shp':{'r':[OGRshpReader,pysalShpReader]}}
 
     def __new__(cls, dataPath='', mode='r', dataFormat=None):

@@ -55,9 +55,9 @@ def get_provider(fn=None):
     if fn is None:
         return ops.atomic._preferred
     try:
-        fprovenance = fn.func.func_name
+        fprovenance = fn.func.__name__
     except AttributeError:
-        fprovenance = fn.func_name
+        fprovenance = fn.__name__
     if fprovenance == 'get_attr':
         return ops._accessors
     else:

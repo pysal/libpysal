@@ -320,7 +320,7 @@ def combo_check(bins, segments, qpoints):
             b = segments[b]
             print("pt to a (grid)", get_segment_point_dist(a, pt))
             print("pt to b (brut)", get_segment_point_dist(b, pt))
-            raw_input()
+            input()
             pylab.clf()
             DEBUG = False
 

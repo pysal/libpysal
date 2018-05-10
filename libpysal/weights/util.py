@@ -11,6 +11,7 @@ import os
 import operator
 import scipy
 from warnings import warn
+import numbers
 
 __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
@@ -908,7 +909,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
         if w.n != val.shape[0]:
             raise Exception("shape of w and diagonal do not match")
         w_new.setdiag(val)
-    elif operator.isNumberType(val):
+    elif isinstance(val, numbers.Number):
         w_new.setdiag([val] * w.n)
     else:
         raise Exception("Invalid value passed to diagonal")

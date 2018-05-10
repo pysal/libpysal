@@ -52,7 +52,7 @@ class Test_Adjlist(ut.TestCase):
     def test_mvapply(self):
         df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
         W = ps.Queen.from_dataframe(df)
-        ssq = lambda (x,y): np.sum((x-y)**2).item()
+        ssq = lambda x_y: np.sum((x_y[0]-x_y[1])**2).item()
         ssq.__name__ = 'sum_of_squares'
         alist = adj.adjlist_apply(df[['HOVAL', 'CRIME', 'INC']], W=W, 
                                   func=ssq)

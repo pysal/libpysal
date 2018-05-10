@@ -150,7 +150,7 @@ class DBF(Tables.DataTable):
                     value = MISSINGVALUE
                 else:
                     value = float(value)
-            if isinstance(value, str) or isinstance(value, unicode):
+            if isinstance(value, str) or isinstance(value, str):
                 value = value.rstrip()
             col[i] = value
         self.seek(prevPos)
@@ -197,7 +197,7 @@ class DBF(Tables.DataTable):
                     value = MISSINGVALUE
                 else:
                     value = float(value)
-            if isinstance(value, str) or isinstance(value, unicode):
+            if isinstance(value, str) or isinstance(value, str):
                 value = value.rstrip()
             result.append(value)
         return result
