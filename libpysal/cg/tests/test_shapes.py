@@ -22,7 +22,7 @@ class test_Point(unittest.TestCase):
         """
         for l in [(-5, 10), (0, -6.0), (float(1e300), -1e300)]:
             p = Point(l)
-            self.assertEquals(str(p), str((float(l[0]), float(
+            self.assertEqual(str(p), str((float(l[0]), float(
                 l[1]))))  # Recast to floats like point does
 
 
@@ -126,23 +126,23 @@ class test_LineSegment(unittest.TestCase):
         """
         ls = LineSegment(Point((0, 0)), Point((10, 0)))
         swap = ls.get_swap()
-        self.assertEquals(ls.p1, swap.p2)
-        self.assertEquals(ls.p2, swap.p1)
+        self.assertEqual(ls.p1, swap.p2)
+        self.assertEqual(ls.p2, swap.p1)
 
         ls = LineSegment(Point((-5, 0)), Point((5, 0)))
         swap = ls.get_swap()
-        self.assertEquals(ls.p1, swap.p2)
-        self.assertEquals(ls.p2, swap.p1)
+        self.assertEqual(ls.p1, swap.p2)
+        self.assertEqual(ls.p2, swap.p1)
 
         ls = LineSegment(Point((0, 0)), Point((0, 0)))
         swap = ls.get_swap()
-        self.assertEquals(ls.p1, swap.p2)
-        self.assertEquals(ls.p2, swap.p1)
+        self.assertEqual(ls.p1, swap.p2)
+        self.assertEqual(ls.p2, swap.p1)
 
         ls = LineSegment(Point((5, 5)), Point((5, 5)))
         swap = ls.get_swap()
-        self.assertEquals(ls.p1, swap.p2)
-        self.assertEquals(ls.p2, swap.p1)
+        self.assertEqual(ls.p1, swap.p2)
+        self.assertEqual(ls.p2, swap.p1)
 
     def test_bounding_box(self):
         """
@@ -151,22 +151,22 @@ class test_LineSegment(unittest.TestCase):
         Test tag: <tc>#tests#LineSegment.bounding_box</tc>
         """
         ls = LineSegment(Point((0, 0)), Point((0, 10)))
-        self.assertEquals(ls.bounding_box.left, 0)
-        self.assertEquals(ls.bounding_box.lower, 0)
-        self.assertEquals(ls.bounding_box.right, 0)
-        self.assertEquals(ls.bounding_box.upper, 10)
+        self.assertEqual(ls.bounding_box.left, 0)
+        self.assertEqual(ls.bounding_box.lower, 0)
+        self.assertEqual(ls.bounding_box.right, 0)
+        self.assertEqual(ls.bounding_box.upper, 10)
 
         ls = LineSegment(Point((0, 0)), Point((-3, -4)))
-        self.assertEquals(ls.bounding_box.left, -3)
-        self.assertEquals(ls.bounding_box.lower, -4)
-        self.assertEquals(ls.bounding_box.right, 0)
-        self.assertEquals(ls.bounding_box.upper, 0)
+        self.assertEqual(ls.bounding_box.left, -3)
+        self.assertEqual(ls.bounding_box.lower, -4)
+        self.assertEqual(ls.bounding_box.right, 0)
+        self.assertEqual(ls.bounding_box.upper, 0)
 
         ls = LineSegment(Point((-5, 0)), Point((3, 0)))
-        self.assertEquals(ls.bounding_box.left, -5)
-        self.assertEquals(ls.bounding_box.lower, 0)
-        self.assertEquals(ls.bounding_box.right, 3)
-        self.assertEquals(ls.bounding_box.upper, 0)
+        self.assertEqual(ls.bounding_box.left, -5)
+        self.assertEqual(ls.bounding_box.lower, 0)
+        self.assertEqual(ls.bounding_box.right, 3)
+        self.assertEqual(ls.bounding_box.upper, 0)
 
     def test_len1(self):
         """
@@ -175,10 +175,10 @@ class test_LineSegment(unittest.TestCase):
         Test tag: <tc>#tests#LineSegment.len</tc>
         """
         ls = LineSegment(Point((0, 0)), Point((0, 0)))
-        self.assertEquals(ls.len, 0)
+        self.assertEqual(ls.len, 0)
 
         ls = LineSegment(Point((0, 0)), Point((-3, 0)))
-        self.assertEquals(ls.len, 3)
+        self.assertEqual(ls.len, 3)
 
     def test_line1(self):
         """
@@ -188,19 +188,19 @@ class test_LineSegment(unittest.TestCase):
         """
         import math
         ls = LineSegment(Point((0, 0)), Point((1, 0)))
-        self.assertEquals(ls.line.m, 0)
-        self.assertEquals(ls.line.b, 0)
+        self.assertEqual(ls.line.m, 0)
+        self.assertEqual(ls.line.b, 0)
 
         ls = LineSegment(Point((0, 0)), Point((0, 1)))
-        self.assertEquals(ls.line.m, float('inf'))
+        self.assertEqual(ls.line.m, float('inf'))
         self.assertTrue(math.isnan(ls.line.b))
 
         ls = LineSegment(Point((0, 0)), Point((0, -1)))
-        self.assertEquals(ls.line.m, float('inf'))
+        self.assertEqual(ls.line.m, float('inf'))
         self.assertTrue(math.isnan(ls.line.b))
 
         ls = LineSegment(Point((0, 0)), Point((0, 0)))
-        self.assertEquals(ls.line, None)
+        self.assertEqual(ls.line, None)
 
         ls = LineSegment(Point((5,0)), Point((10,0)))
         ls1 = LineSegment(Point((5,0)), Point((10,1)))
@@ -232,19 +232,19 @@ class test_Line(unittest.TestCase):
         Test tag: <tc>#tests#Line.y</tc>
         """
         l = Line(0, 0)
-        self.assertEquals(l.y(0), 0)
-        self.assertEquals(l.y(-1e600), 0)
-        self.assertEquals(l.y(1e600), 0)
+        self.assertEqual(l.y(0), 0)
+        self.assertEqual(l.y(-1e600), 0)
+        self.assertEqual(l.y(1e600), 0)
 
         l = Line(1, 1)
-        self.assertEquals(l.y(2), 3)
-        self.assertEquals(l.y(-1e600), -1e600)
-        self.assertEquals(l.y(1e600), 1e600)
+        self.assertEqual(l.y(2), 3)
+        self.assertEqual(l.y(-1e600), -1e600)
+        self.assertEqual(l.y(1e600), 1e600)
 
         l = Line(-1, 1)
-        self.assertEquals(l.y(2), -1)
-        self.assertEquals(l.y(-1e600), 1e600)
-        self.assertEquals(l.y(1e600), -1e600)
+        self.assertEqual(l.y(2), -1)
+        self.assertEqual(l.y(-1e600), 1e600)
+        self.assertEqual(l.y(1e600), -1e600)
 
     def test_x1(self):
         """
@@ -262,14 +262,14 @@ class test_Line(unittest.TestCase):
             l.x(1e600)
 
         l = Line(1, 1)
-        self.assertEquals(l.x(3), 2)
-        self.assertEquals(l.x(-1e600), -1e600)
-        self.assertEquals(l.x(1e600), 1e600)
+        self.assertEqual(l.x(3), 2)
+        self.assertEqual(l.x(-1e600), -1e600)
+        self.assertEqual(l.x(1e600), 1e600)
 
         l = Line(-1, 1)
-        self.assertEquals(l.x(2), -1)
-        self.assertEquals(l.x(-1e600), 1e600)
-        self.assertEquals(l.x(1e600), -1e600)
+        self.assertEqual(l.x(2), -1)
+        self.assertEqual(l.x(-1e600), 1e600)
+        self.assertEqual(l.x(1e600), -1e600)
 
 
 class test_Ray(unittest.TestCase):
@@ -303,11 +303,11 @@ class test_Chain(unittest.TestCase):
         """
         vertices = [Point((0, 0)), Point((1, 1)), Point((2, 5)),
                     Point((0, 0)), Point((1, 1)), Point((2, 5))]
-        self.assertEquals(Chain(vertices).vertices, vertices)
+        self.assertEqual(Chain(vertices).vertices, vertices)
 
         vertices = [[Point((0, 0)), Point((1, 1)), Point((2, 5))],
                     [Point((0, 0)), Point((1, 1)), Point((2, 5))]]
-        self.assertEquals(Chain(vertices).vertices, vertices[0] + vertices[1])
+        self.assertEqual(Chain(vertices).vertices, vertices[0] + vertices[1])
 
     def test_parts1(self):
         """
@@ -317,11 +317,11 @@ class test_Chain(unittest.TestCase):
         """
         vertices = [Point((0, 0)), Point((1, 1)), Point((2, 5)),
                     Point((0, 0)), Point((1, 1)), Point((2, 5))]
-        self.assertEquals(Chain(vertices).parts, [vertices])
+        self.assertEqual(Chain(vertices).parts, [vertices])
 
         vertices = [[Point((0, 0)), Point((1, 1)), Point((2, 5))],
                     [Point((0, 0)), Point((1, 1)), Point((2, 5))]]
-        self.assertEquals(Chain(vertices).parts, vertices)
+        self.assertEqual(Chain(vertices).parts, vertices)
 
     def test_bounding_box1(self):
         """
@@ -332,10 +332,10 @@ class test_Chain(unittest.TestCase):
         vertices = [[Point((0, 0)), Point((1, 1)), Point((2, 6))],
                     [Point((-5, -5)), Point((0, 0)), Point((2, 5))]]
         bb = Chain(vertices).bounding_box
-        self.assertEquals(bb.left, -5)
-        self.assertEquals(bb.lower, -5)
-        self.assertEquals(bb.right, 2)
-        self.assertEquals(bb.upper, 6)
+        self.assertEqual(bb.left, -5)
+        self.assertEqual(bb.lower, -5)
+        self.assertEqual(bb.right, 2)
+        self.assertEqual(bb.upper, 6)
 
     def test_len1(self):
         """
@@ -345,7 +345,7 @@ class test_Chain(unittest.TestCase):
         """
         vertices = [[Point((0, 0)), Point((1, 0)), Point((1, 5))],
                     [Point((-5, -5)), Point((-5, 0)), Point((0, 0)), Point((0, 0))]]
-        self.assertEquals(Chain(vertices).len, 6 + 10)
+        self.assertEqual(Chain(vertices).len, 6 + 10)
 
 
 class test_Polygon(unittest.TestCase):
@@ -402,7 +402,7 @@ class test_Polygon(unittest.TestCase):
         p = Polygon(
             [[Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                      [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))]])
-        self.assertEquals(p.area, 200)
+        self.assertEqual(p.area, 200)
 
     def test_area2(self):
         """
@@ -413,14 +413,14 @@ class test_Polygon(unittest.TestCase):
         p = Polygon(
             [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                     holes=[Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))])
-        self.assertEquals(p.area, 100 - 4)
+        self.assertEqual(p.area, 100 - 4)
 
         p = Polygon(
             [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                     holes=[[Point(
                         (2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
                         [Point((6, 6)), Point((6, 8)), Point((8, 8)), Point((8, 6))]])
-        self.assertEquals(p.area, 100 - (4 + 4))
+        self.assertEqual(p.area, 100 - (4 + 4))
 
         p = Polygon(
             [[Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
@@ -431,7 +431,7 @@ class test_Polygon(unittest.TestCase):
                     holes=[[Point(
                         (2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
                         [Point((36, 36)), Point((36, 38)), Point((38, 38)), Point((38, 36))]])
-        self.assertEquals(p.area, 200 - (4 + 4))
+        self.assertEqual(p.area, 200 - (4 + 4))
 
     def test_area4(self):
         """
@@ -441,11 +441,11 @@ class test_Polygon(unittest.TestCase):
         """
         p = Polygon([Point(
             (0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))])
-        self.assertEquals(p.area, 100)
+        self.assertEqual(p.area, 100)
 
         p = Polygon([Point(
             (0, 0)), Point((0, 10)), Point((10, 10)), Point((10, 0))])
-        self.assertEquals(p.area, 100)
+        self.assertEqual(p.area, 100)
 
     def test_bounding_box1(self):
         """
@@ -457,10 +457,10 @@ class test_Polygon(unittest.TestCase):
             [[Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                      [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))]])
         bb = p.bounding_box
-        self.assertEquals(bb.left, 0)
-        self.assertEquals(bb.lower, 0)
-        self.assertEquals(bb.right, 40)
-        self.assertEquals(bb.upper, 40)
+        self.assertEqual(bb.left, 0)
+        self.assertEqual(bb.lower, 0)
+        self.assertEqual(bb.right, 40)
+        self.assertEqual(bb.upper, 40)
 
     def test_centroid1(self):
         """
@@ -472,8 +472,8 @@ class test_Polygon(unittest.TestCase):
             [[Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                      [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))]])
         c = p.centroid
-        self.assertEquals(c[0], 20)
-        self.assertEquals(c[1], 20)
+        self.assertEqual(c[0], 20)
+        self.assertEqual(c[1], 20)
 
     def test_centroid2(self):
         """
@@ -485,8 +485,8 @@ class test_Polygon(unittest.TestCase):
             [[Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                      [Point((30, 30)), Point((35, 30)), Point((35, 35)), Point((30, 35))]])
         c = p.centroid
-        self.assertEquals(c[0], 10.5)
-        self.assertEquals(c[1], 10.5)
+        self.assertEqual(c[0], 10.5)
+        self.assertEqual(c[1], 10.5)
 
     def test_holes1(self):
         """
@@ -497,7 +497,7 @@ class test_Polygon(unittest.TestCase):
         p = Polygon(
             [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                     holes=[Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))])
-        self.assertEquals(len(p.holes), 1)
+        self.assertEqual(len(p.holes), 1)
         e_holes = [Point((2, 2)), Point((2, 4)), Point((4, 4)), Point((4, 2))]
         self.assertTrue(p.holes[0] in [e_holes, [e_holes[-1]] + e_holes[:3],
                                        e_holes[-2:] + e_holes[:2], e_holes[-3:] + [e_holes[0]]])
@@ -514,7 +514,7 @@ class test_Polygon(unittest.TestCase):
                         (2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
                         [Point((6, 6)), Point((6, 8)), Point((8, 8)), Point((8, 6))]])
         holes = p.holes
-        self.assertEquals(len(holes), 2)
+        self.assertEqual(len(holes), 2)
 
     def test_parts1(self):
         """
@@ -525,7 +525,7 @@ class test_Polygon(unittest.TestCase):
         p = Polygon(
             [[Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                      [Point((30, 30)), Point((40, 30)), Point((30, 40))]])
-        self.assertEquals(len(p.parts), 2)
+        self.assertEqual(len(p.parts), 2)
 
         part1 = [Point(
             (0, 0)), Point((0, 10)), Point((10, 10)), Point((10, 0))]
@@ -552,7 +552,7 @@ class test_Polygon(unittest.TestCase):
         p = Polygon(
             [[Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                      [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))]])
-        self.assertEquals(p.perimeter, 80)
+        self.assertEqual(p.perimeter, 80)
 
     def test_perimeter2(self):
         """
@@ -569,7 +569,7 @@ class test_Polygon(unittest.TestCase):
                     holes=[[Point(
                         (2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
                         [Point((6, 6)), Point((6, 8)), Point((8, 8)), Point((8, 6))]])
-        self.assertEquals(p.perimeter, 80 + 16)
+        self.assertEqual(p.perimeter, 80 + 16)
 
     def test_vertices1(self):
         """
@@ -579,7 +579,7 @@ class test_Polygon(unittest.TestCase):
         """
         p = Polygon([Point(
             (0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))])
-        self.assertEquals(len(p.vertices), 4)
+        self.assertEqual(len(p.vertices), 4)
         e_verts = [Point(
             (0, 0)), Point((0, 10)), Point((10, 10)), Point((10, 0))]
         self.assertTrue(p.vertices in [e_verts, e_verts[-1:] + e_verts[:3],
@@ -594,14 +594,14 @@ class test_Polygon(unittest.TestCase):
         p = Polygon(
             [[Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                      [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))]])
-        self.assertEquals(len(p.vertices), 8)
+        self.assertEqual(len(p.vertices), 8)
 
     def test_contains_point(self):
         p = Polygon([Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))], [Point((1, 2)), Point((2, 2)), Point((2, 1)), Point((1, 1))])
-        self.assertEquals(p.contains_point((0, 0)), 0)
-        self.assertEquals(p.contains_point((1, 1)), 0)
-        self.assertEquals(p.contains_point((5, 5)), 1)
-        self.assertEquals(p.contains_point((10, 10)), 0)
+        self.assertEqual(p.contains_point((0, 0)), 0)
+        self.assertEqual(p.contains_point((1, 1)), 0)
+        self.assertEqual(p.contains_point((5, 5)), 1)
+        self.assertEqual(p.contains_point((10, 10)), 0)
 
 
 class test_Rectangle(unittest.TestCase):
@@ -634,24 +634,24 @@ class test_Rectangle(unittest.TestCase):
         """
         r = Rectangle(5, 5, 5, 10)  # Zero width
         r.set_centroid(Point((0, 0)))
-        self.assertEquals(r.left, 0)
-        self.assertEquals(r.lower, -2.5)
-        self.assertEquals(r.right, 0)
-        self.assertEquals(r.upper, 2.5)
+        self.assertEqual(r.left, 0)
+        self.assertEqual(r.lower, -2.5)
+        self.assertEqual(r.right, 0)
+        self.assertEqual(r.upper, 2.5)
 
         r = Rectangle(10, 5, 20, 5)  # Zero height
         r.set_centroid(Point((40, 40)))
-        self.assertEquals(r.left, 35)
-        self.assertEquals(r.lower, 40)
-        self.assertEquals(r.right, 45)
-        self.assertEquals(r.upper, 40)
+        self.assertEqual(r.left, 35)
+        self.assertEqual(r.lower, 40)
+        self.assertEqual(r.right, 45)
+        self.assertEqual(r.upper, 40)
 
         r = Rectangle(0, 0, 0, 0)  # Zero width and height
         r.set_centroid(Point((-4, -4)))
-        self.assertEquals(r.left, -4)
-        self.assertEquals(r.lower, -4)
-        self.assertEquals(r.right, -4)
-        self.assertEquals(r.upper, -4)
+        self.assertEqual(r.left, -4)
+        self.assertEqual(r.lower, -4)
+        self.assertEqual(r.right, -4)
+        self.assertEqual(r.upper, -4)
 
     def test_set_scale1(self):
         """
@@ -662,16 +662,16 @@ class test_Rectangle(unittest.TestCase):
         r = Rectangle(2, 2, 4, 4)
 
         r.set_scale(0.5)
-        self.assertEquals(r.left, 2.5)
-        self.assertEquals(r.lower, 2.5)
-        self.assertEquals(r.right, 3.5)
-        self.assertEquals(r.upper, 3.5)
+        self.assertEqual(r.left, 2.5)
+        self.assertEqual(r.lower, 2.5)
+        self.assertEqual(r.right, 3.5)
+        self.assertEqual(r.upper, 3.5)
 
         r.set_scale(2)
-        self.assertEquals(r.left, 2)
-        self.assertEquals(r.lower, 2)
-        self.assertEquals(r.right, 4)
-        self.assertEquals(r.upper, 4)
+        self.assertEqual(r.left, 2)
+        self.assertEqual(r.lower, 2)
+        self.assertEqual(r.right, 4)
+        self.assertEqual(r.upper, 4)
 
     def test_set_scale2(self):
         """
@@ -681,31 +681,31 @@ class test_Rectangle(unittest.TestCase):
         """
         r = Rectangle(5, 5, 5, 10)  # Zero width
         r.set_scale(2)
-        self.assertEquals(r.left, 5)
-        self.assertEquals(r.lower, 2.5)
-        self.assertEquals(r.right, 5)
-        self.assertEquals(r.upper, 12.5)
+        self.assertEqual(r.left, 5)
+        self.assertEqual(r.lower, 2.5)
+        self.assertEqual(r.right, 5)
+        self.assertEqual(r.upper, 12.5)
 
         r = Rectangle(10, 5, 20, 5)  # Zero height
         r.set_scale(2)
-        self.assertEquals(r.left, 5)
-        self.assertEquals(r.lower, 5)
-        self.assertEquals(r.right, 25)
-        self.assertEquals(r.upper, 5)
+        self.assertEqual(r.left, 5)
+        self.assertEqual(r.lower, 5)
+        self.assertEqual(r.right, 25)
+        self.assertEqual(r.upper, 5)
 
         r = Rectangle(0, 0, 0, 0)  # Zero width and height
         r.set_scale(100)
-        self.assertEquals(r.left, 0)
-        self.assertEquals(r.lower, 0)
-        self.assertEquals(r.right, 0)
-        self.assertEquals(r.upper, 0)
+        self.assertEqual(r.left, 0)
+        self.assertEqual(r.lower, 0)
+        self.assertEqual(r.right, 0)
+        self.assertEqual(r.upper, 0)
 
         r = Rectangle(0, 0, 0, 0)  # Zero width and height
         r.set_scale(0.01)
-        self.assertEquals(r.left, 0)
-        self.assertEquals(r.lower, 0)
-        self.assertEquals(r.right, 0)
-        self.assertEquals(r.upper, 0)
+        self.assertEqual(r.left, 0)
+        self.assertEqual(r.lower, 0)
+        self.assertEqual(r.right, 0)
+        self.assertEqual(r.upper, 0)
 
     def test_area1(self):
         """
@@ -714,13 +714,13 @@ class test_Rectangle(unittest.TestCase):
         Test tag: <tc>#tests#Rectangle.area</tc>
         """
         r = Rectangle(5, 5, 5, 10)  # Zero width
-        self.assertEquals(r.area, 0)
+        self.assertEqual(r.area, 0)
 
         r = Rectangle(10, 5, 20, 5)  # Zero height
-        self.assertEquals(r.area, 0)
+        self.assertEqual(r.area, 0)
 
         r = Rectangle(0, 0, 0, 0)  # Zero width and height
-        self.assertEquals(r.area, 0)
+        self.assertEqual(r.area, 0)
 
     def test_height1(self):
         """
@@ -729,7 +729,7 @@ class test_Rectangle(unittest.TestCase):
         Test tag: <tc>#tests#Rectangle.height</tc>
         """
         r = Rectangle(10, 5, 20, 5)  # Zero height
-        self.assertEquals(r.height, 0)
+        self.assertEqual(r.height, 0)
 
     def test_width1(self):
         """
@@ -738,7 +738,7 @@ class test_Rectangle(unittest.TestCase):
         Test tag: <tc>#tests#Rectangle.width</tc>
         """
         r = Rectangle(5, 5, 5, 10)  # Zero width
-        self.assertEquals(r.width, 0)
+        self.assertEqual(r.width, 0)
 
 
 #suite = unittest.TestSuite()

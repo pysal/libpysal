@@ -23,7 +23,7 @@ class TestContiguityWeights(unittest.TestCase):
         shpObj.close()
 
     def test_w_type(self):
-        self.assert_(isinstance(self.binningW, ContiguityWeightsLists))
+        self.assertTrue(isinstance(self.binningW, ContiguityWeightsLists))
 
     def test_QUEEN(self):
         self.assertEqual(QUEEN, 1)
@@ -32,8 +32,8 @@ class TestContiguityWeights(unittest.TestCase):
         self.assertEqual(ROOK, 2)
 
     def test_ContiguityWeightsLists(self):
-        self.assert_(hasattr(self.binningW, 'w'))
-        self.assert_(issubclass(dict, type(self.binningW.w)))
+        self.assertTrue(hasattr(self.binningW, 'w'))
+        self.assertTrue(issubclass(dict, type(self.binningW.w)))
         self.assertEqual(len(self.binningW.w), 136)
 
     def test_nested_polygons(self):

@@ -15,7 +15,7 @@ class test_GwtIO(unittest.TestCase):
     def test_close(self):
         f = self.obj
         f.close()
-        self.failUnlessRaises(ValueError, f.read)
+        self.assertRaises(ValueError, f.read)
 
     def test_read(self):
         w = self.obj.read()
@@ -26,7 +26,7 @@ class test_GwtIO(unittest.TestCase):
 
     def test_seek(self):
         self.test_read()
-        self.failUnlessRaises(StopIteration, self.obj.read)
+        self.assertRaises(StopIteration, self.obj.read)
         self.obj.seek(0)
         self.test_read()
 

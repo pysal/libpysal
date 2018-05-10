@@ -128,17 +128,17 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     def test_init(self):
         w = d.DistanceBand(self.grid_kdt, 1)
         for k,v in w:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     def test_from_shapefile(self):
         w = d.DistanceBand.from_shapefile(self.grid_path, 1)
         for k,v in w:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     def test_from_array(self):
         w = d.DistanceBand.from_array(self.grid_points, 1)
         for k,v in w:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     @ut.skipIf(PANDAS_EXTINCT, 'Missing pandas')
     def test_from_dataframe(self):
@@ -148,7 +148,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         df = pd.DataFrame({'obs':random_data, 'geometry':geom_series})
         w = d.DistanceBand.from_dataframe(df, 1)
         for k,v in w:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     ##########################
     # Function/User tests    #
@@ -162,7 +162,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         self.grid_f.seek(0)
         grid_dbw = d.DistanceBand(grid_integers, 1)
         for k,v in grid_dbw:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     def test_arcdist(self):
         arc = cg.sphere.arcdist

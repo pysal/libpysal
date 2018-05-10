@@ -39,7 +39,7 @@ class Test_Tabular(ut.TestCase):
         new_df = GIS.tabular.to_df(geodf)
         self.assertIsInstance(new_df, pd.DataFrame)
         for new, old in zip(new_df.geometry, self.columbus.geometry):
-            self.assertEquals(new, old)
+            self.assertEqual(new, old)
 
     def test_spatial_join(self):
         pass

@@ -106,7 +106,7 @@ class Test_Accessors(ut.TestCase):
         holes = to_test.holes(holed_polygons).tolist()
 
         for elist in no_holes:
-            self.assertEquals(elist, [[]])
+            self.assertEqual(elist, [[]])
 
         answers = [[[(-0.002557818613137461,  -0.25599115990199145),
                      ( 0.0012028146993492903, -0.25561239107915107),

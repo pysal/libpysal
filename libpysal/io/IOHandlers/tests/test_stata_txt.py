@@ -19,7 +19,7 @@ class test_StataTextIO(unittest.TestCase):
         for obj in [self.obj_sparse, self.obj_full]:
             f = obj
             f.close()
-            self.failUnlessRaises(ValueError, f.read)
+            self.assertRaises(ValueError, f.read)
 
     def test_read(self):
         w_sparse = self.obj_sparse.read()
@@ -35,8 +35,8 @@ class test_StataTextIO(unittest.TestCase):
 
     def test_seek(self):
         self.test_read()
-        self.failUnlessRaises(StopIteration, self.obj_sparse.read)
-        self.failUnlessRaises(StopIteration, self.obj_full.read)
+        self.assertRaises(StopIteration, self.obj_sparse.read)
+        self.assertRaises(StopIteration, self.obj_full.read)
         self.obj_sparse.seek(0)
         self.obj_full.seek(0)
         self.test_read()

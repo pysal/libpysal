@@ -167,7 +167,7 @@ class TestW(unittest.TestCase):
         self.assertEqual(self.w3x3.neighbor_offsets, d)
 
     def test_nonzero(self):
-        self.assertEquals(self.w3x3.nonzero, 24)
+        self.assertEqual(self.w3x3.nonzero, 24)
 
     def test_order(self):
         w = util.lat2W(3, 3)
@@ -180,7 +180,7 @@ class TestW(unittest.TestCase):
              6: [2, 3, 0, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [0, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(util.order(w), o)
+        self.assertEqual(util.order(w), o)
 
     def test_pct_nonzero(self):
         self.assertEqual(self.w3x3.pct_nonzero, 29.62962962962963)
@@ -200,14 +200,14 @@ class TestW(unittest.TestCase):
         NPTA3E(self.w3x3.s2array, s2a)
 
     def test_sd(self):
-        self.assertEquals(self.w3x3.sd, 0.66666666666666663)
+        self.assertEqual(self.w3x3.sd, 0.66666666666666663)
 
     def test_set_transform(self):
         w = util.lat2W(2, 2)
         self.assertEqual(w.transform, 'O')
-        self.assertEquals(w.weights[0], [1.0, 1.0])
+        self.assertEqual(w.weights[0], [1.0, 1.0])
         w.transform = 'r'
-        self.assertEquals(w.weights[0], [0.5, 0.5])
+        self.assertEqual(w.weights[0], [0.5, 0.5])
 
     def test_shimbel(self):
         d = {0: [-1, 1, 2, 1, 2, 3, 2, 3, 4],
@@ -219,7 +219,7 @@ class TestW(unittest.TestCase):
              6: [2, 3, 4, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [4, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(util.shimbel(self.w3x3), d)
+        self.assertEqual(util.shimbel(self.w3x3), d)
 
     def test_sparse(self):
         self.assertEqual(self.w3x3.sparse.nnz, 24)
@@ -391,7 +391,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEqual(w.n, 25)
 
     def test_nonzero(self):
-        self.assertEquals(self.w3x3.nonzero, 24)
+        self.assertEqual(self.w3x3.nonzero, 24)
 
     def test_order(self):
         w = util.lat2W(3, 3)
@@ -404,7 +404,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
              6: [2, 3, 0, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [0, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(util.order(w), o)
+        self.assertEqual(util.order(w), o)
 
     def test_pct_nonzero(self):
         self.assertEqual(self.w3x3.pct_nonzero, 29.62962962962963)
@@ -424,14 +424,14 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         NPTA3E(self.w3x3.s2array, s2a)
 
     def test_sd(self):
-        self.assertEquals(self.w3x3.sd, 0.66666666666666663)
+        self.assertEqual(self.w3x3.sd, 0.66666666666666663)
 
     def test_set_transform(self):
         w = util.lat2W(2, 2)
         self.assertEqual(w.transform, 'O')
-        self.assertEquals(w.weights[0], [1.0, 1.0])
+        self.assertEqual(w.weights[0], [1.0, 1.0])
         w.transform = 'r'
-        self.assertEquals(w.weights[0], [0.5, 0.5])
+        self.assertEqual(w.weights[0], [0.5, 0.5])
 
     def test_shimbel(self):
         d = {0: [-1, 1, 2, 1, 2, 3, 2, 3, 4],
@@ -443,7 +443,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
              6: [2, 3, 4, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [4, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(util.shimbel(self.w3x3), d)
+        self.assertEqual(util.shimbel(self.w3x3), d)
 
     def test_sparse(self):
         self.assertEqual(self.w3x3.sparse.nnz, 24)
@@ -466,8 +466,8 @@ class TestWSP(unittest.TestCase):
         self.w3x3 = WSP(w3x3.sparse)
 
     def test_WSP(self):
-        self.assertEquals(self.w.id_order, self.wsp.id_order)
-        self.assertEquals(self.w.n, self.wsp.n)
+        self.assertEqual(self.w.id_order, self.wsp.id_order)
+        self.assertEqual(self.w.n, self.wsp.n)
         np.testing.assert_array_equal(
             self.w.sparse.todense(), self.wsp.sparse.todense())
 

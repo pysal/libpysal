@@ -19,7 +19,7 @@ class test_GeoBUGSTextIO(unittest.TestCase):
         for obj in [self.obj_scot, self.obj_col]:
             f = obj
             f.close()
-            self.failUnlessRaises(ValueError, f.read)
+            self.assertRaises(ValueError, f.read)
 
     def test_read(self):
         w_scot = self.obj_scot.read()
@@ -34,8 +34,8 @@ class test_GeoBUGSTextIO(unittest.TestCase):
 
     def test_seek(self):
         self.test_read()
-        self.failUnlessRaises(StopIteration, self.obj_scot.read)
-        self.failUnlessRaises(StopIteration, self.obj_col.read)
+        self.assertRaises(StopIteration, self.obj_scot.read)
+        self.assertRaises(StopIteration, self.obj_col.read)
         self.obj_scot.seek(0)
         self.obj_col.seek(0)
         self.test_read()
