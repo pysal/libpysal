@@ -43,7 +43,7 @@ class GwtIO(FileIO.FileIO):
         self.file = open(self.dataPath, self.mode)
 
     def _set_varName(self, val):
-        if issubclass(type(val), basestring):
+        if issubclass(type(val), str):
             self._varName = val
 
     def _get_varName(self):
@@ -51,7 +51,7 @@ class GwtIO(FileIO.FileIO):
     varName = property(fget=_get_varName, fset=_set_varName)
 
     def _set_shpName(self, val):
-        if issubclass(type(val), basestring):
+        if issubclass(type(val), str):
             self._shpName = val
 
     def _get_shpName(self):

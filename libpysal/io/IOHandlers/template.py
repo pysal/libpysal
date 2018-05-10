@@ -38,7 +38,7 @@ class TemplateWriter(FileIO):
 
         # it's up to the writer to understand the object, you should check that object is of the type you expect and raise a TypeError is its now.
         # we will support writing string objects in this example, all string are derived from basestring...
-        if issubclass(type(obj), basestring):
+        if issubclass(type(obj), str):
 
             #Non-essential ...
             def foobar(c):
@@ -98,7 +98,7 @@ class TemplateReaderWriter(FileIO):
     def write(self, obj):
         """ .write method of the 'foobar' template, receives an obj """
         self._complain_ifclosed(self.closed)
-        if issubclass(type(obj), basestring):
+        if issubclass(type(obj), str):
             result = self._filter(obj)
             self.fileObj.write(result + '\n')
             self.pos += 1

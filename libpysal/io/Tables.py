@@ -167,7 +167,7 @@ class DataTable(FileIO.FileIO):
             #>>> assert index in range(0, len(table))
         """
         prevPos = self.tell()
-        if issubclass(type(key), basestring):
+        if issubclass(type(key), str):
             raise TypeError("index should be int or slice")
         if issubclass(type(key), int) or isinstance(key, slice):
             rows = key

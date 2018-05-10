@@ -46,7 +46,7 @@ class MatIO(FileIO.FileIO):
         self.file = open(self.dataPath, self.mode + 'b')
 
     def _set_varName(self, val):
-        if issubclass(type(val), basestring):
+        if issubclass(type(val), str):
             self._varName = val
 
     def _get_varName(self):
