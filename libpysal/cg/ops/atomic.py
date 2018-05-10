@@ -1,5 +1,5 @@
-import _accessors as _a
-import _shapely as _s
+from . import _accessors as _a
+from . import _shapely as _s
 
 # prefer access to shapely computation
 _all = dict()

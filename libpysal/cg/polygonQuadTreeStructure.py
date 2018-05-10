@@ -636,7 +636,7 @@ def extract_connecting_borders_between_points(cell_min_point, cell_length_x, cel
         border_id_p_end = 3
 
     if border_id_p_begin == -1 or border_id_p_end == -1:
-        print(cell_min_point, cell_min_point[0]+cell_length_x, cell_min_point[1]+cell_length_y, point_begin, point_end, cell_length_x, cell_length_y)
+        print((cell_min_point, cell_min_point[0]+cell_length_x, cell_min_point[1]+cell_length_y, point_begin, point_end, cell_length_x, cell_length_y))
         raise Exception("Error! begin/end point doesn't lie on the cell border!!!")
 
     # Now, move forward from point_begin to point_end

@@ -136,9 +136,9 @@ if __name__ == '__main__':
     f = pysal.open('test.bar', 'r')
     s = ''.join(f.read())
     f.close()
-    print s
+    print(s)
 
     f = open('test.foo', 'r')
     s2 = f.read()
     f.close()
-    print s == s2
+    print(s == s2)

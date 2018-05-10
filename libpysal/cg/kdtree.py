@@ -7,7 +7,7 @@ import math
 import scipy.spatial
 import numpy
 from scipy import inf
-import sphere
+from . import sphere
 from .sphere import RADIUS_EARTH_KM
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"

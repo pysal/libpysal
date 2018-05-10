@@ -5,13 +5,13 @@ contiguity and distance criteria.
 
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
-from Contiguity import buildContiguity, Queen, Rook
-from Distance import knnW, Kernel, DistanceBand
-from util import get_ids, get_points_array_from_shapefile, min_threshold_distance
+from .Contiguity import buildContiguity, Queen, Rook
+from .Distance import knnW, Kernel, DistanceBand
+from .util import get_ids, get_points_array_from_shapefile, min_threshold_distance
 from ..io.FileIO import FileIO as ps_open
 from .. import cg
 from ..cg.voronoi import voronoi_frames
-from weights import WSP
+from .weights import WSP
 import numpy as np
 
 __all__ = ['queen_from_shapefile', 'rook_from_shapefile', 'knnW_from_array',

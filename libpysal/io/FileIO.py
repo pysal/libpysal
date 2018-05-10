@@ -111,9 +111,9 @@ class FileIO(object):  # should be a type?
     @classmethod
     def check(cls):
         """ Prints the contents of the registry """
-        print "PySAL File I/O understands the following file extensions:"
+        print("PySAL File I/O understands the following file extensions:")
         for key, val in cls.__registry.iteritems():
-            print "Ext: '.%s', Modes: %r" % (key, val.keys())
+            print("Ext: '.%s', Modes: %r" % (key, val.keys()))
 
     @classmethod
     def open(cls, *args, **kwargs):

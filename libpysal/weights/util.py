@@ -65,8 +65,8 @@ def hexLat2W(nrows=5, ncols=5):
     """
 
     if nrows == 1 or ncols == 1:
-        print "Hexagon lattice requires at least 2 rows and columns"
-        print "Returning a linear contiguity structure"
+        print("Hexagon lattice requires at least 2 rows and columns")
+        print("Returning a linear contiguity structure")
         return lat2W(nrows, ncols)
 
     n = nrows * ncols
@@ -252,7 +252,7 @@ def regime_weights(regimes):
     """
     msg = "PendingDepricationWarning: regime_weights will be "
     msg += "renamed to block_weights in PySAL 2.0"
-    print msg
+    print(msg)
     return block_weights(regimes)
 
 

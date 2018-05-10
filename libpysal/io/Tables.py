@@ -1,5 +1,5 @@
 __all__ = ['DataTable']
-import FileIO
+from . import FileIO
 from ..common import requires
 from warnings import warn
 import numpy as np
@@ -206,7 +206,7 @@ class DataTable(FileIO.FileIO):
             if read_shp is True or self.dataPath.endswith('.dbf'):
                 read_shp = self.dataPath[:-3] + 'shp'
             try:
-                from geotable.shp import shp2series
+                from .geotable.shp import shp2series
                 df['geometry'] = shp2series(self.dataPath[:-3] + 'shp')
             except IOError as e:
                 warn('Encountered the following error in attempting to read'

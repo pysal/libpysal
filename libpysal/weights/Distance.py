@@ -657,7 +657,7 @@ class Kernel(W):
             c = c ** (-0.5)
             self.kernel = [c * np.exp(-(zi ** 2) / 2.) for zi in zs]
         else:
-            print('Unsupported kernel function', self.function)
+            print(('Unsupported kernel function', self.function))
 
 
 class DistanceBand(W):

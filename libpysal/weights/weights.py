@@ -955,7 +955,7 @@ class W(object):
                     row_sum = sum(wijs) * 1.0
                     if row_sum == 0.0:
                         if not self.silent_island_warning:
-                            print('WARNING: ', i, ' is an island (no neighbors)')
+                            print(('WARNING: ', i, ' is an island (no neighbors)'))
                     weights[i] = [wij / row_sum for wij in wijs]
                 weights = weights
                 self.transformations[value] = weights

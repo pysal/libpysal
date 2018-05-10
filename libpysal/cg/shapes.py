@@ -1994,6 +1994,6 @@ class Rectangle(Geometry):
 
 _geoJSON_type_to_Pysal_type = {'point': Point, 'linestring': Chain, 'multilinestring': Chain,
                                'polygon': Polygon, 'multipolygon': Polygon}
-import standalone  # moving this to top breaks unit tests !
+from . import standalone  # moving this to top breaks unit tests !
 from .polygonQuadTreeStructure import QuadTreeStructureSingleRing
 

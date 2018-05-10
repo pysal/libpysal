@@ -203,10 +203,10 @@ if __name__ == '__main__':
         import shapely.wkt, shapely.geometry
         from pysal.contrib.shapely_ext import to_wkb
     except ImportError:
-        print "shapely is used to test this module."
+        print("shapely is used to test this module.")
         raise
     for example in wktExamples:
-        print example
+        print(example)
         shape0= shapely.wkt.loads(example)
         shape1 = loads(shape0.to_wkb())
         if example.startswith('MULTIPOINT'):
@@ -220,11 +220,11 @@ if __name__ == '__main__':
             shape2 = shapely.geometry.asShape(shape1)
 
 
-        print shape1
+        print(shape1)
         if shape2:
             assert shape0.equals(shape2)
-            print shape0.equals(shape2)
+            print(shape0.equals(shape2))
         else:
-            print "Skip"
+            print("Skip")
 
-        print ""
+        print("")
