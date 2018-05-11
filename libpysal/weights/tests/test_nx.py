@@ -15,11 +15,11 @@ class Test_NetworkXConverter(ut.TestCase):
         self.known_W = lat2W(5,5)
 
     def test_round_trip(self):
-        W_ = W.from_nx(self.known_nx)
+        W_ = W.from_networkx(self.known_nx)
         np.testing.assert_allclose(W_.sparse.toarray(), self.known_amat)
-        nx2 = W_.to_nx()
+        nx2 = W_.to_networkx()
         np.testing.assert_allclose(nx.to_numpy_matrix(nx2), self.known_amat)
-        nxsquare = self.known_W.to_nx()
+        nxsquare = self.known_W.to_networkx()
         np.testing.assert_allclose(self.known_W.sparse.toarray(), nx.to_numpy_matrix(nxsquare))
-        W_square = W.from_nx(nxsquare)
+        W_square = W.from_networkx(nxsquare)
         np.testing.assert_allclose(self.known_W.sparse.toarray(), W_square.sparse.toarray())
