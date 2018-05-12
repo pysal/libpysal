@@ -77,7 +77,7 @@ class test_shp_file(unittest.TestCase):
         shp.close()
 
         for a, b in zip(points, shp_file('test_point')):
-            self.assertEquals(a, b)
+            self.assertEqual(a, b)
         os.remove('test_point.shp')
         os.remove('test_point.shx')
 
@@ -108,10 +108,10 @@ class test_shp_file(unittest.TestCase):
         points = [pt for pt in shp]
         expected = {'Y': -0.25904661905760773, 'X': -
                     0.00068176617532103578, 'Shape Type': 1}
-        self.assertEqual(expected, shp.next())
+        self.assertEqual(expected, next(shp))
         expected = {'Y': -0.25630328607387354, 'X':
                     0.11697145363360706, 'Shape Type': 1}
-        self.assertEqual(expected, shp.next())
+        self.assertEqual(expected, next(shp))
 
     def test_type(self):
         shp = shp_file(pysal_examples.get_path('Point.shp'))
@@ -203,7 +203,7 @@ class TestPolyLine(unittest.TestCase):
 
 class TestMultiPoint(unittest.TestCase):
     def test___init__(self):
-        self.failUnlessRaises(NotImplementedError, MultiPoint)
+        self.assertRaises(NotImplementedError, MultiPoint)
 
 
 class TestPointZ(unittest.TestCase):
@@ -220,7 +220,7 @@ class TestPointZ(unittest.TestCase):
 
 class TestPolyLineZ(unittest.TestCase):
     def test___init__(self):
-        self.failUnlessRaises(NotImplementedError, PolyLineZ)
+        self.assertRaises(NotImplementedError, PolyLineZ)
 
 
 class TestPolyLineZ(unittest.TestCase):
@@ -263,37 +263,37 @@ class TestPolygonZ(unittest.TestCase):
 
 class TestMultiPointZ(unittest.TestCase):
     def test___init__(self):
-        self.failUnlessRaises(NotImplementedError, MultiPointZ)
+        self.assertRaises(NotImplementedError, MultiPointZ)
         # multi_point_z = MultiPointZ()
 
 
 class TestPointM(unittest.TestCase):
     def test___init__(self):
-        self.failUnlessRaises(NotImplementedError, PointM)
+        self.assertRaises(NotImplementedError, PointM)
         # point_m = PointM()
 
 
 class TestPolyLineM(unittest.TestCase):
     def test___init__(self):
-        self.failUnlessRaises(NotImplementedError, PolyLineM)
+        self.assertRaises(NotImplementedError, PolyLineM)
         # poly_line_m = PolyLineM()
 
 
 class TestPolygonM(unittest.TestCase):
     def test___init__(self):
-        self.failUnlessRaises(NotImplementedError, PolygonM)
+        self.assertRaises(NotImplementedError, PolygonM)
         # polygon_m = PolygonM()
 
 
 class TestMultiPointM(unittest.TestCase):
     def test___init__(self):
-        self.failUnlessRaises(NotImplementedError, MultiPointM)
+        self.assertRaises(NotImplementedError, MultiPointM)
         # multi_point_m = MultiPointM()
 
 
 class TestMultiPatch(unittest.TestCase):
     def test___init__(self):
-        self.failUnlessRaises(NotImplementedError, MultiPatch)
+        self.assertRaises(NotImplementedError, MultiPatch)
         # multi_patch = MultiPatch()
 
 
@@ -308,7 +308,7 @@ class _TestPoints(unittest.TestCase):
 
         shp = list(shp_file('test_point'))
         for a, b in zip(points, shp):
-            self.assertEquals(a, b)
+            self.assertEqual(a, b)
         os.remove('test_point.shp')
         os.remove('test_point.shx')
 
@@ -338,7 +338,7 @@ class _TestPolyLines(unittest.TestCase):
         shp.close()
         shp = list(shp_file('test_line'))
         for a, b in zip(shapes, shp):
-            self.assertEquals(a, b)
+            self.assertEqual(a, b)
         os.remove('test_line.shp')
         os.remove('test_line.shx')
 
@@ -369,7 +369,7 @@ class _TestPolygons(unittest.TestCase):
         shp.close()
         shp = list(shp_file('test_poly'))
         for a, b in zip(shapes, shp):
-            self.assertEquals(a, b)
+            self.assertEqual(a, b)
         os.remove('test_poly.shp')
         os.remove('test_poly.shx')
 

@@ -99,11 +99,11 @@ class GalIO(FileIO.FileIO):
             append = col.append
             counter = 0
             typ = self.data_type
-            for i in xrange(n):
+            for i in range(n):
                 id, n_neighbors = self.file.readline().strip().split()
                 id = typ(id)
                 n_neighbors = int(n_neighbors)
-                neighbors_i = map(typ, self.file.readline().strip().split())
+                neighbors_i = list(map(typ, self.file.readline().strip().split()))
                 nn = len(neighbors_i)
                 extend([id] * nn)
                 counter += nn
@@ -137,7 +137,7 @@ class GalIO(FileIO.FileIO):
                 id, n_neighbors = self.file.readline().strip().split()
                 id = typ(id)
                 n_neighbors = int(n_neighbors)
-                neighbors_i = map(typ, self.file.readline().strip().split())
+                neighbors_i = list(map(typ, self.file.readline().strip().split()))
                 neighbors[id] = neighbors_i
                 ids.append(id)
             self.pos += 1

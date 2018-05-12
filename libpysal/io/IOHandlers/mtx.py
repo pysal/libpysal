@@ -128,7 +128,7 @@ class MtxIO(FileIO.FileIO):
         if self.pos > 0:
             raise StopIteration
         mtx = sio.mmread(self.file)
-        ids = range(1, mtx.shape[0] + 1)  # matrix market indexes start at one
+        ids = list(range(1, mtx.shape[0] + 1))  # matrix market indexes start at one
         wsp = WSP(mtx, ids)
         if self._sparse:
             w = wsp

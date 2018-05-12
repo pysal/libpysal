@@ -1,5 +1,5 @@
 __all__ = ['DataTable']
-import FileIO
+from . import FileIO
 from ..common import requires
 from warnings import warn
 import numpy as np
@@ -167,7 +167,7 @@ class DataTable(FileIO.FileIO):
             #>>> assert index in range(0, len(table))
         """
         prevPos = self.tell()
-        if issubclass(type(key), basestring):
+        if issubclass(type(key), str):
             raise TypeError("index should be int or slice")
         if issubclass(type(key), int) or isinstance(key, slice):
             rows = key
@@ -181,10 +181,10 @@ class DataTable(FileIO.FileIO):
         if isinstance(rows, slice):
             row_start, row_stop, row_step = rows.indices(len(self))
             self.seek(row_start)
-            data = [self.next() for i in range(row_start, row_stop, row_step)]
+            data = [next(self) for i in range(row_start, row_stop, row_step)]
         else:
             self.seek(slice(rows).indices(len(self))[1])
-            data = [self.next()]
+            data = [next(self)]
         if cols is not None:
             if isinstance(cols, slice):
                 col_start, col_stop, col_step = cols.indices(len(data[0]))
@@ -206,7 +206,7 @@ class DataTable(FileIO.FileIO):
             if read_shp is True or self.dataPath.endswith('.dbf'):
                 read_shp = self.dataPath[:-3] + 'shp'
             try:
-                from geotable.shp import shp2series
+                from .geotable.shp import shp2series
                 df['geometry'] = shp2series(self.dataPath[:-3] + 'shp')
             except IOError as e:
                 warn('Encountered the following error in attempting to read'

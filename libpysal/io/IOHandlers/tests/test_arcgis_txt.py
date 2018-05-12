@@ -15,7 +15,7 @@ class test_ArcGISTextIO(unittest.TestCase):
     def test_close(self):
         f = self.obj
         f.close()
-        self.failUnlessRaises(ValueError, f.read)
+        self.assertRaises(ValueError, f.read)
 
     def test_read(self):
         with warnings.catch_warnings(record=True) as warn:
@@ -26,11 +26,11 @@ class test_ArcGISTextIO(unittest.TestCase):
                 assert "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids." in str(warn[0].message)
         self.assertEqual(3, w.n)
         self.assertEqual(2.0, w.mean_neighbors)
-        self.assertEqual([0.1, 0.05], w[2].values())
+        self.assertEqual([0.1, 0.05], list(w[2].values()))
 
     def test_seek(self):
         self.test_read()
-        self.failUnlessRaises(StopIteration, self.obj.read)
+        self.assertRaises(StopIteration, self.obj.read)
         self.obj.seek(0)
         self.test_read()
 

@@ -52,7 +52,7 @@ class Test_Adjlist(ut.TestCase):
     def test_mvapply(self):
         df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
         W = ps.Queen.from_dataframe(df)
-        ssq = lambda (x,y): np.sum((x-y)**2).item()
+        ssq = lambda x_y: np.sum((x_y[0]-x_y[1])**2).item()
         ssq.__name__ = 'sum_of_squares'
         alist = adj.adjlist_apply(df[['HOVAL', 'CRIME', 'INC']], W=W, 
                                   func=ssq)
@@ -78,7 +78,7 @@ class Test_Adjlist(ut.TestCase):
         atts = ['HOVAL', 'CRIME', 'INC'] 
         df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
         W = ps.Queen.from_dataframe(df)
-        hoval, crime, inc = map(self.apply_and_compare_columbus, atts) 
+        hoval, crime, inc = list(map(self.apply_and_compare_columbus, atts)) 
         mapped = adj.adjlist_map(df[atts], W=W)
         for name,data in zip(atts, (hoval, crime, inc)):
             np.testing.assert_allclose(data, 

@@ -2,8 +2,8 @@ from ...weights.Contiguity import Rook, Queen
 from ..FileIO import FileIO as ps_open
 from .utils import insert_metadata
 import os
-from shp import shp2series, series2shp
-from dbf import dbf2df, df2dbf
+from .shp import shp2series, series2shp
+from .dbf import dbf2df, df2dbf
 
 
 def read_files(filepath, **kwargs):

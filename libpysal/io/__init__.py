@@ -1,2 +1,2 @@
-import FileIO
-import geotable as gt
+from . import FileIO
+from . import geotable as gt

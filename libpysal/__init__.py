@@ -20,19 +20,19 @@ io
 weights
     Tools for creating and manipulating weights
 """
-import cg
-import io
-import weights
-import common
-import examples
+from . import cg
+from . import io
+from . import weights
+from . import common
+from . import examples
 
-from io import IOHandlers
+from .io import IOHandlers
 
 if common.pandas is not None:
-    from io import geotable
+    from .io import geotable
 
 # Assign pysal.open to dispatcher
 open = io.FileIO.FileIO
 
-from version import version
+from .version import version
 MISSINGVALUE = common.MISSINGVALUE

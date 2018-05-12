@@ -70,7 +70,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
     try:
         names = X.columns.tolist()
     except AttributeError:
-        names = list(map(str, range(X.shape[1])))
+        names = list(map(str, list(range(X.shape[1]))))
     ids = np.asarray(W.id_order)[:,None]
     table = pd.DataFrame(ids, columns=['id'])
     table = pd.concat((table, pd.DataFrame(X, columns=names)), axis=1)
@@ -80,9 +80,9 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
                           left_on='neighbor', right_on='id', 
                           suffixes=('_focal','_neighbor'))
     alist_atts.drop(['id_focal', 'id_neighbor'], axis=1, inplace=True)
-    alist_atts[func.__name__] = map(func, 
-                                    zip(alist_atts.filter(like='_focal').values,
-                                        alist_atts.filter(like='_neighbor').values))
+    alist_atts[func.__name__] = list(map(func, 
+                                    list(zip(alist_atts.filter(like='_focal').values,
+                                        alist_atts.filter(like='_neighbor').values))))
     return alist_atts
 
 def _get_W_and_alist(W, alist, skip_verify=False):

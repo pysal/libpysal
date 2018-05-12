@@ -215,7 +215,7 @@ def vecW(origin_x, origin_y, dest_x, dest_y, threshold, p=2, alpha=-1.0,
     [1, 2]
 
     """
-    data = zip(origin_x, origin_y, dest_x, dest_y)
+    data = list(zip(origin_x, origin_y, dest_x, dest_y))
     W = DistanceBand(data, threshold=threshold, p=p, binary=binary, alpha=alpha,
             ids=ids, build_sp=False, silent=silent)
     return W

@@ -1,2 +1,2 @@
-import atomic
-import tabular
+from . import atomic
+from . import tabular

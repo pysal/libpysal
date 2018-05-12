@@ -10,7 +10,7 @@ except:
 try:
     import scipy as sp
     import scipy.stats as stats
-    from cg.kdtree import KDTree
+    from .cg.kdtree import KDTree
     from scipy.spatial.distance import pdist, cdist
 except:
     print('scipy 0.7+ is required')
@@ -127,8 +127,8 @@ def requires(*args, **kwargs):
             def passer(*args,**kwargs):
                 if v:
                     missing = [arg for i, arg in enumerate(wanted) if not available[i]]
-                    print('missing dependencies: {d}'.format(d=missing))
-                    print('not running {}'.format(function.__name__))
+                    print(('missing dependencies: {d}'.format(d=missing)))
+                    print(('not running {}'.format(function.__name__)))
                 else:
                     pass
             return passer 

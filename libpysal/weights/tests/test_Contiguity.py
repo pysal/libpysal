@@ -24,7 +24,7 @@ class Contiguity_Mixin(object):
     idVariable = None # id variable from file or column
 
     def setUp(self):
-        self.__dict__.update({k:v for k,v in Contiguity_Mixin.__dict__.items()
+        self.__dict__.update({k:v for k,v in list(Contiguity_Mixin.__dict__.items())
             if not k.startswith('_')})
     
     def runTest(self):
@@ -97,7 +97,7 @@ class Test_Queen(ut.TestCase, Contiguity_Mixin):
         self.cls = c.Queen
         self.idVariable = 'POLYID'
         self.known_name = 5
-        self.known_namedw = {k+1:v for k,v in self.known_w.items()}
+        self.known_namedw = {k+1:v for k,v in list(self.known_w.items())}
 
 class Test_Rook(ut.TestCase, Contiguity_Mixin):
     def setUp(self):
@@ -109,7 +109,7 @@ class Test_Rook(ut.TestCase, Contiguity_Mixin):
         self.cls = c.Rook
         self.idVariable = 'POLYID'
         self.known_name = 5
-        self.known_namedw = {k+1:v for k,v in self.known_w.items()}
+        self.known_namedw = {k+1:v for k,v in list(self.known_w.items())}
 
 q = ut.TestLoader().loadTestsFromTestCase(Test_Queen)
 r = ut.TestLoader().loadTestsFromTestCase(Test_Rook)

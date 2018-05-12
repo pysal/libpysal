@@ -19,24 +19,24 @@ class test_StataTextIO(unittest.TestCase):
         for obj in [self.obj_sparse, self.obj_full]:
             f = obj
             f.close()
-            self.failUnlessRaises(ValueError, f.read)
+            self.assertRaises(ValueError, f.read)
 
     def test_read(self):
         w_sparse = self.obj_sparse.read()
         self.assertEqual(56, w_sparse.n)
         self.assertEqual(4.0, w_sparse.mean_neighbors)
-        self.assertEqual([1.0, 1.0, 1.0, 1.0, 1.0], w_sparse[1].values())
+        self.assertEqual([1.0, 1.0, 1.0, 1.0, 1.0], list(w_sparse[1].values()))
 
         w_full = self.obj_full.read()
         self.assertEqual(56, w_full.n)
         self.assertEqual(4.0, w_full.mean_neighbors)
         self.assertEqual(
-            [0.125, 0.125, 0.125, 0.125, 0.125], w_full[1].values())
+            [0.125, 0.125, 0.125, 0.125, 0.125], list(w_full[1].values()))
 
     def test_seek(self):
         self.test_read()
-        self.failUnlessRaises(StopIteration, self.obj_sparse.read)
-        self.failUnlessRaises(StopIteration, self.obj_full.read)
+        self.assertRaises(StopIteration, self.obj_sparse.read)
+        self.assertRaises(StopIteration, self.obj_full.read)
         self.obj_sparse.seek(0)
         self.obj_full.seek(0)
         self.test_read()

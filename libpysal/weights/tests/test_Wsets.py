@@ -51,7 +51,7 @@ class TestWsets(unittest.TestCase):
     def test_w_subset(self):
         """Unit test"""
         w1 = lat2W(6, 4)
-        ids = range(16)
+        ids = list(range(16))
         w2 = Wsets.w_subset(w1, ids)
         self.assertEqual(w1[0], w2[0])
         self.assertEqual(set(w1.neighbors[15]), set([11, 14, 19]))

@@ -1,23 +1,23 @@
 import warnings
 warnings.filterwarnings(
     action='ignore', message=".*__builtin__.file size changed.*")
-import gwt
-import gal
-import dat
-import pyShpIO
-import wkt
-import geoda_txt
-import csvWrapper
-import pyDbfIO
-import arcgis_dbf
-import arcgis_swm
-import arcgis_txt
-import dat
-import geobugs_txt
-import mat
-import mtx
-import stata_txt
-import wk1
+from . import gwt
+from . import gal
+from . import dat
+from . import pyShpIO
+from . import wkt
+from . import geoda_txt
+from . import csvWrapper
+from . import pyDbfIO
+from . import arcgis_dbf
+from . import arcgis_swm
+from . import arcgis_txt
+from . import dat
+from . import geobugs_txt
+from . import mat
+from . import mtx
+from . import stata_txt
+from . import wk1
 
 try:
     from . import db

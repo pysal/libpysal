@@ -55,12 +55,12 @@ def load_ring_little(dat):
     """
     npts = struct.unpack('<I', dat.read(4))[0]
     xy = struct.unpack('<%dd'%(npts*2), dat.read(npts*2*8))
-    return [cg.Point(xy[i:i+2]) for i in xrange(0,npts*2,2)]
+    return [cg.Point(xy[i:i+2]) for i in range(0,npts*2,2)]
     
 def load_ring_big(dat):
     npts = struct.unpack('>I', dat.read(4))[0]
     xy = struct.unpack('>%dd'%(npts*2), dat.read(npts*2*8))
-    return [cg.Point(xy[i:i+2]) for i in xrange(0,npts*2,2)]
+    return [cg.Point(xy[i:i+2]) for i in range(0,npts*2,2)]
     
 
 def loads(s):
@@ -109,7 +109,7 @@ def loads(s):
         """
         n = struct.unpack(endian+'I', dat.read(4))[0]
         xy = struct.unpack(endian+'%dd'%(n*2), dat.read(n*2*8))
-        return cg.Chain([cg.Point(xy[i:i+2]) for i in xrange(0,n*2,2)])
+        return cg.Chain([cg.Point(xy[i:i+2]) for i in range(0,n*2,2)])
     elif typ == 3:
         """
         WKBPolygon  {
@@ -124,7 +124,7 @@ def loads(s):
         """
         nrings = struct.unpack(endian+'I', dat.read(4))[0]
         load_ring = load_ring_little if endian == '<' else load_ring_big
-        rings = [load_ring(dat) for _ in xrange(nrings)]
+        rings = [load_ring(dat) for _ in range(nrings)]
         return cg.Polygon(rings[0], rings[1:])
     elif typ == 4:
         """
@@ -136,7 +136,7 @@ def loads(s):
         }
         """
         npts = struct.unpack(endian+'I', dat.read(4))[0]
-        return [loads(dat) for _ in xrange(npts)]
+        return [loads(dat) for _ in range(npts)]
     elif typ == 5:
         """
         WKBMultiLineString  {
@@ -147,7 +147,7 @@ def loads(s):
         }
         """
         nparts = struct.unpack(endian+'I', dat.read(4))[0]
-        chains = [loads(dat) for _ in xrange(nparts)]
+        chains = [loads(dat) for _ in range(nparts)]
         return cg.Chain(sum([c.parts for c in chains],[]))
     elif typ == 6:
         """
@@ -160,7 +160,7 @@ def loads(s):
 
         """
         npolys = struct.unpack(endian+'I', dat.read(4))[0]
-        polys = [loads(dat) for _ in xrange(npolys)]
+        polys = [loads(dat) for _ in range(npolys)]
         parts = sum([p.parts for p in polys], [])
         holes = sum([p.holes for p in polys if p.holes[0]], [])
         # MULTIPOLYGON EMPTY, isn't well supported by pysal shape types.
@@ -177,7 +177,7 @@ def loads(s):
         }
         """
         ngeoms = struct.unpack(endian+'I', dat.read(4))[0]
-        return [loads(dat) for _ in xrange(ngeoms)]
+        return [loads(dat) for _ in range(ngeoms)]
         
     raise TypeError('Type (%d) is unknown or unsupported.'%typ)
 
@@ -203,16 +203,16 @@ if __name__ == '__main__':
         import shapely.wkt, shapely.geometry
         from pysal.contrib.shapely_ext import to_wkb
     except ImportError:
-        print "shapely is used to test this module."
+        print("shapely is used to test this module.")
         raise
     for example in wktExamples:
-        print example
+        print(example)
         shape0= shapely.wkt.loads(example)
         shape1 = loads(shape0.to_wkb())
         if example.startswith('MULTIPOINT'):
             shape2 = shapely.geometry.asMultiPoint(shape1)
         elif example.startswith('GEOMETRYCOLLECTION'):
-            shape2 = shapely.geometry.collection.GeometryCollection(map(shapely.geometry.asShape,shape1))
+            shape2 = shapely.geometry.collection.GeometryCollection(list(map(shapely.geometry.asShape,shape1)))
         elif example == 'MULTIPOLYGON EMPTY':
             #Skip Test
             shape2 = None
@@ -220,11 +220,11 @@ if __name__ == '__main__':
             shape2 = shapely.geometry.asShape(shape1)
 
 
-        print shape1
+        print(shape1)
         if shape2:
             assert shape0.equals(shape2)
-            print shape0.equals(shape2)
+            print(shape0.equals(shape2))
         else:
-            print "Skip"
+            print("Skip")
 
-        print ""
+        print("")

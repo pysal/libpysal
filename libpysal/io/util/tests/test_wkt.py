@@ -20,34 +20,34 @@ class test_WKTParser(unittest.TestCase):
 
     def test_Point(self):
         pt = self.parser(self.wktPOINT)
-        self.assert_(issubclass(type(pt), Point))
-        self.assertEquals(pt[:], (6.0, 10.0))
+        self.assertTrue(issubclass(type(pt), Point))
+        self.assertEqual(pt[:], (6.0, 10.0))
 
     def test_LineString(self):
         line = self.parser(self.wktLINESTRING)
-        self.assert_(issubclass(type(line), Chain))
+        self.assertTrue(issubclass(type(line), Chain))
         parts = [[pt[:] for pt in part] for part in line.parts]
-        self.assertEquals(parts, [[(3.0, 4.0), (10.0, 50.0), (20.0, 25.0)]])
-        self.assertEquals(line.len, 73.455384532199886)
+        self.assertEqual(parts, [[(3.0, 4.0), (10.0, 50.0), (20.0, 25.0)]])
+        self.assertEqual(line.len, 73.455384532199886)
 
     def test_Polygon(self):
         poly = self.parser(self.wktPOLYGON)
-        self.assert_(issubclass(type(poly), Polygon))
+        self.assertTrue(issubclass(type(poly), Polygon))
         parts = [[pt[:] for pt in part] for part in poly.parts]
-        self.assertEquals(parts, [[(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0,
+        self.assertEqual(parts, [[(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0,
                                                                         1.0), (1.0, 1.0)], [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0),
                                                                                             (2.0, 2.0)]])
-        self.assertEquals(
+        self.assertEqual(
             poly.centroid, (2.9705882352941178, 2.9705882352941178))
-        self.assertEquals(poly.area, 17.0)
+        self.assertEqual(poly.area, 17.0)
 
     def test_fromWKT(self):
         for wkt in self.unsupported:
-            self.failUnlessRaises(
+            self.assertRaises(
                 NotImplementedError, self.parser.fromWKT, wkt)
         for wkt in self.empty:
-            self.assertEquals(self.parser.fromWKT(wkt), None)
-        self.assertEquals(self.parser.__call__, self.parser.fromWKT)
+            self.assertEqual(self.parser.fromWKT(wkt), None)
+        self.assertEqual(self.parser.__call__, self.parser.fromWKT)
 
 if __name__ == '__main__':
     unittest.main()

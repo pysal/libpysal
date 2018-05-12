@@ -88,7 +88,7 @@ class TestW(unittest.TestCase):
                        [0., 0., 0., 1., 0., 0., 0., 1., 0.],
                        [0., 0., 0., 0., 1., 0., 1., 0., 1.],
                        [0., 0., 0., 0., 0., 1., 0., 1., 0.]])
-        ids = range(9)
+        ids = list(range(9))
 
         wf1, ids1 = self.w3x3.full()
         NPTA3E(wf1, wf)
@@ -109,10 +109,10 @@ class TestW(unittest.TestCase):
                      4: [8, 0, 2, 6], 5: [1, 3, 7], 6: [4, 0, 8], 7: [3, 1, 5],
                      8: [6, 2, 4]}
         wneighbs = {k: {neighb: weights[k][i] for i, neighb in enumerate(v)}
-                    for k, v in neighbors.iteritems()}
+                    for k, v in list(neighbors.items())}
         w2 = util.higher_order(self.w3x3, 2)
         test_wneighbs = {k: {ne: weights[k][i] for i, ne in enumerate(v)}
-                         for k, v in w2.neighbors.iteritems()}
+                         for k, v in list(w2.neighbors.items())}
         self.assertEqual(test_wneighbs, wneighbs)
 
     def test_histogram(self):
@@ -167,7 +167,7 @@ class TestW(unittest.TestCase):
         self.assertEqual(self.w3x3.neighbor_offsets, d)
 
     def test_nonzero(self):
-        self.assertEquals(self.w3x3.nonzero, 24)
+        self.assertEqual(self.w3x3.nonzero, 24)
 
     def test_order(self):
         w = util.lat2W(3, 3)
@@ -180,7 +180,7 @@ class TestW(unittest.TestCase):
              6: [2, 3, 0, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [0, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(util.order(w), o)
+        self.assertEqual(util.order(w), o)
 
     def test_pct_nonzero(self):
         self.assertEqual(self.w3x3.pct_nonzero, 29.62962962962963)
@@ -200,14 +200,14 @@ class TestW(unittest.TestCase):
         NPTA3E(self.w3x3.s2array, s2a)
 
     def test_sd(self):
-        self.assertEquals(self.w3x3.sd, 0.66666666666666663)
+        self.assertEqual(self.w3x3.sd, 0.66666666666666663)
 
     def test_set_transform(self):
         w = util.lat2W(2, 2)
         self.assertEqual(w.transform, 'O')
-        self.assertEquals(w.weights[0], [1.0, 1.0])
+        self.assertEqual(w.weights[0], [1.0, 1.0])
         w.transform = 'r'
-        self.assertEquals(w.weights[0], [0.5, 0.5])
+        self.assertEqual(w.weights[0], [0.5, 0.5])
 
     def test_shimbel(self):
         d = {0: [-1, 1, 2, 1, 2, 3, 2, 3, 4],
@@ -219,7 +219,7 @@ class TestW(unittest.TestCase):
              6: [2, 3, 4, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [4, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(util.shimbel(self.w3x3), d)
+        self.assertEqual(util.shimbel(self.w3x3), d)
 
     def test_sparse(self):
         self.assertEqual(self.w3x3.sparse.nnz, 24)
@@ -325,7 +325,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
                        [0., 0., 0., 1., 0., 0., 0., 1., 0.],
                        [0., 0., 0., 0., 1., 0., 1., 0., 1.],
                        [0., 0., 0., 0., 0., 1., 0., 1., 0.]])
-        ids = range(9)
+        ids = list(range(9))
 
         wf1, ids1 = self.w3x3.full()
         NPTA3E(wf1, wf)
@@ -346,10 +346,10 @@ class Test_WSP_Back_To_W(unittest.TestCase):
                      4: [8, 0, 2, 6], 5: [1, 3, 7], 6: [4, 0, 8], 7: [3, 1, 5],
                      8: [6, 2, 4]}
         wneighbs = {k: {neighb: weights[k][i] for i, neighb in enumerate(v)}
-                    for k, v in neighbors.iteritems()}
+                    for k, v in list(neighbors.items())}
         w2 = util.higher_order(self.w3x3, 2)
         test_wneighbs = {k: {ne: w2.weights[k][i] for i, ne in enumerate(v)}
-                         for k, v in w2.neighbors.iteritems()}
+                         for k, v in list(w2.neighbors.items())}
         self.assertEqual(test_wneighbs, wneighbs)
 
     def test_histogram(self):
@@ -391,7 +391,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEqual(w.n, 25)
 
     def test_nonzero(self):
-        self.assertEquals(self.w3x3.nonzero, 24)
+        self.assertEqual(self.w3x3.nonzero, 24)
 
     def test_order(self):
         w = util.lat2W(3, 3)
@@ -404,7 +404,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
              6: [2, 3, 0, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [0, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(util.order(w), o)
+        self.assertEqual(util.order(w), o)
 
     def test_pct_nonzero(self):
         self.assertEqual(self.w3x3.pct_nonzero, 29.62962962962963)
@@ -424,14 +424,14 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         NPTA3E(self.w3x3.s2array, s2a)
 
     def test_sd(self):
-        self.assertEquals(self.w3x3.sd, 0.66666666666666663)
+        self.assertEqual(self.w3x3.sd, 0.66666666666666663)
 
     def test_set_transform(self):
         w = util.lat2W(2, 2)
         self.assertEqual(w.transform, 'O')
-        self.assertEquals(w.weights[0], [1.0, 1.0])
+        self.assertEqual(w.weights[0], [1.0, 1.0])
         w.transform = 'r'
-        self.assertEquals(w.weights[0], [0.5, 0.5])
+        self.assertEqual(w.weights[0], [0.5, 0.5])
 
     def test_shimbel(self):
         d = {0: [-1, 1, 2, 1, 2, 3, 2, 3, 4],
@@ -443,7 +443,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
              6: [2, 3, 4, 1, 2, 3, -1, 1, 2],
              7: [3, 2, 3, 2, 1, 2, 1, -1, 1],
              8: [4, 3, 2, 3, 2, 1, 2, 1, -1]}
-        self.assertEquals(util.shimbel(self.w3x3), d)
+        self.assertEqual(util.shimbel(self.w3x3), d)
 
     def test_sparse(self):
         self.assertEqual(self.w3x3.sparse.nnz, 24)
@@ -466,8 +466,8 @@ class TestWSP(unittest.TestCase):
         self.w3x3 = WSP(w3x3.sparse)
 
     def test_WSP(self):
-        self.assertEquals(self.w.id_order, self.wsp.id_order)
-        self.assertEquals(self.w.n, self.wsp.n)
+        self.assertEqual(self.w.id_order, self.wsp.id_order)
+        self.assertEqual(self.w.n, self.wsp.n)
         np.testing.assert_array_equal(
             self.w.sparse.todense(), self.wsp.sparse.todense())
 

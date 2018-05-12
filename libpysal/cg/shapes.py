@@ -1031,7 +1031,7 @@ class Chain(Geometry):
         if geo['type'].lower() == 'linestring':
             verts = [Point(pt) for pt in geo['coordinates']]
         elif geo['type'].lower() == 'multilinestring':
-            verts = [map(Point, part) for part in geo['coordinates']]
+            verts = [list(map(Point, part)) for part in geo['coordinates']]
         else:
             raise TypeError('%r is not a Chain'%geo)
         return cls(verts)
@@ -1153,7 +1153,7 @@ class Chain(Geometry):
             return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
         def part_perimeter(part):
-            return sum([dist(part[i], part[i + 1]) for i in xrange(len(part) - 1)])
+            return sum([dist(part[i], part[i + 1]) for i in range(len(part) - 1)])
 
         if self._len is None:
             self._len = sum([part_perimeter(part) for part in self._vertices])
@@ -1173,7 +1173,7 @@ class Chain(Geometry):
         --------
         """
         def part_perimeter(part):
-            return sum([arcdist(part[i], part[i + 1]) * 1000. for i in xrange(len(part) - 1)])
+            return sum([arcdist(part[i], part[i + 1]) * 1000. for i in range(len(part) - 1)])
         if self._arclen is None:
             self._arclen = sum(
                 [part_perimeter(part) for part in self._vertices])
@@ -1247,7 +1247,7 @@ class Ring(Geometry):
             dist = self.dist
             v = self.vertices
             self._perimeter = sum([dist(v[i], v[i + 1])
-                                   for i in xrange(-1, len(self) - 1)])
+                                   for i in range(-1, len(self) - 1)])
         return self._perimeter
 
     @property
@@ -1300,7 +1300,7 @@ class Ring(Geometry):
             N = len(self)
 
             A = 0.0
-            for i in xrange(N - 1):
+            for i in range(N - 1):
                 A += (x[i] + x[i + 1]) * \
                     (y[i] - y[i + 1])
             A = A * 0.5
@@ -1334,7 +1334,7 @@ class Ring(Geometry):
             N = len(self)
             cx = 0
             cy = 0
-            for i in xrange(N - 1):
+            for i in range(N - 1):
                 f = (x[i] * y[i + 1] - x[i + 1] * y[i])
                 cx += (x[i] + x[i + 1]) * f
                 cy += (y[i] + y[i + 1]) * f
@@ -1371,10 +1371,10 @@ class Ring(Geometry):
                 return False
 
             rn = len(self.vertices)
-            xs = [ self.vertices[i][0] - point[0] for i in xrange(rn) ]
-            ys = [ self.vertices[i][1] - point[1] for i in xrange(rn) ]
+            xs = [ self.vertices[i][0] - point[0] for i in range(rn) ]
+            ys = [ self.vertices[i][1] - point[1] for i in range(rn) ]
             w = 0
-            for i in xrange(len(self.vertices) - 1):
+            for i in range(len(self.vertices) - 1):
                 yi = ys[i]
                 yj = ys[i+1]
                 xi = xs[i]
@@ -1459,14 +1459,14 @@ class Polygon(Geometry):
                 return part[::-1]
 
         if isinstance(vertices[0], list):
-            self._part_rings = map(Ring, vertices)
+            self._part_rings = list(map(Ring, vertices))
             self._vertices = [clockwise(part) for part in vertices]
         else:
             self._part_rings = [Ring(vertices)]
             self._vertices = [clockwise(vertices)]
         if holes is not None and holes != []:
             if isinstance(holes[0], list):
-                self._hole_rings = map(Ring, holes)
+                self._hole_rings = list(map(Ring, holes))
                 self._holes = [clockwise(hole) for hole in holes]
             else:
                 self._hole_rings = [Ring(holes)]
@@ -1620,7 +1620,7 @@ class Polygon(Geometry):
             return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
         def part_perimeter(part):
-            return sum([dist(part[i], part[i + 1]) for i in xrange(-1, len(part) - 1)])
+            return sum([dist(part[i], part[i + 1]) for i in range(-1, len(part) - 1)])
 
         if self._perimeter is None:
             self._perimeter = (sum([part_perimeter(part) for part in self._vertices]) +
@@ -1692,7 +1692,7 @@ class Polygon(Geometry):
         """
         def part_area(part_verts):
             area = 0
-            for i in xrange(-1, len(part_verts) - 1):
+            for i in range(-1, len(part_verts) - 1):
                 area += (part_verts[i][0] + part_verts[i + 1][0]) * \
                     (part_verts[i][1] - part_verts[i + 1][1])
             area = area * 0.5
@@ -1842,7 +1842,7 @@ class Rectangle(Geometry):
         self.right = float(right)
         self.upper = float(upper)
 
-    def __nonzero__(self):
+    def __bool__(self):
         """
         ___nonzero__ is used "to implement truth value testing and the built-in operation bool()" -- http://docs.python.org/reference/datamodel.html
 
@@ -1994,6 +1994,6 @@ class Rectangle(Geometry):
 
 _geoJSON_type_to_Pysal_type = {'point': Point, 'linestring': Chain, 'multilinestring': Chain,
                                'polygon': Polygon, 'multipolygon': Polygon}
-import standalone  # moving this to top breaks unit tests !
+from . import standalone  # moving this to top breaks unit tests !
 from .polygonQuadTreeStructure import QuadTreeStructureSingleRing
 

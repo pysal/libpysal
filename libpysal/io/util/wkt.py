@@ -75,7 +75,7 @@ class WKTParser:
 
     def LineString(self, geoStr):
         points = geoStr.strip().split(',')
-        points = map(self.Point, points)
+        points = list(map(self.Point, points))
         return cg.Chain(points)
 
     def Polygon(self, geoStr):

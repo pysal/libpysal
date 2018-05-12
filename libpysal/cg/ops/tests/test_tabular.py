@@ -25,7 +25,7 @@ class Test_Tabular(ut.TestCase):
                 Polygon([(1,2),(2,2),(2,1),(1,1)]),
                 Polygon([(1,1),(2,1),(2,0),(1,0)])]
         regime = [0,0,1,1]
-        ids = range(4)
+        ids = list(range(4))
         data = np.array((regime, ids)).T
         self.exdf = pd.DataFrame(data, columns=['regime', 'ids'])
         self.exdf['geometry'] = grid
@@ -39,7 +39,7 @@ class Test_Tabular(ut.TestCase):
         new_df = GIS.tabular.to_df(geodf)
         self.assertIsInstance(new_df, pd.DataFrame)
         for new, old in zip(new_df.geometry, self.columbus.geometry):
-            self.assertEquals(new, old)
+            self.assertEqual(new, old)
 
     def test_spatial_join(self):
         pass

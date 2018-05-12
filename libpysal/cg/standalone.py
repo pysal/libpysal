@@ -89,7 +89,7 @@ def get_bounding_box(items):
         else:  # Point
             return o[1]
 
-    return Rectangle(min(map(left, items)), min(map(lower, items)), max(map(right, items)), max(map(upper, items)))
+    return Rectangle(min(list(map(left, items))), min(list(map(lower, items))), max(list(map(right, items))), max(list(map(upper, items))))
 
 
 def get_angle_between(ray1, ray2):
@@ -280,23 +280,21 @@ def get_polygon_point_intersect(poly, pt):
     >>> get_polygon_point_intersect(poly, pt2)
     """
     def pt_lies_on_part_boundary(pt, vertices):
-        return filter(
-            lambda i: get_segment_point_dist(LineSegment(
-                vertices[i], vertices[i + 1]), pt)[0] == 0,
-            xrange(-1, len(vertices) - 1)) != []
+        return [i for i in range(-1, len(vertices) - 1) if get_segment_point_dist(LineSegment(
+                vertices[i], vertices[i + 1]), pt)[0] == 0] != []
 
     ret = None
     if get_rectangle_point_intersect(poly.bounding_box, pt) is None:  # Weed out points that aren't even close
         return None
-    elif filter(lambda verts: pt_lies_on_part_boundary(pt, verts), poly._vertices) != []:
+    elif [verts for verts in poly._vertices if pt_lies_on_part_boundary(pt, verts)] != []:
         ret = pt
-    elif filter(lambda verts: _point_in_vertices(pt, verts), poly._vertices) != []:
+    elif [verts for verts in poly._vertices if _point_in_vertices(pt, verts)] != []:
         ret = pt
     if poly._holes != [[]]:
-        if filter(lambda verts: pt_lies_on_part_boundary(pt, verts), poly.holes) != []:
+        if [verts for verts in poly.holes if pt_lies_on_part_boundary(pt, verts)] != []:
             # pt lies on boundary of hole.
             pass
-        if filter(lambda verts: _point_in_vertices(pt, verts), poly.holes) != []:
+        if [verts for verts in poly.holes if _point_in_vertices(pt, verts)] != []:
             # pt lines inside a hole.
             ret = None
         #raise NotImplementedError, 'Cannot compute containment for polygon with holes'
@@ -451,7 +449,7 @@ def get_polygon_point_dist(poly, pt):
     part_prox = []
     for vertices in poly._vertices:
         part_prox.append(min([get_segment_point_dist(LineSegment(vertices[i], vertices[i + 1]), pt)[0]
-                              for i in xrange(-1, len(vertices) - 1)]))
+                              for i in range(-1, len(vertices) - 1)]))
     return min(part_prox)
 
 
@@ -723,7 +721,7 @@ def _point_in_vertices(pt, vertices):
         pt = (pt[0], pt[1] + -1e-14 + random.random(
         ) * 2e-14)  # Perturb the location very slightly
     inters = 0
-    for i in xrange(-1, len(vertices) - 1):
+    for i in range(-1, len(vertices) - 1):
         v1 = vertices[i]
         v2 = vertices[i + 1]
         if neg_ray_intersect(v1, v2, pt):

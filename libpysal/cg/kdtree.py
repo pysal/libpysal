@@ -7,7 +7,7 @@ import math
 import scipy.spatial
 import numpy
 from scipy import inf
-import sphere
+from . import sphere
 from .sphere import RADIUS_EARTH_KM
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
@@ -86,7 +86,7 @@ class Arc_KDTree(temp_KDTree):
         """
         self.radius = radius
         self.circumference = 2 * math.pi * radius
-        temp_KDTree.__init__(self, map(sphere.toXYZ, data), leafsize)
+        temp_KDTree.__init__(self, list(map(sphere.toXYZ, data)), leafsize)
 
     def _toXYZ(self, x):
         if not issubclass(type(x), numpy.ndarray):
@@ -98,7 +98,7 @@ class Arc_KDTree(temp_KDTree):
         elif len(x.shape) == 1:
             x = numpy.array(sphere.toXYZ(x))
         else:
-            x = map(sphere.toXYZ, x)
+            x = list(map(sphere.toXYZ, x))
         return x
 
     def count_neighbors(self, other, r, p=2):
@@ -280,6 +280,6 @@ class Arc_KDTree(temp_KDTree):
         #print D.data
         a2l = lambda x: sphere.linear2arcdist(x, self.radius)
         #print map(a2l,D.data)
-        return scipy.sparse.coo_matrix((map(a2l, D.data), (D.row, D.col))).todok()
+        return scipy.sparse.coo_matrix((list(map(a2l, D.data)), (D.row, D.col))).todok()
 
 

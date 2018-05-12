@@ -62,7 +62,7 @@ class ArcGISDbfIO(FileIO.FileIO):
         self.file = FileIO.FileIO(self.dataPath, self.mode)
 
     def _set_varName(self, val):
-        if issubclass(type(val), basestring):
+        if issubclass(type(val), str):
             self._varName = val
 
     def _get_varName(self):
@@ -212,7 +212,7 @@ class ArcGISDbfIO(FileIO.FileIO):
             self.file.field_spec = [id_spec, id_spec, ('N', 13, 6)]
 
             for id in obj.id_order:
-                neighbors = zip(obj.neighbors[id], obj.weights[id])
+                neighbors = list(zip(obj.neighbors[id], obj.weights[id]))
                 for neighbor, weight in neighbors:
                     self.file.write([id, neighbor, weight])
                     self.pos = self.file.pos

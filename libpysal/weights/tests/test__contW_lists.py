@@ -23,7 +23,7 @@ class TestContiguityWeights(unittest.TestCase):
         shpObj.close()
 
     def test_w_type(self):
-        self.assert_(isinstance(self.binningW, ContiguityWeightsLists))
+        self.assertTrue(isinstance(self.binningW, ContiguityWeightsLists))
 
     def test_QUEEN(self):
         self.assertEqual(QUEEN, 1)
@@ -32,8 +32,8 @@ class TestContiguityWeights(unittest.TestCase):
         self.assertEqual(ROOK, 2)
 
     def test_ContiguityWeightsLists(self):
-        self.assert_(hasattr(self.binningW, 'w'))
-        self.assert_(issubclass(dict, type(self.binningW.w)))
+        self.assertTrue(hasattr(self.binningW, 'w'))
+        self.assertTrue(issubclass(dict, type(self.binningW.w)))
         self.assertEqual(len(self.binningW.w), 136)
 
     def test_nested_polygons(self):
@@ -45,7 +45,7 @@ class TestContiguityWeights(unittest.TestCase):
             pysal_examples.get_path('virginia.shp'), QUEEN, 'POLY_ID')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
@@ -60,7 +60,7 @@ class TestContiguityWeights(unittest.TestCase):
             pysal_examples.get_path('rook31.shp'), ROOK, 'POLY_ID')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
@@ -75,7 +75,7 @@ class TestContiguityWeights(unittest.TestCase):
             'stl_hom.shp'), ROOK, 'POLY_ID_OG')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
@@ -90,7 +90,7 @@ class TestContiguityWeights(unittest.TestCase):
             'sacramentot2.shp'), ROOK, 'POLYID')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
@@ -105,7 +105,7 @@ class TestContiguityWeights(unittest.TestCase):
             pysal_examples.get_path('virginia.shp'), ROOK, 'POLY_ID')
         # compare output.
         for key in geodaW.neighbors:
-            geoda_neighbors = map(int, geodaW.neighbors[key])
+            geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
             geoda_neighbors.sort()
             pysalb_neighbors.sort()
