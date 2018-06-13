@@ -1126,8 +1126,8 @@ class W(object):
         >>> wf, ids = full(w)
         >>> wf
         array([[0., 1., 0.],
-              [1., 0., 1.],
-              [0., 1., 0.]])
+               [1., 0., 1.],
+               [0., 1., 0.]])
 
         >>> ids
         ['first', 'second', 'third']
