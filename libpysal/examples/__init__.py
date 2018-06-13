@@ -1,5 +1,5 @@
 import os
-import _version
+from . import _version
 
 base = os.path.abspath(os.path.dirname(_version.__file__))
 __all__ = ['get_path', 'available', 'explain']

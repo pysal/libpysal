@@ -11,6 +11,7 @@ import os
 import operator
 import scipy
 from warnings import warn
+import numbers
 
 __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
@@ -65,18 +66,18 @@ def hexLat2W(nrows=5, ncols=5):
     """
 
     if nrows == 1 or ncols == 1:
-        print "Hexagon lattice requires at least 2 rows and columns"
-        print "Returning a linear contiguity structure"
+        print("Hexagon lattice requires at least 2 rows and columns")
+        print("Returning a linear contiguity structure")
         return lat2W(nrows, ncols)
 
     n = nrows * ncols
-    rid = [i // ncols for i in xrange(n)]
-    cid = [i % ncols for i in xrange(n)]
+    rid = [i // ncols for i in range(n)]
+    cid = [i % ncols for i in range(n)]
     r1 = nrows - 1
     c1 = ncols - 1
 
     w = lat2W(nrows, ncols).neighbors
-    for i in xrange(n):
+    for i in range(n):
         odd = cid[i] % 2
         if odd:
             if rid[i] < r1:  # odd col index above last row
@@ -153,11 +154,11 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
     n = nrows * ncols
     r1 = nrows - 1
     c1 = ncols - 1
-    rid = [i // ncols for i in xrange(n)] #must be floor!
-    cid = [i % ncols for i in xrange(n)]
+    rid = [i // ncols for i in range(n)] #must be floor!
+    cid = [i % ncols for i in range(n)]
     w = {}
     r = below = 0
-    for i in xrange(n - 1):
+    for i in range(n - 1):
         if rid[i] < r1:
             below = rid[i] + 1
             r = below * ncols + cid[i]
@@ -184,13 +185,13 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
     weights = {}
     for key in w:
         weights[key] = [1.] * len(w[key])
-    ids = range(n)
+    ids = list(range(n))
     if id_type == 'string':
         ids = ['id' + str(i) for i in ids]
     elif id_type == 'float':
         ids = [i * 1. for i in ids]
     if id_type == 'string' or id_type == 'float':
-        id_dict = dict(zip(range(n), ids))
+        id_dict = dict(list(zip(list(range(n)), ids)))
         alt_w = {}
         alt_weights = {}
         for i in w:
@@ -252,7 +253,7 @@ def regime_weights(regimes):
     """
     msg = "PendingDepricationWarning: regime_weights will be "
     msg += "renamed to block_weights in PySAL 2.0"
-    print msg
+    print(msg)
     return block_weights(regimes)
 
 
@@ -527,7 +528,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
     """
     id_order = None
     if issubclass(type(w), W) or isinstance(w, W):
-        if np.unique(np.hstack(w.weights.values())) == np.array([1.0]):
+        if np.unique(np.hstack(list(w.weights.values()))) == np.array([1.0]):
             id_order = w.id_order
             w = w.sparse
         else:
@@ -769,7 +770,7 @@ def full2W(m, ids=None):
     if m.shape[0] != m.shape[1]:
         raise ValueError('Your array is not square')
     neighbors, weights = {}, {}
-    for i in xrange(m.shape[0]):
+    for i in range(m.shape[0]):
     # for i, row in enumerate(m):
         row = m[i]
         if ids:
@@ -833,10 +834,10 @@ def WSP2W(wsp, silent_island_warning=False):
         # replace indices with user IDs
         indices = [id_order[i] for i in indices]
     else:
-        id_order = range(wsp.n)
+        id_order = list(range(wsp.n))
     neighbors, weights = {}, {}
     start = indptr[0]
-    for i in xrange(wsp.n):
+    for i in range(wsp.n):
         oid = id_order[i]
         end = indptr[i + 1]
         neighbors[oid] = indices[start:end]
@@ -908,7 +909,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
         if w.n != val.shape[0]:
             raise Exception("shape of w and diagonal do not match")
         w_new.setdiag(val)
-    elif operator.isNumberType(val):
+    elif isinstance(val, numbers.Number):
         w_new.setdiag([val] * w.n)
     else:
         raise Exception("Invalid value passed to diagonal")
@@ -964,7 +965,7 @@ def remap_ids(w, old2new, id_order=[]):
         raise Exception("w must be a spatial weights object")
     new_neigh = {}
     new_weights = {}
-    for key, value in w.neighbors.iteritems():
+    for key, value in list(w.neighbors.items()):
         new_values = [old2new[i] for i in value]
         new_key = old2new[key]
         new_neigh[new_key] = new_values
@@ -1217,7 +1218,7 @@ def write_gal(file, k=10):
     f = open(file, 'w')
     n = k * k
     f.write("0 %d" % n)
-    for i in xrange(n):
+    for i in range(n):
         row = i / k
         col = i % k
         neighs = [i - i, i + 1, i - k, i + k]

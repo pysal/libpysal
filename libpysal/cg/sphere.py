@@ -109,7 +109,7 @@ def toXYZ(pt):
     -------
     x, y, z
     """
-    phi, theta = map(math.radians, pt)
+    phi, theta = list(map(math.radians, pt))
     phi, theta = phi + pi, theta + (pi / 2)
     x = 1 * sin(theta) * cos(phi)
     y = 1 * sin(theta) * sin(phi)
@@ -137,8 +137,8 @@ def brute_knn(pts, k, mode='arc'):
     """
     n = len(pts)
     full = numpy.zeros((n, n))
-    for i in xrange(n):
-        for j in xrange(i + 1, n):
+    for i in range(n):
+        for j in range(i + 1, n):
             if mode == 'arc':
                 lng0, lat0 = pts[i]
                 lng1, lat1 = pts[j]
@@ -148,7 +148,7 @@ def brute_knn(pts, k, mode='arc'):
             full[i, j] = dist
             full[j, i] = dist
     w = {}
-    for i in xrange(n):
+    for i in range(n):
         w[i] = full[i].argsort()[1:k + 1].tolist()
     return w
 
@@ -178,12 +178,12 @@ def fast_knn(pts, k, return_dist=False):
     d, w = kd.query(pts, k + 1)
     w = w[:, 1:]
     wn = {}
-    for i in xrange(len(pts)):
+    for i in range(len(pts)):
         wn[i] = w[i].tolist()
     if return_dist:
         d = d[:, 1:]
         wd = {}
-        for i in xrange(len(pts)):
+        for i in range(len(pts)):
             wd[i] = [linear2arcdist(x,
                                     radius=RADIUS_EARTH_MILES) for x in d[i].tolist()]
         return wn, wd
@@ -195,7 +195,7 @@ def fast_threshold(pts, dist, radius=RADIUS_EARTH_KM):
     kd = scipy.spatial.KDTree(pts)
     r = kd.query_ball_tree(kd, d)
     wd = {}
-    for i in xrange(len(pts)):
+    for i in range(len(pts)):
         l = r[i]
         l.remove(i)
         wd[i] = l

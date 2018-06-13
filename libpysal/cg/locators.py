@@ -121,7 +121,7 @@ class IntervalTree:
 
         Test tag: <tc>#is#IntervalTree.build</tc>
         """
-        bad_is = filter(lambda i: i[0] > i[1], intervals)
+        bad_is = [i for i in intervals if i[0] > i[1]]
         if bad_is != []:
             raise Exception('Attempt to build IntervalTree with invalid intervals: ' + str(bad_is))
         eps = list(set([i[0] for i in intervals] + [i[1] for i in intervals]))
@@ -358,10 +358,10 @@ class Grid:
         items = []
         lower_left = self.__grid_loc((x_range[0], y_range[0]))
         upper_right = self.__grid_loc((x_range[1], y_range[1]))
-        for i in xrange(lower_left[0], upper_right[0] + 1):
-            for j in xrange(lower_left[1], upper_right[1] + 1):
+        for i in range(lower_left[0], upper_right[0] + 1):
+            for j in range(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
-                    items.extend(map(lambda item: item[1], filter(lambda item: x_range[0] <= item[0][0] <= x_range[1] and y_range[0] <= item[0][1] <= y_range[1], self.hash[(i, j)])))
+                    items.extend([item[1] for item in [item for item in self.hash[(i, j)] if x_range[0] <= item[0][0] <= x_range[1] and y_range[0] <= item[0][1] <= y_range[1]]])
         return items
 
     def proximity(self, pt, r):
@@ -392,10 +392,10 @@ class Grid:
         items = []
         lower_left = self.__grid_loc((pt[0] - r, pt[1] - r))
         upper_right = self.__grid_loc((pt[0] + r, pt[1] + r))
-        for i in xrange(lower_left[0], upper_right[0] + 1):
-            for j in xrange(lower_left[1], upper_right[1] + 1):
+        for i in range(lower_left[0], upper_right[0] + 1):
+            for j in range(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
-                    items.extend(map(lambda item: item[1], filter(lambda item: get_points_dist(pt, item[0]) <= r, self.hash[(i, j)])))
+                    items.extend([item[1] for item in [item for item in self.hash[(i, j)] if get_points_dist(pt, item[0]) <= r]])
         return items
 
     def nearest(self, pt):
@@ -432,11 +432,11 @@ class Grid:
             (pt[0] - search_size, pt[1] - search_size))
         upper_right = self.__grid_loc(
             (pt[0] + search_size, pt[1] + search_size))
-        for i in xrange(lower_left[0], upper_right[0] + 1):
-            for j in xrange(lower_left[1], upper_right[1] + 1):
+        for i in range(lower_left[0], upper_right[0] + 1):
+            for j in range(lower_left[1], upper_right[1] + 1):
                 if (i, j) in self.hash:
-                    items.extend(map(lambda item: (get_points_dist(pt, item[
-                        0]), item[1]), self.hash[(i, j)]))
+                    items.extend([(get_points_dist(pt, item[
+                        0]), item[1]) for item in self.hash[(i, j)]])
         if items == []:
             return None
         return min(items)[1]
@@ -500,7 +500,7 @@ class BruteForcePointLocator:
         >>> len(pts)
         3
         """
-        return filter(lambda p: get_rectangle_point_intersect(region_rect, p) is not None, self._points)
+        return [p for p in self._points if get_rectangle_point_intersect(region_rect, p) is not None]
 
     def proximity(self, origin, r):
         """
@@ -526,7 +526,7 @@ class BruteForcePointLocator:
         >>> str(p)
         '(0.0, 0.0)'
         """
-        return filter(lambda p: get_points_dist(p, origin) <= r, self._points)
+        return [p for p in self._points if get_points_dist(p, origin) <= r]
 
 
 class PointLocator:

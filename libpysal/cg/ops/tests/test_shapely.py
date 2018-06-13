@@ -35,7 +35,7 @@ class Test_Shapely(ut.TestCase):
                     comp.is_shape(shapely)):
                     comp.equal(tabular, shapely)
                 else:
-                    self.assertEquals(tabular, shapely)
+                    self.assertEqual(tabular, shapely)
         except NotImplementedError as e:
             warn('The shapely/pysal bridge is not implemented: {}'.format(e))
             return True

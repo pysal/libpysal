@@ -19,7 +19,7 @@ class BruteSegmentLocator(object):
     def nearest(self, pt):
         d = self.data
         distances = [get_segment_point_dist(
-            d[i], pt)[0] for i in xrange(self.n)]
+            d[i], pt)[0] for i in range(self.n)]
         return numpy.argmin(distances)
 
 
@@ -115,7 +115,7 @@ class SegmentGrid(object):
     @property
     def hashKeys(self):
         if self._hashKeys is None:
-            self._hashKeys = numpy.array(self.hash.keys(),dtype=float)
+            self._hashKeys = numpy.array(list(self.hash.keys()),dtype=float)
         return self._hashKeys
 
     @property
@@ -188,13 +188,13 @@ class SegmentGrid(object):
         res = self.res
         line = segment.line
         tiny = res / 1000.
-        for i in xrange(1 + min(i, I), max(i, I)):
+        for i in range(1 + min(i, I), max(i, I)):
             #print 'i',i
             x = self.x_range[0] + (i * res)
             y = line.y(x)
             self.bin_loc((x - tiny, y), id)
             self.bin_loc((x + tiny, y), id)
-        for j in xrange(1 + min(j, J), max(j, J)):
+        for j in range(1 + min(j, J), max(j, J)):
             #print 'j',j
             y = self.y_range[0] + (j * res)
             x = line.x(y)
@@ -226,7 +226,7 @@ class SegmentGrid(object):
         possibles = set()
 
         if DEBUG:
-            print "in_grid:", self.in_grid(pt)
+            print("in_grid:", self.in_grid(pt))
             i = pylab.matshow(self.mask, origin='lower',
                               extent=self.x_range + self.y_range, fignum=1)
         # Use KD tree to search out the nearest filled bin.
@@ -280,7 +280,7 @@ class SegmentGrid(object):
                 possibles.update(self.hash[t])
 
             if DEBUG:
-                print "possibles", possibles
+                print("possibles", possibles)
         else:
         ### The old way...
         ### previously I was using kd.query_ball_point on, but the performance was terrible.
@@ -293,7 +293,7 @@ class SegmentGrid(object):
 
 def random_segments(n):
     segs = []
-    for i in xrange(n):
+    for i in range(n):
         a, b, c, d = [random.random() for x in [1, 2, 3, 4]]
         seg = LineSegment(Point((a, b)), Point((c, d)))
         segs.append(seg)
@@ -301,7 +301,7 @@ def random_segments(n):
 
 
 def random_points(n):
-    return [Point((random.random(), random.random())) for x in xrange(n)]
+    return [Point((random.random(), random.random())) for x in range(n)]
 
 
 def combo_check(bins, segments, qpoints):
@@ -311,16 +311,16 @@ def combo_check(bins, segments, qpoints):
         a = G.nearest(pt)
         b = G2.nearest(pt)
         if a != b:
-            print a, b, a == b
+            print(a, b, a == b)
             global DEBUG
             DEBUG = True
             a = G.nearest(pt)
-            print a
+            print(a)
             a = segments[a]
             b = segments[b]
-            print "pt to a (grid)", get_segment_point_dist(a, pt)
-            print "pt to b (brut)", get_segment_point_dist(b, pt)
-            raw_input()
+            print("pt to a (grid)", get_segment_point_dist(a, pt))
+            print("pt to b (brut)", get_segment_point_dist(b, pt))
+            input()
             pylab.clf()
             DEBUG = False
 
@@ -329,13 +329,13 @@ def brute_check(segments, qpoints):
     t0 = time.time()
     G2 = BruteSegmentLocator(segs)
     t1 = time.time()
-    print "Created Brute in %0.4f seconds" % (t1 - t0)
+    print("Created Brute in %0.4f seconds" % (t1 - t0))
     t2 = time.time()
-    q = map(G2.nearest, qpoints)
+    q = list(map(G2.nearest, qpoints))
     t3 = time.time()
-    print "Brute Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2)
-    print "Total Brute Time:", t3 - t0
-    print
+    print("Brute Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2))
+    print("Total Brute Time:", t3 - t0)
+    print()
     return q
 
 
@@ -345,19 +345,19 @@ def grid_check(bins, segments, qpoints, visualize=False):
     t1 = time.time()
     G.grid.kd
     t2 = time.time()
-    print "Created Grid in %0.4f seconds" % (t1 - t0)
-    print "Created KDTree in %0.4f seconds" % (t2 - t1)
+    print("Created Grid in %0.4f seconds" % (t1 - t0))
+    print("Created KDTree in %0.4f seconds" % (t2 - t1))
     if visualize:
         i = pylab.matshow(G.grid.mask, origin='lower',
                           extent=G.grid.x_range + G.grid.y_range)
 
     t2 = time.time()
-    q = map(G.nearest, qpoints)
+    q = list(map(G.nearest, qpoints))
     t3 = time.time()
-    print "Grid Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2)
-    print "Total Grid Time:", t3 - t0
+    print("Grid Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2))
+    print("Total Grid Time:", t3 - t0)
     qps = len(qpoints) / (t3 - t2)
-    print "q/s:", qps
+    print("q/s:", qps)
     #print
     return qps
 
@@ -370,14 +370,14 @@ def binSizeTest():
     minB = 250
     maxB = 2000
     stepB = 250
-    sizes = range(minN, maxN, stepN)
-    binSizes = range(minB, maxB, stepB)
+    sizes = list(range(minN, maxN, stepN))
+    binSizes = list(range(minB, maxB, stepB))
     results = numpy.zeros((len(sizes), len(binSizes)))
     for row, n in enumerate(sizes):
         segs = random_segments(n)
         qpts = random_points(q)
         for col, bins in enumerate(binSizes):
-            print "N, Bins:", n, bins
+            print("N, Bins:", n, bins)
             qps = test_grid(bins, segs, qpts)
             results[row, col] = qps
     return results
@@ -394,8 +394,8 @@ if __name__ == '__main__':
     t1 = time.time()
     qpts = random_points(q)
     t2 = time.time()
-    print "segments:", t1 - t0
-    print "points:", t2 - t1
+    print("segments:", t1 - t0)
+    print("points:", t2 - t1)
     #test_brute(segs,qpts)
     #test_grid(50, segs, qpts)
 

@@ -5,13 +5,13 @@ contiguity and distance criteria.
 
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
-from Contiguity import buildContiguity, Queen, Rook
-from Distance import knnW, Kernel, DistanceBand
-from util import get_ids, get_points_array_from_shapefile, min_threshold_distance
+from .Contiguity import buildContiguity, Queen, Rook
+from .Distance import knnW, Kernel, DistanceBand
+from .util import get_ids, get_points_array_from_shapefile, min_threshold_distance
 from ..io.FileIO import FileIO as ps_open
 from .. import cg
 from ..cg.voronoi import voronoi_frames
-from weights import WSP
+from .weights import WSP
 import numpy as np
 
 __all__ = ['queen_from_shapefile', 'rook_from_shapefile', 'knnW_from_array',
@@ -1178,8 +1178,8 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
     d.header = [ 'ID' ]
     d.field_spec = [ ('N', 8, 0) ]
     c = 0
-    for i in xrange(nrows):
-        for j in xrange(ncols):
+    for i in range(nrows):
+        for j in range(ncols):
             ll = i, j
             ul = i, j + 1
             ur = i + 1, j + 1

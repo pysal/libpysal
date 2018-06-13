@@ -20,22 +20,22 @@ class Sphere(unittest.TestCase):
 
     def test_arcdist(self):
         d = sphere.arcdist(self.pt0, self.pt1, sphere.RADIUS_EARTH_MILES)
-        self.assertEquals(d, math.pi * sphere.RADIUS_EARTH_MILES)
+        self.assertEqual(d, math.pi * sphere.RADIUS_EARTH_MILES)
 
     def test_arcdist2linear(self):
         d = sphere.arcdist(self.pt0, self.pt1, sphere.RADIUS_EARTH_MILES)
         ld = sphere.arcdist2linear(d, sphere.RADIUS_EARTH_MILES)
-        self.assertEquals(ld, 2.0)
+        self.assertEqual(ld, 2.0)
 
     def test_radangle(self):
         p0 = (-87.893517, 41.981417)
         p1 = (-87.519295, 41.657498)
-        self.assertAlmostEquals(sphere.radangle(p0,p1), 0.007460167953189258)
+        self.assertAlmostEqual(sphere.radangle(p0,p1), 0.007460167953189258)
 
     def test_linear2arcdist(self):
         d = sphere.arcdist(self.pt0, self.pt1, sphere.RADIUS_EARTH_MILES)
         ad = sphere.linear2arcdist(2.0, radius=sphere.RADIUS_EARTH_MILES)
-        self.assertEquals(d, ad)
+        self.assertEqual(d, ad)
 
     def test_harcdist(self):
         d1 = sphere.harcdist(self.p0, self.p1,
@@ -105,7 +105,7 @@ class Sphere(unittest.TestCase):
               [70, 74, 73, 69]}
 
         pts = [shape.centroid for shape in self.shapes]
-        pts = map(sphere.toXYZ, pts)
+        pts = list(map(sphere.toXYZ, pts))
         self.assertAlmostEqual(sphere.brute_knn(pts, 4, 'xyz'), w2)
 
 if __name__ == '__main__':

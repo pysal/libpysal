@@ -13,7 +13,7 @@ class Voronoi(unittest.TestCase):
 
     def test_voronoi(self):
         regions, vertices = voronoi(self.points)
-        self.assertEquals(regions, [[1, 3, 2],
+        self.assertEqual(regions, [[1, 3, 2],
                                     [4, 5, 1, 0],
                                     [0, 1, 7, 6],
                                     [9, 0, 8]])

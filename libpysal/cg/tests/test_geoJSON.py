@@ -18,9 +18,9 @@ class test_MultiPloygon(unittest.TestCase):
         for poly in multipolygons:
             json = poly.__geo_interface__
             shape = asShape(json)
-            self.assertEquals(json['type'],'MultiPolygon')
-            self.assertEquals(str(shape.holes), str(poly.holes))
-            self.assertEquals(str(shape.parts), str(poly.parts))
+            self.assertEqual(json['type'],'MultiPolygon')
+            self.assertEqual(str(shape.holes), str(poly.holes))
+            self.assertEqual(str(shape.parts), str(poly.parts))
 class test_MultiLineString(unittest.TestCase):
     def test_multipart_chain(self):
         vertices = [[Point((0, 0)), Point((1, 0)), Point((1, 5))],
@@ -34,19 +34,19 @@ class test_MultiLineString(unittest.TestCase):
         chain2 = Chain(vertices)
 
         json = chain0.__geo_interface__
-        self.assertEquals(json['type'], 'LineString')
-        self.assertEquals(len(json['coordinates']), 3)
+        self.assertEqual(json['type'], 'LineString')
+        self.assertEqual(len(json['coordinates']), 3)
 
         json = chain1.__geo_interface__
-        self.assertEquals(json['type'], 'LineString')
-        self.assertEquals(len(json['coordinates']), 3)
+        self.assertEqual(json['type'], 'LineString')
+        self.assertEqual(len(json['coordinates']), 3)
 
         json = chain2.__geo_interface__
-        self.assertEquals(json['type'], 'MultiLineString')
-        self.assertEquals(len(json['coordinates']), 2)
+        self.assertEqual(json['type'], 'MultiLineString')
+        self.assertEqual(len(json['coordinates']), 2)
 
         chain3 = asShape(json)
-        self.assertEquals(chain2.parts, chain3.parts)
+        self.assertEqual(chain2.parts, chain3.parts)
 
 
 if __name__ == '__main__':

@@ -20,7 +20,7 @@ class test_GeoDaTxtReader(unittest.TestCase):
     def test_close(self):
         f = self.obj
         f.close()
-        self.failUnlessRaises(ValueError, f.read)
+        self.assertRaises(ValueError, f.read)
 
 if __name__ == '__main__':
     unittest.main()

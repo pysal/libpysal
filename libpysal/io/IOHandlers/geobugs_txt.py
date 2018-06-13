@@ -129,12 +129,12 @@ class GeoBUGSTextIO(FileIO.FileIO):
             part_text = fbody[start:end]
 
             part_length, start, end = len(part_text), 0, -1
-            for c in xrange(part_length):
+            for c in range(part_length):
                 if part_text[c].isdigit():
                     start = c
                     break
 
-            for c in xrange(part_length - 1, 0, -1):
+            for c in range(part_length - 1, 0, -1):
                 if part_text[c].isdigit():
                     end = c + 1
                     break
@@ -156,7 +156,7 @@ class GeoBUGSTextIO(FileIO.FileIO):
         neighbors = {}
         weights = {}
         pos = 0
-        for i in xrange(no_obs):
+        for i in range(no_obs):
             neighbors[i + 1] = []
             weights[i + 1] = []
             no_nghs = cardinalities[i]

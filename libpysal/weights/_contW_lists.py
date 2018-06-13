@@ -24,9 +24,9 @@ def _get_boundary_points(pgon):
     if pgon.type.lower() == 'polygon':
         bounds = pgon.boundary
         if bounds.type.lower() == 'linestring':
-            return list(map(tuple, zip(*bounds.coords.xy)))
+            return list(map(tuple, list(zip(*bounds.coords.xy))))
         elif bounds.type.lower() == 'multilinestring':
-            return list(it.chain(*(zip(*bound.coords.xy)
+            return list(it.chain(*(list(zip(*bound.coords.xy))
                                      for bound in bounds)))
         else:
             raise TypeError('Input Polygon has unrecognized boundary type: {}'
@@ -82,7 +82,7 @@ class ContiguityWeightsLists:
                 items[vertex].add(offsets[i])
 
             shared_vertices = []
-            for item, location in items.iteritems():
+            for item, location in list(items.items()):
                 if len(location) > 1:
                     shared_vertices.append(location)
 
@@ -107,7 +107,7 @@ class ContiguityWeightsLists:
                 items[item].add(offsets[i])
 
             shared_vertices = []
-            for item, location in items.iteritems():
+            for item, location in list(items.items()):
                 if len(location) > 1:
                     shared_vertices.append(location)
 

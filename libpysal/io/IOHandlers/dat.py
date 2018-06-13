@@ -1,5 +1,5 @@
 import os.path
-import gwt
+from . import gwt
 from ...weights import W
 from warnings import warn
 

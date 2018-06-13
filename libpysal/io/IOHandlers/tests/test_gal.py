@@ -18,7 +18,7 @@ class test_GalIO(unittest.TestCase):
     def test_close(self):
         f = self.obj
         f.close()
-        self.failUnlessRaises(ValueError, f.read)
+        self.assertRaises(ValueError, f.read)
 
     def test_read(self):
         # reading a GAL returns a W
@@ -30,7 +30,7 @@ class test_GalIO(unittest.TestCase):
 
     def test_seek(self):
         self.test_read()
-        self.failUnlessRaises(StopIteration, self.obj.read)
+        self.assertRaises(StopIteration, self.obj.read)
         self.obj.seek(0)
         self.test_read()
 

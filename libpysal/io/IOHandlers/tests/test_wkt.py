@@ -12,7 +12,7 @@ class test_WKTReader(unittest.TestCase):
     def test_close(self):
         f = self.obj
         f.close()
-        self.failUnlessRaises(ValueError, f.read)
+        self.assertRaises(ValueError, f.read)
         # w_kt_reader = WKTReader(*args, **kwargs)
         # self.assertEqual(expected, w_kt_reader.close())
 

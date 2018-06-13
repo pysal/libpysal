@@ -38,7 +38,7 @@ class Distance_Mixin(object):
     known_name = known_wi
     
     def setUp(self):
-        self.__dict__.update({k:v for k,v in Distance_Mixin.__dict__.items()
+        self.__dict__.update({k:v for k,v in list(Distance_Mixin.__dict__.items())
             if not k.startswith('_')})
     
     def test_init(self):
@@ -128,17 +128,17 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     def test_init(self):
         w = d.DistanceBand(self.grid_kdt, 1)
         for k,v in w:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     def test_from_shapefile(self):
         w = d.DistanceBand.from_shapefile(self.grid_path, 1)
         for k,v in w:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     def test_from_array(self):
         w = d.DistanceBand.from_array(self.grid_points, 1)
         for k,v in w:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     @ut.skipIf(PANDAS_EXTINCT, 'Missing pandas')
     def test_from_dataframe(self):
@@ -148,7 +148,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         df = pd.DataFrame({'obs':random_data, 'geometry':geom_series})
         w = d.DistanceBand.from_dataframe(df, 1)
         for k,v in w:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     ##########################
     # Function/User tests    #
@@ -162,7 +162,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         self.grid_f.seek(0)
         grid_dbw = d.DistanceBand(grid_integers, 1)
         for k,v in grid_dbw:
-            self.assertEquals(v, self.grid_rook_w[k])
+            self.assertEqual(v, self.grid_rook_w[k])
 
     def test_arcdist(self):
         arc = cg.sphere.arcdist
@@ -170,8 +170,8 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
                      radius=cg.sphere.RADIUS_EARTH_KM)
         npoints = self.arc_points.shape[0]
         full = np.matrix([[arc(self.arc_points[i], self.arc_points[j])
-                          for j in xrange(npoints)] 
-                          for i in xrange(npoints)])
+                          for j in range(npoints)] 
+                          for i in range(npoints)])
         maxdist = full.max()
         w = d.DistanceBand(kdt, maxdist, binary=False, alpha=1.0)
         np.testing.assert_allclose(w.sparse.todense(), full)
@@ -241,28 +241,28 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
 
     def test_init(self):
         w = d.Kernel(self.euclidean_kdt)
-        for k,v in w[self.known_wi0].items():
+        for k,v in list(w[self.known_wi0].items()):
             np.testing.assert_allclose(v, self.known_w0[k], rtol=RTOL)
 
     def test_from_shapefile(self):
         w = d.Kernel.from_shapefile(self.polygon_path, idVariable='POLYID')
-        for k,v in w[self.known_wi5].items():
+        for k,v in list(w[self.known_wi5].items()):
             np.testing.assert_allclose((k,v), (k,self.known_w5[k]), rtol=RTOL)
         
         w = d.Kernel.from_shapefile(self.polygon_path, fixed=False)
-        for k,v in w[self.known_wi6].items():
+        for k,v in list(w[self.known_wi6].items()):
             np.testing.assert_allclose((k,v), (k,self.known_w6[k]), rtol=RTOL)
 
     def test_from_array(self):
         w = d.Kernel.from_array(self.points)
-        for k,v in w[self.known_wi0].items():
+        for k,v in list(w[self.known_wi0].items()):
             np.testing.assert_allclose(v, self.known_w0[k], rtol=RTOL)
     
     @ut.skipIf(PANDAS_EXTINCT, 'Missing pandas')
     def test_from_dataframe(self):
         df = pdio.read_files(self.polygon_path)
         w = d.Kernel.from_dataframe(df)
-        for k,v in w[self.known_wi5-1].items():
+        for k,v in list(w[self.known_wi5-1].items()):
             np.testing.assert_allclose(v, self.known_w5[k+1], rtol=RTOL)
     
     ##########################
@@ -271,12 +271,12 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
 
     def test_fixed_bandwidth(self):
         w = d.Kernel(self.points, bandwidth=15.0)
-        for k,v in w[self.known_wi1].items():
+        for k,v in list(w[self.known_wi1].items()):
             np.testing.assert_allclose((k,v), (k, self.known_w1[k]))
         np.testing.assert_allclose(np.ones((w.n,1))*15, w.bandwidth)
 
         w = d.Kernel(self.points, bandwidth=self.known_w2_bws)
-        for k,v in w[self.known_wi2].items():
+        for k,v in list(w[self.known_wi2].items()):
             np.testing.assert_allclose((k,v), (k, self.known_w2[k]), rtol=RTOL)
         for i in range(w.n):
             np.testing.assert_allclose(w.bandwidth[i], self.known_w2_bws[i], rtol=RTOL)
@@ -289,7 +289,7 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
         np.testing.assert_allclose(bws, self.known_w3_abws, rtol=RTOL)
 
         w = d.Kernel(self.points, fixed=False, function='gaussian')
-        for k,v in w[self.known_wi4].items():
+        for k,v in list(w[self.known_wi4].items()):
             np.testing.assert_allclose((k,v), (k, self.known_w4[k]), rtol=RTOL)
         bws = w.bandwidth.tolist()
         np.testing.assert_allclose(bws, self.known_w4_abws, rtol=RTOL)

@@ -15,7 +15,7 @@ class test_ArcGISDbfIO(unittest.TestCase):
     def test_close(self):
         f = self.obj
         f.close()
-        self.failUnlessRaises(ValueError, f.read)
+        self.assertRaises(ValueError, f.read)
 
     def test_read(self):
         with warnings.catch_warnings(record=True) as warn:
@@ -26,11 +26,11 @@ class test_ArcGISDbfIO(unittest.TestCase):
                 assert "Missing Value Found, setting value to pysal.MISSINGVALUE" in str(warn[0].message)
         self.assertEqual(88, w.n)
         self.assertEqual(5.25, w.mean_neighbors)
-        self.assertEqual([1.0, 1.0, 1.0, 1.0], w[1].values())
+        self.assertEqual([1.0, 1.0, 1.0, 1.0], list(w[1].values()))
 
     def test_seek(self):
         self.test_read()
-        self.failUnlessRaises(StopIteration, self.obj.read)
+        self.assertRaises(StopIteration, self.obj.read)
         self.obj.seek(0)
         self.test_read()
 

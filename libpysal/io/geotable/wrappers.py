@@ -35,4 +35,4 @@ _readers = {'read_shapefile':read_files,
             'read_fiona':fiona}
 _writers = {'to_shapefile':write_files}
 
-_pandas_readers = {k:v for k,v in pd.io.api.__dict__.items() if k.startswith('read_')}
+_pandas_readers = {k:v for k,v in list(pd.io.api.__dict__.items()) if k.startswith('read_')}
