@@ -12,6 +12,7 @@ import operator
 import scipy
 from warnings import warn
 import numbers
+import copy
 
 __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
@@ -1341,6 +1342,35 @@ def attach_islands(w, w_knn1):
             neighbors[nb] = neighbors[nb] + [island]
             weights[nb] = weights[nb] + [1.0]
         return W(neighbors, weights, id_order=w.id_order)
+
+def fix_nonplanar_neighbors(w, geodataframe):
+    # TODO check on Brazilian data
+    # TODO nested polygons
+    # TODO real islands vs. digitization errors
+    df = geodataframe
+    islands = w.islands
+    joins = copy.deepcopy(w.neighbors)
+    candidates = df['geometry']
+    fixes = {}
+    for island in islands:
+        focal = df.iloc[island].geometry
+        neighbors = [j for j,candidate in enumerate(candidates) if focal.intersects(candidate) and j!= island]
+        if len(neighbors) > 0:
+            fixes[island] = {'neighbors':neighbors, 'method': ['intersects']*len(neighbors)}
+    for fixed in fixes.keys():
+        islands.remove(fixed)
+        neighbors = fixes[fixed]['neighbors']
+        joins[fixed] = neighbors
+        for neighbor in neighbors:
+            if fixed not in joins[neighbor]:
+                joins[neighbor].append(fixed)
+
+    w = W(joins)
+    w.fixes = fixes
+    return w
+
+
+
 
 
 if __name__ == "__main__":
