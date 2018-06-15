@@ -1343,6 +1343,8 @@ def attach_islands(w, w_knn1):
             weights[nb] = weights[nb] + [1.0]
         return W(neighbors, weights, id_order=w.id_order)
 
+
+
 def fix_nonplanar_neighbors(w, geodataframe):
     # TODO check on Brazilian data
     # TODO nested polygons
