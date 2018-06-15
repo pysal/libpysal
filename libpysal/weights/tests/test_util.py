@@ -1,6 +1,6 @@
 """Unit test for util.py"""
 from .. import user
-from ..util import lat2W
+from ..util import lat2W, nonplanar_neighbors
 from .. import util
 from ..weights import W, WSP
 from ..Distance import DistanceBand, KNN
@@ -10,6 +10,12 @@ from ... import examples as pysal_examples
 import numpy as np
 import unittest
 
+
+try:
+    import geopandas as gpd
+    HAS_GEOPANDAS = True
+except:
+    HAS_GEOPANDAS = False
 
 class Testutil(unittest.TestCase):
     def setUp(self):
@@ -215,6 +221,21 @@ class Testutil(unittest.TestCase):
         w_attach = util.attach_islands(w, w_knn1)
         self.assertEqual(w_attach.islands, [])
         self.assertEqual(w_attach[w.islands[0]], {166: 1.0})
+
+    @unittest.skipIf(not HAS_GEOPANDAS, "Missing geopandas, cannot test nonplanar neighbors")
+    def test_nonplanar_neighbors(self):
+        import libpysal.api as lp
+        import geopandas as gpd
+        df = gpd.read_file(lp.get_path('map_RS_BR.shp'))
+        w = lp.Queen.from_dataframe(df)
+        self.assertEqual(w.islands, [0, 4, 23, 27, 80, 94, 101, 107, 109, 119, 122, 139, 169, 175, 223, 239, 247, 253, 254, 255, 256, 261, 276, 291, 294, 303, 321, 357, 374])
+        import libpysal
+        wnp = libpysal.weights.util.nonplanar_neighbors(w, df)
+        self.assertEqual(wnp.islands, [])
+        self.assertEqual(w.neighbors[0], [])
+        self.assertEqual(wnp.neighbors[0], [23, 59, 152, 239])
+        self.assertEqual(wnp.neighbors[23], [0, 45, 59, 107, 152, 185, 246])
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testutil)
 
