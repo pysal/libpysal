@@ -15,7 +15,7 @@ try:
     import geopandas as gpd
     HAS_GEOPANDAS = True
 except:
-    HAS_GEOPANDAS = True
+    HAS_GEOPANDAS = False
 
 class Testutil(unittest.TestCase):
     def setUp(self):
