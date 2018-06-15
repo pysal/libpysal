@@ -145,11 +145,10 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
     >>> w9 = ps.lat2W(3,3)
     >>> "%.3f"%w9.pct_nonzero
     '29.630'
-    >>> w9[0]
-    {1: 1.0, 3: 1.0}
-    >>> w9[3]
-    {0: 1.0, 4: 1.0, 6: 1.0}
-    >>>
+    >>> w9[0] == {1: 1.0, 3: 1.0}
+    True
+    >>> w9[3] == {0: 1.0, 4: 1.0, 6: 1.0}
+    True
     """
     n = nrows * ncols
     r1 = nrows - 1
@@ -231,8 +230,8 @@ def regime_weights(regimes):
     >>> regimes[range(10,20)] = 2
     >>> regimes[range(21,25)] = 3
     >>> regimes
-    array([ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  2.,  2.,  2.,
-            2.,  2.,  2.,  2.,  2.,  2.,  2.,  1.,  3.,  3.,  3.,  3.])
+    array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 2., 2., 2., 2.,
+           2., 2., 2., 1., 3., 3., 3., 3.])
     >>> w = ps.regime_weights(regimes)
     PendingDepricationWarning: regime_weights will be renamed to block_weights in PySAL 2.0
     >>> w.weights[0]
@@ -243,8 +242,8 @@ def regime_weights(regimes):
     >>> n = len(regimes)
     >>> w = ps.regime_weights(regimes)
     PendingDepricationWarning: regime_weights will be renamed to block_weights in PySAL 2.0
-    >>> w.neighbors
-    {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
+    >>> w.neighbors == {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
+    True
 
     Notes
     -----
@@ -291,8 +290,8 @@ def block_weights(regimes, ids=None, sparse=False):
     >>> regimes[range(10,20)] = 2
     >>> regimes[range(21,25)] = 3
     >>> regimes
-    array([ 1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  1.,  2.,  2.,  2.,
-            2.,  2.,  2.,  2.,  2.,  2.,  2.,  1.,  3.,  3.,  3.,  3.])
+    array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 2., 2., 2., 2.,
+           2., 2., 2., 1., 3., 3., 3., 3.])
     >>> w = ps.block_weights(regimes)
     >>> w.weights[0]
     [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -301,8 +300,8 @@ def block_weights(regimes, ids=None, sparse=False):
     >>> regimes = ['n','n','s','s','e','e','w','w','e']
     >>> n = len(regimes)
     >>> w = ps.block_weights(regimes)
-    >>> w.neighbors
-    {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
+    >>> w.neighbors == {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
+    True
     """
     rids = np.unique(regimes)
     neighbors = {}
@@ -342,7 +341,7 @@ def comb(items, n=None):
     --------
     >>> x = range(4)
     >>> for c in comb(x, 2):
-    ...     print c
+    ...     print(c)
     ...
     [0, 1]
     [0, 2]
@@ -352,9 +351,10 @@ def comb(items, n=None):
     [2, 3]
 
     """
+    items = list(items)
     if n is None:
         n = len(items)
-    for i in range(len(items)):
+    for i in list(range(len(items))):
         v = items[i:i + 1]
         if n == 1:
             yield v
@@ -456,16 +456,16 @@ def higher_order(w, k=2):
     >>> import libpysal.api as ps
     >>> w10 = ps.lat2W(10, 10)
     >>> w10_2 = ps.higher_order(w10, 2)
-    >>> w10_2[0]
-    {2: 1.0, 11: 1.0, 20: 1.0}
+    >>> w10_2[0] ==  {2: 1.0, 11: 1.0, 20: 1.0}
+    True
     >>> w5 = ps.lat2W()
-    >>> w5[0]
-    {1: 1.0, 5: 1.0}
-    >>> w5[1]
-    {0: 1.0, 2: 1.0, 6: 1.0}
+    >>> w5[0] ==  {1: 1.0, 5: 1.0}
+    True
+    >>> w5[1] == {0: 1.0, 2: 1.0, 6: 1.0}
+    True
     >>> w5_2 = ps.higher_order(w5,2)
-    >>> w5_2[0]
-    {10: 1.0, 2: 1.0, 6: 1.0}
+    >>> w5_2[0] == {10: 1.0, 2: 1.0, 6: 1.0}
+    True
     """
     return higher_order_sp(w, k)
 
@@ -510,20 +510,20 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
     >>> w25 = ps.lat2W(5,5)
     >>> w25.n
     25
-    >>> w25[0]
-    {1: 1.0, 5: 1.0}
+    >>> w25[0] == {1: 1.0, 5: 1.0}
+    True
     >>> w25_2 = libpysal.weights.util.higher_order_sp(w25, 2)
-    >>> w25_2[0]
-    {10: 1.0, 2: 1.0, 6: 1.0}
+    >>> w25_2[0] == {10: 1.0, 2: 1.0, 6: 1.0}
+    True
     >>> w25_2 = libpysal.weights.util.higher_order_sp(w25, 2, diagonal=True)
-    >>> w25_2[0]
-    {0: 1.0, 10: 1.0, 2: 1.0, 6: 1.0}
+    >>> w25_2[0] ==  {0: 1.0, 10: 1.0, 2: 1.0, 6: 1.0}
+    True
     >>> w25_3 = libpysal.weights.util.higher_order_sp(w25, 3)
-    >>> w25_3[0]
-    {15: 1.0, 3: 1.0, 11: 1.0, 7: 1.0}
+    >>> w25_3[0] == {15: 1.0, 3: 1.0, 11: 1.0, 7: 1.0}
+    True
     >>> w25_3 = libpysal.weights.util.higher_order_sp(w25, 3, shortest_path=False)
-    >>> w25_3[0]
-    {1: 1.0, 3: 1.0, 5: 1.0, 7: 1.0, 11: 1.0, 15: 1.0}
+    >>> w25_3[0] == {1: 1.0, 3: 1.0, 5: 1.0, 7: 1.0, 11: 1.0, 15: 1.0}
+    True
 
     """
     id_order = None
@@ -608,16 +608,18 @@ def w_local_cluster(w):
     --------
     >>> import libpysal.api as ps
     >>> w = ps.lat2W(3,3, rook=False)
-    >>> w_local_cluster(w)
-    array([[ 1.        ],
-           [ 0.6       ],
-           [ 1.        ],
-           [ 0.6       ],
-           [ 0.42857143],
-           [ 0.6       ],
-           [ 1.        ],
-           [ 0.6       ],
-           [ 1.        ]])
+    >>> w_local_cluster(w) 
+    array([[1.        ],
+           [0.6       ],
+           [1.        ],
+           [0.6       ],
+           [0.42857143],
+           [0.6       ],
+           [1.        ],
+           [0.6       ],
+           [1.        ]])
+
+    True
 
     """
 
@@ -708,9 +710,10 @@ def full(w):
     >>> w = ps.W(neighbors, weights)
     >>> wf, ids = ps.full(w)
     >>> wf
-    array([[ 0.,  1.,  0.],
-           [ 1.,  0.,  1.],
-           [ 0.,  1.,  0.]])
+    array([[0., 1., 0.],
+           [1., 0., 1.],
+           [0., 1., 0.]])
+
     >>> ids
     ['first', 'second', 'third']
     """
@@ -755,7 +758,7 @@ def full2W(m, ids=None):
     array([[ True,  True,  True,  True],
            [ True,  True,  True,  True],
            [ True,  True,  True,  True],
-           [ True,  True,  True,  True]], dtype=bool)
+           [ True,  True,  True,  True]])
 
     Create list of user ids
 
@@ -765,7 +768,7 @@ def full2W(m, ids=None):
     array([[ True,  True,  True,  True],
            [ True,  True,  True,  True],
            [ True,  True,  True,  True],
-           [ True,  True,  True,  True]], dtype=bool)
+           [ True,  True,  True,  True]])
     '''
     if m.shape[0] != m.shape[1]:
         raise ValueError('Your array is not square')
@@ -813,16 +816,17 @@ def WSP2W(wsp, silent_island_warning=False):
     >>> wsp = ps.WSP(sp)
     >>> wsp.n
     10
-    >>> print wsp.sparse[0].todense()
-    [[0 1 0 0 0 1 0 0 0 0]]
+    >>> wsp.sparse[0].todense()
+    matrix([[0, 1, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=int8)
 
     Convert this sparse weights object to a standard PySAL weights object.
 
     >>> w = ps.WSP2W(wsp)
     >>> w.n
     10
-    >>> print w.full()[0][0]
-    [ 0.  1.  0.  0.  0.  1.  0.  0.  0.  0.]
+    >>> print(w.full()[0][0])
+    [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
+
 
     """
     wsp.sparse
@@ -889,17 +893,17 @@ def fill_diagonal(w, val=1.0, wsp=False):
 
     >>> w = ps.lat2W(5, 5, id_type='string')
     >>> w_const = ps.insert_diagonal(w)
-    >>> w['id0']
-    {'id5': 1.0, 'id1': 1.0}
-    >>> w_const['id0']
-    {'id5': 1.0, 'id0': 1.0, 'id1': 1.0}
+    >>> w['id0'] ==  {'id5': 1.0, 'id1': 1.0}
+    True
+    >>> w_const['id0'] == {'id5': 1.0, 'id0': 1.0, 'id1': 1.0}
+    True
 
     Insert different values along the main diagonal.
 
     >>> diag = np.arange(100, 125)
     >>> w_var = ps.insert_diagonal(w, diag)
-    >>> w_var['id0']
-    {'id5': 1.0, 'id0': 100.0, 'id1': 1.0}
+    >>> w_var['id0'] == {'id5': 1.0, 'id0': 100.0, 'id1': 1.0}
+    True
 
     """
 
@@ -1074,18 +1078,19 @@ def get_points_array_from_shapefile(shapefile):
     >>> import libpysal
     >>> from libpysal.weights.util import get_points_array_from_shapefile
     >>> xy = get_points_array_from_shapefile(libpysal.examples.get_path('juvenile.shp'))
-    >>> xy[:3]
-    array([[ 94.,  93.],
-           [ 80.,  95.],
-           [ 79.,  90.]])
+    >>> xy[:3] 
+    array([[94., 93.],
+           [80., 95.],
+           [79., 90.]])
+
 
     Polygon shapefile
 
     >>> xy = get_points_array_from_shapefile(libpysal.examples.get_path('columbus.shp'))
     >>> xy[:3]
-    array([[  8.82721847,  14.36907602],
-           [  8.33265837,  14.03162401],
-           [  9.01226541,  13.81971908]])
+    array([[ 8.82721847, 14.36907602],
+           [ 8.33265837, 14.03162401],
+           [ 9.01226541, 13.81971908]])
     """
 
     f = psopen(shapefile)
@@ -1175,8 +1180,8 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     >>> w9[3,6]
     1
     >>> w9r = ps.lat2SW(3,3, row_st=True)
-    >>> w9r[3,6]
-    0.33333333333333331
+    >>> w9r[3,6] == 1./3
+    True
     """
 
     n = nrows * ncols
