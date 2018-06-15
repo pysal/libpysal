@@ -1346,7 +1346,7 @@ def attach_islands(w, w_knn1):
 
 def nonplanar_neighbors(w, geodataframe, tolerance=0.001):
     """
-    Detect neighbors for non-planar polygons
+    Detect neighbors for non-planar polygon collections
 
 
     Parameters
