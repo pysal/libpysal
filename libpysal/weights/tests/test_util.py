@@ -11,6 +11,12 @@ import numpy as np
 import unittest
 
 
+try:
+    import geopandas as gpd
+    HAS_GEOPANDAS = True
+except:
+    HAS_GEOPANDAS = True
+
 class Testutil(unittest.TestCase):
     def setUp(self):
         self.w = user.rook_from_shapefile(
@@ -216,6 +222,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w_attach.islands, [])
         self.assertEqual(w_attach[w.islands[0]], {166: 1.0})
 
+    @unittest.skipIf(not HAS_GEOPANDAS, "Missing geopandas, cannot test nonplanar neighbors")
     def test_nonplanar_neighbors(self):
         import libpysal.api as lp
         import geopandas as gpd
