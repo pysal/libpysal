@@ -13,6 +13,7 @@ import scipy
 from warnings import warn
 import numbers
 import copy
+from collections import defaultdict
 
 __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
@@ -1027,7 +1028,7 @@ def get_points_array(iterable):
     Parameters
     ----------
     iterable      : iterable
-                    arbitrary collection of shapes that supports iteration 
+                    arbitrary collection of shapes that supports iteration
 
     Returns
     -------
@@ -1343,41 +1344,131 @@ def attach_islands(w, w_knn1):
             weights[nb] = weights[nb] + [1.0]
         return W(neighbors, weights, id_order=w.id_order)
 
+def nonplanar_neighbors(w, geodataframe, tolerance=0.001):
+    """
+    Detect neighbors for non-planar polygons
 
 
-def fix_nonplanar_neighbors(w, geodataframe):
-    # TODO check on Brazilian data
-    # TODO nested polygons
-    # TODO real islands vs. digitization errors
-    df = geodataframe
+    Parameters
+    ----------
+
+    w:   pysal W
+         A spatial weights object with reported islands
+
+
+    geodataframe: GeoDataframe
+                  The polygon dataframe from which w was constructed.
+
+    tolerance: float
+               The percentage of the minimum horizontal or vertical extent (minextent) of
+               the dataframe to use in defining  a buffering distance to allow for fuzzy
+               contiguity detection. The buffering distance is equal to tolerance*minextent.
+
+    Attributes
+    ----------
+
+    non_planar_joins : dictionary
+               Stores the new joins detected. Key is the id of the focal unit, value is a list of neighbor ids.
+
+    Returns
+    -------
+
+    w: pysal W
+       Spatial weights object that encodes fuzzy neighbors.
+       This will have an attribute `non_planar_neighbors` to indicate what new joins were detected.
+
+    Notes
+    -----
+
+    This relaxes the notion of contiguity neighbors for the case of shapefiles
+    that violate the condition of planar enforcement. It handles three types
+    of conditions present in such files that would result in islands when using
+    the regular PySAL contiguity methods. The first are edges for nearby
+    polygons that should be shared, but are digitized separately for the
+    individual polygons and the resulting edges do not coincide, but instead
+    the edges intersect. The second case is similar to the first, only the
+    resultant edges do not intersect but are "close". The final case arises
+    when one polygon is "inside" a second polygon but is not encoded to
+    represent a hole in the containing polygon.
+
+    The buffering check assumes the geometry coordinates are projected.
+
+    Examples
+    --------
+
+    >>> import geopandas as gpd
+    >>> import libpysal.api as lp
+    >>> df = gpd.read_file(lp.get_path('map_RS_BR.shp'))
+    >>> w = lp.Queen.from_dataframe(df)
+    >>> import libpysal
+    >>> w.islands
+    [0, 4, 23, 27, 80, 94, 101, 107, 109, 119, 122, 139, 169, 175, 223, 239, 247, 253, 254, 255, 256, 261, 276, 291, 294, 303, 321, 357, 374]
+    >>> wnp = libpysal.weights.util.nonplanar_neighbors(w, df)
+    >>> wnp.islands
+    []
+    >>> w.neighbors[0]
+    []
+    >>> wnp.neighbors[0]
+    [23, 59, 152, 239]
+    >>> wnp.neighbors[23]
+    [0, 45, 59, 107, 152, 185, 246]
+    >>>
+
+    Also see `nonplanarweights.ipynb`
+
+    References
+    ----------
+
+    Planar Enforcement: http://ibis.geog.ubc.ca/courses/klink/gis.notes/ncgia/u12.html#SEC12.6
+
+
+    """
+
+    gdf = geodataframe
     islands = w.islands
     joins = copy.deepcopy(w.neighbors)
-    candidates = df['geometry']
-    fixes = {}
+    candidates = gdf['geometry']
+    fixes = defaultdict(list)
+
+    # first check for intersecting polygons
     for island in islands:
-        focal = df.iloc[island].geometry
-        neighbors = [j for j,candidate in enumerate(candidates) if focal.intersects(candidate) and j!= island]
+        focal = gdf.iloc[island].geometry
+        neighbors = [j for j, candidate in enumerate(candidates) if focal.intersects(candidate) and j!= island]
         if len(neighbors) > 0:
-            fixes[island] = {'neighbors':neighbors, 'method': ['intersects']*len(neighbors)}
-    for fixed in fixes.keys():
-        islands.remove(fixed)
-        neighbors = fixes[fixed]['neighbors']
-        joins[fixed] = neighbors
-        for neighbor in neighbors:
-            if fixed not in joins[neighbor]:
-                joins[neighbor].append(fixed)
+            for neighbor in neighbors:
+                if neighbor not in joins[island]:
+                    fixes[island].append(neighbor)
+                    joins[island].append(neighbor)
+                if island not in joins[neighbor]:
+                    fixes[neighbor].append(island)
+                    joins[neighbor].append(island)
+
+    # if any islands remain, dilate them and check for intersection
+    if islands:
+        x0,y0,x1,y1 = gdf.total_bounds
+        distance = tolerance * min(x1-x0, y1-y0)
+        for island in islands:
+            dilated = gdf.iloc[island].geometry.buffer(distance)
+            neighbors = [j for j, candidate in enumerate(candidates) if dilated.intersects(candidate) and j!= island]
+            if len(neighbors) > 0:
+                for neighbor in neighbors:
+                    if neighbor not in joins[island]:
+                        fixes[island].append(neighbor)
+                        joins[island].append(neighbor)
+                    if island not in joins[neighbor]:
+                        fixes[neighbor].append(island)
+                        joins[neighbor].append(island)
 
     w = W(joins)
-    w.fixes = fixes
+    w.non_planar_joins = fixes
     return w
 
 
 
 
-
 if __name__ == "__main__":
-    from pysal import lat2W
 
+    from pysal import lat2W
     assert (lat2W(5, 5).sparse.todense() == lat2SW(5, 5).todense()).all()
     assert (lat2W(5, 3).sparse.todense() == lat2SW(5, 3).todense()).all()
     assert (lat2W(5, 3, rook=False).sparse.todense() == lat2SW(5, 3,
