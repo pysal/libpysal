@@ -1381,7 +1381,7 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001):
 
     w: pysal W
        Spatial weights object that encodes fuzzy neighbors.
-       This will have an attribute `non_planar_neighbors` to indicate what new joins were detected.
+       This will have an attribute `non_planar_joins` to indicate what new joins were detected.
 
     Notes
     -----
