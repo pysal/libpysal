@@ -6,7 +6,7 @@ from distutils.command.build_py import build_py
 
 import os
 
-with open('README.rst') as file:
+with open('README.rst', 'r', encoding='utf8') as file:
     long_description = file.read()
 
 MAJOR = 3
