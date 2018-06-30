@@ -1578,7 +1578,7 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True):
     neighbors = {}
     n,k = gdf.shape
     for i in range(n):
-        geom = gdf[gdf.geometry.name].iloc[i]
+        geom = gdf.geometry.iloc[i]
         hits = list(tree.intersection(geom.bounds))
         possible = gdf.iloc[hits]
         ids = possible.intersects(geom).index.tolist()
