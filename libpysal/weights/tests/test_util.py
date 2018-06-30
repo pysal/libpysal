@@ -236,6 +236,16 @@ class Testutil(unittest.TestCase):
         self.assertEqual(wnp.neighbors[0], [23, 59, 152, 239])
         self.assertEqual(wnp.neighbors[23], [0, 45, 59, 107, 152, 185, 246])
 
+    @unittest.skipIf(not HAS_GEOPANDAS, "Missing geopandas, cannot test nonplanar neighbors")
+    def test_fuzzy_contiguity(self):
+        import libpysal.api as lps
+        import geopandas as gpd
+        rs = lps.get_path('map_RS_BR.shp')
+        rs_df = gpd.read_file(rs)
+        wf = lps.fuzzy_contiguity(rs_df)
+        self.assertEqual(wf.islands, [])
+        self.assertEqual(set(wf.neighbors[0]), set([239, 59, 152, 23, 107]))
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testutil)
 

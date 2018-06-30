@@ -14,13 +14,19 @@ from warnings import warn
 import numbers
 import copy
 from collections import defaultdict
+from ..common import requires
+
+try:
+    import geopandas as gpd
+except ImportError:
+    _warnings.warn('geopandas not available. Some functionality will be disabled.')
 
 __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
            'insert_diagonal', 'get_ids', 'get_points_array_from_shapefile',
            'min_threshold_distance', 'lat2SW', 'w_local_cluster',
            'higher_order_sp', 'hexLat2W', 'regime_weights', 'attach_islands',
-           'nonplanar_neighbors']
+           'nonplanar_neighbors', 'fuzzy_contiguity']
 
 
 KDTREE_TYPES = [scipy.spatial.KDTree, scipy.spatial.cKDTree]
@@ -1469,6 +1475,122 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001):
     w.non_planar_joins = fixes
     return w
 
+@requires('geopandas')
+def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True):
+    """
+    Fuzzy contiguity spatial weights
+
+    Parameters
+    ----------
+
+    gdf:   GeoDataFrame
+
+    tolerance: float
+               The percentage of the length of the minimum side of the bounding rectangle for the GeoDataFrame to use in determining the buffering distance.
+
+    buffering: boolean
+               If False (default) joins will only be detected for features that intersect (touch, contain, within).
+               If True then features will be buffered and intersections will be based on buffered features.
+
+    drop: boolean
+          If True (default), the buffered features are removed from the GeoDataFrame. If False, buffered features are added to the GeoDataFrame.
+
+    Returns
+    -------
+
+    w:  PySAL W
+        Spatial weights based on fuzzy contiguity. Weights are binary.
+
+    Examples
+    --------
+
+    >>> import libpysal.api as lps
+    >>> import geopandas as gpd
+    >>> rs = lps.get_path('map_RS_BR.shp')
+    >>> rs_df = gpd.read_file(rs)
+    >>> wq = lps.Queen.from_dataframe(rs_df)
+    >>> len(wq.islands)
+    29
+    >>> wq[0]
+    {}
+    >>> wf = lps.fuzzy_contiguity(rs_df)
+    >>> wf.islands
+    []
+    >>> wf[0]
+    {239: 1.0, 59: 1.0, 152: 1.0, 23: 1.0, 107: 1.0}
+
+    Example needing to use buffering
+
+    >>> import libpysal.api as lps
+    >>> import geopandas as gpd
+    >>> from shapely.geometry import Polygon
+    >>> p0 = Polygon([(0,0), (10,0), (10,10)])
+    >>> p1 = Polygon([(10,1), (10,2), (15,2)])
+    >>> p2 = Polygon([(12,2.001), (14, 2.001), (13,10)])
+    >>> gs = gpd.GeoSeries([p0,p1,p2])
+    >>> gdf = gpd.GeoDataFrame(geometry=gs)
+    >>> wf = lps.fuzzy_contiguity(gdf)
+    >>> wf.islands
+    [2]
+    >>> wfb = lps.fuzzy_contiguity(gdf, buffering=True)
+    >>> wfb.islands
+    []
+    >>> wfb[2]
+    {1: 1.0}
+
+    Notes
+    -----
+
+    This relaxes the notion of contiguity neighbors for the case of feature
+    collections that violate the condition of planar enforcement. It handles
+    three types of conditions present in such collections that would result in
+    islands when using the regular PySAL contiguity methods. The first are
+    edges for nearby polygons that should be shared, but are digitized
+    separately for the individual polygons and the resulting edges do not
+    coincide, but instead the edges intersect. The second case is similar to
+    the first, only the resultant edges do not intersect but are "close". The
+    final case arises when one polygon is "inside" a second polygon but is not
+    encoded to represent a hole in the containing polygon.
+
+    Detection of the second case will require setting buffering=True and exploring different values for tolerance.
+
+    The buffering check assumes the geometry coordinates are projected.
+
+
+    References
+    ----------
+
+    Planar Enforcement: http://ibis.geog.ubc.ca/courses/klink/gis.notes/ncgia/u12.html#SEC12.6
+
+
+    """
+    if buffering:
+        # buffer each shape
+        minx, miny, maxx, maxy = gdf.total_bounds
+        buffer = tolerance * 0.5 * abs(min(maxx-minx, maxy-miny))
+        # create new geometry column
+        new_geometry = gpd.GeoSeries([feature.buffer(buffer) for feature in gdf.geometry])
+        gdf['_buffer'] = new_geometry
+        old_geometry_name = gdf.geometry.name
+        gdf.set_geometry('_buffer', inplace=True)
+
+    tree = gdf.sindex
+    neighbors = {}
+    n,k = gdf.shape
+    for i in range(n):
+        geom = gdf['geometry'].iloc[i]
+        hits = list(tree.intersection(geom.bounds))
+        possible = gdf.iloc[hits]
+        ids = possible.intersects(geom).index.tolist()
+        ids.remove(i)
+        neighbors[i] = ids
+
+    if buffering:
+        gdf.set_geometry(old_geometry_name, inplace=True)
+        if drop:
+            gdf.drop(columns=['_buffer'], inplace=True)
+
+    return W(neighbors)
 
 
 
