@@ -19,7 +19,7 @@ from ..common import requires
 try:
     import geopandas as gpd
 except ImportError:
-    _warnings.warn('geopandas not available. Some functionality will be disabled.')
+    warn('geopandas not available. Some functionality will be disabled.')
 
 __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
