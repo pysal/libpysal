@@ -15,7 +15,7 @@ for root, subdirs, files in os.walk(example_dir, topdown=False):
         dirs.append(tail)
 
 
-def get_path(example_name, raw=True):
+def get_path(example_name, raw=False):
     """
     Get path of  example folders
     """
