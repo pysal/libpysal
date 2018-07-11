@@ -56,7 +56,40 @@ def nb_dist(x, y):
 
 @nb.jit
 def r_circumcircle_triangle_single(a, b, c):
-    # https://www.mathopenref.com/trianglecircumcircle.html
+    '''
+    Computation of the circumcircle of a single triangle
+    ...
+
+    Source for equations:
+
+    > https://www.mathopenref.com/trianglecircumcircle.html
+
+    [Last accessed July 11th. 2018]
+
+    Arguments
+    ---------
+    a       : ndarray
+              (2,) Array with coordinates of vertex `a` of the triangle
+    b       : ndarray
+              (2,) Array with coordinates of vertex `b` of the triangle
+    c       : ndarray
+              (2,) Array with coordinates of vertex `c` of the triangle
+
+    Returns
+    -------
+    r       : float
+              Circumcircle of the triangle
+
+    Example
+    -------
+
+    >>> a = np.array([0, 0])
+    >>> b = np.array([0.5, 0])
+    >>> c = np.array([0.25, 0.25])
+    >>> r = r_circumcircle_triangle_single(a, b, c)
+    >>> r
+    0.2500000000000001
+    '''
     ab = nb_dist(a, b)
     bc = nb_dist(b, c)
     ca = nb_dist(c, a)
