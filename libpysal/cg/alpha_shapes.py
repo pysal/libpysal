@@ -1,3 +1,10 @@
+"""
+Computation of alpha shape algorithm
+
+Author(s):
+    Dani Arribas-Bel daniel.arribas.bel@gmail.com
+"""
+
 import numba as nb
 import numpy as np
 import scipy.spatial as spat
