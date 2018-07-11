@@ -163,7 +163,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     This method uses the algorithm proposed by  Edelsbrunner, Kirkpatrick &
     Seidel (1983) to return the tightest polygon that contains all points in
     `xys`. The algorithm ranks every point based on its radious and iterates
-    over each point, checking whether the minimum alpha that would keep the
+    over each point, checking whether the maximum alpha that would keep the
     point and all the other ones in the set with smaller radii results in a
     single polygon. If that is the case, it moves to the next point;
     otherwise, it retains the previous alpha value and returns the polygon
@@ -176,8 +176,12 @@ def alpha_shape_auto(xys, step=1, verbose=False):
               and Y
     step    : int
               [Optional. Default=1]
+              Number of points in `xys` to jump ahead after checking whether the
+              largest possible alpha that includes the point and all the
+              other ones with smaller radii
     verbose : Boolean
-              [Optional. Default=False]
+              [Optional. Default=False] If True, it prints alpha values being
+              tried at every step.
 
 
     Returns
@@ -187,6 +191,19 @@ def alpha_shape_auto(xys, step=1, verbose=False):
 
     Example
     -------
+
+    >>> pts = np.array([[0, 1],
+                        [3, 5],
+                        [4, 1],
+                        [6, 7],
+                        [9, 3]])
+    >>> poly = alpha_shape_auto(pts)
+    >>> poly
+    <shapely.geometry.polygon.Polygon at 0x11a7bbf60>
+    >>> poly.bounds
+    (0.0, 1.0, 9.0, 7.0)
+    >>> poly.centroid.x, poly.centroid.y
+    (4.690476190476191, 3.4523809523809526)
 
     References
     ----------
