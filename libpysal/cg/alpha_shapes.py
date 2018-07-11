@@ -5,7 +5,14 @@ Author(s):
     Dani Arribas-Bel daniel.arribas.bel@gmail.com
 """
 
-import numba as nb
+try:
+    from numba import jit
+    HAS_JIT = True
+except ImportError:
+    def jit(function, **kwargs):
+        return function
+    HAS_JIT = False
+from warnings import warn
 import numpy as np
 import scipy.spatial as spat
 from shapely.geometry import LineString
