@@ -88,8 +88,8 @@ def get_single_faces(triangles_is):
     num_faces_single = 3
     num_triangles = triangles_is.shape[0]
     num_faces = num_triangles * num_faces_single
-    faces = np.zeros((num_faces, 2), np.int_)
-    mask = np.ones((num_faces,), np.bool_)
+    faces = np.zeros((num_faces, 2), dtype=np.int_)
+    mask = np.ones((num_faces,), dtype=np.bool_)
 
     faces = build_faces(faces, triangles_is, 
                         num_triangles, num_faces_single)
