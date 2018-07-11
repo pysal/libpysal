@@ -1,5 +1,8 @@
 """
-Computation of alpha shape algorithm
+Computation of alpha shape algorithm in 2-D based on original implementation
+by Tim Kittel (@timkittel) available at:
+
+    https://github.com/timkittel/alpha-shapes
 
 Author(s):
     Dani Arribas-Bel daniel.arribas.bel@gmail.com
