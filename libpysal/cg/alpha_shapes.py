@@ -23,6 +23,31 @@ eps = np.finfo(type(alpha)).eps
 
 @nb.jit
 def nb_dist(x, y):
+    '''
+    numba implementation of distance between points `x` and `y`
+    ...
+
+    Arguments
+    ---------
+    x       : ndarray
+              Coordinates of point `x`
+    y       : ndarray
+              Coordinates of point `y`
+
+    Returns
+    -------
+    dist    : float
+              Distance between `x` and `y`
+
+    Example
+    -------
+
+    >>> x = np.array([0, 0])
+    >>> y = np.array([1, 1])
+    >>> dist = nb_dist(x, y)
+    >>> dist
+    1.4142135623730951
+    '''
     sum = 0
     for x_i, y_i in zip(x, y):
         sum += (x_i - y_i)**2
