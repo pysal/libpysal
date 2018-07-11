@@ -100,9 +100,9 @@ def r_circumcircle_triangle_single(a, b, c):
                    (ca + ab - bc) * \
                    (ab + bc - ca) )
     if den == 0:
-        print(("Warning: Zero denominator found when calculating"\
-               " circumcircles"))
-        return 0
+        warn(("Zero denominator found when calculating"\
+              " circumcircles"))
+        return np.max([ab, bc, ca]) / 2
     else:
         r = num / den
         return r
