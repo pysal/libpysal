@@ -102,7 +102,8 @@ def alpha_geoms(alpha, triangles, radii, xys):
 
 def alpha_shape(xys, alpha):
     '''
-    Alpha-shape delineation from a collection of points
+    Alpha-shape delineation (Edelsbrunner, Kirkpatrick &
+    Seidel, 1983) from a collection of points
     ...
 
     Arguments
@@ -136,6 +137,13 @@ def alpha_shape(xys, alpha):
     >>> poly.centroid
     0    POINT (4.690476190476191 3.452380952380953)
     dtype: object
+
+    References
+    ----------
+
+    Edelsbrunner, H., Kirkpatrick, D., & Seidel, R. (1983). On the shape of
+        a set of points in the plane. IEEE Transactions on information theory, 
+        29(4), 551-559.
     '''
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
@@ -148,6 +156,45 @@ def alpha_shape(xys, alpha):
     return geoms
 
 def alpha_shape_auto(xys, step=1, verbose=False):
+    '''
+    Computation of alpha-shape delineation with automated selection of alpha.
+    ...
+
+    This method uses the algorithm proposed by  Edelsbrunner, Kirkpatrick &
+    Seidel (1983) to return the tightest polygon that contains all points in
+    `xys`. The algorithm ranks every point based on its radious and iterates
+    over each point, checking whether the minimum alpha that would keep the
+    point and all the other ones in the set with smaller radii results in a
+    single polygon. If that is the case, it moves to the next point;
+    otherwise, it retains the previous alpha value and returns the polygon
+    as `shapely` geometry.
+
+    Arguments
+    ---------
+    xys     : ndarray
+              Nx2 array with one point per row and coordinates structured as X
+              and Y
+    step    : int
+              [Optional. Default=1]
+    verbose : Boolean
+              [Optional. Default=False]
+
+
+    Returns
+    -------
+    poly    : shapely.Polygon
+              Tightest alpha-shape polygon containing all points in `xys`
+
+    Example
+    -------
+
+    References
+    ----------
+
+    Edelsbrunner, H., Kirkpatrick, D., & Seidel, R. (1983). On the shape of
+        a set of points in the plane. IEEE Transactions on information theory, 
+        29(4), 551-559.
+    '''
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
     a_pts = triangles[:, 0, :]
