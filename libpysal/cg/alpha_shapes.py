@@ -1,4 +1,3 @@
-
 import numba as nb
 import numpy as np
 import scipy.spatial as spat
@@ -96,17 +95,40 @@ def alpha_geoms(alpha, triangles, radii, xys):
 
 def alpha_shape(xys, alpha):
     '''
-    Alpha-shape delineation
+    Alpha-shape delineation from a collection of points
     ...
 
     Arguments
     ---------
     xys     : ndarray
+              Nx2 array with one point per row and coordinates structured as X
+              and Y
     alpha   : float
+              Alpha value to delineate the alpha-shape
 
     Returns
     -------
-    shapes
+    shapes  : GeoSeries
+              Polygon(s) resulting from the alpha shape algorithm. The
+              GeoSeries object remains so even if only a single polygon is
+              returned. There is no CRS included in the object.
+
+    Example
+    -------
+
+    >>> pts = np.array([[0, 1],
+                        [3, 5],
+                        [4, 1],
+                        [6, 7],
+                        [9, 3]])
+    >>> alpha = 0.1
+    >>> poly = alpha_shape(pts, alpha)
+    >>> poly
+    0    POLYGON ((0 1, 3 5, 6 7, 9 3, 4 1, 0 1))
+    dtype: object
+    >>> poly.centroid
+    0    POINT (4.690476190476191 3.452380952380953)
+    dtype: object
     '''
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
