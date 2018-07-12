@@ -7,7 +7,7 @@ from ...io import geotable as pdio
 
 from ... import examples as pysal_examples
 import unittest as ut
-from warnings import warn as Warn
+import numpy as np
 
 PANDAS_EXTINCT = pandas is None
 try:
