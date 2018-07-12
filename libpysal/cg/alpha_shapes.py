@@ -19,7 +19,7 @@ from shapely.geometry import LineString
 from shapely.ops import polygonize
 from geopandas import GeoSeries
 
-eps = np.finfo(type(alpha)).eps
+EPS = np.finfo(type(float)).eps
 
 @nb.jit
 def nb_dist(x, y):
@@ -290,13 +290,13 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     radii_sorted_i = radii.argsort()
     triangles = triangulation.simplices[radii_sorted_i][::-1]
     radii = radii[radii_sorted_i][::-1]
-    geoms_prev = alpha_geoms((1/radii.max())-eps, triangles, radii, xys)
+    geoms_prev = alpha_geoms((1/radii.max())-EPS, triangles, radii, xys)
     xys_bb = np.array([*xys.min(axis=0), *xys.max(axis=0)])
     if verbose:
         print('Step set to %i'%step)
     for i in range(0, len(radii), step):
         radi = radii[i]
-        alpha = (1 / radi) - eps
+        alpha = (1 / radi) - EPS
         if verbose:
             print('%.2f%% | Trying a = %f'\
 		  %((i+1)/radii.shape[0], alpha))
@@ -310,7 +310,6 @@ def alpha_shape_auto(xys, step=1, verbose=False):
 if __name__ == '__main__':
 
     import matplotlib.pyplot as plt
-    import geopandas as gpd
     import time
     plt.close('all')
     xys = np.random.random((1000, 2))
