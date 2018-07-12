@@ -54,7 +54,7 @@ def nb_dist(x, y):
     dist = np.sqrt(sum)
     return dist
 
-@jit
+@jit(nopython=True)
 def r_circumcircle_triangle_single(a, b, c):
     '''
     Computation of the circumcircle of a single triangle
@@ -100,12 +100,9 @@ def r_circumcircle_triangle_single(a, b, c):
                    (ca + ab - bc) * \
                    (ab + bc - ca) )
     if den == 0:
-        warn(("Zero denominator found when calculating"\
-              " circumcircles"))
-        return np.max([ab, bc, ca]) / 2
+        return np.array([ab, bc, ca]).max() / 2.0
     else:
-        r = num / den
-        return r
+        return num / den
 
 @jit(nopython=True)
 def r_circumcircle_triangle(a_s, b_s, c_s):
@@ -311,6 +308,7 @@ if __name__ == '__main__':
 
     import matplotlib.pyplot as plt
     import time
+    import geopandas as gpd
     plt.close('all')
     xys = np.random.random((1000, 2))
     t0 = time.time()
@@ -318,7 +316,7 @@ if __name__ == '__main__':
     t1 = time.time()
     print('%.2f Seconds to run algorithm'%(t1-t0))
     f, ax = plt.subplots(1)
-    geoms.plot(ax=ax, color='orange', alpha=0.5)
+    gpd.GeoDataFrame({'geometry':[geoms]}).plot(ax=ax, color='orange', alpha=0.5)
     ax.scatter(xys[:, 0], xys[:, 1], s=0.1)
     plt.show()
 
