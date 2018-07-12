@@ -8,4 +8,4 @@ from .rtree import *
 from .kdtree import *
 from .sphere import *
 from .voronoi import *
-from .alpha_shapes import alpha_shape alpha_shape_auto
+from .alpha_shapes import alpha_shape, alpha_shape_auto

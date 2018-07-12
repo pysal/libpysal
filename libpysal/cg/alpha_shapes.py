@@ -19,9 +19,9 @@ from shapely.geometry import LineString
 from shapely.ops import polygonize
 from geopandas import GeoSeries
 
-EPS = np.finfo(type(float)).eps
+EPS = np.finfo(float).eps
 
-@nb.jit
+@jit
 def nb_dist(x, y):
     '''
     numba implementation of distance between points `x` and `y`
@@ -54,7 +54,7 @@ def nb_dist(x, y):
     dist = np.sqrt(sum)
     return dist
 
-@nb.jit
+@jit
 def r_circumcircle_triangle_single(a, b, c):
     '''
     Computation of the circumcircle of a single triangle
@@ -107,7 +107,7 @@ def r_circumcircle_triangle_single(a, b, c):
         r = num / den
         return r
 
-@nb.jit(nopython=True)
+@jit(nopython=True)
 def r_circumcircle_triangle(a_s, b_s, c_s):
     len_a = len(a_s)
     r2 = np.zeros( (len_a,) )
@@ -117,14 +117,14 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
                                                c_s[i])
     return r2
 
-@nb.jit
+@jit
 def get_faces(triangle):
     faces = np.zeros((3, 2))
     for i, (i0, i1) in enumerate([(0, 1), (1, 2), (2, 0)]):
         faces[i] = triangle[i0], triangle[i1]
     return faces
 
-@nb.jit
+@jit
 def build_faces(faces, triangles_is, 
         num_triangles, num_faces_single):
     for i in range(num_triangles):
@@ -133,7 +133,7 @@ def build_faces(faces, triangles_is,
         faces[from_i: to_i] = get_faces(triangles_is[i])
     return faces
 
-@nb.jit
+@jit
 def nb_mask_faces(mask, faces):
     for k in range(faces.shape[0]-1):
         if mask[k]:
