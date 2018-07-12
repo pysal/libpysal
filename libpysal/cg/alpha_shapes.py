@@ -109,6 +109,34 @@ def r_circumcircle_triangle_single(a, b, c):
 
 @jit(nopython=True)
 def r_circumcircle_triangle(a_s, b_s, c_s):
+    '''
+    Computation of circumcircles for a series of triangles
+    ...
+
+    Arguments
+    ---------
+    a_s     : ndarray
+              (N, 2) array with coordinates of vertices `a` of the triangles
+    b_s     : ndarray
+              (N, 2) array with coordinates of vertices `b` of the triangles
+    c_s     : ndarray
+              (N, 2) array with coordinates of vertices `c` of the triangles
+
+    Returns
+    -------
+    radii   : ndarray
+              (N,) array with circumcircles for every triangle
+
+    Example
+    -------
+
+    >>> a_s = np.array([[0, 0], [2, 1], [3, 2]])
+    >>> b_s = np.array([[1, 0], [5, 1], [2, 4]])
+    >>> c_s = np.array([[0, 7], [1, 3], [4, 2]])
+    >>> rs = r_circumcircle_triangle(a_s, b_s, c_s)
+    >>> rs
+    array([3.53553391, 2.5       , 1.58113883])
+    '''
     len_a = len(a_s)
     r2 = np.zeros( (len_a,) )
     for i in range(len_a):
