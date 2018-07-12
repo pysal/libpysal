@@ -147,6 +147,20 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
 
 @jit
 def get_faces(triangle):
+    '''
+
+    ...
+
+    Arguments
+    ---------
+
+    Returns
+    -------
+
+    Example
+    -------
+
+    '''
     faces = np.zeros((3, 2))
     for i, (i0, i1) in enumerate([(0, 1), (1, 2), (2, 0)]):
         faces[i] = triangle[i0], triangle[i1]
@@ -154,6 +168,20 @@ def get_faces(triangle):
 
 @jit
 def build_faces(faces, triangles_is, 
+    '''
+
+    ...
+
+    Arguments
+    ---------
+
+    Returns
+    -------
+
+    Example
+    -------
+
+    '''
         num_triangles, num_faces_single):
     for i in range(num_triangles):
         from_i = num_faces_single * i
@@ -163,6 +191,20 @@ def build_faces(faces, triangles_is,
 
 @jit
 def nb_mask_faces(mask, faces):
+    '''
+
+    ...
+
+    Arguments
+    ---------
+
+    Returns
+    -------
+
+    Example
+    -------
+
+    '''
     for k in range(faces.shape[0]-1):
         if mask[k]:
             if np.all(faces[k] == faces[k+1]):
@@ -171,6 +213,42 @@ def nb_mask_faces(mask, faces):
     return faces[mask]
 
 def get_single_faces(triangles_is):
+    '''
+    Extract outward facing edges from collection of triangles
+    ...
+
+    Arguments
+    ---------
+    triangles_is    : ndarray
+                      (D, 3) array, where D is the number of Delaunay triangles,
+                      with the vertex indices for each triangle
+
+    Returns
+    -------
+    single_faces    : ndarray
+
+    Example
+    -------
+    >>> import scipy.spatial as spat
+    >>> pts = np.array([[0, 1],
+                        [3, 5],
+                        [4, 1],
+                        [6, 7],
+                        [9, 3]])
+    >>> alpha = 0.33
+    >>> triangulation = spat.Delaunay(pts)
+    >>> triangulation.simplices
+    array([[3, 1, 4],
+           [1, 2, 4],
+           [2, 1, 0]], dtype=int32)
+    >>> faces = get_single_faces(triangulation.simplices)
+    array([[0, 1],
+           [0, 2],
+           [1, 3],
+           [2, 4],
+           [3, 4]])
+
+    '''
     num_faces_single = 3
     num_triangles = triangles_is.shape[0]
     num_faces = num_triangles * num_faces_single
@@ -188,11 +266,66 @@ def get_single_faces(triangles_is):
     return single_faces
 
 def alpha_geoms(alpha, triangles, radii, xys):
+    '''
+    Generate alpha-shape polygon(s) from `alpha` value, vertices of `triangles`,
+    the `radii` for all points, and the points themselves
+    ...
+
+    Arguments
+    ---------
+    alpha       : float
+                  Alpha value to delineate the alpha-shape
+    triangles   : ndarray
+                  (D, 3) array, where D is the number of Delaunay triangles,
+                  with the vertex indices for each triangle
+    radii       : ndarray
+                  (N,) array with circumcircles for every triangle
+    xys         : ndarray
+                  (N, 2) array with one point per row and coordinates structured
+                  as X and Y
+
+    Returns
+    -------
+    geoms       : GeoSeries
+                  Polygon(s) resulting from the alpha shape algorithm. The
+                  GeoSeries object remains so even if only a single polygon is
+                  returned. There is no CRS included in the object.
+
+    Example
+    -------
+    >>> import scipy.spatial as spat
+    >>> pts = np.array([[0, 1],
+                        [3, 5],
+                        [4, 1],
+                        [6, 7],
+                        [9, 3]])
+    >>> alpha = 0.33
+    >>> triangulation = spat.Delaunay(pts)
+    >>> triangles = pts[triangulation.simplices]
+    >>> triangles
+    array([[[6, 7],
+            [3, 5],
+            [9, 3]],
+
+           [[3, 5],
+            [4, 1],
+            [9, 3]],
+
+           [[4, 1],
+            [3, 5],
+            [0, 1]]])
+    >>> a_pts = triangles[:, 0, :]
+    >>> b_pts = triangles[:, 1, :]
+    >>> c_pts = triangles[:, 2, :]
+    >>> radii = r_circumcircle_triangle(a_pts, b_pts, c_pts)
+    >>> geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
+    >>> geoms
+    '''
     triangles_reduced = triangles[radii < 1/alpha]
     outer_triangulation = get_single_faces(triangles_reduced)
     face_pts = xys[outer_triangulation]
     geoms = GeoSeries(list(polygonize(list(map(LineString, 
-                                                   face_pts)))))
+                                               face_pts)))))
     return geoms
 
 def alpha_shape(xys, alpha):
@@ -204,7 +337,7 @@ def alpha_shape(xys, alpha):
     Arguments
     ---------
     xys     : ndarray
-              Nx2 array with one point per row and coordinates structured as X
+              (N, 2) array with one point per row and coordinates structured as X
               and Y
     alpha   : float
               Alpha value to delineate the alpha-shape
