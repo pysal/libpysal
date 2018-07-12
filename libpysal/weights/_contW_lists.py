@@ -1,12 +1,8 @@
 from ..cg.shapes import Polygon, Chain
 import itertools as it
-from sys import version_info
 import collections
 QUEEN = 1
 ROOK = 2
-if version_info[0] == 2:
-    zip = it.izip
-    range = xrange
 
 __author__ = "Jay Laura jlaura@asu.edu"
 
@@ -24,7 +20,7 @@ def _get_boundary_points(shape):
     if shape.type.lower() == 'polygon':
         shape = shape.boundary
         return _get_boundary_points(shape)
-    if shape.type.lower() == 'linestring':
+    elif shape.type.lower() == 'linestring':
         return list(map(tuple, list(zip(*shape.coords.xy))))
     elif shape.type.lower() == 'multilinestring':
         return list(it.chain(*(list(zip(*shape.coords.xy))
@@ -33,8 +29,9 @@ def _get_boundary_points(shape):
         return list(it.chain(*(_get_boundary_points(part.boundary) 
                                for part in shape)))
     else:
-        raise TypeError('Input shape must be Polygon or Multipolygon and was '
-                        'instead: {}'.format(shape.type))
+        raise TypeError('Input shape must be a Polygon, Multipolygon, LineString, '
+                        ' or MultiLinestring and was '
+                        ' instead: {}'.format(shape.type))
 
 
 class ContiguityWeightsLists:
