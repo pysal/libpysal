@@ -341,8 +341,11 @@ def get_single_faces(triangles_is):
 
     orderlist = ["x{}".format(i) for i in range(faces.shape[1])]
     dtype_list = [(el, faces.dtype.str) for el in orderlist]
-    faces.sort(axis=1)                  # Not sure why is required to
-    faces.view(dtype_list).sort(axis=0) # sort by rows first in 2D
+    # Arranging each face so smallest vertex is first
+    faces.sort(axis=1)                  
+    # Arranging faces in ascending way
+    faces.view(dtype_list).sort(axis=0)
+    # Masking
     single_faces = nb_mask_faces(mask, faces)
     return single_faces
 
