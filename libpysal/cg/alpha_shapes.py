@@ -168,21 +168,64 @@ def get_faces(triangle):
 
 @jit
 def build_faces(faces, triangles_is, 
+        num_triangles, num_faces_single):
     '''
+    Build facing triangles
 
     ...
 
     Arguments
     ---------
+    faces               : ndarray
+                          (num_triangles * num_faces_single, 2) array of
+                          zeroes in int form
+    triangles_is        : ndarray
+                          (D, 3) array, where D is the number of Delaunay
+                          triangles, with the vertex indices for each
+                          triangle
+    num_triangles       : int
+                          Number of triangles
+    num_faces_single    : int
+                          Number of faces a triangle has (i.e. 3)
 
     Returns
     -------
+    faces               : ndarray
+                          Two dimensional array with a row for every facing
+                          segment containing the indices of the coordinate points
 
     Example
     -------
+    >>> import scipy.spatial as spat
+    >>> pts = np.array([[0, 1],
+                        [3, 5],
+                        [4, 1],
+                        [6, 7],
+                        [9, 3]])
+    >>> triangulation = spat.Delaunay(pts)
+    >>> triangulation.simplices
+    array([[3, 1, 4],
+           [1, 2, 4],
+           [2, 1, 0]], dtype=int32)
+    >>> num_faces_single = 3
+    >>> num_triangles = triangulation.simplices.shape[0]
+    >>> num_faces = num_triangles * num_faces_single
+    >>> faces = np.zeros((num_faces, 2), dtype=np.int_)
+    >>> mask = np.ones((num_faces,), dtype=np.bool_)       
+    >>> faces = build_faces(faces, triangulation.simplices, 
+                            num_triangles, num_faces_single)
+    >>> faces
+    array([[3, 1],
+           [1, 4],
+           [4, 3],
+           [1, 2],
+           [2, 4],
+           [4, 1],
+           [2, 1],
+           [1, 0],
+           [0, 2]])
 
     '''
-        num_triangles, num_faces_single):
     for i in range(num_triangles):
         from_i = num_faces_single * i
         to_i = num_faces_single * (i+1)
@@ -192,18 +235,44 @@ def build_faces(faces, triangles_is,
 @jit
 def nb_mask_faces(mask, faces):
     '''
-
+    Run over each row in `faces`, if the face in the following row is the
+    same, then mark both as False on `mask` 
     ...
 
     Arguments
     ---------
+    mask    : ndarray
+              One-dimensional boolean array set to True with as many
+              observations as rows in `faces`
+    faces   : ndarray
+              Sorted sequence of faces for all triangles (ie. triangles split
+              by each segment)
 
     Returns
     -------
+    masked  : ndarray
+              Sequence of outward-facing faces
 
     Example
     -------
 
+    >>> faces = array([[0, 1],
+                       [0, 2],
+                       [1, 2],
+                       [1, 2],
+                       [1, 3],
+                       [1, 4],
+                       [1, 4],
+                       [2, 4],
+                       [3, 4]])
+    >>> mask = np.ones((faces.shape[0], ), dtype=bool_)
+    >>> masked = nb_mask_faces(mask, faces)
+    >>> masked
+    array([[0, 1],
+           [0, 2],
+           [1, 3],
+           [2, 4],
+           [3, 4]])
     '''
     for k in range(faces.shape[0]-1):
         if mask[k]:
