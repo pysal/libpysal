@@ -4,8 +4,16 @@ from ..alpha_shapes import alpha_shape, alpha_shape_auto
 import numpy as np
 import os
 
+try:
+    import geopandas
+    GEOPANDAS_EXTINCT = False
+except ImportError:
+    GEOPANDAS_EXTINCT = True
+
 this_directory = os.path.dirname(__file__)
 
+@unittest.skipIf(GEOPANDAS_EXTINCT, 'Geopandas is missing, '
+                 'so test will not run')
 class Test_Alpha_Shapes(TestCase):
     def setUp(self):
         import geopandas
