@@ -148,17 +148,29 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
 @jit
 def get_faces(triangle):
     '''
-
+    Extract faces from a single triangle
     ...
 
     Arguments
     ---------
+    triangles       : ndarray
+                      (3,) array with the vertex indices for a triangle
 
     Returns
     -------
+    faces           : ndarray
+                      (3, 2) array with a row for each face containing the
+                      indices of the two points that make up the face
 
     Example
     -------
+    
+    >>> triangle = np.array([3, 1, 4], dtype=int32)
+    >>> faces = get_faces(triangle)
+    >>> faces
+    array([[3., 1.],
+           [1., 4.],
+           [4., 3.]])
 
     '''
     faces = np.zeros((3, 2))
