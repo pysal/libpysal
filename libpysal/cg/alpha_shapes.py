@@ -12,10 +12,18 @@ try:
     from numba import jit
     HAS_JIT = True
 except ImportError:
-    def jit(function, **kwargs):
-        return function
+    from warnings import warn
+    warn("Numba not imported, so alpha shape construction may be slower than expected.")
+    def jit(function=None, **kwargs):
+        if function is not None:
+            def wrapped(*original_args, **original_kw):
+                return function(*original_args, **original_kw)
+            return wrapped
+        else:
+            def partial_inner(func):
+                return jit(func)
+            return partial_inner
     HAS_JIT = False
-from warnings import warn
 import numpy as np
 import scipy.spatial as spat
 from shapely.geometry import LineString
