@@ -8,6 +8,7 @@ import math
 import warnings
 import numpy as np
 import scipy.sparse
+from scipy.sparse.csgraph import connected_components
 import copy
 from os.path import basename as BASENAME
 #from .util import full, WSP2W resolve import cycle by
@@ -41,6 +42,12 @@ class W(object):
                            dataset contains any disconnected observations or
                            islands. To silence this warning set this
                            parameter to True.
+    silent_connected_components   : boolean
+                            By default PySAL will print a warning if the
+                            dataset contains any disconnected components in the
+                            adjacency matrix. These are disconnected *groups*
+                            of islands. To silence this warning set this
+                            parameter to True.                       
     ids                  : list
                            Values to use for keys of the neighbors and weights dicts.
 
@@ -51,6 +58,8 @@ class W(object):
                           of
     cardinalities       : dictionary
                           of
+    components          : int
+
     diagW2              : array
                           of
     diagWtW             : array
@@ -158,8 +167,9 @@ class W(object):
     """
 
     def __init__(self, neighbors, weights=None, id_order=None,
-        silent_island_warning=False, ids=None):
+        silent_island_warning=False, silent_connected_components=False, ids=None):
         self.silent_island_warning = silent_island_warning
+        self.silent_connected_components = silent_connected_components
         self.transformations = {}
         self.neighbors = neighbors
         if not weights:
@@ -188,6 +198,8 @@ class W(object):
             else:
                 warnings.warn("There are %d disconnected observations" % ni)
                 warnings.warn("Island ids: %s" % ', '.join(str(island) for island in self.islands))
+        if self.components > 1 and not self.silent_connected_components:
+            warnings.warn("The weights matrix is not fully connected. There are  %d components" % self.components )
 
     def _reset(self):
         """Reset properties.
@@ -351,6 +363,15 @@ class W(object):
             self._sparse = self._build_sparse()
             self._cache['sparse'] = self._sparse
         return self._sparse
+    
+    @property
+    def components(self):
+        """Store whether the adjacency matrix is fully connected
+        """
+        if 'components' not in self._cache:
+            self._components = connected_components(self.sparse)[0]
+            self._cache['components'] = self._components
+        return self._components
 
     def _build_sparse(self):
         """Construct the sparse attribute.
