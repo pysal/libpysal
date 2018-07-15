@@ -58,8 +58,9 @@ class W(object):
                           of
     cardinalities       : dictionary
                           of
-    components          : int
-
+    component_labels    : numpy ndarray
+                          array of integer labels for each observation, showing
+                          which component of the graph an observation is in. 
     diagW2              : array
                           of
     diagWtW             : array
@@ -87,7 +88,8 @@ class W(object):
                           minimum neighbor count
     n                   : int
                           of
-
+    n_components        : int
+                          number of connected components in the W.
     neighbor_offsets    : list
                           ids of neighbors to a region in id_order
     nonzero             : int
