@@ -167,9 +167,9 @@ class W(object):
     """
 
     def __init__(self, neighbors, weights=None, id_order=None,
-        silent_island_warning=False, silent_connected_components=False, ids=None):
-        self.silent_island_warning = silent_island_warning
-        self.silent_connected_components = silent_connected_components
+                 silence_warnings=False, ids=None):
+        self.silent_island_warning = silence_warnings
+        self.silent_connected_components = silence_warnings
         self.transformations = {}
         self.neighbors = neighbors
         if not weights:
@@ -196,10 +196,10 @@ class W(object):
                               .format(str(self.islands[0])), 
                               stacklevel=2)
             else:
-                warnings.warn("There are %d disconnected observations" % ni)
-                warnings.warn("Island ids: %s" % ', '.join(str(island) for island in self.islands))
-        if self.components > 1 and not self.silent_connected_components:
-            warnings.warn("The weights matrix is not fully connected. There are  %d components" % self.components )
+                warnings.warn("There are %d disconnected observations" % ni + ' \n '
+                              " Island ids: %s" % ', '.join(str(island) for island in self.islands))
+        if self.n_components > 1 and not self.silent_connected_components:
+            warnings.warn("The weights matrix is not fully connected. There are  %d components" % self.n_components )
 
     def _reset(self):
         """Reset properties.
@@ -365,13 +365,24 @@ class W(object):
         return self._sparse
     
     @property
-    def components(self):
-        """Store whether the adjacency matrix is fully connected
+    def n_components(self):
+        """Store whether the adjacency matrix is fully connected.
         """
-        if 'components' not in self._cache:
-            self._components = connected_components(self.sparse)[0]
-            self._cache['components'] = self._components
-        return self._components
+        if 'n_components' not in self._cache:
+            self._n_components, self._component_labels = connected_components(self.sparse)
+            self._cache['n_components'] = self._n_components
+            self._cache['component_labels'] = self._component_labels
+        return self._n_components
+
+    @property
+    def component_labels(self):
+        """Store the graph component in which each observation falls.
+        """
+        if 'component_labels' not in self._cache:
+            self._n_components, self._component_labels = connected_components(self.sparse)
+            self._cache['n_components'] = self._n_components
+            self._cache['component_labels'] = self._component_labels
+        return self._component_labels
 
     def _build_sparse(self):
         """Construct the sparse attribute.
