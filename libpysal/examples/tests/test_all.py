@@ -6,7 +6,7 @@ from ...examples import available, explain, get_path
 class TestHelpers(TestCase):
     def test_available(self):
         examples = available()
-        self.assertEqual(len(examples), 38)
+        self.assertEqual(len(examples), 40)
         self.assertIn('arcgis', examples)
         self.assertIn('nat', examples)
 
