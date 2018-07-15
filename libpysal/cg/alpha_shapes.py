@@ -13,7 +13,6 @@ try:
     HAS_JIT = True
 except ImportError:
     from warnings import warn
-    warn("Numba not imported, so alpha shape construction may be slower than expected.")
     def jit(function=None, **kwargs):
         if function is not None:
             def wrapped(*original_args, **original_kw):
@@ -465,6 +464,8 @@ def alpha_shape(xys, alpha):
         a set of points in the plane. IEEE Transactions on information theory, 
         29(4), 551-559.
     '''
+    if not HAS_JIT:
+        warn("Numba not imported, so alpha shape construction may be slower than expected.")
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
     a_pts = triangles[:, 0, :]
@@ -532,6 +533,8 @@ def alpha_shape_auto(xys, step=1, verbose=False):
         a set of points in the plane. IEEE Transactions on information theory, 
         29(4), 551-559.
     '''
+    if not HAS_JIT:
+        warn("Numba not imported, so alpha shape construction may be slower than expected.")
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
     a_pts = triangles[:, 0, :]
