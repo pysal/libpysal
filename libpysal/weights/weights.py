@@ -225,8 +225,8 @@ class W(object):
                                   ' Queen, DistanceBand, or Kernel')
 
     @classmethod
-    def from_WSP(cls, WSP, silent_island_warning=True):
-        return WSP2W(WSP, silent_island_warning=silent_island_warning)
+    def from_WSP(cls, WSP, silence_warnings=True):
+        return WSP2W(WSP, silence_warnings=silence_warnings)
 
     @classmethod
     def from_adjlist(cls, adjlist, focal_col='focal', 
@@ -1441,7 +1441,7 @@ class WSP(object):
         """
         return cls(W.sparse, id_order=W.id_order)
     
-    def to_W(self, silent_island_warning=False):
+    def to_W(self, silence_warnings=False):
 
         """
         Convert a pysal WSP object (thin weights matrix) to a pysal W object.
@@ -1450,7 +1450,7 @@ class WSP(object):
         ----------
         self                     : WSP
                                   PySAL sparse weights object
-        silent_island_warning   : boolean
+        silence_warnings         : boolean
                                   Switch to turn off (default on) print statements
                                   for every observation with islands
 
@@ -1502,7 +1502,7 @@ class WSP(object):
             start = end
         ids = copy.copy(self.id_order)
         w = W(neighbors, weights, ids,
-                    silent_island_warning=silent_island_warning)
+                    silence_warnings=silence_warnings)
         w._sparse = copy.deepcopy(self.sparse)
         w._cache['sparse'] = w._sparse
         return w

@@ -249,7 +249,7 @@ class TestW(unittest.TestCase):
                  1: [0],
                  2: [3],
                  3: [2]}
-        disco = ps.W(disco)
+        disco = W(disco)
         assert disco.n_components == 2
 
 class Test_WSP_Back_To_W(unittest.TestCase):
