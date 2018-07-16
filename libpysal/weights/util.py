@@ -1439,7 +1439,7 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001):
     gdf = geodataframe
     islands = w.islands
     joins = copy.deepcopy(w.neighbors)
-    candidates = gdf['geometry']
+    candidates = gdf.geometry
     fixes = defaultdict(list)
 
     # first check for intersecting polygons
