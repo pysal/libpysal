@@ -3,7 +3,6 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, Levi John Wolf <levi.john.wolf@gmail
 
 
 from ..cg.kdtree import KDTree
-from ..common import KDTree
 from .weights import W, WSP
 from .util import isKDTree, get_ids, get_points_array_from_shapefile,\
                   get_points_array, WSP2W
@@ -90,10 +89,10 @@ class KNN(W):
     def __init__(self, data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
         if isKDTree(data):
             self.kdtree = data
-            self.data = data.data
+            self.data = self.kdtree.data
         else:
-            self.data = data
             self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
+            self.data = self.kdtree.data
         self.k = k 
         self.p = p
         this_nnq = self.kdtree.query(self.data, k=k+1, p=p)
@@ -499,8 +498,8 @@ class Kernel(W):
             self.data = self.kdt.data
             data = self.data
         else:
-            self.data = data
-            self.kdt = KDTree(self.data)
+            self.kdt = KDTree(data)
+            self.data = self.kdt.data
         self.k = k + 1
         self.function = function.lower()
         self.fixed = fixed
@@ -784,8 +783,12 @@ class DistanceBand(W):
                     data = np.asarray(data)
                     if data.dtype.kind != 'f':
                         data = data.astype(float)
-                    self.data = data
+<<<<<<< HEAD
+                    self.kd = KDTree(data)
+=======
                     self.kd = KDTree(self.data)
+>>>>>>> dfe91866... be consistent; always refer to the kdtree data
+                    self.data = self.kd.data
                 except:
                     raise ValueError("Could not make array from data")        
             else:
