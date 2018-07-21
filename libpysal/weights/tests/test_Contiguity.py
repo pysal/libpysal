@@ -134,6 +134,16 @@ class Test_Rook(ut.TestCase, Contiguity_Mixin):
         self.known_name = 5
         self.known_namedw = {k+1:v for k,v in list(self.known_w.items())}
 
+class Test_Voronoi(ut.TestCase):
+    def test_voronoiW(self):
+        np.random.seed(12345)
+        points = np.random.random((5,2))*10 + 10
+        w = c.Voronoi(points)
+        self.assertEqual(w.n, 5)
+        self.assertEqual(w.neighbors, {0: [1, 2, 3, 4],
+                                        1: [0, 2], 2: [0, 1, 4],
+                                        3: [0, 4], 4: [0, 2, 3]})
+
 q = ut.TestLoader().loadTestsFromTestCase(Test_Queen)
 r = ut.TestLoader().loadTestsFromTestCase(Test_Rook)
 suite = ut.TestSuite([q, r])

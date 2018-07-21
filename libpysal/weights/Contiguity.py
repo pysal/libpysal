@@ -312,6 +312,40 @@ class Queen(W):
         w = cls.from_iterable(df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs)
         return w
 
+def Voronoi(points):
+    """
+    Voronoi weights for a 2-d point set
+
+
+    Points are Voronoi neighbors if their polygons share an edge or vertex.
+
+
+    Parameters
+    ----------
+
+    points      : array
+                  (n,2)
+                  coordinates for point locations
+
+    Returns
+    -------
+
+    w           : W
+                  instance of spatial weights
+
+    Examples
+    --------
+    >>> np.random.seed(12345)
+    >>> points= np.random.random((5,2))*10 + 10
+    >>> w = voronoiW(points)
+    >>> w.neighbors
+    {0: [1, 2, 3, 4], 1: [0, 2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
+    """
+    from ..cg import voronoi_frames
+    region_df, _ = voronoi_frames(points)
+    return Queen.from_dataframe(region_df)
+
+
 def _build(polygons, criterion="rook", ids=None):
     """
     This is a developer-facing function to construct a spatial weights object. 
