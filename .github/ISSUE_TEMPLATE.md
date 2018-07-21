@@ -16,7 +16,7 @@ Feel free to delete the commands after you've filled out each bullet.
 ```
 - SciPy version:
 ```python
->>> import scpiy; print(scipy.__version__)
+>>> import scipy; print(scipy.__version__)
 ```
 - NumPy version:
 ```python
