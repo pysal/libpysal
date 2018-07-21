@@ -201,7 +201,7 @@ class W(object):
                 warnings.warn("There are %d disconnected observations" % ni + ' \n '
                               " Island ids: %s" % ', '.join(str(island) for island in self.islands))
         if self.n_components > 1 and not self.silent_connected_components:
-            warnings.warn("The weights matrix is not fully connected. There are  %d components" % self.n_components )
+            warnings.warn("The weights matrix is not fully connected. There are %d components" % self.n_components)
 
     def _reset(self):
         """Reset properties.
