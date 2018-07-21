@@ -57,7 +57,6 @@ class Testutil(unittest.TestCase):
         wn0 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
         self.assertEqual(w.neighbors[0], wn0)
         regimes = ['n', 'n', 's', 's', 'e', 'e', 'w', 'w', 'e']
-        n = len(regimes)
         w = util.block_weights(regimes)
         wn = {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8],
               6: [7], 7: [6], 8: [4, 5]}
@@ -223,12 +222,10 @@ class Testutil(unittest.TestCase):
 
     @unittest.skipIf(not HAS_GEOPANDAS, "Missing geopandas, cannot test nonplanar neighbors")
     def test_nonplanar_neighbors(self):
-        import geopandas as gpd
         df = gpd.read_file(examples.get_path('map_RS_BR.shp'))
         w = Queen.from_dataframe(df)
         self.assertEqual(w.islands, [0, 4, 23, 27, 80, 94, 101, 107, 109, 119, 122, 139, 169, 175, 223, 239, 247, 253, 254, 255, 256, 261, 276, 291, 294, 303, 321, 357, 374])
-        import libpysal
-        wnp = libpysal.weights.util.nonplanar_neighbors(w, df)
+        wnp = nonplanar_neighbors(w, df)
         self.assertEqual(wnp.islands, [])
         self.assertEqual(w.neighbors[0], [])
         self.assertEqual(wnp.neighbors[0], [23, 59, 152, 239])
@@ -236,7 +233,6 @@ class Testutil(unittest.TestCase):
 
     @unittest.skipIf(not HAS_GEOPANDAS, "Missing geopandas, cannot test fuzzy_contiguity")
     def test_fuzzy_contiguity(self):
-        import geopandas as gpd
         rs = examples.get_path('map_RS_BR.shp')
         rs_df = gpd.read_file(rs)
         wf = fuzzy_contiguity(rs_df)
