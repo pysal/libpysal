@@ -132,13 +132,13 @@ class TestW(unittest.TestCase):
 
     def test_islands(self):
         w = W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
-                               ['b'], 'd': []})
+                               ['b'], 'd': []}, silence_warnings=True)
         self.assertEqual(w.islands, ['d'])
         self.assertEqual(self.w3x3.islands, [])
 
     def test_max_neighbors(self):
         w = W(neighbors={'a': ['b'], 'b': ['a', 'c'], 'c':
-                               ['b'], 'd': []})
+                               ['b'], 'd': []}, silence_warnings=True)
         self.assertEqual(w.max_neighbors, 2)
         self.assertEqual(self.w3x3.max_neighbors, 4)
 
