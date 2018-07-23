@@ -86,7 +86,7 @@ class KNN(W):
     --------
     :class:`pysal.weights.W`
     """
-    def __init__(self, data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
+    def __init__(self, data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean', **kwargs):
         if isKDTree(data):
             self.kdtree = data
             self.data = self.kdtree.data
@@ -108,7 +108,7 @@ class KNN(W):
             row = [ids[j] for j in row]
             focal = ids[i]
             neighbors[focal] = row
-        W.__init__(self, neighbors, id_order=ids)
+        W.__init__(self, neighbors, id_order=ids, **kwargs)
     
     @classmethod
     def from_shapefile(cls, filepath, *args, **kwargs):
@@ -492,7 +492,7 @@ class Kernel(W):
     """
     def __init__(self, data, bandwidth=None, fixed=True, k=2,
                  function='triangular', eps=1.0000001, ids=None,
-                 diagonal=False):
+                 diagonal=False, **kwargs):
         if isKDTree(data):
             self.kdt = data
             self.data = self.kdt.data
@@ -519,7 +519,7 @@ class Kernel(W):
         if diagonal:
             for i in neighbors:
                 weights[i][neighbors[i].index(i)] = 1.0
-        W.__init__(self, neighbors, weights, ids)
+        W.__init__(self, neighbors, weights, ids, **kwargs)
     
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None,  **kwargs):
