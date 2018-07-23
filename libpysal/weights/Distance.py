@@ -494,12 +494,12 @@ class Kernel(W):
                  function='triangular', eps=1.0000001, ids=None,
                  diagonal=False, **kwargs):
         if isKDTree(data):
-            self.kdt = data
-            self.data = self.kdt.data
+            self.kdtree = data
+            self.data = self.kdtree.data
             data = self.data
         else:
-            self.kdt = KDTree(data)
-            self.data = self.kdt.data
+            self.kdtree = KDTree(data)
+            self.data = self.kdtree.data
         self.k = k + 1
         self.function = function.lower()
         self.fixed = fixed
@@ -608,7 +608,7 @@ class Kernel(W):
         return allneighbors, weights
 
     def _set_bw(self):
-        dmat, neigh = self.kdt.query(self.data, k=self.k)
+        dmat, neigh = self.kdtree.query(self.data, k=self.k)
         if self.fixed:
             # use max knn distance as bandwidth
             bandwidth = dmat.max() * self.eps
@@ -619,20 +619,20 @@ class Kernel(W):
             self.bandwidth = dmat.max(axis=1) * self.eps
             self.bandwidth.shape = (self.bandwidth.size, 1)
             # identify knn neighbors for each point
-            nnq = self.kdt.query(self.data, k=self.k)
+            nnq = self.kdtree.query(self.data, k=self.k)
             self.neigh = nnq[1]
 
     def _eval_kernel(self):
         # get points within bandwidth distance of each point
         if not hasattr(self, 'neigh'):
-            kdtq = self.kdt.query_ball_point
+            kdtq = self.kdtree.query_ball_point
             neighbors = [kdtq(self.data[i], r=bwi[0]) for i,
                          bwi in enumerate(self.bandwidth)]
             self.neigh = neighbors
         # get distances for neighbors
         bw = self.bandwidth
 
-        kdtq = self.kdt.query
+        kdtq = self.kdtree.query
         z = []
         for i, nids in enumerate(self.neigh):
             di, ni = kdtq(self.data[i], k=len(nids))
@@ -775,21 +775,21 @@ class DistanceBand(W):
         self.silent = silent
         
         if isKDTree(data):
-            self.kd = data
-            self.data = self.kd.data
+            self.kdtree = data
+            self.data = self.kdtree.data
         else:
             if self.build_sp:
                 try:
                     data = np.asarray(data)
                     if data.dtype.kind != 'f':
                         data = data.astype(float)
-                    self.kd = KDTree(data)
-                    self.data = self.kd.data
+                    self.kdtree = KDTree(data)
+                    self.data = self.kdtree.data
                 except:
                     raise ValueError("Could not make array from data")        
             else:
                 self.data = data
-                self.kd = None       
+                self.kdtree = None       
         self._band()
         neighbors, weights = self._distance_to_W(ids)
         W.__init__(self, neighbors, weights, ids, silence_warnings=self.silent)
@@ -869,10 +869,10 @@ class DistanceBand(W):
 
         """
         if self.build_sp:
-            self.dmat = self.kd.sparse_distance_matrix(
-                    self.kd, max_distance=self.threshold, p=self.p).tocsr()
+            self.dmat = self.kdtree.sparse_distance_matrix(
+                    self.kdtree, max_distance=self.threshold, p=self.p).tocsr()
         else:
-            if str(self.kd).split('.')[-1][0:10] == 'Arc_KDTree':
+            if str(self.kdtree).split('.')[-1][0:10] == 'Arc_KDTree':
             	raise TypeError('Unable to calculate dense arc distance matrix;'
             	        ' parameter "build_sp" must be set to True for arc'
             	        ' distance type weight')
