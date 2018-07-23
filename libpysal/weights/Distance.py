@@ -783,11 +783,7 @@ class DistanceBand(W):
                     data = np.asarray(data)
                     if data.dtype.kind != 'f':
                         data = data.astype(float)
-<<<<<<< HEAD
                     self.kd = KDTree(data)
-=======
-                    self.kd = KDTree(self.data)
->>>>>>> dfe91866... be consistent; always refer to the kdtree data
                     self.data = self.kd.data
                 except:
                     raise ValueError("Could not make array from data")        
