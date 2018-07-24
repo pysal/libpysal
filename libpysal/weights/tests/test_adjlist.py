@@ -2,11 +2,15 @@ import unittest as ut
 import numpy as np
 from .. import adjtools as adj
 from ..weights import W
-from ... import api as ps
+from ..Contiguity import Queen, Rook
+from ..util import lat2W
 from ...common import RTOL, ATOL
+from ... import io
+from ...examples import get_path
 
 try:
-    import pandas as pd
+    import pandas
+    import geopandas
     PANDAS_MISSING = False
 except ImportError:
     PANDAS_MISSING = True
@@ -14,17 +18,16 @@ except ImportError:
 @ut.skipIf(PANDAS_MISSING, 'Pandas is gone')
 class Test_Adjlist(ut.TestCase):
     def setUp(self):
-        self.knownW = ps.open(ps.get_path('columbus.gal')).read()
+        self.knownW = io.FileIO.FileIO(get_path('columbus.gal')).read()
     
-    @ut.skip
     def test_round_trip(self):
-        adjlist = self.knownW.to_adjlist()
-        w_from_adj = W.from_adjlist(adjlist, remove_symmetric=False)
+        adjlist = self.knownW.to_adjlist().astype(int)
+        w_from_adj = W.from_adjlist(adjlist)
         np.testing.assert_allclose(w_from_adj.sparse.toarray(), 
                                    self.knownW.sparse.toarray())
 
     def test_filter(self):
-        grid = ps.lat2W(2,2)
+        grid = lat2W(2,2)
         alist = grid.to_adjlist(remove_symmetric=True)
         assert len(alist) == 4
         with self.assertRaises(AssertionError):
@@ -36,8 +39,8 @@ class Test_Adjlist(ut.TestCase):
         assert alist.weight.unique().item() == 1
 
     def apply_and_compare_columbus(self, col):
-        df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
-        W = ps.Queen.from_dataframe(df)
+        df = geopandas.read_file(get_path('columbus.dbf')).head()
+        W = Queen.from_dataframe(df)
         alist = adj.adjlist_apply(df[col], W=W)
         right_hovals = alist.groupby('focal').att_focal.unique()
         assert (right_hovals == df[col]).all()
@@ -50,8 +53,8 @@ class Test_Adjlist(ut.TestCase):
         self.apply_and_compare_columbus('HOVAL')
 
     def test_mvapply(self):
-        df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
-        W = ps.Queen.from_dataframe(df)
+        df = geopandas.read_file(get_path('columbus.dbf')).head()
+        W = Queen.from_dataframe(df)
         ssq = lambda x_y: np.sum((x_y[0]-x_y[1])**2).item()
         ssq.__name__ = 'sum_of_squares'
         alist = adj.adjlist_apply(df[['HOVAL', 'CRIME', 'INC']], W=W, 
@@ -76,8 +79,8 @@ class Test_Adjlist(ut.TestCase):
 
     def test_map(self):
         atts = ['HOVAL', 'CRIME', 'INC'] 
-        df = ps.geotable.read_files(ps.get_path('columbus.dbf')).head()
-        W = ps.Queen.from_dataframe(df)
+        df = geopandas.read_file(get_path('columbus.dbf')).head()
+        W = Queen.from_dataframe(df)
         hoval, crime, inc = list(map(self.apply_and_compare_columbus, atts)) 
         mapped = adj.adjlist_map(df[atts], W=W)
         for name,data in zip(atts, (hoval, crime, inc)):
