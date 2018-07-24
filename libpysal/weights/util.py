@@ -1437,6 +1437,7 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001):
     """
 
     gdf = geodataframe
+    assert gdf.sindex, 'GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed'
     islands = w.islands
     joins = copy.deepcopy(w.neighbors)
     candidates = gdf.geometry
