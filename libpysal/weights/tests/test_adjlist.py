@@ -22,8 +22,8 @@ class Test_Adjlist(ut.TestCase):
         self.knownW = io.open(examples.get_path('columbus.gal')).read()
     
     def test_round_trip(self):
-        adjlist = self.knownW.to_adjlist()
-        w_from_adj = weights.W.from_adjlist(adjlist, remove_symmetric=False)
+        adjlist = self.knownW.to_adjlist(remove_symmetric=False).astype(int)
+        w_from_adj = weights.W.from_adjlist(adjlist)
         np.testing.assert_allclose(w_from_adj.sparse.toarray(), 
                                    self.knownW.sparse.toarray())
 
