@@ -1,4 +1,5 @@
 from . import FileIO
-from . import geotable as gt
+from . import IOHandlers
 open = FileIO.FileIO
 del FileIO
+del IOHandlers
