@@ -11,7 +11,7 @@ from scipy.spatial import Voronoi
 
 __author__ = "Serge Rey <sjsrey@gmail.com>"
 
-__all__ = ['voronoi']
+__all__ = ['voronoi_frames']
 
 def voronoi(points, radius=None):
     """

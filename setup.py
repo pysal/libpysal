@@ -11,7 +11,7 @@ with open('README.rst', 'r', encoding='utf8') as file:
 
 MAJOR = 3
 MINOR = 0
-MICRO = 6
+MICRO = 7
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
