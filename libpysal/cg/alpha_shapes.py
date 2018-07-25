@@ -28,6 +28,8 @@ import scipy.spatial as spat
 
 EPS = np.finfo(float).eps
 
+__all__ = ['alpha_shape', 'alpha_shape_auto']
+
 @jit
 def nb_dist(x, y):
     '''
