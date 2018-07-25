@@ -1574,7 +1574,7 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True):
         gdf['_buffer'] = new_geometry
         old_geometry_name = gdf.geometry.name
         gdf.set_geometry('_buffer', inplace=True)
-
+    assert gdf.sindex, 'GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed'
     tree = gdf.sindex
     neighbors = {}
     n,k = gdf.shape
