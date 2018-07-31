@@ -1,4 +1,4 @@
-from .. import Tables 
+from .. import Tables
 import csv
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
@@ -93,4 +93,3 @@ class csvWrapper(Tables.DataTable):
             return row
         else:
             return None
-

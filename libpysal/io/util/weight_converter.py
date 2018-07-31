@@ -241,4 +241,3 @@ def weight_convert(inPath, outPath, inDataFormat=None, outDataFormat=None, useId
     converter = WeightConverter(inPath, dataFormat=inDataFormat)
     converter.write(outPath, dataFormat=outDataFormat,
                     useIdIndex=useIdIndex, matrix_form=matrix_form)
-

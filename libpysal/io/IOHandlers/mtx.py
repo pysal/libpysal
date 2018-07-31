@@ -1,9 +1,6 @@
-import os.path
 import scipy.io as sio
 from .. import FileIO
 from ...weights.weights import W, WSP
-from ...weights.util import full, full2W
-from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["MtxIO"]
@@ -236,5 +233,3 @@ class MtxIO(FileIO.FileIO):
     def close(self):
         self.file.close()
         FileIO.FileIO.close(self)
-
-

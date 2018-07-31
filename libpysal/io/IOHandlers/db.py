@@ -12,8 +12,7 @@ except ImportError:
 
 try:
     from sqlalchemy.ext.automap import automap_base
-    from sqlalchemy import create_engine, inspect
-    from sqlalchemy.ext.automap import automap_base
+    from sqlalchemy import create_engine
     from sqlalchemy.orm import Session
     nosql_mode = False
 except ImportError:

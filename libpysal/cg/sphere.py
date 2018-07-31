@@ -11,12 +11,11 @@ Author(s):
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>, Luc Anselin <luc.anselin@asu.edu, Xun Li <xun.li@asu.edu"
 
 import math
-import random
 import numpy
 import scipy.spatial
 import scipy.constants
 from scipy.spatial.distance import euclidean
-from math import pi, cos, sin, asin
+from math import pi, cos, sin
 
 __all__ = ['RADIUS_EARTH_KM', 'RADIUS_EARTH_MILES', 'arcdist', 'arcdist2linear', 'brute_knn', 'fast_knn', 'fast_threshold', 'linear2arcdist', 'toLngLat', 'toXYZ', 'lonlat','harcdist','geointerpolate','geogrid']
 

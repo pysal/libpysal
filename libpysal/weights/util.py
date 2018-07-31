@@ -1,18 +1,15 @@
-from ..cg.shapes import Polygon, Point
 from ..io.FileIO import FileIO as psopen
 from .weights import W, WSP
 from .Wsets import w_subset
 import numpy as np
-from scipy import sparse, float32
+from scipy import sparse
 from scipy.spatial import KDTree
 import copy
 import scipy.spatial
 import os
-import operator
 import scipy
 from warnings import warn
 import numbers
-import copy
 from collections import defaultdict
 from ..common import requires
 

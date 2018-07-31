@@ -7,7 +7,6 @@ __credits__ = "Copyright (c) 2005-2011 Sergio J. Rey"
 
 import math
 import copy
-import doctest
 from .rtree import *
 from .standalone import *
 from .shapes import *
@@ -983,4 +982,3 @@ class PolygonLocator:
         future test: len(pl.proximity(Point((0, 0)), 2)) == 2
         """
         raise NotImplementedError
-

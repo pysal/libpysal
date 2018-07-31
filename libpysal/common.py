@@ -20,19 +20,14 @@ RTOL = .00001
 ATOL = 1e-7
 
 import copy
-import math
-import random
 import sys
 import time
-import unittest
-from warnings import warn as Warn
-from functools import wraps
 try:
     from patsy import PatsyError
 except ImportError:
     PatsyError = Exception
 try:
-    import pandas 
+    import pandas
 except ImportError:
     pandas = None
 

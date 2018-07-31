@@ -5,11 +5,8 @@ Computational geometry code for PySAL: Python Spatial Analysis Library.
 
 __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow, Hu Shao"
 
-import doctest
 import math
-from warnings import warn
 from .sphere import arcdist
-import numpy as np
 
 __all__ = ['Point', 'LineSegment', 'Line', 'Ray', 'Chain', 'Polygon',
            'Rectangle', 'asShape']
@@ -1996,4 +1993,3 @@ _geoJSON_type_to_Pysal_type = {'point': Point, 'linestring': Chain, 'multilinest
                                'polygon': Polygon, 'multipolygon': Polygon}
 from . import standalone  # moving this to top breaks unit tests !
 from .polygonQuadTreeStructure import QuadTreeStructureSingleRing
-

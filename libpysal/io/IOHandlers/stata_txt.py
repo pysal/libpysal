@@ -1,7 +1,5 @@
-import os.path
 from .. import FileIO as FileIO
 from ...weights import W
-from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["StataTextIO"]
@@ -232,4 +230,3 @@ class StataTextIO(FileIO.FileIO):
     def close(self):
         self.file.close()
         FileIO.FileIO.close(self)
-

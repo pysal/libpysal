@@ -1,7 +1,5 @@
-import os.path
 from . import gwt
 from ...weights import W
-from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["DatIO"]
@@ -128,4 +126,3 @@ class DatIO(gwt.GwtIO):
         else:
             raise TypeError("Expected a pysal weights object, got: %s" % (
                 type(obj)))
-
