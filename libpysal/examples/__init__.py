@@ -1,7 +1,8 @@
 import os
-from . import _version
+#from . import _version
 
-base = os.path.abspath(os.path.dirname(_version.__file__))
+#base = os.path.abspath(os.path.dirname(_version.__file__))
+base = os.path.abspath(os.getcwd())
 __all__ = ['get_path', 'available', 'explain']
 file_2_dir = {}
 example_dir = base

@@ -27,4 +27,4 @@ from . import examples
 
 # Assign pysal.open to dispatcher
 
-from .version import version
+from .version import version as __version__
