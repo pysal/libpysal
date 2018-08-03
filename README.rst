@@ -20,12 +20,6 @@ libpysal modules
 - libpysal.weights  Spatial weights
 - libpysal.examples  Built-in example datasets
 
-
-Mimicing parts of the original PySAL api can be done with
-
-``import libpysal.api as ps``
-
-
 ***********
 Development
 ***********
