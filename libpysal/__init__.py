@@ -1,3 +1,7 @@
+__version__ = "3.0.7"
+
+# __version__ has to be define in the first line
+
 """
 Python Spatial Analysis Library
 ===============================
@@ -27,4 +31,5 @@ from . import examples
 
 # Assign pysal.open to dispatcher
 
-from .version import version as __version__
+#from .version import version as __version__
+

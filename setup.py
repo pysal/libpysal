@@ -9,12 +9,10 @@ import os
 with open('README.rst', 'r', encoding='utf8') as file:
     long_description = file.read()
 
-MAJOR = 3
-MINOR = 0
-MICRO = 7
-ISRELEASED = False
-VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-
+# Get _version__ from libpysal/__init__.py without importing the package
+# __version__ has to be defined in the firt line
+exec(compile(open('libpysal/__init__.py').readline(),
+             'libpysal/__init__.py', 'exec'))
 
 # BEFORE importing distutils, remove MANIFEST. distutils doesn't properly
 # update it when the contents of directories change.
@@ -62,7 +60,7 @@ def setup_package():
 
     setup(
         name='libpysal',
-        version=VERSION,
+        version=__version__,
         description="Core components of PySAL A library of spatial analysis functions.",
         long_description=long_description,
         maintainer="PySAL Developers",
