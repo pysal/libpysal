@@ -9,7 +9,7 @@ import os
 with open('README.rst', 'r', encoding='utf8') as file:
     long_description = file.read()
 
-# Get _version__ from libpysal/__init__.py without importing the package
+# Get __version__ from libpysal/__init__.py without importing the package
 # __version__ has to be defined in the firt line
 exec(compile(open('libpysal/__init__.py').readline(),
              'libpysal/__init__.py', 'exec'))
