@@ -51,67 +51,38 @@ class W(object):
     ids                  : list
                            Values to use for keys of the neighbors and weights dicts.
 
-    Attributes
+    Attributes (NOTE: these are described by their docstrings. to view, use the `help` function)
     ----------
 
     asymmetries
-
     cardinalities
-
     component_labels
-
     diagW2
-
     diagWtW
-
     diagWtW_WW
-
     histogram
-
     id2i
-
     id_order
-
     id_order_set
-
     islands
-
     max_neighbors
-
     mean_neighbors
-
     min_neighbors
-
     n
-
     n_components
-
     neighbor_offsets
-
     nonzero
-
     pct_nonzero
-
     s0
-
     s1
-
     s2
-
     s2array
-
     sd
-
     sparse
-
     trcW2
-
     trcWtW
-
     trcWtW_WW
-
     transform
-
 
     Examples
     --------
