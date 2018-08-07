@@ -10,9 +10,9 @@ with open('README.rst', 'r', encoding='utf8') as file:
     long_description = file.read()
 
 # Get __version__ from libpysal/__init__.py without importing the package
-# __version__ has to be defined in the firt line
-exec(compile(open('libpysal/__init__.py').readline(),
-             'libpysal/__init__.py', 'exec'))
+# __version__ has to be defined in the first line
+with open('libpysal/__init__.py', 'r') as f:
+    exec(f.readline())
 
 # BEFORE importing distutils, remove MANIFEST. distutils doesn't properly
 # update it when the contents of directories change.
