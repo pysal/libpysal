@@ -47,75 +47,42 @@ class W(object):
                             dataset contains any disconnected components in the
                             adjacency matrix. These are disconnected *groups*
                             of islands. To silence this warning set this
-                            parameter to True.                       
+                            parameter to True.
     ids                  : list
                            Values to use for keys of the neighbors and weights dicts.
 
-    Attributes
+    Attributes (NOTE: these are described by their docstrings. to view, use the `help` function)
     ----------
 
-    asymmetries         : list
-                          of
-    cardinalities       : dictionary
-                          of
-    component_labels    : numpy ndarray
-                          array of integer labels for each observation, showing
-                          which component of the graph an observation is in. 
-    diagW2              : array
-                          of
-    diagWtW             : array
-                          of
-    diagWtW_WW          : array
-                          of
-    histogram           : dictionary
-                          of
-    id2i                : dictionary
-                          of
-    id_order            : list
-                          of
-    id_order_set        : boolean
-                          True if
-    islands             : list
-                          of
-
-    max_neighbors       : int
-                          maximum number of neighbors
-
-    mean_neighbors      : int
-                          mean number of neighbors
-
-    min_neighbors       : int
-                          minimum neighbor count
-    n                   : int
-                          of
-    n_components        : int
-                          number of connected components in the W.
-    neighbor_offsets    : list
-                          ids of neighbors to a region in id_order
-    nonzero             : int
-                          Number of non-zero entries
-    pct_nonzero         : float
-                          Percentage of nonzero neighbor counts
-    s0                  : float
-                          of
-    s1                  : float
-                          of
-    s2                  : float
-                          of
-    s2array             : array
-                          of
-    sd                  : float
-                          of
-    sparse              : sparse_matrix
-                          SciPy sparse matrix instance
-    trcW2               : float
-                          of
-    trcWtW              : float
-                          of
-    trcWtW_WW           : float
-                          of
-    transform           : string
-                          of
+    asymmetries
+    cardinalities
+    component_labels
+    diagW2
+    diagWtW
+    diagWtW_WW
+    histogram
+    id2i
+    id_order
+    id_order_set
+    islands
+    max_neighbors
+    mean_neighbors
+    min_neighbors
+    n
+    n_components
+    neighbor_offsets
+    nonzero
+    pct_nonzero
+    s0
+    s1
+    s2
+    s2array
+    sd
+    sparse
+    trcW2
+    trcWtW
+    trcWtW_WW
+    transform
 
     Examples
     --------
@@ -365,7 +332,7 @@ class W(object):
             self._sparse = self._build_sparse()
             self._cache['sparse'] = self._sparse
         return self._sparse
-    
+
     @property
     def n_components(self):
         """Store whether the adjacency matrix is fully connected.
