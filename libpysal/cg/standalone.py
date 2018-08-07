@@ -13,7 +13,6 @@ from .shapes import *
 from itertools import islice
 import scipy.spatial
 import numpy as np
-#from ..common import *
 
 EPSILON_SCALER = 3
 
@@ -908,5 +907,3 @@ def distance_matrix(X, p=2.0, threshold=5e7):
             D += dx2
         D = D ** (1.0 / p)
         return D
-
-

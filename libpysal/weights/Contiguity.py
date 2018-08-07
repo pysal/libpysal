@@ -1,4 +1,3 @@
-from warnings import warn as Warn
 from ..io.FileIO import FileIO
 from .weights import W, WSP
 from ._contW_lists import ContiguityWeightsLists

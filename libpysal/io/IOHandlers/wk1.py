@@ -1,8 +1,6 @@
-import os.path
 import struct
 from .. import FileIO
 from ...weights import W
-from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["Wk1IO"]
@@ -325,5 +323,3 @@ class Wk1IO(FileIO.FileIO):
     def close(self):
         self.file.close()
         FileIO.FileIO.close(self)
-
-

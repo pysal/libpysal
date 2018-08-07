@@ -1,8 +1,6 @@
-import os.path
 from .. import FileIO
 from ...weights.weights import W
 from ...weights.util import remap_ids
-from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["ArcGISDbfIO"]
@@ -227,4 +225,3 @@ class ArcGISDbfIO(FileIO.FileIO):
 
     def close(self):
         self.file.close()
-

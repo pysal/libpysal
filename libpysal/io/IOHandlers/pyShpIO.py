@@ -11,7 +11,6 @@ from .. import FileIO
 from ..util import shp_file
 from ... import cg
 from warnings import warn
-import unittest
 
 STRING_TO_TYPE = {'POLYGON': cg.Polygon, 'POINT': cg.Point, 'POINTM':
                   cg.Point, 'POINTZ': cg.Point, 'ARC': cg.Chain, 'POLYGONZ': cg.Polygon}
@@ -185,4 +184,3 @@ class PurePyShpWrapper(FileIO.FileIO):
     def close(self):
         self.dataObj.close()
         FileIO.FileIO.close(self)
-

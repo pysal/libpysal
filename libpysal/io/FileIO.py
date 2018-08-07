@@ -12,7 +12,6 @@ __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
 __all__ = ['FileIO']
 import os.path
-import struct
 from warnings import warn
 from ..common import MISSINGVALUE
 

@@ -532,5 +532,3 @@ def w_clip(w1, w2, outSP=True, silence_warnings=False):
     if not outSP:
         wc = WSP2W(wc, silence_warnings=silence_warnings)
     return wc
-
-

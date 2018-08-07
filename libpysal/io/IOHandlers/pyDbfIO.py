@@ -2,8 +2,6 @@ from .. import Tables
 from ...common import MISSINGVALUE
 import datetime
 import struct
-import itertools
-from warnings import warn
 import os
 import time
 

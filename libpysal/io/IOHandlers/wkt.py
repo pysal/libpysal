@@ -1,7 +1,5 @@
 from .. import FileIO
 from ..util import WKTParser
-from ... import cg
-import re
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ['WKTReader']
@@ -95,4 +93,3 @@ class WKTReader(FileIO.FileIO):
     def close(self):
         self.dataObj.close()
         FileIO.FileIO.close(self)
-

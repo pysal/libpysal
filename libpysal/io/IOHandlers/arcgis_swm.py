@@ -1,10 +1,8 @@
-import os.path
 import numpy as np
 from struct import pack, unpack
 from .. import FileIO as FileIO
 from ...weights import W
 from ...weights.util import remap_ids
-from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["ArcGISSwmIO"]
