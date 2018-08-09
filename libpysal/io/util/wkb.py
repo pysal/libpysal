@@ -28,8 +28,8 @@ SOURCE: http://webhelp.esri.com/arcgisserver/9.3/dotNet/index.htm#geodatabases/t
 
 
 """
-from cStringIO import StringIO
-from pysal import cg
+from io import StringIO
+from ... import cg
 import sys
 import struct
 
