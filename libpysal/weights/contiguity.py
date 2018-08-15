@@ -336,7 +336,7 @@ def Voronoi(points):
     --------
     >>> np.random.seed(12345)
     >>> points= np.random.random((5,2))*10 + 10
-    >>> w = voronoiW(points)
+    >>> w = Voronoi(points)
     >>> w.neighbors
     {0: [1, 2, 3, 4], 1: [0, 2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
     """

@@ -8,7 +8,7 @@ __author__ = "Taylor Oshan  <tayoshan@gmail.com> "
 
 from scipy.sparse import kron
 from .weights import W, WSP
-from .Distance import DistanceBand
+from .distance import DistanceBand
 from collections import OrderedDict
 
 def ODW(Wo, Wd, transform='r', silence_warnings=True):

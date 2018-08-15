@@ -1,4 +1,4 @@
-from ...weights.Contiguity import Rook, Queen
+from ...weights.contiguity import Rook, Queen
 from ..FileIO import FileIO as ps_open
 from .utils import insert_metadata
 import os

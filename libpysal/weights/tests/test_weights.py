@@ -2,10 +2,10 @@ import unittest
 from ..weights import W, WSP
 from .. import util
 from ..util import WSP2W, lat2W
-from ..Contiguity import Rook
+from ..contiguity import Rook
 from ...io.FileIO import FileIO as psopen
 from ... import examples
-from ..Distance import KNN
+from ..distance import KNN
 import numpy as np
 
 NPTA3E = np.testing.assert_array_almost_equal
