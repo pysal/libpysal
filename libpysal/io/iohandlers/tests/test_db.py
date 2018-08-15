@@ -1,6 +1,6 @@
 import os
 from ... import geotable as pdio
-from ...FileIO import FileIO as psopen
+from ...fileio import FileIO as psopen
 import unittest as ut
 from .... import examples as pysal_examples
 

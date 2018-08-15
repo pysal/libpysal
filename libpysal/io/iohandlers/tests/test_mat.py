@@ -1,15 +1,16 @@
 import unittest
-from ..arcgis_swm import ArcGISSwmIO
-from ...FileIO import FileIO as psopen
+from ..mat import MatIO
 from .... import examples as pysal_examples
+from ...fileio import FileIO as psopen
 import tempfile
 import os
+import warnings
 
 
-class test_ArcGISSwmIO(unittest.TestCase):
+class test_MatIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('ohio.swm')
-        self.obj = ArcGISSwmIO(test_file, 'r')
+        self.test_file = test_file = pysal_examples.get_path('spat-sym-us.mat')
+        self.obj = MatIO(test_file, 'r')
 
     def test_close(self):
         f = self.obj
@@ -18,8 +19,8 @@ class test_ArcGISSwmIO(unittest.TestCase):
 
     def test_read(self):
         w = self.obj.read()
-        self.assertEqual(88, w.n)
-        self.assertEqual(5.25, w.mean_neighbors)
+        self.assertEqual(46, w.n)
+        self.assertEqual(4.0869565217391308, w.mean_neighbors)
         self.assertEqual([1.0, 1.0, 1.0, 1.0], list(w[1].values()))
 
     def test_seek(self):
@@ -31,11 +32,15 @@ class test_ArcGISSwmIO(unittest.TestCase):
     def test_write(self):
         w = self.obj.read()
         f = tempfile.NamedTemporaryFile(
-            suffix='.swm', dir=pysal_examples.get_path(''))
+            suffix='.mat', dir=pysal_examples.get_path(''))
         fname = f.name
         f.close()
         o = psopen(fname, 'w')
-        o.write(w)
+        with warnings.catch_warnings(record=True) as warn:
+            warnings.simplefilter("always")
+            o.write(w)
+            if len(warn) > 0:
+                assert issubclass(warn[0].category, FutureWarning)
         o.close()
         wnew = psopen(fname, 'r').read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)

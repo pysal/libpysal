@@ -7,7 +7,7 @@ __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __credits__ = "Copyright (c) 2009 Charles R. Schmidt"
 __all__ = ['PurePyShpWrapper']
 
-from .. import FileIO
+from .. import fileio
 from ..util import shp_file
 from ... import cg
 from warnings import warn
@@ -20,7 +20,7 @@ TYPE_TO_STRING = {cg.Polygon: 'POLYGON', cg.Point: 'POINT', cg.Chain:
 #    TYPE_TO_STRING[value] = key
 
 
-class PurePyShpWrapper(FileIO.FileIO):
+class PurePyShpWrapper(fileio.FileIO):
     """
     FileIO handler for ESRI ShapeFiles.
 
@@ -60,7 +60,7 @@ class PurePyShpWrapper(FileIO.FileIO):
     MODES = ['w', 'r', 'wb', 'rb']
 
     def __init__(self, *args, **kwargs):
-        FileIO.FileIO.__init__(self, *args, **kwargs)
+        fileio.FileIO.__init__(self, *args, **kwargs)
         self.dataObj = None
         if self.mode == 'r' or self.mode == 'rb':
             self.__open()
@@ -183,4 +183,4 @@ class PurePyShpWrapper(FileIO.FileIO):
 
     def close(self):
         self.dataObj.close()
-        FileIO.FileIO.close(self)
+        fileio.FileIO.close(self)

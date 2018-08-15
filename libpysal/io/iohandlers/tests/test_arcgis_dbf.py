@@ -1,16 +1,16 @@
 import unittest
-from ..arcgis_txt import ArcGISTextIO
-from ...FileIO import FileIO as psopen
+from ...fileio import FileIO as psopen
 from .... import examples as pysal_examples
+from ..arcgis_dbf import ArcGISDbfIO
 import tempfile
 import os
 import warnings
 
 
-class test_ArcGISTextIO(unittest.TestCase):
+class test_ArcGISDbfIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('arcgis_txt.txt')
-        self.obj = ArcGISTextIO(test_file, 'r')
+        self.test_file = test_file = pysal_examples.get_path('arcgis_ohio.dbf')
+        self.obj = ArcGISDbfIO(test_file, 'r')
 
     def test_close(self):
         f = self.obj
@@ -23,10 +23,10 @@ class test_ArcGISTextIO(unittest.TestCase):
             w = self.obj.read()
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
-                assert "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids." in str(warn[0].message)
-        self.assertEqual(3, w.n)
-        self.assertEqual(2.0, w.mean_neighbors)
-        self.assertEqual([0.1, 0.05], list(w[2].values()))
+                assert "Missing Value Found, setting value to pysal.MISSINGVALUE" in str(warn[0].message)
+        self.assertEqual(88, w.n)
+        self.assertEqual(5.25, w.mean_neighbors)
+        self.assertEqual([1.0, 1.0, 1.0, 1.0], list(w[1].values()))
 
     def test_seek(self):
         self.test_read()
@@ -40,20 +40,17 @@ class test_ArcGISTextIO(unittest.TestCase):
             w = self.obj.read()
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
-                assert "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids." in str(warn[0].message)
+                assert "Missing Value Found, setting value to pysal.MISSINGVALUE" in str(warn[0].message)
         f = tempfile.NamedTemporaryFile(
-            suffix='.txt', dir=pysal_examples.get_path(''))
+            suffix='.dbf', dir=pysal_examples.get_path(''))
         fname = f.name
         f.close()
-        o = psopen(fname, 'w', 'arcgis_text')
+        o = psopen(fname, 'w', 'arcgis_dbf')
         o.write(w)
         o.close()
-        with warnings.catch_warnings(record=True) as warn:
-            warnings.simplefilter("always")
-            wnew = psopen(fname, 'r', 'arcgis_text').read()
-            if len(warn) > 0:
-                assert issubclass(warn[0].category, RuntimeWarning)
-                assert "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids." in str(warn[0].message)
+        f = psopen(fname, 'r', 'arcgis_dbf')
+        wnew = f.read()
+        f.close()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
         os.remove(fname)
 

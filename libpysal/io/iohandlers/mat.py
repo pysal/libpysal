@@ -1,5 +1,5 @@
 import scipy.io as sio
-from .. import FileIO
+from .. import fileio
 from ...weights import W
 from ...weights.util import full, full2W
 
@@ -7,7 +7,7 @@ __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["MatIO"]
 
 
-class MatIO(FileIO.FileIO):
+class MatIO(fileio.FileIO):
     """
     Opens, reads, and writes weights file objects in MATLAB Level 4-5 MAT format.
 
@@ -40,7 +40,7 @@ class MatIO(FileIO.FileIO):
 
     def __init__(self, *args, **kwargs):
         self._varName = 'Unknown'
-        FileIO.FileIO.__init__(self, *args, **kwargs)
+        fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode + 'b')
 
     def _set_varName(self, val):
@@ -168,4 +168,4 @@ class MatIO(FileIO.FileIO):
 
     def close(self):
         self.file.close()
-        FileIO.FileIO.close(self)
+        fileio.FileIO.close(self)

@@ -1,11 +1,11 @@
-from .. import FileIO 
+from .. import fileio 
 from ...weights import W
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["GeoBUGSTextIO"]
 
 
-class GeoBUGSTextIO(FileIO.FileIO):
+class GeoBUGSTextIO(fileio.FileIO):
     """
     Opens, reads, and writes weights file objects in the text format
     used in GeoBUGS. GeoBUGS generates a spatial weights matrix
@@ -63,7 +63,7 @@ class GeoBUGSTextIO(FileIO.FileIO):
 
     def __init__(self, *args, **kwargs):
         args = args[:2]
-        FileIO.FileIO.__init__(self, *args, **kwargs)
+        fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
     def read(self, n=-1):
@@ -247,4 +247,4 @@ class GeoBUGSTextIO(FileIO.FileIO):
 
     def close(self):
         self.file.close()
-        FileIO.FileIO.close(self)
+        fileio.FileIO.close(self)

@@ -1,4 +1,4 @@
-from ..FileIO import FileIO
+from ..fileio import FileIO
 from ...examples import get_path 
 def test_by_col_exists():
     """ 

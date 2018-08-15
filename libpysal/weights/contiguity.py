@@ -1,4 +1,4 @@
-from ..io.FileIO import FileIO
+from ..io.fileio import FileIO
 from .weights import W, WSP
 from ._contW_lists import ContiguityWeightsLists
 from .util import get_ids

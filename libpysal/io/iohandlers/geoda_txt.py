@@ -1,13 +1,13 @@
-from .. import Tables
+from .. import tables
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ['GeoDaTxtReader']
 
 
-class GeoDaTxtReader(Tables.DataTable):
+class GeoDaTxtReader(tables.DataTable):
     """GeoDa Text File Export Format
     """
-    __doc__ = Tables.DataTable.__doc__
+    __doc__ = tables.DataTable.__doc__
     FORMATS = ['geoda_txt']
     MODES = ['r']
 
@@ -29,7 +29,7 @@ class GeoDaTxtReader(Tables.DataTable):
         [<type 'int'>, <type 'float'>, <type 'float'>, <type 'int'>]
 
         """
-        Tables.DataTable.__init__(self, *args, **kwargs)
+        tables.DataTable.__init__(self, *args, **kwargs)
         self.__idx = {}
         self.__len = None
         self.pos = 0
@@ -64,7 +64,7 @@ class GeoDaTxtReader(Tables.DataTable):
 
     def close(self):
         self.fileObj.close()
-        Tables.DataTable.close(self)
+        tables.DataTable.close(self)
 
     @staticmethod
     def _determineSpec(data):

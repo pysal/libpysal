@@ -1,11 +1,11 @@
-from .. import FileIO as FileIO
+from .. import fileio
 from ...weights import W
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["StataTextIO"]
 
 
-class StataTextIO(FileIO.FileIO):
+class StataTextIO(fileio.FileIO):
     """
     Opens, reads, and writes weights file objects in STATA text format.
 
@@ -65,7 +65,7 @@ class StataTextIO(FileIO.FileIO):
 
     def __init__(self, *args, **kwargs):
         args = args[:2]
-        FileIO.FileIO.__init__(self, *args, **kwargs)
+        fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
     def read(self, n=-1):
@@ -229,4 +229,4 @@ class StataTextIO(FileIO.FileIO):
 
     def close(self):
         self.file.close()
-        FileIO.FileIO.close(self)
+        fileio.FileIO.close(self)

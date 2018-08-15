@@ -1,6 +1,6 @@
 import numpy as np
 from struct import pack, unpack
-from .. import FileIO as FileIO
+from .. import fileio
 from ...weights import W
 from ...weights.util import remap_ids
 
@@ -8,7 +8,7 @@ __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["ArcGISSwmIO"]
 
 
-class ArcGISSwmIO(FileIO.FileIO):
+class ArcGISSwmIO(fileio.FileIO):
     """
     Opens, reads, and writes weights file objects in ArcGIS swm format.
 
@@ -50,7 +50,7 @@ class ArcGISSwmIO(FileIO.FileIO):
     def __init__(self, *args, **kwargs):
         self._varName = 'Unknown'
         self._srs = "Unknow"
-        FileIO.FileIO.__init__(self, *args, **kwargs)
+        fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode + 'b')
 
     def _set_varName(self, val):
@@ -277,4 +277,4 @@ class ArcGISSwmIO(FileIO.FileIO):
 
     def close(self):
         self.file.close()
-        FileIO.FileIO.close(self)
+        fileio.FileIO.close(self)

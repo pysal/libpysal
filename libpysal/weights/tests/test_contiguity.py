@@ -2,7 +2,7 @@ from .. import contiguity as c
 from ..weights import W
 from .. import util
 from ...common import pandas
-from ...io.FileIO import FileIO as ps_open
+from ...io.fileio import FileIO as ps_open
 from ...io import geotable as pdio
 
 from ... import examples as pysal_examples

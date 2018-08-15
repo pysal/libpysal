@@ -1,4 +1,4 @@
-from .. import FileIO
+from .. import fileio
 from ...weights.weights import W
 from ...weights.util import remap_ids
 
@@ -6,7 +6,7 @@ __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["ArcGISDbfIO"]
 
 
-class ArcGISDbfIO(FileIO.FileIO):
+class ArcGISDbfIO(fileio.FileIO):
     """
     Opens, reads, and writes weights file objects in ArcGIS dbf format.
 
@@ -56,8 +56,8 @@ class ArcGISDbfIO(FileIO.FileIO):
     def __init__(self, *args, **kwargs):
         self._varName = 'Unknown'
         args = args[:2]
-        FileIO.FileIO.__init__(self, *args, **kwargs)
-        self.file = FileIO.FileIO(self.dataPath, self.mode)
+        fileio.FileIO.__init__(self, *args, **kwargs)
+        self.file = fileio.FileIO(self.dataPath, self.mode)
 
     def _set_varName(self, val):
         if issubclass(type(val), str):

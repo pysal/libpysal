@@ -2,7 +2,7 @@ import os.path
 from . import gwt
 from ...weights import W
 from ...weights.util import remap_ids
-from .. import FileIO
+from .. import fileio
 from warnings import warn
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
@@ -105,7 +105,7 @@ class ArcGISTextIO(gwt.GwtIO):
         try:
             dbf = os.path.join(self.dataPath + '.dbf')
             if os.path.exists(dbf):
-                db = FileIO.FileIO(dbf, 'r')
+                db = fileio.FileIO(dbf, 'r')
                 if id_var in db.header:
                     id_order = db.by_col(id_var)
                     id_type = type(id_order[0])

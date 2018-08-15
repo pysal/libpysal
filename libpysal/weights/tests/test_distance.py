@@ -6,7 +6,7 @@ from ... import cg
 from ... import weights
 from .. import distance as d, contiguity as c
 from ...io import geotable as pdio
-from ...io.FileIO import FileIO as psopen
+from ...io.fileio import FileIO as psopen
 import numpy as np
 from ... import examples as pysal_examples
 import unittest as ut

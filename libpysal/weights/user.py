@@ -6,7 +6,7 @@ contiguity and distance criteria.
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
 from .util import get_points_array_from_shapefile, min_threshold_distance
-from ..io.FileIO import FileIO as ps_open
+from ..io.fileio import FileIO as ps_open
 from .. import cg
 import numpy as np
 

@@ -3,7 +3,7 @@ from ..weights import W, WSP
 from .. import util
 from ..util import WSP2W, lat2W
 from ..contiguity import Rook
-from ...io.FileIO import FileIO as psopen
+from ...io.fileio import FileIO as psopen
 from ... import examples
 from ..distance import KNN
 import numpy as np

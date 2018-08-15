@@ -1,12 +1,12 @@
 import scipy.io as sio
-from .. import FileIO
+from .. import fileio
 from ...weights.weights import W, WSP
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["MtxIO"]
 
 
-class MtxIO(FileIO.FileIO):
+class MtxIO(fileio.FileIO):
     """
     Opens, reads, and writes weights file objects in Matrix Market MTX format.
 
@@ -52,7 +52,7 @@ class MtxIO(FileIO.FileIO):
     MODES = ['r', 'w']
 
     def __init__(self, *args, **kwargs):
-        FileIO.FileIO.__init__(self, *args, **kwargs)
+        fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode + 'b')
 
     def read(self, n=-1, sparse=False):
@@ -232,4 +232,4 @@ class MtxIO(FileIO.FileIO):
 
     def close(self):
         self.file.close()
-        FileIO.FileIO.close(self)
+        fileio.FileIO.close(self)

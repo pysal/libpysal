@@ -4,7 +4,7 @@ from .. import util
 from ..weights import W, WSP
 from ..distance import DistanceBand, KNN
 from ..contiguity import Queen, Rook
-from ...io.FileIO import FileIO as psopen
+from ...io.fileio import FileIO as psopen
 from ... import examples
 import numpy as np
 import unittest

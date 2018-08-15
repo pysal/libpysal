@@ -1,13 +1,13 @@
-from .. import Tables
+from .. import tables
 import csv
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ['csvWrapper']
 
 
-class csvWrapper(Tables.DataTable):
+class csvWrapper(tables.DataTable):
     
-    __doc__ = Tables.DataTable.__doc__
+    __doc__ = tables.DataTable.__doc__
     FORMATS = ['csv']
     READ_MODES = ['r','Ur','rU','U']
     MODES = READ_MODES[:]
@@ -28,7 +28,7 @@ class csvWrapper(Tables.DataTable):
 
 
         """
-        Tables.DataTable.__init__(self, *args, **kwargs)
+        tables.DataTable.__init__(self, *args, **kwargs)
         self.__idx = {}
         self.__len = None
         self._open()

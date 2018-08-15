@@ -1,5 +1,5 @@
 import os.path
-from .. import FileIO as FileIO
+from .. import fileio as FileIO
 from ...weights.weights import W
 from warnings import warn
 

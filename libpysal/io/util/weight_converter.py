@@ -1,5 +1,5 @@
 import os
-from ..FileIO import FileIO as psopen
+from ..fileio import FileIO as psopen
 from warnings import warn
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["weight_convert"]

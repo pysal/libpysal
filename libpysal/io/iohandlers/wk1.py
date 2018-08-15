@@ -1,12 +1,12 @@
 import struct
-from .. import FileIO
+from .. import fileio
 from ...weights import W
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["Wk1IO"]
 
 
-class Wk1IO(FileIO.FileIO):
+class Wk1IO(fileio.FileIO):
     """
     MATLAB wk1read.m and wk1write.m that were written by Brian M. Bourgault in 10/22/93
 
@@ -140,7 +140,7 @@ class Wk1IO(FileIO.FileIO):
 
     def __init__(self, *args, **kwargs):
         self._varName = 'Unknown'
-        FileIO.FileIO.__init__(self, *args, **kwargs)
+        fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode + 'b')
 
     def _set_varName(self, val):
@@ -322,4 +322,4 @@ class Wk1IO(FileIO.FileIO):
 
     def close(self):
         self.file.close()
-        FileIO.FileIO.close(self)
+        fileio.FileIO.close(self)

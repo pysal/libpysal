@@ -1,5 +1,5 @@
 __all__ = ['DataTable']
-from . import FileIO
+from . import fileio
 from ..common import requires
 from warnings import warn
 import numpy as np
@@ -7,7 +7,7 @@ import numpy as np
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
 
-class DataTable(FileIO.FileIO):
+class DataTable(fileio.FileIO):
     """ DataTable provides additional functionality to FileIO for data table file tables
         FileIO Handlers that provide data tables should subclass this instead of FileIO """
     class _By_Col:
@@ -27,7 +27,7 @@ class DataTable(FileIO.FileIO):
             return self.p._get_col(key)
 
     def __init__(self, *args, **kwargs):
-        FileIO.FileIO.__init__(self, *args, **kwargs)
+        fileio.FileIO.__init__(self, *args, **kwargs)
 
     def __repr__(self):
         return 'DataTable: % s' % self.dataPath
