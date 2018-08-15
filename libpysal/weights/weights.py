@@ -14,7 +14,7 @@ from os.path import basename as BASENAME
 #from .util import full, WSP2W resolve import cycle by
 #forcing these into methods
 from . import adjtools
-from ..io.FileIO import FileIO as popen
+from ..io.fileio import FileIO as popen
 
 __all__ = ['W', 'WSP']
 

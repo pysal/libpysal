@@ -1,6 +1,6 @@
-from ..io.FileIO import FileIO as psopen
+from ..io.fileio import FileIO as psopen
 from .weights import W, WSP
-from .Wsets import w_subset
+from .set_operations import w_subset
 import numpy as np
 from scipy import sparse
 from scipy.spatial import KDTree

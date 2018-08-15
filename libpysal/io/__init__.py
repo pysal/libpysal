@@ -1,5 +1,5 @@
-from . import FileIO
-from .Tables import *
-from .IOHandlers import *
+from . import fileio
+from .tables import *
+from .iohandlers import *
 from .util import *
-open = FileIO.FileIO
+open = fileio.FileIO

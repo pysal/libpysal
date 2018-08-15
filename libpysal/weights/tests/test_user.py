@@ -1,7 +1,7 @@
 import os
 import unittest
 import numpy as np
-from ..Contiguity import Rook, Voronoi
+from ..contiguity import Rook, Voronoi
 from .. import user
 from ... import examples
 
