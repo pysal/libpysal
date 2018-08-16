@@ -936,16 +936,20 @@ def remap_ids(w, old2new, id_order=[]):
             return W(new_neigh, new_weights)
 
 
-def get_ids(shapefile, idVariable):
+def get_ids(in_shps, idVariable):
     """
-    Gets the IDs from the DBF file that moves with a given shape file.
+    Gets the IDs from the DBF file that moves with a given shape file or
+    a geopandas.GeoDataFrame.
 
     Parameters
     ----------
-    shapefile    : string
-                   name of a shape file including suffix
-    idVariable   : string
-                   name of a column in the shapefile's DBF to use for ids
+    in_shps      : str or geopandas.GeoDataFrame
+                   The input geographic data. Either
+                   (1) a path to a shapefile including suffix (str); or
+                   (2) a geopandas.GeoDataFrame.
+    idVariable   : str
+                   name of a column in the shapefile's DBF or the 
+                   geopandas.GeoDataFrame to use for ids.
 
     Returns
     -------
@@ -959,22 +963,38 @@ def get_ids(shapefile, idVariable):
     >>> polyids = get_ids(libpysal.examples.get_path("columbus.shp"), "POLYID")
     >>> polyids[:5]
     [1, 2, 3, 4, 5]
+    
+    >>> from libpysal.weights.util import get_ids
+    >>> import libpysal
+    >>> import geopandas as gpd
+    >>> gdf = gpd.read_file(libpysal.examples.get_path("columbus.shp"))
+    >>> polyids = gdf["POLYID"]
+    >>> polyids[:5]
+    [1, 2, 3, 4, 5]
+    
     """
 
     try:
-        dbname = os.path.splitext(shapefile)[0] + '.dbf'
-        db = psopen(dbname)
-        var = db.by_col[idVariable]
-        db.close()
+        if type(in_shps) == str:
+            dbname = os.path.splitext(in_shps)[0] + '.dbf'
+            db = psopen(dbname)
+            cols = db.header
+            var = db.by_col[idVariable]
+            db.close()
+        else:
+            cols = list(in_shps.columns)
+            var = list(in_shps[idVariable])
         return var
+    
     except IOError:
-        msg = 'The shapefile "%s" appears to be missing its DBF file. The DBF file "%s" could not be found.' % (
-            shapefile, dbname)
+        msg = 'The shapefile "%s" appears to be missing its DBF file. '\
+              + ' The DBF file "%s" could not be found.' % (in_shps, dbname)
         raise IOError(msg)
     except AttributeError:
-        msg = 'The variable "%s" was not found in the DBF file. The DBF contains the following variables: %s.' % (
-            idVariable, ','.join(db.header))
+        msg = 'The variable "%s" not found in the DBF/GDF. The the following '\
+              + 'variables are present: %s.' % (idVariable, ','.join(cols))
         raise KeyError(msg)
+
 
 def get_points_array(iterable):
     """
