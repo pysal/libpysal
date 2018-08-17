@@ -990,7 +990,7 @@ def get_ids(in_shps, idVariable):
         msg = 'The shapefile "%s" appears to be missing its DBF file. '\
               + ' The DBF file "%s" could not be found.' % (in_shps, dbname)
         raise IOError(msg)
-    except AttributeError:
+    except (AttributeError, KeyError):
         msg = 'The variable "%s" not found in the DBF/GDF. The the following '\
               + 'variables are present: %s.' % (idVariable, ','.join(cols))
         raise KeyError(msg)
