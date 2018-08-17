@@ -196,7 +196,7 @@ class Testutil(unittest.TestCase):
     @unittest.skipIf(not HAS_GEOPANDAS, "Missing geopandas, cannot test get_ids with gdf")
     def test_get_ids_gdf(self):
         gdf = gpd.read_file(examples.get_path('columbus.shp'))
-        polyids = list(gdf["POLYID"])
+        polyids = util.get_ids(gdf, "POLYID")
         polyids5 = [1, 2, 3, 4, 5]
         self.assertEqual(polyids5, polyids[:5])
     
