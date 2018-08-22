@@ -61,8 +61,8 @@ We closed a total of 51 issues (enhancements and bug fixes) through 18 pull requ
 
 The following individuals contributed to this release:
 
-  * James Gaboardi
-  * Levi John Wolf
-  * Serge Rey
-  * Wei Kang
-  * eli knaap
+  - Serge Rey
+  - Levi John Wolf
+  - Wei Kang
+  - James Gaboardi
+  - Eli Knaap
