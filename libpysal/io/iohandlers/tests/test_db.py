@@ -48,7 +48,7 @@ class Test_sqlite_reader(ut.TestCase):
         self.assertEqual(db.tables, ['newhaven'])
 
         gj = db._get_gjson('newhaven')
-        self.assertFalse(True)
+        self.assertEqual(gj["type"], 'FeatureCollection')
 
     def tearDown(self):
         os.remove('test.db')
