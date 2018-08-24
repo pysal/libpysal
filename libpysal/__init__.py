@@ -1,4 +1,4 @@
-__version__ = "3.0.8"
+__version__ = "4.0.0"
 
 # __version__ has to be define in the first line
 

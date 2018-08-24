@@ -1,10 +1,11 @@
 # Changes
 
-Version 3.0.8 (2018-08-22)
+Version 4.0.0 (2018-08-22)
 
-We closed a total of 51 issues (enhancements and bug fixes) through 18 pull requests, since our last release on 2018-07-15.
+We closed a total of 52 issues (enhancements and bug fixes) through 18 pull requests, since our last release on 2018-07-15.
 
 ## Issues Closed
+  - REL: 3.0.8 (#104)
   - error importing v3.0.7 (#100)
   - Lower case module names (#98)
   - remove function regime_weights (#96)
@@ -66,7 +67,7 @@ The following individuals contributed to this release:
   - Wei Kang
   - James Gaboardi
   - Eli Knaap
-
+# Changes
 
 
 v<1.13.0>, 2016-11-24
