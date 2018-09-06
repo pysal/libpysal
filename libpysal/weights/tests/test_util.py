@@ -187,12 +187,19 @@ class Testutil(unittest.TestCase):
         w_newdneighborsa = ['c', 'b']
         self.assertEqual(w_newdneighborsa, w_new.neighbors['a'])
 
-    def test_get_ids(self):
+    def test_get_ids_shp(self):
         polyids = util.get_ids(
             examples.get_path('columbus.shp'), "POLYID")
         polyids5 = [1, 2, 3, 4, 5]
         self.assertEqual(polyids5, polyids[:5])
 
+    @unittest.skipIf(not HAS_GEOPANDAS, "Missing geopandas, cannot test get_ids with gdf")
+    def test_get_ids_gdf(self):
+        gdf = gpd.read_file(examples.get_path('columbus.shp'))
+        polyids = util.get_ids(gdf, "POLYID")
+        polyids5 = [1, 2, 3, 4, 5]
+        self.assertEqual(polyids5, polyids[:5])
+    
     def test_get_points_array_from_shapefile(self):
         xy = util.get_points_array_from_shapefile(
             examples.get_path('juvenile.shp'))
