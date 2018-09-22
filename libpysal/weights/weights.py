@@ -86,7 +86,7 @@ class W(object):
 
     Examples
     --------
-    >>> from libpysal.api import W, lat2W
+    >>> from libpysal.weights.weights import W
     >>> import libpysal.api as ps
     >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4], 4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7], 7: [4, 6, 8], 8: [5, 7]}
     >>> weights = {0: [1, 1], 1: [1, 1, 1], 2: [1, 1], 3: [1, 1, 1], 4: [1, 1, 1, 1], 5: [1, 1, 1], 6: [1, 1], 7: [1, 1, 1], 8: [1, 1]}
@@ -175,7 +175,7 @@ class W(object):
 
         """
         self._cache = {}
-   
+
     @classmethod
     def from_file(cls, path='', format=None, **kwargs):
         f = popen(dataPath=path, mode='r', dataFormat=format)
@@ -239,7 +239,7 @@ class W(object):
         Compute an adjacency list representation of a weights object.
 
         Parameters
-        -----------
+        ----------
         remove_symmetric    :   bool
                             whether or not to remove ``symmetric'' entries. If the W is symmetric,
                             a standard ``directed'' adjacency list will contain both the forward and
@@ -266,13 +266,13 @@ class W(object):
     def to_networkx(self):
         """
         Convert a weights object to a networkx graph
-        
-        Arguments
-        ---------
+
+        Parameters
+        ----------
         None
 
         Returns
-        --------
+        -------
         a networkx graph representation of the W object
         """
         try:
@@ -281,13 +281,13 @@ class W(object):
             raise ImportError("NetworkX is required to use this function.")
         G = nx.DiGraph() if len(self.asymmetries)>0 else nx.Graph()
         return nx.from_scipy_sparse_matrix(self.sparse, create_using=G)
-    
+
     @classmethod
     def from_networkx(cls, graph, weight_col='weight'):
         """
         Convert a networkx graph to a PySAL W object.
 
-        Arguments
+        Parameters
         ----------
         graph       :   networkx graph
                         the graph to convert to a W
@@ -692,8 +692,8 @@ class W(object):
 
         ...
 
-        Arguments
-        ---------
+        Parameters
+        ----------
 
         new_ids     :   list
                         /ndarray
@@ -702,8 +702,8 @@ class W(object):
                         w.id_order, second element of new_ids replaces second
                         element of w.id_order and so on.
 
-        Example
-        -------
+        Examples
+        --------
 
         >>> import libpysal.api as ps
         >>> w = ps.lat2W(3, 3)
@@ -1212,7 +1212,7 @@ class W(object):
         NOTE: Requires matplotlib, and implicitly requires geopandas 
         dataframe as input.
 
-        Arguments
+        Parameters
         ---------
         gdf         : geopandas geodataframe 
                       the original shapes whose topological relations are 
@@ -1243,8 +1243,8 @@ class W(object):
               geodataframe, call gdf.plot(ax=ax) after this. To plot underneath,
               adjust the z-order of the geopandas plot: gdf.plot(ax=ax,zorder=0)
 
-        Usage
-        -----
+        Examples
+        --------
 
         >>> import libpysal.api as lp
         >>> import geopandas
@@ -1393,14 +1393,14 @@ class WSP(object):
             self._diagWtW_WW = (wt * w + w * w).diagonal()
             self._cache['diagWtW_WW'] = self._diagWtW_WW
         return self._diagWtW_WW
-    
+
     @classmethod
     def from_W(cls, W):
         """
         Constructs a WSP object from the W's sparse matrix
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         W       :   libpysal.weights.W
                     a pysal weights object with a sparse form and ids
 
@@ -1409,7 +1409,7 @@ class WSP(object):
         a WSP instance
         """
         return cls(W.sparse, id_order=W.id_order)
-    
+
     def to_W(self, silence_warnings=False):
 
         """

@@ -11,8 +11,8 @@ class Rook(W):
         """
         Construct a weights object from a collection of pysal polygons.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         polygons    : list
                       a collection of PySAL shapes to build weights from
         ids         : list
@@ -22,7 +22,7 @@ class Rook(W):
 
         See Also
         ---------
-        :class:`pysal.weights.W`
+        :class:`libpysal.weights.weights.W`
         """
         criterion = 'rook'
         ids = kw.pop('ids', None) 
@@ -69,8 +69,8 @@ class Rook(W):
 
         See Also
         --------
-        :class:`pysal.weights.W`
-        :class:`pysal.weights.Rook`
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.contiguity.Rook`
         """
         sparse = kwargs.pop('sparse', False)
         if idVariable is not None:
@@ -89,7 +89,7 @@ class Rook(W):
         Construct a weights object from a collection of arbitrary polygons. This
         will cast the polygons to PySAL polygons, then build the W.
 
-        Arguments
+        Parameters
         ---------
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
@@ -98,15 +98,15 @@ class Rook(W):
                       optional arguments for  :class:`pysal.weights.W`
         See Also
         ----------
-        :class:`pysal.weights.W`
-        :class:`pysal.weights.Rook`
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.contiguity.Rook`
         """
         new_iterable = iter(iterable)
         w = cls(new_iterable, **kwargs)
         if sparse:
             w = WSP.from_W(w)
         return w
-    
+
     @classmethod
     def from_dataframe(cls, df, geom_col='geometry', 
                        idVariable=None, ids=None, id_order=None, **kwargs):
@@ -115,7 +115,7 @@ class Rook(W):
         column. This will cast the polygons to PySAL polygons, then build the W
         using ids from the dataframe.
 
-        Arguments
+        Parameters
         ---------
         df          : DataFrame
                       a :class: `pandas.DataFrame` containing geometries to use
@@ -137,8 +137,8 @@ class Rook(W):
 
         See Also
         ---------
-        :class:`pysal.weights.W`
-        :class:`pysal.weights.Rook`
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.contiguity.Rook`
         """
         if id_order is not None:
             if id_order is True and ((idVariable is not None) 
@@ -160,8 +160,8 @@ class Queen(W):
         """
         Construct a weights object from a collection of pysal polygons.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         polygons    : list
                       a collection of PySAL shapes to build weights from
         ids         : list
@@ -171,14 +171,14 @@ class Queen(W):
 
         See Also
         ---------
-        :class:`pysal.weights.W`
+        :class:`libpysal.weights.weights.W`
         """
         criterion = 'queen'
         ids = kw.pop('ids', None)
         neighbors, ids = _build(polygons, ids=ids, 
                                 criterion=criterion)
         W.__init__(self, neighbors, ids=ids, **kw)
-    
+
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
         """
@@ -221,8 +221,8 @@ class Queen(W):
 
         See Also
         --------
-        :class:`pysal.weights.W`
-        :class:`pysal.weights.Queen`
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.contiguity.Queen`
         """
         sparse = kwargs.pop('sparse', False)
         if idVariable is not None:
@@ -241,7 +241,7 @@ class Queen(W):
         Construct a weights object from a collection of arbitrary polygons. This
         will cast the polygons to PySAL polygons, then build the W.
 
-        Arguments
+        Parameters
         ---------
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
@@ -250,8 +250,8 @@ class Queen(W):
                       optional arguments for  :class:`pysal.weights.W`
         See Also
         ----------
-        :class:`pysal.weights.W`
-        :class:`pysal.weights.Queen`
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.contiguiyt.Queen`
         """
         new_iterable = iter(iterable) 
         w = cls(new_iterable, **kwargs) 
@@ -266,7 +266,7 @@ class Queen(W):
         column. This will cast the polygons to PySAL polygons, then build the W
         using ids from the dataframe.
 
-        Arguments
+        Parameters
         ---------
         df          : DataFrame
                       a :class: `pandas.DataFrame` containing geometries to use
@@ -288,8 +288,8 @@ class Queen(W):
 
         See Also
         ---------
-        :class:`pysal.weights.W`
-        :class:`pysal.weights.Queen`
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.contiguity.Queen`
         """
         idVariable = kwargs.pop('idVariable', None)
         ids = kwargs.pop('ids', None)
@@ -349,7 +349,7 @@ def _build(polygons, criterion="rook", ids=None):
     """
     This is a developer-facing function to construct a spatial weights object. 
 
-    Arguments
+    Parameters
     ---------
     polygons    : list
                   list of pysal polygons to use to build contiguity
