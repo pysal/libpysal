@@ -72,8 +72,9 @@ def simport(modname):
     Wrapping this function around an iterative context or a with context would
     allow the module to be used without necessarily attaching it permanently in
     the global namespace:
+
     
-    >>> for t,mod in simport('pandas'):
+        for t,mod in simport('pandas'):
             if t:
                 mod.DataFrame()
             else:
@@ -82,8 +83,8 @@ def simport(modname):
 
     instead of:
 
-    >>> t, mod = simport('pandas')
-    >>> if t:
+        t, mod = simport('pandas')
+        if t:
             mod.DataFrame()
         else:
             #do alternative behavior here
