@@ -17,7 +17,7 @@ class unique_filter(object):
 
     Example:
     >>> l = ['a','a','b','a','c','v','d','a','v','d']
-    >>> filter(unique_filter(),l)
+    >>> list(filter(unique_filter(),l))
     ['a', 'b', 'c', 'v', 'd']
     """
     def __init__(self):
@@ -106,7 +106,8 @@ class GwtIO(FileIO.FileIO):
         Type 'dir(f)' at the interpreter to see what methods are supported.
         Open .gwt file and read it into a pysal weights object
 
-        >>> f = pysal.open(pysal.examples.get_path('juvenile.gwt'),'r').read()
+        >>> import libpysal
+        >>> f = libpysal.io.open(libpysal.examples.get_path('juvenile.gwt'),'r').read()
 
         Get the number of observations from the header
 

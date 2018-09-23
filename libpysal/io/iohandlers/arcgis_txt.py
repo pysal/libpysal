@@ -69,7 +69,7 @@ class ArcGISTextIO(gwt.GwtIO):
 
     def _read(self):
         """Reads ArcGIS Text file
-        Returns a pysal.weights.weights.W object
+        Returns a libpysal.weights.weights.W object
 
         Examples
         --------
@@ -77,7 +77,8 @@ class ArcGISTextIO(gwt.GwtIO):
         Type 'dir(w)' at the interpreter to see what methods are supported.
         Open a text file and read it into a pysal weights object
 
-        >>> w = pysal.open(pysal.examples.get_path('arcgis_txt.txt'),'r','arcgis_text').read()
+        >>> import libpysal
+        >>> w = libpysal.io.open(libpysal.examples.get_path('arcgis_txt.txt'),'r','arcgis_text').read()
 
         Get the number of observations from the header
 
