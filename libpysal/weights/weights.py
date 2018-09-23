@@ -4,13 +4,13 @@ Weights.
 """
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
+import copy
+from os.path import basename as BASENAME
 import math
 import warnings
 import numpy as np
 import scipy.sparse
 from scipy.sparse.csgraph import connected_components
-import copy
-from os.path import basename as BASENAME
 #from .util import full, WSP2W resolve import cycle by
 #forcing these into methods
 from . import adjtools

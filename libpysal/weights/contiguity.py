@@ -334,6 +334,7 @@ def Voronoi(points):
 
     Examples
     --------
+    >>> import numpy as np
     >>> np.random.seed(12345)
     >>> points= np.random.random((5,2))*10 + 10
     >>> w = Voronoi(points)

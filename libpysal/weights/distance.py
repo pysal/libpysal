@@ -53,10 +53,9 @@ class KNN(W):
     Examples
     --------
     >>> import libpysal
-    >>> import libpysal.api as ps
     >>> points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
     >>> kd = libpysal.cg.kdtree.KDTree(np.array(points))
-    >>> wnn2 = ps.KNN(kd, 2)
+    >>> wnn2 = libpysal.weights.KNN(kd, 2)
     >>> [1,3] == wnn2.neighbors[0]
     True
 
@@ -70,7 +69,7 @@ class KNN(W):
 
     now with 1 rather than 0 offset
 
-    >>> wnn2 = KNN(kd, 2, ids=range(1,7))
+    >>> wnn2 = libpysal.weights.KNN(kd, 2, ids=range(1,7))
     >>> wnn2[1]
     {2: 1.0, 4: 1.0}
     >>> wnn2[2]
@@ -147,35 +146,25 @@ class KNN(W):
 
         Polygon shapefile
         >>> import libpysal
-        >>> import libpysal.api as ps
-        >>> wc=ps.knnW_from_shapefile(libpysal.examples.get_path("columbus.shp"))
+        >>> from libpysal.weights import KNN
+        >>> wc=KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"))
         >>> "%.4f"%wc.pct_nonzero
         '4.0816'
         >>> set([2,1]) == set(wc.neighbors[0])
         True
-        >>> wc3=ps.knnW_from_shapefile(libpysal.examples.get_path("columbus.shp"),k=3)
+        >>> wc3=KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"),k=3)
         >>> set(wc3.neighbors[0]) == set([2,1,3])
         True
         >>> set(wc3.neighbors[2]) == set([4,3,0])
         True
 
-        1 offset rather than 0 offset
-
-        >>> wc3_1=ps.knnW_from_shapefile(libpysal.examples.get_path("columbus.shp"),k=3,idVariable="POLYID")
-        >>> set([4,3,2]) == set(wc3_1.neighbors[1])
-        True
-        >>> wc3_1.weights[2]
-        [1.0, 1.0, 1.0]
-        >>> set([4,1,8]) == set(wc3_1.neighbors[2])
-        True
-
 
         Point shapefile
 
-        >>> w=ps.knnW_from_shapefile(libpysal.examples.get_path("juvenile.shp"))
+        >>> w=KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"))
         >>> w.pct_nonzero
         1.1904761904761905
-        >>> w1=ps.knnW_from_shapefile(libpysal.examples.get_path("juvenile.shp"),k=1)
+        >>> w1=KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"),k=1)
         >>> "%.3f"%w1.pct_nonzero
         '0.595'
 
@@ -212,15 +201,15 @@ class KNN(W):
 
         Examples
         --------
-        >>> import libpysal.api as ps
+        >>> from libpysal.weights import KNN
         >>> points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
-        >>> wnn2 = ps.KNN.from_array(points, 2)
+        >>> wnn2 = KNN.from_array(points, 2)
         >>> [1,3] == wnn2.neighbors[0]
         True
 
         ids
 
-        >>> wnn2 = ps.KNN.from_array(points,2)
+        >>> wnn2 = KNN.from_array(points,2)
         >>> wnn2[0]
         {1: 1.0, 3: 1.0}
         >>> wnn2[1]
@@ -228,7 +217,7 @@ class KNN(W):
 
         now with 1 rather than 0 offset
 
-        >>> wnn2 = ps.KNN.from_array(points, 2, ids=range(1,7))
+        >>> wnn2 = KNN.from_array(points, 2, ids=range(1,7))
         >>> wnn2[1]
         {2: 1.0, 4: 1.0}
         >>> wnn2[2]
@@ -711,7 +700,7 @@ class DistanceBand(W):
     --------
     >>> import libpysal
     >>> points=[(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
-    >>> wcheck = ps.W({0: [1, 3], 1: [0, 3], 2: [], 3: [0, 1], 4: [5], 5: [4]})
+    >>> wcheck = libpysal.weights.W({0: [1, 3], 1: [0, 3], 2: [], 3: [0, 1], 4: [5], 5: [4]})
 
     WARNING: there is one disconnected observation (no neighbors)
     Island id:  [2]
@@ -722,7 +711,7 @@ class DistanceBand(W):
     >>> libpysal.weights.util.neighbor_equality(w, wcheck)
     True
     >>> w=libpysal.weights.distance.DistanceBand(points,threshold=14.2)
-    >>> wcheck = ps.W({0: [1, 3], 1: [0, 3, 4], 2: [4], 3: [1, 0], 4: [5, 2, 1], 5: [4]})
+    >>> wcheck = libpysal.weights.W({0: [1, 3], 1: [0, 3, 4], 2: [4], 3: [1, 0], 4: [5, 2, 1], 5: [4]})
     >>> libpysal.weights.util.neighbor_equality(w, wcheck)
     True
 
