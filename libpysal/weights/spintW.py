@@ -36,10 +36,10 @@ def ODW(Wo, Wd, transform='r', silence_warnings=True):
     Examples
     --------
 
-    >>> import libpysal.api as ps
-    >>> O = ps.lat2W(2,2)
-    >>> D = ps.lat2W(2,2)
-    >>> OD = ps.ODW(O,D)
+    >>> import libpysal
+    >>> O = libpysal.weights.lat2W(2,2)
+    >>> D = libpysal.weights.lat2W(2,2)
+    >>> OD = libpysal.weights.spintW.ODW(O,D)
     >>> OD.weights[0]
     [0.25, 0.25, 0.25, 0.25]
     >>> OD.neighbors[0]
@@ -102,19 +102,19 @@ def netW(link_list, share='A', transform = 'r'):
     -------
      W          : nodal contiguity W object for networkd edges or flows
                   W Object representing the binary adjacency of the network edges
-                  given a definition of nodal relationships.
+                  given a definition of nodal relationshilibpysal.weights.spintW.
 
     Examples
     --------
-    >>> import libpysal.api as ps
+    >>> import libpysal
     >>> links = [('a','b'), ('a','c'), ('a','d'), ('c','d'), ('c', 'b'), ('c','a')]
-    >>> O = ps.netW(links, share='O')
+    >>> O = libpysal.weights.spintW.netW(links, share='O')
     >>> O.neighbors[('a', 'b')]
     [('a', 'c'), ('a', 'd')]
-    >>> OD = ps.netW(links, share='OD')
+    >>> OD = libpysal.weights.spintW.netW(links, share='OD')
     >>> OD.neighbors[('a', 'b')]
     [('a', 'c'), ('a', 'd'), ('c', 'b')]
-    >>> any_common = ps.netW(links, share='A')
+    >>> any_common = libpysal.weights.spintW.netW(links, share='A')
     >>> any_common.neighbors[('a', 'b')]
     [('a', 'c'), ('a', 'd'), ('c', 'b'), ('c', 'a')]
 
@@ -202,15 +202,15 @@ def vecW(origin_x, origin_y, dest_x, dest_y, threshold, p=2, alpha=-1.0,
 
     Examples
     --------
-    >>> import libpysal.api as ps
+    >>> import libpysal
     >>> x1 = [5,6,3]
     >>> y1 = [1,8,5]
     >>> x2 = [2,4,9]
     >>> y2 = [3,6,1]
-    >>> W1 = ps.vecW(x1, y1, x2, y2, threshold=999)
+    >>> W1 = libpysal.weights.spintW.vecW(x1, y1, x2, y2, threshold=999)
     >>> list(W1.neighbors[0])
     [1, 2]
-    >>> W2 = ps.vecW(x1, y2, x1, y2, threshold=8.5)
+    >>> W2 = libpysal.weights.spintW.vecW(x1, y2, x1, y2, threshold=8.5)
     >>> list(W2.neighbors[0])
     [1, 2]
 
