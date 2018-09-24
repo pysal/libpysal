@@ -24,7 +24,7 @@ before_install:
 install:
   - conda install --yes pip
   - if [ "$PYSAL_PLUS" == true ]; then
-        echo 'plus testing'; conda install --yes --file requirements_plus.txt;
+        echo 'plus testing'; pip install -r requirements_plus.txt;
         else conda install --yes --file requirements.txt;
     fi;
   - conda install --yes geopandas
