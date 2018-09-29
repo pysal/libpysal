@@ -6,24 +6,27 @@ WT_TYPE = {'rook': 2, 'queen': 1}  # for _contW_Binning
 
 __author__ = "Sergio J. Rey <srey@asu.edu> , Levi John Wolf <levi.john.wolf@gmail.com>"
 
+__all__ = ['Rook', 'Queen', 'Voronoi']
+
 class Rook(W):
+    """
+    Construct a weights object from a collection of pysal polygons that share at least one edge.
+
+    Parameters
+    ----------
+    polygons    : list
+                a collection of PySAL shapes to build weights from
+    ids         : list
+                a list of names to use to build the weights
+    **kw        : keyword arguments
+                optional arguments for :class:`pysal.weights.W`
+
+    See Also
+    ---------
+    :class:`libpysal.weights.weights.W`
+    """
+
     def __init__(self, polygons, **kw):
-        """
-        Construct a weights object from a collection of pysal polygons.
-
-        Parameters
-        ----------
-        polygons    : list
-                      a collection of PySAL shapes to build weights from
-        ids         : list
-                      a list of names to use to build the weights
-        **kw        : keyword arguments
-                      optional arguments for :class:`pysal.weights.W`
-
-        See Also
-        ---------
-        :class:`libpysal.weights.weights.W`
-        """
         criterion = 'rook'
         ids = kw.pop('ids', None) 
         neighbors, ids = _build(polygons, criterion=criterion, 
@@ -156,23 +159,24 @@ class Rook(W):
                                  id_order=id_order, **kwargs)
 
 class Queen(W):
+    """
+    Construct a weights object from a collection of pysal polygons that share at least one vertex.
+
+    Parameters
+    ----------
+    polygons    : list
+                  a collection of PySAL shapes to build weights from
+    ids         : list
+                  a list of names to use to build the weights
+    **kw        : keyword arguments
+                  optional arguments for :class:`pysal.weights.W`
+
+    See Also
+    ---------
+    :class:`libpysal.weights.weights.W`
+    """
+
     def __init__(self, polygons, **kw):
-        """
-        Construct a weights object from a collection of pysal polygons.
-
-        Parameters
-        ----------
-        polygons    : list
-                      a collection of PySAL shapes to build weights from
-        ids         : list
-                      a list of names to use to build the weights
-        **kw        : keyword arguments
-                      optional arguments for :class:`pysal.weights.W`
-
-        See Also
-        ---------
-        :class:`libpysal.weights.weights.W`
-        """
         criterion = 'queen'
         ids = kw.pop('ids', None)
         neighbors, ids = _build(polygons, ids=ids, 

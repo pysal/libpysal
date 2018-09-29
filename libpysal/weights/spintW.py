@@ -238,8 +238,6 @@ def mat2L(edge_matrix):
                     of tuples where each tuple is of the form (o,d) where o is an
                     origin id and d is a destination id
 
-    Examples
-    --------
     """
     if len(edge_matrix.shape) !=2:
     	raise AttributeError("Matrix of network edges should be two dimensions"

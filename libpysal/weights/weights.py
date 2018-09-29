@@ -20,7 +20,7 @@ __all__ = ['W', 'WSP']
 
 class W(object):
     """
-    Spatial weights.
+    Spatial weights class.
 
     Parameters
     ----------
