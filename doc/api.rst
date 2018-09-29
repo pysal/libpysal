@@ -108,3 +108,128 @@ Spatial Lag
    libpysal.weights.lag_spatial
    libpysal.weights.lag_categorical
           
+
+cg: Computational Geometry
+--------------------------
+
+alpha_shapes
+++++++++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.cg.alpha_shape
+   libpysal.cg.alpha_shape_auto
+
+voronoi
++++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.cg.voronoi_frames
+
+
+sphere
+++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.cg.RADIUS_EARTH_KM
+   libpysal.cg.RADIUS_EARTH_MILES
+   libpysal.cg.arcdist
+   libpysal.cg.arcdist2linear
+   libpysal.cg.brute_knn
+   libpysal.cg.fast_knn
+   libpysal.cg.fast_threshold
+   libpysal.cg.linear2arcdist
+   libpysal.cg.toLngLat
+   libpysal.cg.toXYZ
+   libpysal.cg.lonlat
+   libpysal.cg.harcdist
+   libpysal.cg.geointerpolate
+   libpysal.cg.geogrid
+
+shapes
+++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.cg.Point
+   libpysal.cg.LineSegment
+   libpysal.cg.Line
+   libpysal.cg.Ray
+   libpysal.cg.Chain
+   libpysal.cg.Polygon
+   libpysal.cg.Rectangle
+   libpysal.cg.asShape
+
+standalone
+++++++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.cg.bbcommon
+   libpysal.cg.get_bounding_box
+   libpysal.cg.get_angle_between
+   libpysal.cg.is_collinear
+   libpysal.cg.get_segments_intersect
+   libpysal.cg.get_segment_point_intersect
+   libpysal.cg.get_polygon_point_intersect
+   libpysal.cg.get_rectangle_point_intersect
+   libpysal.cg.get_ray_segment_intersect
+   libpysal.cg.get_rectangle_rectangle_intersection
+   libpysal.cg.get_polygon_point_dist
+   libpysal.cg.get_points_dist
+   libpysal.cg.get_segment_point_dist
+   libpysal.cg.get_point_at_angle_and_dist
+   libpysal.cg.convex_hull
+   libpysal.cg.is_clockwise
+   libpysal.cg.point_touches_rectangle
+   libpysal.cg.get_shared_segments
+   libpysal.cg.distance_matrix
+
+
+locators
+++++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.cg.Grid
+   libpysal.cg.PointLocator
+   libpysal.cg.PolygonLocator
+
+
+kdtree
+++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.cg.KDTree
+
+
+io
+-- 
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.io.open
+   libpysal.io.fileio.FileIO
+
+
+examples
+--------
+
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.examples.available
+   libpysal.examples.explain
+   libpysal.examples.get_path

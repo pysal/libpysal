@@ -43,6 +43,17 @@ def bbcommon(bb, bbother):
 
 def get_bounding_box(items):
     """
+    Find bounding box for a list of geometries
+
+    Parameters
+    ----------
+    items: list
+           PySAL shapes
+
+    Returns
+    -------
+    Rectangle
+          
 
     Examples
     --------
