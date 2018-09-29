@@ -84,29 +84,29 @@ class DataTable(fileio.FileIO):
         Examples
         --------
 
-        >>> import pysal as ps
-        >>> dbf = ps.open(ps.examples.get_path('NAT.dbf'))
+        >>> import libpysal
+        >>> dbf = libpysal.io.open(libpysal.examples.get_path('NAT.dbf'))
         >>> hr = dbf.by_col_array('HR70', 'HR80')
         >>> hr[0:5]
-        array([[  0.        ,   8.85582713],
-               [  0.        ,  17.20874204],
-               [  1.91515848,   3.4507747 ],
-               [  1.28864319,   3.26381409],
-               [  0.        ,   7.77000777]])
+        array([[ 0.        ,  8.85582713],
+               [ 0.        , 17.20874204],
+               [ 1.91515848,  3.4507747 ],
+               [ 1.28864319,  3.26381409],
+               [ 0.        ,  7.77000777]])
         >>> hr = dbf.by_col_array(['HR80', 'HR70'])
         >>> hr[0:5]
-        array([[  8.85582713,   0.        ],
-               [ 17.20874204,   0.        ],
-               [  3.4507747 ,   1.91515848],
-               [  3.26381409,   1.28864319],
-               [  7.77000777,   0.        ]])
+        array([[ 8.85582713,  0.        ],
+               [17.20874204,  0.        ],
+               [ 3.4507747 ,  1.91515848],
+               [ 3.26381409,  1.28864319],
+               [ 7.77000777,  0.        ]])
         >>> hr = dbf.by_col_array(['HR80'])
         >>> hr[0:5]
-        array([[  8.85582713],
-               [ 17.20874204],
-               [  3.4507747 ],
-               [  3.26381409],
-               [  7.77000777]])
+        array([[ 8.85582713],
+               [17.20874204],
+               [ 3.4507747 ],
+               [ 3.26381409],
+               [ 7.77000777]])
         
         Numpy only supports homogeneous arrays. See Notes above.
 
@@ -116,8 +116,7 @@ class DataTable(fileio.FileIO):
                ['Washington', '17.208742041'],
                ['Washington', '3.4507746989'],
                ['Washington', '3.2638140931'],
-               ['Washington', '7.77000777']], 
-              dtype='|S20')
+               ['Washington', '7.77000777']], dtype='<U20')
 
         >>> y, X = dbf.by_col_array('STATE_NAME', ['HR80', 'HR70'])
         >>> y[0:5]
@@ -125,15 +124,13 @@ class DataTable(fileio.FileIO):
                ['Washington'],
                ['Washington'],
                ['Washington'],
-               ['Washington']], 
-              dtype='|S20')
+               ['Washington']], dtype='<U20')
         >>> X[0:5]
-        array([[  8.85582713,   0.        ],
-               [ 17.20874204,   0.        ],
-               [  3.4507747 ,   1.91515848],
-               [  3.26381409,   1.28864319],
-               [  7.77000777,   0.        ]])
-
+        array([[ 8.85582713,  0.        ],
+               [17.20874204,  0.        ],
+               [ 3.4507747 ,  1.91515848],
+               [ 3.26381409,  1.28864319],
+               [ 7.77000777,  0.        ]])
         """
         if any([isinstance(arg, list) for arg in args]):
             results = []

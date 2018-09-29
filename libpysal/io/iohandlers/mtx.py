@@ -80,7 +80,8 @@ class MtxIO(fileio.FileIO):
         Type 'dir(w)' at the interpreter to see what methods are supported.
         Open a MatrixMarket mtx file and read it into a pysal weights object
 
-        >>> f = pysal.open(pysal.examples.get_path('wmat.mtx'),'r')
+        >>> import libpysal
+        >>> f = libpysal.io.open(libpysal.examples.get_path('wmat.mtx'),'r')
 
         >>> w = f.read()
 
@@ -92,16 +93,16 @@ class MtxIO(fileio.FileIO):
         Get the mean number of neighbors
 
         >>> w.mean_neighbors
-        4.7346938775510203
+        4.73469387755102
 
         Get neighbor weights for a single observation
 
         >>> w[1]
-        {2: 0.33329999999999999, 5: 0.33329999999999999, 6: 0.33329999999999999}
+        {2: 0.3333, 5: 0.3333, 6: 0.3333}
 
         >>> f.close()
 
-        >>> f = pysal.open(pysal.examples.get_path('wmat.mtx'),'r')
+        >>> f = libpysal.io.open(libpysal.examples.get_path('wmat.mtx'),'r')
 
         >>> wsp = f.read(sparse=True)
 
@@ -114,13 +115,12 @@ class MtxIO(fileio.FileIO):
         matrix (the 0th row) corresponds to ID 1 from the original mtx file
         read in.
 
-        >>> print wsp.sparse[0].todense()
-        [[ 0.      0.3333  0.      0.      0.3333  0.3333  0.      0.      0.      0.
-           0.      0.      0.      0.      0.      0.      0.      0.      0.      0.
-           0.      0.      0.      0.      0.      0.      0.      0.      0.      0.
-           0.      0.      0.      0.      0.      0.      0.      0.      0.      0.
-           0.      0.      0.      0.      0.      0.      0.      0.      0.    ]]
-
+        >>> print(wsp.sparse[0].todense())
+        [[0.     0.3333 0.     0.     0.3333 0.3333 0.     0.     0.     0.
+          0.     0.     0.     0.     0.     0.     0.     0.     0.     0.
+          0.     0.     0.     0.     0.     0.     0.     0.     0.     0.
+          0.     0.     0.     0.     0.     0.     0.     0.     0.     0.
+          0.     0.     0.     0.     0.     0.     0.     0.     0.    ]]
         """
         if self.pos > 0:
             raise StopIteration

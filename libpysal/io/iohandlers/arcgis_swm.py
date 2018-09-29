@@ -83,7 +83,7 @@ class ArcGISSwmIO(fileio.FileIO):
     def _read(self):
         """
         Reads ArcGIS swm file.
-        Returns a pysal.weights.weights.W object
+        Returns a libpysal.weights.weights.W object
 
         Examples
         --------
@@ -91,7 +91,8 @@ class ArcGISSwmIO(fileio.FileIO):
         Type 'dir(w)' at the interpreter to see what methods are supported.
         Open an ArcGIS swm file and read it into a pysal weights object
 
-        >>> w = pysal.open(pysal.examples.get_path('ohio.swm'),'r').read()
+        >>> import libpysal
+        >>> w = libpysal.io.open(libpysal.examples.get_path('ohio.swm'),'r').read()
 
         Get the number of observations from the header
 
@@ -105,8 +106,8 @@ class ArcGISSwmIO(fileio.FileIO):
 
         Get neighbor distances for a single observation
 
-        >>> w[1]
-        {2: 1.0, 11: 1.0, 6: 1.0, 7: 1.0}
+        >>> w[1] == dict({2: 1.0, 11: 1.0, 6: 1.0, 7: 1.0})
+        True
 
         """
         if self.pos > 0:

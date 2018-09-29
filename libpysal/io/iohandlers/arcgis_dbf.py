@@ -77,7 +77,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
     def _read(self):
         """Reads ArcGIS dbf file
-        Returns a pysal.weights.weights.W object
+        Returns a libpysal.weights.weights.W object
 
         Examples
         --------
@@ -85,7 +85,8 @@ class ArcGISDbfIO(fileio.FileIO):
         Type 'dir(w)' at the interpreter to see what methods are supported.
         Open an ArcGIS dbf file and read it into a pysal weights object
 
-        >>> w = pysal.open(pysal.examples.get_path('arcgis_ohio.dbf'),'r','arcgis_dbf').read()
+        >>> import libpysal
+        >>> w = libpysal.io.open(libpysal.examples.get_path('arcgis_ohio.dbf'),'r','arcgis_dbf').read()
 
         Get the number of observations from the header
 
@@ -99,8 +100,8 @@ class ArcGISDbfIO(fileio.FileIO):
 
         Get neighbor distances for a single observation
 
-        >>> w[1]
-        {2: 1.0, 11: 1.0, 6: 1.0, 7: 1.0}
+        >>> w[1] == dict({2: 1.0, 11: 1.0, 6: 1.0, 7: 1.0})
+        True
 
         """
         if self.pos > 0:
