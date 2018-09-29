@@ -971,7 +971,12 @@ def get_ids(in_shps, idVariable):
     >>> gdf = gpd.read_file(libpysal.examples.get_path("columbus.shp"))
     >>> polyids = gdf["POLYID"]
     >>> polyids[:5]
-    [1, 2, 3, 4, 5]
+    0    1
+    1    2
+    2    3
+    3    4
+    4    5
+    Name: POLYID, dtype: int64
     
     """
 
