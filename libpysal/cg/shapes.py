@@ -1455,7 +1455,8 @@ class Polygon(Geometry):
             else:
                 return part[::-1]
 
-        if isinstance(vertices[0], list):
+        vl = list(vertices)
+        if isinstance(vl[0], list):
             self._part_rings = list(map(Ring, vertices))
             self._vertices = [clockwise(part) for part in vertices]
         else:

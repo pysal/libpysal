@@ -1,5 +1,7 @@
-Python Spatial Analysis Library Core
-====================================
+.. libpysal documentation master file
+
+libpysal: Python Spatial Analysis Library Core
+==============================================
 
 .. image:: https://travis-ci.org/pysal/libpysal.svg
    :target: https://travis-ci.org/pysal/libpysal
@@ -7,26 +9,19 @@ Python Spatial Analysis Library Core
 .. image:: https://badges.gitter.im/pysal/pysal.svg
    :target: https://gitter.im/pysal/pysal
 
-This package is part of a `refactoring of PySAL
-<https://github.com/pysal/pysal/wiki/PEP-13:-Refactor-PySAL-Using-Submodules>`_.
+************
+Introduction
+************
+
+**libpysal** offers four modules that form the building blocks in many upstream packages in the `PySAL family <https://github.com/pysal>`_:
+
+- Spatial Weights: libpysal.weights 
+- Input-and output: libpysal.io 
+- Computational geometry: libpysal.cg  
+- Built-in example datasets libpysal.examples  
 
 
-****************
-libpysal modules
-****************
-
-- libpysal.cg  Computational geometry
-- libpysal.io  Input and output
-- libpysal.weights  Spatial weights
-- libpysal.examples  Built-in example datasets
-
-
-*****************
-Example Notebooks
-*****************
-- `Spatial Weights  <notebooks/weights.ipynb>`_
-- `Voronoi  <notebooks/voronoi.ipynb>`_
-- `Input and Output <notebooks/io.ipynb>`_
+Further information is available in the `libpysal api <api.html>`_.
 
 ***********
 Development
@@ -65,3 +60,21 @@ License information
 See the file "LICENSE.txt" for information on the history of this
 software, terms & conditions for usage, and a DISCLAIMER OF ALL
 WARRANTIES.
+
+
+libpysal
+========
+
+Core components of the Python Spatial Analysis Library (`PySAL`_)
+
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: 4
+   :caption: Contents:
+
+   Installation <installation>
+   API <api>
+   
+.. _PySAL: https://github.com/pysal/pysal
