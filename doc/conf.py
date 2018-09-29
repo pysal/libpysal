@@ -179,6 +179,7 @@ html_theme_options = {
                      #("Gallery", "auto_examples/index"),
                      ("Installation", "installation"),
                      ("API", "api"),
+                     ("References", "references"),
                      ],
 
 }

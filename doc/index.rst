@@ -9,11 +9,32 @@ libpysal: Python Spatial Analysis Library Core
 .. image:: https://badges.gitter.im/pysal/pysal.svg
    :target: https://gitter.im/pysal/pysal
 
+
+.. raw:: html
+
+    <div class="container-fluid">
+      <div class="row equal-height">
+        <div class="col-sm-1 col-xs-hidden">
+        </div>
+        <div class="col-sm-10 col-xs-12">
+            <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/master/notebooks/weights.ipynb" class="thumbnail">
+                <img src="_static/images/npweights.png" class="img-responsive center-block">
+                <div class="caption text-center">
+                <h6>Weights for nonplanar enforced geometries</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-1 col-xs-hidden">
+        </div>
+      </div>
+    </div>
+
+
 ************
 Introduction
 ************
 
-**libpysal** offers four modules that form the building blocks in many upstream packages in the `PySAL family <https://github.com/pysal>`_:
+**libpysal** offers four modules that form the building blocks in many upstream packages in the `PySAL family <https://pysal.org>`_:
 
 - Spatial Weights: libpysal.weights 
 - Input-and output: libpysal.io 
@@ -21,7 +42,9 @@ Introduction
 - Built-in example datasets libpysal.examples  
 
 
-Further information is available in the `libpysal api <api.html>`_.
+Details are available in the `libpysal api <api.html>`_.
+
+For background information see :cite:`pysal2007`.
 
 ***********
 Development
@@ -52,6 +75,30 @@ Bug reports
 To search for or report bugs, please see libpysal's issues_.
 
 .. _issues :  http://github.com/pysal/libpysal/issues
+
+
+***************
+Citing libpysal
+***************
+
+If you use PySAL in a scientific publication, we would appreciate citations to the following paper:
+
+  `PySAL: A Python Library of Spatial Analytical Methods <http://journal.srsa.org/ojs/index.php/RRS/article/view/134/85>`_, *Rey, S.J. and L. Anselin*, Review of Regional Studies 37, 5-27 2007.
+
+  Bibtex entry::
+
+      @Article{pysal2007,
+        author={Rey, Sergio J. and Anselin, Luc},
+        title={{PySAL: A Python Library of Spatial Analytical Methods}},
+        journal={The Review of Regional Studies},
+        year=2007,
+        volume={37},
+        number={1},
+        pages={5-27},
+        keywords={Open Source; Software; Spatial}
+      }
+
+
 
 *******************
 License information
