@@ -27,12 +27,13 @@ def ODW(Wo, Wd, transform='r', silence_warnings=True):
 
     transform   : Transformation for standardization of final OD spatial weight; default
                   is 'r' for row standardized
+
     Returns
     -------
     W           : spatial contiguity W object for assocations between flows
                  o*d x o*d spatial weight object amongst o*d flows between o
                  origins and d destinations
-    
+
     Examples
     --------
 
