@@ -45,7 +45,6 @@ spint Weights
    libpysal.weights.mat2L
    libpysal.weights.ODW
    libpysal.weights.vecW
-   libpysal.weights.lat2W
 
 
 Weights Util Classes and Functions
@@ -55,6 +54,7 @@ Weights Util Classes and Functions
    :toctree: generated/
 
    libpysal.weights.block_weights
+   libpysal.weights.lat2W
    libpysal.weights.comb
    libpysal.weights.order
    libpysal.weights.higher_order
