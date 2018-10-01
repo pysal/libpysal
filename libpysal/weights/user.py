@@ -68,12 +68,11 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
 
     Examples
     --------
-    >>> import libpysal.api as ps
     >>> import libpysal
-    >>> md = ps.min_threshold_dist_from_shapefile(libpysal.examples.get_path("columbus.shp"))
+    >>> md = libpysal.weights.user.min_threshold_dist_from_shapefile(libpysal.examples.get_path("columbus.shp"))
     >>> md
     0.6188641580768541
-    >>> ps.min_threshold_dist_from_shapefile(libpysal.examples.get_path("stl_hom.shp"), libpysal.cg.sphere.RADIUS_EARTH_MILES)
+    >>> libpysal.weights.user.min_threshold_dist_from_shapefile(libpysal.examples.get_path("stl_hom.shp"), libpysal.cg.sphere.RADIUS_EARTH_MILES)
     31.846942936393717
 
     Notes

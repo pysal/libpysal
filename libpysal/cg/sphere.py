@@ -27,6 +27,8 @@ RADIUS_EARTH_MILES = (
 
 def arcdist(pt0, pt1, radius=RADIUS_EARTH_KM):
     """
+    Arc distance between two points on a sphere.
+
     Parameters
     ----------
     pt0 : point
@@ -97,6 +99,8 @@ def linear2arcdist(linear_dist, radius=RADIUS_EARTH_KM):
 
 def toXYZ(pt):
     """
+    Convert a point's latitude and longitude to x,y,z
+    
     Parameters
     ----------
     pt0 : point
@@ -117,6 +121,10 @@ def toXYZ(pt):
 
 
 def toLngLat(xyz):
+    """
+    Convert x,y,z to latitude and longitude
+
+    """
     x, y, z = xyz
     if z == -1 or z == 1:
         phi = 0
@@ -190,6 +198,27 @@ def fast_knn(pts, k, return_dist=False):
 
 
 def fast_threshold(pts, dist, radius=RADIUS_EARTH_KM):
+    """
+    Find all neighbors on a sphere within a threshold distance
+
+    Parameters
+    ----------
+
+    pointslist : list of lat-lon tuples (Note, has to be a list, even for one point)
+
+    dist: float
+          threshold distance
+
+    radius: float
+            sphere's radius
+
+    Returns
+    -------
+
+    dict:
+         key is id of point, value is a list of ids for other points within dist of key point
+
+    """
     d = arcdist2linear(dist, radius)
     kd = scipy.spatial.KDTree(pts)
     r = kd.query_ball_tree(kd, d)

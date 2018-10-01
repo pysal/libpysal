@@ -1,4 +1,5 @@
 from .. import fileio
+
 errmsg = ''
 try:
     try:

@@ -28,8 +28,3 @@ from . import cg
 from . import io
 from . import weights
 from . import examples
-
-# Assign pysal.open to dispatcher
-
-#from .version import version as __version__
-
