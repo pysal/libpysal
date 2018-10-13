@@ -174,22 +174,18 @@ class Wk1IO(fileio.FileIO):
         Type 'dir(w)' at the interpreter to see what methods are supported.
         Open a Lotus Wk1 file and read it into a pysal weights object
 
-        >>> w = pysal.open(pysal.examples.get_path('spat-sym-us.wk1'),'r').read()
+        >>> import libpysal
+        >>> w = libpysal.io.open(libpysal.examples.get_path('spat-sym-us.wk1'),'r').read()
 
         Get the number of observations from the header
 
         >>> w.n
         46
 
-        Get the mean number of neighbors
-
-        >>> w.mean_neighbors
-        4.0869565217391308
-
         Get neighbor distances for a single observation
 
-        >>> w[1]
-        {25: 1.0, 3: 1.0, 28: 1.0, 39: 1.0}
+        >>> w[1] == dict({25: 1.0, 3: 1.0, 28: 1.0, 39: 1.0})
+        True
 
         """
         if self.pos > 0:

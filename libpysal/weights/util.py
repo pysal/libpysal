@@ -57,13 +57,13 @@ def hexLat2W(nrows=5, ncols=5):
     Examples
     --------
 
-    >>> import libpysal.api as ps
-    >>> w = ps.lat2W()
+    >>> from libpysal.weights import lat2W
+    >>> w = lat2W()
     >>> w.neighbors[1]
     [0, 6, 2]
     >>> w.neighbors[21]
     [16, 20, 22]
-    >>> wh = ps.hexLat2W()
+    >>> wh = hexLat2W()
     >>> wh.neighbors[1]
     [0, 6, 2, 5, 7]
     >>> wh.neighbors[21]
@@ -147,8 +147,8 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int'):
     Examples
     --------
 
-    >>> import libpysal.api as ps
-    >>> w9 = ps.lat2W(3,3)
+    >>> from libpysal.weights import lat2W
+    >>> w9 = lat2W(3,3)
     >>> "%.3f"%w9.pct_nonzero
     '29.630'
     >>> w9[0] == {1: 1.0, 3: 1.0}
@@ -236,7 +236,7 @@ def block_weights(regimes, ids=None, sparse=False):
     Examples
     --------
 
-    >>> import libpysal.api as ps
+    >>> from libpysal.weights import lat2W
     >>> import numpy as np
     >>> regimes = np.ones(25)
     >>> regimes[range(10,20)] = 2
@@ -244,14 +244,14 @@ def block_weights(regimes, ids=None, sparse=False):
     >>> regimes
     array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 2., 2., 2., 2.,
            2., 2., 2., 1., 3., 3., 3., 3.])
-    >>> w = ps.block_weights(regimes)
+    >>> w = block_weights(regimes)
     >>> w.weights[0]
     [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
     >>> w.neighbors[0]
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
     >>> regimes = ['n','n','s','s','e','e','w','w','e']
     >>> n = len(regimes)
-    >>> w = ps.block_weights(regimes)
+    >>> w = block_weights(regimes)
     >>> w.neighbors == {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
     True
     """
@@ -343,9 +343,10 @@ def order(w, kmax=3):
 
     Examples
     --------
-    >>> import libpysal.api as ps
+    >>> from libpysal.weights import lat2W
+    >>> from libpysal.weights.contiguity import Rook
     >>> import libpysal
-    >>> w = ps.rook_from_shapefile(libpysal.examples.get_path('10740.shp'))
+    >>> w = Rook.from_shapefile(libpysal.examples.get_path('10740.shp'))
 
     WARNING: there is one disconnected observation (no neighbors)
     Island id:  [163]
@@ -405,17 +406,17 @@ def higher_order(w, k=2):
 
     Examples
     --------
-    >>> import libpysal.api as ps
-    >>> w10 = ps.lat2W(10, 10)
-    >>> w10_2 = ps.higher_order(w10, 2)
+    >>> from libpysal.weights import lat2W
+    >>> w10 = lat2W(10, 10)
+    >>> w10_2 = higher_order(w10, 2)
     >>> w10_2[0] ==  {2: 1.0, 11: 1.0, 20: 1.0}
     True
-    >>> w5 = ps.lat2W()
+    >>> w5 = lat2W()
     >>> w5[0] ==  {1: 1.0, 5: 1.0}
     True
     >>> w5[1] == {0: 1.0, 2: 1.0, 6: 1.0}
     True
-    >>> w5_2 = ps.higher_order(w5,2)
+    >>> w5_2 = higher_order(w5,2)
     >>> w5_2[0] == {10: 1.0, 2: 1.0, 6: 1.0}
     True
     """
@@ -457,9 +458,9 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
     Examples
     --------
 
-    >>> import libpysal.api as ps
+    >>> from libpysal.weights import lat2W
     >>> import libpysal
-    >>> w25 = ps.lat2W(5,5)
+    >>> w25 = lat2W(5,5)
     >>> w25.n
     25
     >>> w25[0] == {1: 1.0, 5: 1.0}
@@ -558,8 +559,8 @@ def w_local_cluster(w):
 
     Examples
     --------
-    >>> import libpysal.api as ps
-    >>> w = ps.lat2W(3,3, rook=False)
+    >>> from libpysal.weights import lat2W
+    >>> w = lat2W(3,3, rook=False)
     >>> w_local_cluster(w) 
     array([[1.        ],
            [0.6       ],
@@ -603,9 +604,9 @@ def shimbel(w):
 
     Examples
     --------
-    >>> import libpysal.api as ps
-    >>> w5 = ps.lat2W()
-    >>> w5_shimbel = ps.shimbel(w5)
+    >>> from libpysal.weights import lat2W
+    >>> w5 = lat2W()
+    >>> w5_shimbel = shimbel(w5)
     >>> w5_shimbel[0][24]
     8
     >>> w5_shimbel[0][0:4]
@@ -656,11 +657,11 @@ def full(w):
 
     Examples
     --------
-    >>> import libpysal.api as ps
+    >>> from libpysal.weights import lat2W, W
     >>> neighbors = {'first':['second'],'second':['first','third'],'third':['second']}
     >>> weights = {'first':[1],'second':[1,1],'third':[1]}
-    >>> w = ps.W(neighbors, weights)
-    >>> wf, ids = ps.full(w)
+    >>> w = W(neighbors, weights)
+    >>> wf, ids = full(w)
     >>> wf
     array([[0., 1., 0.],
            [1., 0., 1.],
@@ -759,13 +760,13 @@ def WSP2W(wsp, silence_warnings=False):
 
     Examples
     --------
-    >>> import libpysal.api as ps
+    >>> from libpysal.weights import lat2W, WSP
 
     Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
     (rook contiguity), then construct a PySAL sparse weights object (wsp).
 
-    >>> sp = ps.lat2SW(2, 5)
-    >>> wsp = ps.WSP(sp)
+    >>> sp = lat2SW(2, 5)
+    >>> wsp = WSP(sp)
     >>> wsp.n
     10
     >>> wsp.sparse[0].todense()
@@ -773,7 +774,7 @@ def WSP2W(wsp, silence_warnings=False):
 
     Convert this sparse weights object to a standard PySAL weights object.
 
-    >>> w = ps.WSP2W(wsp)
+    >>> w = WSP2W(wsp)
     >>> w.n
     10
     >>> print(w.full()[0][0])
@@ -837,14 +838,14 @@ def fill_diagonal(w, val=1.0, wsp=False):
 
     Examples
     --------
-    >>> import libpysal.api as ps
+    >>> from libpysal.weights import lat2W
     >>> import numpy as np
 
     Build a basic rook weights matrix, which has zeros on the diagonal, then
     insert ones along the diagonal.
 
-    >>> w = ps.lat2W(5, 5, id_type='string')
-    >>> w_const = ps.insert_diagonal(w)
+    >>> w = lat2W(5, 5, id_type='string')
+    >>> w_const = insert_diagonal(w)
     >>> w['id0'] ==  {'id5': 1.0, 'id1': 1.0}
     True
     >>> w_const['id0'] == {'id5': 1.0, 'id0': 1.0, 'id1': 1.0}
@@ -853,7 +854,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
     Insert different values along the main diagonal.
 
     >>> diag = np.arange(100, 125)
-    >>> w_var = ps.insert_diagonal(w, diag)
+    >>> w_var = insert_diagonal(w, diag)
     >>> w_var['id0'] == {'id5': 1.0, 'id0': 100.0, 'id1': 1.0}
     True
 
@@ -902,14 +903,14 @@ def remap_ids(w, old2new, id_order=[]):
 
     Examples
     --------
-    >>> import libpysal.api as ps
-    >>> w = ps.lat2W(3,2)
+    >>> from libpysal.weights import lat2W
+    >>> w = lat2W(3,2)
     >>> w.id_order
     [0, 1, 2, 3, 4, 5]
     >>> w.neighbors[0]
     [2, 1]
     >>> old_to_new = {0:'a', 1:'b', 2:'c', 3:'d', 4:'e', 5:'f'}
-    >>> w_new = ps.remap_ids(w, old_to_new)
+    >>> w_new = remap_ids(w, old_to_new)
     >>> w_new.id_order
     ['a', 'b', 'c', 'd', 'e', 'f']
     >>> w_new.neighbors['a']
@@ -970,7 +971,12 @@ def get_ids(in_shps, idVariable):
     >>> gdf = gpd.read_file(libpysal.examples.get_path("columbus.shp"))
     >>> polyids = gdf["POLYID"]
     >>> polyids[:5]
-    [1, 2, 3, 4, 5]
+    0    1
+    1    2
+    2    3
+    3    4
+    4    5
+    Name: POLYID, dtype: int64
     
     """
 
@@ -1145,13 +1151,13 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     Examples
     --------
 
-    >>> import libpysal.api as ps
-    >>> w9 = ps.lat2SW(3,3)
+    >>> from libpysal.weights import lat2W
+    >>> w9 = lat2SW(3,3)
     >>> w9[0,1]
     1
     >>> w9[3,6]
     1
-    >>> w9r = ps.lat2SW(3,3, row_st=True)
+    >>> w9r = lat2SW(3,3, row_st=True)
     >>> w9r[3,6] == 1./3
     True
     """
@@ -1230,25 +1236,25 @@ def neighbor_equality(w1, w2):
     Examples
     --------
     >>> from libpysal.weights.util import neighbor_equality
-    >>> import libpysal.api as ps
-    >>> w1 = ps.lat2W(3,3)
-    >>> w2 = ps.lat2W(3,3)
+    >>> from libpysal.weights import lat2W, W
+    >>> w1 = lat2W(3,3)
+    >>> w2 = lat2W(3,3)
     >>> neighbor_equality(w1, w2)
     True
-    >>> w3 = ps.lat2W(5,5)
+    >>> w3 = lat2W(5,5)
     >>> neighbor_equality(w1, w3)
     False
     >>> n4 = w1.neighbors.copy()
     >>> n4[0] = [1]
     >>> n4[1] = [4, 2]
-    >>> w4 = ps.W(n4)
+    >>> w4 = W(n4)
     >>> neighbor_equality(w1, w4)
     False
     >>> n5 = w1.neighbors.copy()
     >>> n5[0]
     [3, 1]
     >>> n5[0] = [1, 3]
-    >>> w5 = ps.W(n5)
+    >>> w5 = W(n5)
     >>> neighbor_equality(w1, w5)
     True
 
@@ -1290,12 +1296,12 @@ def attach_islands(w, w_knn1):
 
     Examples
     --------
-    >>> import libpysal.api as ps
+    >>> from libpysal.weights import lat2W
     >>> import libpysal
-    >>> w = ps.rook_from_shapefile(libpysal.examples.get_path('10740.shp'))
+    >>> w = libpysal.weights.contiguity.Rook.from_shapefile(libpysal.examples.get_path('10740.shp'))
     >>> w.islands
     [163]
-    >>> w_knn1 = ps.knnW_from_shapefile(libpysal.examples.get_path('10740.shp'),k=1)
+    >>> w_knn1 = libpysal.weights.distance.KNN.from_shapefile(libpysal.examples.get_path('10740.shp'),k=1)
     >>> w_attach = attach_islands(w, w_knn1)
     >>> w_attach.islands
     []
@@ -1372,9 +1378,9 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001):
     --------
 
     >>> import geopandas as gpd
-    >>> import libpysal.api as lp
-    >>> df = gpd.read_file(lp.get_path('map_RS_BR.shp'))
-    >>> w = lp.Queen.from_dataframe(df)
+    >>> import libpysal
+    >>> df = gpd.read_file(libpysal.examples.get_path('map_RS_BR.shp'))
+    >>> w = libpysal.weights.contiguity.Queen.from_dataframe(df)
     >>> import libpysal
     >>> w.islands
     [0, 4, 23, 27, 80, 94, 101, 107, 109, 119, 122, 139, 169, 175, 223, 239, 247, 253, 254, 255, 256, 261, 276, 291, 294, 303, 321, 357, 374]
@@ -1468,24 +1474,24 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True):
     Examples
     --------
 
-    >>> import libpysal.api as lps
+    >>> import libpysal as lps
     >>> import geopandas as gpd
-    >>> rs = lps.get_path('map_RS_BR.shp')
+    >>> rs = lps.examples.get_path('map_RS_BR.shp')
     >>> rs_df = gpd.read_file(rs)
-    >>> wq = lps.Queen.from_dataframe(rs_df)
+    >>> wq = lps.weights.contiguity.Queen.from_dataframe(rs_df)
     >>> len(wq.islands)
     29
     >>> wq[0]
     {}
-    >>> wf = lps.fuzzy_contiguity(rs_df)
+    >>> wf = fuzzy_contiguity(rs_df)
     >>> wf.islands
     []
-    >>> wf[0]
-    {239: 1.0, 59: 1.0, 152: 1.0, 23: 1.0, 107: 1.0}
+    >>> wf[0] == dict({239: 1.0, 59: 1.0, 152: 1.0, 23: 1.0, 107: 1.0})
+    True
 
     Example needing to use buffering
 
-    >>> import libpysal.api as lps
+    >>> import libpysal as lps
     >>> import geopandas as gpd
     >>> from shapely.geometry import Polygon
     >>> p0 = Polygon([(0,0), (10,0), (10,10)])
@@ -1493,10 +1499,10 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True):
     >>> p2 = Polygon([(12,2.001), (14, 2.001), (13,10)])
     >>> gs = gpd.GeoSeries([p0,p1,p2])
     >>> gdf = gpd.GeoDataFrame(geometry=gs)
-    >>> wf = lps.fuzzy_contiguity(gdf)
+    >>> wf = fuzzy_contiguity(gdf)
     >>> wf.islands
     [2]
-    >>> wfb = lps.fuzzy_contiguity(gdf, buffering=True)
+    >>> wfb = fuzzy_contiguity(gdf, buffering=True)
     >>> wfb.islands
     []
     >>> wfb[2]

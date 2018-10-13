@@ -70,7 +70,8 @@ class MatIO(fileio.FileIO):
         Type 'dir(w)' at the interpreter to see what methods are supported.
         Open a MATLAB mat file and read it into a pysal weights object
 
-        >>> w = pysal.open(pysal.examples.get_path('spat-sym-us.mat'),'r').read()
+        >>> import libpysal
+        >>> w = libpysal.io.open(libpysal.examples.get_path('spat-sym-us.mat'),'r').read()
 
         Get the number of observations from the header
 
@@ -80,12 +81,12 @@ class MatIO(fileio.FileIO):
         Get the mean number of neighbors
 
         >>> w.mean_neighbors
-        4.0869565217391308
+        4.086956521739131
 
         Get neighbor distances for a single observation
 
-        >>> w[1]
-        {25: 1, 3: 1, 28: 1, 39: 1}
+        >>> w[1] == dict({25: 1, 3: 1, 28: 1, 39: 1})
+        True
 
         """
         if self.pos > 0:

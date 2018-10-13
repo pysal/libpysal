@@ -20,6 +20,14 @@ libpysal modules
 - libpysal.weights  Spatial weights
 - libpysal.examples  Built-in example datasets
 
+
+*****************
+Example Notebooks
+*****************
+- `Spatial Weights  <notebooks/weights.ipynb>`_
+- `Voronoi  <notebooks/voronoi.ipynb>`_
+- `Input and Output <notebooks/io.ipynb>`_
+
 ***********
 Development
 ***********

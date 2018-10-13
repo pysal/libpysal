@@ -39,7 +39,8 @@ class WeightConverter(object):
 
         Create a WeightConvert object
 
-        >>> wc = WeightConverter(pysal.examples.get_path('arcgis_ohio.dbf'),dataFormat='arcgis_dbf')
+        >>> import libpysal
+        >>> wc = WeightConverter(libpysal.examples.get_path('arcgis_ohio.dbf'),dataFormat='arcgis_dbf')
 
         Check whether or not the W object is set as an attribute
 
@@ -97,11 +98,11 @@ class WeightConverter(object):
 
         Examples
         --------
-        >>> import tempfile, os, pysal
+        >>> import tempfile, os, libpysal
 
         Create a WeightConverter object
 
-        >>> wc = WeightConverter(pysal.examples.get_path('sids2.gal'))
+        >>> wc = WeightConverter(libpysal.examples.get_path('sids2.gal'))
 
         Check whether or not the W object is set as an attribute
 

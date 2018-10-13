@@ -35,6 +35,10 @@ class FileIO_MetaCls(type):
 
 class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     """
+    Metaclass for supporting spatial data file read and write
+
+
+
     How this works:
     FileIO.open(\*args) == FileIO(\*args)
     When creating a new instance of FileIO the .__new__ method intercepts

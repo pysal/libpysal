@@ -171,7 +171,7 @@ def get_faces(triangle):
     Example
     -------
     
-    >>> triangle = np.array([3, 1, 4], dtype=int32)
+    >>> triangle = np.array([3, 1, 4], dtype=np.int32)
     >>> faces = get_faces(triangle)
     >>> faces
     array([[3., 1.],
@@ -215,11 +215,7 @@ def build_faces(faces, triangles_is,
     Example
     -------
     >>> import scipy.spatial as spat
-    >>> pts = np.array([[0, 1],
-                        [3, 5],
-                        [4, 1],
-                        [6, 7],
-                        [9, 3]])
+    >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> triangulation = spat.Delaunay(pts)
     >>> triangulation.simplices
     array([[3, 1, 4],
@@ -229,9 +225,8 @@ def build_faces(faces, triangles_is,
     >>> num_triangles = triangulation.simplices.shape[0]
     >>> num_faces = num_triangles * num_faces_single
     >>> faces = np.zeros((num_faces, 2), dtype=np.int_)
-    >>> mask = np.ones((num_faces,), dtype=np.bool_)       
-    >>> faces = build_faces(faces, triangulation.simplices, 
-                            num_triangles, num_faces_single)
+    >>> mask = np.ones((num_faces,), dtype=np.bool_)
+    >>> faces = build_faces(faces, triangulation.simplices, num_triangles, num_faces_single)
     >>> faces
     array([[3, 1],
            [1, 4],
@@ -273,17 +268,9 @@ def nb_mask_faces(mask, faces):
 
     Example
     -------
-
-    >>> faces = array([[0, 1],
-                       [0, 2],
-                       [1, 2],
-                       [1, 2],
-                       [1, 3],
-                       [1, 4],
-                       [1, 4],
-                       [2, 4],
-                       [3, 4]])
-    >>> mask = np.ones((faces.shape[0], ), dtype=bool_)
+    >>> import numpy as np
+    >>> faces = np.array([[0, 1], [0, 2], [1, 2], [1, 2], [1, 3], [1, 4], [1, 4], [2, 4], [3, 4]])
+    >>> mask = np.ones((faces.shape[0], ), dtype=np.bool_)
     >>> masked = nb_mask_faces(mask, faces)
     >>> masked
     array([[0, 1],
@@ -317,18 +304,14 @@ def get_single_faces(triangles_is):
     Example
     -------
     >>> import scipy.spatial as spat
-    >>> pts = np.array([[0, 1],
-                        [3, 5],
-                        [4, 1],
-                        [6, 7],
-                        [9, 3]])
+    >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> alpha = 0.33
     >>> triangulation = spat.Delaunay(pts)
     >>> triangulation.simplices
     array([[3, 1, 4],
            [1, 2, 4],
            [2, 1, 0]], dtype=int32)
-    >>> faces = get_single_faces(triangulation.simplices)
+    >>> get_single_faces(triangulation.simplices)
     array([[0, 1],
            [0, 2],
            [1, 3],
@@ -384,11 +367,7 @@ def alpha_geoms(alpha, triangles, radii, xys):
     Example
     -------
     >>> import scipy.spatial as spat
-    >>> pts = np.array([[0, 1],
-                        [3, 5],
-                        [4, 1],
-                        [6, 7],
-                        [9, 3]])
+    >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> alpha = 0.33
     >>> triangulation = spat.Delaunay(pts)
     >>> triangles = pts[triangulation.simplices]
@@ -396,11 +375,11 @@ def alpha_geoms(alpha, triangles, radii, xys):
     array([[[6, 7],
             [3, 5],
             [9, 3]],
-
+    <BLANKLINE>
            [[3, 5],
             [4, 1],
             [9, 3]],
-
+    <BLANKLINE>
            [[4, 1],
             [3, 5],
             [0, 1]]])
@@ -408,8 +387,10 @@ def alpha_geoms(alpha, triangles, radii, xys):
     >>> b_pts = triangles[:, 1, :]
     >>> c_pts = triangles[:, 2, :]
     >>> radii = r_circumcircle_triangle(a_pts, b_pts, c_pts)
-    >>> geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
+    >>> geoms = alpha_geoms(alpha, triangulation.simplices, radii, pts)
     >>> geoms
+    0    POLYGON ((0 1, 3 5, 4 1, 0 1))
+    dtype: object
     '''
     try:
         from shapely.geometry import LineString
@@ -453,11 +434,7 @@ def alpha_shape(xys, alpha):
     Example
     -------
 
-    >>> pts = np.array([[0, 1],
-                        [3, 5],
-                        [4, 1],
-                        [6, 7],
-                        [9, 3]])
+    >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> alpha = 0.1
     >>> poly = alpha_shape(pts, alpha)
     >>> poly
@@ -523,14 +500,8 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     Example
     -------
 
-    >>> pts = np.array([[0, 1],
-                        [3, 5],
-                        [4, 1],
-                        [6, 7],
-                        [9, 3]])
+    >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> poly = alpha_shape_auto(pts)
-    >>> poly
-    <shapely.geometry.polygon.Polygon at 0x11a7bbf60>
     >>> poly.bounds
     (0.0, 1.0, 9.0, 7.0)
     >>> poly.centroid.x, poly.centroid.y
