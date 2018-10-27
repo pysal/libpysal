@@ -1,5 +1,40 @@
 # Changes
 
+Version 4.0.1 (2018-10-27)
+
+We closed a total of 21 issues (enhancements and bug fixes) through 8 pull requests, since our last release on 2018-08-22.
+
+## Issues Closed
+  - weights.distance.KNN.from_dataframe ignoring radius  (#116)
+  - Always make spherical KDTrees if radius is passed (#117)
+  - [ENH] should `weights.util.get_ids()` also accept a geodataframe? (#97)
+  - enh: add doctests to travis (#2) (#112)
+  - sphinx docs need updating (#49)
+  - Add notebooks for subpackage contract (#108)
+  - Api docs complete (#110)
+  - Doctests and start of documentation for libpysal (#109)
+  - Add dependencies to requirements_plus.txt for test_db (#107)
+  - Weights/util/get ids gdf (#101)
+  - missing adjustments to lower case module names (#106)
+  - Rel.4.0.0 (#105)
+  - REL: 3.0.8 (#104)
+
+## Pull Requests
+  - Always make spherical KDTrees if radius is passed (#117)
+  - enh: add doctests to travis (#2) (#112)
+  - Api docs complete (#110)
+  - Doctests and start of documentation for libpysal (#109)
+  - Add dependencies to requirements_plus.txt for test_db (#107)
+  - Weights/util/get ids gdf (#101)
+  - missing adjustments to lower case module names (#106)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - Levi John Wolf
+  - Wei Kang
+
+
 Version 4.0.0 (2018-08-22)
 
 We closed a total of 52 issues (enhancements and bug fixes) through 18 pull requests, since our last release on 2018-07-15.
