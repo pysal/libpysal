@@ -36,9 +36,7 @@ def setup_package():
         'base': 'requirements.txt',
         'plus': 'requirements_plus.txt',
         'dev': 'requirements_dev.txt',
-        'docs': 'requirements_docs.txt',
-        'tests': 'requirements_tests.txt',
-
+        'docs': 'requirements_docs.txt'
     }
 
     reqs = _get_requirements_from_files(_groups_files)
