@@ -44,11 +44,11 @@ def spw_from_gal(galfile):
 
 def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     """
-    Kernel weights with adaptive bandwidths.
+    Get the maximum nearest neighbor distance between observations in the
+    shapefile.
 
     Parameters
     ----------
-
     shapefile  : string
                  shapefile name with shp suffix.
     radius     : float
