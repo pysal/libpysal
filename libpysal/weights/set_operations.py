@@ -48,11 +48,10 @@ def w_union(w1, w2, silence_warnings=False):
     and the other is 6x4 (24 areas). A union of these two weights matrices
     results in the new weights matrix matching the larger one.
 
-    >>> from libpysal.weights import lat2W
+    >>> from libpysal.weights import lat2W, w_union
     >>> w1 = lat2W(4,4)
     >>> w2 = lat2W(6,4)
-    >>> import libpysal
-    >>> w = libpysal.weights.set_operations.w_union(w1, w2)
+    >>> w = w_union(w1, w2)
     >>> w1[0] == w[0]
     True
     >>> w1.neighbors[15]
@@ -61,7 +60,6 @@ def w_union(w1, w2, silence_warnings=False):
     [11, 14, 19]
     >>> w.neighbors[15]
     [19, 11, 14]
-    >>>
 
     """
     neighbors = dict(list(w1.neighbors.items()))
@@ -113,11 +111,10 @@ def w_intersection(w1, w2, w_shape='w1', silence_warnings=False):
     and the other is 6x4 (24 areas). An intersection of these two weights
     matrices results in the new weights matrix matching the smaller one.
 
-    >>> from libpysal.weights import lat2W
+    >>> from libpysal.weights import lat2W, w_intersection
     >>> w1 = lat2W(4,4)
     >>> w2 = lat2W(6,4)
-    >>> import libpysal
-    >>> w = libpysal.weights.set_operations.w_intersection(w1, w2)
+    >>> w = w_intersection(w1, w2)
     >>> w1[0] == w[0]
     True
     >>> w1.neighbors[15]
@@ -126,7 +123,6 @@ def w_intersection(w1, w2, w_shape='w1', silence_warnings=False):
     [11, 14, 19]
     >>> w.neighbors[15]
     [11, 14]
-    >>>
 
     """
 
@@ -199,11 +195,10 @@ def w_difference(w1, w2, w_shape='w1', constrained=True, silence_warnings=False)
     bishop matrix). Note that the difference of queen from rook would result
     in a weights matrix with no joins.
 
-    >>> from libpysal.weights import lat2W
+    >>> from libpysal.weights import lat2W, w_difference
     >>> w1 = lat2W(4,4,rook=False)
     >>> w2 = lat2W(4,4,rook=True)
-    >>> import libpysal
-    >>> w = libpysal.weights.set_operations.w_difference(w1, w2, constrained=False)
+    >>> w = w_difference(w1, w2, constrained=False)
     >>> w1[0] == w[0]
     False
     >>> w1.neighbors[15]
@@ -212,7 +207,6 @@ def w_difference(w1, w2, w_shape='w1', constrained=True, silence_warnings=False)
     [11, 14]
     >>> w.neighbors[15]
     [10]
-    >>>
 
     """
 
@@ -299,11 +293,10 @@ def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, silence_warn
     contains the corner joins in the overlap area, all the joins in the
     non-overlap area.
 
-    >>> from libpysal.weights import lat2W
-    >>> import libpysal
+    >>> from libpysal.weights import lat2W, w_symmetric_difference
     >>> w1 = lat2W(4,4,rook=False)
     >>> w2 = lat2W(6,4,rook=True)
-    >>> w = libpysal.weights.set_operations.w_symmetric_difference(w1, w2, constrained=False)
+    >>> w = w_symmetric_difference(w1, w2, constrained=False)
     >>> w1[0] == w[0]
     False
     >>> w1.neighbors[15]
@@ -312,7 +305,6 @@ def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, silence_warn
     [11, 14, 19]
     >>> set(w.neighbors[15]) == set([10, 19])
     True
-    >>>
 
     """
 
@@ -383,19 +375,16 @@ def w_subset(w1, ids, silence_warnings=False):
     previous weights matrix, and only those joins relevant to the new region
     are retained.
 
-
-    >>> from libpysal.weights import lat2W
-    >>> import libpysal
+    >>> from libpysal.weights import lat2W, w_subset
     >>> w1 = lat2W(6,4)
     >>> ids = range(16)
-    >>> w = libpysal.weights.set_operations.w_subset(w1, ids)
+    >>> w = w_subset(w1, ids)
     >>> w1[0] == w[0]
     True
     >>> w1.neighbors[15]
     [11, 14, 19]
     >>> w.neighbors[15]
     [11, 14]
-    >>>
 
     """ 
 
@@ -462,7 +451,7 @@ def w_clip(w1, w2, outSP=True, silence_warnings=False):
     different groups). For that, we use the following method:
 
     >>> import libpysal
-    >>> w2 = libpysal.weights.util.block_weights(['r1', 'r2', 'r1', 'r1', 'r1', 'r2'])
+    >>> w2 = libpysal.weights.block_weights(['r1', 'r2', 'r1', 'r1', 'r1', 'r2'])
 
     To illustrate that w2 will only be considered as binary even when the
     object passed is not, we can row-standardize it
@@ -473,7 +462,7 @@ def w_clip(w1, w2, outSP=True, silence_warnings=False):
     relationships that occur within one group ('r1' or 'r2') but will have
     gotten rid of those that happen across groups
 
-    >>> wcs = libpysal.weights.set_operations.w_clip(w1, w2, outSP=True)
+    >>> wcs = libpysal.weights.w_clip(w1, w2, outSP=True)
 
     This will create a sparse object (recommended when n is large).
 
@@ -495,7 +484,7 @@ def w_clip(w1, w2, outSP=True, silence_warnings=False):
     If we wanted an original W object, we can control that with the argument
     ``outSP``:
 
-    >>> wc = libpysal.weights.set_operations.w_clip(w1, w2, outSP=False)
+    >>> wc = libpysal.weights.w_clip(w1, w2, outSP=False)
 
     WARNING: there are 2 disconnected observations
     Island ids:  [1, 5]

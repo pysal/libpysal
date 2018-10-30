@@ -34,7 +34,7 @@ def spw_from_gal(galfile):
     Examples
     --------
     >>> import libpysal
-    >>> spw = libpysal.weights.user.spw_from_gal(libpysal.examples.get_path("sids2.gal"))
+    >>> spw = libpysal.weights.spw_from_gal(libpysal.examples.get_path("sids2.gal"))
     >>> spw.sparse.nnz
     462
 
@@ -69,10 +69,10 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     Examples
     --------
     >>> import libpysal
-    >>> md = libpysal.weights.user.min_threshold_dist_from_shapefile(libpysal.examples.get_path("columbus.shp"))
+    >>> md = libpysal.weights.min_threshold_dist_from_shapefile(libpysal.examples.get_path("columbus.shp"))
     >>> md
     0.6188641580768541
-    >>> libpysal.weights.user.min_threshold_dist_from_shapefile(libpysal.examples.get_path("stl_hom.shp"), libpysal.cg.sphere.RADIUS_EARTH_MILES)
+    >>> libpysal.weights.min_threshold_dist_from_shapefile(libpysal.examples.get_path("stl_hom.shp"), libpysal.cg.sphere.RADIUS_EARTH_MILES)
     31.846942936393717
 
     Notes
