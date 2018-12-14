@@ -27,7 +27,7 @@ install:
         echo 'plus testing'; pip install -r requirements_plus.txt;
         else conda install --yes --file requirements.txt;
     fi;
-  - conda install --yes geopandas
+  - conda install --yes geopandas=0.4
   - pip install -r requirements_dev.txt
 
 script:
