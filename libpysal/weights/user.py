@@ -119,8 +119,8 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
     d.header = [ 'ID' ]
     d.field_spec = [ ('N', 8, 0) ]
     c = 0
-    for i in range(nrows):
-        for j in range(ncols):
+    for i in range(ncols):
+        for j in range(nrows):
             ll = i, j
             ul = i, j + 1
             ur = i + 1, j + 1
