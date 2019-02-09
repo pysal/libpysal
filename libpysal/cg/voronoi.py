@@ -173,7 +173,7 @@ def as_dataframes(regions, vertices, points):
 
     return region_df, point_df
 
-def voronoi_frames(points, radius=None):
+def voronoi_frames(points, radius=None, clip=False, tolerance=.01):
     """
     Composite helper to return Voronoi regions and generator points as individual dataframes
 
@@ -183,6 +183,17 @@ def voronoi_frames(points, radius=None):
     points      : array-like
                   originator points
 
+    radius      : float
+                  distance to "points at infinity" used in 
+                  building voronoi cells
+
+    clip        : bool
+                  whether or not to clip the voronoi cells
+                  back to the original map extent (default: True)
+
+    tolerance   : float
+                  percent of map width to use to buffer the extent
+                  of the map, if clipping (default: .01, or 1 percent) 
 
     Returns
     -------
@@ -215,4 +226,45 @@ def voronoi_frames(points, radius=None):
 
     """
     regions, vertices = voronoi(points, radius=radius)
-    return as_dataframes(regions, vertices, points)
+    regions, vertices = as_dataframes(regions, vertices, points)
+    if clip:
+        regions = clip_voronoi_frames_to_extent(regions, 
+                                                vertices,
+                                                tolerance=tolerance)
+    return regions,vertices 
+
+def clip_voronoi_frames_to_extent(regions, vertices, tolerance = .01):
+    """
+    Arguments
+    ---------
+    regions :   geopandas geodataframe
+                dataframe containing voronoi cells to clip
+    vertices:   geopandas geodataframe
+                dataframe containing vertices used to build voronoi cells
+    tolerance:  float
+                percent of map width to buffer the bounds of the vertices
+                in order to ensure that vertices are unambiguously
+                contained within regions. Default is .01, or 1 percent
+                of the total map width. 
+    """
+    min_x, min_y, max_x, max_y = vertices.total_bounds
+    try:
+        from shapely.geometry import Polygon
+    except ImportError:
+        raise ImportError('shapely is not found, and is required to'
+                          ' clip voronoi polygons.')
+    try:
+        import geopandas
+    except ImportError:
+        raise ImportError('geopandas is not found, and is required to'
+                          ' clip voronoi polygons')
+    bounding_poly = Polygon([(min_x, min_y), (min_x, max_y), 
+                             (max_x, max_y), (max_x, min_y),
+                             (min_x, min_y)]).buffer(abs(max_x - min_x)*tolerance)
+                            
+    bounding_frame = geopandas.GeoDataFrame(geometry=[bounding_poly])
+
+    return geopandas.overlay(regions, bounding_frame, how='intersection')
+    
+    
+
