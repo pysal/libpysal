@@ -303,7 +303,7 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
     except ImportError:
         raise ImportError('geopandas is required to clip voronoi cells')
     clipped_regions = overlay(regions, clipper, how='intersection')
-    return clipped_region, clip=clips
+    return clipped_regions
     
     
 
