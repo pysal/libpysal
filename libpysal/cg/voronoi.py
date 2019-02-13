@@ -274,7 +274,18 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
     a geodataframe of clipped voronoi regions
 
     """
-    if clip_type is None:
+    try:
+        from shapely.geometry import Polygon
+    except ImportError:
+        raise ImportError("shapely is required to clip voronoi regions")
+    try:
+        import geopandas
+    except ImportError:
+        raise ImportError('geopandas is required to clip voronoi regions')
+
+    if isinstance(clip_type, Polygon):
+        clipper = geopandas.GeoDataFrame(geometry=[clip_type])
+    elif clip_type is None:
         return regions
     elif clip_type.lower() == 'none':
         return regions
@@ -298,11 +309,7 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
         raise ValueError('clip type "{}" not understood. Try one '
                          ' of the supported options: [None, "extent", '
                          '"chull", "ahull"]'.format(clip_type))
-    try:
-        from geopandas import overlay
-    except ImportError:
-        raise ImportError('geopandas is required to clip voronoi cells')
-    clipped_regions = overlay(regions, clipper, how='intersection')
+    clipped_regions = geopandas.overlay(regions, clipper, how='intersection')
     return clipped_regions
     
     
