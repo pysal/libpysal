@@ -341,7 +341,7 @@ class Queen(W):
         w = cls.from_iterable(df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs)
         return w
 
-def Voronoi(points, criterion='queen', **kwargs):
+def Voronoi(points, criterion='rook', clip='ahull', **kwargs):
     """
     Voronoi weights for a 2-d point set
 
@@ -374,7 +374,7 @@ def Voronoi(points, criterion='queen', **kwargs):
     {0: [1, 2, 3, 4], 1: [0, 2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
     """
     from ..cg.voronoi import voronoi_frames
-    region_df, _ = voronoi_frames(points)
+    region_df, _ = voronoi_frames(points, clip=clip)
     if criterion.lower() == 'queen':
         cls = Queen
     elif criterion.lower() == 'rook':
@@ -382,7 +382,7 @@ def Voronoi(points, criterion='queen', **kwargs):
     else:
         raise ValueError('Contiguity criterion {} not supported. '
                          'Only "rook" and "queen" are supported.'.format(criterion))
-    return cls.from_dataframe(region_df)
+    return cls.from_dataframe(region_df, **kwargs)
 
 def _from_dataframe(df, **kwargs):
     """
