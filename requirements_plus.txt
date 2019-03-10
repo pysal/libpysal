@@ -10,5 +10,4 @@ statsmodels>=0.6.1
 numba
 numexpr
 networkx
-geomet
 sqlalchemy
