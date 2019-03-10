@@ -34,7 +34,8 @@ def setup_package():
     # assumes nested directories are only down one level
     _groups_files = {
         'base': 'requirements.txt',
-        'plus': 'requirements_plus.txt',
+        'plus_conda': 'requirements_plus_conda.txt',
+        'plus_pip': 'requirements_plus_pip.txt',
         'dev': 'requirements_dev.txt',
         'docs': 'requirements_docs.txt'
     }

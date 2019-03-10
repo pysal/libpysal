@@ -4,15 +4,15 @@ branches:
 only:
   - master
 python:
-  - "3.5"
-  - "3.6"
+  - 3.5
+  - 3.6
 
 env:
   - PYSAL_PLUS=false
   - PYSAL_PLUS=true
 
 before_install:
-  - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
   - ./miniconda.sh -b -p ./miniconda
   - export PATH=`pwd`/miniconda/bin:$PATH
@@ -24,7 +24,7 @@ before_install:
 install:
   - conda install --yes pip
   - if [ "$PYSAL_PLUS" == true ]; then
-        echo 'plus testing'; pip install -r requirements_plus.txt;
+        echo 'plus testing'; conda install --yes --file requirements_plus_conda.txt; pip install -r requirements_plus_pip.txt;
         else conda install --yes --file requirements.txt;
     fi;
   - conda install --yes geopandas
