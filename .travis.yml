@@ -25,7 +25,6 @@ install:
   - conda install --yes pip
   - if [ "$PYSAL_PLUS" == true ]; then
 	echo 'plus testing'; conda install --yes --file requirements_plus.txt;
-	pip install geomat;
         else conda install --yes --file requirements.txt;
     fi;
   - conda install --yes geopandas
@@ -41,12 +40,9 @@ notifications:
         recipients:
             - sjsrey@gmail.com
             - levi.john.wolf@gmail.com
-            - dfolch@gmail.com
             - daniel.arribas.bel@gmail.com
             - weikang9009@gmail.com
-            - carsonfarmer@gmail.com
             - tayoshan@gmail.com
-            - marynia.kolak@gmail.com
             - jgaboardi@gmail.com
             - phil.stphns@gmail.com
         on_success: always
