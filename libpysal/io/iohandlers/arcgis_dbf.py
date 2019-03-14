@@ -158,7 +158,7 @@ class ArcGISDbfIO(fileio.FileIO):
         --------
 
         >>> import tempfile, libpysal, os
-        >>> testfile = libpysal.open(pysal.examples.get_path('arcgis_ohio.dbf'),'r','arcgis_dbf')
+        >>> testfile = libpysal.open(libpysal.examples.get_path('arcgis_ohio.dbf'),'r','arcgis_dbf')
         >>> w = testfile.read()
 
         Create a temporary file for this example

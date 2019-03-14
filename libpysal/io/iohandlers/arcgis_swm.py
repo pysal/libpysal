@@ -211,7 +211,7 @@ class ArcGISSwmIO(fileio.FileIO):
         --------
 
         >>> import tempfile, libpysal, os
-        >>> testfile = libpysal.open(pysal.examples.get_path('ohio.swm'),'r')
+        >>> testfile = libpysal.open(libpysal.examples.get_path('ohio.swm'),'r')
         >>> w = testfile.read()
 
         Create a temporary file for this example
