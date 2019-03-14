@@ -232,7 +232,7 @@ def weight_convert(inPath, outPath, inDataFormat=None, outDataFormat=None, useId
 
     Create a new weights object from the converted dbf file
 
-    >>> wnew = ibpysal.io.open(fname, 'r', 'arcgis_dbf').read()
+    >>> wnew = libpysal.io.open(fname, 'r', 'arcgis_dbf').read()
 
     Compare the number of observations in two W objects
 
