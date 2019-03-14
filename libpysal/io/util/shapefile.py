@@ -490,7 +490,7 @@ class shx_file:
         -------
         
         >>> import libpysal
-        >>> shx = shx_file(pysal.examples.get_path('10740'))
+        >>> shx = shx_file(libpysal.examples.get_path('10740'))
         >>> shx._header == {'BBOX Xmax': -105.29012, 'BBOX Ymax': 36.219799000000002, 'BBOX Mmax': 0.0, 'BBOX Zmin': 0.0, 'BBOX Mmin': 0.0, 'File Code': 9994, 'BBOX Ymin': 34.259672000000002, 'BBOX Xmin': -107.62651, 'Unused0': 0, 'Unused1': 0, 'Unused2': 0, 'Unused3': 0, 'Unused4': 0, 'Version': 1000, 'BBOX Zmax': 0.0, 'Shape Type': 5, 'File Length': 830}
         True
         >>> len(shx.index)
