@@ -257,7 +257,7 @@ class Wk1IO(fileio.FileIO):
 
         Open the new file in write mode
 
-        >>> o = libpysal.io..open(fname,'w')
+        >>> o = libpysal.io.open(fname,'w')
 
         Write the Weights object into the open file
 
@@ -266,7 +266,7 @@ class Wk1IO(fileio.FileIO):
 
         Read in the newly created text file
 
-        >>> wnew =  libpysal.io..open(fname,'r').read()
+        >>> wnew =  libpysal.io.open(fname,'r').read()
 
         Compare values from old to new
 
