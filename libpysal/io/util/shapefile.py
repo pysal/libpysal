@@ -43,8 +43,7 @@ __all__ = ['shp_file', 'shx_file']
 #SHAPEFILE Globals
 
 def bufferIO(buf):
-    """
-    Helper function for 2-3 compatibility
+    """Helper function for 2-3 compatibility
     """
     if PY3:
         return io.BytesIO(buf)
@@ -120,18 +119,28 @@ def _unpackDict(structure, fileObj):
 
     _unpackDict(structure tuple, fileObj file) -> dict
 
-    Arguments:
+    Arguments
+    ---------
+    
         structure -- tuple of tuples -- (('FieldName 1','type','byteOrder'),('FieldName 2','type','byteOrder'))
         fileObj -- file -- an open file at the correct position!
-    Returns:
+    
+    Returns
+    -------
+    
         {'FieldName 1': value, 'FieldName 2': value}
-    Side Effects:
+    
+    Side Effects
+    ------------
         #file at new position
 
-    Example:
-    >>> import pysal
-    >>> _unpackDict(UHEADERSTRUCT,open(pysal.examples.get_path('10740.shx'),'rb')) == {'BBOX Xmax': -105.29012, 'BBOX Ymax': 36.219799000000002, 'BBOX Mmax': 0.0, 'BBOX Zmin': 0.0, 'BBOX Mmin': 0.0, 'File Code': 9994, 'BBOX Ymin': 34.259672000000002, 'BBOX Xmin': -107.62651, 'Unused0': 0, 'Unused1': 0, 'Unused2': 0, 'Unused3': 0, 'Unused4': 0, 'Version': 1000, 'BBOX Zmax': 0.0, 'Shape Type': 5, 'File Length': 830}
+    Example
+    -------
+    
+    >>> import libpysal
+    >>> _unpackDict(UHEADERSTRUCT, libpysal.io.open(libpysal.examples.get_path('10740.shx'),'rb')) == {'BBOX Xmax': -105.29012, 'BBOX Ymax': 36.219799000000002, 'BBOX Mmax': 0.0, 'BBOX Zmin': 0.0, 'BBOX Mmin': 0.0, 'File Code': 9994, 'BBOX Ymin': 34.259672000000002, 'BBOX Xmin': -107.62651, 'Unused0': 0, 'Unused1': 0, 'Unused2': 0, 'Unused3': 0, 'Unused4': 0, 'Version': 1000, 'BBOX Zmax': 0.0, 'Shape Type': 5, 'File Length': 830}
     True
+    
     """
     d = {}
     for struct in structure:
@@ -145,9 +154,12 @@ def _unpackDict(structure, fileObj):
 def _unpackDict2(d, structure, fileObj):
     """Utility Function, used arrays instead from struct
 
-    Arguments:
+    Arguments
+    ---------
+    
         d -- dict -- Dictionary to be updated.
         structure -- tuple of tuples -- (('FieldName 1',('type',n),'byteOrder'),('FieldName 2',('type',n,'byteOrder'))
+    
     """
     for name, dtype, order in structure:
         dtype, n = dtype
@@ -164,16 +176,21 @@ def _packDict(structure, d):
 
     _packDict(structure tuple, d dict) -> str
 
-    Arguments:
+    Arguments
+    ---------
+    
         structure -- tuple of tuples -- (('FieldName 1','type','byteOrder'),('FieldName 2','type','byteOrder'))
         d -- dict -- {'FieldName 1': value, 'FieldName 2': value}
 
-    Example:
+    Example
+    -------
+    
     >>> s = _packDict( (('FieldName 1','i','<'),('FieldName 2','i','<')), {'FieldName 1': 1, 'FieldName 2': 2} )
     >>> s==pack('<ii',1,2)
     True
     >>> unpack('<ii',s)
     (1, 2)
+    
     """
     string = b''
     for name, dtype, order in structure:
@@ -185,14 +202,18 @@ def _packDict(structure, d):
 
 
 class shp_file:
-    """
-    Reads and Writes the SHP compenent of a ShapeFile
+    """Reads and Writes the SHP compenent of a ShapeFile
 
-    Attributes:
+    Attributes
+    ----------
+    
     header -- dict -- Contents of the SHP header. #For contents see: HEADERSTRUCT
     shape -- int -- ShapeType.
 
-    Notes: The header of both the SHP and SHX files are indentical.
+    Notes
+    -----
+    
+    The header of both the SHP and SHX files are indentical.
 
     """
     SHAPE_TYPES = {'POINT': 1, 'ARC': 3, 'POLYGON': 5, 'MULTIPOINT': 8, 'POINTZ': 11, 'ARCZ': 13, 'POLYGONZ': 15, 'MULTIPOINTZ': 18, 'POINTM': 21, 'ARCM': 23, 'POLYGONM': 25, 'MULTIPOINTM': 28, 'MULTIPATCH': 31}
@@ -227,23 +248,27 @@ class shp_file:
             raise Exception('Only "w" and "r" modes are supported')
 
     def _open_shp_file(self):
-        """
-        Opens a shp/shx file.
+        """Opens a shp/shx file.
 
         shp_file(fileName string, 'r') -> Shpfile
 
-        Arguments:
+        Arguments
+        ---------
+        
         filename -- the name of the file to create
         mode -- string -- 'r'
         shape_type -- None
 
-        Example:
-        >>> import pysal
-        >>> shp = shp_file(pysal.examples.get_path('10740.shp'))
+        Example
+        -------
+        
+        >>> import libpysal
+        >>> shp = shp_file(libpysal.examples.get_path('10740.shp'))
         >>> shp.header == {'BBOX Xmax': -105.29012, 'BBOX Ymax': 36.219799000000002, 'BBOX Mmax': 0.0, 'BBOX Zmin': 0.0, 'BBOX Mmin': 0.0, 'File Code': 9994, 'BBOX Ymin': 34.259672000000002, 'BBOX Xmin': -107.62651, 'Unused0': 0, 'Unused1': 0, 'Unused2': 0, 'Unused3': 0, 'Unused4': 0, 'Version': 1000, 'BBOX Zmax': 0.0, 'Shape Type': 5, 'File Length': 260534}
         True
         >>> len(shp)
         195
+        
         """
         self.__isreadable()
         fileName = self.fileName
@@ -261,12 +286,13 @@ class shp_file:
         self.shapeType = self.header['Shape Type']
 
     def _create_shp_file(self, shape_type):
-        """
-        Creates a shp/shx file.
+        """Creates a shp/shx file.
 
         shp_file(fileName string, 'w', shape_type string) -> Shpfile
 
-        Arguments:
+        Arguments
+        ---------
+        
         filename -- the name of the file to create
         mode -- string -- must be 'w'
         shape_type -- string -- the type of shp/shx file to create. must be one of
@@ -274,20 +300,22 @@ class shp_file:
                 'ARC', 'ARCZ', 'ARCM', 'POLYGON', 'POLYGONZ', 'POLYGONM',
                 'MULTIPOINT', 'MULTIPOINTZ', 'MULTIPOINTM', 'MULTIPATCH'
 
-        Example:
-        >>> import pysal,os
+        Example
+        -------
+        
+        >>> import libpysal, os
         >>> shp = shp_file('test','w','POINT')
-        >>> p = shp_file(pysal.examples.get_path('Point.shp'))
+        >>> p = shp_file(libpysal.examples.get_path('Point.shp'))
         >>> for pt in p:
         ...   shp.add_shape(pt)
-        ...
         >>> shp.close()
-        >>> open('test.shp','rb').read() == open(pysal.examples.get_path('Point.shp'),'rb').read()
+        >>> open('test.shp','rb').read() == open(libpysal.examples.get_path('Point.shp'),'rb').read()
         True
-        >>> open('test.shx','rb').read() == open(pysal.examples.get_path('Point.shx'),'rb').read()
+        >>> open('test.shx','rb').read() == open(libpysal.examples.get_path('Point.shx'),'rb').read()
         True
         >>> os.remove('test.shx')
         >>> os.remove('test.shp')
+        
         """
         self.__iswritable()
         fileName = self.fileName
@@ -327,10 +355,13 @@ class shp_file:
     def __next__(self):
         """returns the next Shape in the shapeFile
 
-        Example:
-        >>> import pysal
-        >>> list(shp_file(pysal.examples.get_path('Point.shp'))) == [{'Y': -0.25904661905760773, 'X': -0.00068176617532103578, 'Shape Type': 1}, {'Y': -0.25630328607387354, 'X': 0.11697145363360706, 'Shape Type': 1}, {'Y': -0.33930131004366804, 'X': 0.05043668122270728, 'Shape Type': 1}, {'Y': -0.41266375545851519, 'X': -0.041266375545851552, 'Shape Type': 1}, {'Y': -0.44017467248908293, 'X': -0.011462882096069604, 'Shape Type': 1}, {'Y': -0.46080786026200882, 'X': 0.027510917030567628, 'Shape Type': 1}, {'Y': -0.45851528384279472, 'X': 0.075655021834060809, 'Shape Type': 1}, {'Y': -0.43558951965065495, 'X': 0.11233624454148461, 'Shape Type': 1}, {'Y': -0.40578602620087334, 'X': 0.13984716157205224, 'Shape Type': 1}]
+        Example
+        -------
+        
+        >>> import libpysal
+        >>> list(shp_file(libpysal.examples.get_path('Point.shp'))) == [{'Y': -0.25904661905760773, 'X': -0.00068176617532103578, 'Shape Type': 1}, {'Y': -0.25630328607387354, 'X': 0.11697145363360706, 'Shape Type': 1}, {'Y': -0.33930131004366804, 'X': 0.05043668122270728, 'Shape Type': 1}, {'Y': -0.41266375545851519, 'X': -0.041266375545851552, 'Shape Type': 1}, {'Y': -0.44017467248908293, 'X': -0.011462882096069604, 'Shape Type': 1}, {'Y': -0.46080786026200882, 'X': 0.027510917030567628, 'Shape Type': 1}, {'Y': -0.45851528384279472, 'X': 0.075655021834060809, 'Shape Type': 1}, {'Y': -0.43558951965065495, 'X': 0.11233624454148461, 'Shape Type': 1}, {'Y': -0.40578602620087334, 'X': 0.13984716157205224, 'Shape Type': 1}]
         True
+        
         """
         self.__isreadable()
         nextShape = self.__lastShape
@@ -410,13 +441,14 @@ class shp_file:
 
 
 class shx_file:
-    """
-    Reads and Writes the SHX compenent of a ShapeFile
-
-    Attributes:
+    """Reads and Writes the SHX compenent of a ShapeFile
+    
+    Attributes
+    ----------
+    
     index -- list -- Contains the file offset and len of each recond in the SHP component
     numRecords -- int -- Number of records
-
+    
     """
     def __iswritable(self):
         try:
@@ -444,21 +476,26 @@ class shx_file:
             self._create_shx_file()
 
     def _open_shx_file(self):
-        """ Opens the SHX file.
-
+        """Opens the SHX file.
+        
         shx_file(filename,'r') --> shx_file
-
-        Arguments:
+        
+        Arguments
+        ---------
+        
         filename -- string -- extension is optional, will remove '.dbf','.shx','.shp' and append '.shx'
         mode -- string -- Must be 'r'
-
-        Example:
-        >>> import pysal
+        
+        Example
+        -------
+        
+        >>> import libpysal
         >>> shx = shx_file(pysal.examples.get_path('10740'))
         >>> shx._header == {'BBOX Xmax': -105.29012, 'BBOX Ymax': 36.219799000000002, 'BBOX Mmax': 0.0, 'BBOX Zmin': 0.0, 'BBOX Mmin': 0.0, 'File Code': 9994, 'BBOX Ymin': 34.259672000000002, 'BBOX Xmin': -107.62651, 'Unused0': 0, 'Unused1': 0, 'Unused2': 0, 'Unused3': 0, 'Unused4': 0, 'Version': 1000, 'BBOX Zmax': 0.0, 'Shape Type': 5, 'File Length': 830}
         True
         >>> len(shx.index)
         195
+        
         """
         self.__isreadable()
         self.fileObj = open(self.fileName + '.shx', 'rb')
@@ -473,18 +510,23 @@ class shx_file:
 
     def _create_shx_file(self):
         """ Creates the SHX file.
-
+        
         shx_file(filename,'w') --> shx_file
-
-        Arguments:
+        
+        Arguments
+        ---------
+        
         filename -- string -- extension is optional, will remove '.dbf','.shx','.shp' and append '.shx'
         mode -- string -- Must be 'w'
-
-        Example:
-        >>> import pysal
-        >>> shx = shx_file(pysal.examples.get_path('Point'))
+        
+        Example
+        -------
+        
+        >>> import libpysal
+        >>> shx = shx_file(libpysal.examples.get_path('Point'))
         >>> isinstance(shx,shx_file)
         True
+        
         """
         self.__iswritable()
         self.fileObj = open(self.fileName + '.shx', 'wb')
@@ -494,21 +536,30 @@ class shx_file:
         self.__next_rid = 1  # record IDs start at 1
 
     def add_record(self, size):
-        """ Add a record to the shx index.
-
+        """Add a record to the shx index.
+        
         add_record(size int) --> RecordID int
-
-        Arguments:
+        
+        Arguments
+        ---------
+        
         size -- int -- the length of the record in bytes NOT including the 8byte record header
-
-        Returns:
+        
+        Returns
+        -------
+        
         rec_id -- int -- the sequential record ID, 1-based.
-
-        Note: the SHX records contain (Offset, Length) in 16-bit words.
-
-        Example:
-        >>> import pysal,os
-        >>> shx = shx_file(pysal.examples.get_path('Point'))
+        
+        Note
+        -----
+        
+        the SHX records contain (Offset, Length) in 16-bit words.
+        
+        Example
+        -------
+        
+        >>> import libpysal, os
+        >>> shx = shx_file(libpysal.examples.get_path('Point'))
         >>> shx.index
         [(100, 20), (128, 20), (156, 20), (184, 20), (212, 20), (240, 20), (268, 20), (296, 20), (324, 20)]
         >>> shx2 = shx_file('test','w')
@@ -517,9 +568,10 @@ class shx_file:
         >>> shx2.index == shx.index
         True
         >>> shx2.close(shx._header)
-        >>> open('test.shx','rb').read() == open(pysal.examples.get_path('Point.shx'),'rb').read()
+        >>> libpysal.io.open('test.shx','rb').read() == libpysal.io.open(libpysal.examples.get_path('Point.shx'),'rb').read()
         True
         >>> os.remove('test.shx')
+        
         """
         self.__iswritable()
         pos = self.__offset
@@ -529,7 +581,7 @@ class shx_file:
         self.numRecords += 1
         self.__next_rid += 1
         return rec_id, pos
-
+    
     def close(self, header):
         if self.__mode == 'w':
             self.__iswritable()
@@ -557,10 +609,13 @@ class NullShape:
 
 
 class Point(object):
-    """ Packs and Unpacks a ShapeFile Point Type
-    Example:
-    >>> import pysal
-    >>> shp = shp_file(pysal.examples.get_path('Point.shp'))
+    """Packs and Unpacks a ShapeFile Point Type
+    
+    Example
+    -------
+    
+    >>> import libpysal
+    >>> shp = shp_file(libpysal.examples.get_path('Point.shp'))
     >>> rec = shp.get_shape(0)
     >>> rec == {'Y': -0.25904661905760773, 'X': -0.00068176617532103578, 'Shape Type': 1}
     True
@@ -568,6 +623,7 @@ class Point(object):
     >>> dat = shp.fileObj.read(shp._shx.index[0][1])
     >>> dat == Point.pack(rec)
     True
+    
     """
     Shape_Type = 1
     String_Type = 'POINT'
@@ -604,10 +660,13 @@ class PointZ(Point):
 
 
 class PolyLine:
-    """ Packs and Unpacks a ShapeFile PolyLine Type
-    Example:
-    >>> import pysal
-    >>> shp = shp_file(pysal.examples.get_path('Line.shp'))
+    """Packs and Unpacks a ShapeFile PolyLine Type
+    
+    Example
+    -------
+    
+    >>> import libpysal
+    >>> shp = shp_file(libpysal.examples.get_path('Line.shp'))
     >>> rec = shp.get_shape(0)
     >>> rec == {'BBOX Ymax': -0.25832280562918325, 'NumPoints': 3, 'BBOX Ymin': -0.25895877033237352, 'NumParts': 1, 'Vertices': [(-0.0090539248870159517, -0.25832280562918325), (0.0074811573959305822, -0.25895877033237352), (0.0074811573959305822, -0.25895877033237352)], 'BBOX Xmax': 0.0074811573959305822, 'BBOX Xmin': -0.0090539248870159517, 'Shape Type': 3, 'Parts Index': [0]}
     True
@@ -615,6 +674,7 @@ class PolyLine:
     >>> dat = shp.fileObj.read(shp._shx.index[0][1])
     >>> dat == PolyLine.pack(rec)
     True
+    
     """
     HASZ = False
     HASM = False
@@ -720,10 +780,12 @@ class PolyLineZ(object):
 class Polygon(PolyLine):
     """ Packs and Unpacks a ShapeFile Polygon Type
     Indentical to PolyLine.
-
-    Example:
-    >>> import pysal
-    >>> shp = shp_file(pysal.examples.get_path('Polygon.shp'))
+    
+    Example
+    -------
+    
+    >>> import libpysal
+    >>> shp = shp_file(libpysal.examples.get_path('Polygon.shp'))
     >>> rec = shp.get_shape(1)
     >>> rec == {'BBOX Ymax': -0.3126531125455273, 'NumPoints': 7, 'BBOX Ymin': -0.35957259110238166, 'NumParts': 1, 'Vertices': [(0.05396439570183631, -0.3126531125455273), (0.051473095955454629, -0.35251390848763364), (0.059777428443393454, -0.34254870950210703), (0.063099161438568974, -0.34462479262409174), (0.048981796209073003, -0.35957259110238166), (0.046905713087088297, -0.3126531125455273), (0.05396439570183631, -0.3126531125455273)], 'BBOX Xmax': 0.063099161438568974, 'BBOX Xmin': 0.046905713087088297, 'Shape Type': 5, 'Parts Index': [0]}
     True
@@ -731,6 +793,7 @@ class Polygon(PolyLine):
     >>> dat = shp.fileObj.read(shp._shx.index[1][1])
     >>> dat == Polygon.pack(rec)
     True
+    
     """
     String_Type = 'POLYGON'
 
