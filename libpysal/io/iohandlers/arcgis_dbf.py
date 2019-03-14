@@ -158,7 +158,7 @@ class ArcGISDbfIO(fileio.FileIO):
         --------
 
         >>> import tempfile, libpysal, os
-        >>> testfile = libpysal.open(libpysal.examples.get_path('arcgis_ohio.dbf'),'r','arcgis_dbf')
+        >>> testfile = libpysal.io.open(libpysal.examples.get_path('arcgis_ohio.dbf'),'r','arcgis_dbf')
         >>> w = testfile.read()
 
         Create a temporary file for this example
@@ -175,7 +175,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
         Open the new file in write mode
 
-        >>> o = libpysal.open(fname,'w','arcgis_dbf')
+        >>> o = libpysal.io.open(fname,'w','arcgis_dbf')
 
         Write the Weights object into the open file
 
@@ -184,7 +184,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
         Read in the newly created text file
 
-        >>> wnew =  libpysal.open(fname,'r','arcgis_dbf').read()
+        >>> wnew =  libpysal.io.open(fname,'r','arcgis_dbf').read()
 
         Compare values from old to new
 
