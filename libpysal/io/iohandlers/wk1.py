@@ -240,7 +240,7 @@ class Wk1IO(fileio.FileIO):
         --------
 
         >>> import tempfile, libpysal, os
-        >>> testfile = libpysal.io..open(libpysal.examples.get_path('spat-sym-us.wk1'),'r')
+        >>> testfile = libpysal.io.open(libpysal.examples.get_path('spat-sym-us.wk1'),'r')
         >>> w = testfile.read()
 
         Create a temporary file for this example
