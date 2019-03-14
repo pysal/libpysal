@@ -145,7 +145,7 @@ def _unpackDict(structure, fileObj):
     d = {}
     for struct in structure:
         items = unpack(struct['order'] + struct['fmt'],
-                       bytes(fileObj.read(struct['size'])))
+                       fileObj.read(struct['size']))
         for i, name in enumerate(struct['names']):
             d[name] = items[i]
     return d
