@@ -84,7 +84,7 @@ class DatIO(gwt.GwtIO):
         --------
 
         >>> import tempfile, libpysal, os
-        >>> testfile = libpysal.open(libpysal.examples.get_path('wmat.dat'),'r')
+        >>> testfile = libpysal.io.open(libpysal.examples.get_path('wmat.dat'),'r')
         >>> w = testfile.read()
 
         Create a temporary file for this example
@@ -101,7 +101,7 @@ class DatIO(gwt.GwtIO):
 
         Open the new file in write mode
 
-        >>> o = libpysal.open(fname,'w')
+        >>> o = libpysal.io.open(fname,'w')
 
         Write the Weights object into the open file
 
@@ -110,7 +110,7 @@ class DatIO(gwt.GwtIO):
 
         Read in the newly created dat file
 
-        >>> wnew =  libpysal.open(fname,'r').read()
+        >>> wnew =  libpysal.io.open(fname,'r').read()
 
         Compare values from old to new
 
