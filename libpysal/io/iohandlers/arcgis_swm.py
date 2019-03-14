@@ -211,7 +211,7 @@ class ArcGISSwmIO(fileio.FileIO):
         --------
 
         >>> import tempfile, libpysal, os
-        >>> testfile = libpysal.open(libpysal.examples.get_path('ohio.swm'),'r')
+        >>> testfile = libpysal.io.open(libpysal.examples.get_path('ohio.swm'),'r')
         >>> w = testfile.read()
 
         Create a temporary file for this example
@@ -228,7 +228,7 @@ class ArcGISSwmIO(fileio.FileIO):
 
         Open the new file in write mode
 
-        >>> o = libpysal.open(fname,'w')
+        >>> o = libpysal.io.open(fname,'w')
 
         Add properities to the file to write
 
@@ -242,7 +242,7 @@ class ArcGISSwmIO(fileio.FileIO):
 
         Read in the newly created text file
 
-        >>> wnew = libpysal.open(fname,'r').read()
+        >>> wnew = libpysal.io.open(fname,'r').read()
 
         Compare values from old to new
 
