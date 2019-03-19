@@ -558,7 +558,7 @@ class shx_file:
         >>> shx2.index == shx.index
         True
         >>> shx2.close(shx._header)
-        >>> libpysal.io.open('test.shx','rb').read() == libpysal.io.open(libpysal.examples.get_path('Point.shx'),'rb').read()
+        >>> open('test.shx','rb').read() == open(libpysal.examples.get_path('Point.shx'),'rb').read()
         True
         >>> os.remove('test.shx')
         
