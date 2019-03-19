@@ -34,11 +34,6 @@ __all__ = ['shp_file', 'shx_file']
 
 #SHAPEFILE Globals
 
-def bufferIO(buf):
-    """Helper function for 2-3 compatibility
-    """
-    io.BytesIO(buf)
-
 
 def struct2arrayinfo(struct):
     """
@@ -384,7 +379,7 @@ class shp_file:
         self.__seek(fPosition)
         #the index does not include the 2 byte record header (which contains, Record ID and Content Length)
         rec_id, con_len = _unpackDict(URHEADERSTRUCT, self.fileObj)
-        return self.shape.unpack(bufferIO(self.fileObj.read(byts)))
+        return self.shape.unpack(io.BytesIO(self.fileObj.read(byts)))
         #return self.shape.unpack(self.fileObj.read(bytes))
     
     def __update_bbox(self, s):
