@@ -23,7 +23,7 @@ __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'insert_diagonal', 'get_ids', 'get_points_array_from_shapefile',
            'min_threshold_distance', 'lat2SW', 'w_local_cluster',
            'higher_order_sp', 'hexLat2W', 'attach_islands',
-           'nonplanar_neighbors', 'fuzzy_contiguity']
+           'nonplanar_neighbors', 'fuzzy_contiguity', 'rasterW']
 
 
 KDTREE_TYPES = [scipy.spatial.KDTree, scipy.spatial.cKDTree]
@@ -1562,7 +1562,48 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True):
 
     return W(neighbors)
 
+def rasterW(raster, rook=True, id_type='int', silence_warnings=False):
+    '''
+    Build a W from a dense (potentially masked) array assumed to represent
+    locations
+    ...
+    
+    Arguments
+    ---------
+    raster           : ndarray/MaskedArray
+                       Dense (potentially masked) array where each value
+                       represents a location/pixel
+    rook             : Boolean
+                       [Optional. Default=True] Type of contiguity. If set 
+                       to False, queen contiguity is applied
+    id_type          : str
+                       String defining the type of IDs to use in the final W
+                       object; options are 'int' (0, 1, 2 ...; default),
+                       'float' (0.0, 1.0, 2.0, ...) and 'string' ('id0',
+                       'id1', 'id2', ...)
+    silence_warnings : boolean
+                       Switch to turn off (default on) print statements for
+                       every observation with islands
 
+    
+    Returns
+    -------
+    w               : W
+                      Spatial weights matrix connecting. The first observation
+                      corresponds to the first (non-masked) value starting
+                      from the top-left (first row, first column)
+    y               : ndarray
+                      Values from `raster` as a vector of dimension (`w.n` x
+                      None) aligned with `w`
+    '''
+    w = lat2W(*raster.shape, rook=rook, id_type=id_type)
+    y = raster.flatten(order='C')
+    if type(raster) is np.ma.core.MaskedArray:
+        nid_order = np.array(w.id_order)
+        nid_order = nid_order[~y.mask].tolist()
+        y = y[~y.mask].data
+        w = w_subset(w, nid_order, silence_warnings=silence_warnings)
+    return w, y
 
 if __name__ == "__main__":
 
