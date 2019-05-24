@@ -1138,10 +1138,10 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
 
     >>> from libpysal.weights import lat2SW
     >>> w9 = lat2SW(3,3)
-    >>> w9[0,1]
-    1
-    >>> w9[3,6]
-    1
+    >>> w9[0,1] == 1
+    True
+    >>> w9[3,6] == 1
+    True
     >>> w9r = lat2SW(3,3, row_st=True)
     >>> w9r[3,6] == 1./3
     True
@@ -1175,7 +1175,7 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
         offsets.append(-(ncols + 1))
     data = np.concatenate(diagonals)
     offsets = np.array(offsets)
-    m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8).tocsr()
+    m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8)
     m = m + m.T
     if row_st:
         m = sparse.spdiags(1. / m.sum(1).T, 0, *m.shape) * m
