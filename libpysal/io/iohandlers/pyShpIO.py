@@ -42,15 +42,19 @@ class PurePyShpWrapper(fileio.FileIO):
 
     >>> import tempfile
     >>> f = tempfile.NamedTemporaryFile(suffix='.shp'); fname = f.name; f.close()
-    >>> import pysal
-    >>> i = pysal.open(pysal.examples.get_path('10740.shp'),'r')
-    >>> o = pysal.open(fname,'w')
+    >>> import libpysal
+    >>> i = libpysal.io.open(libpysal.examples.get_path('10740.shp'),'r')
+    >>> o = libpysal.io.open(fname,'w')
     >>> for shp in i:
     ...     o.write(shp)
     >>> o.close()
-    >>> open(pysal.examples.get_path('10740.shp'),'rb').read() == open(fname,'rb').read()
+    >>> one = libpysal.io.open(libpysal.examples.get_path('10740.shp'),'rb').read()
+    >>> two = libpysal.io.open(fname,'rb').read()
+    >>> one[0].centroid == two[0].centroid
     True
-    >>> open(pysal.examples.get_path('10740.shx'),'rb').read() == open(fname[:-1]+'x','rb').read()
+    >>> one = libpysal.io.open(libpysal.examples.get_path('10740.shx'),'rb').read()
+    >>> two = libpysal.io.open(fname[:-1]+'x','rb').read()
+    >>> one[0].centroid == two[0].centroid
     True
     >>> import os
     >>> os.remove(fname); os.remove(fname.replace('.shp','.shx'))
