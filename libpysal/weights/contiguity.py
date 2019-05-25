@@ -55,6 +55,7 @@ class Rook(W):
 
         Examples
         --------
+        >>> from libpysal.weights import Rook
         >>> import libpysal
         >>> wr=Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), "POLYID")
         >>> "%.3f"%wr.pct_nonzero
@@ -206,6 +207,7 @@ class Queen(W):
 
         Examples
         --------
+        >>> from libpysal.weights import Queen
         >>> import libpysal
         >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"))
         >>> "%.3f"%wq.pct_nonzero
@@ -339,6 +341,7 @@ def Voronoi(points):
     Examples
     --------
     >>> import numpy as np
+    >>> from libpysal.weights import Voronoi
     >>> np.random.seed(12345)
     >>> points= np.random.random((5,2))*10 + 10
     >>> w = Voronoi(points)

@@ -40,7 +40,7 @@ def ODW(Wo, Wd, transform='r', silence_warnings=True):
     >>> import libpysal
     >>> O = libpysal.weights.lat2W(2,2)
     >>> D = libpysal.weights.lat2W(2,2)
-    >>> OD = libpysal.weights.spintW.ODW(O,D)
+    >>> OD = libpysal.weights.ODW(O,D)
     >>> OD.weights[0]
     [0.25, 0.25, 0.25, 0.25]
     >>> OD.neighbors[0]
@@ -52,13 +52,13 @@ def ODW(Wo, Wd, transform='r', silence_warnings=True):
     """
     if Wo.transform is not 'b':
         try:
-    	    Wo.tranform = 'b'
+            Wo.tranform = 'b'
         except:
             raise AttributeError('Wo is not binary and cannot be transformed to '
                     'binary. Wo must be binary or suitably transformed to binary.')
     if Wd.transform is not 'b':
         try:
-    	    Wd.tranform = 'b'
+            Wd.tranform = 'b'
         except:
             raise AttributeError('Wd is not binary and cannot be transformed to '
                    'binary. Wd must be binary or suitably transformed to binary.')
@@ -109,13 +109,13 @@ def netW(link_list, share='A', transform = 'r'):
     --------
     >>> import libpysal
     >>> links = [('a','b'), ('a','c'), ('a','d'), ('c','d'), ('c', 'b'), ('c','a')]
-    >>> O = libpysal.weights.spintW.netW(links, share='O')
+    >>> O = libpysal.weights.netW(links, share='O')
     >>> O.neighbors[('a', 'b')]
     [('a', 'c'), ('a', 'd')]
-    >>> OD = libpysal.weights.spintW.netW(links, share='OD')
+    >>> OD = libpysal.weights.netW(links, share='OD')
     >>> OD.neighbors[('a', 'b')]
     [('a', 'c'), ('a', 'd'), ('c', 'b')]
-    >>> any_common = libpysal.weights.spintW.netW(links, share='A')
+    >>> any_common = libpysal.weights.netW(links, share='A')
     >>> any_common.neighbors[('a', 'b')]
     [('a', 'c'), ('a', 'd'), ('c', 'b'), ('c', 'a')]
 
@@ -136,7 +136,7 @@ def netW(link_list, share='A', transform = 'r'):
                     neighbors[key].append(neigh)
             elif share.upper() == 'D':
                 if key[1] == neigh[1]:
-                	neighbors[key].append(neigh)
+                    neighbors[key].append(neigh)
             elif share.upper() == 'C':
                 if key[1] == neigh[0]:
                     neighbors[key].append(neigh)
@@ -208,10 +208,10 @@ def vecW(origin_x, origin_y, dest_x, dest_y, threshold, p=2, alpha=-1.0,
     >>> y1 = [1,8,5]
     >>> x2 = [2,4,9]
     >>> y2 = [3,6,1]
-    >>> W1 = libpysal.weights.spintW.vecW(x1, y1, x2, y2, threshold=999)
+    >>> W1 = libpysal.weights.vecW(x1, y1, x2, y2, threshold=999)
     >>> list(W1.neighbors[0])
     [1, 2]
-    >>> W2 = libpysal.weights.spintW.vecW(x1, y2, x1, y2, threshold=8.5)
+    >>> W2 = libpysal.weights.vecW(x1, y2, x1, y2, threshold=8.5)
     >>> list(W2.neighbors[0])
     [1, 2]
 
@@ -241,7 +241,7 @@ def mat2L(edge_matrix):
 
     """
     if len(edge_matrix.shape) !=2:
-    	raise AttributeError("Matrix of network edges should be two dimensions"
+        raise AttributeError("Matrix of network edges should be two dimensions"
     	        "with edge origins on one axis and edge destinations on the"
     	        "second axis with non-zero matrix entires denoting an edge"
     	        "between and origin and destination")
