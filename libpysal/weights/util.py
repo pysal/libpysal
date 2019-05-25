@@ -1154,8 +1154,8 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     >>> from libpysal.weights import lat2W
     >>> w9 = lat2SW(3,3)
     >>> w9[0,1]
-    1
-    >>> w9[3,6]
+    array(1, dtype=int8)
+    >>> w9[3,6].tolist()
     1
     >>> w9r = lat2SW(3,3, row_st=True)
     >>> w9r[3,6] == 1./3
