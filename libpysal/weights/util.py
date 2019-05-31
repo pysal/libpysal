@@ -381,10 +381,12 @@ def higher_order(w, k=2, **kwargs):
     Parameters
     ----------
 
-    w     : W
-            spatial weights object
-    k     : int
-            order of contiguity
+    w        : W
+               spatial weights object
+    k        : int
+               order of contiguity
+    **kwargs : keyword arguments
+               optional arguments for :class:`pysal.weights.W`
 
     Returns
     -------
@@ -435,6 +437,8 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     diagonal      : boolean
                     True:  keep k-order (i,j) joins when i==j
                     False: remove k-order (i,j) joins when i==j
+    **kwargs      : keyword arguments
+                    optional arguments for :class:`pysal.weights.W`
 
     Returns
     -------
