@@ -374,7 +374,7 @@ def order(w, kmax=3):
     return info
 
 
-def higher_order(w, k=2):
+def higher_order(w, k=2, **kwargs):
     """
     Contiguity weights object of order k.
 
@@ -413,10 +413,10 @@ def higher_order(w, k=2):
     >>> w5_2[0] == {10: 1.0, 2: 1.0, 6: 1.0}
     True
     """
-    return higher_order_sp(w, k)
+    return higher_order_sp(w, k, **kwargs)
 
 
-def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
+def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     """
     Contiguity weights for either a sparse W or W  for order k.
 
@@ -503,7 +503,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
             k = id_order[k]
             v = id_order[v]
             d[k].append(v)
-        return W(neighbors=d)
+        return W(neighbors=d, **kwargs)
     else:
         d = {}
         for pair in sk:
@@ -512,7 +512,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False):
                 d[k].append(v)
             else:
                 d[k] = [v]
-        return WSP(W(neighbors=d).sparse)
+        return WSP(W(neighbors=d, **kwargs).sparse)
 
 
 def w_local_cluster(w):
@@ -550,7 +550,7 @@ def w_local_cluster(w):
     --------
     >>> from libpysal.weights import lat2W, w_local_cluster
     >>> w = lat2W(3,3, rook=False)
-    >>> w_local_cluster(w) 
+    >>> w_local_cluster(w)
     array([[1.        ],
            [0.6       ],
            [1.        ],
@@ -934,7 +934,7 @@ def get_ids(in_shps, idVariable):
                    (1) a path to a shapefile including suffix (str); or
                    (2) a geopandas.GeoDataFrame.
     idVariable   : str
-                   name of a column in the shapefile's DBF or the 
+                   name of a column in the shapefile's DBF or the
                    geopandas.GeoDataFrame to use for ids.
 
     Returns
@@ -949,7 +949,7 @@ def get_ids(in_shps, idVariable):
     >>> polyids = get_ids(libpysal.examples.get_path("columbus.shp"), "POLYID")
     >>> polyids[:5]
     [1, 2, 3, 4, 5]
-    
+
     >>> from libpysal.weights.util import get_ids
     >>> import libpysal
     >>> import geopandas as gpd
@@ -962,7 +962,7 @@ def get_ids(in_shps, idVariable):
     3    4
     4    5
     Name: POLYID, dtype: int64
-    
+
     """
 
     try:
@@ -976,7 +976,7 @@ def get_ids(in_shps, idVariable):
             cols = list(in_shps.columns)
             var = list(in_shps[idVariable])
         return var
-    
+
     except IOError:
         msg = 'The shapefile "%s" appears to be missing its DBF file. '\
               + ' The DBF file "%s" could not be found.' % (in_shps, dbname)
@@ -1041,7 +1041,7 @@ def get_points_array_from_shapefile(shapefile):
     >>> import libpysal
     >>> from libpysal.weights.util import get_points_array_from_shapefile
     >>> xy = get_points_array_from_shapefile(libpysal.examples.get_path('juvenile.shp'))
-    >>> xy[:3] 
+    >>> xy[:3]
     array([[94., 93.],
            [80., 95.],
            [79., 90.]])
