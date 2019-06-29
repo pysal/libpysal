@@ -72,14 +72,14 @@ def ODW(Wo, Wd, transform='r', silence_warnings=True):
     Ww.transform = transform
     return Ww
 
-def netW(link_list, share='A', transform = 'r'):
+def netW(link_list, share='A', transform = 'r', **kwargs):
     """
     Create a network-contiguity based weight object based on different nodal
     relationships encoded in a network.
 
     Parameters
     ----------
-    link_list   : list 
+    link_list   : list
                   of tuples where each tuple is of the form (o,d) where o is an
                   origin id and d is a destination id
 
@@ -87,7 +87,7 @@ def netW(link_list, share='A', transform = 'r'):
                   denoting how to define the nodal relationship used to
                   determine neighboring edges; defualt is 'A' for any shared
                   nodes between two network edges; options include:
-                    'A': any shared nodes 
+                    'A': any shared nodes
                     'O': a shared origin node
                     'D': a shared destination node
                     'OD' a shared origin node or a shared destination node
@@ -98,7 +98,10 @@ def netW(link_list, share='A', transform = 'r'):
 
     transform   : Transformation for standardization of final OD spatial weight; default
                   is 'r' for row standardized
-       
+    **kwargs    : keyword arguments
+                  optional arguments for :class:`pysal.weights.W`
+
+
     Returns
     -------
      W          : nodal contiguity W object for networkd edges or flows
@@ -147,12 +150,12 @@ def netW(link_list, share='A', transform = 'r'):
             else:
                 raise AttributeError("Parameter 'share' must be 'O', 'D',"
                        " 'OD', or 'C'")
-    netW = W(neighbors)
+    netW = W(neighbors, **kwargs)
     netW.tranform = transform
     return netW
 
 def vecW(origin_x, origin_y, dest_x, dest_y, threshold, p=2, alpha=-1.0,
-        binary=True, ids=None, build_sp=False, silence_warnings=False):
+        binary=True, ids=None, build_sp=False, **kwargs):
     """
     Distance-based spatial weight for vectors that is computed using a
     4-dimensional distance between the origin x,y-coordinates and the
@@ -190,16 +193,14 @@ def vecW(origin_x, origin_y, dest_x, dest_y, threshold, p=2, alpha=-1.0,
                   distance matrix; significant speed gains may be obtained
                   dending on the sparsity of the of distance_matrix and
                   threshold that is applied
-    silence_warnings : boolean
-                  By default PySAL will print a warning if the
-                  dataset contains any disconnected observations or
-                  islands. To silence this warning set this
-                  parameter to True.
-    
+    **kwargs    : keyword arguments
+                  optional arguments for :class:`pysal.weights.W`
+
+
     Returns
     ------
     W           : DistanceBand W object that uses 4-dimenional distances between
-                  vectors origin and destination coordinates. 
+                  vectors origin and destination coordinates.
 
     Examples
     --------
@@ -218,7 +219,7 @@ def vecW(origin_x, origin_y, dest_x, dest_y, threshold, p=2, alpha=-1.0,
     """
     data = list(zip(origin_x, origin_y, dest_x, dest_y))
     W = DistanceBand(data, threshold=threshold, p=p, binary=binary, alpha=alpha,
-            ids=ids, build_sp=False, silence_warnings=silence_warnings)
+            ids=ids, build_sp=False, **kwargs)
     return W
 
 def mat2L(edge_matrix):
@@ -228,7 +229,7 @@ def mat2L(edge_matrix):
 
     Parameters
     ----------
-    edge_matrix   : array 
+    edge_matrix   : array
                     where rows denote network edge origins, columns denote
                     network edge destinations, and non-zero entries denote the
                     existence of an edge between a given origin and destination
