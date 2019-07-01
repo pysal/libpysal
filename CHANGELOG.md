@@ -1,10 +1,13 @@
 # Changes
 
-Version 4.1.0 (2019-06-29)
+Version 4.1.0 (2019-06-30)
 
-We closed a total of 40 issues (enhancements and bug fixes) through 13 pull requests, since our last release on 2018-10-27.
+We closed a total of 45 issues (enhancements and bug fixes) through 15 pull requests, since our last release on 2018-10-27.
 
 ## Issues Closed
+  - Allow for **kwargs any time there's a weights construction (#158)
+  - Some functions do not support silence_warnings=True (#134)
+  - REL: update changelog (#159)
   - MAINT: bumping version for a release (#157)
   - update interactive examples in inline docstrings (#122)
   - BUG: fix for scipy bump #154 (#156)
@@ -34,6 +37,8 @@ We closed a total of 40 issues (enhancements and bug fixes) through 13 pull requ
   - REL: version bump for v4.0.1 (#118)
 
 ## Pull Requests
+  - Allow for **kwargs any time there's a weights construction (#158)
+  - REL: update changelog (#159)
   - MAINT: bumping version for a release (#157)
   - update interactive examples in inline docstrings (#122)
   - BUG: fix for scipy bump #154 (#156)
@@ -50,13 +55,13 @@ We closed a total of 40 issues (enhancements and bug fixes) through 13 pull requ
 
 The following individuals contributed to this release:
 
-  - James Gaboardi
   - Serge Rey
   - Wei Kang
+  - Martin Fleischmann
+  - James Gaboardi
   - Elliott Sales De Andrade
   - Levi John Wolf
   - Renanxcortes
-
 # Changes
 
 Version 4.0.1 (2018-10-27)
