@@ -1,6 +1,6 @@
 # Changes
 
-Version 4.1.0 (2019-06-30)
+Version 4.1.0 (2019-07-01)
 
 We closed a total of 45 issues (enhancements and bug fixes) through 15 pull requests, since our last release on 2018-10-27.
 
