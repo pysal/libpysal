@@ -283,23 +283,23 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
     except ImportError:
         raise ImportError('geopandas is required to clip voronoi regions')
 
-    if isinstance(clip_type, Polygon):
-        clipper = geopandas.GeoDataFrame(geometry=[clip_type])
-    elif clip_type is None:
+    if isinstance(clip, Polygon):
+        clipper = geopandas.GeoDataFrame(geometry=[clip])
+    elif clip is None:
         return regions
-    elif clip_type.lower() == 'none':
+    elif clip.lower() == 'none':
         return regions
-    elif clip_type.lower() in ('bounds','bounding box', 'bbox', 'extent'):
+    elif clip.lower() in ('bounds','bounding box', 'bbox', 'extent'):
         min_x, min_y, max_x, max_y = vertices.total_bounds 
         bounding_poly = Polygon([(min_x, min_y), (min_x, max_y), 
                                  (max_x, max_y), (max_x, min_y),
                                  (min_x, min_y)])
         clipper = geopandas.GeoDataFrame(geometry=[bounding_poly])
-    elif clip_type.lower() in ('chull','convex hull', 'convex_hull'):
+    elif clip.lower() in ('chull','convex hull', 'convex_hull'):
         clipper = geopandas.GeoDataFrame(geometry=[vertices.geometry\
                                                            .unary_union\
                                                            .convex_hull])
-    elif clip_type.lower() in ('ahull','alpha hull', 'alpha_hull', 
+    elif clip.lower() in ('ahull','alpha hull', 'alpha_hull', 
                                'ashape','alpha shape', 'alpha_shape'):
         from .ashapes import alpha_shape_auto
         from ..weights import get_points_array
@@ -308,7 +308,7 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
     else:
         raise ValueError('clip type "{}" not understood. Try one '
                          ' of the supported options: [None, "extent", '
-                         '"chull", "ahull"]'.format(clip_type))
+                         '"chull", "ahull"]'.format(clip))
     clipped_regions = geopandas.overlay(regions, clipper, how='intersection')
     return clipped_regions
     
