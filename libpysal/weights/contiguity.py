@@ -204,8 +204,6 @@ class Queen(W):
             polygons = list(polygons.geometry)
         neighbors, ids = _build(polygons, criterion=criterion, 
                                 ids=ids)
-        neighbors, ids = _build(polygons, ids=ids, 
-                                criterion=criterion)
         W.__init__(self, neighbors, ids=ids, **kw)
 
     @classmethod
