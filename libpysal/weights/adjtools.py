@@ -180,16 +180,18 @@ def filter_adjlist(adjlist, focal_col = 'focal', neighbor_col = 'neighbor'):
     -------
     an adjacency table with reversible entries removed. 
     """
-    directed = set(map(tuple, adjlist[['focal', 'neighbor']].values))
+    directed = set(map(tuple, adjlist[[focal_col, neighbor_col]].values))
     undirected = set()
     for tupe in directed:
         #print(tupe)
         if (tupe in undirected):
-            to_drop = adjlist.query('focal == {} and neighbor == {}'
-                                    .format(*tupe))
+            to_drop_mask = ((adjlist[focal_col] == tupe[0])
+                            & (adjlist[neighbor_col] == tupe[-1]))
+            to_drop = adjlist[to_drop_mask]
         elif (tuple(reversed(tupe)) in undirected):
-            to_drop = adjlist.query('focal == {} and neighbor == {}'
-                                    .format(*tuple(reversed(tupe))))
+            to_drop_mask = ((adjlist[focal_col] == tupe[-1])
+                            & (adjlist[neighbor_col] == tupe[0]))
+            to_drop = adjlist[to_drop_mask]
         else:
             undirected.update((tupe,))
             undirected.update((tuple(reversed(tupe),)))
