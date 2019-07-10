@@ -1082,7 +1082,7 @@ class W(object):
         if not inplace:
             neighbors = copy.deepcopy(self.neighbors)
             weights = copy.deepcopy(self.weights)
-            out_W = W(neighbors, weights)
+            out_W = W(neighbors, weights, id_order=self.id_order)
             out_W.symmetrize(inplace=True)
             return out_W
         else:
