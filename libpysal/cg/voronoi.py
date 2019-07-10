@@ -301,7 +301,7 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
                                                            .convex_hull])
     elif clip.lower() in ('ahull','alpha hull', 'alpha_hull', 
                                'ashape','alpha shape', 'alpha_shape'):
-        from .ashapes import alpha_shape_auto
+        from .alpha_shapes import alpha_shape_auto
         from ..weights import get_points_array
         coordinates = get_points_array(vertices.geometry)
         clipper = geopandas.GeoDataFrame(geometry=[alpha_shape_auto(coordinates)])
