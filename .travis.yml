@@ -4,6 +4,7 @@ sudo: false
 
 matrix:
   include:
+    - env: ENV_FILE="ci/travis/36-latest-conda-forge.yaml"
     - env: ENV_FILE="ci/travis/37-latest-conda-forge.yaml"
 
 install:
