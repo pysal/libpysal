@@ -4,10 +4,10 @@ channels:
 dependencies:
   - python=3.7
   - six
-  # required
   # testing
   - nose
   - codecov
   - matplotlib
   # optional
   - geopandas
+  - numba
