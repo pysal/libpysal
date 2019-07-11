@@ -1,0 +1,12 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.7
+  - six
+  # required
+  # testing
+  - nose
+  - codecov
+  # optional
+  - geopandas
