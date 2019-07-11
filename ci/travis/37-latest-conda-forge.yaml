@@ -8,5 +8,6 @@ dependencies:
   # testing
   - nose
   - codecov
+  - matplotlib
   # optional
   - geopandas
