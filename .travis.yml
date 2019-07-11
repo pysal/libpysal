@@ -19,6 +19,7 @@ install:
   # Install dependencies
   - conda env create --file="${ENV_FILE}"
   - source activate test
+  - pip install -e .
   - conda list
 
 script:
