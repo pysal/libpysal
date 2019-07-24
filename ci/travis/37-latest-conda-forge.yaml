@@ -11,3 +11,4 @@ dependencies:
   # optional
   - geopandas
   - numba
+  - zstd
