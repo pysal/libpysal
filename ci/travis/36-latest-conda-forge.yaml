@@ -11,3 +11,4 @@ dependencies:
   - matplotlib
   # optional
   - geopandas
+  - zstd
