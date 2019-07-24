@@ -37,17 +37,11 @@ class W(object):
                            lexicographical ordering is used to iterate and the
                            id_order_set property will return False. This can be
                            set after creation by setting the 'id_order' property.
-    silent_island_warning: boolean
+    silence_warnings     : boolean
                            By default libpysal will print a warning if the
-                           dataset contains any disconnected observations or
+                           dataset contains any disconnected components or
                            islands. To silence this warning set this
                            parameter to True.
-    silent_connected_components   : boolean
-                            By default PySAL will print a warning if the
-                            dataset contains any disconnected components in the
-                            adjacency matrix. These are disconnected *groups*
-                            of islands. To silence this warning set this
-                            parameter to True.
     ids                  : list
                            Values to use for keys of the neighbors and weights dicts.
 
@@ -129,15 +123,16 @@ class W(object):
     >>> from libpysal.weights import W
     >>> w = W({1:[0],0:[1],2:[], 3:[]})
 
-    WARNING: there are 2 disconnected observations
-    Island ids:  [2, 3]
+    UserWarning: The weights matrix is not fully connected:
+    There are 3 disconnected components.
+    There are 2 islands with ids: 2, 3.
 
     """
 
     def __init__(self, neighbors, weights=None, id_order=None,
-                 silence_warnings=False, ids=None):
-        self.silent_island_warning = silence_warnings
-        self.silent_connected_components = silence_warnings
+                 silence_warnings=False,
+                 ids=None):
+        self.silence_warnings = silence_warnings
         self.transformations = {}
         self.neighbors = neighbors
         if not weights:
@@ -156,18 +151,22 @@ class W(object):
             self._id_order_set = True
         self._reset()
         self._n = len(self.weights)
-        if self.islands and not self.silent_island_warning:
+        if not self.silence_warnings:
+            message = ""
+            if self.n_components > 1:
+                message = message + \
+                          "The weights matrix is not fully connected: " \
+                          "\n There are %d disconnected components." % \
+                          self.n_components
             ni = len(self.islands)
             if ni == 1:
-                warnings.warn("There is one disconnected observation"
-                              " (no neighbors).\nIsland id: {}"
-                              .format(str(self.islands[0])), 
-                              stacklevel=2)
-            else:
-                warnings.warn("There are %d disconnected observations" % ni + ' \n '
-                              " Island ids: %s" % ', '.join(str(island) for island in self.islands))
-        if self.n_components > 1 and not self.islands and not self.silent_connected_components:
-            warnings.warn("The weights matrix is not fully connected. There are %d components" % self.n_components)
+                message = message + "\n There is one island with id: " \
+                                    "%s."% (str(self.islands[0]))
+            elif ni > 1:
+                message = message + "\n There are %d islands with ids: %s." % (
+                    ni, ', '.join(str(island) for island in self.islands))
+            if len(message):
+                warnings.warn(message)
 
     def _reset(self):
         """Reset properties.
