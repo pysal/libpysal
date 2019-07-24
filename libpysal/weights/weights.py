@@ -151,22 +151,18 @@ class W(object):
             self._id_order_set = True
         self._reset()
         self._n = len(self.weights)
-        if not self.silence_warnings:
-            message = ""
-            if self.n_components > 1:
-                message = message + \
-                          "The weights matrix is not fully connected: " \
+        if not self.silence_warnings and self.n_components > 1:
+            message = "The weights matrix is not fully connected: " \
                           "\n There are %d disconnected components." % \
                           self.n_components
             ni = len(self.islands)
             if ni == 1:
-                message = message + "\n There is one island with id: " \
+                message = message + "\n There is 1 island with id: " \
                                     "%s."% (str(self.islands[0]))
             elif ni > 1:
                 message = message + "\n There are %d islands with ids: %s." % (
                     ni, ', '.join(str(island) for island in self.islands))
-            if len(message):
-                warnings.warn(message)
+            warnings.warn(message)
 
     def _reset(self):
         """Reset properties.
