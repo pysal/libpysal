@@ -1,7 +1,19 @@
 from ..io.fileio import FileIO
+from ..cg import voronoi_frames
 from .weights import W, WSP
 from ._contW_lists import ContiguityWeightsLists
-from .util import get_ids
+from .util import get_ids, get_points_array
+import numpy 
+import itertools
+
+try:
+    from shapely.geometry import Point as shapely_point
+    from ..cg.shapes import Point as pysal_point
+    point_type = (shapely_point, pysal_point)
+except ImportError:
+    from ..cg.shapes import Point as point_type
+
+
 WT_TYPE = {'rook': 2, 'queen': 1}  # for _contW_Binning
 
 __author__ = "Sergio J. Rey <srey@asu.edu> , Levi John Wolf <levi.john.wolf@gmail.com>"
@@ -29,6 +41,11 @@ class Rook(W):
     def __init__(self, polygons, **kw):
         criterion = 'rook'
         ids = kw.pop('ids', None) 
+        polygons, backup = itertools.tee(polygons)
+        first_shape = next(iter(backup))
+        if isinstance(first_shape, point_type):
+            polygons, vertices = voronoi_frames(get_points_array(polygons))
+            polygons = list(polygons.geometry)
         neighbors, ids = _build(polygons, criterion=criterion, 
                                 ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
@@ -180,8 +197,13 @@ class Queen(W):
     def __init__(self, polygons, **kw):
         criterion = 'queen'
         ids = kw.pop('ids', None)
-        neighbors, ids = _build(polygons, ids=ids, 
-                                criterion=criterion)
+        polygons, backup = itertools.tee(polygons)
+        first_shape = next(iter(backup))
+        if isinstance(first_shape, point_type):
+            polygons, vertices = voronoi_frames(get_points_array(polygons))
+            polygons = list(polygons.geometry)
+        neighbors, ids = _build(polygons, criterion=criterion, 
+                                ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
 
     @classmethod
@@ -317,7 +339,7 @@ class Queen(W):
         w = cls.from_iterable(df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs)
         return w
 
-def Voronoi(points):
+def Voronoi(points, criterion='rook', clip='ahull', **kwargs):
     """
     Voronoi weights for a 2-d point set
 
@@ -331,6 +353,7 @@ def Voronoi(points):
     points      : array
                   (n,2)
                   coordinates for point locations
+    kwargs      : arguments to pass to Rook, the underlying contiguity class.
 
     Returns
     -------
@@ -346,11 +369,49 @@ def Voronoi(points):
     >>> points= np.random.random((5,2))*10 + 10
     >>> w = Voronoi(points)
     >>> w.neighbors
-    {0: [1, 2, 3, 4], 1: [0, 2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
+    {0: [2, 3, 4], 1: [2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
     """
     from ..cg.voronoi import voronoi_frames
-    region_df, _ = voronoi_frames(points)
-    return Queen.from_dataframe(region_df)
+    region_df, _ = voronoi_frames(points, clip=clip)
+    if criterion.lower() == 'queen':
+        cls = Queen
+    elif criterion.lower() == 'rook':
+        cls = Rook
+    else:
+        raise ValueError('Contiguity criterion {} not supported. '
+                         'Only "rook" and "queen" are supported.'.format(criterion))
+    return cls.from_dataframe(region_df, **kwargs)
+
+def _from_dataframe(df, **kwargs):
+    """
+    Construct a voronoi contiguity weight directly from a dataframe. 
+    Note that if criterion='rook', this is identical to the delaunay
+    graph for the points. 
+
+    If the input dataframe is of any other geometry type than "Point",
+    a value error is raised. 
+
+    Arguments
+    ---------
+    df          :   pandas.DataFrame
+                    dataframe containing point geometries for a 
+                    voronoi diagram.
+
+    Returns
+    -------
+    w           :   W
+                    instance of spatial weights.
+    """
+    try:
+        x,y = df.geometry.x.values, df.geometry.y.values
+    except ValueError:
+        raise NotImplementedError('Voronoi weights are only'
+                                  ' implemented for point geometries. '
+                                  'You may consider using df.centroid.')
+    coords = numpy.column_stack((x,y))
+    return Voronoi(coords, **kwargs) 
+    
+Voronoi.from_dataframe = _from_dataframe
 
 
 def _build(polygons, criterion="rook", ids=None):
