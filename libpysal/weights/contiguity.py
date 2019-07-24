@@ -369,7 +369,7 @@ def Voronoi(points, criterion='rook', clip='ahull', **kwargs):
     >>> points= np.random.random((5,2))*10 + 10
     >>> w = Voronoi(points)
     >>> w.neighbors
-    {0: [1, 2, 3, 4], 1: [0, 2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
+    {0: [2, 3, 4], 1: [2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
     """
     from ..cg.voronoi import voronoi_frames
     region_df, _ = voronoi_frames(points, clip=clip)
