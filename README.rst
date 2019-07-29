@@ -6,6 +6,12 @@ Python Spatial Analysis Library Core
 
 .. image:: https://badges.gitter.im/pysal/pysal.svg
    :target: https://gitter.im/pysal/pysal
+   
+.. image:: https://zenodo.org/badge/81501824.svg
+   :target: https://zenodo.org/badge/latestdoi/81501824   
+
+
+
 
 This package is part of a `refactoring of PySAL
 <https://github.com/pysal/pysal/wiki/PEP-13:-Refactor-PySAL-Using-Submodules>`_.
