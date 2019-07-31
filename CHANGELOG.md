@@ -1,5 +1,69 @@
 # Changes
 
+Version 4.1.0 (2019-07-01)
+
+We closed a total of 45 issues (enhancements and bug fixes) through 15 pull requests, since our last release on 2018-10-27.
+
+## Issues Closed
+  - Allow for **kwargs any time there's a weights construction (#158)
+  - Some functions do not support silence_warnings=True (#134)
+  - REL: update changelog (#159)
+  - MAINT: bumping version for a release (#157)
+  - update interactive examples in inline docstrings (#122)
+  - BUG: fix for scipy bump #154 (#156)
+  - Revert "bump supported Python versions and correct lat2SW doctest" (#155)
+  - bump supported Python versions and correct lat2SW doctest (#154)
+  - WIP debugging travis failure (#141)
+  - replace deprecated "fromstring" with "frombytes" (#152)
+  - doctests on weights are failing across the board (#48)
+  - Use Unix line-endings for all files. (#149)
+  - Remove unnecessary executable bits. (#148)
+  - `import pysal` in libpysal/io/iohandlers/dat.py (#144)
+  - enforce strict channel in .travis.yml (#143)
+  - continued failing doctests in libpysal.io (#145)
+  - sphinxcontrib-napoleon is no longer necessary (#146)
+  - pysal --> libpysal docs conv & modernizing .travis.yml (#142)
+  - fix README for pypi (#7)
+  - build_lattice_shapefile swapped arguments (#138)
+  - Accidental create of branch (#124)
+  - Travis errors on Python3.6 PYTHON_PLUS=True (#127)
+  - [WIP] solution for Travis CI failures (#140)
+  - Conda travis (#139)
+  - alphashapes & n<4 (#111)
+  - [WIP] ensure safe returns for small n alphashapes (#115)
+  - swapping ncols <-> nrows in the build_lattice_shapefile function (#130)
+  - docstring for min_threshold_dist_from_shapefile is wrong (#120)
+  - doc: requirements (#119)
+  - REL: version bump for v4.0.1 (#118)
+
+## Pull Requests
+  - Allow for **kwargs any time there's a weights construction (#158)
+  - REL: update changelog (#159)
+  - MAINT: bumping version for a release (#157)
+  - update interactive examples in inline docstrings (#122)
+  - BUG: fix for scipy bump #154 (#156)
+  - bump supported Python versions and correct lat2SW doctest (#154)
+  - Use Unix line-endings for all files. (#149)
+  - Remove unnecessary executable bits. (#148)
+  - pysal --> libpysal docs conv & modernizing .travis.yml (#142)
+  - [WIP] solution for Travis CI failures (#140)
+  - [WIP] ensure safe returns for small n alphashapes (#115)
+  - swapping ncols <-> nrows in the build_lattice_shapefile function (#130)
+  - docstring for min_threshold_dist_from_shapefile is wrong (#120)
+  - doc: requirements (#119)
+  - REL: version bump for v4.0.1 (#118)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - Wei Kang
+  - Martin Fleischmann
+  - James Gaboardi
+  - Elliott Sales De Andrade
+  - Levi John Wolf
+  - Renanxcortes
+# Changes
+
 Version 4.0.1 (2018-10-27)
 
 We closed a total of 21 issues (enhancements and bug fixes) through 8 pull requests, since our last release on 2018-08-22.
