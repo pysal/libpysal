@@ -151,8 +151,8 @@ class MtxIO(fileio.FileIO):
         Examples
         --------
 
-        >>> import tempfile, pysal, os
-        >>> testfile = pysal.open(pysal.examples.get_path('wmat.mtx'),'r')
+        >>> import tempfile, libpysal, os
+        >>> testfile = libpysal.io.open(libpysal.examples.get_path('wmat.mtx'),'r')
         >>> w = testfile.read()
 
         Create a temporary file for this example
@@ -169,7 +169,7 @@ class MtxIO(fileio.FileIO):
 
         Open the new file in write mode
 
-        >>> o = pysal.open(fname,'w')
+        >>> o = libpysal.io.open(fname,'w')
 
         Write the Weights object into the open file
 
@@ -178,7 +178,7 @@ class MtxIO(fileio.FileIO):
 
         Read in the newly created mtx file
 
-        >>> wnew =  pysal.open(fname,'r').read()
+        >>> wnew =  libpysal.io.open(fname,'r').read()
 
         Compare values from old to new
 
@@ -199,7 +199,7 @@ class MtxIO(fileio.FileIO):
 
         Open the new file in write mode
 
-        >>> o = pysal.open(fname,'w')
+        >>> o = libpysal.io.open(fname,'w')
 
         Write the sparse weights object into the open file
 
@@ -208,7 +208,7 @@ class MtxIO(fileio.FileIO):
 
         Read in the newly created mtx file
 
-        >>> wsp_new =  pysal.open(fname,'r').read(sparse=True)
+        >>> wsp_new =  libpysal.io.open(fname,'r').read(sparse=True)
 
         Compare values from old to new
 
