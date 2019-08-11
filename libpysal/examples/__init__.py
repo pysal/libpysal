@@ -1,9 +1,11 @@
 import os
+from os import environ
+from os.path import expanduser, join, exists
 
-base = os.path.abspath(os.path.dirname(__file__))
+base_dir = os.path.abspath(os.path.dirname(__file__))
 __all__ = ['get_path', 'available', 'explain']
 file_2_dir = {}
-example_dir = base
+example_dir = base_dir
 
 dirs = []
 for root, subdirs, files in os.walk(example_dir, topdown=False):
@@ -12,6 +14,25 @@ for root, subdirs, files in os.walk(example_dir, topdown=False):
     head, tail = os.path.split(root)
     if tail != 'examples':
         dirs.append(tail)
+
+# check if user has cached downloads
+# if so, update file list
+data_home = environ.get('LIBPYSAL_DATA',
+                        join("~", "libpysal_data"))
+data_home = expanduser(data_home)
+if exists(data_home):
+    for root, subdirs, files in os.walk(data_home, topdown=False):
+        for f in files:
+            file_2_dir[f] = root
+        head, tail = os.path.split(root)
+        if tail != 'examples':
+            dirs.append(tail)
+
+
+# databases no longer included in source: anything > 1m
+fetch_datasets = ["nat", "nyc_bikes", "rio_grande_do_sul",\
+                  "taz", "clearwater", "south", "guerry",\
+                  "newHaven", "sacramento2", "georgia" "virginia"]
 
 
 def get_path(example_name, raw=False):
@@ -29,7 +50,7 @@ def get_path(example_name, raw=False):
         d = file_2_dir[example_name]
         outpath = os.path.join(d, example_name)
     elif example_name == "":
-        outpath = os.path.join(base, 'examples', example_name)
+        outpath = os.path.join(base_dir, 'examples', example_name)
     else:
         raise KeyError(example_name + ' not found in PySAL built-in examples.')
     name,ext = os.path.splitext(outpath)
@@ -42,7 +63,7 @@ def available(verbose=False):
     List available datasets
     """
 
-    examples = [os.path.join(base, d) for d in dirs]
+    examples = [os.path.join(base_dir, d) for d in dirs]
     if not verbose:
         return [os.path.split(d)[-1] for d in examples]
     examples = [os.path.join(dty, 'README.md') for dty in examples]
@@ -63,8 +84,8 @@ def _read_example(pth):
             rest = [l.strip('\n') for l in rest if l.strip('\n') != '']
             d = {'name': title, 'description': short, 'explanation': rest}
     except IOError:
-        basename = os.path.split(pth)[-2]
-        dirname = os.path.split(basename)[-1]
+        base_dirname = os.path.split(pth)[-2]
+        dirname = os.path.split(base_dirname)[-1]
         d = {'name': dirname, 'description': None, 'explanation': None}
     return d
 
