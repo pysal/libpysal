@@ -8,6 +8,7 @@ from os import environ, listdir, makedirs
 from os.path import dirname, exists, expanduser, isdir, join, splitext
 import hashlib
 
+PYSALDATA = 'pysal_data'
 
 import numpy as np
 
@@ -24,7 +25,7 @@ def get_data_home(data_home=None):
     data multiple times.
 
 
-    Alternatively, it can be set by the 'LIBPYSAL_DATA' environment variable or
+    Alternatively, it can be set by the 'PYSALDATA' environment variable or
     programmatically by giving an explicit folder path. The '~' symbol is
     expanded to the user home folder
 
@@ -40,8 +41,8 @@ def get_data_home(data_home=None):
     """
 
     if data_home is None:
-        data_home = environ.get('LIBPYSAL_DATA',
-                                join("~", "libpysal_data"))
+        data_home = environ.get('PYSALDATA',
+                                join("~", PYSALDATA))
     data_home = expanduser(data_home)
     if not exists(data_home):
         makedirs(data_home)

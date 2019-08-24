@@ -1,6 +1,7 @@
 import os
 from os import environ
 from os.path import expanduser, join, exists
+from .base import PYSALDATA
 
 
 class DataSets:
@@ -41,31 +42,30 @@ example_dir = base_dir
 
 dirs = []
 for root, subdirs, files in os.walk(example_dir, topdown=False):
-    for f in files:
-        file_2_dir[f] = root
+
     head, tail = os.path.split(root)
     if tail != "examples":
+        for f in files:
+            file_2_dir[f] = root
         dirs.append(tail)
         desc = None
         if f == "README.md":
             f = join(root, f)
             with open(f, "r") as desc_file:
                 desc = desc_file.read()
-        print(root)
         data_set = DataSet(tail, path=root, description=desc)
 
 # check if user has cached downloads
 # if so, update file list
-data_home = environ.get("PYSALDATA", join("~", "pysal_data"))
+data_home = environ.get("PYSALDATA", join("~", PYSALDATA))
 data_home = expanduser(data_home)
 if exists(data_home):
     for root, subdirs, files in os.walk(data_home, topdown=False):
-        for f in files:
-            file_2_dir[f] = root
         head, tail = os.path.split(root)
         if tail != "examples":
             dirs.append(tail)
-
+            for f in files:
+                file_2_dir[f] = root
 
 # databases no longer included in source: anything > 1m
 fetch_datasets = [
