@@ -38,6 +38,26 @@ class Test_Adjlist(ut.TestCase):
         assert set(alist.focal.unique().tolist()) == set(list(range(4)))
         assert set(alist.neighbor.unique().tolist()) == set(list(range(4)))
         assert alist.weight.unique().item() == 1
+        grid = lat2W(2,2, id_type='string')
+        alist = grid.to_adjlist(remove_symmetric=True)
+        assert len(alist) == 4
+        with self.assertRaises(AssertionError):
+            badgrid = weights.W.from_adjlist(alist)
+            np.testing.assert_allclose(badgrid.sparse.toarray(), 
+                                       grid.sparse.toarray())
+        print(alist)
+        tuples = set([tuple(t) for t in alist[['focal','neighbor']].values])
+        full_alist = grid.to_adjlist()
+        all_possible = set([tuple(t) for t in full_alist[['focal','neighbor']].values])
+        assert tuples.issubset(all_possible), ('the de-duped adjlist has links '
+                                               'not in the duplicated adjlist.')
+        complements = all_possible.difference(tuples)
+        reversed_complements = set([t[::-1] for t in complements])
+        assert reversed_complements == tuples, ('the remaining links in the duplicated'
+                                                ' adjlist are not the reverse of the links'
+                                                ' in the deduplicated adjlist.')
+        assert alist.weight.unique().item() == 1 
+
 
     def apply_and_compare_columbus(self, col):
         import geopandas
