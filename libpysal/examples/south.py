@@ -5,7 +5,7 @@ The version retrieved here comes from:
 """
 
 from os.path import dirname, exists, join
-from os import makedirs, remove
+from os import makedirs, remove, rename
 from zipfile import ZipFile
 from .base import RemoteFileMetadata
 from .base import get_data_home
@@ -65,6 +65,7 @@ def fetch_south(data_home=None, download_if_missing=True):
             with ZipFile(file_name, 'r') as archive:
                 print('Extracting files....')
                 archive.extractall(path=data_home)
+
             # write README.md from original libpysal
             readme_pth = join(dataset_path, 'README.md')
             print(readme_pth)
