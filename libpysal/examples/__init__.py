@@ -2,6 +2,7 @@ import os
 from os import environ
 from os.path import expanduser, join, exists
 from .base import PYSALDATA
+from .nat import fetch_nat
 
 
 class DataSets:
