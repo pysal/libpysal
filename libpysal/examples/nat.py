@@ -5,7 +5,7 @@ The version retrieved here comes from:
 """
 
 from os.path import dirname, exists, join
-from os import makedirs, remove
+from os import makedirs, remove, chdir, rename
 from zipfile import ZipFile
 from .base import RemoteFileMetadata
 from .base import get_data_home
@@ -55,25 +55,29 @@ def fetch_nat(data_home=None, download_if_missing=True):
     data_home = get_data_home(data_home=data_home)
     if not exists(data_home):
         makedirs(data_home)
-    filepath = join(data_home, 'nat')
-    if not exists(filepath):
+    dataset_path = join(data_home, 'nat')
+    if not exists(dataset_path):
         if not download_if_missing:
             raise IOError("Data not found and 'download_if_missing' is False")
         else:
-            makedirs(filepath)
-            print('downloading nat dataset from %s to %s' % (NAT.url, filepath))
-            data_path = _fetch_remote(NAT, dirname=filepath)
-            file_name = join(filepath,NAT.filename)
-            print(data_path)
-            print(file_name)
+            print('downloading nat dataset from %s to %s' % (NAT.url, data_home))
+            data_path = _fetch_remote(NAT, dirname=data_home)
+            file_name = join(data_home, NAT.filename)
             with ZipFile(file_name, 'r') as archive:
                 print('Extracting files....')
-                archive.extractall(path=filepath)
+                archive.extractall(path=data_home)
+
+            # rename directory to match historical pysal path nat
+            chdir(data_home)
+            rename('ncovr', 'nat')
+
             # write README.md from original libpysal
-            readme_pth = join(filepath, 'README.md')
-            print(readme_pth)
+            readme_pth = join(dataset_path, 'README.md')
             with open(readme_pth, 'w') as readme:
                 readme.write(description)
+
+            # remove zip archive
+            remove(file_name)
     else:
         print('already exists, not downloading')
 
