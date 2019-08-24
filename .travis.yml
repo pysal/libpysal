@@ -1,5 +1,4 @@
 language: python
-
 sudo: false
 
 matrix:
@@ -18,7 +17,6 @@ install:
     conda config --add channels conda-forge --force
     conda config --set channel_priority strict
     conda config --set safety_checks disabled
-
 
   # Install dependencies
   - conda env create --file="${ENV_FILE}"
