@@ -32,9 +32,9 @@ Homicides and selected socio-economic characteristics for Southern U.S. counties
 """
 
 def fetch_south(data_home=None, download_if_missing=True):
-    """Load the south data-set.
+    """Download the south data-set.
 
-    Download it if necessary
+    Download it if necessary - will check if it has been fetched already.
 
     Parameters
     ----------

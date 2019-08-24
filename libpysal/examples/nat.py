@@ -37,9 +37,9 @@ US county homicides 1960-1990
 """
 
 def fetch_nat(data_home=None, download_if_missing=True):
-    """Load the nat data-set.
+    """Download the nat data-set.
 
-    Download it if necessary
+    Download it if necessary - will check if it has already been fetched.
 
     Parameters
     ----------
