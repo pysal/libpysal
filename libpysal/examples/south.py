@@ -18,12 +18,42 @@ south
 Homicides and selected socio-economic characteristics for Southern U.S. counties.
 ---------------------------------------------------------------------------------
 
-* south.dbf: attribute data. (k=69)
-* south.shp: Polygon shapefile. (n=1412)
-* south.shx: spatial index.
-* south_q.gal: queen contiguity weights in GAL format.
-* south_queen.gal: queen contiguity weights in GAL format.
+- Observations = 1,412
+- Variables = 69
+- Years = 1960-90s
+- Support = polygon
 
+Files
+-----
+south.gdb     README.md  south.dbf      south.gpkg  south.kml  south.mif  south.shp  south.sqlite
+codebook.pdf  south.csv  south.geojson  south.html  south.mid  south.prj  south.shx  south.xlsx
+
+Variables
+---------
+NAME 	county name
+STATE_NAME 	state name
+STATE_FIPS 	state fips code (character)
+CNTY_FIPS 	county fips code (character)
+FIPS 	combined state and county fips code (character)
+STFIPS 	state fips code (numeric)
+COFIPS 	county fips code (numeric)
+FIPSNO 	fips code as numeric variable
+SOUTH 	dummy variable for Southern counties (South = 1)
+HR** 	homicide rate per 100,000 (1960, 1970, 1980, 1990)
+HC** 	homicide count, three year average centered on 1960, 1970, 1980, 1990
+PO** 	county population, 1960, 1970, 1980, 1990
+RD** 	resource deprivation 1960, 1970, 1980, 1990 (principal component, see Codebook for details)
+PS** 	population structure 1960, 1970, 1980, 1990 (principal component, see Codebook for details)
+UE** 	unemployment rate 1960, 1970, 1980, 1990
+DV** 	divorce rate 1960, 1970, 1980, 1990 (% males over 14 divorced)
+MA** 	median age 1960, 1970, 1980, 1990
+POL** 	log of population 1960, 1970, 1980, 1990
+DNL** 	log of population density 1960, 1970, 1980, 1990
+MFIL** 	log of median family income 1960, 1970, 1980, 1990
+FP** 	% families below poverty 1960, 1970, 1980, 1990 (see Codebook for details)
+BLK** 	% black 1960, 1970, 1980, 1990
+GI** 	Gini index of family income inequality 1960, 1970, 1980, 1990
+FH** 	% female headed households 1960, 1970, 1980, 1990
 """
 
 

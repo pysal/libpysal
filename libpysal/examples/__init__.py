@@ -2,8 +2,9 @@
 The :mod:`libpysal.examples` module includes a number of small built-in example datasets as well as functions to fetch larger datasets.
 """
 from .base import example_manager
+from .nat import fetch_nat
 
-__all__ = ['get_path', 'available', 'explain']
+__all__ = ['get_path', 'available', 'explain', 'fetch_nat']
 
 def get_path(name):
     """

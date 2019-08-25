@@ -198,6 +198,29 @@ def _fetch(metadata,
            data_home=None,
            download_if_missing=True,
            is_dir=True):
+    """Helper function to download a remote dataset
+
+    Parameters
+    ----------
+    metadata : RemoteFileMetadata
+      Named tuple containing remote dataset meta information: url, filename
+      and checksum
+
+    dir_name : string
+      Name of the directory to store dataset
+
+    description : string
+      Long description of the contents of the dataset
+
+    data_home : string
+      Path of parent directory for dir_name
+
+    download_if_missing : boolean
+      If file in metadata is not available locally, download and install (Default=True). Raise IOError and do not download if False.
+
+    is_dir : boolean
+      The archive create a new directory upon extract (Default=True) or extracts into the parent directory (False)
+    """
     data_home = get_data_home(data_home=data_home)
     if not exists(data_home):
         makedirs(data_home)
@@ -208,7 +231,7 @@ def _fetch(metadata,
 
         print('downloading dataset from %s to %s' % (metadata.url,
                                                         data_home))
-        data_path = _fetch_remote(metadata, dirname=data_home)
+        _ = _fetch_remote(metadata, dirname=data_home)
         file_name = join(data_home, metadata.filename)
         with ZipFile(file_name, 'r') as archive:
             print('Extracting files....')
