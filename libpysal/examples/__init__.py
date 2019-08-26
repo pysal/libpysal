@@ -3,8 +3,9 @@ The :mod:`libpysal.examples` module includes a number of small built-in example 
 """
 from .base import example_manager
 from .nat import fetch_nat
+from .rio_grande_do_sul import fetch_rio
 
-__all__ = ['get_path', 'available', 'explain', 'fetch_nat']
+__all__ = ['get_path', 'available', 'explain', 'fetch_nat', 'fetch_rio']
 
 def get_path(name):
     """

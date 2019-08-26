@@ -28,7 +28,7 @@ script:
   - python setup.py sdist >/dev/null
   - echo "check_stable=False" >libpysal/config.py
   - python setup.py install
-  - python -c 'import libpysal; libpysal.examples.fetch_nat()'
+  - python -c 'import libpysal; libpysal.examples.fetch_nat(); libpysal.examples.fetch_rio()'
   - nosetests --with-doctest --verbose --with-coverage --cover-package=libpysal -I shapely_ext.py;
   #- cd doc; make pickle; make doctest
 notifications:
