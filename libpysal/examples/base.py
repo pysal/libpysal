@@ -237,11 +237,14 @@ def _fetch(metadata,
             print('Extracting files....')
             if is_dir:
                 archive.extractall(path=data_home)
+                info = list(archive.infolist())
+                if info[0].is_dir():
+                    old_dir = info[0].filename.replace("/", "")
             else:
                 archive.extractall(path=join(data_home, dir_name))
+                old_dir = metadata.filename.split(".")[0]
 
         chdir(data_home)
-        old_dir = metadata.filename.split(".")[0]
         rename(old_dir, dir_name)
 
         # write README.md from original libpysal
