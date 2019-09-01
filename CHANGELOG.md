@@ -1,5 +1,11 @@
 # Changes
 
+Version 4.1.1 (2019-09-01)
+This is a bug fix release
+
+## Issues
+  - Updating manifest file for new requirements
+
 Version 4.1.0 (2019-07-01)
 
 We closed a total of 45 issues (enhancements and bug fixes) through 15 pull requests, since our last release on 2018-10-27.
