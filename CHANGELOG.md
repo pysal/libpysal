@@ -1,7 +1,7 @@
 # Changes
 
 Version 4.1.1 (2019-09-01)
-This is a bug fix release
+This is a bug fix release.
 
 We closed a total of 32 issues (enhancements and bug fixes) through 13 pull requests, since our last release on 2019-07-01.
 
