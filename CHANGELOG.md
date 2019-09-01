@@ -3,8 +3,50 @@
 Version 4.1.1 (2019-09-01)
 This is a bug fix release
 
-## Issues
-  - Updating manifest file for new requirements
+We closed a total of 32 issues (enhancements and bug fixes) through 13 pull requests, since our last release on 2019-07-01.
+
+## Issues Closed
+  - BUG: Updating manifest for additional requirements files (#179)
+  - libpysal 4.1.0 is not released on pypi or conda-forge (#169)
+  - addressing DeprecationWarning: fromstring() (#131)
+  - ENH: fromstring has been deprecated (#175)
+  - addressing DeprecationWarning: fromstring() (#132)
+  - Ci (#172)
+  - minor change to W's silence_warnings workflow (#171)
+  - Automatically voronoi input point dataframes to Queen/Rook (#135)
+  - (docs, bug) silence warning for disconnected components and islands (#170)
+  - BUG: add zstd as a dependency to work around conda glitch (#168)
+  - unable to updata libpysal in Anaconda (#133)
+  - Modernize the travis builds (#167)
+  - make id_order propagate through symmetrize(inplace=False) (#137)
+  - W.symmetrize(inplace=False) resets id order (#136)
+  - swap to masking instead of querying in adjlist (#166)
+  - REL: 4.1.0 changelog (#160)
+  - removing alumni devs from travis notifications  (#161) (#162)
+  - remove alumni from travis (#161)
+  - update setup.py to accommodate the transition to python3.6 and 3.7 (#163)
+
+## Pull Requests
+  - BUG: Updating manifest for additional requirements files (#179)
+  - addressing DeprecationWarning: fromstring() (#132)
+  - Ci (#172)
+  - minor change to W's silence_warnings workflow (#171)
+  - Automatically voronoi input point dataframes to Queen/Rook (#135)
+  - (docs, bug) silence warning for disconnected components and islands (#170)
+  - BUG: add zstd as a dependency to work around conda glitch (#168)
+  - Modernize the travis builds (#167)
+  - make id_order propagate through symmetrize(inplace=False) (#137)
+  - swap to masking instead of querying in adjlist (#166)
+  - REL: 4.1.0 changelog (#160)
+  - removing alumni devs from travis notifications  (#161) (#162)
+  - update setup.py to accommodate the transition to python3.6 and 3.7 (#163)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - James Gaboardi
+  - Wei Kang
+  - Levi John Wolf
 
 Version 4.1.0 (2019-07-01)
 
