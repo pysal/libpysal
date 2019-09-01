@@ -1,0 +1,6 @@
+libpysal.weights.attach\_islands
+================================
+
+.. currentmodule:: libpysal.weights
+
+.. autofunction:: attach_islands

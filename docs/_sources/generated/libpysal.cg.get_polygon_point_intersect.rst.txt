@@ -1,0 +1,6 @@
+libpysal.cg.get\_polygon\_point\_intersect
+==========================================
+
+.. currentmodule:: libpysal.cg
+
+.. autofunction:: get_polygon_point_intersect
