@@ -3,7 +3,7 @@
 The version retrieved here comes from:
      https://s3.amazonaws.com/geoda/data/south.zip
 """
-
+from shutil import rmtree
 from os.path import dirname, exists, join
 from os import makedirs, remove, rename
 from zipfile import ZipFile
@@ -73,7 +73,11 @@ def fetch_south(data_home=None, download_if_missing=True):
                 readme.write(description)
             # remove zip file
             remove(file_name)
-            
+            # remove __MACOSX if it exists
+            mac = join(data_home, "__MACOSX")
+            if exists(mac):
+                print('removing: ', mac)
+                rmtree(mac)
     else:
         print('already exists, not downloading')
 
