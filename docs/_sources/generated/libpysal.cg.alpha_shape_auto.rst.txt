@@ -1,0 +1,6 @@
+libpysal.cg.alpha\_shape\_auto
+==============================
+
+.. currentmodule:: libpysal.cg
+
+.. autofunction:: alpha_shape_auto

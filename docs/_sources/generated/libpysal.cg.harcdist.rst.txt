@@ -1,0 +1,6 @@
+libpysal.cg.harcdist
+====================
+
+.. currentmodule:: libpysal.cg
+
+.. autofunction:: harcdist

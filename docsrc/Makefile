@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = libpysal
+SPHINXPROJ    = PACKAGE_NAME
 SOURCEDIR     = .
 BUILDDIR      = _build
 
@@ -18,6 +18,13 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+github:
+	@make html
+
+sync:
+	@rsync -avh _build/html/ ../docs/ --delete
+	@make clean
 
 clean:
 	rm -rf $(BUILDDIR)/*

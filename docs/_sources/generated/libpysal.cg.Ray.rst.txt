@@ -1,0 +1,22 @@
+libpysal.cg.Ray
+===============
+
+.. currentmodule:: libpysal.cg
+
+.. autoclass:: Ray
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Ray.__init__
+   
+   
+
+   
+   
+   
