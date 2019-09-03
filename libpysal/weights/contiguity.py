@@ -161,25 +161,20 @@ class Rook(W):
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Rook`
         """
-        if id_order is not None:
-            if id_order is True and ((idVariable is not None) 
-                                     or (ids is not None)):
-                # if idVariable is None, we want ids. Otherwise, we want the
-                # idVariable column
-                id_order = list(df.get(idVariable, ids))
-            else:
-                id_order = df.get(id_order, ids)
-        elif idVariable is not None:
-            ids = df.get(idVariable).tolist()
-        elif isinstance(ids, str):
-            ids = df.get(ids).tolist()
+        if idVariable is not None:
+            ids = df.get(idVariable).tolist() #  idVariable takes precedent 
+            if id_order is None:
+                id_order = ids
+        else:
+            ids = df.index.tolist()
+            id_order = ids
         return cls.from_iterable(df[geom_col].tolist(), ids=ids,
                                  id_order=id_order, **kwargs)
 
 class Queen(W):
     """
     Construct a weights object from a collection of pysal polygons that share at least one vertex.
-
+ 
     Parameters
     ----------
     polygons    : list
@@ -322,22 +317,16 @@ class Queen(W):
         idVariable = kwargs.pop('idVariable', None)
         ids = kwargs.pop('ids', None)
         id_order = kwargs.pop('id_order', None)
-        if id_order is not None:
-            if id_order is True and ((idVariable is not None) 
-                                     or (ids is not None)):
-                # if idVariable is None, we want ids. Otherwise, we want the
-                # idVariable column
-                ids = list(df.get(idVariable, ids))
+        if idVariable is not None:
+            ids = df.get(idVariable).tolist() #  idVariable takes precedent 
+            if id_order is None:
                 id_order = ids
-            elif isinstance(id_order, str):
-                ids = df.get(id_order, ids)
-                id_order = ids
-        elif idVariable is not None:
-            ids = df.get(idVariable).tolist()
-        elif isinstance(ids, str):
-            ids = df.get(ids).tolist()
-        w = cls.from_iterable(df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs)
-        return w
+        else:
+            ids = df.index.tolist()
+            id_order = ids
+        return cls.from_iterable(df[geom_col].tolist(), ids=ids,
+                                 id_order=id_order, **kwargs)
+
 
 def Voronoi(points, criterion='rook', clip='ahull', **kwargs):
     """
