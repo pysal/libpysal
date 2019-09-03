@@ -20,6 +20,47 @@ __author__ = "Sergio J. Rey <srey@asu.edu> , Levi John Wolf <levi.john.wolf@gmai
 
 __all__ = ['Rook', 'Queen', 'Voronoi']
 
+
+def _rq_from_data_frame(cls, df, geom_col='geometry',
+                        idVariable=None, ids=None, id_order=None,
+                        **kwargs):
+    """Helper function to handle setting rook/queen ids from a dataframe
+
+
+        Parameters
+        ---------
+        cls         : class
+                      class that will nest this within a classmethod
+        df          : DataFrame
+                      a :class: `pandas.DataFrame` containing geometries to use
+                      for spatial weights
+        geom_col    : string
+                      the name of the column in `df` that contains the
+                      geometries. Defaults to `geometry`
+        idVariable  : string
+                      the name of the column to use as IDs. If nothing is
+                      provided, the dataframe index is used
+        ids         : list
+                      a list of ids to use to index the spatial weights object.
+                      Order is not respected from this list.
+        id_order    : list
+                      an ordered list of ids to use to index the spatial weights
+                      object. If used, the resulting weights object will iterate
+                      over results in the order of the names provided in this
+                      argument. 
+    """
+
+
+    if idVariable is not None:
+        ids = df.get(idVariable).tolist() #  idVariable takes precedent 
+        if id_order is None:
+            id_order = ids
+    else:
+        ids = df.index.tolist()
+        id_order = ids
+    return cls.from_iterable(df[geom_col].tolist(), ids=ids,
+                                id_order=id_order, **kwargs)
+
 class Rook(W):
     """
     Construct a weights object from a collection of pysal polygons that share at least one edge.
@@ -161,15 +202,9 @@ class Rook(W):
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Rook`
         """
-        if idVariable is not None:
-            ids = df.get(idVariable).tolist() #  idVariable takes precedent 
-            if id_order is None:
-                id_order = ids
-        else:
-            ids = df.index.tolist()
-            id_order = ids
-        return cls.from_iterable(df[geom_col].tolist(), ids=ids,
-                                 id_order=id_order, **kwargs)
+        return _rq_from_data_frame(cls, df, geom_col=geom_col,
+                                   idVariable=idVariable, ids=ids,
+                                   id_order=id_order, **kwargs)
 
 class Queen(W):
     """
@@ -283,7 +318,8 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col='geometry', **kwargs):
+    def from_dataframe(cls, df, geom_col='geometry',
+                       idVariable=None, ids=None, id_order=None, **kwargs):
         """
         Construct a weights object from a pandas dataframe with a geometry
         column. This will cast the polygons to PySAL polygons, then build the W
@@ -314,18 +350,9 @@ class Queen(W):
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Queen`
         """
-        idVariable = kwargs.pop('idVariable', None)
-        ids = kwargs.pop('ids', None)
-        id_order = kwargs.pop('id_order', None)
-        if idVariable is not None:
-            ids = df.get(idVariable).tolist() #  idVariable takes precedent 
-            if id_order is None:
-                id_order = ids
-        else:
-            ids = df.index.tolist()
-            id_order = ids
-        return cls.from_iterable(df[geom_col].tolist(), ids=ids,
-                                 id_order=id_order, **kwargs)
+        return _rq_from_data_frame(cls, df, geom_col=geom_col,
+                                   idVariable=idVariable, ids=ids,
+                                   id_order=id_order, **kwargs)
 
 
 def Voronoi(points, criterion='rook', clip='ahull', **kwargs):
