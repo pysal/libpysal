@@ -56,7 +56,7 @@ Getting Involved
 ****************
 
 If you are interested in contributing to PySAL please see our
-`development guidelines  https://github.com/pysal/pysal/wiki`_.
+`development guidelines  <https://github.com/pysal/pysal/wiki>`_.
 
 ***********
 Bug reports
