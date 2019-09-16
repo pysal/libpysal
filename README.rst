@@ -56,7 +56,7 @@ Getting Involved
 ****************
 
 If you are interested in contributing to PySAL please see our
-`development guidelines  https://github.com/pysal/pysal/wiki`_.
+`development guidelines  <https://github.com/pysal/pysal/wiki>`_.
 
 ***********
 Bug reports
@@ -70,6 +70,6 @@ To search for or report bugs, please see libpysal's issues_.
 License information
 *******************
 
-See the file "LICENSE.txt" for information on the history of this
+See the `LICENSE <https://github.com/pysal/libpysal/blob/master/LICENSE.txt>`_ for information on the history of this
 software, terms & conditions for usage, and a DISCLAIMER OF ALL
 WARRANTIES.
