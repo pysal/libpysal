@@ -3,7 +3,6 @@ from ...examples import get_path
 from ..alpha_shapes import alpha_shape, alpha_shape_auto
 import numpy as np
 import os
-import numpy as np
 
 try:
     import geopandas
