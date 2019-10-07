@@ -1437,9 +1437,9 @@ class WSP(object):
 
         """
 
-        indices = self.sparse.indices
-        data = self.sparse.data
-        indptr = self.sparse.indptr
+        indices = list(self.sparse.indices)
+        data = list(self.sparse.data)
+        indptr = list(self.sparse.indptr)
         id_order = self.id_order
         if id_order:
             # replace indices with user IDs
