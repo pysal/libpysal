@@ -30,7 +30,7 @@ class Test_Alpha_Shapes(TestCase):
 
         self.autoalpha = np.asarray(geopandas.read_file(os.path.join(this_directory, 'data/alpha_auto.shp')).geometry).item()
 
-    def test_alpha_shapes(self):
+    Def test_alpha_shapes(self):
         new_a05 = alpha_shape(self.vertices, .05).to_numpy().item()
         new_a10 = alpha_shape(self.vertices, .10).to_numpy().item()
         new_a2  = alpha_shape(self.vertices, .2).to_numpy().item()
