@@ -31,11 +31,11 @@ from shapely.geometry.point import Point
 
 __all__ = ['alpha_shape', 'alpha_shape_auto']
 
-def _single_hull(geoms, points):
+def _valid_hull(geoms, points):
     if geoms.shape[0] != 1:
         return False
     for point in points:
-        if not (point.within(geoms[0]) or point.touches(geoms[0])):
+        if not point.intersects(geoms[0]):
             return False
     return True
 
@@ -539,7 +539,6 @@ def alpha_shape_auto(xys, step=1, verbose=False):
                                    for xy in xys])\
                   .convex_hull.buffer(0)
     triangulation = spat.Delaunay(xys)
-    triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
     a_pts = triangles[:, 0, :]
     b_pts = triangles[:, 1, :]
@@ -564,7 +563,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
         geoms = alpha_geoms(alpha, triangles, radii, xys)
         if verbose:
             print(geoms.shape)
-        if _single_hull(geoms, points):
+        if _valid_hull(geoms, points):
             geoms_prev = geoms
         else:
             if verbose:
