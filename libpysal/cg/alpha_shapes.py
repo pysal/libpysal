@@ -561,13 +561,9 @@ def alpha_shape_auto(xys, step=1, verbose=False):
             print('%.2f%% | Trying a = %f'\
 		  %((i+1)/radii.shape[0], alpha))
         geoms = alpha_geoms(alpha, triangles, radii, xys)
-        if verbose:
-            print(geoms.shape)
         if _valid_hull(geoms, points):
             geoms_prev = geoms
         else:
-            if verbose:
-                print(i, geoms.shape[0], xys_bb, geoms.total_bounds)
             break
     if verbose:
         print(geoms_prev.shape)
