@@ -28,8 +28,7 @@ class Test_Alpha_Shapes(TestCase):
         self.a25 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fourth.shp')).geometry.to_numpy().item()
         self.a25 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fourth.shp')).geometry.to_numpy().item()
 
-        self.autoalpha = np.asarray(geopandas.read_file(os.path.join(this_directory, 'data/alpha_auto.shp')).geometry).item()
-
+        self.autoalpha = geopandas.read_file(os.path.join(this_directory, 'data/alpha_auto.shp')).geometry[0]
     def test_alpha_shapes(self):
         new_a05 = alpha_shape(self.vertices, .05).to_numpy().item()
         new_a10 = alpha_shape(self.vertices, .10).to_numpy().item()
