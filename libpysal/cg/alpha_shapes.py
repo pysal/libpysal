@@ -27,8 +27,18 @@ import numpy as np
 import scipy.spatial as spat
 
 EPS = np.finfo(float).eps
+from shapely.geometry.point import Point
 
 __all__ = ['alpha_shape', 'alpha_shape_auto']
+
+def _valid_hull(geoms, points):
+    if geoms.shape[0] != 1:
+        return False
+    for point in points:
+        if not point.intersects(geoms[0]):
+            return False
+    return True
+
 
 @jit
 def nb_dist(x, y):
@@ -529,7 +539,6 @@ def alpha_shape_auto(xys, step=1, verbose=False):
                                    for xy in xys])\
                   .convex_hull.buffer(0)
     triangulation = spat.Delaunay(xys)
-    triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
     a_pts = triangles[:, 0, :]
     b_pts = triangles[:, 1, :]
@@ -542,6 +551,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     radii = radii[radii_sorted_i][::-1]
     geoms_prev = alpha_geoms((1/radii.max())-EPS, triangles, radii, xys)
     xys_bb = np.array([*xys.min(axis=0), *xys.max(axis=0)])
+    points = [Point(pnt) for pnt in xys]
     if verbose:
         print('Step set to %i'%step)
     for i in range(0, len(radii), step):
@@ -551,10 +561,12 @@ def alpha_shape_auto(xys, step=1, verbose=False):
             print('%.2f%% | Trying a = %f'\
 		  %((i+1)/radii.shape[0], alpha))
         geoms = alpha_geoms(alpha, triangles, radii, xys)
-        if (geoms.shape[0] != 1) or not (np.all(xys_bb == geoms.total_bounds)):
-            break
-        else:
+        if _valid_hull(geoms, points):
             geoms_prev = geoms
+        else:
+            break
+    if verbose:
+        print(geoms_prev.shape)
     return geoms_prev[0] # Return a shapely polygon
 
 if __name__ == '__main__':
