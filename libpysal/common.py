@@ -33,22 +33,6 @@ except ImportError:
 
 MISSINGVALUE = None
 
-#################
-# Compatibility #
-#################
-
-def iteritems(d, **kwargs):
-    """
-    Implements six compatibility library's iteritems function
-
-    appropriately calls either d.iteritems() or d.items() depending on the
-    version of python being used. 
-    """
-    if sys.version_info.major < 3:
-        return d.iteritems(**kwargs)
-    else:
-        return iter(d.items(**kwargs))
-
 ######################
 # Decorators/Utils   #
 ######################
