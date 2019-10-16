@@ -30,6 +30,7 @@ script:
   - python setup.py install
   - nosetests --with-doctest --verbose --with-coverage --cover-package=libpysal -I shapely_ext.py;
   #- cd doc; make pickle; make doctest
+
 notifications:
     email:
         recipients:

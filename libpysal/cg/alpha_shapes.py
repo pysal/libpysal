@@ -23,8 +23,11 @@ except ImportError:
                 return jit(func)
             return partial_inner
     HAS_JIT = False
+
 import numpy as np
 import scipy.spatial as spat
+
+from ..common import requires
 
 EPS = np.finfo(float).eps
 from shapely.geometry.point import Point
@@ -348,6 +351,7 @@ def get_single_faces(triangles_is):
     single_faces = nb_mask_faces(mask, faces)
     return single_faces
 
+@requires('geopandas', 'shapely')
 def alpha_geoms(alpha, triangles, radii, xys):
     '''
     Generate alpha-shape polygon(s) from `alpha` value, vertices of `triangles`,
@@ -402,16 +406,9 @@ def alpha_geoms(alpha, triangles, radii, xys):
     0    POLYGON ((0.00000 1.00000, 3.00000 5.00000, 4....
     dtype: geometry
     '''
-    try:
-        from shapely.geometry import LineString
-        from shapely.ops import polygonize
-    except ImportError:
-        raise ImportError("Shapely is a required package to use alpha_shapes")
-
-    try:
-        from geopandas import GeoSeries
-    except ImportError:
-        raise ImportError("Geopandas is a required package to use alpha_shapes")
+    from shapely.geometry import LineString
+    from shapely.ops import polygonize
+    from geopandas import GeoSeries
 
     triangles_reduced = triangles[radii < 1/alpha]
     outer_triangulation = get_single_faces(triangles_reduced)
@@ -420,6 +417,7 @@ def alpha_geoms(alpha, triangles, radii, xys):
                                                face_pts)))))
     return geoms
 
+@requires('geopandas', 'shapely')
 def alpha_shape(xys, alpha):
     '''
     Alpha-shape delineation (Edelsbrunner, Kirkpatrick &
@@ -480,6 +478,7 @@ def alpha_shape(xys, alpha):
     geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
     return geoms
 
+@requires('geopandas', 'shapely')
 def alpha_shape_auto(xys, step=1, verbose=False):
     '''
     Computation of alpha-shape delineation with automated selection of alpha.
