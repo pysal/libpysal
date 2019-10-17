@@ -158,8 +158,8 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
     len_a = len(a_s)
     r2 = np.zeros( (len_a,) )
     for i in range(len_a):
-        r2[i] = r_circumcircle_triangle_single(a_s[i], 
-                                               b_s[i], 
+        r2[i] = r_circumcircle_triangle_single(a_s[i],
+                                               b_s[i],
                                                c_s[i])
     return r2
 
@@ -197,7 +197,7 @@ def get_faces(triangle):
     return faces
 
 @jit
-def build_faces(faces, triangles_is, 
+def build_faces(faces, triangles_is,
         num_triangles, num_faces_single):
     '''
     Build facing triangles
@@ -261,7 +261,7 @@ def build_faces(faces, triangles_is,
 def nb_mask_faces(mask, faces):
     '''
     Run over each row in `faces`, if the face in the following row is the
-    same, then mark both as False on `mask` 
+    same, then mark both as False on `mask`
     ...
 
     Arguments
@@ -337,13 +337,13 @@ def get_single_faces(triangles_is):
     faces = np.zeros((num_faces, 2), dtype=np.int_)
     mask = np.ones((num_faces,), dtype=np.bool_)
 
-    faces = build_faces(faces, triangles_is, 
+    faces = build_faces(faces, triangles_is,
                         num_triangles, num_faces_single)
 
     orderlist = ["x{}".format(i) for i in range(faces.shape[1])]
     dtype_list = [(el, faces.dtype.str) for el in orderlist]
     # Arranging each face so smallest vertex is first
-    faces.sort(axis=1)                  
+    faces.sort(axis=1)
     # Arranging faces in ascending way
     faces.view(dtype_list).sort(axis=0)
     # Masking
@@ -412,7 +412,7 @@ def alpha_geoms(alpha, triangles, radii, xys):
     triangles_reduced = triangles[radii < 1/alpha]
     outer_triangulation = get_single_faces(triangles_reduced)
     face_pts = xys[outer_triangulation]
-    geoms = GeoSeries(list(polygonize(list(map(LineString, 
+    geoms = GeoSeries(list(polygonize(list(map(LineString,
                                                face_pts)))))
     return geoms
 
@@ -457,14 +457,14 @@ def alpha_shape(xys, alpha):
     ----------
 
     Edelsbrunner, H., Kirkpatrick, D., & Seidel, R. (1983). On the shape of
-        a set of points in the plane. IEEE Transactions on information theory, 
+        a set of points in the plane. IEEE Transactions on information theory,
         29(4), 551-559.
     '''
     if not HAS_JIT:
         warn("Numba not imported, so alpha shape construction may be slower than expected.")
     if xys.shape[0] < 4:
         from shapely import ops, geometry as geom
-        return ops.cascaded_union([geom.Point(xy) 
+        return ops.cascaded_union([geom.Point(xy)
                                    for xy in xys])\
                   .convex_hull.buffer(0)
     triangulation = spat.Delaunay(xys)
@@ -526,7 +526,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     ----------
 
     Edelsbrunner, H., Kirkpatrick, D., & Seidel, R. (1983). On the shape of
-        a set of points in the plane. IEEE Transactions on information theory, 
+        a set of points in the plane. IEEE Transactions on information theory,
         29(4), 551-559.
     '''
     if not HAS_JIT:
@@ -534,7 +534,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     from shapely import geometry as geom
     if xys.shape[0] < 4:
         from shapely import ops
-        return ops.cascaded_union([geom.Point(xy) 
+        return ops.cascaded_union([geom.Point(xy)
                                    for xy in xys])\
                   .convex_hull.buffer(0)
     triangulation = spat.Delaunay(xys)
