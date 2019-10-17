@@ -30,7 +30,7 @@ import scipy.spatial as spat
 from ..common import requires
 
 EPS = np.finfo(float).eps
-from shapely.geometry.point import Point
+from shapely.geometry import Point
 
 __all__ = ['alpha_shape', 'alpha_shape_auto']
 
