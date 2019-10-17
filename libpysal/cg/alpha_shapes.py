@@ -30,7 +30,6 @@ import scipy.spatial as spat
 from ..common import requires
 
 EPS = np.finfo(float).eps
-from shapely.geometry.point import Point
 
 __all__ = ['alpha_shape', 'alpha_shape_auto']
 
@@ -532,8 +531,9 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     '''
     if not HAS_JIT:
         warn("Numba not imported, so alpha shape construction may be slower than expected.")
+    from shapely import geometry as geom
     if xys.shape[0] < 4:
-        from shapely import ops, geometry as geom
+        from shapely import ops
         return ops.cascaded_union([geom.Point(xy) 
                                    for xy in xys])\
                   .convex_hull.buffer(0)
@@ -550,7 +550,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     radii = radii[radii_sorted_i][::-1]
     geoms_prev = alpha_geoms((1/radii.max())-EPS, triangles, radii, xys)
     xys_bb = np.array([*xys.min(axis=0), *xys.max(axis=0)])
-    points = [Point(pnt) for pnt in xys]
+    points = [geom.Point(pnt) for pnt in xys]
     if verbose:
         print('Step set to %i'%step)
     for i in range(0, len(radii), step):
@@ -558,7 +558,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
         alpha = (1 / radi) - EPS
         if verbose:
             print('%.2f%% | Trying a = %f'\
-		  %((i+1)/radii.shape[0], alpha))
+            %((i+1)/radii.shape[0], alpha))
         geoms = alpha_geoms(alpha, triangles, radii, xys)
         if _valid_hull(geoms, points):
             geoms_prev = geoms
