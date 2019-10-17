@@ -402,8 +402,8 @@ def alpha_geoms(alpha, triangles, radii, xys):
     >>> radii = r_circumcircle_triangle(a_pts, b_pts, c_pts)
     >>> geoms = alpha_geoms(alpha, triangulation.simplices, radii, pts)
     >>> geoms
-    0    POLYGON ((0.00000 1.00000, 3.00000 5.00000, 4....
-    dtype: geometry
+    0    POLYGON ((0 1, 3 5, 4 1, 0 1))
+    dtype: object
     '''
     from shapely.geometry import LineString
     from shapely.ops import polygonize
@@ -445,11 +445,11 @@ def alpha_shape(xys, alpha):
     >>> alpha = 0.1
     >>> poly = alpha_shape(pts, alpha)
     >>> poly
-    0    POLYGON ((0.00000 1.00000, 3.00000 5.00000, 6....
-    dtype: geometry
+    0    POLYGON ((0 1, 3 5, 6 7, 9 3, 4 1, 0 1))
+    dtype: object
     >>> poly.centroid
-    0    POINT (4.69048 3.45238)
-    dtype: geometry
+    0    POINT (4.690476190476191 3.452380952380953)
+    dtype: object
 
 
 
