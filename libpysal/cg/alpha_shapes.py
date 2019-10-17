@@ -445,8 +445,8 @@ def alpha_shape(xys, alpha):
     >>> alpha = 0.1
     >>> poly = alpha_shape(pts, alpha)
     >>> poly
-    0    POLYGON ((0 1, 3 5, 6 7, 9 3, 4 1, 0 1))
-    dtype: object
+    0    POLYGON ((0.00000 1.00000, 3.00000 5.00000, 6....
+    dtype: geometry
     >>> poly.centroid
     0    POINT (4.69048 3.45238)
     dtype: geometry
