@@ -8,26 +8,10 @@ Author(s):
     Dani Arribas-Bel daniel.arribas.bel@gmail.com
 """
 
-try:
-    from numba import jit
-    HAS_JIT = True
-except ImportError:
-    from warnings import warn
-    def jit(function=None, **kwargs):
-        if function is not None:
-            def wrapped(*original_args, **original_kw):
-                return function(*original_args, **original_kw)
-            return wrapped
-        else:
-            def partial_inner(func):
-                return jit(func)
-            return partial_inner
-    HAS_JIT = False
-
 import numpy as np
 import scipy.spatial as spat
 
-from ..common import requires
+from ..common import requires, jit, HAS_JIT
 
 EPS = np.finfo(float).eps
 
@@ -40,7 +24,6 @@ def _valid_hull(geoms, points):
         if not point.intersects(geoms[0]):
             return False
     return True
-
 
 @jit
 def nb_dist(x, y):
