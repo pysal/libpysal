@@ -13,6 +13,10 @@ import scipy.spatial as spat
 
 from ..common import requires, jit, HAS_JIT
 
+if not HAS_JIT:
+    from warnings import warn
+    NUMBA_WARN = "Numba not imported, so alpha shape construction may be slower than expected."
+
 EPS = np.finfo(float).eps
 
 __all__ = ['alpha_shape', 'alpha_shape_auto']
@@ -444,7 +448,7 @@ def alpha_shape(xys, alpha):
         29(4), 551-559.
     '''
     if not HAS_JIT:
-        warn("Numba not imported, so alpha shape construction may be slower than expected.")
+        warn(NUMBA_WARN)
     if xys.shape[0] < 4:
         from shapely import ops, geometry as geom
         return ops.cascaded_union([geom.Point(xy)
@@ -513,7 +517,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
         29(4), 551-559.
     '''
     if not HAS_JIT:
-        warn("Numba not imported, so alpha shape construction may be slower than expected.")
+        warn(NUMBA_WARN)
     from shapely import geometry as geom
     if xys.shape[0] < 4:
         from shapely import ops
