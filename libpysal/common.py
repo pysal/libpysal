@@ -37,7 +37,6 @@ try:
     from numba import jit
     HAS_JIT = True
 except ImportError:
-    from warnings import warn
     def jit(function=None, **kwargs):
         if function is not None:
             def wrapped(*original_args, **original_kw):
