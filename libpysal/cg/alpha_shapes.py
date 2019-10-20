@@ -457,13 +457,31 @@ def alpha_shape(xys, alpha):
     return geoms
 
 def _valid_hull(geoms, points):
+    '''
+    Sanity check within ``alpha_shape_auto()`` to verify the generated
+    alpha shape actually contains the original set of points (xys).
+    
+    Arguments
+    ---------
+    geoms   : GeoSeries
+              see alpha_geoms()
+    points  : list
+              xys parameter cast as shapely.geometry.Point objects
+    
+    Returns
+    -------
+    flag    : bool
+              Valid hull for alpha shape [True] or not [False]
+    '''
+    flag = True
+    # if there is not exactly one polygon
     if geoms.shape[0] != 1:
-        return False
+        flag = False
+    # if any (xys) points do not intersect the polygon
     for point in points:
         if not point.intersects(geoms[0]):
-            return False
-    return True
-
+            flag = False
+    return flag
 
 @requires('geopandas', 'shapely')
 def alpha_shape_auto(xys, step=1, verbose=False):
