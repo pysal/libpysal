@@ -1,3 +1,7 @@
+import copy
+import sys
+import time
+
 # external imports
 import numpy as np
 import numpy.linalg as la
@@ -9,18 +13,13 @@ from scipy.spatial.distance import pdist, cdist
 
 import pandas
 
-RTOL = .00001
-ATOL = 1e-7
-
-import copy
-import sys
-import time
 try:
     from patsy import PatsyError
 except ImportError:
     PatsyError = Exception
 
-
+RTOL = .00001
+ATOL = 1e-7
 MISSINGVALUE = None
 
 ######################
