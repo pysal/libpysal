@@ -33,24 +33,33 @@ except ImportError:
 
 MISSINGVALUE = None
 
+######################
+# Decorators/Utils   #
+######################
+
+# import numba.jit OR create mimic decorator and set existence flag
 try:
     from numba import jit
     HAS_JIT = True
 except ImportError:
     def jit(function=None, **kwargs):
+        """Mimic numba.jit() with synthetic wrapper
+        """
         if function is not None:
             def wrapped(*original_args, **original_kw):
+                """Case 1 - structure of a standard decorator
+                i.e., jit(function)(*args, **kwargs)
+                """
                 return function(*original_args, **original_kw)
             return wrapped
         else:
             def partial_inner(func):
+                """Case 2 - returns Case 1
+                i.e., jit()(function)(*args, **kwargs)
+                """
                 return jit(func)
             return partial_inner
     HAS_JIT = False
-
-######################
-# Decorators/Utils   #
-######################
 
 def simport(modname):
     """
@@ -110,7 +119,7 @@ def requires(*args, **kwargs):
     Returns
     -------
     Original function is all arg in args are importable, otherwise returns a
-    function that passes. 
+    function that passes.
     """
     v = kwargs.pop('verbose', True)
     wanted = copy.deepcopy(args)
