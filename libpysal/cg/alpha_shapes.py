@@ -8,39 +8,18 @@ Author(s):
     Dani Arribas-Bel daniel.arribas.bel@gmail.com
 """
 
-try:
-    from numba import jit
-    HAS_JIT = True
-except ImportError:
-    from warnings import warn
-    def jit(function=None, **kwargs):
-        if function is not None:
-            def wrapped(*original_args, **original_kw):
-                return function(*original_args, **original_kw)
-            return wrapped
-        else:
-            def partial_inner(func):
-                return jit(func)
-            return partial_inner
-    HAS_JIT = False
-
 import numpy as np
 import scipy.spatial as spat
 
-from ..common import requires
+from ..common import requires, jit, HAS_JIT
+
+if not HAS_JIT:
+    from warnings import warn
+    NUMBA_WARN = "Numba not imported, so alpha shape construction may be slower than expected."
 
 EPS = np.finfo(float).eps
 
 __all__ = ['alpha_shape', 'alpha_shape_auto']
-
-def _valid_hull(geoms, points):
-    if geoms.shape[0] != 1:
-        return False
-    for point in points:
-        if not point.intersects(geoms[0]):
-            return False
-    return True
-
 
 @jit
 def nb_dist(x, y):
@@ -461,7 +440,7 @@ def alpha_shape(xys, alpha):
         29(4), 551-559.
     '''
     if not HAS_JIT:
-        warn("Numba not imported, so alpha shape construction may be slower than expected.")
+        warn(NUMBA_WARN)
     if xys.shape[0] < 4:
         from shapely import ops, geometry as geom
         return ops.cascaded_union([geom.Point(xy)
@@ -476,6 +455,33 @@ def alpha_shape(xys, alpha):
     del triangles, a_pts, b_pts, c_pts
     geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
     return geoms
+
+def _valid_hull(geoms, points):
+    '''
+    Sanity check within ``alpha_shape_auto()`` to verify the generated
+    alpha shape actually contains the original set of points (xys).
+    
+    Arguments
+    ---------
+    geoms   : GeoSeries
+              see alpha_geoms()
+    points  : list
+              xys parameter cast as shapely.geometry.Point objects
+    
+    Returns
+    -------
+    flag    : bool
+              Valid hull for alpha shape [True] or not [False]
+    '''
+    flag = True
+    # if there is not exactly one polygon
+    if geoms.shape[0] != 1:
+        flag = False
+    # if any (xys) points do not intersect the polygon
+    for point in points:
+        if not point.intersects(geoms[0]):
+            flag = False
+    return flag
 
 @requires('geopandas', 'shapely')
 def alpha_shape_auto(xys, step=1, verbose=False):
@@ -530,7 +536,7 @@ def alpha_shape_auto(xys, step=1, verbose=False):
         29(4), 551-559.
     '''
     if not HAS_JIT:
-        warn("Numba not imported, so alpha shape construction may be slower than expected.")
+        warn(NUMBA_WARN)
     from shapely import geometry as geom
     if xys.shape[0] < 4:
         from shapely import ops
