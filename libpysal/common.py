@@ -7,6 +7,8 @@ import scipy.stats as stats
 from .cg.kdtree import KDTree
 from scipy.spatial.distance import pdist, cdist
 
+import pandas
+
 RTOL = .00001
 ATOL = 1e-7
 
@@ -17,10 +19,7 @@ try:
     from patsy import PatsyError
 except ImportError:
     PatsyError = Exception
-try:
-    import pandas
-except ImportError:
-    pandas = None
+
 
 MISSINGVALUE = None
 
@@ -54,7 +53,7 @@ except ImportError:
 
 def simport(modname):
     """
-    Safely import a module without raising an error. 
+    Safely import a module without raising an error.
 
     Parameters
     -----------
@@ -126,5 +125,5 @@ def requires(*args, **kwargs):
                     print(('not running {}'.format(function.__name__)))
                 else:
                     pass
-            return passer 
+            return passer
     return inner
