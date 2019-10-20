@@ -21,14 +21,6 @@ EPS = np.finfo(float).eps
 
 __all__ = ['alpha_shape', 'alpha_shape_auto']
 
-def _valid_hull(geoms, points):
-    if geoms.shape[0] != 1:
-        return False
-    for point in points:
-        if not point.intersects(geoms[0]):
-            return False
-    return True
-
 @jit
 def nb_dist(x, y):
     '''
@@ -463,6 +455,15 @@ def alpha_shape(xys, alpha):
     del triangles, a_pts, b_pts, c_pts
     geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
     return geoms
+
+def _valid_hull(geoms, points):
+    if geoms.shape[0] != 1:
+        return False
+    for point in points:
+        if not point.intersects(geoms[0]):
+            return False
+    return True
+
 
 @requires('geopandas', 'shapely')
 def alpha_shape_auto(xys, step=1, verbose=False):
