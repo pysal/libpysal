@@ -861,8 +861,8 @@ def distance_matrix(X, p=2.0, threshold=5e7):
     Parameters
     ----------
     X          : numpy.ndarray
-                    An n by k array where n is number of observations and
-                    k is number of dimensions (2 for x,y)
+                    An n by k array where n is the number of observations and
+                    k is the number of dimensions (2 for x,y).
     p          : float
                     Minkowski p-norm distance metric parameter:
                     1<=p<=infinity
