@@ -90,7 +90,7 @@ class W(object):
     Disconnected observations (islands)
 
     >>> from libpysal.weights import W
-    >>> w = W({1:[0],0:[1],2:[], 3:[]})
+    >>> w = W({1:[0],0:[1],2:[], 3:[]})  # doctest: +SKIP
     UserWarning: The weights matrix is not fully connected:
     There are 3 disconnected components.
     There are 2 islands with ids: 2, 3.
