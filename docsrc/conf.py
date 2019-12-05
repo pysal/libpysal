@@ -263,10 +263,15 @@ texinfo_documents = [
 
 # Generate the API documentation when building
 autosummary_generate = True
-numpydoc_show_class_members = True
-class_members_toctree = True
-numpydoc_show_inherited_class_members = True
+
+# avoid to show members twice
+numpydoc_show_class_members = False
 numpydoc_use_plots = True
+
+# automatically document class members
+autodoc_default_options = {
+    'members': True
+}
 
 # display the source code for Plot directive
 plot_include_source = True
