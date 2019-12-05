@@ -264,7 +264,7 @@ texinfo_documents = [
 # Generate the API documentation when building
 autosummary_generate = True
 
-# avoid to show members twice
+# avoid showing members twice
 numpydoc_show_class_members = False
 numpydoc_use_plots = True
 
