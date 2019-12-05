@@ -121,13 +121,13 @@
 <dl class="function">
 <dt id="libpysal.cg.distance_matrix">
 <code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">distance_matrix</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">p=2.0</em>, <em class="sig-param">threshold=50000000.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#distance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.distance_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distance Matrices</p>
+<dd><p>Calculate a distance matrix</p>
 <p>XXX Needs optimization/integration with other weights in pysal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>X</strong><span class="classifier">An, n by k numpy.ndarray</span></dt><dd><p>Where n is number of observations
-k is number of dimmensions (2 for x,y)</p>
+<dt><strong>X</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>An n by k array where n is the number of observations and
+k is the number of dimensions (2 for x,y).</p>
 </dd>
 <dt><strong>p</strong><span class="classifier">float</span></dt><dd><p>Minkowski p-norm distance metric parameter:
 1&lt;=p&lt;=infinity
@@ -135,15 +135,21 @@ k is number of dimmensions (2 for x,y)</p>
 1: Manhattan distance</p>
 </dd>
 <dt><strong>threshold</strong><span class="classifier">positive integer</span></dt><dd><p>If (n**2)*32 &gt; threshold use scipy.spatial.distance_matrix instead
-of working in ram, this is roughly the ammount of ram (in bytes) that will be used.</p>
+of working in RAM, this is roughly the amount of RAM (in bytes) that will be used.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>D</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>An n by m p-norm distance matrix.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">=</span><span class="n">distance_matrix</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 <span class="go">array([[0.        , 1.        , 2.        , 1.        , 1.41421356,</span>
 <span class="go">        2.23606798, 2.        , 2.23606798, 2.82842712],</span>
@@ -189,7 +195,7 @@ of working in ram, this is roughly the ammount of ram (in bytes) that will be us
     </p>
     <p>
         &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

@@ -1,6 +1,6 @@
 
 """
-Weights.
+Spatial Weights.
 """
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
@@ -45,38 +45,6 @@ class W(object):
     ids                  : list
                            Values to use for keys of the neighbors and weights dicts.
 
-    Attributes (NOTE: these are described by their docstrings. to view, use the `help` function)
-    ----------
-
-    asymmetries
-    cardinalities
-    component_labels
-    diagW2
-    diagWtW
-    diagWtW_WW
-    histogram
-    id2i
-    id_order
-    id_order_set
-    islands
-    max_neighbors
-    mean_neighbors
-    min_neighbors
-    n
-    n_components
-    neighbor_offsets
-    nonzero
-    pct_nonzero
-    s0
-    s1
-    s2
-    s2array
-    sd
-    sparse
-    trcW2
-    trcWtW
-    trcWtW_WW
-    transform
 
     Examples
     --------
@@ -115,6 +83,7 @@ class W(object):
     2533.667
 
     Cardinality Histogram
+
     >>> w.histogram
     [(2, 4), (3, 392), (4, 9604)]
 
@@ -122,7 +91,6 @@ class W(object):
 
     >>> from libpysal.weights import W
     >>> w = W({1:[0],0:[1],2:[], 3:[]})
-
     UserWarning: The weights matrix is not fully connected:
     There are 3 disconnected components.
     There are 2 islands with ids: 2, 3.
@@ -183,7 +151,7 @@ class W(object):
         # try and get people to use `Rook.from_shapefile(shapefile)` rather than
         # W.from_shapefile(shapefile, type=`rook`), otherwise we'd need to build
         # a type dispatch table. Generic W should be for stuff we don't know
-        # anything about. 
+        # anything about.
         raise NotImplementedError('Use type-specific constructors, like Rook,'
                                   ' Queen, DistanceBand, or Kernel')
 
@@ -192,10 +160,10 @@ class W(object):
         return WSP2W(WSP, silence_warnings=silence_warnings)
 
     @classmethod
-    def from_adjlist(cls, adjlist, focal_col='focal', 
+    def from_adjlist(cls, adjlist, focal_col='focal',
                      neighbor_col='neighbor', weight_col=None):
         """
-        Return an adjacency list representation of a weights object. 
+        Return an adjacency list representation of a weights object.
 
         Parameters
         ----------
@@ -211,23 +179,23 @@ class W(object):
                             are assumed to be 1.
         """
         if weight_col is None:
-           weight_col = 'weight' 
-        try_weightcol = getattr(adjlist, weight_col) 
+           weight_col = 'weight'
+        try_weightcol = getattr(adjlist, weight_col)
         if try_weightcol is None:
             adjlist = adjlist.copy(deep=True)
             adjlist['weight'] = 1
-        all_ids = set(adjlist[focal_col].tolist()) 
+        all_ids = set(adjlist[focal_col].tolist())
         all_ids |= set(adjlist[neighbor_col].tolist())
         grouper = adjlist.groupby(focal_col)
         neighbors = grouper[neighbor_col].apply(list).to_dict()
         weights = grouper[weight_col].apply(list).to_dict()
-        neighbors.update({k:[] for k in 
+        neighbors.update({k:[] for k in
                           all_ids.difference(list(neighbors.keys()))})
-        weights.update({k:[] for k in 
+        weights.update({k:[] for k in
                         all_ids.difference(list(weights.keys()))})
         return cls(neighbors=neighbors, weights=weights)
 
-    def to_adjlist(self, remove_symmetric=False, 
+    def to_adjlist(self, remove_symmetric=False,
                    focal_col='focal', neighbor_col='neighbor', weight_col='weight'):
         """
         Compute an adjacency list representation of a weights object.
@@ -239,20 +207,20 @@ class W(object):
                             a standard ``directed'' adjacency list will contain both the forward and
                             backward links by default because adjacency lists are a directed
                             graph representation. If this is True, a W created from this adjacency list
-                            **MAY NOT BE THE SAME** as the original W. If you would like to 
-                            consider (1,2) and (2,1) as distinct links, leave this as "False". 
+                            **MAY NOT BE THE SAME** as the original W. If you would like to
+                            consider (1,2) and (2,1) as distinct links, leave this as "False".
         focal_col       :   string
                             name of the column in which to store "source" node ids.
         neighbor_col    :   string
                             name of the column in which to store "destination" node ids.
         weight_col      :   string
-                            name of the column in which to store weight information. 
+                            name of the column in which to store weight information.
         """
         try:
             import pandas as pd
         except ImportError:
             raise ImportError('pandas must be installed to use this method')
-        adjlist = pd.DataFrame(((idx, n,w) for idx, neighb in self 
+        adjlist = pd.DataFrame(((idx, n,w) for idx, neighb in self
                                            for n,w in list(neighb.items())),
                                columns = ('focal', 'neighbor', 'weight'))
         return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
@@ -393,12 +361,7 @@ class W(object):
 
     @property
     def s0(self):
-        """s0 is defined as
-
-        .. math::
-
-               s0=\sum_i \sum_j w_{i,j}
-
+        """:math:`s0=\sum_i \sum_j w_{i,j}`
         """
         if 's0' not in self._cache:
             self._s0 = self.sparse.sum()
@@ -407,11 +370,7 @@ class W(object):
 
     @property
     def s1(self):
-        """s1 is defined as
-
-        .. math::
-
-               s1=1/2 \sum_i \sum_j (w_{i,j} + w_{j,i})^2
+        """:math:`s1=1/2 \sum_i \sum_j (w_{i,j} + w_{j,i})^2``
 
         """
         if 's1' not in self._cache:
@@ -439,11 +398,7 @@ class W(object):
 
     @property
     def s2(self):
-        """s2 is defined as
-
-        .. math::
-
-                s2=\sum_j (\sum_i w_{i,j} + \sum_i w_{j,i})^2
+        """:math:`s2=\sum_j (\sum_i w_{i,j} + \sum_i w_{j,i})^2`
 
         """
         if 's2' not in self._cache:
@@ -942,7 +897,7 @@ class W(object):
                     wijs = self.weights[i]
                     row_sum = sum(wijs) * 1.0
                     if row_sum == 0.0:
-                        if not self.silence_warnings:
+                        if not self.silent_island_warning:
                             print(('WARNING: ', i, ' is an island (no neighbors)'))
                     weights[i] = [wij / row_sum for wij in wijs]
                 weights = weights
@@ -1069,7 +1024,7 @@ class W(object):
         Construct a symmetric KNN weight.
 
         This ensures that the neighbors of each focal observation
-        consider the focal observation itself as a neighbor. 
+        consider the focal observation itself as a neighbor.
 
         This returns a generic W object, since the object is no
         longer guaranteed to have k neighbors for each observation.
@@ -1162,7 +1117,7 @@ class W(object):
 
         '''
         return WSP(self.sparse, self._id_order)
-    
+
     def set_shapefile(self, shapefile, idVariable=None, full=False):
         """
         Adding meta data for writing headers of gal and gwt files.
@@ -1193,23 +1148,23 @@ class W(object):
              node_kws=None, edge_kws=None):
         """
         Plot spatial weights objects.
-        NOTE: Requires matplotlib, and implicitly requires geopandas 
+        NOTE: Requires matplotlib, and implicitly requires geopandas
         dataframe as input.
 
         Parameters
         ---------
-        gdf         : geopandas geodataframe 
-                      the original shapes whose topological relations are 
-                      modelled in W. 
-        indexed_on  : str 
+        gdf         : geopandas geodataframe
+                      the original shapes whose topological relations are
+                      modelled in W.
+        indexed_on  : str
                       column of gdf which the weights object uses as an index.
                       (Default: None, so the geodataframe's index is used)
         ax          : matplotlib axis
-                      axis on which to plot the weights. 
+                      axis on which to plot the weights.
                       (Default: None, so plots on the current figure)
         color       : string
                       matplotlib color string, will color both nodes and edges
-                      the same by default. 
+                      the same by default.
         node_kws    : keyword argument dictionary
                       dictionary of keyword arguments to send to pyplot.scatter,
                       which provide fine-grained control over the aesthetics
@@ -1221,9 +1176,9 @@ class W(object):
 
         Returns
         -------
-        f,ax : matplotlib figure,axis on which the plot is made. 
+        f,ax : matplotlib figure,axis on which the plot is made.
 
-        NOTE: if you'd like to overlay the actual shapes from the 
+        NOTE: if you'd like to overlay the actual shapes from the
               geodataframe, call gdf.plot(ax=ax) after this. To plot underneath,
               adjust the z-order of the geopandas plot: gdf.plot(ax=ax,zorder=0)
 
@@ -1257,7 +1212,7 @@ class W(object):
             if 'color' not in edge_kws:
                 edge_kws['color'] = color
         else:
-            edge_kws=dict(color=color) 
+            edge_kws=dict(color=color)
 
         for idx, neighbors in self:
             if idx in self.islands:
@@ -1345,12 +1300,7 @@ class WSP(object):
 
     @property
     def s0(self):
-        """s0 is defined as:
-
-        .. math::
-
-               s0=\sum_i \sum_j w_{i,j}
-
+        """:math:`s0=\sum_i \sum_j w_{i,j}`
         """
         if 's0' not in self._cache:
             self._s0 = self.sparse.sum()
