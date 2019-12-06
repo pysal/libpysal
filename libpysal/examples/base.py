@@ -13,16 +13,16 @@ import zipfile
 import requests
 import pandas
 from bs4 import BeautifulSoup
-from ..io import open as load
+from ..io import open as ps_open
 
 PYSALDATA = 'pysal_data'
 
-def get_data_home(data_home=None):
+def get_data_home():
     """Return the path of the libpysal data directory.
 
 
-    This folder is used by some large dataset loaders to avoid downloading the
-    data multiple times.
+    This folder (~/pysal_data)is used by some large dataset loaders to avoid
+    downloading the data multiple times.
 
 
     Alternatively, it can be set by the 'PYSALDATA' environment variable or
@@ -30,18 +30,9 @@ def get_data_home(data_home=None):
     expanded to the user home folder
 
     If the folder does not already exisit, it is automatically created.
-
-    Parameters
-    ----------
-
-    data_home : str | None
-        The path to the libpysal data directory.
-
-
     """
 
-    if data_home is None:
-        data_home = environ.get('PYSALDATA', join("~", PYSALDATA))
+    data_home = environ.get('PYSALDATA', join("~", PYSALDATA))
     data_home = expanduser(data_home)
     if not exists(data_home):
         makedirs(data_home)
@@ -93,12 +84,13 @@ class Example:
         self.download_url = download_url
         self.explain_url = explain_url
         self.root = name.replace(" ", "_")
+        self.installed = self.downloaded()
 
     def get_local_path(self, path=get_data_home()):
         """Get local path for example"""
         return join(path, self.root)
 
-    def get_path(self, file_name):
+    def get_path(self, file_name, verbose=True):
         """
         get path for local file
         """
@@ -107,7 +99,8 @@ class Example:
             base_name = os.path.basename(file_path)
             if file_name == base_name:
                 return file_path
-        print("{} is not a file in this example".format(file_name))
+        if verbose:
+            print("{} is not a file in this example".format(file_name))
         return None
 
     def downloaded(self):
@@ -116,6 +109,7 @@ class Example:
         """
         path = self.get_local_path()
         if os.path.isdir(path):
+            self.installed = True
             return True
         return False
 
@@ -146,6 +140,7 @@ class Example:
             print('Downloading {} to {}'.format(self.name, target))
             archive.extractall(path=target)
             self.zipfile = archive
+            self.installed = True
 
     def get_file_list(self):
         """
@@ -175,7 +170,9 @@ class Example:
         """
         pth = self.get_path(file_name)
         if pth:
-            return load(pth)
+            return ps_open(pth)
+
+
 
 
 class Examples:
@@ -185,12 +182,19 @@ class Examples:
     """
 
     def __init__(self):
-        self.remotes = None
-        self.builtins = None
+        self.datasets = {}
+
+
+    def add_examples(self, examples):
+        """
+        add examples to the set of datasets available
+        """
+        self.datasets.update(examples)
+
 
     def explain(self, example_name):
-        if example_name in self.remotes:
-            return self.remotes[example_name].explain()
+        if example_name in self.datasets:
+            return self.datasets[example_name].explain()
         else:
             print('not available')
 
@@ -198,22 +202,31 @@ class Examples:
         """
         report available datasets
         """
-        datasets = self.remotes
+        datasets = self.datasets
         names = list(datasets.keys())
         names.sort()
         rows = []
         for name in names:
-            rows.append([name, datasets[name].description])
-        datasets = pandas.DataFrame(data = rows, columns=['Name', 'Description'])
+            description = datasets[name].description
+            installed = datasets[name].installed
+            rows.append([name, description, installed])
+        datasets = pandas.DataFrame(data = rows, columns=['Name', 'Description', 'Installed'])
         datasets.style.set_properties(subset=['text'], **{'width': '300px'})
         print(datasets.to_string())
 
+
     def load(self, example_name):
         """
-        load example dataset
+        load example dataset, download if not locally available
         """
-        if example_name in self.remotes:
-            return self.remotes[example_name]
+        if example_name in self.datasets:
+            example = self.datasets[example_name]
+            if example.installed:
+                return example
+            else:
+                "Downloading: {}".format(example_name)
+                example.download()
+                return example
         else:
             print('Example not available: {}'.format(example_name))
             return None
@@ -234,6 +247,11 @@ class Examples:
             except:
                 print('Example not downloaded: {}'.format(name))
 
+
+    def get_installed_names(self):
+        """Return names of all currently installed datasets"""
+        ds = self.datasets
+        return [name for name in ds if ds[name].installed]
 
 example_manager = Examples()
 

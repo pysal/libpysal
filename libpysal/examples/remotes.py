@@ -28,11 +28,21 @@ for row in rows[1:]:
 
 
 # Other Remotes
-datasets['Rio Grande do Sul'] = Example('Rio Grande do Sul',
-                          'Cities of the Brazilian State of Rio Grande do Sul',
-                          497, 3,
-                          'https://github.com/sjsrey/rio_grande_do_sul/archive/master.zip',
-                          'https://raw.githubusercontent.com/sjsrey/rio_grande_do_sul/master/README.md')
+
+name = 'Rio Grande do Sul'
+description = 'Cities of the Brazilian State of Rio Grande do Sul' 
+n = 497
+k = 3
+download_url = 'https://github.com/sjsrey/rio_grande_do_sul/archive/master.zip'
+explain_url = 'https://raw.githubusercontent.com/sjsrey/rio_grande_do_sul/master/README.md'
+datasets[name] = Example(name, description, n, k, download_url, explain_url)
+
+#datasets['Rio Grande do Sul'] = Example('Rio Grande do Sul',
+#                          'Cities of the Brazilian State of Rio Grande do Sul',
+#                          497, 3,
+#                          'https://github.com/sjsrey/rio_grande_do_sul/archive/master.zip',
+#                          'https://raw.githubusercontent.com/sjsrey/rio_grande_do_sul/master/README.md')
+
 
 out_dict = {}
 for dataset in datasets:

@@ -2,7 +2,8 @@
 The :mod:`libpysal.examples` module includes a number of small built-in example datasets as well as functions to fetch larger datasets.
 """
 from .base import example_manager
-from .remotes import datasets as remotes
+from .remotes import datasets as remote_datasets
+from .builtin import datasets as builtin_datasets
 #from .nat import fetch_nat
 #from .rio_grande_do_sul import fetch_rio
 #from .guerry import fetch_guerry
@@ -16,8 +17,9 @@ __all__ = [
 ]
 
 
-example_manager.remotes = remotes
-example_manager.locals = {}
+example_manager.add_examples(remote_datasets)
+example_manager.add_examples(builtin_datasets)
+
 
 
 def get_path(name):
@@ -45,6 +47,24 @@ def load_example(example_name):
     Load example dataset instance
     """
     return example_manager.load(example_name)
+
+def get_path(file_name):
+    """
+    get the path for a file by searching installed datasets
+    """
+
+    installed = example_manager.get_installed_names()
+    for name in installed:
+        example = example_manager.datasets[name]
+        pth = example.get_path(file_name, verbose=False)
+        if pth:
+            return pth
+    print("{} is not a file in any installed datasets.")
+
+
+
+
+
 
 #remotes = {}
 #remotes['guerry'] = fetch_guerry
