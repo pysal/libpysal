@@ -32,7 +32,7 @@ for row in rows[1:]:
 
 # rio
 name = 'Rio Grande do Sul'
-description = 'Cities of the Brazilian State of Rio Grande do Sul' 
+description = 'Cities of the Brazilian State of Rio Grande do Sul'
 n = 497
 k = 3
 download_url = 'https://github.com/sjsrey/rio_grande_do_sul/archive/master.zip'
@@ -52,20 +52,32 @@ datasets[name] = Example(name, description, n, k, download_url, explain_url)
 name = 'taz'
 description = 'Traffic Analysis Zones in So. California'
 n = 4109
-k = 14 
+k = 14
 download_url = 'https://github.com/sjsrey/taz/archive/master.zip'
 explain_url = 'https://raw.githubusercontent.com/sjsrey/taz/master/README.md'
 datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
+# clearwater
+name = 'clearwater'
+description = 'mgwr testing dataset'
+n = 239
+k = 14
+download_url = 'https://github.com/sjsrey/clearwater/archive/master.zip'
+explain_url = 'https://raw.githubusercontent.com/sjsrey/clearwater/master/README.md'
+datasets[name] = Example(name, description, n, k, download_url, explain_url)
+
+# newHaven
+name = 'newHaven'
+description = 'Network testing dataset'
+n = 3293
+k = 5 
+download_url = 'https://github.com/sjsrey/newHaven/archive/master.zip'
+explain_url = 'https://raw.githubusercontent.com/sjsrey/newHaven/master/README.md'
+datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
 
-
-# assemble all remotes
-
-out_dict = {}
-for dataset in datasets:
-    out_dict[dataset] = datasets[dataset].json_dict()
-
+# remove Cars dataset as it is broken
+datasets.pop('Cars')
 
 def download(datasets=datasets):
     '''

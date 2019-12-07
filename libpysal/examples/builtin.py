@@ -9,8 +9,8 @@ from .base import  get_list_of_files
 
 dirs = [
     "10740", "arcgis", "baltim", "berlin", "book", "burkitt", "calemp",
-    "chicago", "clearwater", "columbus", "desmith", "geodanet", "georgia",
-    "juvenile", "Line", "mexico", "networks", "newHaven", "Point", "Polygon",
+    "chicago", "columbus", "desmith", "geodanet", "georgia",
+    "juvenile", "Line", "mexico", "networks", "Point", "Polygon",
     "Polygon_Holes", "sids2", "snow_maps", "stl", "street_net_pts", "tests",
     "tokyo", "us_income", "virginia", "wmat"
 ]

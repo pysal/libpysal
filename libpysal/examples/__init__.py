@@ -5,13 +5,6 @@ from .base import example_manager
 from .remotes import datasets as remote_datasets
 from .remotes import download as fetch_all
 from .builtin import datasets as builtin_datasets
-#from .nat import fetch_nat
-#from .rio_grande_do_sul import fetch_rio
-#from .guerry import fetch_guerry
-#from .nyc_bikes import fetch_bikes
-#from .sacramento2 import fetch_sacramento2
-#from .south import fetch_south
-#from .taz import fetch_taz
 
 __all__ = ['get_path', 'available', 'explain', 'fetch_all']
 
