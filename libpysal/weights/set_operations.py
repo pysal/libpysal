@@ -478,8 +478,6 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     ``outSP``:
 
     >>> wc = libpysal.weights.w_clip(w1, w2, outSP=False)
-    WARNING: there are 2 disconnected observations
-    Island ids:  [1, 5]
     >>> wc.full()[0]
     array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,
             0.        ],
