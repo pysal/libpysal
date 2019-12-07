@@ -29,6 +29,8 @@ for row in rows[1:]:
 
 # Other Remotes
 
+
+# rio
 name = 'Rio Grande do Sul'
 description = 'Cities of the Brazilian State of Rio Grande do Sul' 
 n = 497
@@ -37,12 +39,28 @@ download_url = 'https://github.com/sjsrey/rio_grande_do_sul/archive/master.zip'
 explain_url = 'https://raw.githubusercontent.com/sjsrey/rio_grande_do_sul/master/README.md'
 datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
-#datasets['Rio Grande do Sul'] = Example('Rio Grande do Sul',
-#                          'Cities of the Brazilian State of Rio Grande do Sul',
-#                          497, 3,
-#                          'https://github.com/sjsrey/rio_grande_do_sul/archive/master.zip',
-#                          'https://raw.githubusercontent.com/sjsrey/rio_grande_do_sul/master/README.md')
+# nyc bikes
+name = 'nyc_bikes'
+description = 'New York City Bike Trips'
+n = 14042
+k = 27
+download_url = 'https://github.com/sjsrey/nyc_bikes/archive/master.zip'
+explain_url = 'https://raw.githubusercontent.com/sjsrey/nyc_bikes/master/README.md'
+datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
+# taz
+name = 'taz'
+description = 'Traffic Analysis Zones in So. California'
+n = 4109
+k = 14 
+download_url = 'https://github.com/sjsrey/taz/archive/master.zip'
+explain_url = 'https://raw.githubusercontent.com/sjsrey/taz/master/README.md'
+datasets[name] = Example(name, description, n, k, download_url, explain_url)
+
+
+
+
+# assemble all remotes
 
 out_dict = {}
 for dataset in datasets:
