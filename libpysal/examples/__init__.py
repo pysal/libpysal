@@ -3,6 +3,7 @@ The :mod:`libpysal.examples` module includes a number of small built-in example 
 """
 from .base import example_manager
 from .remotes import datasets as remote_datasets
+from .remotes import download as fetch_all
 from .builtin import datasets as builtin_datasets
 #from .nat import fetch_nat
 #from .rio_grande_do_sul import fetch_rio
@@ -60,7 +61,6 @@ def get_path(file_name):
         if pth:
             return pth
     print("{} is not a file in any installed datasets.")
-
 
 
 
