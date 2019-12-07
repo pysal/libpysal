@@ -9,6 +9,7 @@ from .base import (PYSALDATA, Example, get_list_of_files,
 
 
 # Geoda Center Data Sets
+
 url = "https://geodacenter.github.io/data-and-lab//"
 page = requests.get(url)
 soup = BeautifulSoup(page.text, 'html.parser')
@@ -28,7 +29,6 @@ for row in rows[1:]:
 
 
 # Other Remotes
-
 
 # rio
 name = 'Rio Grande do Sul'
@@ -70,7 +70,7 @@ datasets[name] = Example(name, description, n, k, download_url, explain_url)
 name = 'newHaven'
 description = 'Network testing dataset'
 n = 3293
-k = 5 
+k = 5
 download_url = 'https://github.com/sjsrey/newHaven/archive/master.zip'
 explain_url = 'https://raw.githubusercontent.com/sjsrey/newHaven/master/README.md'
 datasets[name] = Example(name, description, n, k, download_url, explain_url)
