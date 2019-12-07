@@ -1,5 +1,5 @@
 sphinx>=1.4.3
 sphinx_gallery
 sphinxcontrib-bibtex
-sphinx_bootstrap_theme
+sphinx_bootstrap_theme>=0.7.0
 numpydoc
