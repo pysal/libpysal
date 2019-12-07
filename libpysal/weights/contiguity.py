@@ -103,7 +103,7 @@ class Rook(W):
         if sparse:
             w = w.to_WSP()
         return w
-    
+
     @classmethod
     def from_iterable(cls, iterable, sparse=False, **kwargs):
         """
@@ -111,14 +111,14 @@ class Rook(W):
         will cast the polygons to PySAL polygons, then build the W.
 
         Parameters
-        ---------
+        ----------
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
                       support iteration. Can be either Shapely or PySAL shapes.
         **kw        : keyword arguments
                       optional arguments for  :class:`pysal.weights.W`
         See Also
-        ----------
+        --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Rook`
         """
@@ -137,7 +137,7 @@ class Rook(W):
         using ids from the dataframe.
 
         Parameters
-        ---------
+        ----------
         df          : DataFrame
                       a :class: `pandas.DataFrame` containing geometries to use
                       for spatial weights
@@ -157,7 +157,7 @@ class Rook(W):
                       argument. 
 
         See Also
-        ---------
+        --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Rook`
         """
@@ -190,7 +190,7 @@ class Queen(W):
                   optional arguments for :class:`pysal.weights.W`
 
     See Also
-    ---------
+    --------
     :class:`libpysal.weights.weights.W`
     """
 
@@ -270,14 +270,14 @@ class Queen(W):
         will cast the polygons to PySAL polygons, then build the W.
 
         Parameters
-        ---------
+        ----------
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
                       support iteration. Contents may either be a shapely or PySAL shape.
         **kw        : keyword arguments
                       optional arguments for  :class:`pysal.weights.W`
         See Also
-        ----------
+        ---------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguiyt.Queen`
         """
@@ -295,7 +295,7 @@ class Queen(W):
         using ids from the dataframe.
 
         Parameters
-        ---------
+        ----------
         df          : DataFrame
                       a :class: `pandas.DataFrame` containing geometries to use
                       for spatial weights
@@ -315,7 +315,7 @@ class Queen(W):
                       argument. 
 
         See Also
-        ---------
+        --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Queen`
         """

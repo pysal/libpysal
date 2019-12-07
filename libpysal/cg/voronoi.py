@@ -8,10 +8,10 @@ Adapted from https://gist.github.com/pv/8036995
 import numpy as np
 from scipy.spatial import Voronoi
 
-
 __author__ = "Serge Rey <sjsrey@gmail.com>"
 
 __all__ = ['voronoi_frames']
+
 
 def voronoi(points, radius=None):
     """
@@ -57,6 +57,7 @@ def voronoi(points, radius=None):
     vor = Voronoi(points)
     return voronoi_regions(vor, radius=radius)
 
+
 def voronoi_regions(vor, radius=None):
     """
     Finite voronoi regions for a 2-d point set.
@@ -75,7 +76,7 @@ def voronoi_regions(vor, radius=None):
 
     center = vor.points.mean(axis=0)
     if radius is None:
-        radius = vor.points.ptp().max()*2
+        radius = vor.points.ptp().max() * 2
 
     all_ridges = {}
     for (p1, p2), (v1, v2) in zip(vor.ridge_points, vor.ridge_vertices):
@@ -98,7 +99,7 @@ def voronoi_regions(vor, radius=None):
             if v1 >= 0:
                 continue
 
-            t = vor.points[p2] - vor.points[p1] 
+            t = vor.points[p2] - vor.points[p1]
             t /= np.linalg.norm(t)
             n = np.array([-t[1], t[0]])
 
@@ -111,7 +112,7 @@ def voronoi_regions(vor, radius=None):
 
         vs = np.asarray([new_vertices[v] for v in new_region])
         c = vs.mean(axis=0)
-        angles = np.arctan2(vs[:, 1] - c[1], vs[:,0] - c[0])
+        angles = np.arctan2(vs[:, 1] - c[1], vs[:, 0] - c[0])
         new_region = np.array(new_region)[np.argsort(angles)]
 
         new_regions.append(new_region.tolist())
@@ -160,18 +161,23 @@ def as_dataframes(regions, vertices, points):
 
     if gpd is not None:
         region_df = gpd.GeoDataFrame()
-        region_df['geometry'] = [Polygon(vertices[region]) for region in regions]
+        region_df['geometry'] = [
+            Polygon(vertices[region]) for region in regions
+        ]
 
         point_df = gpd.GeoDataFrame()
         point_df['geometry'] = gpd.GeoSeries(Point(pnt) for pnt in points)
     else:
         import pandas as pd
         region_df = pd.DataFrame()
-        region_df['geometry'] = [Polygon(vertices[region].tolist()) for region in regions]
+        region_df['geometry'] = [
+            Polygon(vertices[region].tolist()) for region in regions
+        ]
         point_df = pd.DataFrame()
         point_df['geometry'] = [Point(pnt) for pnt in points]
 
     return region_df, point_df
+
 
 def voronoi_frames(points, radius=None, clip='extent'):
     """
@@ -184,28 +190,19 @@ def voronoi_frames(points, radius=None, clip='extent'):
                   originator points
 
     radius      : float
-                  distance to "points at infinity" used in 
-                  building voronoi cells
+                  distance to "points at infinity" used in building voronoi cells
 
     clip        : str, or shapely.geometry.Polygon
                   an overloaded option about how to clip the voronoi
                   cells. The options are:
-                  - 'none'/None: no clip is applied. Voronoi cells may be arbitrarily
-                                 larger that the source map. Note that this may lead
-                                 to cells that are many orders of magnitude larger
-                                 in extent than the original map. Not recommended. 
-                  - 'bbox'/'extent'/'bounding box': clip the voronoi cells to the 
-                                                    bounding box of the input points.
-                  - 'chull'/'convex hull': clip the voronoi cells to the convex hull
-                                           of the input points.
-                  - 'ashape'/'ahull': clip the voronoi cells to the tightest hull that
-                                      contains all points (e.g. the smallest alphashape,
-                                      using libpysal.cg.alpha_shape_auto)
+                  - 'none'/None: no clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.
+                  - 'bbox'/'extent'/'bounding box': clip the voronoi cells to the bounding box of the input points.
+                  - 'chull'/'convex hull': clip the voronoi cells to the convex hull of the input points.
+                  - 'ashape'/'ahull': clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using libpysal.cg.alpha_shape_auto)
                   - Polygon: clip to an arbitrary Polygon
 
     tolerance   : float
-                  percent of map width to use to buffer the extent
-                  of the map, if clipping (default: .01, or 1 percent) 
+                  percent of map width to use to buffer the extent of the map, if clipping (default: .01, or 1 percent)
 
     Returns
     -------
@@ -240,10 +237,9 @@ def voronoi_frames(points, radius=None, clip='extent'):
     regions, vertices = voronoi(points, radius=radius)
     regions, vertices = as_dataframes(regions, vertices, points)
     if clip:
-        regions = clip_voronoi_frames_to_extent(regions, 
-                                                vertices,
-                                                clip=clip)
-    return regions,vertices 
+        regions = clip_voronoi_frames_to_extent(regions, vertices, clip=clip)
+    return regions, vertices
+
 
 def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
     """
@@ -289,28 +285,26 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
         return regions
     elif clip.lower() == 'none':
         return regions
-    elif clip.lower() in ('bounds','bounding box', 'bbox', 'extent'):
-        min_x, min_y, max_x, max_y = vertices.total_bounds 
-        bounding_poly = Polygon([(min_x, min_y), (min_x, max_y), 
+    elif clip.lower() in ('bounds', 'bounding box', 'bbox', 'extent'):
+        min_x, min_y, max_x, max_y = vertices.total_bounds
+        bounding_poly = Polygon([(min_x, min_y), (min_x, max_y),
                                  (max_x, max_y), (max_x, min_y),
                                  (min_x, min_y)])
         clipper = geopandas.GeoDataFrame(geometry=[bounding_poly])
-    elif clip.lower() in ('chull','convex hull', 'convex_hull'):
+    elif clip.lower() in ('chull', 'convex hull', 'convex_hull'):
         clipper = geopandas.GeoDataFrame(geometry=[vertices.geometry\
                                                            .unary_union\
                                                            .convex_hull])
-    elif clip.lower() in ('ahull','alpha hull', 'alpha_hull', 
-                               'ashape','alpha shape', 'alpha_shape'):
+    elif clip.lower() in ('ahull', 'alpha hull', 'alpha_hull', 'ashape',
+                          'alpha shape', 'alpha_shape'):
         from .alpha_shapes import alpha_shape_auto
         from ..weights.distance import get_points_array
         coordinates = get_points_array(vertices.geometry)
-        clipper = geopandas.GeoDataFrame(geometry=[alpha_shape_auto(coordinates)])
+        clipper = geopandas.GeoDataFrame(
+            geometry=[alpha_shape_auto(coordinates)])
     else:
         raise ValueError('clip type "{}" not understood. Try one '
                          ' of the supported options: [None, "extent", '
                          '"chull", "ahull"]'.format(clip))
     clipped_regions = geopandas.overlay(regions, clipper, how='intersection')
     return clipped_regions
-    
-    
-
