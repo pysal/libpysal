@@ -517,14 +517,14 @@ class Kernel(W):
         Kernel based weights from shapefile
 
         Parameters
-        ---------
+        ----------
         shapefile   : string
                       shapefile name with shp suffix
         idVariable  : string
                       name of column in shapefile's DBF to use for ids
 
         Returns
-        --------
+        -------
         Kernel Weights Object
 
         See Also
