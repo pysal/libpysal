@@ -44,7 +44,7 @@ def ODW(Wo, Wd, transform='r', silence_warnings=True):
     >>> OD.weights[0]
     [0.25, 0.25, 0.25, 0.25]
     >>> OD.neighbors[0]
-    array([ 5,  6,  9, 10], dtype=int32)
+    [5, 6, 9, 10]
     >>> OD.full()[0][0]
     array([0.  , 0.  , 0.  , 0.  , 0.  , 0.25, 0.25, 0.  , 0.  , 0.25, 0.25,
            0.  , 0.  , 0.  , 0.  , 0.  ])
