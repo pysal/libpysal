@@ -13,21 +13,10 @@ from .builtin import datasets as builtin_datasets
 #from .south import fetch_south
 #from .taz import fetch_taz
 
-__all__ = [
-    'get_path', 'available', 'explain', 'fetch_nat', 'fetch_rio', 'fetch_all'
-]
-
+__all__ = ['get_path', 'available', 'explain', 'fetch_all']
 
 example_manager.add_examples(remote_datasets)
 example_manager.add_examples(builtin_datasets)
-
-
-
-def get_path(name):
-    """
-    Get path of  example folders
-    """
-    return example_manager.get_path(name)
 
 
 def available():
@@ -37,17 +26,19 @@ def available():
     return example_manager.available()
 
 
-def explain(name):  
+def explain(name):
     """
     Explain a dataset by name
     """
     return example_manager.explain(name)
+
 
 def load_example(example_name):
     """
     Load example dataset instance
     """
     return example_manager.load(example_name)
+
 
 def get_path(file_name):
     """
@@ -61,23 +52,3 @@ def get_path(file_name):
         if pth:
             return pth
     print("{} is not a file in any installed datasets.")
-
-
-
-
-
-#remotes = {}
-#remotes['guerry'] = fetch_guerry
-#remotes['rio'] = fetch_rio
-#remotes['nat'] = fetch_nat
-#remotes['nyc_bikes'] = fetch_bikes
-#remotes['sacramento2'] = fetch_sacramento2
-#remotes['south'] = fetch_south
-#remotes['taz'] = fetch_taz
-#
-#
-#def fetch_all():
-#    """Fetch all the large remote example datasets"""
-#    for data_set in remotes:
-#        remotes[data_set]()
-
