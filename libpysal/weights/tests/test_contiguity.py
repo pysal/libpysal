@@ -122,6 +122,27 @@ class Test_Queen(ut.TestCase, Contiguity_Mixin):
         computed = self.cls.from_dataframe(eberly).sparse.toarray()
         np.testing.assert_array_equal(eberly_w, computed)
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, 'Missing Geopandas')
+    def test_from_dataframe(self):
+        p = ("https://github.com/rsbivand/ectqg19-workshop/"\
+            "raw/master/data/lux_regions.gpkg")
+        db = geopandas.read_file(p)
+        wq = self.cls.from_dataframe(db)
+        self.assertEqual(wq.id_order[:5], [0, 1, 2, 3, 4])
+        wq_idv = self.cls.from_dataframe(db, idVariable='LAU2')
+        ido = ['0214', '1002', '0204', '0310', '0409']
+        self.assertEqual(wq_idv.id_order[:5], ido)
+        wq_sind = self.cls.from_dataframe(db.set_index('LAU2'))
+        self.assertEqual(wq_sind.id_order[:5], ido)
+        n_0 = [41, 2, 47, 7]
+        n_s = db.LAU2[n_0]
+        self.assertEqual(set(n_s) ,set(wq_idv.neighbors['0214']))
+        self.assertEqual(wq_sind.neighbors, wq_idv.neighbors)
+
+
+
+
+
 class Test_Rook(ut.TestCase, Contiguity_Mixin):
     def setUp(self):
         Contiguity_Mixin.setUp(self)
@@ -143,6 +164,9 @@ class Test_Voronoi(ut.TestCase):
         self.assertEqual(w.neighbors, {0: [2, 3, 4],
                                         1: [2], 2: [0, 1, 4],
                                         3: [0, 4], 4: [0, 2, 3]})
+
+
+
 
 q = ut.TestLoader().loadTestsFromTestCase(Test_Queen)
 r = ut.TestLoader().loadTestsFromTestCase(Test_Rook)
