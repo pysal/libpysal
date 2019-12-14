@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.voronoi &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.cg.voronoi &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -122,10 +122,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">Voronoi</span>
 
-
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Serge Rey &lt;sjsrey@gmail.com&gt;&quot;</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;voronoi_frames&#39;</span><span class="p">]</span>
+
 
 <span class="k">def</span> <span class="nf">voronoi</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -171,6 +171,7 @@
     <span class="n">vor</span> <span class="o">=</span> <span class="n">Voronoi</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">voronoi_regions</span><span class="p">(</span><span class="n">vor</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
 
+
 <span class="k">def</span> <span class="nf">voronoi_regions</span><span class="p">(</span><span class="n">vor</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finite voronoi regions for a 2-d point set.</span>
@@ -189,7 +190,7 @@
 
     <span class="n">center</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">radius</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">ptp</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">*</span><span class="mi">2</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">ptp</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span>
 
     <span class="n">all_ridges</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">),</span> <span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">vor</span><span class="o">.</span><span class="n">ridge_points</span><span class="p">,</span> <span class="n">vor</span><span class="o">.</span><span class="n">ridge_vertices</span><span class="p">):</span>
@@ -212,7 +213,7 @@
             <span class="k">if</span> <span class="n">v1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="n">t</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">p2</span><span class="p">]</span> <span class="o">-</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">p1</span><span class="p">]</span> 
+            <span class="n">t</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">p2</span><span class="p">]</span> <span class="o">-</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">p1</span><span class="p">]</span>
             <span class="n">t</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 
@@ -225,7 +226,7 @@
 
         <span class="n">vs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">new_vertices</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_region</span><span class="p">])</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">vs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">vs</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">vs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">vs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">new_region</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_region</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">angles</span><span class="p">)]</span>
 
         <span class="n">new_regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_region</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
@@ -274,18 +275,23 @@
 
     <span class="k">if</span> <span class="n">gpd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">region_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">()</span>
-        <span class="n">region_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="n">region</span><span class="p">])</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">]</span>
+        <span class="n">region_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="n">region</span><span class="p">])</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span>
+        <span class="p">]</span>
 
         <span class="n">point_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">()</span>
         <span class="n">point_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="n">pnt</span><span class="p">)</span> <span class="k">for</span> <span class="n">pnt</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
         <span class="n">region_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-        <span class="n">region_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="n">region</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">]</span>
+        <span class="n">region_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="n">region</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span>
+        <span class="p">]</span>
         <span class="n">point_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
         <span class="n">point_df</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">(</span><span class="n">pnt</span><span class="p">)</span> <span class="k">for</span> <span class="n">pnt</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">region_df</span><span class="p">,</span> <span class="n">point_df</span>
+
 
 <div class="viewcode-block" id="voronoi_frames"><a class="viewcode-back" href="../../../generated/libpysal.cg.voronoi_frames.html#libpysal.cg.voronoi_frames">[docs]</a><span class="k">def</span> <span class="nf">voronoi_frames</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="s1">&#39;extent&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -298,28 +304,19 @@
 <span class="sd">                  originator points</span>
 
 <span class="sd">    radius      : float</span>
-<span class="sd">                  distance to &quot;points at infinity&quot; used in </span>
-<span class="sd">                  building voronoi cells</span>
+<span class="sd">                  distance to &quot;points at infinity&quot; used in building voronoi cells</span>
 
 <span class="sd">    clip        : str, or shapely.geometry.Polygon</span>
 <span class="sd">                  an overloaded option about how to clip the voronoi</span>
 <span class="sd">                  cells. The options are:</span>
-<span class="sd">                  - &#39;none&#39;/None: no clip is applied. Voronoi cells may be arbitrarily</span>
-<span class="sd">                                 larger that the source map. Note that this may lead</span>
-<span class="sd">                                 to cells that are many orders of magnitude larger</span>
-<span class="sd">                                 in extent than the original map. Not recommended. </span>
-<span class="sd">                  - &#39;bbox&#39;/&#39;extent&#39;/&#39;bounding box&#39;: clip the voronoi cells to the </span>
-<span class="sd">                                                    bounding box of the input points.</span>
-<span class="sd">                  - &#39;chull&#39;/&#39;convex hull&#39;: clip the voronoi cells to the convex hull</span>
-<span class="sd">                                           of the input points.</span>
-<span class="sd">                  - &#39;ashape&#39;/&#39;ahull&#39;: clip the voronoi cells to the tightest hull that</span>
-<span class="sd">                                      contains all points (e.g. the smallest alphashape,</span>
-<span class="sd">                                      using libpysal.cg.alpha_shape_auto)</span>
+<span class="sd">                  - &#39;none&#39;/None: no clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.</span>
+<span class="sd">                  - &#39;bbox&#39;/&#39;extent&#39;/&#39;bounding box&#39;: clip the voronoi cells to the bounding box of the input points.</span>
+<span class="sd">                  - &#39;chull&#39;/&#39;convex hull&#39;: clip the voronoi cells to the convex hull of the input points.</span>
+<span class="sd">                  - &#39;ashape&#39;/&#39;ahull&#39;: clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using libpysal.cg.alpha_shape_auto)</span>
 <span class="sd">                  - Polygon: clip to an arbitrary Polygon</span>
 
 <span class="sd">    tolerance   : float</span>
-<span class="sd">                  percent of map width to use to buffer the extent</span>
-<span class="sd">                  of the map, if clipping (default: .01, or 1 percent) </span>
+<span class="sd">                  percent of map width to use to buffer the extent of the map, if clipping (default: .01, or 1 percent)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -354,10 +351,9 @@
     <span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span> <span class="o">=</span> <span class="n">voronoi</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
     <span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span> <span class="o">=</span> <span class="n">as_dataframes</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">clip</span><span class="p">:</span>
-        <span class="n">regions</span> <span class="o">=</span> <span class="n">clip_voronoi_frames_to_extent</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> 
-                                                <span class="n">vertices</span><span class="p">,</span>
-                                                <span class="n">clip</span><span class="o">=</span><span class="n">clip</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">regions</span><span class="p">,</span><span class="n">vertices</span> </div>
+        <span class="n">regions</span> <span class="o">=</span> <span class="n">clip_voronoi_frames_to_extent</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="n">clip</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span></div>
+
 
 <span class="k">def</span> <span class="nf">clip_voronoi_frames_to_extent</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="s1">&#39;extent&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -403,31 +399,29 @@
         <span class="k">return</span> <span class="n">regions</span>
     <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">regions</span>
-    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bounds&#39;</span><span class="p">,</span><span class="s1">&#39;bounding box&#39;</span><span class="p">,</span> <span class="s1">&#39;bbox&#39;</span><span class="p">,</span> <span class="s1">&#39;extent&#39;</span><span class="p">):</span>
-        <span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">total_bounds</span> 
-        <span class="n">bounding_poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">),</span> <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">),</span> 
+    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bounds&#39;</span><span class="p">,</span> <span class="s1">&#39;bounding box&#39;</span><span class="p">,</span> <span class="s1">&#39;bbox&#39;</span><span class="p">,</span> <span class="s1">&#39;extent&#39;</span><span class="p">):</span>
+        <span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">total_bounds</span>
+        <span class="n">bounding_poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">),</span> <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">),</span>
                                  <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">),</span> <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">),</span>
                                  <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">)])</span>
         <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">bounding_poly</span><span class="p">])</span>
-    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;chull&#39;</span><span class="p">,</span><span class="s1">&#39;convex hull&#39;</span><span class="p">,</span> <span class="s1">&#39;convex_hull&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;chull&#39;</span><span class="p">,</span> <span class="s1">&#39;convex hull&#39;</span><span class="p">,</span> <span class="s1">&#39;convex_hull&#39;</span><span class="p">):</span>
         <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">vertices</span><span class="o">.</span><span class="n">geometry</span>\
                                                            <span class="o">.</span><span class="n">unary_union</span>\
                                                            <span class="o">.</span><span class="n">convex_hull</span><span class="p">])</span>
-    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ahull&#39;</span><span class="p">,</span><span class="s1">&#39;alpha hull&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_hull&#39;</span><span class="p">,</span> 
-                               <span class="s1">&#39;ashape&#39;</span><span class="p">,</span><span class="s1">&#39;alpha shape&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_shape&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ahull&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha hull&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_hull&#39;</span><span class="p">,</span> <span class="s1">&#39;ashape&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;alpha shape&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_shape&#39;</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.alpha_shapes</span> <span class="k">import</span> <span class="n">alpha_shape_auto</span>
         <span class="kn">from</span> <span class="nn">..weights.distance</span> <span class="k">import</span> <span class="n">get_points_array</span>
         <span class="n">coordinates</span> <span class="o">=</span> <span class="n">get_points_array</span><span class="p">(</span><span class="n">vertices</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
-        <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">alpha_shape_auto</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)])</span>
+        <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">alpha_shape_auto</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;clip type &quot;</span><span class="si">{}</span><span class="s1">&quot; not understood. Try one &#39;</span>
                          <span class="s1">&#39; of the supported options: [None, &quot;extent&quot;, &#39;</span>
                          <span class="s1">&#39;&quot;chull&quot;, &quot;ahull&quot;]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clip</span><span class="p">))</span>
     <span class="n">clipped_regions</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">overlay</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">clipper</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;intersection&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">clipped_regions</span>
-    
-    
-
 </pre></div>
 
     </div>
@@ -444,8 +438,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

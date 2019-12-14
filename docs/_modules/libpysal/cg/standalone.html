@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.standalone &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.cg.standalone &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -968,16 +968,15 @@
 
 
 <div class="viewcode-block" id="distance_matrix"><a class="viewcode-back" href="../../../generated/libpysal.cg.distance_matrix.html#libpysal.cg.distance_matrix">[docs]</a><span class="k">def</span> <span class="nf">distance_matrix</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">5e7</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Distance Matrices</span>
+    <span class="sd">&quot;&quot;&quot;Calculate a distance matrix</span>
 
 <span class="sd">    XXX Needs optimization/integration with other weights in pysal</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    X          : An, n by k numpy.ndarray</span>
-<span class="sd">                    Where n is number of observations</span>
-<span class="sd">                    k is number of dimmensions (2 for x,y)</span>
+<span class="sd">    X          : numpy.ndarray</span>
+<span class="sd">                    An n by k array where n is the number of observations and</span>
+<span class="sd">                    k is the number of dimensions (2 for x,y).</span>
 <span class="sd">    p          : float</span>
 <span class="sd">                    Minkowski p-norm distance metric parameter:</span>
 <span class="sd">                    1&lt;=p&lt;=infinity</span>
@@ -985,13 +984,18 @@
 <span class="sd">                    1: Manhattan distance</span>
 <span class="sd">    threshold  : positive integer</span>
 <span class="sd">                    If (n**2)*32 &gt; threshold use scipy.spatial.distance_matrix instead</span>
-<span class="sd">                    of working in ram, this is roughly the ammount of ram (in bytes) that will be used.</span>
+<span class="sd">                    of working in RAM, this is roughly the amount of RAM (in bytes) that will be used.</span>
 
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    D          : numpy.ndarray</span>
+<span class="sd">                    An n by m p-norm distance matrix.</span>
+<span class="sd">    </span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x,y=[r.flatten() for r in np.indices((3,3))]</span>
-<span class="sd">    &gt;&gt;&gt; data = np.array([x,y]).T</span>
-<span class="sd">    &gt;&gt;&gt; d=distance_matrix(data)</span>
+<span class="sd">    &gt;&gt;&gt; x, y = [r.flatten() for r in np.indices((3, 3))]</span>
+<span class="sd">    &gt;&gt;&gt; data = np.array([x, y]).T</span>
+<span class="sd">    &gt;&gt;&gt; d = distance_matrix(data)</span>
 <span class="sd">    &gt;&gt;&gt; np.array(d)</span>
 <span class="sd">    array([[0.        , 1.        , 2.        , 1.        , 1.41421356,</span>
 <span class="sd">            2.23606798, 2.        , 2.23606798, 2.82842712],</span>
@@ -1015,7 +1019,8 @@
     <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">X</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;wtf?&quot;</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Should be 2D point coordinates: </span><span class="si">%s</span><span class="s2"> dimensions present.&quot;</span> <span class="o">%</span> <span class="n">X</span><span class="o">.</span><span class="n">ndim</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">32</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
@@ -1049,8 +1054,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

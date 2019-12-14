@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.PointLocator &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.cg.PointLocator &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -20,6 +20,8 @@
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal.cg.PolygonLocator" href="libpysal.cg.PolygonLocator.html" />
+    <link rel="prev" title="libpysal.cg.Grid" href="libpysal.cg.Grid.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -38,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -120,30 +122,6 @@
 <dt id="libpysal.cg.PointLocator">
 <em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">PointLocator</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PointLocator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PointLocator" title="Permalink to this definition">¶</a></dt>
 <dd><p>An abstract representation of a point indexing data structure.</p>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code>(self, query_point)</p></td>
-<td><p>Returns the nearest point indexed to a query point.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlapping</span></code>(self, region_rect)</p></td>
-<td><p>Returns the indexed points located inside a rectangular query region.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code>(self, polygon)</p></td>
-<td><p>Returns the indexed points located inside a polygon</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code>(self, origin, r)</p></td>
-<td><p>Returns the indexed points located within some distance of an origin point.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code>(self, region_rect)</p></td>
-<td><p>Returns the indexed points located inside a rectangular query region.</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="method">
 <dt id="libpysal.cg.PointLocator.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PointLocator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PointLocator.__init__" title="Permalink to this definition">¶</a></dt>
@@ -173,23 +151,117 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PointLocator.__init__" title="libpysal.cg.PointLocator.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, points)</p></td>
 <td><p>Returns a point locator object.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code>(self, query_point)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PointLocator.nearest" title="libpysal.cg.PointLocator.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a>(self, query_point)</p></td>
 <td><p>Returns the nearest point indexed to a query point.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlapping</span></code>(self, region_rect)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PointLocator.overlapping" title="libpysal.cg.PointLocator.overlapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlapping</span></code></a>(self, region_rect)</p></td>
 <td><p>Returns the indexed points located inside a rectangular query region.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code>(self, polygon)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PointLocator.polygon" title="libpysal.cg.PointLocator.polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code></a>(self, polygon)</p></td>
 <td><p>Returns the indexed points located inside a polygon</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code>(self, origin, r)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PointLocator.proximity" title="libpysal.cg.PointLocator.proximity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code></a>(self, origin, r)</p></td>
 <td><p>Returns the indexed points located within some distance of an origin point.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code>(self, region_rect)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PointLocator.region" title="libpysal.cg.PointLocator.region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code></a>(self, region_rect)</p></td>
 <td><p>Returns the indexed points located inside a rectangular query region.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="libpysal.cg.PointLocator.nearest">
+<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">query_point</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PointLocator.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PointLocator.nearest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the nearest point indexed to a query point.</p>
+<p>nearest(Point) -&gt; Point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>query_point</strong><span class="classifier">a point to find the nearest indexed point to</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mf">5.4</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PointLocator</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="go">&#39;(0.0, 0.0)&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.PointLocator.overlapping">
+<code class="sig-name descname">overlapping</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">region_rect</em><span class="sig-paren">)</span><a class="headerlink" href="#libpysal.cg.PointLocator.overlapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the indexed points located inside a rectangular query region.</p>
+<p>region(Rectangle) -&gt; Point list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>region_rect</strong><span class="classifier">the rectangular range to find indexed points in</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mf">5.4</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PointLocator</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.PointLocator.polygon">
+<code class="sig-name descname">polygon</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">polygon</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PointLocator.polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PointLocator.polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the indexed points located inside a polygon</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.PointLocator.proximity">
+<code class="sig-name descname">proximity</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">origin</em>, <em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PointLocator.proximity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PointLocator.proximity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the indexed points located within some distance of an origin point.</p>
+<p>proximity(Point, number) -&gt; Point list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>origin</strong><span class="classifier">the point to find indexed points near</span></dt><dd></dd>
+<dt><strong>r</strong><span class="classifier">the maximum distance to find indexed point from the origin point</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mf">5.4</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PointLocator</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">proximity</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.PointLocator.region">
+<code class="sig-name descname">region</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">region_rect</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PointLocator.region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PointLocator.region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the indexed points located inside a rectangular query region.</p>
+<p>region(Rectangle) -&gt; Point list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>region_rect</strong><span class="classifier">the rectangular range to find indexed points in</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mf">5.4</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">))]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PointLocator</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pts</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -213,8 +285,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.set_operations &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.weights.set_operations &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -538,8 +538,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    wc      : W</span>
 <span class="sd">              W, scipy.sparse.csr.csr_matrix</span>
-<span class="sd">              Clipped W object (sparse if outSP=Ture). It inherits</span>
-<span class="sd">              ``id_order`` from w1.</span>
+<span class="sd">              Clipped W object (sparse if outSP=Ture). It inherits ``id_order`` from w1.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -593,9 +592,6 @@
 <span class="sd">    ``outSP``:</span>
 
 <span class="sd">    &gt;&gt;&gt; wc = libpysal.weights.w_clip(w1, w2, outSP=False)</span>
-
-<span class="sd">    WARNING: there are 2 disconnected observations</span>
-<span class="sd">    Island ids:  [1, 5]</span>
 <span class="sd">    &gt;&gt;&gt; wc.full()[0]</span>
 <span class="sd">    array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
 <span class="sd">            0.        ],</span>
@@ -652,8 +648,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

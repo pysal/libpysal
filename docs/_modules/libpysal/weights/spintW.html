@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.spintW &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.weights.spintW &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -158,7 +158,7 @@
 <span class="sd">    &gt;&gt;&gt; OD.weights[0]</span>
 <span class="sd">    [0.25, 0.25, 0.25, 0.25]</span>
 <span class="sd">    &gt;&gt;&gt; OD.neighbors[0]</span>
-<span class="sd">    array([ 5,  6,  9, 10], dtype=int32)</span>
+<span class="sd">    [5, 6, 9, 10]</span>
 <span class="sd">    &gt;&gt;&gt; OD.full()[0][0]</span>
 <span class="sd">    array([0.  , 0.  , 0.  , 0.  , 0.  , 0.25, 0.25, 0.  , 0.  , 0.25, 0.25,</span>
 <span class="sd">           0.  , 0.  , 0.  , 0.  , 0.  ])</span>
@@ -198,17 +198,7 @@
 <span class="sd">                  origin id and d is a destination id</span>
 
 <span class="sd">    share       : string</span>
-<span class="sd">                  denoting how to define the nodal relationship used to</span>
-<span class="sd">                  determine neighboring edges; defualt is &#39;A&#39; for any shared</span>
-<span class="sd">                  nodes between two network edges; options include:</span>
-<span class="sd">                    &#39;A&#39;: any shared nodes</span>
-<span class="sd">                    &#39;O&#39;: a shared origin node</span>
-<span class="sd">                    &#39;D&#39;: a shared destination node</span>
-<span class="sd">                    &#39;OD&#39; a shared origin node or a shared destination node</span>
-<span class="sd">                    &#39;C&#39;: a shared node that is the destination of the first</span>
-<span class="sd">                         edge and the origin of the second edge - i.e., a</span>
-<span class="sd">                         directed chain is formed moving from edge one to edge</span>
-<span class="sd">                         two.</span>
+<span class="sd">                  denoting how to define the nodal relationship used to determine neighboring edges; defualt is &#39;A&#39; for any shared nodes between two network edges; options include: O a shared origin node; D a shared destination node; OD; a shared origin or a shared destination node; C a shared node that is the destination of the first edge and the origin of the second edge - i.e., a directed chain is formed moving from edge one to edge two.</span>
 
 <span class="sd">    transform   : Transformation for standardization of final OD spatial weight; default</span>
 <span class="sd">                  is &#39;r&#39; for row standardized</span>
@@ -383,8 +373,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

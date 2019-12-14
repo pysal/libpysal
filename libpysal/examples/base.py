@@ -7,6 +7,7 @@ Base class for managing example datasets
 
 import io
 import os
+import webbrowser
 from os import environ, makedirs
 from os.path import exists, expanduser, join
 import zipfile
@@ -123,6 +124,9 @@ class Example:
             explain_page = requests.get(self.explain_url)
             crawled = BeautifulSoup(explain_page.text, 'html.parser')
             print(crawled.text)
+            return None
+        if type_of_script() == 'terminal':
+            webbrowser.open(self.explain_url)
             return None
         from IPython.display import IFrame
         return IFrame(self.explain_url, width=700, height=350)
