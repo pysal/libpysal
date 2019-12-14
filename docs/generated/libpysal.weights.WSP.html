@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.WSP &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.weights.WSP &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -20,6 +20,7 @@
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal.weights.netW" href="libpysal.weights.netW.html" />
     <link rel="prev" title="libpysal.weights.Voronoi" href="libpysal.weights.Voronoi.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
@@ -39,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -154,28 +155,13 @@ sparse.</p>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>n</strong><span class="classifier">int</span></dt><dd><p>description</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">s0</span></code><span class="classifier">float</span></dt><dd><p>s0 is defined as:</p>
+<dt><a class="reference internal" href="#libpysal.weights.WSP.s0" title="libpysal.weights.WSP.s0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s0</span></code></a><span class="classifier">float</span></dt><dd><p>s0 is defined as:</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW_WW</span></code><span class="classifier">float</span></dt><dd><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p>
-</dd>
-</dl>
+<dt><a class="reference internal" href="#libpysal.weights.WSP.trcWtW_WW" title="libpysal.weights.WSP.trcWtW_WW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW_WW</span></code></a><span class="classifier">float</span></dt><dd><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p>
 </dd>
 </dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_W</span></code>(W)</p></td>
-<td><p>Constructs a WSP object from the W’s sparse matrix</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_W</span></code>(self[, silence_warnings])</p></td>
-<td><p>Convert a pysal WSP object (thin weights matrix) to a pysal W object.</p></td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <dl class="method">
 <dt id="libpysal.weights.WSP.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">sparse</em>, <em class="sig-param">id_order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.__init__" title="Permalink to this definition">¶</a></dt>
@@ -192,10 +178,10 @@ sparse.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.__init__" title="libpysal.weights.WSP.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, sparse[, id_order])</p></td>
 <td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_W</span></code>(W)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.WSP.from_W" title="libpysal.weights.WSP.from_W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_W</span></code></a>(W)</p></td>
 <td><p>Constructs a WSP object from the W’s sparse matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_W</span></code>(self[, silence_warnings])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.to_W" title="libpysal.weights.WSP.to_W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_W</span></code></a>(self[, silence_warnings])</p></td>
 <td><p>Convert a pysal WSP object (thin weights matrix) to a pysal W object.</p></td>
 </tr>
 </tbody>
@@ -207,17 +193,101 @@ sparse.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagWtW_WW</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.diagWtW_WW" title="libpysal.weights.WSP.diagWtW_WW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagWtW_WW</span></code></a></p></td>
 <td><p>Diagonal of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">s0</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.WSP.s0" title="libpysal.weights.WSP.s0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s0</span></code></a></p></td>
 <td><p>s0 is defined as:</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW_WW</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.trcWtW_WW" title="libpysal.weights.WSP.trcWtW_WW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW_WW</span></code></a></p></td>
 <td><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="libpysal.weights.WSP.diagWtW_WW">
+<em class="property">property </em><code class="sig-name descname">diagWtW_WW</code><a class="headerlink" href="#libpysal.weights.WSP.diagWtW_WW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Diagonal of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.weights.WSP.from_W">
+<em class="property">classmethod </em><code class="sig-name descname">from_W</code><span class="sig-paren">(</span><em class="sig-param">W</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.from_W"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.from_W" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a WSP object from the W’s sparse matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>W</strong><span class="classifier">libpysal.weights.W</span></dt><dd><p>a pysal weights object with a sparse form and ids</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>a WSP instance</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.weights.WSP.s0">
+<em class="property">property </em><code class="sig-name descname">s0</code><a class="headerlink" href="#libpysal.weights.WSP.s0" title="Permalink to this definition">¶</a></dt>
+<dd><p>s0 is defined as:</p>
+<div class="math notranslate nohighlight">
+\[s0=\sum_i \sum_j w_{i,j}\]</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.weights.WSP.to_W">
+<code class="sig-name descname">to_W</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">silence_warnings=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.to_W"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.to_W" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a pysal WSP object (thin weights matrix) to a pysal W object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>self</strong><span class="classifier">WSP</span></dt><dd><p>PySAL sparse weights object</p>
+</dd>
+<dt><strong>silence_warnings</strong><span class="classifier">boolean</span></dt><dd><p>Switch to turn off (default on) print statements
+for every observation with islands</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>PySAL weights object</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2SW</span><span class="p">,</span> <span class="n">WSP</span><span class="p">,</span> <span class="n">WSP2W</span>
+</pre></div>
+</div>
+<p>Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
+(rook contiguity), then construct a libpysal sparse weights object (self).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">lat2SW</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span> <span class="o">=</span> <span class="n">WSP</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sparse</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span>
+<span class="go">[[0 1 0 0 0 1 0 0 0 0]]</span>
+</pre></div>
+</div>
+<p>Convert this sparse weights object to a standard PySAL weights object.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">WSP2W</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">n</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">[0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.weights.WSP.trcWtW_WW">
+<em class="property">property </em><code class="sig-name descname">trcWtW_WW</code><a class="headerlink" href="#libpysal.weights.WSP.trcWtW_WW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -241,8 +311,8 @@ sparse.</p>
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

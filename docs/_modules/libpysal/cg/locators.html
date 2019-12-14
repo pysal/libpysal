@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.locators &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.cg.locators &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -165,14 +165,14 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid arguments for Grid(): (&#39;</span> <span class="o">+</span>
                             <span class="nb">str</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_range</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">in_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
+<div class="viewcode-block" id="Grid.in_grid"><a class="viewcode-back" href="../../../generated/libpysal.cg.Grid.html#libpysal.cg.Grid.in_grid">[docs]</a>    <span class="k">def</span> <span class="nf">in_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns whether a 2-tuple location _loc_ lies inside the grid bounds.</span>
 
 <span class="sd">        Test tag: &lt;tc&gt;#is#Grid.in_grid&lt;/tc&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 
     <span class="k">def</span> <span class="nf">__grid_loc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
         <span class="n">i</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">i_range</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span>
@@ -181,7 +181,7 @@
                                       <span class="bp">self</span><span class="o">.</span><span class="n">res</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
+<div class="viewcode-block" id="Grid.add"><a class="viewcode-back" href="../../../generated/libpysal.cg.Grid.html#libpysal.cg.Grid.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds an item to the grid at a specified location.</span>
 
@@ -206,9 +206,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">[</span><span class="n">grid_loc</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">pt</span><span class="p">,</span> <span class="n">item</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">[</span><span class="n">grid_loc</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span><span class="n">pt</span><span class="p">,</span> <span class="n">item</span><span class="p">)]</span>
-        <span class="k">return</span> <span class="n">item</span>
+        <span class="k">return</span> <span class="n">item</span></div>
 
-    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
+<div class="viewcode-block" id="Grid.remove"><a class="viewcode-back" href="../../../generated/libpysal.cg.Grid.html#libpysal.cg.Grid.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Removes an item from the grid at a specified location.</span>
 
@@ -234,9 +234,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">[</span><span class="n">grid_loc</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">((</span><span class="n">pt</span><span class="p">,</span> <span class="n">item</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">[</span><span class="n">grid_loc</span><span class="p">]</span> <span class="o">==</span> <span class="p">[]:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">[</span><span class="n">grid_loc</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">item</span>
+        <span class="k">return</span> <span class="n">item</span></div>
 
-    <span class="k">def</span> <span class="nf">bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+<div class="viewcode-block" id="Grid.bounds"><a class="viewcode-back" href="../../../generated/libpysal.cg.Grid.html#libpysal.cg.Grid.bounds">[docs]</a>    <span class="k">def</span> <span class="nf">bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a list of items found in the grid within the bounds specified.</span>
 
@@ -271,9 +271,9 @@
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lower_left</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">upper_right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">:</span>
                     <span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)]</span> <span class="k">if</span> <span class="n">x_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">y_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">y_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]]])</span>
-        <span class="k">return</span> <span class="n">items</span>
+        <span class="k">return</span> <span class="n">items</span></div>
 
-    <span class="k">def</span> <span class="nf">proximity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pt</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<div class="viewcode-block" id="Grid.proximity"><a class="viewcode-back" href="../../../generated/libpysal.cg.Grid.html#libpysal.cg.Grid.proximity">[docs]</a>    <span class="k">def</span> <span class="nf">proximity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pt</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a list of items found in the grid within a specified distance of a point.</span>
 
@@ -305,9 +305,9 @@
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lower_left</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">upper_right</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">:</span>
                     <span class="n">items</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)]</span> <span class="k">if</span> <span class="n">get_points_dist</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">]])</span>
-        <span class="k">return</span> <span class="n">items</span>
+        <span class="k">return</span> <span class="n">items</span></div>
 
-    <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
+<div class="viewcode-block" id="Grid.nearest"><a class="viewcode-back" href="../../../generated/libpysal.cg.Grid.html#libpysal.cg.Grid.nearest">[docs]</a>    <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pt</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the nearest item to a point.</span>
 
@@ -348,7 +348,7 @@
                         <span class="mi">0</span><span class="p">]),</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)]])</span>
         <span class="k">if</span> <span class="n">items</span> <span class="o">==</span> <span class="p">[]:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">items</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">items</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">BruteForcePointLocator</span><span class="p">:</span>
@@ -460,7 +460,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span> <span class="o">=</span> <span class="n">BruteForcePointLocator</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_point</span><span class="p">):</span>
+<div class="viewcode-block" id="PointLocator.nearest"><a class="viewcode-back" href="../../../generated/libpysal.cg.PointLocator.html#libpysal.cg.PointLocator.nearest">[docs]</a>    <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the nearest point indexed to a query point.</span>
 
@@ -478,9 +478,9 @@
 <span class="sd">        &gt;&gt;&gt; str(n)</span>
 <span class="sd">        &#39;(0.0, 0.0)&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">query_point</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">query_point</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_rect</span><span class="p">):</span>
+<div class="viewcode-block" id="PointLocator.region"><a class="viewcode-back" href="../../../generated/libpysal.cg.PointLocator.html#libpysal.cg.PointLocator.region">[docs]</a>    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_rect</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the indexed points located inside a rectangular query region.</span>
 
@@ -498,19 +498,19 @@
 <span class="sd">        &gt;&gt;&gt; len(pts)</span>
 <span class="sd">        3</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">region_rect</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">region_rect</span><span class="p">)</span></div>
     <span class="n">overlapping</span> <span class="o">=</span> <span class="n">region</span>
 
-    <span class="k">def</span> <span class="nf">polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polygon</span><span class="p">):</span>
+<div class="viewcode-block" id="PointLocator.polygon"><a class="viewcode-back" href="../../../generated/libpysal.cg.PointLocator.html#libpysal.cg.PointLocator.polygon">[docs]</a>    <span class="k">def</span> <span class="nf">polygon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polygon</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the indexed points located inside a polygon</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
         <span class="c1"># get points in polygon bounding box</span>
 
         <span class="c1"># for points in bounding box, check for inclusion in polygon</span>
 
-    <span class="k">def</span> <span class="nf">proximity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<div class="viewcode-block" id="PointLocator.proximity"><a class="viewcode-back" href="../../../generated/libpysal.cg.PointLocator.html#libpysal.cg.PointLocator.proximity">[docs]</a>    <span class="k">def</span> <span class="nf">proximity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the indexed points located within some distance of an origin point.</span>
 
@@ -528,7 +528,7 @@
 <span class="sd">        &gt;&gt;&gt; len(pl.proximity(Point((1, 0)), 2))</span>
 <span class="sd">        1</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span><span class="o">.</span><span class="n">proximity</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_locator</span><span class="o">.</span><span class="n">proximity</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="PolygonLocator"><a class="viewcode-back" href="../../../generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator">[docs]</a><span class="k">class</span> <span class="nc">PolygonLocator</span><span class="p">:</span>
@@ -565,7 +565,7 @@
             <span class="n">Y</span> <span class="o">=</span> <span class="n">polygon</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">upper</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rtree</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">Rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_rectangle</span><span class="p">):</span>
+<div class="viewcode-block" id="PolygonLocator.inside"><a class="viewcode-back" href="../../../generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator.inside">[docs]</a>    <span class="k">def</span> <span class="nf">inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_rectangle</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns polygons that are inside query_rectangle</span>
 
@@ -624,9 +624,9 @@
             <span class="n">p2</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="n">right</span><span class="p">,</span> <span class="n">upper</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">GPPI</span><span class="p">(</span><span class="n">qp</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">GPPI</span><span class="p">(</span><span class="n">qp</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
                 <span class="n">ip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ip</span>
+        <span class="k">return</span> <span class="n">ip</span></div>
 
-    <span class="k">def</span> <span class="nf">overlapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_rectangle</span><span class="p">):</span>
+<div class="viewcode-block" id="PolygonLocator.overlapping"><a class="viewcode-back" href="../../../generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator.overlapping">[docs]</a>    <span class="k">def</span> <span class="nf">overlapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_rectangle</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns list of polygons that overlap query_rectangle</span>
 
@@ -762,9 +762,9 @@
             <span class="k">elif</span> <span class="n">get_polygon_point_intersect</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">nw</span><span class="p">):</span>
                 <span class="n">overlapping</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
                 <span class="k">break</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">overlapping</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">overlapping</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_point</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;vertex&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="PolygonLocator.nearest"><a class="viewcode-back" href="../../../generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator.nearest">[docs]</a>    <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_point</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;vertex&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the nearest polygon indexed to a query point based on</span>
 <span class="sd">        various rules.</span>
@@ -790,9 +790,9 @@
 <span class="sd">        ... except NotImplementedError: print(&quot;future test: str(min(n.vertices())) == (0.0, 1.0)&quot;)</span>
 <span class="sd">        future test: str(min(n.vertices())) == (0.0, 1.0)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_rect</span><span class="p">):</span>
+<div class="viewcode-block" id="PolygonLocator.region"><a class="viewcode-back" href="../../../generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator.region">[docs]</a>    <span class="k">def</span> <span class="nf">region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region_rect</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the indexed polygons located inside a rectangular query region.</span>
 
@@ -818,9 +818,9 @@
             <span class="n">pts</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">region_rect</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">n</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">n</span>
+        <span class="k">return</span> <span class="n">n</span></div>
 
-    <span class="k">def</span> <span class="nf">contains_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+<div class="viewcode-block" id="PolygonLocator.contains_point"><a class="viewcode-back" href="../../../generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator.contains_point">[docs]</a>    <span class="k">def</span> <span class="nf">contains_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns polygons that contain point</span>
 
@@ -860,9 +860,9 @@
         <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">leaf_obj</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rtree</span><span class="o">.</span><span class="n">query_point</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
                <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">()]</span>
         <span class="c1"># explicit containment check for candidate polygons needed</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">poly</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">res</span> <span class="k">if</span> <span class="n">poly</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="n">point</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">poly</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">res</span> <span class="k">if</span> <span class="n">poly</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="n">point</span><span class="p">)]</span></div>
 
-    <span class="k">def</span> <span class="nf">proximity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;vertex&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="PolygonLocator.proximity"><a class="viewcode-back" href="../../../generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator.proximity">[docs]</a>    <span class="k">def</span> <span class="nf">proximity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="s1">&#39;vertex&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns the indexed polygons located within some distance of an</span>
 <span class="sd">        origin point based on various rules.</span>
@@ -891,7 +891,7 @@
 <span class="sd">        ...     print(&quot;future test: len(pl.proximity(Point((0, 0)), 2)) == 2&quot;)</span>
 <span class="sd">        future test: len(pl.proximity(Point((0, 0)), 2)) == 2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 </pre></div>
 
     </div>
@@ -908,8 +908,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

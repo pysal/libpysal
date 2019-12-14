@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.w_clip &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.weights.w_clip &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -147,8 +147,7 @@ False, return W object of the clipped matrix</p>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>wc</strong><span class="classifier">W</span></dt><dd><p>W, scipy.sparse.csr.csr_matrix
-Clipped W object (sparse if outSP=Ture). It inherits
-<code class="docutils literal notranslate"><span class="pre">id_order</span></code> from w1.</p>
+Clipped W object (sparse if outSP=Ture). It inherits <code class="docutils literal notranslate"><span class="pre">id_order</span></code> from w1.</p>
 </dd>
 </dl>
 </dd>
@@ -203,41 +202,21 @@ gotten rid of those that happen across groups</p>
 <p>If we wanted an original W object, we can control that with the argument
 <code class="docutils literal notranslate"><span class="pre">outSP</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">w_clip</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">outSP</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.        , 0.        , 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.2       , 0.        , 0.        , 0.2       , 0.2       ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.2       , 0.        , 0.2       , 0.        , 0.2       ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.        , 0.        , 0.        ,</span>
+<span class="go">        0.        ]])</span>
 </pre></div>
 </div>
-<p>WARNING: there are 2 disconnected observations
-Island ids:  [1, 5]
-&gt;&gt;&gt; wc.full()[0]
-array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</p>
-<blockquote>
-<div><blockquote>
-<div><ol class="arabic simple" start="0">
-<li><p>],</p></li>
-</ol>
-</div></blockquote>
-<dl class="simple">
-<dt>[0.        , 0.        , 0.        , 0.        , 0.        ,</dt><dd><ol class="arabic simple" start="0">
-<li><p>],</p></li>
-</ol>
-</dd>
-<dt>[0.2       , 0.        , 0.        , 0.2       , 0.2       ,</dt><dd><ol class="arabic simple" start="0">
-<li><p>],</p></li>
-</ol>
-</dd>
-<dt>[0.2       , 0.        , 0.2       , 0.        , 0.2       ,</dt><dd><ol class="arabic simple" start="0">
-<li><p>],</p></li>
-</ol>
-</dd>
-<dt>[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</dt><dd><ol class="arabic simple" start="0">
-<li><p>],</p></li>
-</ol>
-</dd>
-<dt>[0.        , 0.        , 0.        , 0.        , 0.        ,</dt><dd><ol class="arabic simple" start="0">
-<li><p>]])</p></li>
-</ol>
-</dd>
-</dl>
-</div></blockquote>
 <p>You can check they are actually the same:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">==</span> <span class="n">wc</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">array([[ True,  True,  True,  True,  True,  True],</span>
@@ -271,8 +250,8 @@ array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</p>
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

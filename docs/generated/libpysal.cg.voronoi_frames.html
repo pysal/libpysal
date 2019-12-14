@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.voronoi_frames &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.cg.voronoi_frames &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -124,42 +124,20 @@
 <dd><p>Composite helper to return Voronoi regions and generator points as individual dataframes</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl>
+<dd class="field-odd"><dl class="simple">
 <dt><strong>points</strong><span class="classifier">array-like</span></dt><dd><p>originator points</p>
 </dd>
-<dt><strong>radius</strong><span class="classifier">float</span></dt><dd><p>distance to “points at infinity” used in 
-building voronoi cells</p>
+<dt><strong>radius</strong><span class="classifier">float</span></dt><dd><p>distance to “points at infinity” used in building voronoi cells</p>
 </dd>
 <dt><strong>clip</strong><span class="classifier">str, or shapely.geometry.Polygon</span></dt><dd><p>an overloaded option about how to clip the voronoi
 cells. The options are:
-- ‘none’/None: no clip is applied. Voronoi cells may be arbitrarily</p>
-<blockquote>
-<div><p>larger that the source map. Note that this may lead
-to cells that are many orders of magnitude larger
-in extent than the original map. Not recommended.</p>
-</div></blockquote>
-<ul class="simple">
-<li><dl class="simple">
-<dt>‘bbox’/’extent’/’bounding box’: clip the voronoi cells to the </dt><dd><p>bounding box of the input points.</p>
+- ‘none’/None: no clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.
+- ‘bbox’/’extent’/’bounding box’: clip the voronoi cells to the bounding box of the input points.
+- ‘chull’/’convex hull’: clip the voronoi cells to the convex hull of the input points.
+- ‘ashape’/’ahull’: clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using libpysal.cg.alpha_shape_auto)
+- Polygon: clip to an arbitrary Polygon</p>
 </dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>‘chull’/’convex hull’: clip the voronoi cells to the convex hull</dt><dd><p>of the input points.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>‘ashape’/’ahull’: clip the voronoi cells to the tightest hull that</dt><dd><p>contains all points (e.g. the smallest alphashape,
-using libpysal.cg.alpha_shape_auto)</p>
-</dd>
-</dl>
-</li>
-<li><p>Polygon: clip to an arbitrary Polygon</p></li>
-</ul>
-</dd>
-<dt><strong>tolerance</strong><span class="classifier">float</span></dt><dd><p>percent of map width to use to buffer the extent
-of the map, if clipping (default: .01, or 1 percent)</p>
+<dt><strong>tolerance</strong><span class="classifier">float</span></dt><dd><p>percent of map width to use to buffer the extent of the map, if clipping (default: .01, or 1 percent)</p>
 </dd>
 </dl>
 </dd>
@@ -213,8 +191,8 @@ with shapely geometry types.</p>
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

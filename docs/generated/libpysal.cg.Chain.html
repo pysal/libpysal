@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.Chain &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.cg.Chain &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -125,9 +125,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code><span class="classifier">list</span></dt><dd><p>Returns the vertices of the chain in clockwise order.</p>
+<dt><a class="reference internal" href="#libpysal.cg.Chain.vertices" title="libpysal.cg.Chain.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a><span class="classifier">list</span></dt><dd><p>Returns the vertices of the chain in clockwise order.</p>
 </dd>
-<dt><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#len" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">len</span></code></a><span class="classifier">float</span></dt><dd><p>Returns the geometric length of the chain.</p>
+<dt><a class="reference internal" href="#libpysal.cg.Chain.len" title="libpysal.cg.Chain.len"><code class="xref py py-obj docutils literal notranslate"><span class="pre">len</span></code></a><span class="classifier">float</span></dt><dd><p>Returns the geometric length of the chain.</p>
 </dd>
 </dl>
 </dd>
@@ -169,26 +169,101 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">arclen</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Chain.arclen" title="libpysal.cg.Chain.arclen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">arclen</span></code></a></p></td>
 <td><p>Returns the geometric length of the chain computed using arcdistance (meters).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Chain.bounding_box" title="libpysal.cg.Chain.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a></p></td>
 <td><p>Returns the bounding box of the chain.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">len</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Chain.len" title="libpysal.cg.Chain.len"><code class="xref py py-obj docutils literal notranslate"><span class="pre">len</span></code></a></p></td>
 <td><p>Returns the geometric length of the chain.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parts</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Chain.parts" title="libpysal.cg.Chain.parts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parts</span></code></a></p></td>
 <td><p>Returns the parts of the chain.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">segments</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Chain.segments" title="libpysal.cg.Chain.segments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">segments</span></code></a></p></td>
 <td><p>Returns the segments that compose the Chain</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Chain.vertices" title="libpysal.cg.Chain.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a></p></td>
 <td><p>Returns the vertices of the chain in clockwise order.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="libpysal.cg.Chain.arclen">
+<em class="property">property </em><code class="sig-name descname">arclen</code><a class="headerlink" href="#libpysal.cg.Chain.arclen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the geometric length of the chain computed using arcdistance (meters).</p>
+<p>len -&gt; number</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.Chain.bounding_box">
+<em class="property">property </em><code class="sig-name descname">bounding_box</code><a class="headerlink" href="#libpysal.cg.Chain.bounding_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the bounding box of the chain.</p>
+<p>bounding_box -&gt; Rectangle</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">left</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">lower</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">right</span>
+<span class="go">2.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">upper</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.Chain.len">
+<em class="property">property </em><code class="sig-name descname">len</code><a class="headerlink" href="#libpysal.cg.Chain.len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the geometric length of the chain.</p>
+<p>len -&gt; number</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">len</span>
+<span class="go">3.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">([[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))],[</span><span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span><span class="mi">10</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">))]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">len</span>
+<span class="go">4.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.Chain.parts">
+<em class="property">property </em><code class="sig-name descname">parts</code><a class="headerlink" href="#libpysal.cg.Chain.parts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the parts of the chain.</p>
+<p>parts -&gt; Point list</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">([[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))],[</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.Chain.segments">
+<em class="property">property </em><code class="sig-name descname">segments</code><a class="headerlink" href="#libpysal.cg.Chain.segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the segments that compose the Chain</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="libpysal.cg.Chain.vertices">
+<em class="property">property </em><code class="sig-name descname">vertices</code><a class="headerlink" href="#libpysal.cg.Chain.vertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the vertices of the chain in clockwise order.</p>
+<p>vertices -&gt; Point list</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">verts</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">vertices</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -212,8 +287,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

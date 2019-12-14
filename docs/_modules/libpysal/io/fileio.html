@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.io.fileio &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.io.fileio &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -185,7 +185,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="FileIO.getType"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.getType">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">getType</span><span class="p">(</span><span class="n">dataPath</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">dataFormat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse the dataPath and return the data type&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dataFormat</span><span class="p">:</span>
@@ -207,7 +207,7 @@
                     <span class="k">return</span> <span class="s1">&#39;geoda_txt&#39;</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">ext</span>
-        <span class="k">return</span> <span class="n">ext</span>
+        <span class="k">return</span> <span class="n">ext</span></div>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_register</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">formats</span><span class="p">,</span> <span class="n">modes</span><span class="p">):</span>
@@ -224,17 +224,17 @@
                 <span class="bp">cls</span><span class="o">.</span><span class="n">__registry</span><span class="p">[</span><span class="nb">format</span><span class="p">][</span><span class="n">mode</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">parser</span><span class="p">)</span>
         <span class="c1">#cls.check()</span>
 
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FileIO.check"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.check">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Prints the contents of the registry &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PySAL File I/O understands the following file extensions:&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">__registry</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ext: &#39;.</span><span class="si">%s</span><span class="s2">&#39;, Modes: </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ext: &#39;.</span><span class="si">%s</span><span class="s2">&#39;, Modes: </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span></div>
 
-    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="FileIO.open"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.open">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Alias for FileIO() &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">class</span> <span class="nc">_By_Row</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
@@ -327,7 +327,7 @@
         <span class="k">if</span> <span class="n">closed</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;I/O operation on closed file&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">typ</span><span class="p">):</span>
+<div class="viewcode-block" id="FileIO.cast"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.cast">[docs]</a>    <span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">typ</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;cast key as typ&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span><span class="p">:</span>
@@ -341,7 +341,7 @@
                 <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Cast Objects must be callable&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_cast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spec</span> <span class="ow">and</span> <span class="n">row</span><span class="p">:</span>
@@ -370,13 +370,13 @@
             <span class="k">raise</span> <span class="ne">StopIteration</span>
         <span class="k">return</span> <span class="n">r</span>
 
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileIO.close"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; subclasses should clean themselves up and then call this method &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataObj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataObj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span></div>
 
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="FileIO.get"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Seeks the file to n and returns n</span>
 <span class="sd">        If .ids is set n should be an id,</span>
 <span class="sd">        else, n should be an offset</span>
@@ -385,20 +385,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">prevPos</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">obj</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
 
-    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+<div class="viewcode-block" id="FileIO.seek"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Seek the FileObj to the beginning of the n&#39;th record,</span>
 <span class="sd">            if ids are set, seeks to the beginning of the record at id, n&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_complain_ifclosed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">n</span></div>
 
-    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileIO.tell"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return id (or offset) of next object &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_complain_ifclosed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span></div>
 
-    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="FileIO.read"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Read at most n objects, less if read hits EOF</span>
 <span class="sd">        if size is negative or omitted read all objects until EOF</span>
 <span class="sd">        returns None if EOF is reached before any objects.</span>
@@ -422,7 +422,7 @@
                     <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__read</span><span class="p">())</span>
                 <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                     <span class="k">break</span>
-            <span class="k">return</span> <span class="n">result</span>
+            <span class="k">return</span> <span class="n">result</span></div>
 
     <span class="k">def</span> <span class="nf">__read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Gets one row from the file handler, and if necessary casts it&#39;s objects &quot;&quot;&quot;</span>
@@ -440,14 +440,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_complain_ifclosed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="FileIO.truncate"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.truncate">[docs]</a>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Should be implemented by subclasses</span>
 <span class="sd">        and redefine this doc string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_complain_ifclosed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="FileIO.write"><a class="viewcode-back" href="../../../generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Must be implemented by subclasses that support &#39;w&#39;</span>
 <span class="sd">        subclasses should increment .pos</span>
 <span class="sd">        subclasses should also check if obj is an instance of type(list)</span>
@@ -455,7 +455,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_complain_ifclosed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">)</span>
         <span class="s2">&quot;Write obj to dataObj&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_complain_ifclosed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">)</span>
@@ -476,8 +476,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>

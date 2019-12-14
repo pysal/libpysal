@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.examples &#8212; libpysal v4.1.1 Manual</title>
+    <title>libpysal.examples &#8212; libpysal v4.2.0 Manual</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
@@ -38,7 +38,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.1.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -112,84 +112,53 @@
     <div class="col-md-12 content">
       
   <h1>Source code for libpysal.examples</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The :mod:`libpysal.examples` module includes a number of small built-in example datasets as well as functions to fetch larger datasets.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">example_manager</span>
+<span class="kn">from</span> <span class="nn">.remotes</span> <span class="k">import</span> <span class="n">datasets</span> <span class="k">as</span> <span class="n">remote_datasets</span>
+<span class="kn">from</span> <span class="nn">.remotes</span> <span class="k">import</span> <span class="n">download</span> <span class="k">as</span> <span class="n">fetch_all</span>
+<span class="kn">from</span> <span class="nn">.builtin</span> <span class="k">import</span> <span class="n">datasets</span> <span class="k">as</span> <span class="n">builtin_datasets</span>
 
-<span class="n">base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;get_path&#39;</span><span class="p">,</span> <span class="s1">&#39;available&#39;</span><span class="p">,</span> <span class="s1">&#39;explain&#39;</span><span class="p">]</span>
-<span class="n">file_2_dir</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">example_dir</span> <span class="o">=</span> <span class="n">base</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;get_path&#39;</span><span class="p">,</span> <span class="s1">&#39;available&#39;</span><span class="p">,</span> <span class="s1">&#39;explain&#39;</span><span class="p">,</span> <span class="s1">&#39;fetch_all&#39;</span><span class="p">]</span>
 
-<span class="n">dirs</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">example_dir</span><span class="p">,</span> <span class="n">topdown</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-        <span class="n">file_2_dir</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">root</span>
-    <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">tail</span> <span class="o">!=</span> <span class="s1">&#39;examples&#39;</span><span class="p">:</span>
-        <span class="n">dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+<span class="n">example_manager</span><span class="o">.</span><span class="n">add_examples</span><span class="p">(</span><span class="n">remote_datasets</span><span class="p">)</span>
+<span class="n">example_manager</span><span class="o">.</span><span class="n">add_examples</span><span class="p">(</span><span class="n">builtin_datasets</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_path"><a class="viewcode-back" href="../../generated/libpysal.examples.get_path.html#libpysal.examples.get_path">[docs]</a><span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="n">example_name</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get path of  example folders</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">example_name</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">example_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">example_name</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Cannot coerce requested example name to string&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">example_name</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
-        <span class="n">outpath</span> <span class="o">=</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">example_dir</span><span class="p">,</span> <span class="n">example_name</span><span class="p">,</span> <span class="n">example_name</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">example_name</span> <span class="ow">in</span> <span class="n">file_2_dir</span><span class="p">:</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">file_2_dir</span><span class="p">[</span><span class="n">example_name</span><span class="p">]</span>
-        <span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">example_name</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">example_name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="n">outpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s1">&#39;examples&#39;</span><span class="p">,</span> <span class="n">example_name</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">example_name</span> <span class="o">+</span> <span class="s1">&#39; not found in PySAL built-in examples.&#39;</span><span class="p">)</span>
-    <span class="n">name</span><span class="p">,</span><span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">outpath</span><span class="p">)</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ext</span> <span class="o">==</span> <span class="s1">&#39;.zip&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">raw</span><span class="p">):</span>
-        <span class="n">outpath</span> <span class="o">=</span> <span class="s1">&#39;zip://&#39;</span><span class="o">+</span><span class="n">outpath</span>
-    <span class="k">return</span> <span class="n">outpath</span></div>
-
-<div class="viewcode-block" id="available"><a class="viewcode-back" href="../../generated/libpysal.examples.available.html#libpysal.examples.available">[docs]</a><span class="k">def</span> <span class="nf">available</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="available"><a class="viewcode-back" href="../../generated/libpysal.examples.available.html#libpysal.examples.available">[docs]</a><span class="k">def</span> <span class="nf">available</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List available datasets</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">examples</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">d</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">]</span>
-    <span class="n">examples</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dty</span><span class="p">,</span> <span class="s1">&#39;README.md&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">dty</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">]</span>
-    <span class="n">descs</span> <span class="o">=</span> <span class="p">[</span><span class="n">_read_example</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">]</span>
-    <span class="k">return</span> <span class="p">[{</span><span class="n">desc</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span><span class="n">desc</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">descs</span><span class="p">}]</span></div>
+    <span class="k">return</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">available</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">_read_example</span><span class="p">(</span><span class="n">pth</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pth</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">io</span><span class="p">:</span>
-            <span class="n">title</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">io</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># titling</span>
-            <span class="n">io</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># pad</span>
-            <span class="n">short</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">io</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># subtitling</span>
-            <span class="n">io</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># pad</span>
-            <span class="n">rest</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-            <span class="n">rest</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">rest</span> <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">short</span><span class="p">,</span> <span class="s1">&#39;explanation&#39;</span><span class="p">:</span> <span class="n">rest</span><span class="p">}</span>
-    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-        <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">pth</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">basename</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">dirname</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;explanation&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
-    <span class="k">return</span> <span class="n">d</span>
-
-
-<div class="viewcode-block" id="explain"><a class="viewcode-back" href="../../generated/libpysal.examples.explain.html#libpysal.examples.explain">[docs]</a><span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>  <span class="c1"># would be nice to use pandas for display here</span>
+<div class="viewcode-block" id="explain"><a class="viewcode-back" href="../../generated/libpysal.examples.explain.html#libpysal.examples.explain">[docs]</a><span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Explain a dataset by name</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="n">name</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;README.md&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_read_example</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">load_example</span><span class="p">(</span><span class="n">example_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load example dataset instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">example_name</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_path"><a class="viewcode-back" href="../../generated/libpysal.examples.get_path.html#libpysal.examples.get_path">[docs]</a><span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get the path for a file by searching installed datasets</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">installed</span> <span class="o">=</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">get_installed_names</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">installed</span><span class="p">:</span>
+        <span class="n">example</span> <span class="o">=</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">pth</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pth</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pth</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is not a file in any installed datasets.&quot;</span><span class="p">)</span></div>
 </pre></div>
 
     </div>
@@ -206,8 +175,8 @@
       
     </p>
     <p>
-        &copy; Copyright 2018, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.<br/>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
     </p>
   </div>
 </footer>
