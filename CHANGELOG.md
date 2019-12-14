@@ -1,5 +1,75 @@
 # Changes
+Version 4.2.0 (2019-12-14)
 
+We closed a total of 54 issues (enhancements and bug fixes) through 20 pull requests, since our last release on 2019-09-01.
+
+## Issues Closed
+  - Fetch (#176)
+  - metadata for examples  (#125)
+  - DOC: math rendering in sphinx, and members included for W (#209)
+  - (docs) automatically generate docstrings for class members (#210)
+  - (docs) keep file .nojekyll in docs when syncing between docs/ and docsrc/_build/html/ (#207)
+  - (bug) replace silent_island_warning with silence_warnings for weights (#206)
+  - Documentation does not work (#205)
+  - updating cg.standalone.distance_matrix docs (#203)
+  - error message in cg.standalone.distance_matrix() (#195)
+  - improved docs in io.util.shapefile (#202)
+  - [ENH] moving jit import to common.py / improve documentation (#201)
+  - rearrange shapely import in cg.alpha_shapes (#199)
+  - fix quasi-redundant import of shapely (#200)
+  - Remove more relics (from pre-reorg PySAL) (#196)
+  - [BUG] alpha_shapes/shapely import error (#197)
+  - [BUG] correcting shapely import bug (#198)
+  - README.txt refers to pre-reorg PySAL (#194)
+  - remove `distribute_setup.py`? (#147)
+  - requires() decorator for libpysal.cg.alpha_shapes (#128)
+  - decorating functions with requires() (#129)
+  - [WIP] removing unused relics (#193)
+  - necessity of libpysal.common.iteritems()? (#191)
+  - removing iteritems decorator (#192)
+  - Voronoi results in weights of different shape than input points (#189)
+  - BUG: alpha_shape_auto can fail to contain all points in the set. (#190)
+  - WSP(sparse).to_W() has `array`s in weights,neighbors dictionaries, rather than lists.  (#185)
+  - Cast arrays as lists (Issue 185)  (#186)
+  - BUG: Update for geopandas use of GeometryArray (#188)
+  - Updated documentation error (link incorrectly specified) in README.rst  (#187)
+  - Docs: badges for pypi (#182)
+  - development guidelines link failure (#178)
+  - DOCS: moving off rtd (#181)
+  - REL 4.1.1 bf release (#180)
+  - BUG: Updating manifest for additional requirements files (#179)
+
+## Pull Requests
+  - Fetch (#176)
+  - (docs) automatically generate docstrings for class members (#210)
+  - (docs) keep file .nojekyll in docs when syncing between docs/ and docsrc/_build/html/ (#207)
+  - (bug) replace silent_island_warning with silence_warnings for weights (#206)
+  - updating cg.standalone.distance_matrix docs (#203)
+  - improved docs in io.util.shapefile (#202)
+  - [ENH] moving jit import to common.py / improve documentation (#201)
+  - fix quasi-redundant import of shapely (#200)
+  - Remove more relics (from pre-reorg PySAL) (#196)
+  - decorating functions with requires() (#129)
+  - [WIP] removing unused relics (#193)
+  - removing iteritems decorator (#192)
+  - BUG: alpha_shape_auto can fail to contain all points in the set. (#190)
+  - Cast arrays as lists (Issue 185)  (#186)
+  - BUG: Update for geopandas use of GeometryArray (#188)
+  - Updated documentation error (link incorrectly specified) in README.rst  (#187)
+  - Docs: badges for pypi (#182)
+  - DOCS: moving off rtd (#181)
+  - REL 4.1.1 bf release (#180)
+  - BUG: Updating manifest for additional requirements files (#179)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - Wei Kang
+  - James Gaboardi
+  - Levi John Wolf
+  - Siddharths8212376
+  
+  
 Version 4.1.1 (2019-09-01)
 This is a bug fix release.
 
