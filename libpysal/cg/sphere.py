@@ -17,12 +17,15 @@ import scipy.constants
 from scipy.spatial.distance import euclidean
 from math import pi, cos, sin
 
-__all__ = ['RADIUS_EARTH_KM', 'RADIUS_EARTH_MILES', 'arcdist', 'arcdist2linear', 'brute_knn', 'fast_knn', 'fast_threshold', 'linear2arcdist', 'toLngLat', 'toXYZ', 'lonlat','harcdist','geointerpolate','geogrid']
-
+__all__ = [
+    'RADIUS_EARTH_KM', 'RADIUS_EARTH_MILES', 'arcdist', 'arcdist2linear',
+    'brute_knn', 'fast_knn', 'fast_threshold', 'linear2arcdist', 'toLngLat',
+    'toXYZ', 'lonlat', 'harcdist', 'geointerpolate', 'geogrid'
+]
 
 RADIUS_EARTH_KM = 6371.0
-RADIUS_EARTH_MILES = (
-    RADIUS_EARTH_KM * scipy.constants.kilo) / scipy.constants.mile
+RADIUS_EARTH_MILES = (RADIUS_EARTH_KM *
+                      scipy.constants.kilo) / scipy.constants.mile
 
 
 def arcdist(pt0, pt1, radius=RADIUS_EARTH_KM):
@@ -70,7 +73,7 @@ def arcdist2linear(arc_dist, radius=RADIUS_EARTH_KM):
     2.0
     """
     c = 2 * math.pi * radius
-    d = (2 - (2 * math.cos(math.radians((arc_dist * 360.0) / c)))) ** (0.5)
+    d = (2 - (2 * math.cos(math.radians((arc_dist * 360.0) / c))))**(0.5)
     return d
 
 
@@ -89,9 +92,11 @@ def linear2arcdist(linear_dist, radius=RADIUS_EARTH_KM):
     if linear_dist == float('inf'):
         return float('inf')
     elif linear_dist > 2.0:
-        raise ValueError("linear_dist, must not exceed the diameter of the unit sphere, 2.0")
+        raise ValueError(
+            "linear_dist, must not exceed the diameter of the unit sphere, 2.0"
+        )
     c = 2 * math.pi * radius
-    a2 = linear_dist ** 2
+    a2 = linear_dist**2
     theta = math.degrees(math.acos((2 - a2) / (2.)))
     d = (theta * c) / 360.0
     return d
@@ -191,8 +196,10 @@ def fast_knn(pts, k, return_dist=False):
         d = d[:, 1:]
         wd = {}
         for i in range(len(pts)):
-            wd[i] = [linear2arcdist(x,
-                                    radius=RADIUS_EARTH_MILES) for x in d[i].tolist()]
+            wd[i] = [
+                linear2arcdist(x, radius=RADIUS_EARTH_MILES)
+                for x in d[i].tolist()
+            ]
         return wn, wd
     return wn
 
@@ -232,6 +239,7 @@ def fast_threshold(pts, dist, radius=RADIUS_EARTH_KM):
 
 ########### new functions
 
+
 def lonlat(pointslist):
     """
     Converts point order from lat-lon tuples to lon-lat (x,y) tuples
@@ -254,8 +262,9 @@ def lonlat(pointslist):
     [(-87.893517, 41.981417), (-87.776787, 41.980396), (-87.69645, 41.980906)]
 
     """
-    newpts = [(i[1],i[0]) for i in pointslist]
+    newpts = [(i[1], i[0]) for i in pointslist]
     return newpts
+
 
 def haversine(x):
     """
@@ -276,8 +285,9 @@ def haversine(x):
 
     """
 
-    x = math.sin(x/2)
-    return x*x
+    x = math.sin(x / 2)
+    return x * x
+
 
 # Lambda functions
 
@@ -287,7 +297,8 @@ d2r = lambda x: x * math.pi / 180.0
 # radian to degree conversion
 r2d = lambda x: x * 180.0 / math.pi
 
-def radangle(p0,p1):
+
+def radangle(p0, p1):
     """
     Radian angle between two points on a sphere in lon-lat (x,y)
 
@@ -313,13 +324,16 @@ def radangle(p0,p1):
     conversion lambda function d2r
 
     """
-    x0, y0 = d2r(p0[0]),d2r(p0[1])
-    x1, y1 = d2r(p1[0]),d2r(p1[1])
-    d = 2.0 * math.asin(math.sqrt(haversine(y1 - y0) +
-                        math.cos(y0) * math.cos(y1)*haversine(x1 - x0)))
+    x0, y0 = d2r(p0[0]), d2r(p0[1])
+    x1, y1 = d2r(p1[0]), d2r(p1[1])
+    d = 2.0 * math.asin(
+        math.sqrt(
+            haversine(y1 - y0) +
+            math.cos(y0) * math.cos(y1) * haversine(x1 - x0)))
     return d
 
-def harcdist(p0,p1,lonx=True,radius=RADIUS_EARTH_KM):
+
+def harcdist(p0, p1, lonx=True, radius=RADIUS_EARTH_KM):
     """
     Alternative arc distance function, uses haversine formula
 
@@ -331,8 +345,7 @@ def harcdist(p0,p1,lonx=True,radius=RADIUS_EARTH_KM):
                for lon,lat (default) = True, for lat,lon = False
     radius   : radius of the earth at the equator as a sphere
                default: RADIUS_EARTH_KM (6371.0 km)
-               options: RADIUS_EARTH_MILES (3959.0 miles)
-                        None (for result in radians)
+               options: RADIUS_EARTH_MILES (3959.0 miles), None (for result in radians)
 
     Returns
     -------
@@ -352,17 +365,18 @@ def harcdist(p0,p1,lonx=True,radius=RADIUS_EARTH_KM):
     Uses radangle function to compute radian angle
 
     """
-    if not(lonx):
-        p = lonlat([p0,p1])
+    if not (lonx):
+        p = lonlat([p0, p1])
         p0 = p[0]
         p1 = p[1]
 
-    d = radangle(p0,p1)
+    d = radangle(p0, p1)
     if radius is not None:
-        d = d*radius
+        d = d * radius
     return d
 
-def geointerpolate(p0,p1,t,lonx=True):
+
+def geointerpolate(p0, p1, t, lonx=True):
     """
     Finds a point on a sphere along the great circle distance between two points
     on a sphere
@@ -396,31 +410,32 @@ def geointerpolate(p0,p1,t,lonx=True):
 
     """
 
-    if not(lonx):
-        p = lonlat([p0,p1])
+    if not (lonx):
+        p = lonlat([p0, p1])
         p0 = p[0]
         p1 = p[1]
 
-    d = radangle(p0,p1)
+    d = radangle(p0, p1)
     k = 1.0 / math.sin(d)
-    t = t*d
-    A = math.sin(d-t) * k
+    t = t * d
+    A = math.sin(d - t) * k
     B = math.sin(t) * k
 
-    x0, y0 = d2r(p0[0]),d2r(p0[1])
-    x1, y1 = d2r(p1[0]),d2r(p1[1])
+    x0, y0 = d2r(p0[0]), d2r(p0[1])
+    x1, y1 = d2r(p1[0]), d2r(p1[1])
 
     x = A * math.cos(y0) * math.cos(x0) + B * math.cos(y1) * math.cos(x1)
     y = A * math.cos(y0) * math.sin(x0) + B * math.cos(y1) * math.sin(x1)
     z = A * math.sin(y0) + B * math.sin(y1)
 
     newpx = r2d(math.atan2(y, x))
-    newpy = r2d(math.atan2(z, math.sqrt(x*x + y*y)))
-    if not(lonx):
-        return newpy,newpx
-    return newpx,newpy
+    newpy = r2d(math.atan2(z, math.sqrt(x * x + y * y)))
+    if not (lonx):
+        return newpy, newpx
+    return newpx, newpy
 
-def geogrid(pup,pdown,k,lonx=True):
+
+def geogrid(pup, pdown, k, lonx=True):
     """
     Computes a k+1 by k+1 set of grid points for a bounding box in lat-lon
     uses geointerpolate
@@ -448,18 +463,18 @@ def geogrid(pup,pdown,k,lonx=True):
 
     """
     if lonx:
-        corners = [pup,pdown]
+        corners = [pup, pdown]
     else:
-        corners = lonlat([pup,pdown])
-    tpoints = [float(i)/k for i in range(k)[1:]]
-    leftcorners = [corners[0],(corners[0][0],corners[1][1])]
-    rightcorners = [(corners[1][0],corners[0][1]),corners[1]]
+        corners = lonlat([pup, pdown])
+    tpoints = [float(i) / k for i in range(k)[1:]]
+    leftcorners = [corners[0], (corners[0][0], corners[1][1])]
+    rightcorners = [(corners[1][0], corners[0][1]), corners[1]]
     leftside = [leftcorners[0]]
     rightside = [rightcorners[0]]
     for t in tpoints:
-        newpl = geointerpolate(leftcorners[0],leftcorners[1],t)
+        newpl = geointerpolate(leftcorners[0], leftcorners[1], t)
         leftside.append(newpl)
-        newpr = geointerpolate(rightcorners[0],rightcorners[1],t)
+        newpr = geointerpolate(rightcorners[0], rightcorners[1], t)
         rightside.append(newpr)
     leftside.append(leftcorners[1])
     rightside.append(rightcorners[1])
@@ -468,9 +483,9 @@ def geogrid(pup,pdown,k,lonx=True):
     for i in range(len(leftside)):
         grid.append(leftside[i])
         for t in tpoints:
-            newp = geointerpolate(leftside[i],rightside[i],t)
+            newp = geointerpolate(leftside[i], rightside[i], t)
             grid.append(newp)
         grid.append(rightside[i])
-    if not(lonx):
+    if not (lonx):
         grid = lonlat(grid)
     return grid

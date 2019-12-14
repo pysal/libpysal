@@ -1,6 +1,9 @@
 Python Spatial Analysis Library Core
 ====================================
 
+.. image:: https://badge.fury.io/py/libpysal.svg
+    :target: https://badge.fury.io/py/libpysal
+
 .. image:: https://travis-ci.org/pysal/libpysal.svg
    :target: https://travis-ci.org/pysal/libpysal
 

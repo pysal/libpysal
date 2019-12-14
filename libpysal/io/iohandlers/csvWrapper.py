@@ -25,8 +25,6 @@ class csvWrapper(tables.DataTable):
         ['WKT', 'NAME', 'STATE_NAME', 'STATE_FIPS', 'CNTY_FIPS', 'FIPS', 'FIPSNO', 'HR7984', 'HR8488', 'HR8893', 'HC7984', 'HC8488', 'HC8893', 'PO7984', 'PO8488', 'PO8893', 'PE77', 'PE82', 'PE87', 'RDAC80', 'RDAC85', 'RDAC90']
         >>> f._spec
         [<class 'str'>, <class 'str'>, <class 'str'>, <class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>, <class 'float'>, <class 'float'>, <class 'float'>, <class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>, <class 'float'>, <class 'float'>, <class 'float'>, <class 'float'>, <class 'float'>, <class 'float'>]
-
-
         """
         tables.DataTable.__init__(self, *args, **kwargs)
         self.__idx = {}

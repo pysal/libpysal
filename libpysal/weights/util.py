@@ -342,7 +342,7 @@ def order(w, kmax=3):
 
     Notes
     -----
-    Implements the algorithm in Anselin and Smirnov (1996) [Anselin1996b]_
+    Implements the algorithm in :cite:`Anselin1996b`.
 
     Examples
     --------
@@ -557,7 +557,7 @@ def w_local_cluster(w):
 
     where :math:`N_i` is the set of neighbors to :math:`i`, :math:`k_i =
     |N_i|` and :math:`\{w_{j,k}\}` is the set of non-zero elements of the
-    weights between pairs in :math:`N_i`. [Watts1998]_
+    weights between pairs in :math:`N_i`.    :cite:`Watts1998`._
 
     Examples
     --------

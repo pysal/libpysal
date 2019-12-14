@@ -1,10 +1,12 @@
-from ..io.fileio import FileIO
+import itertools
+
+import numpy
+
 from ..cg import voronoi_frames
-from .weights import W, WSP
+from ..io.fileio import FileIO
 from ._contW_lists import ContiguityWeightsLists
 from .util import get_ids, get_points_array
-import numpy 
-import itertools
+from .weights import WSP, W
 
 try:
     from shapely.geometry import Point as shapely_point
@@ -13,12 +15,12 @@ try:
 except ImportError:
     from ..cg.shapes import Point as point_type
 
-
 WT_TYPE = {'rook': 2, 'queen': 1}  # for _contW_Binning
 
 __author__ = "Sergio J. Rey <srey@asu.edu> , Levi John Wolf <levi.john.wolf@gmail.com>"
 
 __all__ = ['Rook', 'Queen', 'Voronoi']
+
 
 class Rook(W):
     """
@@ -37,19 +39,17 @@ class Rook(W):
     ---------
     :class:`libpysal.weights.weights.W`
     """
-
     def __init__(self, polygons, **kw):
         criterion = 'rook'
-        ids = kw.pop('ids', None) 
+        ids = kw.pop('ids', None)
         polygons, backup = itertools.tee(polygons)
         first_shape = next(iter(backup))
         if isinstance(first_shape, point_type):
             polygons, vertices = voronoi_frames(get_points_array(polygons))
             polygons = list(polygons.geometry)
-        neighbors, ids = _build(polygons, criterion=criterion, 
-                                ids=ids)
+        neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
-    
+
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
         """
@@ -95,15 +95,15 @@ class Rook(W):
         """
         sparse = kwargs.pop('sparse', False)
         if idVariable is not None:
-            ids = get_ids(filepath, idVariable) 
+            ids = get_ids(filepath, idVariable)
         else:
             ids = None
-        w = cls(FileIO(filepath), ids=ids,**kwargs)
+        w = cls(FileIO(filepath), ids=ids, **kwargs)
         w.set_shapefile(filepath, idVariable=idVariable, full=full)
         if sparse:
             w = w.to_WSP()
         return w
-    
+
     @classmethod
     def from_iterable(cls, iterable, sparse=False, **kwargs):
         """
@@ -111,14 +111,14 @@ class Rook(W):
         will cast the polygons to PySAL polygons, then build the W.
 
         Parameters
-        ---------
+        ----------
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
                       support iteration. Can be either Shapely or PySAL shapes.
         **kw        : keyword arguments
                       optional arguments for  :class:`pysal.weights.W`
         See Also
-        ----------
+        --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Rook`
         """
@@ -129,15 +129,20 @@ class Rook(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col='geometry', 
-                       idVariable=None, ids=None, id_order=None, **kwargs):
+    def from_dataframe(cls,
+                       df,
+                       geom_col='geometry',
+                       idVariable=None,
+                       ids=None,
+                       id_order=None,
+                       **kwargs):
         """
         Construct a weights object from a pandas dataframe with a geometry
         column. This will cast the polygons to PySAL polygons, then build the W
         using ids from the dataframe.
 
         Parameters
-        ---------
+        ----------
         df          : DataFrame
                       a :class: `pandas.DataFrame` containing geometries to use
                       for spatial weights
@@ -157,13 +162,13 @@ class Rook(W):
                       argument. 
 
         See Also
-        ---------
+        --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Rook`
         """
         if id_order is not None:
-            if id_order is True and ((idVariable is not None) 
-                                     or (ids is not None)):
+            if id_order is True and ((idVariable is not None) or
+                                     (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
                 # idVariable column
                 id_order = list(df.get(idVariable, ids))
@@ -173,8 +178,11 @@ class Rook(W):
             ids = df.get(idVariable).tolist()
         elif isinstance(ids, str):
             ids = df.get(ids).tolist()
-        return cls.from_iterable(df[geom_col].tolist(), ids=ids,
-                                 id_order=id_order, **kwargs)
+        return cls.from_iterable(df[geom_col].tolist(),
+                                 ids=ids,
+                                 id_order=id_order,
+                                 **kwargs)
+
 
 class Queen(W):
     """
@@ -190,10 +198,9 @@ class Queen(W):
                   optional arguments for :class:`pysal.weights.W`
 
     See Also
-    ---------
+    --------
     :class:`libpysal.weights.weights.W`
     """
-
     def __init__(self, polygons, **kw):
         criterion = 'queen'
         ids = kw.pop('ids', None)
@@ -202,8 +209,7 @@ class Queen(W):
         if isinstance(first_shape, point_type):
             polygons, vertices = voronoi_frames(get_points_array(polygons))
             polygons = list(polygons.geometry)
-        neighbors, ids = _build(polygons, criterion=criterion, 
-                                ids=ids)
+        neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
 
     @classmethod
@@ -254,7 +260,7 @@ class Queen(W):
         """
         sparse = kwargs.pop('sparse', False)
         if idVariable is not None:
-            ids = get_ids(filepath, idVariable) 
+            ids = get_ids(filepath, idVariable)
         else:
             ids = None
         w = cls(FileIO(filepath), ids=ids, **kwargs)
@@ -270,19 +276,19 @@ class Queen(W):
         will cast the polygons to PySAL polygons, then build the W.
 
         Parameters
-        ---------
+        ----------
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
                       support iteration. Contents may either be a shapely or PySAL shape.
         **kw        : keyword arguments
                       optional arguments for  :class:`pysal.weights.W`
         See Also
-        ----------
+        ---------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguiyt.Queen`
         """
-        new_iterable = iter(iterable) 
-        w = cls(new_iterable, **kwargs) 
+        new_iterable = iter(iterable)
+        w = cls(new_iterable, **kwargs)
         if sparse:
             w = WSP.from_W(w)
         return w
@@ -295,7 +301,7 @@ class Queen(W):
         using ids from the dataframe.
 
         Parameters
-        ---------
+        ----------
         df          : DataFrame
                       a :class: `pandas.DataFrame` containing geometries to use
                       for spatial weights
@@ -315,7 +321,7 @@ class Queen(W):
                       argument. 
 
         See Also
-        ---------
+        --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Queen`
         """
@@ -323,8 +329,8 @@ class Queen(W):
         ids = kwargs.pop('ids', None)
         id_order = kwargs.pop('id_order', None)
         if id_order is not None:
-            if id_order is True and ((idVariable is not None) 
-                                     or (ids is not None)):
+            if id_order is True and ((idVariable is not None) or
+                                     (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
                 # idVariable column
                 ids = list(df.get(idVariable, ids))
@@ -336,8 +342,12 @@ class Queen(W):
             ids = df.get(idVariable).tolist()
         elif isinstance(ids, str):
             ids = df.get(ids).tolist()
-        w = cls.from_iterable(df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs)
+        w = cls.from_iterable(df[geom_col].tolist(),
+                              ids=ids,
+                              id_order=id_order,
+                              **kwargs)
         return w
+
 
 def Voronoi(points, criterion='rook', clip='ahull', **kwargs):
     """
@@ -378,9 +388,11 @@ def Voronoi(points, criterion='rook', clip='ahull', **kwargs):
     elif criterion.lower() == 'rook':
         cls = Rook
     else:
-        raise ValueError('Contiguity criterion {} not supported. '
-                         'Only "rook" and "queen" are supported.'.format(criterion))
+        raise ValueError(
+            'Contiguity criterion {} not supported. '
+            'Only "rook" and "queen" are supported.'.format(criterion))
     return cls.from_dataframe(region_df, **kwargs)
+
 
 def _from_dataframe(df, **kwargs):
     """
@@ -403,14 +415,15 @@ def _from_dataframe(df, **kwargs):
                     instance of spatial weights.
     """
     try:
-        x,y = df.geometry.x.values, df.geometry.y.values
+        x, y = df.geometry.x.values, df.geometry.y.values
     except ValueError:
         raise NotImplementedError('Voronoi weights are only'
                                   ' implemented for point geometries. '
                                   'You may consider using df.centroid.')
-    coords = numpy.column_stack((x,y))
-    return Voronoi(coords, **kwargs) 
-    
+    coords = numpy.column_stack((x, y))
+    return Voronoi(coords, **kwargs)
+
+
 Voronoi.from_dataframe = _from_dataframe
 
 
@@ -439,7 +452,8 @@ def _build(polygons, criterion="rook", ids=None):
           object, not the object itself. 
     """
     if ids and len(ids) != len(set(ids)):
-        raise ValueError("The argument to the ids parameter contains duplicate entries.")
+        raise ValueError(
+            "The argument to the ids parameter contains duplicate entries.")
 
     wttype = WT_TYPE[criterion.lower()]
     geo = polygons
@@ -461,7 +475,11 @@ def _build(polygons, criterion="rook", ids=None):
     else:
         for key in neighbor_data:
             neighbors[key] = set(neighbor_data[key])
-    return dict(list(zip(list(neighbors.keys()),list(map(list, list(neighbors.values())))))), ids
+    return dict(
+        list(
+            zip(list(neighbors.keys()),
+                list(map(list, list(neighbors.values())))))), ids
+
 
 def buildContiguity(polygons, criterion="rook", ids=None):
     """
@@ -477,4 +495,5 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     elif criterion.lower() == 'queen':
         return Queen(polygons, ids=ids)
     else:
-        raise Exception('Weights criterion "{}" was not found.'.format(criterion))
+        raise Exception(
+            'Weights criterion "{}" was not found.'.format(criterion))

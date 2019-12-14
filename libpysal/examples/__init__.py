@@ -1,78 +1,47 @@
-import os
+"""
+The :mod:`libpysal.examples` module includes a number of small built-in example datasets as well as functions to fetch larger datasets.
+"""
+from .base import example_manager
+from .remotes import datasets as remote_datasets
+from .remotes import download as fetch_all
+from .builtin import datasets as builtin_datasets
 
-base = os.path.abspath(os.path.dirname(__file__))
-__all__ = ['get_path', 'available', 'explain']
-file_2_dir = {}
-example_dir = base
+__all__ = ['get_path', 'available', 'explain', 'fetch_all']
 
-dirs = []
-for root, subdirs, files in os.walk(example_dir, topdown=False):
-    for f in files:
-        file_2_dir[f] = root
-    head, tail = os.path.split(root)
-    if tail != 'examples':
-        dirs.append(tail)
+example_manager.add_examples(remote_datasets)
+example_manager.add_examples(builtin_datasets)
 
 
-def get_path(example_name, raw=False):
-    """
-    Get path of  example folders
-    """
-    if type(example_name) != str:
-        try:
-            example_name = str(example_name)
-        except:
-            raise KeyError('Cannot coerce requested example name to string')
-    if example_name in dirs:
-        outpath =  os.path.join(example_dir, example_name, example_name)
-    elif example_name in file_2_dir:
-        d = file_2_dir[example_name]
-        outpath = os.path.join(d, example_name)
-    elif example_name == "":
-        outpath = os.path.join(base, 'examples', example_name)
-    else:
-        raise KeyError(example_name + ' not found in PySAL built-in examples.')
-    name,ext = os.path.splitext(outpath)
-    if (ext == '.zip') and (not raw):
-        outpath = 'zip://'+outpath
-    return outpath
-
-def available(verbose=False):
+def available():
     """
     List available datasets
     """
-
-    examples = [os.path.join(base, d) for d in dirs]
-    if not verbose:
-        return [os.path.split(d)[-1] for d in examples]
-    examples = [os.path.join(dty, 'README.md') for dty in examples]
-    descs = [_read_example(path) for path in examples]
-    return [{desc['name']:desc['description'] for desc in descs}]
+    return example_manager.available()
 
 
-def _read_example(pth):
-    try:
-        with open(pth, 'r') as io:
-            title = io.readline().strip('\n')
-            io.readline()  # titling
-            io.readline()  # pad
-            short = io.readline().strip('\n')
-            io.readline()  # subtitling
-            io.readline()  # pad
-            rest = io.readlines()
-            rest = [l.strip('\n') for l in rest if l.strip('\n') != '']
-            d = {'name': title, 'description': short, 'explanation': rest}
-    except IOError:
-        basename = os.path.split(pth)[-2]
-        dirname = os.path.split(basename)[-1]
-        d = {'name': dirname, 'description': None, 'explanation': None}
-    return d
-
-
-def explain(name):  # would be nice to use pandas for display here
+def explain(name):
     """
     Explain a dataset by name
     """
-    path = os.path.split(get_path(name))[0]
-    fpath = os.path.join(path, 'README.md')
-    return _read_example(fpath)
+    return example_manager.explain(name)
+
+
+def load_example(example_name):
+    """
+    Load example dataset instance
+    """
+    return example_manager.load(example_name)
+
+
+def get_path(file_name):
+    """
+    get the path for a file by searching installed datasets
+    """
+
+    installed = example_manager.get_installed_names()
+    for name in installed:
+        example = example_manager.datasets[name]
+        pth = example.get_path(file_name, verbose=False)
+        if pth:
+            return pth
+    print("{} is not a file in any installed datasets.")
