@@ -13,10 +13,6 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -26,6 +22,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -114,7 +114,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <div class="section" id="libpysal-io-fileio-fileio">
 <h1>libpysal.io.fileio.FileIO<a class="headerlink" href="#libpysal-io-fileio-fileio" title="Permalink to this headline">¶</a></h1>
@@ -138,7 +138,7 @@ It doesn’t make much sense to treat weights in the same way as shapefiles and 
 …. on mode=’w’, .write will expect an instance of W</p>
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">dataPath=''</em>, <em class="sig-param">mode='r'</em>, <em class="sig-param">dataFormat=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">dataPath=''</em>, <em class="sig-param">mode='r'</em>, <em class="sig-param">dataFormat=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -149,43 +149,43 @@ It doesn’t make much sense to treat weights in the same way as shapefiles and 
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.__init__" title="libpysal.io.fileio.FileIO.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self[, dataPath, mode, dataFormat])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.__init__" title="libpysal.io.fileio.FileIO.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([dataPath, mode, dataFormat])</p></td>
 <td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.cast" title="libpysal.io.fileio.FileIO.cast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cast</span></code></a>(self, key, typ)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.cast" title="libpysal.io.fileio.FileIO.cast"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cast</span></code></a>(key, typ)</p></td>
 <td><p>cast key as typ</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.check" title="libpysal.io.fileio.FileIO.check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check</span></code></a>()</p></td>
 <td><p>Prints the contents of the registry</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.close" title="libpysal.io.fileio.FileIO.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>(self)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.close" title="libpysal.io.fileio.FileIO.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
 <td><p>subclasses should clean themselves up and then call this method</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flush</span></code>(self)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flush</span></code>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.get" title="libpysal.io.fileio.FileIO.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(self, n)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.get" title="libpysal.io.fileio.FileIO.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(n)</p></td>
 <td><p>Seeks the file to n and returns n If .ids is set n should be an id, else, n should be an offset</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.getType" title="libpysal.io.fileio.FileIO.getType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getType</span></code></a>(dataPath, mode[, dataFormat])</p></td>
 <td><p>Parse the dataPath and return the data type</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.open" title="libpysal.io.fileio.FileIO.open"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open</span></code></a>(\*args, \*\*kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.open" title="libpysal.io.fileio.FileIO.open"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Alias for FileIO()</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.read" title="libpysal.io.fileio.FileIO.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(self[, n])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.read" title="libpysal.io.fileio.FileIO.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>([n])</p></td>
 <td><p>Read at most n objects, less if read hits EOF if size is negative or omitted read all objects until EOF returns None if EOF is reached before any objects.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.seek" title="libpysal.io.fileio.FileIO.seek"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seek</span></code></a>(self, n)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.seek" title="libpysal.io.fileio.FileIO.seek"><code class="xref py py-obj docutils literal notranslate"><span class="pre">seek</span></code></a>(n)</p></td>
 <td><p>Seek the FileObj to the beginning of the n’th record, if ids are set, seeks to the beginning of the record at id, n</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.tell" title="libpysal.io.fileio.FileIO.tell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tell</span></code></a>(self)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.tell" title="libpysal.io.fileio.FileIO.tell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tell</span></code></a>()</p></td>
 <td><p>Return id (or offset) of next object</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.truncate" title="libpysal.io.fileio.FileIO.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>(self[, size])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.truncate" title="libpysal.io.fileio.FileIO.truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code></a>([size])</p></td>
 <td><p>Should be implemented by subclasses and redefine this doc string</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.write" title="libpysal.io.fileio.FileIO.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(self, obj)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.io.fileio.FileIO.write" title="libpysal.io.fileio.FileIO.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(obj)</p></td>
 <td><p>Must be implemented by subclasses that support ‘w’ subclasses should increment .pos subclasses should also check if obj is an instance of type(list) and redefine this doc string</p></td>
 </tr>
 </tbody>
@@ -210,7 +210,7 @@ It doesn’t make much sense to treat weights in the same way as shapefiles and 
 </table>
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.cast">
-<code class="sig-name descname">cast</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">key</em>, <em class="sig-param">typ</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.cast" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">cast</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">typ</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.cast" title="Permalink to this definition">¶</a></dt>
 <dd><p>cast key as typ</p>
 </dd></dl>
 
@@ -222,13 +222,13 @@ It doesn’t make much sense to treat weights in the same way as shapefiles and 
 
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.close">
-<code class="sig-name descname">close</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.close" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>subclasses should clean themselves up and then call this method</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.get" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Seeks the file to n and returns n
 If .ids is set n should be an id,
 else, n should be an offset</p>
@@ -248,7 +248,7 @@ else, n should be an offset</p>
 
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.read">
-<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">n=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.read" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param">n=-1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.read" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read at most n objects, less if read hits EOF
 if size is negative or omitted read all objects until EOF
 returns None if EOF is reached before any objects.</p>
@@ -256,27 +256,27 @@ returns None if EOF is reached before any objects.</p>
 
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.seek">
-<code class="sig-name descname">seek</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.seek"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.seek" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">seek</code><span class="sig-paren">(</span><em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.seek"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.seek" title="Permalink to this definition">¶</a></dt>
 <dd><p>Seek the FileObj to the beginning of the n’th record,
 if ids are set, seeks to the beginning of the record at id, n</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.tell">
-<code class="sig-name descname">tell</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.tell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.tell" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.tell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.tell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return id (or offset) of next object</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.truncate">
-<code class="sig-name descname">truncate</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.truncate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">truncate</code><span class="sig-paren">(</span><em class="sig-param">size=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.truncate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.truncate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Should be implemented by subclasses
 and redefine this doc string</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="libpysal.io.fileio.FileIO.write">
-<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.write" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/io/fileio.html#FileIO.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.io.fileio.FileIO.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Must be implemented by subclasses that support ‘w’
 subclasses should increment .pos
 subclasses should also check if obj is an instance of type(list)
@@ -307,7 +307,7 @@ and redefine this doc string</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

@@ -13,10 +13,6 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -26,6 +22,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -114,7 +114,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <div class="section" id="libpysal-cg-grid">
 <h1>libpysal.cg.Grid<a class="headerlink" href="#libpysal-cg-grid" title="Permalink to this headline">¶</a></h1>
@@ -124,7 +124,7 @@
 <dd><p>Representation of a binning data structure.</p>
 <dl class="method">
 <dt id="libpysal.cg.Grid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bounds</em>, <em class="sig-param">resolution</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">bounds</em>, <em class="sig-param">resolution</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a grid with specified properties.</p>
 <p>__init__(Rectangle, number) -&gt; Grid</p>
 <dl class="field-list simple">
@@ -147,32 +147,32 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.__init__" title="libpysal.cg.Grid.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, bounds, resolution)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.__init__" title="libpysal.cg.Grid.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(bounds, resolution)</p></td>
 <td><p>Returns a grid with specified properties.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.add" title="libpysal.cg.Grid.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(self, item, pt)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.add" title="libpysal.cg.Grid.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(item, pt)</p></td>
 <td><p>Adds an item to the grid at a specified location.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.bounds" title="libpysal.cg.Grid.bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounds</span></code></a>(self, bounds)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.bounds" title="libpysal.cg.Grid.bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounds</span></code></a>(bounds)</p></td>
 <td><p>Returns a list of items found in the grid within the bounds specified.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.in_grid" title="libpysal.cg.Grid.in_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_grid</span></code></a>(self, loc)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.in_grid" title="libpysal.cg.Grid.in_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_grid</span></code></a>(loc)</p></td>
 <td><p>Returns whether a 2-tuple location _loc_ lies inside the grid bounds.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.nearest" title="libpysal.cg.Grid.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a>(self, pt)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.nearest" title="libpysal.cg.Grid.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a>(pt)</p></td>
 <td><p>Returns the nearest item to a point.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.proximity" title="libpysal.cg.Grid.proximity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code></a>(self, pt, r)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.proximity" title="libpysal.cg.Grid.proximity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code></a>(pt, r)</p></td>
 <td><p>Returns a list of items found in the grid within a specified distance of a point.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.remove" title="libpysal.cg.Grid.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(self, item, pt)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.remove" title="libpysal.cg.Grid.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(item, pt)</p></td>
 <td><p>Removes an item from the grid at a specified location.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="libpysal.cg.Grid.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">item</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">item</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an item to the grid at a specified location.</p>
 <p>add(x, Point) -&gt; x</p>
 <dl class="field-list simple">
@@ -184,7 +184,7 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
 <span class="go">&#39;A&#39;</span>
 </pre></div>
@@ -193,7 +193,7 @@
 
 <dl class="method">
 <dt id="libpysal.cg.Grid.bounds">
-<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of items found in the grid within the bounds specified.</p>
 <p>bounds(Rectangle) -&gt; x list</p>
 <dl class="field-list simple">
@@ -205,7 +205,7 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
 <span class="go">&#39;A&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
@@ -222,14 +222,14 @@
 
 <dl class="method">
 <dt id="libpysal.cg.Grid.in_grid">
-<code class="sig-name descname">in_grid</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">loc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.in_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.in_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">in_grid</code><span class="sig-paren">(</span><em class="sig-param">loc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.in_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.in_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether a 2-tuple location _loc_ lies inside the grid bounds.</p>
 <p>Test tag: &lt;tc&gt;#is#Grid.in_grid&lt;/tc&gt;</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="libpysal.cg.Grid.nearest">
-<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.nearest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.nearest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the nearest item to a point.</p>
 <p>nearest(Point) -&gt; x</p>
 <dl class="field-list simple">
@@ -240,7 +240,7 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
 <span class="go">&#39;A&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
@@ -255,7 +255,7 @@
 
 <dl class="method">
 <dt id="libpysal.cg.Grid.proximity">
-<code class="sig-name descname">proximity</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">pt</em>, <em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.proximity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.proximity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">proximity</code><span class="sig-paren">(</span><em class="sig-param">pt</em>, <em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.proximity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.proximity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of items found in the grid within a specified distance of a point.</p>
 <p>proximity(Point, number) -&gt; x list</p>
 <dl class="field-list simple">
@@ -267,7 +267,7 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
 <span class="go">&#39;A&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
@@ -284,7 +284,7 @@
 
 <dl class="method">
 <dt id="libpysal.cg.Grid.remove">
-<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">item</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.remove" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param">item</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes an item from the grid at a specified location.</p>
 <p>remove(x, Point) -&gt; x</p>
 <dl class="field-list simple">
@@ -296,7 +296,7 @@
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
 <span class="go">&#39;A&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
@@ -329,7 +329,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>
