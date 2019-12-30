@@ -7,10 +7,12 @@ import os
 from sys import version as V
 
 PY3 = int(V[0]) > 2
-
+TEST_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_DIR = os.path.abspath(os.path.join(TEST_DIR, os.pardir))
 class test_csvWrapper(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('stl_hom.csv')
+        stl = pysal_examples.load_example('stl')
+        self.test_file = test_file = stl.get_path('stl_hom.csv')
         self.obj = csvWrapper.csvWrapper(test_file, 'r')
 
     def test_len(self):
