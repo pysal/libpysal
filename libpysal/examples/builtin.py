@@ -50,7 +50,6 @@ class LocalExample:
         with open(description, 'r', encoding="utf8") as f:
             print(f.read())
 
-
     def get_description(self):
         description = [f for f in self.get_file_list() if "README.md" in f][0]
         with open(description, 'r', encoding="utf8") as f:
