@@ -13,10 +13,6 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -26,6 +22,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -114,7 +114,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <div class="section" id="libpysal-weights-kernel">
 <h1>libpysal.weights.Kernel<a class="headerlink" href="#libpysal-weights-kernel" title="Permalink to this headline">¶</a></h1>
@@ -171,7 +171,7 @@ knnth observations</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">Kernel</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">Kernel</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">points</span><span class="o">=</span><span class="p">[(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kw</span><span class="o">=</span><span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kw</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -200,7 +200,7 @@ knnth observations</p>
 </pre></div>
 </div>
 <p>Adaptive bandwidths user specified</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bw</span><span class="o">=</span><span class="p">[</span><span class="mf">25.0</span><span class="p">,</span><span class="mf">15.0</span><span class="p">,</span><span class="mf">25.0</span><span class="p">,</span><span class="mf">16.0</span><span class="p">,</span><span class="mf">14.5</span><span class="p">,</span><span class="mf">25.0</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bw</span><span class="o">=</span><span class="p">[</span><span class="mf">25.0</span><span class="p">,</span><span class="mf">15.0</span><span class="p">,</span><span class="mf">25.0</span><span class="p">,</span><span class="mf">16.0</span><span class="p">,</span><span class="mf">14.5</span><span class="p">,</span><span class="mf">25.0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kwa</span><span class="o">=</span><span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">bandwidth</span><span class="o">=</span><span class="n">bw</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kwa</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[1.0, 0.6, 0.552786404500042, 0.10557280900008403]</span>
@@ -216,7 +216,7 @@ knnth observations</p>
 </pre></div>
 </div>
 <p>Endogenous adaptive bandwidths</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwea</span><span class="o">=</span><span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kwea</span><span class="o">=</span><span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kwea</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[1.0, 0.10557289844279438, 9.99999900663795e-08]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kwea</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -231,7 +231,7 @@ knnth observations</p>
 </pre></div>
 </div>
 <p>Endogenous adaptive bandwidths with Gaussian kernel</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kweag</span><span class="o">=</span><span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kweag</span><span class="o">=</span><span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">fixed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kweag</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[0.3989422804014327, 0.2674190291577696, 0.2419707487162134]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kweag</span><span class="o">.</span><span class="n">bandwidth</span>
@@ -244,7 +244,7 @@ knnth observations</p>
 </pre></div>
 </div>
 <p>Diagonals to 1.0</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kq</span> <span class="o">=</span> <span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">kq</span> <span class="o">=</span> <span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">,</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kq</span><span class="o">.</span><span class="n">weights</span>
 <span class="go">{0: [0.3989422804014327, 0.35206533556593145, 0.3412334260702758], 1: [0.35206533556593145, 0.3989422804014327, 0.2419707487162134, 0.3412334260702758, 0.31069657591175387], 2: [0.2419707487162134, 0.3989422804014327, 0.31069657591175387], 3: [0.3412334260702758, 0.3412334260702758, 0.3989422804014327, 0.3011374490937829, 0.26575287272131043], 4: [0.31069657591175387, 0.31069657591175387, 0.3011374490937829, 0.3989422804014327, 0.35206533556593145], 5: [0.26575287272131043, 0.35206533556593145, 0.3989422804014327]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kqd</span> <span class="o">=</span> <span class="n">Kernel</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">diagonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -266,7 +266,7 @@ knnth observations</p>
 </dl>
 <dl class="method">
 <dt id="libpysal.weights.Kernel.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">data</em>, <em class="sig-param">bandwidth=None</em>, <em class="sig-param">fixed=True</em>, <em class="sig-param">k=2</em>, <em class="sig-param">function='triangular'</em>, <em class="sig-param">eps=1.0000001</em>, <em class="sig-param">ids=None</em>, <em class="sig-param">diagonal=False</em>, <em class="sig-param">distance_metric='euclidean'</em>, <em class="sig-param">radius=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/distance.html#Kernel.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.Kernel.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">bandwidth=None</em>, <em class="sig-param">fixed=True</em>, <em class="sig-param">k=2</em>, <em class="sig-param">function='triangular'</em>, <em class="sig-param">eps=1.0000001</em>, <em class="sig-param">ids=None</em>, <em class="sig-param">diagonal=False</em>, <em class="sig-param">distance_metric='euclidean'</em>, <em class="sig-param">radius=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/distance.html#Kernel.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.Kernel.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -277,10 +277,10 @@ knnth observations</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.Kernel.__init__" title="libpysal.weights.Kernel.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, data[, bandwidth, fixed, k, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.Kernel.__init__" title="libpysal.weights.Kernel.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(data[, bandwidth, fixed, k, …])</p></td>
 <td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">asymmetry</span></code>(self[, intrinsic])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">asymmetry</span></code>([intrinsic])</p></td>
 <td><p>Asymmetry check.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_WSP</span></code>(WSP[, silence_warnings])</p></td>
@@ -289,7 +289,7 @@ knnth observations</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_adjlist</span></code>(adjlist[, focal_col, …])</p></td>
 <td><p>Return an adjacency list representation of a weights object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.Kernel.from_array" title="libpysal.weights.Kernel.from_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_array</span></code></a>(array, \*\*kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.Kernel.from_array" title="libpysal.weights.Kernel.from_array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_array</span></code></a>(array, **kwargs)</p></td>
 <td><p>Construct a Kernel weights from an array.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.Kernel.from_dataframe" title="libpysal.weights.Kernel.from_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dataframe</span></code></a>(df[, geom_col, ids])</p></td>
@@ -304,34 +304,34 @@ knnth observations</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.Kernel.from_shapefile" title="libpysal.weights.Kernel.from_shapefile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_shapefile</span></code></a>(filepath[, idVariable])</p></td>
 <td><p>Kernel based weights from shapefile</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">full</span></code>(self)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">full</span></code>()</p></td>
 <td><p>Generate a full numpy array.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code>(self)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code>()</p></td>
 <td><p>Getter for transform property.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>(self, gdf[, indexed_on, ax, color, …])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>(gdf[, indexed_on, ax, color, node_kws, …])</p></td>
 <td><p>Plot spatial weights objects.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remap_ids</span></code>(self, new_ids)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remap_ids</span></code>(new_ids)</p></td>
 <td><p>In place modification throughout <cite>W</cite> of id values from <cite>w.id_order</cite> to <cite>new_ids</cite> in all</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_shapefile</span></code>(self, shapefile[, idVariable, …])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_shapefile</span></code>(shapefile[, idVariable, full])</p></td>
 <td><p>Adding meta data for writing headers of gal and gwt files.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code>(self[, value])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code>([value])</p></td>
 <td><p>Transformations of weights.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">symmetrize</span></code>(self[, inplace])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">symmetrize</span></code>([inplace])</p></td>
 <td><p>Construct a symmetric KNN weight.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_WSP</span></code>(self)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_WSP</span></code>()</p></td>
 <td><p>Generate a WSP object.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_adjlist</span></code>(self[, remove_symmetric, …])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_adjlist</span></code>([remove_symmetric, focal_col, …])</p></td>
 <td><p>Compute an adjacency list representation of a weights object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_networkx</span></code>(self)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_networkx</span></code>()</p></td>
 <td><p>Convert a weights object to a networkx graph</p></td>
 </tr>
 </tbody>
@@ -439,9 +439,7 @@ knnth observations</p>
 as <a class="reference internal" href="#libpysal.weights.Kernel" title="libpysal.weights.Kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">libpysal.weights.Kernel</span></code></a></p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">libpysal.weights.weights.W</span></code></dt><dd></dd>
-</dl>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">libpysal.weights.weights.W</span></code></p>
 </div>
 </dd></dl>
 
@@ -466,9 +464,7 @@ if None, df.index is used.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">libpysal.weights.weights.W</span></code></dt><dd></dd>
-</dl>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">libpysal.weights.weights.W</span></code></p>
 </div>
 </dd></dl>
 
@@ -487,15 +483,13 @@ if None, df.index is used.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>Kernel Weights Object</dt><dd></dd>
+<dt><strong>Kernel Weights Object</strong></dt><dd></dd>
 </dl>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">libpysal.weights.weights.W</span></code></dt><dd></dd>
-</dl>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">libpysal.weights.weights.W</span></code></p>
 </div>
 </dd></dl>
 
@@ -523,7 +517,7 @@ if None, df.index is used.</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>
