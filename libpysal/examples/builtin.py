@@ -47,13 +47,13 @@ class LocalExample:
         Provide a description of the example
         """
         description = [f for f in self.get_file_list() if "README.md" in f][0]
-        with open(description, 'r') as f:
+        with open(description, 'r', encoding="utf8") as f:
             print(f.read())
 
 
     def get_description(self):
         description = [f for f in self.get_file_list() if "README.md" in f][0]
-        with open(description, 'r') as f:
+        with open(description, 'r', encoding="utf8") as f:
             lines = f.readlines()
         return lines[3].strip()
 
