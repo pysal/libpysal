@@ -1247,44 +1247,13 @@ class W(object):
             raise ImportError("W.plot depends on matplotlib.pyplot, and this was"
                               "not able to be imported. \nInstall matplotlib to"
                               "plot spatial weights.")
-        if ax is None:
-            f = plt.figure()
-            ax = plt.gca()
-        else:
-            f = plt.gcf()
-        if node_kws is not None:
-            if 'color' not in node_kws:
-                node_kws['color'] = color
-        else:
-            node_kws=dict(color=color)
-        if edge_kws is not None:
-            if 'color' not in edge_kws:
-                edge_kws['color'] = color
-        else:
-            edge_kws=dict(color=color) 
-
-        for idx, neighbors in self:
-            if idx in self.islands:
-                continue
-            if indexed_on is not None:
-                neighbors = gdf[gdf[indexed_on].isin(neighbors)].index.tolist()
-                idx = gdf[gdf[indexed_on] == idx].index.tolist()[0]
-            centroids = gdf.loc[neighbors].centroid.apply(lambda p: (p.x, p.y))
-            centroids = np.vstack(centroids.values)
-            focal = np.hstack(gdf.loc[idx].geometry.centroid.xy)
-            seen = set()
-            for nidx, neighbor in zip(neighbors, centroids):
-                if (idx,nidx) in seen:
-                    continue
-                ax.plot(*list(zip(focal, neighbor)), marker=None,
-                        **edge_kws)
-                seen.update((idx,nidx))
-                seen.update((nidx,idx))
-        ax.scatter(gdf.centroid.apply(lambda p: p.x),
-                   gdf.centroid.apply(lambda p: p.y),
-                   **node_kws)
-        return f,ax
-
+        from pysal.viz.splot.libpysal import plot_spatial_weights
+        node_kws = dict() if node_kws is None else node_kws
+        edge_kws = dict() if edge_kws is None else edge_kws
+        node_kws.setdefault('color', color)
+        edge_kws.setdefault('color', color)
+        return plot_spatial_weights(self, gdf, indexed_on=indexed_on, ax=ax,
+                                        node_kws=node_kws, edge_kws=edge_kws)
 
 class WSP(object):
 
