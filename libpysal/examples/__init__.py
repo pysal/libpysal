@@ -44,4 +44,4 @@ def get_path(file_name):
         pth = example.get_path(file_name, verbose=False)
         if pth:
             return pth
-    print("{} is not a file in any installed datasets.")
+    print("{} is not a file in any installed dataset.".format(file_name))

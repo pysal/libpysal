@@ -18,7 +18,8 @@ class csvWrapper(tables.DataTable):
         Examples
         --------
         >>> import libpysal
-        >>> file_name = libpysal.examples.get_path('stl_hom.csv')
+        >>> stl = libpysal.examples.load_example('stl')
+        >>> file_name = stl.get_path('stl_hom.csv')
         >>> f = libpysal.io.open(file_name,'r')
         >>> y = f.read()
         >>> f.header
