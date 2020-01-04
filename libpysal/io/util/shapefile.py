@@ -1,5 +1,5 @@
 """
-A Pure Python ShapeFile Reader and Writer
+A Pure Python Shapefile Reader and Writer
 This module is selfcontained and does not require pysal.
 This module returns and expects dictionary based data strucutres.
 This module should be wrapped into your native data strcutures.
@@ -152,7 +152,7 @@ def _unpackDict2(d, structure, fileObj):
     for name, dtype, order in structure:
         dtype, n = dtype
         result = array.array(dtype)
-        result.fromstring(fileObj.read(result.itemsize * n))
+        result.frombytes(fileObj.read(result.itemsize * n))
         if order != SYS_BYTE_ORDER:
             result.byteswap()
         d[name] = result.tolist()
@@ -190,7 +190,7 @@ def _packDict(structure, d):
 
 
 class shp_file:
-    """Reads and Writes the SHP compenent of a ShapeFile
+    """Reads and writes the SHP compenent of a shapefile.
     
     Attributes
     ----------
@@ -342,7 +342,7 @@ class shp_file:
         return self.shape.String_Type
     
     def __next__(self):
-        """returns the next Shape in the shapeFile
+        """returns the next shape in the shapefile
         
         Example
         -------
@@ -430,7 +430,7 @@ class shp_file:
 
 
 class shx_file:
-    """Reads and Writes the SHX compenent of a ShapeFile
+    """Reads and writes the SHX compenent of a shapefile.
     
     Attributes
     ----------
@@ -479,7 +479,7 @@ class shx_file:
         -------
         
         >>> import libpysal
-        >>> shx = shx_file(libpysal.examples.get_path('10740'))
+        >>> shx = shx_file(libpysal.examples.get_path('10740.shx'))
         >>> shx._header == {'BBOX Xmax': -105.29012, 'BBOX Ymax': 36.219799000000002, 'BBOX Mmax': 0.0, 'BBOX Zmin': 0.0, 'BBOX Mmin': 0.0, 'File Code': 9994, 'BBOX Ymin': 34.259672000000002, 'BBOX Xmin': -107.62651, 'Unused0': 0, 'Unused1': 0, 'Unused2': 0, 'Unused3': 0, 'Unused4': 0, 'Version': 1000, 'BBOX Zmax': 0.0, 'Shape Type': 5, 'File Length': 830}
         True
         >>> len(shx.index)
@@ -512,7 +512,7 @@ class shx_file:
         -------
         
         >>> import libpysal
-        >>> shx = shx_file(libpysal.examples.get_path('Point'))
+        >>> shx = shx_file(libpysal.examples.get_path('Point.shx'))
         >>> isinstance(shx,shx_file)
         True
         
@@ -549,7 +549,7 @@ class shx_file:
         -------
         
         >>> import libpysal, os
-        >>> shx = shx_file(libpysal.examples.get_path('Point'))
+        >>> shx = shx_file(libpysal.examples.get_path('Point.shx'))
         >>> shx.index
         [(100, 20), (128, 20), (156, 20), (184, 20), (212, 20), (240, 20), (268, 20), (296, 20), (324, 20)]
         >>> shx2 = shx_file('test','w')
@@ -600,7 +600,7 @@ class NullShape:
 
 
 class Point(object):
-    """Packs and Unpacks a ShapeFile Point Type
+    """Packs and unpacks a shapefile Point type.
     
     Example
     -------
@@ -651,7 +651,7 @@ class PointZ(Point):
 
 
 class PolyLine:
-    """Packs and Unpacks a ShapeFile PolyLine Type
+    """Packs and unpacks a shapefile PolyLine type.
     
     Example
     -------
@@ -769,8 +769,7 @@ class PolyLineZ(object):
 
 
 class Polygon(PolyLine):
-    """ Packs and Unpacks a ShapeFile Polygon Type
-    Indentical to PolyLine.
+    """Packs and unpacks a shapefile Polygon type identical to PolyLine.
     
     Example
     -------
@@ -792,7 +791,7 @@ class Polygon(PolyLine):
 class MultiPoint:
     String_Type = "MULTIPOINT"
     def __init__(self):
-        raise NotImplementedError("No MultiPoint Support at this time.")
+        raise NotImplementedError("No MultiPoint support at this time.")
 
 
 class PolygonZ(PolyLineZ):
@@ -802,37 +801,37 @@ class PolygonZ(PolyLineZ):
 class MultiPointZ:
     String_Type = "MULTIPOINTZ"
     def __init__(self):
-        raise NotImplementedError("No MultiPointZ Support at this time.")
+        raise NotImplementedError("No MultiPointZ support at this time.")
 
 
 class PointM:
     String_Type = "POINTM"
     def __init__(self):
-        raise NotImplementedError("No PointM Support at this time.")
+        raise NotImplementedError("No PointM support at this time.")
 
 
 class PolyLineM:
     String_Type = "ARCM"
     def __init__(self):
-        raise NotImplementedError("No PolyLineM Support at this time.")
+        raise NotImplementedError("No PolyLineM support at this time.")
 
 
 class PolygonM:
     String_Type = "POLYGONM"
     def __init__(self):
-        raise NotImplementedError("No PolygonM Support at this time.")
+        raise NotImplementedError("No PolygonM support at this time.")
 
 
 class MultiPointM:
     String_Type = "MULTIPOINTM"
     def __init__(self):
-        raise NotImplementedError("No MultiPointM Support at this time.")
+        raise NotImplementedError("No MultiPointM support at this time.")
 
 
 class MultiPatch:
     String_Type = "MULTIPATCH"
     def __init__(self):
-        raise NotImplementedError("No MultiPatch Support at this time.")
+        raise NotImplementedError("No MultiPatch support at this time.")
 
 
 TYPE_DISPATCH = {0: NullShape, 1: Point, 3: PolyLine, 5: Polygon,

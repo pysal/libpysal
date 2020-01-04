@@ -44,7 +44,7 @@ def ODW(Wo, Wd, transform='r', silence_warnings=True):
     >>> OD.weights[0]
     [0.25, 0.25, 0.25, 0.25]
     >>> OD.neighbors[0]
-    array([ 5,  6,  9, 10], dtype=int32)
+    [5, 6, 9, 10]
     >>> OD.full()[0][0]
     array([0.  , 0.  , 0.  , 0.  , 0.  , 0.25, 0.25, 0.  , 0.  , 0.25, 0.25,
            0.  , 0.  , 0.  , 0.  , 0.  ])
@@ -84,17 +84,7 @@ def netW(link_list, share='A', transform = 'r', **kwargs):
                   origin id and d is a destination id
 
     share       : string
-                  denoting how to define the nodal relationship used to
-                  determine neighboring edges; defualt is 'A' for any shared
-                  nodes between two network edges; options include:
-                    'A': any shared nodes
-                    'O': a shared origin node
-                    'D': a shared destination node
-                    'OD' a shared origin node or a shared destination node
-                    'C': a shared node that is the destination of the first
-                         edge and the origin of the second edge - i.e., a
-                         directed chain is formed moving from edge one to edge
-                         two.
+                  denoting how to define the nodal relationship used to determine neighboring edges; defualt is 'A' for any shared nodes between two network edges; options include: O a shared origin node; D a shared destination node; OD; a shared origin or a shared destination node; C a shared node that is the destination of the first edge and the origin of the second edge - i.e., a directed chain is formed moving from edge one to edge two.
 
     transform   : Transformation for standardization of final OD spatial weight; default
                   is 'r' for row standardized

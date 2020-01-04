@@ -1,0 +1,10 @@
+libpysal.weights.W
+==================
+
+.. currentmodule:: libpysal.weights
+
+.. autoclass:: W
+   :members:
+
+
+   
