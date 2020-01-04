@@ -15,7 +15,7 @@ convert:
 	python convert.py
 
 test:
-	nosetests 
+	pytest --doctest-modules --doctest-continue-on-failure
 
 doctest:
 	cd doc; make pickle; make doctest
