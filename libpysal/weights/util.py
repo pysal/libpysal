@@ -11,6 +11,7 @@ import scipy
 from warnings import warn
 import numbers
 from collections import defaultdict
+from itertools import tee
 from ..common import requires
 
 try:
@@ -1024,10 +1025,11 @@ def get_points_array(iterable):
     this function returns x and y coordinates of the polygons' centroids
 
     """
+    first_choice, backup = tee(iterable)
     try:
-        data = np.vstack([np.array(shape.centroid) for shape in iterable])
+        data = np.vstack([np.array(shape.centroid) for shape in first_choice])
     except AttributeError:
-        data = np.vstack([shape for shape in iterable])
+        data = np.vstack([shape for shape in backup])
     return data
 
 
