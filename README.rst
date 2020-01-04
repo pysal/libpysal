@@ -10,9 +10,9 @@ Python Spatial Analysis Library Core
 .. image:: https://badge.fury.io/py/libpysal.svg
     :target: https://badge.fury.io/py/libpysal
 
-.. image:: https://badges.gitter.im/pysal/pysal.svg
-   :target: https://gitter.im/pysal/pysal
-   
+.. image:: https://img.shields.io/conda/vn/conda-forge/libpysal.svg
+   :target: https://anaconda.org/conda-forge/libpysal
+
 .. image:: https://zenodo.org/badge/81501824.svg
    :target: https://zenodo.org/badge/latestdoi/81501824   
 
