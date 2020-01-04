@@ -1,9 +1,12 @@
 # Changes
+
 Version 4.2.0 (2019-12-14)
 
-We closed a total of 54 issues (enhancements and bug fixes) through 20 pull requests, since our last release on 2019-09-01.
+We closed a total of 57 issues (enhancements and bug fixes) through 21 pull requests, since our last release on 2019-09-01.
 
 ## Issues Closed
+  - Updating requirements (#211)
+  - Big tarball (#174)
   - Fetch (#176)
   - metadata for examples  (#125)
   - DOC: math rendering in sphinx, and members included for W (#209)
@@ -40,6 +43,7 @@ We closed a total of 54 issues (enhancements and bug fixes) through 20 pull requ
   - BUG: Updating manifest for additional requirements files (#179)
 
 ## Pull Requests
+  - Updating requirements (#211)
   - Fetch (#176)
   - (docs) automatically generate docstrings for class members (#210)
   - (docs) keep file .nojekyll in docs when syncing between docs/ and docsrc/_build/html/ (#207)
@@ -68,7 +72,6 @@ The following individuals contributed to this release:
   - James Gaboardi
   - Levi John Wolf
   - Siddharths8212376
-  
   
 # Changes
 Version 4.1.1 (2019-09-01)
