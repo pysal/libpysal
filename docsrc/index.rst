@@ -44,6 +44,8 @@ Introduction
 - Built-in example datasets libpysal.examples  
 
 
+Examples demonstrating some of **libpysal** functionality are available in the `tutorial <tutorial.html>`_.
+
 Details are available in the `libpysal api <api.html>`_.
 
 For background information see :cite:`pysal2007`.
@@ -124,6 +126,8 @@ Core components of the Python Spatial Analysis Library (`PySAL`_)
    :caption: Contents:
 
    Installation <installation>
+   Tutorial <tutorial>
    API <api>
+   References <references>
    
 .. _PySAL: https://github.com/pysal/pysal
