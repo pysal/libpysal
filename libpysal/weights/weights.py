@@ -144,11 +144,7 @@ class W(object):
         self.transform = 'O'
         if id_order is None:
             self._id_order = list(self.neighbors.keys())
-            self._id_order.sort()
-            self._id_order_set = False
-        else:
-            self._id_order = id_order
-            self._id_order_set = True
+        self._id_order_set = True
         self._reset()
         self._n = len(self.weights)
         if not self.silence_warnings:
@@ -825,7 +821,7 @@ class W(object):
         >>> w.id_order_set
         True
         """
-        return self._id_order_set
+        return True 
 
     @property
     def neighbor_offsets(self):
@@ -1065,7 +1061,6 @@ class W(object):
             return []
         else:
             ijs = list(zip(ids[0], ids[1]))
-            ijs.sort()
             return ijs
 
     def symmetrize(self, inplace=False):
