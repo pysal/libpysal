@@ -24,7 +24,7 @@ github:
 
 sync:
 	@rsync -avh --exclude '.nojekyll' _build/html/ ../docs/ --delete
-  @rsync -avh --exclude '.nojekyll' notebooks/ ../docs/ --delete
+	@rsync -avh --exclude '.nojekyll' notebooks/ ../docs/notebooks/ --delete
 	@make clean
 
 clean:
