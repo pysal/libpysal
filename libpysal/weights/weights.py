@@ -257,11 +257,14 @@ class W(object):
             import pandas as pd
         except ImportError:
             raise ImportError('pandas must be installed to use this method')
-        adjlist = pd.DataFrame(((idx, n, w) for idx, neighb in self
-                                for n, w in list(neighb.items())),
-                               columns=('focal', 'neighbor', 'weight'))
-        return adjtools.filter_adjlist(
-            adjlist) if remove_symmetric else adjlist
+        n_islands = len(self.islands)
+        if n_islands > 0 and (not self.silence_warnings):
+            warnings.warn('{} islands in this weights matrix. Conversion to an '
+                          'adjacency list will drop these observations!')
+        adjlist = pd.DataFrame(((idx, n,w) for idx, neighb in self 
+                                           for n,w in list(neighb.items())),
+                               columns = ('focal', 'neighbor', 'weight'))
+        return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
 
     def to_networkx(self):
         """
