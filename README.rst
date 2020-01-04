@@ -15,11 +15,6 @@ Python Spatial Analysis Library Core
 
 
 
-
-This package is part of a `refactoring of PySAL
-<https://github.com/pysal/pysal/wiki/PEP-13:-Refactor-PySAL-Using-Submodules>`_.
-
-
 ****************
 libpysal modules
 ****************
