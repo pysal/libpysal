@@ -22,19 +22,18 @@ class Test_Alpha_Shapes(TestCase):
         eberly_vertices = np.vstack(eberly_vertices)
         self.vertices = eberly_vertices
 
-        self.a05 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_05.shp')).geometry.item()
-        self.a10 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_tenth.shp')).geometry.item()
-        self.a2 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fifth.shp')).geometry.item()
-        self.a25 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fourth.shp')).geometry.item()
-        self.a25 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fourth.shp')).geometry.item()
+        self.a05 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_05.shp')).geometry.to_numpy().item()
+        self.a10 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_tenth.shp')).geometry.to_numpy().item()
+        self.a2  = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fifth.shp')).geometry.to_numpy().item()
+        self.a25 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fourth.shp')).geometry.to_numpy().item()
+        self.a25 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fourth.shp')).geometry.to_numpy().item()
 
-        self.autoalpha = geopandas.read_file(os.path.join(this_directory, 'data/alpha_auto.shp')).geometry.item()
-
+        self.autoalpha = geopandas.read_file(os.path.join(this_directory, 'data/alpha_auto.shp')).geometry[0]
     def test_alpha_shapes(self):
-        new_a05 = alpha_shape(self.vertices, .05).item()
-        new_a10 = alpha_shape(self.vertices, .10).item()
-        new_a2 = alpha_shape(self.vertices, .2).item()
-        new_a25 = alpha_shape(self.vertices, .25).item()
+        new_a05 = alpha_shape(self.vertices, .05).to_numpy().item()
+        new_a10 = alpha_shape(self.vertices, .10).to_numpy().item()
+        new_a2  = alpha_shape(self.vertices, .2).to_numpy().item()
+        new_a25 = alpha_shape(self.vertices, .25).to_numpy().item()
 
         assert new_a05.equals(self.a05)
         assert new_a10.equals(self.a10)

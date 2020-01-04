@@ -1,6 +1,156 @@
-# Changes
+# Version 4.2.1 (2020-01-04)
 
-Version 4.1.0 (2019-07-01)
+This is a bug fix release.
+
+We closed a total of 14 issues (enhancements and bug fixes) through 5 pull requests, since our last release on 2019-12-14.
+
+## Issues Closed
+  - libpysal 4.2.0 won't import on Windows (#214)
+  - libpysal 4.2.0 Windows import issue (#215)
+  - Constructing contiguity spatial weights using from_dataframe and from_shapefile could give different results (#212)
+  - fix bug 212 (#213)
+  - alpha_shapes docs not rendering (#216)
+  - corrected docstrings in cg.alpha_shapes.py (#217)
+  - Updating requirements (#211)
+  - Big tarball (#174)
+  - Fetch (#176)
+
+## Pull Requests
+  - libpysal 4.2.0 Windows import issue (#215)
+  - fix bug 212 (#213)
+  - corrected docstrings in cg.alpha_shapes.py (#217)
+  - Updating requirements (#211)
+  - Fetch (#176)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - James Gaboardi
+  - Levi John Wolf
+
+# Version 4.2.0 (2019-12-14)
+
+We closed a total of 57 issues (enhancements and bug fixes) through 21 pull requests, since our last release on 2019-09-01.
+
+## Issues Closed
+  - Updating requirements (#211)
+  - Big tarball (#174)
+  - Fetch (#176)
+  - metadata for examples  (#125)
+  - DOC: math rendering in sphinx, and members included for W (#209)
+  - (docs) automatically generate docstrings for class members (#210)
+  - (docs) keep file .nojekyll in docs when syncing between docs/ and docsrc/_build/html/ (#207)
+  - (bug) replace silent_island_warning with silence_warnings for weights (#206)
+  - Documentation does not work (#205)
+  - updating cg.standalone.distance_matrix docs (#203)
+  - error message in cg.standalone.distance_matrix() (#195)
+  - improved docs in io.util.shapefile (#202)
+  - [ENH] moving jit import to common.py / improve documentation (#201)
+  - rearrange shapely import in cg.alpha_shapes (#199)
+  - fix quasi-redundant import of shapely (#200)
+  - Remove more relics (from pre-reorg PySAL) (#196)
+  - [BUG] alpha_shapes/shapely import error (#197)
+  - [BUG] correcting shapely import bug (#198)
+  - README.txt refers to pre-reorg PySAL (#194)
+  - remove `distribute_setup.py`? (#147)
+  - requires() decorator for libpysal.cg.alpha_shapes (#128)
+  - decorating functions with requires() (#129)
+  - [WIP] removing unused relics (#193)
+  - necessity of libpysal.common.iteritems()? (#191)
+  - removing iteritems decorator (#192)
+  - Voronoi results in weights of different shape than input points (#189)
+  - BUG: alpha_shape_auto can fail to contain all points in the set. (#190)
+  - WSP(sparse).to_W() has `array`s in weights,neighbors dictionaries, rather than lists.  (#185)
+  - Cast arrays as lists (Issue 185)  (#186)
+  - BUG: Update for geopandas use of GeometryArray (#188)
+  - Updated documentation error (link incorrectly specified) in README.rst  (#187)
+  - Docs: badges for pypi (#182)
+  - development guidelines link failure (#178)
+  - DOCS: moving off rtd (#181)
+  - REL 4.1.1 bf release (#180)
+  - BUG: Updating manifest for additional requirements files (#179)
+
+## Pull Requests
+  - Updating requirements (#211)
+  - Fetch (#176)
+  - (docs) automatically generate docstrings for class members (#210)
+  - (docs) keep file .nojekyll in docs when syncing between docs/ and docsrc/_build/html/ (#207)
+  - (bug) replace silent_island_warning with silence_warnings for weights (#206)
+  - updating cg.standalone.distance_matrix docs (#203)
+  - improved docs in io.util.shapefile (#202)
+  - [ENH] moving jit import to common.py / improve documentation (#201)
+  - fix quasi-redundant import of shapely (#200)
+  - Remove more relics (from pre-reorg PySAL) (#196)
+  - decorating functions with requires() (#129)
+  - [WIP] removing unused relics (#193)
+  - removing iteritems decorator (#192)
+  - BUG: alpha_shape_auto can fail to contain all points in the set. (#190)
+  - Cast arrays as lists (Issue 185)  (#186)
+  - BUG: Update for geopandas use of GeometryArray (#188)
+  - Updated documentation error (link incorrectly specified) in README.rst  (#187)
+  - Docs: badges for pypi (#182)
+  - DOCS: moving off rtd (#181)
+  - REL 4.1.1 bf release (#180)
+  - BUG: Updating manifest for additional requirements files (#179)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - Wei Kang
+  - James Gaboardi
+  - Levi John Wolf
+  - Siddharths8212376
+  
+#  Version 4.1.1 (2019-09-01)
+
+This is a bug fix release.
+
+We closed a total of 32 issues (enhancements and bug fixes) through 13 pull requests, since our last release on 2019-07-01.
+
+## Issues Closed
+  - BUG: Updating manifest for additional requirements files (#179)
+  - libpysal 4.1.0 is not released on pypi or conda-forge (#169)
+  - addressing DeprecationWarning: fromstring() (#131)
+  - ENH: fromstring has been deprecated (#175)
+  - addressing DeprecationWarning: fromstring() (#132)
+  - Ci (#172)
+  - minor change to W's silence_warnings workflow (#171)
+  - Automatically voronoi input point dataframes to Queen/Rook (#135)
+  - (docs, bug) silence warning for disconnected components and islands (#170)
+  - BUG: add zstd as a dependency to work around conda glitch (#168)
+  - unable to updata libpysal in Anaconda (#133)
+  - Modernize the travis builds (#167)
+  - make id_order propagate through symmetrize(inplace=False) (#137)
+  - W.symmetrize(inplace=False) resets id order (#136)
+  - swap to masking instead of querying in adjlist (#166)
+  - REL: 4.1.0 changelog (#160)
+  - removing alumni devs from travis notifications  (#161) (#162)
+  - remove alumni from travis (#161)
+  - update setup.py to accommodate the transition to python3.6 and 3.7 (#163)
+
+## Pull Requests
+  - BUG: Updating manifest for additional requirements files (#179)
+  - addressing DeprecationWarning: fromstring() (#132)
+  - Ci (#172)
+  - minor change to W's silence_warnings workflow (#171)
+  - Automatically voronoi input point dataframes to Queen/Rook (#135)
+  - (docs, bug) silence warning for disconnected components and islands (#170)
+  - BUG: add zstd as a dependency to work around conda glitch (#168)
+  - Modernize the travis builds (#167)
+  - make id_order propagate through symmetrize(inplace=False) (#137)
+  - swap to masking instead of querying in adjlist (#166)
+  - REL: 4.1.0 changelog (#160)
+  - removing alumni devs from travis notifications  (#161) (#162)
+  - update setup.py to accommodate the transition to python3.6 and 3.7 (#163)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - James Gaboardi
+  - Wei Kang
+  - Levi John Wolf
+
+# Version 4.1.0 (2019-07-01)
 
 We closed a total of 45 issues (enhancements and bug fixes) through 15 pull requests, since our last release on 2018-10-27.
 
@@ -62,9 +212,8 @@ The following individuals contributed to this release:
   - Elliott Sales De Andrade
   - Levi John Wolf
   - Renanxcortes
-# Changes
 
-Version 4.0.1 (2018-10-27)
+# Version 4.0.1 (2018-10-27)
 
 We closed a total of 21 issues (enhancements and bug fixes) through 8 pull requests, since our last release on 2018-08-22.
 
@@ -99,7 +248,7 @@ The following individuals contributed to this release:
   - Wei Kang
 
 
-Version 4.0.0 (2018-08-22)
+# Version 4.0.0 (2018-08-22)
 
 We closed a total of 52 issues (enhancements and bug fixes) through 18 pull requests, since our last release on 2018-07-15.
 
@@ -166,10 +315,9 @@ The following individuals contributed to this release:
   - Wei Kang
   - James Gaboardi
   - Eli Knaap
-# Changes
 
 
-v<1.13.0>, 2016-11-24
+# v<1.13.0>, 2016-11-24
 
 We closed a total of 38 issues, 7 pull requests and 31 regular issues;
 this is the full list (generated with the script 
@@ -219,7 +367,7 @@ Issues (31):
 * :ghissue:`870`: Doc/release
 * :ghissue:`869`: Dev
 
-v<1.12.0>, 2016-09-21
+# v<1.12.0>, 2016-09-21
 
 We closed a total of 100 issues, 33 pull requests and 67 regular issues;
 this is the full list (generated with the script 
@@ -331,7 +479,7 @@ Issues (67):
 * :ghissue:`807`: Updating contrib docs and bumping version for dev
 * :ghissue:`797`: working moran plot func
 
-v<1.11.2>, 2016-05-18
+# v<1.11.2>, 2016-05-18
 
 We closed a total of 20 issues, 6 pull requests and 14 regular issues;
 this is the full list (generated with the script 
@@ -364,7 +512,7 @@ Issues (14):
 * :ghissue:`779`: DistanceBand include the point itself as neighbor
 
 
-v<1.11.1>, 2016-04-01
+# v<1.11.1>, 2016-04-01
 
 We closed a total of 62 issues, 20 pull requests and 42 regular issues;
 this is the full list (generated with the script 
@@ -438,7 +586,7 @@ Issues (42):
 * :ghissue:`735`: Dev in sync with master for 1.11
 * :ghissue:`734`: Release 1.11
 
-v<1.11.0>, 2016-01-27
+# v<1.11.0>, 2016-01-27
 
 GitHub stats for 2015/07/29 - 2016/01/27
 
@@ -558,7 +706,7 @@ Issues (53):
 * :ghissue:`680`: Rel1.10
 
 
-v<1.10.0>, 2015-07-29
+# v<1.10.0>, 2015-07-29
 
 GitHub stats for 2015/01/31 - 2015/07/29
 
@@ -755,7 +903,7 @@ Issues (98):
 * :ghissue:`565`: Bsetup
 
 
-v<1.9.1>, 2015-01-31
+# v<1.9.1>, 2015-01-31
 
 GitHub stats for 2015/01/30 - 2015/01/31 
 
@@ -788,7 +936,7 @@ Issues (5):
 * :ghissue:`561`: Rolling over to 1.10
 
 
-v<1.9.0>, 2015-01-30
+# v<1.9.0>, 2015-01-30
 
 GitHub stats for 2014/07/25 - 2015/01/30 
 
@@ -932,7 +1080,7 @@ Issues (69):
 * :ghissue:`503`: Grid for landing page
 
 
-v<1.8.0>, 2014-07-25
+# v<1.8.0>, 2014-07-25
 
 GitHub stats for 2014/01/29 - 2014/07/25 
 
@@ -1120,7 +1268,7 @@ Issues (100):
 * :ghissue:`388`: update testing procedures docs
 * :ghissue:`402`: release changes
 
-v<1.7.0>, 2014-01-29
+# v<1.7.0>, 2014-01-29
 
 36d268f Philip Stephens -Merge pull request #400 from sjsrey/mldoc
 c2c4741 Serge Rey -Formatting ml docs
@@ -1298,7 +1446,7 @@ b1f009f Philip Stephens -Changes to release docs.
 028364a Sergio Rey -Update THANKS.txt
 94f5916 Sergio Rey -Update INSTALL.txt
 
-v<1.6.0>, 2013-07-31
+# v<1.6.0>, 2013-07-31
 
 5fa9d09 darribas -silent_island_warning implemented for w_union
 6526c62 Sergio Rey -Update README.md
@@ -1551,7 +1699,7 @@ ab672c9 Serge Rey -- modified knnW to speed up dict construction
  * migration to github from svn
    svn2git http://pysal.googlecode.com/svn --authors ~/Dropbox/pysal/src/pysal/authors.txt --verbose
 
-v<1.5.0>, 2013-01-31
+# v<1.5.0>, 2013-01-31
 
 2013-01-29 20:36  phil.stphns
 
@@ -1938,7 +2086,7 @@ v<1.5.0>, 2013-01-31
 
 
 
-v<1.4.0>, 2012-07-31
+# v<1.4.0>, 2012-07-31
 
 2013-01-31 
 
@@ -2424,7 +2572,7 @@ v<1.4.0>, 2012-07-31
 	  doc/source/developers/py3k.txt,
 	  doc/source/developers/release.txt: Adding early docs on Python 3 support. Modifying release instructions.
 
-v<1.3.0>, 2012-01-31
+# v<1.3.0>, 2012-01-31
 
     * core/IOHandlers/pyDbfIO.py: Addressing issue #186
 
@@ -2624,7 +2772,7 @@ v<1.3.0>, 2012-01-31
     * esda/mapclassify.py: - more general fix for #166
 
 
-v<1.2.0>, 2011-07-31
+# v<1.2.0>, 2011-07-31
 
     * pysal/spreg/user_output.py: Fix for bug 162
 
@@ -2712,7 +2860,7 @@ v<1.2.0>, 2011-07-31
 
     * doc/source/developers/release.txt: Updated pypi instructions; PySAL available on the Python Package Index via download, easy_install, and pip. 
 
-v<1.1.0>, 2011-01-31
+# v<1.1.0>, 2011-01-31
 
     * pysal/core/FileIO.py, pysal/core/IOHandlers/pyDbfIO.py: Added missing value support to FileIO. Warnings will be issued when missing values are found and the value will be set to pysal.MISSINGVALUE, currently None, but the user can change it as needed.
 
@@ -2747,7 +2895,8 @@ v<1.1.0>, 2011-01-31
 
     * doc/source/developers/release.txt: - updating release cycle - release management
 
-v<1.0.0>, 2010-07-31 -- Initial release.
+# v<1.0.0>, 2010-07-31 -- Initial release.
+
 The following 13 authors contributed 216 commits.
 
 * Dani Arribas-Bel
@@ -2861,7 +3010,7 @@ Issues (53):
 * :ghissue:`681`: version bump for next dev cycle
 * :ghissue:`680`: Rel1.10
 
-v<1.10.0>, 2015-07-29
+# v<1.10.0>, 2015-07-29
 
 GitHub stats for 2015/01/31 - 2015/07/29
 
@@ -3058,7 +3207,7 @@ Issues (98):
 * :ghissue:`565`: Bsetup
 
 
-v<1.9.1>, 2015-01-31
+# v<1.9.1>, 2015-01-31
 
 GitHub stats for 2015/01/30 - 2015/01/31 
 
@@ -3091,7 +3240,7 @@ Issues (5):
 * :ghissue:`561`: Rolling over to 1.10
 
 
-v<1.9.0>, 2015-01-30
+# v<1.9.0>, 2015-01-30
 
 GitHub stats for 2014/07/25 - 2015/01/30 
 
@@ -3235,7 +3384,7 @@ Issues (69):
 * :ghissue:`503`: Grid for landing page
 
 
-v<1.8.0>, 2014-07-25
+# v<1.8.0>, 2014-07-25
 
 GitHub stats for 2014/01/29 - 2014/07/25 
 
@@ -3423,7 +3572,7 @@ Issues (100):
 * :ghissue:`388`: update testing procedures docs
 * :ghissue:`402`: release changes
 
-v<1.7.0>, 2014-01-29
+# v<1.7.0>, 2014-01-29
 
 36d268f Philip Stephens -Merge pull request #400 from sjsrey/mldoc
 c2c4741 Serge Rey -Formatting ml docs
@@ -3601,7 +3750,7 @@ b1f009f Philip Stephens -Changes to release docs.
 028364a Sergio Rey -Update THANKS.txt
 94f5916 Sergio Rey -Update INSTALL.txt
 
-v<1.6.0>, 2013-07-31
+# v<1.6.0>, 2013-07-31
 
 5fa9d09 darribas -silent_island_warning implemented for w_union
 6526c62 Sergio Rey -Update README.md
@@ -3854,7 +4003,7 @@ ab672c9 Serge Rey -- modified knnW to speed up dict construction
  * migration to github from svn
    svn2git http://pysal.googlecode.com/svn --authors ~/Dropbox/pysal/src/pysal/authors.txt --verbose
 
-v<1.5.0>, 2013-01-31
+# v<1.5.0>, 2013-01-31
 
 2013-01-29 20:36  phil.stphns
 
@@ -4241,7 +4390,7 @@ v<1.5.0>, 2013-01-31
 
 
 
-v<1.4.0>, 2012-07-31
+# v<1.4.0>, 2012-07-31
 
 2013-01-31 
 
@@ -4727,7 +4876,7 @@ v<1.4.0>, 2012-07-31
 	  doc/source/developers/py3k.txt,
 	  doc/source/developers/release.txt: Adding early docs on Python 3 support. Modifying release instructions.
 
-v<1.3.0>, 2012-01-31
+# v<1.3.0>, 2012-01-31
 
     * core/IOHandlers/pyDbfIO.py: Addressing issue #186
 
@@ -4927,7 +5076,7 @@ v<1.3.0>, 2012-01-31
     * esda/mapclassify.py: - more general fix for #166
 
 
-v<1.2.0>, 2011-07-31
+# v<1.2.0>, 2011-07-31
 
     * pysal/spreg/user_output.py: Fix for bug 162
 
@@ -5015,7 +5164,7 @@ v<1.2.0>, 2011-07-31
 
     * doc/source/developers/release.txt: Updated pypi instructions; PySAL available on the Python Package Index via download, easy_install, and pip. 
 
-v<1.1.0>, 2011-01-31
+# v<1.1.0>, 2011-01-31
 
     * pysal/core/FileIO.py, pysal/core/IOHandlers/pyDbfIO.py: Added missing value support to FileIO. Warnings will be issued when missing values are found and the value will be set to pysal.MISSINGVALUE, currently None, but the user can change it as needed.
 
@@ -5050,4 +5199,4 @@ v<1.1.0>, 2011-01-31
 
     * doc/source/developers/release.txt: - updating release cycle - release management
 
-v<1.0.0>, 2010-07-31 -- Initial release.
+# v<1.0.0>, 2010-07-31 -- Initial release.

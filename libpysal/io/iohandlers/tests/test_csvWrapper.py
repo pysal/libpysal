@@ -10,7 +10,8 @@ PY3 = int(V[0]) > 2
 
 class test_csvWrapper(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('stl_hom.csv')
+        stl = pysal_examples.load_example('stl')
+        self.test_file = test_file = stl.get_path('stl_hom.csv')
         self.obj = csvWrapper.csvWrapper(test_file, 'r')
 
     def test_len(self):

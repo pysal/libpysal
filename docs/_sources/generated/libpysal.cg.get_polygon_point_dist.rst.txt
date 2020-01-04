@@ -1,0 +1,6 @@
+libpysal.cg.get\_polygon\_point\_dist
+=====================================
+
+.. currentmodule:: libpysal.cg
+
+.. autofunction:: get_polygon_point_dist
