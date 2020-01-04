@@ -23,7 +23,7 @@ __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'insert_diagonal', 'get_ids', 'get_points_array_from_shapefile',
            'min_threshold_distance', 'lat2SW', 'w_local_cluster',
            'higher_order_sp', 'hexLat2W', 'attach_islands',
-           'nonplanar_neighbors', 'fuzzy_contiguity']
+           'nonplanar_neighbors', 'fuzzy_contiguity', 'neighbor_equality','write_gal']
 
 
 KDTREE_TYPES = [scipy.spatial.KDTree, scipy.spatial.cKDTree]
