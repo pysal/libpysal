@@ -15,10 +15,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,6 +24,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <div class="section" id="libpysal-weights-w">
 <h1>libpysal.weights.W<a class="headerlink" href="#libpysal-weights-w" title="Permalink to this headline">¶</a></h1>
@@ -199,7 +199,7 @@ parameter to True.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">neighbors</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="mi">6</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="mi">7</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="mi">8</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">6</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">7</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">8</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
@@ -221,7 +221,7 @@ parameter to True.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">pct_nonzero</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
 <span class="go">29.63</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2W</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">trcW2</span>
 <span class="go">39600.0</span>
@@ -238,13 +238,175 @@ parameter to True.</p>
 &gt;&gt;&gt; w.histogram
 [(2, 4), (3, 392), (4, 9604)]</p>
 <p>Disconnected observations (islands)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">W</span><span class="p">({</span><span class="mi">1</span><span class="p">:[</span><span class="mi">0</span><span class="p">],</span><span class="mi">0</span><span class="p">:[</span><span class="mi">1</span><span class="p">],</span><span class="mi">2</span><span class="p">:[],</span> <span class="mi">3</span><span class="p">:[]})</span>
 </pre></div>
 </div>
 <p>UserWarning: The weights matrix is not fully connected:
 There are 3 disconnected components.
 There are 2 islands with ids: 2, 3.</p>
+<dl class="method">
+<dt id="libpysal.weights.W.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">neighbors</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">id_order=None</em>, <em class="sig-param">silence_warnings=False</em>, <em class="sig-param">ids=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#W.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.W.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.__init__" title="libpysal.weights.W.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, neighbors[, weights, …])</p></td>
+<td><p>Initialize self.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.asymmetry" title="libpysal.weights.W.asymmetry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asymmetry</span></code></a>(self[, intrinsic])</p></td>
+<td><p>Asymmetry check.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_WSP</span></code>(WSP[, silence_warnings])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.from_adjlist" title="libpysal.weights.W.from_adjlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_adjlist</span></code></a>(adjlist[, focal_col, …])</p></td>
+<td><p>Return an adjacency list representation of a weights object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_file</span></code>([path, format])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.from_networkx" title="libpysal.weights.W.from_networkx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_networkx</span></code></a>(graph[, weight_col])</p></td>
+<td><p>Convert a networkx graph to a PySAL W object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_shapefile</span></code>(\*args, \*\*kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.full" title="libpysal.weights.W.full"><code class="xref py py-obj docutils literal notranslate"><span class="pre">full</span></code></a>(self)</p></td>
+<td><p>Generate a full numpy array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.get_transform" title="libpysal.weights.W.get_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code></a>(self)</p></td>
+<td><p>Getter for transform property.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.plot" title="libpysal.weights.W.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>(self, gdf[, indexed_on, ax, color, …])</p></td>
+<td><p>Plot spatial weights objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.remap_ids" title="libpysal.weights.W.remap_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remap_ids</span></code></a>(self, new_ids)</p></td>
+<td><p>In place modification throughout <cite>W</cite> of id values from <cite>w.id_order</cite> to <cite>new_ids</cite> in all</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.set_shapefile" title="libpysal.weights.W.set_shapefile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_shapefile</span></code></a>(self, shapefile[, idVariable, …])</p></td>
+<td><p>Adding meta data for writing headers of gal and gwt files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.set_transform" title="libpysal.weights.W.set_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code></a>(self[, value])</p></td>
+<td><p>Transformations of weights.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.symmetrize" title="libpysal.weights.W.symmetrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symmetrize</span></code></a>(self[, inplace])</p></td>
+<td><p>Construct a symmetric KNN weight.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.to_WSP" title="libpysal.weights.W.to_WSP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_WSP</span></code></a>(self)</p></td>
+<td><p>Generate a WSP object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.to_adjlist" title="libpysal.weights.W.to_adjlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_adjlist</span></code></a>(self[, remove_symmetric, …])</p></td>
+<td><p>Compute an adjacency list representation of a weights object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.to_networkx" title="libpysal.weights.W.to_networkx"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_networkx</span></code></a>(self)</p></td>
+<td><p>Convert a weights object to a networkx graph</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.asymmetries" title="libpysal.weights.W.asymmetries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asymmetries</span></code></a></p></td>
+<td><p>List of id pairs with asymmetric weights.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.cardinalities" title="libpysal.weights.W.cardinalities"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cardinalities</span></code></a></p></td>
+<td><p>Number of neighbors for each observation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.component_labels" title="libpysal.weights.W.component_labels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">component_labels</span></code></a></p></td>
+<td><p>Store the graph component in which each observation falls.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.diagW2" title="libpysal.weights.W.diagW2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagW2</span></code></a></p></td>
+<td><p>Diagonal of <span class="math notranslate nohighlight">\(WW\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.diagWtW" title="libpysal.weights.W.diagWtW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagWtW</span></code></a></p></td>
+<td><p>Diagonal of <span class="math notranslate nohighlight">\(W^{'}W\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.diagWtW_WW" title="libpysal.weights.W.diagWtW_WW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagWtW_WW</span></code></a></p></td>
+<td><p>Diagonal of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.histogram" title="libpysal.weights.W.histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">histogram</span></code></a></p></td>
+<td><p>Cardinality histogram as a dictionary where key is the id and value is the number of neighbors for that unit.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.id2i" title="libpysal.weights.W.id2i"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id2i</span></code></a></p></td>
+<td><p>Dictionary where the key is an ID and the value is that ID’s index in W.id_order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.id_order" title="libpysal.weights.W.id_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id_order</span></code></a></p></td>
+<td><p>Returns the ids for the observations in the order in which they would be encountered if iterating over the weights.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.id_order_set" title="libpysal.weights.W.id_order_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id_order_set</span></code></a></p></td>
+<td><p>Returns True if user has set id_order, False if not.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.islands" title="libpysal.weights.W.islands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">islands</span></code></a></p></td>
+<td><p>List of ids without any neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.max_neighbors" title="libpysal.weights.W.max_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_neighbors</span></code></a></p></td>
+<td><p>Largest number of neighbors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.mean_neighbors" title="libpysal.weights.W.mean_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_neighbors</span></code></a></p></td>
+<td><p>Average number of neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.min_neighbors" title="libpysal.weights.W.min_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_neighbors</span></code></a></p></td>
+<td><p>Minimum number of neighbors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.n" title="libpysal.weights.W.n"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n</span></code></a></p></td>
+<td><p>Number of units.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.n_components" title="libpysal.weights.W.n_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_components</span></code></a></p></td>
+<td><p>Store whether the adjacency matrix is fully connected.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.neighbor_offsets" title="libpysal.weights.W.neighbor_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbor_offsets</span></code></a></p></td>
+<td><p>Given the current id_order, neighbor_offsets[id] is the offsets of the id’s neighbors in id_order.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.nonzero" title="libpysal.weights.W.nonzero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nonzero</span></code></a></p></td>
+<td><p>Number of nonzero weights.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.pct_nonzero" title="libpysal.weights.W.pct_nonzero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pct_nonzero</span></code></a></p></td>
+<td><p>Percentage of nonzero weights.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.s0" title="libpysal.weights.W.s0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s0</span></code></a></p></td>
+<td><p>s0 is defined as</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.s1" title="libpysal.weights.W.s1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s1</span></code></a></p></td>
+<td><p>s1 is defined as</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.s2" title="libpysal.weights.W.s2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s2</span></code></a></p></td>
+<td><p>s2 is defined as</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.s2array" title="libpysal.weights.W.s2array"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s2array</span></code></a></p></td>
+<td><p>Individual elements comprising s2.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.sd" title="libpysal.weights.W.sd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sd</span></code></a></p></td>
+<td><p>Standard deviation of number of neighbors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.sparse" title="libpysal.weights.W.sparse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse</span></code></a></p></td>
+<td><p>Sparse matrix object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.transform" title="libpysal.weights.W.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a></p></td>
+<td><p>Getter for transform property.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.trcW2" title="libpysal.weights.W.trcW2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcW2</span></code></a></p></td>
+<td><p>Trace of <span class="math notranslate nohighlight">\(WW\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.W.trcWtW" title="libpysal.weights.W.trcWtW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW</span></code></a></p></td>
+<td><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.W.trcWtW_WW" title="libpysal.weights.W.trcWtW_WW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW_WW</span></code></a></p></td>
+<td><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p></td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="libpysal.weights.W.asymmetries">
 <em class="property">property </em><code class="sig-name descname">asymmetries</code><a class="headerlink" href="#libpysal.weights.W.asymmetries" title="Permalink to this definition">¶</a></dt>
@@ -280,7 +442,7 @@ if asymmetries, then a list of (i,j) tuples is returned</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">=</span><span class="n">lat2W</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">asymmetry</span><span class="p">()</span>
 <span class="go">[]</span>
@@ -405,7 +567,7 @@ keys being the ids associated with each row in the array.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">W</span><span class="p">,</span> <span class="n">full</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">W</span><span class="p">,</span> <span class="n">full</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">neighbors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;first&#39;</span><span class="p">:[</span><span class="s1">&#39;second&#39;</span><span class="p">],</span><span class="s1">&#39;second&#39;</span><span class="p">:[</span><span class="s1">&#39;first&#39;</span><span class="p">,</span><span class="s1">&#39;third&#39;</span><span class="p">],</span><span class="s1">&#39;third&#39;</span><span class="p">:[</span><span class="s1">&#39;second&#39;</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;first&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;second&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;third&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
@@ -438,7 +600,7 @@ keys being the ids associated with each row in the array.</p>
 </dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">=</span><span class="n">lat2W</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[1.0, 1.0]</span>
@@ -480,7 +642,7 @@ would be encountered if iterating over the weights.</p>
 <em class="property">property </em><code class="sig-name descname">id_order_set</code><a class="headerlink" href="#libpysal.weights.W.id_order_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if user has set id_order, False if not.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">=</span><span class="n">lat2W</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">id_order_set</span>
 <span class="go">True</span>
@@ -538,7 +700,7 @@ id’s neighbors in id_order.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">neighbors</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span><span class="p">{</span><span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">=</span><span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span><span class="n">weights</span><span class="p">)</span>
@@ -605,7 +767,7 @@ adjust the z-order of the geopandas plot: gdf.plot(ax=ax,zorder=0)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">Queen</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">Queen</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libpysal</span> <span class="k">as</span> <span class="nn">lp</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">geopandas</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gdf</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">lp</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;columbus.shp&quot;</span><span class="p">))</span>
@@ -634,7 +796,7 @@ element of w.id_order and so on.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">id_order</span>
 <span class="go">[0, 1, 2, 3, 4, 5, 6, 7, 8]</span>
@@ -762,7 +924,7 @@ element of w.id_order and so on.</p>
 instantiation. Chaining of transformations cannot be done on a W
 instance.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">=</span><span class="n">lat2W</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[1.0, 1.0]</span>
@@ -815,7 +977,7 @@ longer guaranteed to have k neighbors for each observation.</p>
 </dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">W</span><span class="p">,</span> <span class="n">WSP</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">W</span><span class="p">,</span> <span class="n">WSP</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">neighbors</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;first&#39;</span><span class="p">:[</span><span class="s1">&#39;second&#39;</span><span class="p">],</span><span class="s1">&#39;second&#39;</span><span class="p">:[</span><span class="s1">&#39;first&#39;</span><span class="p">,</span><span class="s1">&#39;third&#39;</span><span class="p">],</span><span class="s1">&#39;third&#39;</span><span class="p">:[</span><span class="s1">&#39;second&#39;</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;first&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;second&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;third&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">=</span><span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span><span class="n">weights</span><span class="p">)</span>
@@ -886,7 +1048,7 @@ longer guaranteed to have k neighbors for each observation.</p>
 </dl>
 </div>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2W</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">=</span><span class="n">lat2W</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">[1.0, 1.0]</span>
