@@ -6,8 +6,7 @@ from ... import io
 from ... import examples
 from ..util import lat2W
 from ...common import RTOL, ATOL
-from ... import io
-from ...examples import get_path
+
 
 try:
     import pandas
@@ -16,6 +15,7 @@ try:
 except ImportError:
     PANDAS_MISSING = True
 
+@ut.skipIf(PANDAS_MISSING, 'Pandas is gone')
 class Test_Adjlist(ut.TestCase):
     def setUp(self):
         self.knownW = io.open(examples.get_path('columbus.gal')).read()
