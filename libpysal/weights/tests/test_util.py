@@ -16,10 +16,13 @@ try:
 except:
     HAS_GEOPANDAS = False
 
+
 class Testutil(unittest.TestCase):
     def setUp(self):
         self.w = Rook.from_shapefile(
             examples.get_path('10740.shp'))
+
+        self.rio = examples.load_example('Rio Grande do Sul')
 
     def test_lat2W(self):
         w9 = lat2W(3, 3)
@@ -95,7 +98,7 @@ class Testutil(unittest.TestCase):
         w5_2 = util.higher_order(w5, 2)
         w5_20 = {2: 1.0, 10: 1.0, 6: 1.0}
         self.assertEqual(w5_20, w5_2[0])
-    
+
     def test_higher_order_classes(self):
         wdb = DistanceBand.from_shapefile(examples.get_path('baltim.shp'), 34)
         wknn = KNN.from_shapefile(examples.get_path('baltim.shp'), 10)
@@ -199,7 +202,7 @@ class Testutil(unittest.TestCase):
         polyids = util.get_ids(gdf, "POLYID")
         polyids5 = [1, 2, 3, 4, 5]
         self.assertEqual(polyids5, polyids[:5])
-    
+
     def test_get_points_array_from_shapefile(self):
         xy = util.get_points_array_from_shapefile(
             examples.get_path('juvenile.shp'))

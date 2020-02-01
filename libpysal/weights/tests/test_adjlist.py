@@ -6,8 +6,7 @@ from ... import io
 from ... import examples
 from ..util import lat2W
 from ...common import RTOL, ATOL
-from ... import io
-from ...examples import get_path
+
 
 try:
     import pandas
@@ -20,11 +19,11 @@ except ImportError:
 class Test_Adjlist(ut.TestCase):
     def setUp(self):
         self.knownW = io.open(examples.get_path('columbus.gal')).read()
-    
+
     def test_round_trip(self):
         adjlist = self.knownW.to_adjlist(remove_symmetric=False).astype(int)
         w_from_adj = weights.W.from_adjlist(adjlist)
-        np.testing.assert_allclose(w_from_adj.sparse.toarray(), 
+        np.testing.assert_allclose(w_from_adj.sparse.toarray(),
                                    self.knownW.sparse.toarray())
 
     def test_filter(self):
@@ -33,7 +32,7 @@ class Test_Adjlist(ut.TestCase):
         assert len(alist) == 4
         with self.assertRaises(AssertionError):
             badgrid = weights.W.from_adjlist(alist)
-            np.testing.assert_allclose(badgrid.sparse.toarray(), 
+            np.testing.assert_allclose(badgrid.sparse.toarray(),
                                        grid.sparse.toarray())
         assert set(alist.focal.unique().tolist()) == set(list(range(4)))
         assert set(alist.neighbor.unique().tolist()) == set(list(range(4)))
@@ -43,7 +42,7 @@ class Test_Adjlist(ut.TestCase):
         assert len(alist) == 4
         with self.assertRaises(AssertionError):
             badgrid = weights.W.from_adjlist(alist)
-            np.testing.assert_allclose(badgrid.sparse.toarray(), 
+            np.testing.assert_allclose(badgrid.sparse.toarray(),
                                        grid.sparse.toarray())
         print(alist)
         tuples = set([tuple(t) for t in alist[['focal','neighbor']].values])
@@ -56,7 +55,7 @@ class Test_Adjlist(ut.TestCase):
         assert reversed_complements == tuples, ('the remaining links in the duplicated'
                                                 ' adjlist are not the reverse of the links'
                                                 ' in the deduplicated adjlist.')
-        assert alist.weight.unique().item() == 1 
+        assert alist.weight.unique().item() == 1
 
 
     def apply_and_compare_columbus(self, col):
@@ -66,7 +65,7 @@ class Test_Adjlist(ut.TestCase):
         alist = adj.adjlist_apply(df[col], W=W)
         right_hovals = alist.groupby('focal').att_focal.unique()
         assert (right_hovals == df[col]).all()
-        allpairs = np.subtract.outer(df[col], df[col])
+        allpairs = np.subtract.outer(df[col].values, df[col].values)
         flat_diffs = allpairs[W.sparse.toarray().astype(bool)]
         np.testing.assert_allclose(flat_diffs, alist['subtract'].values)
         return flat_diffs
@@ -80,7 +79,7 @@ class Test_Adjlist(ut.TestCase):
         W = weights.Queen.from_dataframe(df)
         ssq = lambda x_y: np.sum((x_y[0]-x_y[1])**2).item()
         ssq.__name__ = 'sum_of_squares'
-        alist = adj.adjlist_apply(df[['HOVAL', 'CRIME', 'INC']], W=W, 
+        alist = adj.adjlist_apply(df[['HOVAL', 'CRIME', 'INC']], W=W,
                                   func=ssq)
         known_ssq = [1301.1639302990804,
                      3163.46450914361,
@@ -101,11 +100,11 @@ class Test_Adjlist(ut.TestCase):
                                    rtol=RTOL, atol=ATOL)
 
     def test_map(self):
-        atts = ['HOVAL', 'CRIME', 'INC'] 
+        atts = ['HOVAL', 'CRIME', 'INC']
         df = geopandas.read_file(examples.get_path('columbus.dbf')).head()
         W = weights.Queen.from_dataframe(df)
-        hoval, crime, inc = list(map(self.apply_and_compare_columbus, atts)) 
+        hoval, crime, inc = list(map(self.apply_and_compare_columbus, atts))
         mapped = adj.adjlist_map(df[atts], W=W)
         for name,data in zip(atts, (hoval, crime, inc)):
-            np.testing.assert_allclose(data, 
+            np.testing.assert_allclose(data,
                                        mapped['_'.join(('subtract',name))].values)
