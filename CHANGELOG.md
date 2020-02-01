@@ -1,3 +1,50 @@
+# Version 4.2.2 (2020-02-01)
+
+This is a bug fix release.
+
+We closed a total of 32 issues (enhancements and bug fixes) through 12 pull requests, since our last release on 2020-01-04.
+
+## Issues Closed
+  - test_map breakage due to pandas 1.0 deprecation of ufunc.outer (#236)
+  - BUG:  ufunc.outer deprecated (#237)
+  - raise warning when islands are used in to_adjlist (#230)
+  - Some example datasets are missing documentation (#113)
+  - DOC: Cleaning up docs and docsr for tutorial (#229)
+  - `to_adjlist(remove_symmetric=True)` fails on string-indexed weights.  (#165)
+  - AttributeError: 'Queen' object has no attribute 'silent_island_warning' (#204)
+  - 4.2.1 (#226)
+  - Revert "4.2.1" (#228)
+  - 4.2.1 (#227)
+  - DOC: images for notebooks (#225)
+  - 4.2.1 (#224)
+  - 4.2.1 (#223)
+  - duplicate pypi package badge (#221)
+  - 4.2.1 (#222)
+  - REL: 4.2.1 (#220)
+  - libpysal 4.2.0 won't import on Windows (#214)
+  - libpysal 4.2.0 Windows import issue (#215)
+  - Constructing contiguity spatial weights using from_dataframe and from_shapefile could give different results (#212)
+  - fix bug 212 (#213)
+
+## Pull Requests
+  - BUG:  ufunc.outer deprecated (#237)
+  - raise warning when islands are used in to_adjlist (#230)
+  - DOC: Cleaning up docs and docsr for tutorial (#229)
+  - Revert "4.2.1" (#228)
+  - 4.2.1 (#227)
+  - DOC: images for notebooks (#225)
+  - 4.2.1 (#224)
+  - 4.2.1 (#223)
+  - 4.2.1 (#222)
+  - REL: 4.2.1 (#220)
+  - libpysal 4.2.0 Windows import issue (#215)
+  - fix bug 212 (#213)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - Levi John Wolf
+
 # Version 4.2.1 (2020-01-04)
 
 This is a bug fix release.
