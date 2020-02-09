@@ -254,8 +254,8 @@ def lonlat(pointslist):
 
     newpts      : list with tuples of points in lon-lat order
 
-    Example
-    -------
+    Examples
+    --------
     >>> points = [(41.981417, -87.893517), (41.980396, -87.776787), (41.980906, -87.696450)]
     >>> newpoints = lonlat(points)
     >>> newpoints
@@ -278,8 +278,8 @@ def haversine(x):
     -------
          : square of sine of half the radian (the haversine formula)
 
-    Example
-    -------
+    Examples
+    --------
     >>> haversine(math.pi)     # is 180 in radians, hence sin of 90 = 1
     1.0
 
@@ -311,15 +311,15 @@ def radangle(p0, p1):
     -------
     d     : radian angle in radians
 
-    Example
-    -------
+    Examples
+    --------
     >>> p0 = (-87.893517, 41.981417)
     >>> p1 = (-87.519295, 41.657498)
     >>> radangle(p0,p1)
     0.007460167953189258
 
-    Note
-    ----
+    Notes
+    -----
     Uses haversine formula, function haversine and degree to radian
     conversion lambda function d2r
 
@@ -351,8 +351,8 @@ def harcdist(p0, p1, lonx=True, radius=RADIUS_EARTH_KM):
     -------
     d        : distance in units specified, km, miles or radians (for None)
 
-    Example
-    -------
+    Examples
+    --------
     >>> p0 = (-87.893517, 41.981417)
     >>> p1 = (-87.519295, 41.657498)
     >>> harcdist(p0,p1)
@@ -360,8 +360,8 @@ def harcdist(p0, p1, lonx=True, radius=RADIUS_EARTH_KM):
     >>> harcdist(p0,p1,radius=None)
     0.007460167953189258
 
-    Note
-    ----
+    Notes
+    -----
     Uses radangle function to compute radian angle
 
     """
@@ -397,8 +397,8 @@ def geointerpolate(p0, p1, t, lonx=True):
                depending on setting of lonx; in other words, the same
                order is used as for the input
 
-    Example
-    -------
+    Examples
+    --------
     >>> p0 = (-87.893517, 41.981417)
     >>> p1 = (-87.519295, 41.657498)
     >>> geointerpolate(p0,p1,0.1)          # using lon-lat
@@ -454,8 +454,8 @@ def geogrid(pup, pdown, k, lonx=True):
               starting with the top row and moving to the bottom; coordinate tuples
               are returned in same order as input
 
-    Example
-    -------
+    Examples
+    --------
     >>> pup = (42.023768,-87.946389)    # Arlington Heights IL
     >>> pdown = (41.644415,-87.524102)  # Hammond, IN
     >>> geogrid(pup,pdown,3,lonx=False)
