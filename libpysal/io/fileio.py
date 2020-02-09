@@ -40,7 +40,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
 
 
     How this works:
-    FileIO.open(\*args) == FileIO(\*args)
+    FileIO.open(\\*args) == FileIO(\\*args)
     When creating a new instance of FileIO the .__new__ method intercepts
     .__new__ parses the filename to determine the fileType
     next, .__registry and checked for that type.

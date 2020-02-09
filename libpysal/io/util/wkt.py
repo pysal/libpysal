@@ -56,11 +56,13 @@ class WKTParser:
     See local doctest output for the items not tested...
 
     """
-    regExes = {'typeStr': re.compile('^\s*([\w\s]+)\s*\(\s*(.*)\s*\)\s*$'),
-               'spaces': re.compile('\s+'),
-               'parenComma': re.compile('\)\s*,\s*\('),
-               'doubleParenComma': re.compile('\)\s*\)\s*,\s*\(\s*\('),  # can't use {2} here
-               'trimParens': re.compile('^\s*\(?(.*?)\)?\s*$')}
+    regExes = {
+        'typeStr': re.compile(r'^\s*([\w\s]+)\s*\(\s*(.*)\s*\)\s*$'),
+        'spaces': re.compile(r'\s+'),
+        'parenComma': re.compile(r'\)\s*,\s*\('),
+        'doubleParenComma': re.compile(r'\)\s*\)\s*,\s*\(\s*\('),  # can't use {2} here
+        'trimParens': re.compile(r'^\s*\(?(.*?)\)?\s*$'),
+    }
 
     def __init__(self):
         self.parsers = p = {}

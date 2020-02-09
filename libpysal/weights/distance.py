@@ -351,31 +351,31 @@ class Kernel(W):
 
                   .. math::
 
-                      K(z) = (1 - |z|) \ if |z| \le 1
+                      K(z) = (1 - |z|) \\ if |z| \\le 1
 
                   uniform
 
                   .. math::
 
-                      K(z) = 1/2 \ if |z| \le 1
+                      K(z) = 1/2 \\ if |z| \\le 1
 
                   quadratic
 
                   .. math::
 
-                      K(z) = (3/4)(1-z^2) \ if |z| \le 1
+                      K(z) = (3/4)(1-z^2) \\ if |z| \\le 1
 
                   quartic
 
                   .. math::
 
-                      K(z) = (15/16)(1-z^2)^2 \ if |z| \le 1
+                      K(z) = (15/16)(1-z^2)^2 \\ if |z| \\le 1
 
                   gaussian
 
                   .. math::
 
-                      K(z) = (2\pi)^{(-1/2)} exp(-z^2 / 2)
+                      K(z) = (2\\pi)^{(-1/2)} exp(-z^2 / 2)
 
     eps         : float
                   adjustment to ensure knn distance range is closed on the
