@@ -5,6 +5,7 @@ dependencies:
   - python=3.7
   - six
   - scipy
+  - beautifulsoup4
   # testing
   - pytest
   - pytest-cov
