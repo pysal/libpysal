@@ -1,42 +1,49 @@
-environment:
+# With infos from
+# http://tjelvarolsson.com/blog/how-to-continuously-test-your-python-code-on-windows-using-appveyor/
+# https://packaging.python.org/en/latest/appveyor/
+# https://github.com/rmcgibbo/python-appveyor-conda-example
 
+environment:
   matrix:
 
-    # For Python versions available on Appveyor, see
-    # https://www.appveyor.com/docs/windows-images-software/#python
-    # The list here is complete (excluding Python 2.6, which
-    # isn't covered by this document) at the time of writing.
+    - PYTHON_VERSION: "3.6"
+      MINICONDA: C:\Miniconda37-x64
+      ENV_FILE: "ci/travis/36-latest-conda-forge.yaml"
 
-    - PYTHON: "C:\\Python36-x64"
+    - PYTHON_VERSION: "3.7"
+      MINICONDA: C:\Miniconda37-x64
+      ENV_FILE: "ci/travis/37-latest-conda-forge.yaml"
+
+
+# all our python builds have to happen in tests_script...
+build: false
+
+init:
+  - "ECHO %PYTHON_VERSION% %MINICONDA%"
 
 install:
-  # We need wheel installed to build wheels
-  - "%PYTHON%\\python.exe -m pip install wheel"
+  # cancel older builds for the same PR
+  - ps: if ($env:APPVEYOR_PULL_REQUEST_NUMBER -and $env:APPVEYOR_BUILD_NUMBER -ne ((Invoke-RestMethod `
+        https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
+        Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
+        throw "There are newer queued builds for this pull request, failing early." }
 
-build: off
+  # set up environment
+  - CALL "%MINICONDA%\\Scripts\\activate.bat"
+  - conda config --set always_yes yes --set show_channel_urls true --set changeps1 no
+  - conda update conda
+  # this is basically equivalent to what conda init does.  It changes the "conda" to
+  #    be a .bat script that sets appropriate PATH entries before conda hits problems.
+  #  This PATH modification only works with conda 4.6+, but it won't hurt other versions.
+  - set "PATH=%MINICONDA%\condabin:%PATH%"
+  - conda info -a
+  # free channel needed for older envs (< py37), see
+  # https://github.com/conda/conda/issues/8849
+  - conda config --set restore_free_channel true
+  - conda env create --file="${ENV_FILE}"
 
 test_script:
-  # Put your test command here.
-  # If you don't need to build C extensions on 64-bit Python 3.3 or 3.4,
-  # you can remove "build.cmd" from the front of the command, as it's
-  # only needed to support those cases.
-  # Note that you must use the environment variable %PYTHON% to refer to
-  # the interpreter you're using - Appveyor does not do anything special
-  # to put the Python version you want to use on PATH.
-  - "%PYTHON%\\python.exe setup.py test"
-
-after_test:
-  # This step builds your wheels.
-  # Again, you only need build.cmd if you're building C extensions for
-  # 64-bit Python 3.3/3.4. And you need to use %PYTHON% to get the correct
-  # interpreter
-  - "%PYTHON%\\python.exe setup.py bdist_wheel"
-
-artifacts:
-  # bdist_wheel puts your built wheel in the dist directory
-  - path: dist\*
-
-#on_success:
-#  You can use this step to upload your artifacts to a public website.
-#  See Appveyor's documentation for more details. Or you can simply
-#  access your wheels from the Appveyor "artifacts" tab for your build.
+  # this uses condabin/conda.bat because of our PATH modification above
+  - conda activate test
+  - conda list
+  - pytest libpysal -v
