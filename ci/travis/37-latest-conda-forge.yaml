@@ -5,6 +5,9 @@ dependencies:
   - python=3.7
   - six
   # testing
+  - pytest
+  - pytest-cov
+  - codecov
   - nose
   - codecov
   - matplotlib

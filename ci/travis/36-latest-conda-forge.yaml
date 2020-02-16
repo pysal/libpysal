@@ -6,6 +6,9 @@ dependencies:
   - six
   # required
   # testing
+  - pytest
+  - pytest-cov
+  - codecov
   - nose
   - codecov
   - matplotlib
