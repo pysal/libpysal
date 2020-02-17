@@ -42,4 +42,4 @@ notifications:
         on_failure: always
 
 after_success:
-  - coveralls
+  - codecov
