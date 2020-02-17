@@ -34,8 +34,8 @@ class Test_Adjlist(ut.TestCase):
             badgrid = weights.W.from_adjlist(alist)
             np.testing.assert_allclose(badgrid.sparse.toarray(),
                                        grid.sparse.toarray())
-        assert set(alist.focal.unique().tolist()) == set(list(range(4)))
-        assert set(alist.neighbor.unique().tolist()) == set(list(range(4)))
+        assert set(alist.focal.unique()) == {0, 1, 2}
+        assert set(alist.neighbor.unique()) == {1, 2, 3}
         assert alist.weight.unique().item() == 1
         grid = lat2W(2,2, id_type='string')
         alist = grid.to_adjlist(remove_symmetric=True)
