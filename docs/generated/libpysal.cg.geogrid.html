@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -160,6 +160,13 @@ are returned in same order as input</p>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pup</span> <span class="o">=</span> <span class="p">(</span><span class="mf">42.023768</span><span class="p">,</span><span class="o">-</span><span class="mf">87.946389</span><span class="p">)</span>    <span class="c1"># Arlington Heights IL</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pdown</span> <span class="o">=</span> <span class="p">(</span><span class="mf">41.644415</span><span class="p">,</span><span class="o">-</span><span class="mf">87.524102</span><span class="p">)</span>  <span class="c1"># Hammond, IN</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geogrid</span><span class="p">(</span><span class="n">pup</span><span class="p">,</span><span class="n">pdown</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">lonx</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">[(42.023768, -87.946389), (42.02393997819538, -87.80562679358316), (42.02393997819538, -87.66486420641684), (42.023768, -87.524102), (41.897317, -87.94638900000001), (41.8974888973743, -87.80562679296166), (41.8974888973743, -87.66486420703835), (41.897317, -87.524102), (41.770866000000005, -87.94638900000001), (41.77103781320412, -87.80562679234043), (41.77103781320412, -87.66486420765956), (41.770866000000005, -87.524102), (41.644415, -87.946389), (41.64458672568646, -87.80562679171955), (41.64458672568646, -87.66486420828045), (41.644415, -87.524102)]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -184,7 +191,7 @@ are returned in same order as input</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
     </p>
   </div>
 </footer>
