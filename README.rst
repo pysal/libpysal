@@ -6,6 +6,9 @@ Python Spatial Analysis Library Core
 
 .. image:: https://ci.appveyor.com/api/projects/status/db18n032qo49xwlb/branch/master?svg=true
    :target: https://ci.appveyor.com/project/SergeRey/libpysal/branch/master
+   
+.. image:: https://codecov.io/gh/pysal/libpysal/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/pysal/libpysal
 
 .. image:: https://badge.fury.io/py/libpysal.svg
     :target: https://badge.fury.io/py/libpysal
@@ -14,7 +17,7 @@ Python Spatial Analysis Library Core
    :target: https://anaconda.org/conda-forge/libpysal
 
 .. image:: https://zenodo.org/badge/81501824.svg
-   :target: https://zenodo.org/badge/latestdoi/81501824   
+   :target: https://zenodo.org/badge/latestdoi/81501824
 
 
 
