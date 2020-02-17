@@ -4,8 +4,11 @@ channels:
 dependencies:
   - python=3.7
   - six
+  - scipy
+  - beautifulsoup4
   # testing
-  - nose
+  - pytest
+  - pytest-cov
   - codecov
   - matplotlib
   # optional

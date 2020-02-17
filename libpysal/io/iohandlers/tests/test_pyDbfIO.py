@@ -111,7 +111,7 @@ class test_DBF(unittest.TestCase):
         db.close()
         db2 = DBF(fname, 'r')
         self.assertEqual(records, db2.read())
-
+        db2.close()
         os.remove(fname)
 
 if __name__ == '__main__':

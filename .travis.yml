@@ -30,7 +30,7 @@ script:
   - python setup.py install
   - python -c 'import libpysal; libpysal.examples.fetch_all()'
   - rm -rf /home/travis/pysal_data/StLouis
-  - nosetests --with-doctest --verbose --with-coverage --cover-package=libpysal -I shapely_ext.py;
+  - py.test libpysal --cov libpysal -v --cov-report term-missing
   #- cd doc; make pickle; make doctest
 
 notifications:
