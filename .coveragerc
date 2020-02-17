@@ -8,3 +8,5 @@ omit =
     __init__.py 
     */contrib/* 
     */test/*
+[run]
+include=libpysal/*
