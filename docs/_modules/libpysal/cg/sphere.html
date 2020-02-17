@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -387,8 +387,8 @@
 
 <span class="sd">    newpts      : list with tuples of points in lon-lat order</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; points = [(41.981417, -87.893517), (41.980396, -87.776787), (41.980906, -87.696450)]</span>
 <span class="sd">    &gt;&gt;&gt; newpoints = lonlat(points)</span>
 <span class="sd">    &gt;&gt;&gt; newpoints</span>
@@ -411,8 +411,8 @@
 <span class="sd">    -------</span>
 <span class="sd">         : square of sine of half the radian (the haversine formula)</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; haversine(math.pi)     # is 180 in radians, hence sin of 90 = 1</span>
 <span class="sd">    1.0</span>
 
@@ -444,15 +444,15 @@
 <span class="sd">    -------</span>
 <span class="sd">    d     : radian angle in radians</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; p0 = (-87.893517, 41.981417)</span>
 <span class="sd">    &gt;&gt;&gt; p1 = (-87.519295, 41.657498)</span>
 <span class="sd">    &gt;&gt;&gt; radangle(p0,p1)</span>
 <span class="sd">    0.007460167953189258</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    Uses haversine formula, function haversine and degree to radian</span>
 <span class="sd">    conversion lambda function d2r</span>
 
@@ -484,8 +484,8 @@
 <span class="sd">    -------</span>
 <span class="sd">    d        : distance in units specified, km, miles or radians (for None)</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; p0 = (-87.893517, 41.981417)</span>
 <span class="sd">    &gt;&gt;&gt; p1 = (-87.519295, 41.657498)</span>
 <span class="sd">    &gt;&gt;&gt; harcdist(p0,p1)</span>
@@ -493,8 +493,8 @@
 <span class="sd">    &gt;&gt;&gt; harcdist(p0,p1,radius=None)</span>
 <span class="sd">    0.007460167953189258</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 <span class="sd">    Uses radangle function to compute radian angle</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -530,8 +530,8 @@
 <span class="sd">               depending on setting of lonx; in other words, the same</span>
 <span class="sd">               order is used as for the input</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; p0 = (-87.893517, 41.981417)</span>
 <span class="sd">    &gt;&gt;&gt; p1 = (-87.519295, 41.657498)</span>
 <span class="sd">    &gt;&gt;&gt; geointerpolate(p0,p1,0.1)          # using lon-lat</span>
@@ -587,8 +587,8 @@
 <span class="sd">              starting with the top row and moving to the bottom; coordinate tuples</span>
 <span class="sd">              are returned in same order as input</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; pup = (42.023768,-87.946389)    # Arlington Heights IL</span>
 <span class="sd">    &gt;&gt;&gt; pdown = (41.644415,-87.524102)  # Hammond, IN</span>
 <span class="sd">    &gt;&gt;&gt; geogrid(pup,pdown,3,lonx=False)</span>
@@ -639,7 +639,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
     </p>
   </div>
 </footer>
