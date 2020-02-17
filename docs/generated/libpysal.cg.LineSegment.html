@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.LineSegment &#8212; libpysal v4.2.1 Manual</title>
+    <title>libpysal.cg.LineSegment &#8212; libpysal v4.2.2 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -15,10 +15,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,6 +24,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.2.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <div class="section" id="libpysal-cg-linesegment">
 <h1>libpysal.cg.LineSegment<a class="headerlink" href="#libpysal-cg-linesegment" title="Permalink to this headline">¶</a></h1>
@@ -173,7 +173,7 @@
 <p>Test tag: &lt;tc&gt;#is#LineSegment.__init__&lt;/tc&gt;
 Test tag: &lt;tc&gt;#tests#LineSegment.__init__&lt;/tc&gt;</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -244,7 +244,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.__init__&lt;/tc&gt;</p>
 Test tag: &lt;tc&gt;#tests#LineSegment.bounding_box&lt;/tc&gt;</p>
 <p>bounding_box -&gt; Rectangle</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">left</span>
 <span class="go">1.0</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">lower</span>
@@ -265,7 +265,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.bounding_box&lt;/tc&gt;</p>
 <p>Test tag: &lt;tc&gt;#is#LineSegment.get_swap&lt;/tc&gt;
 Test tag: &lt;tc&gt;#tests#LineSegment.get_swap&lt;/tc&gt;</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">swap</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">get_swap</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">swap</span><span class="o">.</span><span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">5.0</span>
@@ -285,7 +285,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.get_swap&lt;/tc&gt;</p>
 <dd><p>Test whether segment intersects with other segment</p>
 <p>Handles endpoints of segments being on other segment</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls1</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">ls1</span><span class="p">)</span>
 <span class="go">True</span>
@@ -315,7 +315,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.is_ccw&lt;/tc&gt;</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">is_ccw</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">is_ccw</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)))</span>
@@ -339,7 +339,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.is_cw&lt;/tc&gt;</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">is_cw</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
 <span class="go">False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">is_cw</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)))</span>
@@ -356,7 +356,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.is_cw&lt;/tc&gt;</p>
 Test tag: &lt;tc&gt;#tests#LineSegment.len&lt;/tc&gt;</p>
 <p>len() -&gt; number</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">len</span>
 <span class="go">3.0</span>
 </pre></div>
@@ -371,7 +371,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.len&lt;/tc&gt;</p>
 Test tag: &lt;tc&gt;#tests#LineSegment.line&lt;/tc&gt;</p>
 <p>line() -&gt; Line</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">line</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">m</span>
 <span class="go">1.0</span>
@@ -388,7 +388,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.line&lt;/tc&gt;</p>
 <p>Returns the p1 attribute of the line segment.</p>
 <p>_get_p1() -&gt; Point</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">_get_p1</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">==</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="go">True</span>
@@ -403,7 +403,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.line&lt;/tc&gt;</p>
 <p>Returns the p2 attribute of the line segment.</p>
 <p>_get_p2() -&gt; Point</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">_get_p2</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">==</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="go">True</span>
@@ -452,7 +452,7 @@ Test tag: &lt;tc&gt;#tests#LineSegment.line&lt;/tc&gt;</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>

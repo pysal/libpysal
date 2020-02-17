@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.w_clip &#8212; libpysal v4.2.1 Manual</title>
+    <title>libpysal.weights.w_clip &#8212; libpysal v4.2.2 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -15,10 +15,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,6 +24,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -42,7 +42,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.2.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <div class="section" id="libpysal-weights-w-clip">
 <h1>libpysal.weights.w_clip<a class="headerlink" href="#libpysal-weights-w-clip" title="Permalink to this headline">¶</a></h1>
@@ -172,14 +172,14 @@ Clipped W object (sparse if outSP=Ture). It inherits <code class="docutils liter
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="k">import</span> <span class="n">lat2W</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span>
 </pre></div>
 </div>
 <p>First create a W object from a lattice using queen contiguity and
 row-standardize it (note that these weights will stay when we clip the
 object, but they will not neccesarily represent a row-standardization
 anymore):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w1</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w1</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w1</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
 </pre></div>
 </div>
@@ -187,23 +187,23 @@ anymore):</p>
 one group and 1, 5 belong to another group and we don’t want both groups
 to interact with each other in our weights (i.e. w_ij = 0 if i and j in
 different groups). For that, we use the following method:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libpysal</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">libpysal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">block_weights</span><span class="p">([</span><span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r2&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r2&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>To illustrate that w2 will only be considered as binary even when the
 object passed is not, we can row-standardize it</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
 </pre></div>
 </div>
 <p>The clipped object <code class="docutils literal notranslate"><span class="pre">wc</span></code> will contain only the spatial queen
 relationships that occur within one group (‘r1’ or ‘r2’) but will have
 gotten rid of those that happen across groups</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">w_clip</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">outSP</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">w_clip</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">outSP</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This will create a sparse object (recommended when n is large).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
 <span class="go">array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
 <span class="go">        0.        ],</span>
 <span class="go">       [0.        , 0.        , 0.        , 0.        , 0.        ,</span>
@@ -220,7 +220,7 @@ gotten rid of those that happen across groups</p>
 </div>
 <p>If we wanted an original W object, we can control that with the argument
 <code class="docutils literal notranslate"><span class="pre">outSP</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">w_clip</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">outSP</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">w_clip</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">outSP</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
 <span class="go">        0.        ],</span>
@@ -237,7 +237,7 @@ gotten rid of those that happen across groups</p>
 </pre></div>
 </div>
 <p>You can check they are actually the same:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">==</span> <span class="n">wc</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">==</span> <span class="n">wc</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 <span class="go">array([[ True,  True,  True,  True,  True,  True],</span>
 <span class="go">       [ True,  True,  True,  True,  True,  True],</span>
 <span class="go">       [ True,  True,  True,  True,  True,  True],</span>
@@ -270,7 +270,7 @@ gotten rid of those that happen across groups</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>
