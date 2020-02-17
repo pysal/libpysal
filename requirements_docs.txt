@@ -4,3 +4,4 @@ sphinxcontrib-bibtex
 sphinx_bootstrap_theme>=0.7.0
 numpydoc
 nbsphinx
+pandoc
