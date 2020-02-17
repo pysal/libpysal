@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Datasets for use with libpysal &#8212; libpysal v4.2.2 Manual</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal API reference" href="../api.html" />
+    <link rel="prev" title="Voronoi Polygons for 2-D Point Sets" href="voronoi.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.2.2</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="weights.html">Weights from GeoDataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weights.html#Weights-from-shapefiles-(without-geopandas)">Weights from shapefiles (without geopandas)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weights.html#Lattice-Weights">Lattice Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weights.html#Handling-nonplanar-geometries">Handling nonplanar geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="voronoi.html">Voronoi Polygons for 2-D Point Sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="voronoi.html#Voronoi-Weights">Voronoi Weights</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Datasets for use with libpysal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Backwards-compatibility-is-maintained">Backwards compatibility is maintained</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#available-is-updated"><code class="docutils literal notranslate"><span class="pre">available</span></code> is updated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Remote-datasets">Remote datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Other-Remotes">Other Remotes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Grabbing-all-the-remotes">Grabbing all the remotes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Datasets for use with libpysal</a></li>
+<li><a class="reference internal" href="#Backwards-compatibility-is-maintained">Backwards compatibility is maintained</a></li>
+<li><a class="reference internal" href="#available-is-updated"><code class="docutils literal notranslate"><span class="pre">available</span></code> is updated</a></li>
+<li><a class="reference internal" href="#Remote-datasets">Remote datasets</a></li>
+<li><a class="reference internal" href="#Other-Remotes">Other Remotes</a></li>
+<li><a class="reference internal" href="#Grabbing-all-the-remotes">Grabbing all the remotes</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    min-width: 5.5ex;
+    padding-top: 0.3rem;
+    padding-right: 0.3rem;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 0.3rem;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="Datasets-for-use-with-libpysal">
+<h1>Datasets for use with libpysal<a class="headerlink" href="#Datasets-for-use-with-libpysal" title="Permalink to this headline">¶</a></h1>
+<p>As of version 4.2, libpysal has refactored the <code class="docutils literal notranslate"><span class="pre">examples</span></code> package to:</p>
+<ul class="simple">
+<li><p>reduce the size of the source installation</p></li>
+<li><p>allow the use of remote datasets from the <a class="reference external" href="https://spatial.uchicago.edu/">Center for Spatial Data Science at the Unversity of Chicago</a>, and other remotes</p></li>
+</ul>
+<p>This notebook highlights the new functionality</p>
+</div>
+<div class="section" id="Backwards-compatibility-is-maintained">
+<h1>Backwards compatibility is maintained<a class="headerlink" href="#Backwards-compatibility-is-maintained" title="Permalink to this headline">¶</a></h1>
+<p>If you were familiar with previous versions of libpysal, the newest version maintains backwards compatibility so any code that relied on the previous API should work.</p>
+<p>For example:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">libpysal.examples</span> <span class="kn">import</span> <span class="n">get_path</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;mexicojoin.dbf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/jovyan/libpysal/examples/mexico/mexicojoin.dbf&#39;
+</pre></div></div>
+</div>
+<p>An important thing to note here is that the path to the file for this particular example is within the source distribution that was installed. Such an example data set is now referred to as a <code class="docutils literal notranslate"><span class="pre">builtin</span></code> dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">libpysal</span>
+<span class="n">dbf</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;mexicojoin.dbf&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dbf</span><span class="o">.</span><span class="n">header</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;POLY_ID&#39;,
+ &#39;AREA&#39;,
+ &#39;CODE&#39;,
+ &#39;NAME&#39;,
+ &#39;PERIMETER&#39;,
+ &#39;ACRES&#39;,
+ &#39;HECTARES&#39;,
+ &#39;PCGDP1940&#39;,
+ &#39;PCGDP1950&#39;,
+ &#39;PCGDP1960&#39;,
+ &#39;PCGDP1970&#39;,
+ &#39;PCGDP1980&#39;,
+ &#39;PCGDP1990&#39;,
+ &#39;PCGDP2000&#39;,
+ &#39;HANSON03&#39;,
+ &#39;HANSON98&#39;,
+ &#39;ESQUIVEL99&#39;,
+ &#39;INEGI&#39;,
+ &#39;INEGI2&#39;,
+ &#39;MAXP&#39;,
+ &#39;GR4000&#39;,
+ &#39;GR5000&#39;,
+ &#39;GR6000&#39;,
+ &#39;GR7000&#39;,
+ &#39;GR8000&#39;,
+ &#39;GR9000&#39;,
+ &#39;LPCGDP40&#39;,
+ &#39;LPCGDP50&#39;,
+ &#39;LPCGDP60&#39;,
+ &#39;LPCGDP70&#39;,
+ &#39;LPCGDP80&#39;,
+ &#39;LPCGDP90&#39;,
+ &#39;LPCGDP00&#39;,
+ &#39;TEST&#39;]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="available-is-updated">
+<h1><code class="docutils literal notranslate"><span class="pre">available</span></code> is updated<a class="headerlink" href="#available-is-updated" title="Permalink to this headline">¶</a></h1>
+<p>The function <code class="docutils literal notranslate"><span class="pre">available</span></code> is also available but has been updated to be more informative:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">libpysal.examples</span> <span class="kn">import</span> <span class="n">available</span>
+<span class="n">available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                      Name                                        Description  Installed
+0                    10740    Albuquerque, New Mexico, Census 2000 Tract Data       True
+1                   AirBnB  Airbnb rentals, socioeconomics, and crime in C...       True
+2                  Atlanta       Atlanta, GA region homicide counts and rates       True
+3                Baltimore          Baltimore house sales prices and hedonics       True
+4                Bostonhsg               Boston housing and neighborhood data       True
+5              Buenosaires      Electoral Data for 1999 Argentinean Elections       True
+6              Charleston1   2000 Census Tract Data for Charleston, SC MSA...       True
+7              Charleston2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+8           Chicago Health                   Chicago Health + Socio-Economics       True
+9              Chile Labor                 Labor Markets in Chile (1982-2002)       True
+10         Chile Migration            Internal Migration in Chile (1977-2002)       True
+11              Cincinnati         2008 Cincinnati Crime + Socio-Demographics       True
+12               Cleveland       2015 sales prices of homes in Cleveland, OH.       True
+13                Columbus                        Columbus neighborhood crime       True
+14                  Denver   Demographics and housing in Denver neighborho...       True
+15               Elections               2012 and 2016 Presidential Elections       True
+16                 Grid100                      Grid with simulated variables       True
+17               Groceries                          2015 Chicago supermarkets       True
+18                  Guerry          Moral statistics of France (Guerry, 1833)       True
+19       Health Indicators                Chicago Health Indicators (2005-11)       True
+20                 Health+                    2000 Health, Income + Diversity       True
+21                Hickory1   2000 Census Tract Data for Hickory, NC MSA an...       True
+22                Hickory2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+23              Home Sales              2014-15 Home Sales in King County, WA       True
+24                 Houston       Houston, TX region homicide counts and rates       True
+25                Juvenile             Cardiff juvenile delinquent residences       True
+26                Lansing1   2000 Census Tract Data for Lansing, MI MSA an...       True
+27                Lansing2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+28                 Laozone   Ozone measures at monitoring stations in Los ...       True
+29                LasRosas   Corn yield, fertilizer and field data for pre...       True
+30                    Line                                     Line Shapefile       True
+31           Liquor Stores                         2015 Chicago Liquor Stores       True
+32                 Malaria   Malaria incidence and population (1973, 95, 9...       True
+33              Milwaukee1       2000 Census Tract Data for Milwaukee, WI MSA       True
+34              Milwaukee2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+35                   NCOVR                      US county homicides 1960-1990       True
+36                    NDVI        Normalized Difference Vegetation Index grid       True
+37                     NYC   Demographic and housing data for New York Cit...       True
+38            NYC Earnings              Block-level Earnings in NYC (2002-14)       True
+39           NYC Education                               NYC Education (2000)       True
+40       NYC Neighborhoods       Demographics for New York City neighborhoods       True
+41  NYC Socio-Demographics                 NYC Education + Socio-Demographics       True
+42              Natregimes                    NCOVR with regimes (book/PySAL)       True
+43                   Nepal   Health, poverty and education indicators for ...       True
+44                Ohiolung            Ohio lung cancer data, 1968, 1978, 1988       True
+45                Orlando1   2000 Census Tract Data for Orlando, FL MSA an...       True
+46                Orlando2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+47                  Oz9799                        Monthly ozone data, 1997-99       True
+48             Phoenix ACS   Phoenix American Community Survey Data (2010,...       True
+49              Pittsburgh                      Pittsburgh homicide locations       True
+50                   Point                                    Point Shapefile       True
+51                  Police           Police expenditures Mississippi counties       True
+52                 Polygon                                  Polygon Shapefile       True
+53           Polygon_Holes                 Example to test treatment of holes       True
+54       Rio Grande do Sul  Cities of the Brazilian State of Rio Grande do...       True
+55                    SIDS            North Carolina county SIDS death counts       True
+56                   SIDS2   North Carolina county SIDS death counts and r...       True
+57             Sacramento1          2000 Census Tract Data for Sacramento MSA       True
+58             Sacramento2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+59           SanFran Crime   July-Dec 2012 crime incidents in San Francisc...       True
+60               Savannah1   2000 Census Tract Data for Savannah, GA MSA a...       True
+61               Savannah2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+62                 Scotlip               Male lip cancer in Scotland, 1975-80       True
+63                Seattle1   2000 Census Tract Data for Seattle, WA MSA an...       True
+64                Seattle2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+65                   South             US Southern county homicides 1960-1990       True
+66                 StLouis   St Louis region county homicide counts and rates       True
+67                  Tampa1   2000 Census Tract Data for Tampa, FL MSA and ...       True
+68                  arcgis                               arcgis testing files       True
+69                  baltim     Baltimore house sales prices and hedonics 1978       True
+70                  berlin  Prenzlauer Berg neighborhood AirBnB data from ...       True
+71                    book       Synthetic data to illustrate spatial weights       True
+72                 burkitt  Burkitt&#39;s lymphoma in the Western Nile distric...       True
+73                  calemp         Employment density for California counties       True
+74                 chicago                              Chicago neighborhoods       True
+75              clearwater                               mgwr testing dataset       True
+76                columbus              Columbus neighborhood crime data 1980       True
+77                 desmith    Small dataset to illustrate Moran&#39;s I statistic       True
+78                geodanet        Datasets from geodanet for network analysis       True
+79                 georgia  Various socio-economic variables for counties ...       True
+80                juvenile    Residences of juvenile offenders in Cardiff, UK       True
+81                  mexico  Decennial per capita incomes of Mexican states...       True
+82                networks                  Datasets used for network testing       True
+83                newHaven                            Network testing dataset       True
+84               nyc_bikes                           New York City Bike Trips       True
+85                   sids2  North Carolina county SIDS death counts and rates       True
+86               snow_maps  Public water pumps and Cholera deaths in Londo...       True
+87                     stl  Homicides and selected socio-economic characte...       True
+88          street_net_pts                              Street network points       True
+89                     taz           Traffic Analysis Zones in So. California       True
+90                   tokyo                               Tokyo Mortality data       True
+91               us_income  Per-capita income for the lower 48 US states 1...       True
+92                virginia                        Virginia counties shapefile       True
+93                    wmat          Datasets used for spatial weights testing       True
+</pre></div></div>
+</div>
+<p>We see that the new column <code class="docutils literal notranslate"><span class="pre">Installed</span></code> is added to the tablular output of <code class="docutils literal notranslate"><span class="pre">available</span></code>. This tells the user whether the dataset has aready been installed on the local machine. All the builtin datasets are by defninition installed. The interesting cases are the remote data sets that are new in this release.</p>
+</div>
+<div class="section" id="Remote-datasets">
+<h1>Remote datasets<a class="headerlink" href="#Remote-datasets" title="Permalink to this headline">¶</a></h1>
+<p>The listing from <code class="docutils literal notranslate"><span class="pre">available</span></code> above shows that the dataset <code class="docutils literal notranslate"><span class="pre">Tampa1</span></code> is avalable, but has not yet been installed.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">libpysal.examples</span> <span class="kn">import</span> <span class="n">explain</span>
+<span class="n">explain</span><span class="p">(</span><span class="s1">&#39;Tampa1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<iframe
+    width="700"
+    height="350"
+    src="https://geodacenter.github.io/data-and-lab/tampa1/"
+    frameborder="0"
+    allowfullscreen
+></iframe></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">libpysal.examples</span> <span class="kn">import</span> <span class="n">load_example</span>
+<span class="n">tampa1</span> <span class="o">=</span> <span class="n">load_example</span><span class="p">(</span><span class="s1">&#39;Tampa1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                      Name                                        Description  Installed
+0                    10740    Albuquerque, New Mexico, Census 2000 Tract Data       True
+1                   AirBnB  Airbnb rentals, socioeconomics, and crime in C...       True
+2                  Atlanta       Atlanta, GA region homicide counts and rates       True
+3                Baltimore          Baltimore house sales prices and hedonics       True
+4                Bostonhsg               Boston housing and neighborhood data       True
+5              Buenosaires      Electoral Data for 1999 Argentinean Elections       True
+6              Charleston1   2000 Census Tract Data for Charleston, SC MSA...       True
+7              Charleston2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+8           Chicago Health                   Chicago Health + Socio-Economics       True
+9              Chile Labor                 Labor Markets in Chile (1982-2002)       True
+10         Chile Migration            Internal Migration in Chile (1977-2002)       True
+11              Cincinnati         2008 Cincinnati Crime + Socio-Demographics       True
+12               Cleveland       2015 sales prices of homes in Cleveland, OH.       True
+13                Columbus                        Columbus neighborhood crime       True
+14                  Denver   Demographics and housing in Denver neighborho...       True
+15               Elections               2012 and 2016 Presidential Elections       True
+16                 Grid100                      Grid with simulated variables       True
+17               Groceries                          2015 Chicago supermarkets       True
+18                  Guerry          Moral statistics of France (Guerry, 1833)       True
+19       Health Indicators                Chicago Health Indicators (2005-11)       True
+20                 Health+                    2000 Health, Income + Diversity       True
+21                Hickory1   2000 Census Tract Data for Hickory, NC MSA an...       True
+22                Hickory2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+23              Home Sales              2014-15 Home Sales in King County, WA       True
+24                 Houston       Houston, TX region homicide counts and rates       True
+25                Juvenile             Cardiff juvenile delinquent residences       True
+26                Lansing1   2000 Census Tract Data for Lansing, MI MSA an...       True
+27                Lansing2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+28                 Laozone   Ozone measures at monitoring stations in Los ...       True
+29                LasRosas   Corn yield, fertilizer and field data for pre...       True
+30                    Line                                     Line Shapefile       True
+31           Liquor Stores                         2015 Chicago Liquor Stores       True
+32                 Malaria   Malaria incidence and population (1973, 95, 9...       True
+33              Milwaukee1       2000 Census Tract Data for Milwaukee, WI MSA       True
+34              Milwaukee2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+35                   NCOVR                      US county homicides 1960-1990       True
+36                    NDVI        Normalized Difference Vegetation Index grid       True
+37                     NYC   Demographic and housing data for New York Cit...       True
+38            NYC Earnings              Block-level Earnings in NYC (2002-14)       True
+39           NYC Education                               NYC Education (2000)       True
+40       NYC Neighborhoods       Demographics for New York City neighborhoods       True
+41  NYC Socio-Demographics                 NYC Education + Socio-Demographics       True
+42              Natregimes                    NCOVR with regimes (book/PySAL)       True
+43                   Nepal   Health, poverty and education indicators for ...       True
+44                Ohiolung            Ohio lung cancer data, 1968, 1978, 1988       True
+45                Orlando1   2000 Census Tract Data for Orlando, FL MSA an...       True
+46                Orlando2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+47                  Oz9799                        Monthly ozone data, 1997-99       True
+48             Phoenix ACS   Phoenix American Community Survey Data (2010,...       True
+49              Pittsburgh                      Pittsburgh homicide locations       True
+50                   Point                                    Point Shapefile       True
+51                  Police           Police expenditures Mississippi counties       True
+52                 Polygon                                  Polygon Shapefile       True
+53           Polygon_Holes                 Example to test treatment of holes       True
+54       Rio Grande do Sul  Cities of the Brazilian State of Rio Grande do...       True
+55                    SIDS            North Carolina county SIDS death counts       True
+56                   SIDS2   North Carolina county SIDS death counts and r...       True
+57             Sacramento1          2000 Census Tract Data for Sacramento MSA       True
+58             Sacramento2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+59           SanFran Crime   July-Dec 2012 crime incidents in San Francisc...       True
+60               Savannah1   2000 Census Tract Data for Savannah, GA MSA a...       True
+61               Savannah2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+62                 Scotlip               Male lip cancer in Scotland, 1975-80       True
+63                Seattle1   2000 Census Tract Data for Seattle, WA MSA an...       True
+64                Seattle2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+65                   South             US Southern county homicides 1960-1990       True
+66                 StLouis   St Louis region county homicide counts and rates       True
+67                  Tampa1   2000 Census Tract Data for Tampa, FL MSA and ...       True
+68                  arcgis                               arcgis testing files       True
+69                  baltim     Baltimore house sales prices and hedonics 1978       True
+70                  berlin  Prenzlauer Berg neighborhood AirBnB data from ...       True
+71                    book       Synthetic data to illustrate spatial weights       True
+72                 burkitt  Burkitt&#39;s lymphoma in the Western Nile distric...       True
+73                  calemp         Employment density for California counties       True
+74                 chicago                              Chicago neighborhoods       True
+75              clearwater                               mgwr testing dataset       True
+76                columbus              Columbus neighborhood crime data 1980       True
+77                 desmith    Small dataset to illustrate Moran&#39;s I statistic       True
+78                geodanet        Datasets from geodanet for network analysis       True
+79                 georgia  Various socio-economic variables for counties ...       True
+80                juvenile    Residences of juvenile offenders in Cardiff, UK       True
+81                  mexico  Decennial per capita incomes of Mexican states...       True
+82                networks                  Datasets used for network testing       True
+83                newHaven                            Network testing dataset       True
+84               nyc_bikes                           New York City Bike Trips       True
+85                   sids2  North Carolina county SIDS death counts and rates       True
+86               snow_maps  Public water pumps and Cholera deaths in Londo...       True
+87                     stl  Homicides and selected socio-economic characte...       True
+88          street_net_pts                              Street network points       True
+89                     taz           Traffic Analysis Zones in So. California       True
+90                   tokyo                               Tokyo Mortality data       True
+91               us_income  Per-capita income for the lower 48 US states 1...       True
+92                virginia                        Virginia counties shapefile       True
+93                    wmat          Datasets used for spatial weights testing       True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">tampa1</span><span class="o">.</span><span class="n">installed</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">tampa1</span><span class="o">.</span><span class="n">get_file_list</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;/home/jovyan/pysal_data/Tampa1/__MACOSX/._TampaMSA&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/__MACOSX/TampaMSA/._2000 Census Data Variables_Documentation.pdf&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbn&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbn&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.geojson&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.gpkg&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.xlsx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.mid&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.spx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbindexes&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByDestItemTypeID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByType.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/gdb&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByForwardLabel.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByBackwardLabel.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByParentTypeID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbindexes&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbindexes&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbindexes&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.spx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbindexes&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.FDO_UUID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByOriginID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbindexes&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByPhysicalName.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByType.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbindexes&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByUUID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByUUID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.spx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.FDO_UUID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByDestinationID.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtable&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/timestamps&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByName.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbindexes&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByName.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.TablesByName.atx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtablx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.sbn&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.xlsx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/2000 Census Data Variables_Documentation.pdf&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.mid&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.dbf&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.gpkg&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.mif&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.kml&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.sqlite&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.dbf&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.prj&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.mif&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.shx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.geojson&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.shx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.sbn&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.sbx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.prj&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.shp&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.shp&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.sqlite&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_final_census2.sbx&#39;,
+ &#39;/home/jovyan/pysal_data/Tampa1/TampaMSA/tampa_counties.kml&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">tampa_counties_shp</span> <span class="o">=</span> <span class="n">tampa1</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;tampa_counties.shp&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">tampa_counties_shp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;libpysal.io.iohandlers.pyShpIO.PurePyShpWrapper at 0x7f2c886869b0&gt;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">geopandas</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">tampa_df</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">tampa1</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;tampa_counties.shp&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="n">tampa_df</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f2c885f5e48&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_22_1.png" src="../_images/notebooks_examples_22_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Other-Remotes">
+<h1>Other Remotes<a class="headerlink" href="#Other-Remotes" title="Permalink to this headline">¶</a></h1>
+<p>In addition to the remote datasets from the GeoData Data Science Center, there are several large remotes available at github repositories.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">explain</span><span class="p">(</span><span class="s1">&#39;Rio Grande do Sul&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Rio_Grande_do_Sul
+======================
+
+Cities of the Brazilian State of Rio Grande do Sul
+-------------------------------------------------------
+
+* 43MUE250GC_SIR.dbf: attribute data (k=2)
+* 43MUE250GC_SIR.shp: Polygon shapefile (n=499)
+* 43MUE250GC_SIR.shx: spatial index
+* 43MUE250GC_SIR.cpg: encoding file
+* 43MUE250GC_SIR.prj: projection information
+* map_RS_BR.dbf: attribute data (k=3)
+* map_RS_BR.shp: Polygon shapefile (no lakes) (n=497)
+* map_RS_BR.prj: projection information
+* map_RS_BR.shx: spatial index
+
+
+
+Source: Renan Xavier Cortes
+Reference: https://github.com/pysal/pysal/issues/889#issuecomment-396693495
+
+
+</pre></div></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">explain</span></code> function generates a textual description of this example dataset - no rendering of the map is done as the source repository does not include that functionality.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">rio</span> <span class="o">=</span> <span class="n">load_example</span><span class="p">(</span><span class="s1">&#39;Rio Grande do Sul&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                      Name                                        Description  Installed
+0                    10740    Albuquerque, New Mexico, Census 2000 Tract Data       True
+1                   AirBnB  Airbnb rentals, socioeconomics, and crime in C...       True
+2                  Atlanta       Atlanta, GA region homicide counts and rates       True
+3                Baltimore          Baltimore house sales prices and hedonics       True
+4                Bostonhsg               Boston housing and neighborhood data       True
+5              Buenosaires      Electoral Data for 1999 Argentinean Elections       True
+6              Charleston1   2000 Census Tract Data for Charleston, SC MSA...       True
+7              Charleston2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+8           Chicago Health                   Chicago Health + Socio-Economics       True
+9              Chile Labor                 Labor Markets in Chile (1982-2002)       True
+10         Chile Migration            Internal Migration in Chile (1977-2002)       True
+11              Cincinnati         2008 Cincinnati Crime + Socio-Demographics       True
+12               Cleveland       2015 sales prices of homes in Cleveland, OH.       True
+13                Columbus                        Columbus neighborhood crime       True
+14                  Denver   Demographics and housing in Denver neighborho...       True
+15               Elections               2012 and 2016 Presidential Elections       True
+16                 Grid100                      Grid with simulated variables       True
+17               Groceries                          2015 Chicago supermarkets       True
+18                  Guerry          Moral statistics of France (Guerry, 1833)       True
+19       Health Indicators                Chicago Health Indicators (2005-11)       True
+20                 Health+                    2000 Health, Income + Diversity       True
+21                Hickory1   2000 Census Tract Data for Hickory, NC MSA an...       True
+22                Hickory2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+23              Home Sales              2014-15 Home Sales in King County, WA       True
+24                 Houston       Houston, TX region homicide counts and rates       True
+25                Juvenile             Cardiff juvenile delinquent residences       True
+26                Lansing1   2000 Census Tract Data for Lansing, MI MSA an...       True
+27                Lansing2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+28                 Laozone   Ozone measures at monitoring stations in Los ...       True
+29                LasRosas   Corn yield, fertilizer and field data for pre...       True
+30                    Line                                     Line Shapefile       True
+31           Liquor Stores                         2015 Chicago Liquor Stores       True
+32                 Malaria   Malaria incidence and population (1973, 95, 9...       True
+33              Milwaukee1       2000 Census Tract Data for Milwaukee, WI MSA       True
+34              Milwaukee2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+35                   NCOVR                      US county homicides 1960-1990       True
+36                    NDVI        Normalized Difference Vegetation Index grid       True
+37                     NYC   Demographic and housing data for New York Cit...       True
+38            NYC Earnings              Block-level Earnings in NYC (2002-14)       True
+39           NYC Education                               NYC Education (2000)       True
+40       NYC Neighborhoods       Demographics for New York City neighborhoods       True
+41  NYC Socio-Demographics                 NYC Education + Socio-Demographics       True
+42              Natregimes                    NCOVR with regimes (book/PySAL)       True
+43                   Nepal   Health, poverty and education indicators for ...       True
+44                Ohiolung            Ohio lung cancer data, 1968, 1978, 1988       True
+45                Orlando1   2000 Census Tract Data for Orlando, FL MSA an...       True
+46                Orlando2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+47                  Oz9799                        Monthly ozone data, 1997-99       True
+48             Phoenix ACS   Phoenix American Community Survey Data (2010,...       True
+49              Pittsburgh                      Pittsburgh homicide locations       True
+50                   Point                                    Point Shapefile       True
+51                  Police           Police expenditures Mississippi counties       True
+52                 Polygon                                  Polygon Shapefile       True
+53           Polygon_Holes                 Example to test treatment of holes       True
+54       Rio Grande do Sul  Cities of the Brazilian State of Rio Grande do...       True
+55                    SIDS            North Carolina county SIDS death counts       True
+56                   SIDS2   North Carolina county SIDS death counts and r...       True
+57             Sacramento1          2000 Census Tract Data for Sacramento MSA       True
+58             Sacramento2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+59           SanFran Crime   July-Dec 2012 crime incidents in San Francisc...       True
+60               Savannah1   2000 Census Tract Data for Savannah, GA MSA a...       True
+61               Savannah2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+62                 Scotlip               Male lip cancer in Scotland, 1975-80       True
+63                Seattle1   2000 Census Tract Data for Seattle, WA MSA an...       True
+64                Seattle2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+65                   South             US Southern county homicides 1960-1990       True
+66                 StLouis   St Louis region county homicide counts and rates       True
+67                  Tampa1   2000 Census Tract Data for Tampa, FL MSA and ...       True
+68                  arcgis                               arcgis testing files       True
+69                  baltim     Baltimore house sales prices and hedonics 1978       True
+70                  berlin  Prenzlauer Berg neighborhood AirBnB data from ...       True
+71                    book       Synthetic data to illustrate spatial weights       True
+72                 burkitt  Burkitt&#39;s lymphoma in the Western Nile distric...       True
+73                  calemp         Employment density for California counties       True
+74                 chicago                              Chicago neighborhoods       True
+75              clearwater                               mgwr testing dataset       True
+76                columbus              Columbus neighborhood crime data 1980       True
+77                 desmith    Small dataset to illustrate Moran&#39;s I statistic       True
+78                geodanet        Datasets from geodanet for network analysis       True
+79                 georgia  Various socio-economic variables for counties ...       True
+80                juvenile    Residences of juvenile offenders in Cardiff, UK       True
+81                  mexico  Decennial per capita incomes of Mexican states...       True
+82                networks                  Datasets used for network testing       True
+83                newHaven                            Network testing dataset       True
+84               nyc_bikes                           New York City Bike Trips       True
+85                   sids2  North Carolina county SIDS death counts and rates       True
+86               snow_maps  Public water pumps and Cholera deaths in Londo...       True
+87                     stl  Homicides and selected socio-economic characte...       True
+88          street_net_pts                              Street network points       True
+89                     taz           Traffic Analysis Zones in So. California       True
+90                   tokyo                               Tokyo Mortality data       True
+91               us_income  Per-capita income for the lower 48 US states 1...       True
+92                virginia                        Virginia counties shapefile       True
+93                    wmat          Datasets used for spatial weights testing       True
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Grabbing-all-the-remotes">
+<h1>Grabbing all the remotes<a class="headerlink" href="#Grabbing-all-the-remotes" title="Permalink to this headline">¶</a></h1>
+<p>All the remote datasets can be downloaded with:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">fetch_all</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AirBnB
+Already downloaded
+Atlanta
+Already downloaded
+Baltimore
+Already downloaded
+Bostonhsg
+Already downloaded
+Buenosaires
+Already downloaded
+Charleston1
+Already downloaded
+Charleston2
+Already downloaded
+Chicago Health
+Already downloaded
+Chile Labor
+Already downloaded
+Chile Migration
+Already downloaded
+Cincinnati
+Already downloaded
+Cleveland
+Already downloaded
+Columbus
+Already downloaded
+Denver
+Already downloaded
+Elections
+Already downloaded
+Grid100
+Already downloaded
+Groceries
+Already downloaded
+Guerry
+Already downloaded
+Health Indicators
+Already downloaded
+Health+
+Already downloaded
+Hickory1
+Already downloaded
+Hickory2
+Already downloaded
+Home Sales
+Already downloaded
+Houston
+Already downloaded
+Juvenile
+Already downloaded
+Lansing1
+Already downloaded
+Lansing2
+Already downloaded
+Laozone
+Already downloaded
+LasRosas
+Already downloaded
+Liquor Stores
+Already downloaded
+Malaria
+Already downloaded
+Milwaukee1
+Already downloaded
+Milwaukee2
+Already downloaded
+NCOVR
+Already downloaded
+NDVI
+Already downloaded
+NYC
+Already downloaded
+NYC Earnings
+Already downloaded
+NYC Education
+Already downloaded
+NYC Neighborhoods
+Already downloaded
+NYC Socio-Demographics
+Already downloaded
+Natregimes
+Already downloaded
+Nepal
+Already downloaded
+Ohiolung
+Already downloaded
+Orlando1
+Already downloaded
+Orlando2
+Already downloaded
+Oz9799
+Already downloaded
+Phoenix ACS
+Already downloaded
+Pittsburgh
+Already downloaded
+Police
+Already downloaded
+Rio Grande do Sul
+Already downloaded
+SIDS
+Already downloaded
+SIDS2
+Already downloaded
+Sacramento1
+Already downloaded
+Sacramento2
+Already downloaded
+SanFran Crime
+Already downloaded
+Savannah1
+Already downloaded
+Savannah2
+Already downloaded
+Scotlip
+Already downloaded
+Seattle1
+Already downloaded
+Seattle2
+Already downloaded
+South
+Already downloaded
+StLouis
+Already downloaded
+Tampa1
+Already downloaded
+clearwater
+Already downloaded
+newHaven
+Already downloaded
+nyc_bikes
+Already downloaded
+taz
+Already downloaded
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">available</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+                      Name                                        Description  Installed
+0                    10740    Albuquerque, New Mexico, Census 2000 Tract Data       True
+1                   AirBnB  Airbnb rentals, socioeconomics, and crime in C...       True
+2                  Atlanta       Atlanta, GA region homicide counts and rates       True
+3                Baltimore          Baltimore house sales prices and hedonics       True
+4                Bostonhsg               Boston housing and neighborhood data       True
+5              Buenosaires      Electoral Data for 1999 Argentinean Elections       True
+6              Charleston1   2000 Census Tract Data for Charleston, SC MSA...       True
+7              Charleston2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+8           Chicago Health                   Chicago Health + Socio-Economics       True
+9              Chile Labor                 Labor Markets in Chile (1982-2002)       True
+10         Chile Migration            Internal Migration in Chile (1977-2002)       True
+11              Cincinnati         2008 Cincinnati Crime + Socio-Demographics       True
+12               Cleveland       2015 sales prices of homes in Cleveland, OH.       True
+13                Columbus                        Columbus neighborhood crime       True
+14                  Denver   Demographics and housing in Denver neighborho...       True
+15               Elections               2012 and 2016 Presidential Elections       True
+16                 Grid100                      Grid with simulated variables       True
+17               Groceries                          2015 Chicago supermarkets       True
+18                  Guerry          Moral statistics of France (Guerry, 1833)       True
+19       Health Indicators                Chicago Health Indicators (2005-11)       True
+20                 Health+                    2000 Health, Income + Diversity       True
+21                Hickory1   2000 Census Tract Data for Hickory, NC MSA an...       True
+22                Hickory2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+23              Home Sales              2014-15 Home Sales in King County, WA       True
+24                 Houston       Houston, TX region homicide counts and rates       True
+25                Juvenile             Cardiff juvenile delinquent residences       True
+26                Lansing1   2000 Census Tract Data for Lansing, MI MSA an...       True
+27                Lansing2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+28                 Laozone   Ozone measures at monitoring stations in Los ...       True
+29                LasRosas   Corn yield, fertilizer and field data for pre...       True
+30                    Line                                     Line Shapefile       True
+31           Liquor Stores                         2015 Chicago Liquor Stores       True
+32                 Malaria   Malaria incidence and population (1973, 95, 9...       True
+33              Milwaukee1       2000 Census Tract Data for Milwaukee, WI MSA       True
+34              Milwaukee2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+35                   NCOVR                      US county homicides 1960-1990       True
+36                    NDVI        Normalized Difference Vegetation Index grid       True
+37                     NYC   Demographic and housing data for New York Cit...       True
+38            NYC Earnings              Block-level Earnings in NYC (2002-14)       True
+39           NYC Education                               NYC Education (2000)       True
+40       NYC Neighborhoods       Demographics for New York City neighborhoods       True
+41  NYC Socio-Demographics                 NYC Education + Socio-Demographics       True
+42              Natregimes                    NCOVR with regimes (book/PySAL)       True
+43                   Nepal   Health, poverty and education indicators for ...       True
+44                Ohiolung            Ohio lung cancer data, 1968, 1978, 1988       True
+45                Orlando1   2000 Census Tract Data for Orlando, FL MSA an...       True
+46                Orlando2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+47                  Oz9799                        Monthly ozone data, 1997-99       True
+48             Phoenix ACS   Phoenix American Community Survey Data (2010,...       True
+49              Pittsburgh                      Pittsburgh homicide locations       True
+50                   Point                                    Point Shapefile       True
+51                  Police           Police expenditures Mississippi counties       True
+52                 Polygon                                  Polygon Shapefile       True
+53           Polygon_Holes                 Example to test treatment of holes       True
+54       Rio Grande do Sul  Cities of the Brazilian State of Rio Grande do...       True
+55                    SIDS            North Carolina county SIDS death counts       True
+56                   SIDS2   North Carolina county SIDS death counts and r...       True
+57             Sacramento1          2000 Census Tract Data for Sacramento MSA       True
+58             Sacramento2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+59           SanFran Crime   July-Dec 2012 crime incidents in San Francisc...       True
+60               Savannah1   2000 Census Tract Data for Savannah, GA MSA a...       True
+61               Savannah2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+62                 Scotlip               Male lip cancer in Scotland, 1975-80       True
+63                Seattle1   2000 Census Tract Data for Seattle, WA MSA an...       True
+64                Seattle2   1998 and 2001 Zip Code Business Patterns (Cen...       True
+65                   South             US Southern county homicides 1960-1990       True
+66                 StLouis   St Louis region county homicide counts and rates       True
+67                  Tampa1   2000 Census Tract Data for Tampa, FL MSA and ...       True
+68                  arcgis                               arcgis testing files       True
+69                  baltim     Baltimore house sales prices and hedonics 1978       True
+70                  berlin  Prenzlauer Berg neighborhood AirBnB data from ...       True
+71                    book       Synthetic data to illustrate spatial weights       True
+72                 burkitt  Burkitt&#39;s lymphoma in the Western Nile distric...       True
+73                  calemp         Employment density for California counties       True
+74                 chicago                              Chicago neighborhoods       True
+75              clearwater                               mgwr testing dataset       True
+76                columbus              Columbus neighborhood crime data 1980       True
+77                 desmith    Small dataset to illustrate Moran&#39;s I statistic       True
+78                geodanet        Datasets from geodanet for network analysis       True
+79                 georgia  Various socio-economic variables for counties ...       True
+80                juvenile    Residences of juvenile offenders in Cardiff, UK       True
+81                  mexico  Decennial per capita incomes of Mexican states...       True
+82                networks                  Datasets used for network testing       True
+83                newHaven                            Network testing dataset       True
+84               nyc_bikes                           New York City Bike Trips       True
+85                   sids2  North Carolina county SIDS death counts and rates       True
+86               snow_maps  Public water pumps and Cholera deaths in Londo...       True
+87                     stl  Homicides and selected socio-economic characte...       True
+88          street_net_pts                              Street network points       True
+89                     taz           Traffic Analysis Zones in So. California       True
+90                   tokyo                               Tokyo Mortality data       True
+91               us_income  Per-capita income for the lower 48 US states 1...       True
+92                virginia                        Virginia counties shapefile       True
+93                    wmat          Datasets used for spatial weights testing       True
+</pre></div></div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/examples.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
