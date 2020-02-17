@@ -448,7 +448,7 @@ class _NodeCursor(object):
         if (self.nchildren() <= MAXCHILDREN):
             return
 
-        t = time.clock()
+        t = time.process_time()
 
         cur_score = -10
 
@@ -466,7 +466,7 @@ class _NodeCursor(object):
 
         self._set_children(nodes)
 
-        dur = (time.clock() - t)
+        dur = (time.process_time() - t)
         c = float(self.root.stats["overflow_f"])
         oa = self.root.stats["avg_overflow_t_f"]
         self.root.stats["avg_overflow_t_f"] = (
@@ -593,7 +593,7 @@ def closest(centroids, node):
 
 
 def k_means_cluster(root, k, nodes):
-    t = time.clock()
+    t = time.process_time()
     if len(nodes) <= k:
         return [[n] for n in nodes]
 
@@ -633,7 +633,7 @@ def k_means_cluster(root, k, nodes):
         if new_cluster_centers == cluster_centers:
             root.stats["avg_kmeans_iter_f"] = float(root.stats["sum_kmeans_iter_f"] / root.stats["count_kmeans_iter_f"])
             root.stats["longest_kmeans"] = max(
-                root.stats["longest_kmeans"], (time.clock() - t))
+                root.stats["longest_kmeans"], (time.process_time() - t))
             return clusters
         else:
             cluster_centers = new_cluster_centers
