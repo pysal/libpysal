@@ -530,7 +530,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
 
 
 def w_local_cluster(w):
-    """
+    r"""
     Local clustering coefficients for each unit as a node in a graph. [ws]_
 
     Parameters

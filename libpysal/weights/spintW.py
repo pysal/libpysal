@@ -50,13 +50,13 @@ def ODW(Wo, Wd, transform='r', silence_warnings=True):
            0.  , 0.  , 0.  , 0.  , 0.  ])
 
     """
-    if Wo.transform is not 'b':
+    if Wo.transform != 'b':
         try:
             Wo.tranform = 'b'
         except:
             raise AttributeError('Wo is not binary and cannot be transformed to '
                     'binary. Wo must be binary or suitably transformed to binary.')
-    if Wd.transform is not 'b':
+    if Wd.transform != 'b':
         try:
             Wd.tranform = 'b'
         except:
