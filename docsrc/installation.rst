@@ -3,11 +3,24 @@
 Installation
 ============
 
-libpysal supports python `3.5`_ and `3.6`_ only. Please make sure that you are
+libpysal supports python >= `3.6`_ only. Please make sure that you are
 operating in a python 3 environment.
 
 Installing released version
 ---------------------------
+
+conda
++++++
+
+libpysal is available through conda::
+
+ 
+  conda install -c conda-forge libpysal
+
+
+pypi
+++++
+
 
 libpysal is available on the `Python Package Index`_. Therefore, you can either
 install directly with `pip` from the command line::
@@ -36,8 +49,9 @@ your fork. By making changes
 to your local clone and submitting a pull request to `pysal/libpysal`_, you can
 contribute to libpysal development.
 
-.. _3.5: https://docs.python.org/3.5/
 .. _3.6: https://docs.python.org/3.6/
+.. _3.7: https://docs.python.org/3.7/
+.. _3.8: https://docs.python.org/3.8/
 .. _Python Package Index: https://pypi.org/project/libpysal/
 .. _pysal/libpysal: https://github.com/pysal/libpysal
 .. _fork: https://help.github.com/articles/fork-a-repo/
