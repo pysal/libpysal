@@ -37,7 +37,8 @@ script:
 notifications:
     email:
         recipients:
-            - joshua.wagner93@gmail.com
+            - sjsrey@gmail.com
+            - levi.john.wolf@gmail.com
         on_success: change 
         on_failure: always
 
