@@ -114,7 +114,7 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
     return W(w, **kwargs)
 
 
-def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
+def lat2W(nrows=5, ncols=5, contiguity="rook", id_type='int', **kwargs):
     """
     Create a W object for a regular lattice.
 
@@ -125,8 +125,8 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
                  number of rows
     ncols      : int
                  number of columns
-    rook       : boolean
-                 type of contiguity. Default is rook. For queen, rook =False
+    contiguity : {"rook", "queen", "bishop"}
+                 type of contiguity. Default is rook.
     id_type    : string
                  string defining the type of IDs to use in the final W object;
                  options are 'int' (0, 1, 2 ...; default), 'float' (0.0,
@@ -159,36 +159,11 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
     True
     """
     n = nrows * ncols
-    r1 = nrows - 1
-    c1 = ncols - 1
-    rid = [i // ncols for i in range(n)] #must be floor!
-    cid = [i % ncols for i in range(n)]
-    w = {}
-    r = below = 0
-    for i in range(n - 1):
-        if rid[i] < r1:
-            below = rid[i] + 1
-            r = below * ncols + cid[i]
-            w[i] = w.get(i, []) + [r]
-            w[r] = w.get(r, []) + [i]
-        if cid[i] < c1:
-            right = cid[i] + 1
-            c = rid[i] * ncols + right
-            w[i] = w.get(i, []) + [c]
-            w[c] = w.get(c, []) + [i]
-        if not rook:
-            # southeast bishop
-            if cid[i] < c1 and rid[i] < r1:
-                r = (rid[i] + 1) * ncols + 1 + cid[i]
-                w[i] = w.get(i, []) + [r]
-                w[r] = w.get(r, []) + [i]
-            # southwest bishop
-            if cid[i] > 0 and rid[i] < r1:
-                r = (rid[i] + 1) * ncols - 1 + cid[i]
-                w[i] = w.get(i, []) + [r]
-                w[r] = w.get(r, []) + [i]
 
-    neighbors = {}
+    w = {}
+    for i in range(n):
+        w[i] = np.array(list(lat2SW(nrows, ncols, contiguity).todok()[i].keys()))[:,1].tolist()
+
     weights = {}
     for key in w:
         weights[key] = [1.] * len(w[key])
@@ -1130,15 +1105,15 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     Parameters
     ----------
 
-    nrows   : int
-              number of rows
-    ncols   : int
-              number of columns
-    rook    : {"rook", "queen", "bishop"}
-              type of contiguity. Default is rook.
-    row_st  : boolean
-              If True, the created sparse W object is row-standardized so
-              every row sums up to one. Defaults to False.
+    nrows      : int
+                 number of rows
+    ncols      : int
+                 number of columns
+    criterion : {"rook", "queen", "bishop"}
+                 type of contiguity. Default is rook.
+    row_st     : boolean
+                 If True, the created sparse W object is row-standardized so
+                 every row sums up to one. Defaults to False.
 
     Returns
     -------
@@ -1170,28 +1145,34 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     diagonals = []
     offsets = []
     if criterion == "rook" or criterion == "queen":
-        d = np.ones((1, n))
-        for i in range(ncols - 1, n, ncols):
-            d[0, i] = 0
-        diagonals.append(d)
-        offsets.append(-1)
+        if ncols>1:
+            d = np.ones((1, n))
+            for i in range(ncols - 1, n, ncols):
+                d[0, i] = 0
+            if criterion == "queen" and ncols==2:
+                d = np.ones((1, n))
+            diagonals.append(d)
+            offsets.append(-1)
 
-        d = np.ones((1, n))
-        diagonals.append(d)
-        offsets.append(-ncols)
+        if ncols>=1:
+            d = np.ones((1, n))
+            diagonals.append(d)
+            offsets.append(-ncols)
 
     if criterion == "queen" or criterion == "bishop":
-        d = np.ones((1, n))
-        for i in range(0, n, ncols):
-            d[0, i] = 0
-        diagonals.append(d)
-        offsets.append(-(ncols - 1))
+        if (criterion == "bishop" and ncols>=2) or ncols>2:
+            d = np.ones((1, n))
+            for i in range(0, n, ncols):
+                d[0, i] = 0
+            diagonals.append(d)
+            offsets.append(-(ncols - 1))
 
         d = np.ones((1, n))
         for i in range(ncols - 1, n, ncols):
             d[0, i] = 0
         diagonals.append(d)
         offsets.append(-(ncols + 1))
+        
     data = np.concatenate(diagonals)
     offsets = np.array(offsets)
     m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8)
