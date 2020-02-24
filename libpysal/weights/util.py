@@ -23,7 +23,7 @@ __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
            'insert_diagonal', 'get_ids', 'get_points_array_from_shapefile',
            'min_threshold_distance', 'lat2SW', 'w_local_cluster',
-           'higher_order_sp', 'hexLat2W', 'attach_islands',
+           'higher_order_sp', 'hexLat2W', 'torusW', 'attach_islands',
            'nonplanar_neighbors', 'fuzzy_contiguity']
 
 
@@ -113,6 +113,85 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
 
     return W(w, **kwargs)
 
+def torusW(nrows=5, ncols=5, rook=True, **kwargs):
+    """
+    Create a W object for a torus lattice.
+
+    Parameters
+    ----------
+    nrows      : int
+                 number of rows
+    ncols      : int
+                 number of columns
+    rook       : boolean
+                 type of contiguity. Default is rook. For queen, rook = False
+    **kwargs   : keyword arguments
+                 optional arguments for :class:`pysal.weights.W`
+
+    Returns
+    -------
+    w : W
+        instance of spatial weights class W
+
+    Notes
+    -----
+    Observations are row ordered: first k observations are in row 0, next k in row 1, and so on.
+
+    Examples
+    --------
+    >>> from libpysal.weights import lat2W, torusW
+    >>> w = lat2W(3,3)
+    >>> w.neighbors[0]
+    [3, 1]
+    >>> w.neighbors[3]
+    [0, 6, 4]
+    >>> wt = torusW(3,3)
+    >>> wt.neighbors[0]
+    [3, 1, 2, 6]
+    >>> wh.neighbors[3]
+    [0, 6, 4, 5]
+    """
+
+    n = nrows * ncols
+    r1 = nrows - 1
+    c1 = ncols - 1
+    lat_pts = range(n)
+    rid = [i // ncols for i in range(n)] #must be floor!
+    cid = [i % ncols for i in range(n)]
+
+    w = lat2W(nrows, ncols, rook).neighbors
+    for i in range(n):
+        if rid[i] == r1 and r1 not in [0, 1]:
+            below = rid[i] + 1
+            r = lat_pts[(below * ncols + cid[i]) - n]
+            w[i] = w.get(i, []) + [r]
+            w[r] = w.get(r, []) + [i]
+        if cid[i] == c1 and c1 not in [0, 1]:
+            c = lat_pts[(rid[i] * ncols) - n]
+            w[i] = w.get(i, []) + [c]
+            w[c] = w.get(c, []) + [i]
+        if not rook:
+            if  r1 not in [0, 1]:
+                if cid[i] < c1 and rid[i] == r1:
+                    r = lat_pts[((rid[i] + 1) * ncols + 1 + cid[i]) - n]
+                    w[i] = w.get(i, []) + [r]
+                    w[r] = w.get(r, []) + [i]
+                if cid[i] > 0 and rid[i] == r1:
+                    r = lat_pts[((rid[i] + 1) * ncols - 1 + cid[i]) - n]
+                    w[i] = w.get(i, []) + [r]
+                    w[r] = w.get(r, []) + [i]
+            if  c1 not in [0, 1]:
+                if cid[i] == c1:
+                    r = lat_pts[i + 1 - n]
+                    w[i] = w.get(i, []) + [r]
+                    w[r] = w.get(r, []) + [i]
+                if cid[i] == 0:
+                    below = rid[i] + 2
+                    r = lat_pts[(below * ncols - 1) - n]
+                    w[i] = w.get(i, []) + [r]
+                    w[r] = w.get(r, []) + [i]
+
+    return W(w, **kwargs)
 
 def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
     """
@@ -164,7 +243,6 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
     rid = [i // ncols for i in range(n)] #must be floor!
     cid = [i % ncols for i in range(n)]
     w = {}
-    r = below = 0
     for i in range(n - 1):
         if rid[i] < r1:
             below = rid[i] + 1
@@ -1170,22 +1248,27 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     diagonals = []
     offsets = []
     if criterion == "rook" or criterion == "queen":
-        d = np.ones((1, n))
-        for i in range(ncols - 1, n, ncols):
-            d[0, i] = 0
-        diagonals.append(d)
-        offsets.append(-1)
+        if ncols>1:
+            d = np.ones((1, n))
+            for i in range(ncols - 1, n, ncols):
+                d[0, i] = 0
+            if criterion == "queen" and ncols==2:
+                d = np.ones((1, n))
+            diagonals.append(d)
+            offsets.append(-1)
 
-        d = np.ones((1, n))
-        diagonals.append(d)
-        offsets.append(-ncols)
+        if ncols>=1:
+            d = np.ones((1, n))
+            diagonals.append(d)
+            offsets.append(-ncols)
 
     if criterion == "queen" or criterion == "bishop":
-        d = np.ones((1, n))
-        for i in range(0, n, ncols):
-            d[0, i] = 0
-        diagonals.append(d)
-        offsets.append(-(ncols - 1))
+        if (criterion == "bishop" and ncols>=2) or ncols>2:
+            d = np.ones((1, n))
+            for i in range(0, n, ncols):
+                d[0, i] = 0
+            diagonals.append(d)
+            offsets.append(-(ncols - 1))
 
         d = np.ones((1, n))
         for i in range(ncols - 1, n, ncols):
