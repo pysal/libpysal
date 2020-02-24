@@ -31,12 +31,12 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w9[3], {0: 1.0, 4: 1.0, 6: 1.0})
     
     def test_torusW(self):
-        wt = torusW(3, 3)
+        wt = util.torusW(3, 3)
         self.assertEqual(wt[0], {1: 1.0, 2: 1.0, 3: 1.0, 6: 1.0})
         self.assertEqual(wt[3], {0: 1.0, 4: 1.0, 5: 1.0, 6: 1.0})
 
     def test_hexLat2W(self):
-        wh = hexLat2W(5, 5)
+        wh = util.hexLat2W(5, 5)
         self.assertEqual(wh[1], {0: 1.0, 6: 1.0, 2: 1.0, 5: 1.0, 7: 1.0})
         self.assertEqual(wh[21], {16: 1.0, 20: 1.0, 22: 1.0})
 

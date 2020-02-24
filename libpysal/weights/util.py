@@ -148,7 +148,7 @@ def torusW(nrows=5, ncols=5, rook=True, **kwargs):
     >>> wt = torusW(3,3)
     >>> wt.neighbors[0]
     [3, 1, 2, 6]
-    >>> wh.neighbors[3]
+    >>> wt.neighbors[3]
     [0, 6, 4, 5]
     """
 
