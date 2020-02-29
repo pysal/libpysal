@@ -15,7 +15,7 @@ jobs:
       - uses: goanpeca/setup-miniconda@v1
         with:
            activate-environment: test
-           environment-file: ../ci/travis/36-latest-conda-forge.yml
+           environment-file: ../ci/travis/36-latest-conda-forge.yaml
            python-version: 3.6
            auto-activate-base: false
       - shell: bash -l {0}
