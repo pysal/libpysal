@@ -4,3 +4,4 @@ pandas
 beautifulsoup4
 requests
 jinja2
+shapely
