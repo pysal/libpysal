@@ -43,5 +43,24 @@ jobs:
           python setup.py install
           python -c 'import libpysal; libpysal.examples.fetch_all()'
           py.test libpysal 
+  conda38:
+    name: conda 3.8
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: goanpeca/setup-miniconda@v1
+        with:
+           activate-environment: test
+           environment-file: ci/travis/38-latest-conda-forge.yaml
+           python-version: 3.8
+           auto-activate-base: false
+      - shell: bash -l {0}
+        run: |
+          conda info
+          conda list
+          python setup.py install
+          python -c 'import libpysal; libpysal.examples.fetch_all()'
+          py.test libpysal 
+
 
 
