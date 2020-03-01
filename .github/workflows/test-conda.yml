@@ -25,4 +25,23 @@ jobs:
           python setup.py install
           python -c 'import libpysal; libpysal.examples.fetch_all()'
           py.test libpysal 
+  conda37:
+    name: conda 3.7
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: goanpeca/setup-miniconda@v1
+        with:
+           activate-environment: test
+           environment-file: ci/travis/37-latest-conda-forge.yaml
+           python-version: 3.7
+           auto-activate-base: false
+      - shell: bash -l {0}
+        run: |
+          conda info
+          conda list
+          python setup.py install
+          python -c 'import libpysal; libpysal.examples.fetch_all()'
+          py.test libpysal 
+
 
