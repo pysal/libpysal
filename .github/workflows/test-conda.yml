@@ -7,8 +7,8 @@ on:
     - '*'
 
 jobs:
-  example-3:
-    name: Ex3 Linux
+  conda-3.6:
+    name: conda 3.6
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v2
@@ -22,3 +22,9 @@ jobs:
         run: |
           conda info
           conda list
+      - shell: bash -l {0}
+        run: |
+          python setup.py install
+          python -c 'import libpysal; libpysal.examples.fetch_all()'
+          py.test libpysal 
+
