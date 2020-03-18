@@ -7,18 +7,18 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -140,7 +140,7 @@
 <dl class="function">
 <dt id="libpysal.weights.w_local_cluster">
 <code class="sig-prename descclassname">libpysal.weights.</code><code class="sig-name descname">w_local_cluster</code><span class="sig-paren">(</span><em class="sig-param">w</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/util.html#w_local_cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.w_local_cluster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Local clustering coefficients for each unit as a node in a graph. <span id="id1">[ws]</span></p>
+<dd><p>Local clustering coefficients for each unit as a node in a graph.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
@@ -159,13 +159,11 @@ local clustering coefficients</p>
 <p class="rubric">Notes</p>
 <p>The local clustering coefficient <span class="math notranslate nohighlight">\(c_i\)</span> quantifies how close the
 neighbors of observation <span class="math notranslate nohighlight">\(i\)</span> are to being a clique:</p>
-<blockquote>
-<div><div class="math notranslate nohighlight">
+<div class="math notranslate nohighlight">
 \[c_i = | \{w_{j,k}\} |/ (k_i(k_i - 1)): j,k \in N_i\]</div>
-</div></blockquote>
 <p>where <span class="math notranslate nohighlight">\(N_i\)</span> is the set of neighbors to <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(k_i =
 |N_i|\)</span> and <span class="math notranslate nohighlight">\(\{w_{j,k}\}\)</span> is the set of non-zero elements of the
-weights between pairs in <span class="math notranslate nohighlight">\(N_i\)</span>.    <a class="bibtex reference internal" href="../references.html#watts1998" id="id2">[WS98]</a>._</p>
+weights between pairs in <span class="math notranslate nohighlight">\(N_i\)</span> <a class="bibtex reference internal" href="../references.html#watts1998" id="id1">[WS98]</a>.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights</span> <span class="kn">import</span> <span class="n">lat2W</span><span class="p">,</span> <span class="n">w_local_cluster</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -205,7 +203,7 @@ weights between pairs in <span class="math notranslate nohighlight">\(N_i\)</spa
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

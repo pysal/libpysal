@@ -7,18 +7,18 @@
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -145,7 +145,7 @@ neighbors.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>kdtree</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>PySAL KDTree or ArcKDTree where KDtree.data is array (n,k)
+<dt><strong>kdtree</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a></span></dt><dd><p>PySAL KDTree or ArcKDTree where KDtree.data is array (n,k)
 n observations on k characteristics used to measure
 distances between the n objects</p>
 </dd>
@@ -385,7 +385,7 @@ neighbors.</p>
 k characteristics used to measure distances 
 between the n objects</p>
 </dd>
-<dt><strong>**kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/keyword.html#module-keyword" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyword</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">arguments</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">see</span></code> <a class="reference internal" href="libpysal.weights.Rook.html#libpysal.weights.Rook" title="libpysal.weights.Rook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rook</span></code></a></span></dt><dd></dd>
+<dt><strong>**kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.6/library/keyword.html#module-keyword" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyword</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">arguments</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">see</span></code> <a class="reference internal" href="libpysal.weights.Rook.html#libpysal.weights.Rook" title="libpysal.weights.Rook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rook</span></code></a></span></dt><dd></dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -547,8 +547,8 @@ Ignored if the KDTree is an ArcKDTree</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">A</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/copy.html#module-copy" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">using</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">new</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">parameterization</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">or</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">if</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code></dt><dd></dd>
-<dt><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">is</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">reweighted</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> place.</dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">A</span></code> <a class="reference external" href="https://docs.python.org/3.6/library/copy.html#module-copy" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">using</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">new</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">parameterization</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">or</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">if</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code></dt><dd></dd>
+<dt><a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">is</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">reweighted</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> place.</dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -578,7 +578,7 @@ Ignored if the KDTree is an ArcKDTree</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>
