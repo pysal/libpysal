@@ -10,4 +10,5 @@ North Carolina county SIDS death counts and rates
 * sids2.shx: spatial index.
 * sids2.gal: spatial weights in GAL format.
 
-Source: http://geodacenter.org/downloads/data-files/sids2.zip
+Source: Cressie, Noel (1993). Statistics for Spatial Data. New York, Wiley, pp. 386-389. Rates computed.
+Updated URL: https://geodacenter.github.io/data-and-lab/sids2/

@@ -1,7 +1,7 @@
 baltim
 ======
 
-Baltimore house sales prices and hedonics 1978
+Baltimore house sales prices and hedonics, 1978. 
 ----------------------------------------------------------------
 
 * baltim.dbf: attribute data. (k=17)
@@ -12,3 +12,4 @@ Baltimore house sales prices and hedonics 1978
 * baltim_q.gal: queen contiguity weights in GAL format.
 * baltimore.geojson: spatial weights in geojson format.
 
+Source: Dubin, Robin A. (1992). Spatial autocorrelation and neighborhood quality. Regional Science and Urban Economics 22(3), 433-452.
