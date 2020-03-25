@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-line">
 <h1>libpysal.cg.Line<a class="headerlink" href="#libpysal-cg-line" title="Permalink to this headline">¶</a></h1>
@@ -141,12 +141,12 @@
 <dt id="libpysal.cg.Line">
 <em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Line</code><span class="sig-paren">(</span><em class="sig-param">m</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Geometric representation of line objects.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>m</strong><span class="classifier">float</span></dt><dd><p>slope</p>
+<dd class="field-odd"><dl>
+<dt><strong>m</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>slope</p>
 </dd>
-<dt><strong>b</strong><span class="classifier">float</span></dt><dd><p>y-intercept</p>
+<dt><strong>b</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>y-intercept</p>
 </dd>
 </dl>
 </dd>
@@ -158,11 +158,11 @@
 <p>__init__(number, number) -&gt; Line</p>
 <p>Test tag: &lt;tc&gt;#is#Line.__init__&lt;/tc&gt;
 Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>m</strong><span class="classifier">the slope of the line</span></dt><dd></dd>
-<dt><strong>b</strong><span class="classifier">the y-intercept of the line</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>m</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">slope</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">line</span></code></span></dt><dd></dd>
+<dt><strong>b</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> y-intercept <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">line</span></code></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -199,10 +199,10 @@ Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
 <code class="sig-name descname">x</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line.x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line.x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the x-value of the line at a particular y-value.</p>
 <p>x(number) -&gt; number</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>y</strong><span class="classifier">the y-value to compute x at</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>y</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> y-value <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code> <a class="reference internal" href="#libpysal.cg.Line.x" title="libpysal.cg.Line.x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -219,10 +219,10 @@ Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
 <code class="sig-name descname">y</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line.y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line.y" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the y-value of the line at a particular x-value.</p>
 <p>y(number) -&gt; number</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>x</strong><span class="classifier">the x-value to compute y at</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>x</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> x-value <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code> <a class="reference internal" href="#libpysal.cg.Line.y" title="libpysal.cg.Line.y"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -258,7 +258,7 @@ Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

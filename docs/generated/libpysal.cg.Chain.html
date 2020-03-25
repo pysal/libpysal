@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-chain">
 <h1>libpysal.cg.Chain<a class="headerlink" href="#libpysal-cg-chain" title="Permalink to this headline">¶</a></h1>
@@ -141,12 +141,12 @@
 <dt id="libpysal.cg.Chain">
 <em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Chain</code><span class="sig-paren">(</span><em class="sig-param">vertices</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Chain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Geometric representation of a chain, also known as a polyline.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="#libpysal.cg.Chain.vertices" title="libpysal.cg.Chain.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a><span class="classifier">list</span></dt><dd><p>Returns the vertices of the chain in clockwise order.</p>
+<dd class="field-odd"><dl>
+<dt><a class="reference internal" href="#libpysal.cg.Chain.vertices" title="libpysal.cg.Chain.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Returns the vertices of the chain in clockwise order.</p>
 </dd>
-<dt><a class="reference internal" href="#libpysal.cg.Chain.len" title="libpysal.cg.Chain.len"><code class="xref py py-obj docutils literal notranslate"><span class="pre">len</span></code></a><span class="classifier">float</span></dt><dd><p>Returns the geometric length of the chain.</p>
+<dt><a class="reference internal" href="#libpysal.cg.Chain.len" title="libpysal.cg.Chain.len"><code class="xref py py-obj docutils literal notranslate"><span class="pre">len</span></code></a><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Returns the geometric length of the chain.</p>
 </dd>
 </dl>
 </dd>
@@ -156,10 +156,10 @@
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">vertices</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Chain.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Chain.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a chain created from the points specified.</p>
 <p>__init__(Point list or list of Point lists) -&gt; Chain</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>vertices</strong><span class="classifier">list – Point list or list of Point lists.</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>vertices</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> – <a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code></a> <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code></a> lists.</span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -307,7 +307,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

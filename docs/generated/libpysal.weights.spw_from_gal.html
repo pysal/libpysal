@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-weights-spw-from-gal">
 <h1>libpysal.weights.spw_from_gal<a class="headerlink" href="#libpysal-weights-spw-from-gal" title="Permalink to this headline">¶</a></h1>
@@ -141,18 +141,18 @@
 <dt id="libpysal.weights.spw_from_gal">
 <code class="sig-prename descclassname">libpysal.weights.</code><code class="sig-name descname">spw_from_gal</code><span class="sig-paren">(</span><em class="sig-param">galfile</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/user.html#spw_from_gal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.spw_from_gal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sparse scipy matrix for w from a gal file.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>galfile</strong><span class="classifier">string</span></dt><dd><p>name of gal file including suffix</p>
+<dd class="field-odd"><dl>
+<dt><strong>galfile</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>name of gal file including suffix</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>spw</strong><span class="classifier">sparse_matrix</span></dt><dd><p>scipy sparse matrix in CSR format</p>
+<dd class="field-even"><dl>
+<dt><strong>spw</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse_matrix</span></code></span></dt><dd><p>scipy sparse matrix in CSR format</p>
 </dd>
-<dt><strong>ids</strong><span class="classifier">array</span></dt><dd><p>identifiers for rows/cols of spw</p>
+<dt><strong>ids</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>identifiers for rows/cols of spw</p>
 </dd>
 </dl>
 </dd>
@@ -188,7 +188,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../../../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../../../_static/js/jquery-fix.js"></script>
+    <script src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -22,10 +26,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../../../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -128,7 +128,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <h1>Source code for libpysal.weights.util</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">..io.fileio</span> <span class="kn">import</span> <span class="n">FileIO</span> <span class="k">as</span> <span class="n">psopen</span>
@@ -664,7 +664,7 @@
 
 <div class="viewcode-block" id="w_local_cluster"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_local_cluster.html#libpysal.weights.w_local_cluster">[docs]</a><span class="k">def</span> <span class="nf">w_local_cluster</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Local clustering coefficients for each unit as a node in a graph. [ws]_</span>
+<span class="sd">    Local clustering coefficients for each unit as a node in a graph.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -685,13 +685,13 @@
 <span class="sd">    The local clustering coefficient :math:`c_i` quantifies how close the</span>
 <span class="sd">    neighbors of observation :math:`i` are to being a clique:</span>
 
-<span class="sd">            .. math::</span>
-
-<span class="sd">               c_i = | \{w_{j,k}\} |/ (k_i(k_i - 1)): j,k \in N_i</span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">       c_i = | \{w_{j,k}\} |/ (k_i(k_i - 1)): j,k \in N_i</span>
 
 <span class="sd">    where :math:`N_i` is the set of neighbors to :math:`i`, :math:`k_i =</span>
 <span class="sd">    |N_i|` and :math:`\{w_{j,k}\}` is the set of non-zero elements of the</span>
-<span class="sd">    weights between pairs in :math:`N_i`.    :cite:`Watts1998`._</span>
+<span class="sd">    weights between pairs in :math:`N_i` :cite:`Watts1998`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1734,7 +1734,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

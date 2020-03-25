@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-grid">
 <h1>libpysal.cg.Grid<a class="headerlink" href="#libpysal-cg-grid" title="Permalink to this headline">¶</a></h1>
@@ -146,11 +146,11 @@
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bounds</em>, <em class="sig-param">resolution</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a grid with specified properties.</p>
 <p>__init__(Rectangle, number) -&gt; Grid</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>bounds</strong><span class="classifier">the area for the grid to encompass</span></dt><dd></dd>
-<dt><strong>resolution</strong><span class="classifier">the diameter of each bin</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>bounds</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">area</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">encompass</span></code></span></dt><dd></dd>
+<dt><strong>resolution</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">diameter</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">each</span></code> <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#bin" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bin</span></code></a></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -194,11 +194,11 @@
 <code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">item</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an item to the grid at a specified location.</p>
 <p>add(x, Point) -&gt; x</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>item</strong><span class="classifier">the item to insert into the grid</span></dt><dd></dd>
-<dt><strong>pt</strong><span class="classifier">the location to insert the item at</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>item</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">item</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">into</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code></span></dt><dd></dd>
+<dt><strong>pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">location</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">item</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -215,11 +215,11 @@
 <code class="sig-name descname">bounds</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of items found in the grid within the bounds specified.</p>
 <p>bounds(Rectangle) -&gt; x list</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>item</strong><span class="classifier">the item to remove from the grid</span></dt><dd></dd>
-<dt><strong>pt</strong><span class="classifier">the location the item was added at</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>item</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">item</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <a class="reference internal" href="#libpysal.cg.Grid.remove" title="libpysal.cg.Grid.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">from</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code></span></dt><dd></dd>
+<dt><strong>pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">location</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">item</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">was</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">added</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -251,10 +251,10 @@
 <code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.nearest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the nearest item to a point.</p>
 <p>nearest(Point) -&gt; x</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>pt</strong><span class="classifier">the location to search near</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">location</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">search</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">near</span></code></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -277,11 +277,11 @@
 <code class="sig-name descname">proximity</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">pt</em>, <em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.proximity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.proximity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of items found in the grid within a specified distance of a point.</p>
 <p>proximity(Point, number) -&gt; x list</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>pt</strong><span class="classifier">the location to search around</span></dt><dd></dd>
-<dt><strong>r</strong><span class="classifier">the distance to search around the point</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">location</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">search</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">around</span></code></span></dt><dd></dd>
+<dt><strong>r</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">search</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">around</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -306,11 +306,11 @@
 <code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">item</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes an item from the grid at a specified location.</p>
 <p>remove(x, Point) -&gt; x</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>item</strong><span class="classifier">the item to remove from the grid</span></dt><dd></dd>
-<dt><strong>pt</strong><span class="classifier">the location the item was added at</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>item</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">item</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <a class="reference internal" href="#libpysal.cg.Grid.remove" title="libpysal.cg.Grid.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">from</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code></span></dt><dd></dd>
+<dt><strong>pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">location</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">item</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">was</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">added</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -348,7 +348,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

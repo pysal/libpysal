@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-weights-higher-order-sp">
 <h1>libpysal.weights.higher_order_sp<a class="headerlink" href="#libpysal-weights-higher-order-sp" title="Permalink to this headline">¶</a></h1>
@@ -141,29 +141,29 @@
 <dt id="libpysal.weights.higher_order_sp">
 <code class="sig-prename descclassname">libpysal.weights.</code><code class="sig-name descname">higher_order_sp</code><span class="sig-paren">(</span><em class="sig-param">w</em>, <em class="sig-param">k=2</em>, <em class="sig-param">shortest_path=True</em>, <em class="sig-param">diagonal=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/util.html#higher_order_sp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.higher_order_sp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contiguity weights for either a sparse W or W  for order k.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>w</strong><span class="classifier">W</span></dt><dd><p>sparse_matrix, spatial weights object or
+<dd class="field-odd"><dl>
+<dt><strong>w</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a></span></dt><dd><p>sparse_matrix, spatial weights object or
 scipy.sparse.csr.csr_instance</p>
 </dd>
-<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>Order of contiguity</p>
+<dt><strong>k</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Order of contiguity</p>
 </dd>
-<dt><strong>shortest_path</strong><span class="classifier">boolean</span></dt><dd><p>True: i,j and k-order neighbors if the
+<dt><strong>shortest_path</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>True: i,j and k-order neighbors if the
 shortest path for i,j is k.
 False: i,j are k-order neighbors if there
 is a path from i,j of length k.</p>
 </dd>
-<dt><strong>diagonal</strong><span class="classifier">boolean</span></dt><dd><p>True:  keep k-order (i,j) joins when i==j
+<dt><strong>diagonal</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>True:  keep k-order (i,j) joins when i==j
 False: remove k-order (i,j) joins when i==j</p>
 </dd>
-<dt><strong>**kwargs</strong><span class="classifier">keyword arguments</span></dt><dd><p>optional arguments for <code class="xref py py-class docutils literal notranslate"><span class="pre">pysal.weights.W</span></code></p>
+<dt><strong>**kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.6/library/keyword.html#module-keyword" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyword</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">arguments</span></code></span></dt><dd><p>optional arguments for <code class="xref py py-class docutils literal notranslate"><span class="pre">pysal.weights.W</span></code></p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>wk</strong><span class="classifier">W</span></dt><dd><p>WSP, type matches type of w argument</p>
+<dd class="field-even"><dl>
+<dt><strong>wk</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a></span></dt><dd><p>WSP, type matches type of w argument</p>
 </dd>
 </dl>
 </dd>
@@ -215,7 +215,7 @@ False: remove k-order (i,j) joins when i==j</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

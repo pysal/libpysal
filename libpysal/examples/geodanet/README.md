@@ -1,7 +1,7 @@
 geodanet
 ========
 
-Datasets from geodanet for network analysis
+Datasets from GeoDaNet for network analysis
 -------------------------------------------
 
 * crimes.dbf: attribute data for crime point set. (k=2)

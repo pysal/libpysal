@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-get-shared-segments">
 <h1>libpysal.cg.get_shared_segments<a class="headerlink" href="#libpysal-cg-get-shared-segments" title="Permalink to this headline">¶</a></h1>
@@ -142,11 +142,11 @@
 <code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">get_shared_segments</code><span class="sig-paren">(</span><em class="sig-param">poly1</em>, <em class="sig-param">poly2</em>, <em class="sig-param">bool_ret=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#get_shared_segments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.get_shared_segments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the line segments in common to both polygons.</p>
 <p>get_shared_segments(poly1, poly2) -&gt; list</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>poly1</strong><span class="classifier">a Polygon</span></dt><dd></dd>
-<dt><strong>poly2</strong><span class="classifier">a Polygon</span></dt><dd></dd>
+<dd class="field-odd"><dl>
+<dt><strong>poly1</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference internal" href="libpysal.cg.Polygon.html#libpysal.cg.Polygon" title="libpysal.cg.Polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polygon</span></code></a></span></dt><dd></dd>
+<dt><strong>poly2</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference internal" href="libpysal.cg.Polygon.html#libpysal.cg.Polygon" title="libpysal.cg.Polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Polygon</span></code></a></span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -185,7 +185,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

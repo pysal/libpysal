@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-harcdist">
 <h1>libpysal.cg.harcdist<a class="headerlink" href="#libpysal-cg-harcdist" title="Permalink to this headline">¶</a></h1>
@@ -141,21 +141,21 @@
 <dt id="libpysal.cg.harcdist">
 <code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">harcdist</code><span class="sig-paren">(</span><em class="sig-param">p0</em>, <em class="sig-param">p1</em>, <em class="sig-param">lonx=True</em>, <em class="sig-param">radius=6371.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#harcdist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.harcdist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alternative arc distance function, uses haversine formula</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>p0</strong><span class="classifier">first point as a tuple in decimal degrees</span></dt><dd></dd>
-<dt><strong>p1</strong><span class="classifier">second point as a tuple in decimal degrees</span></dt><dd></dd>
-<dt><strong>lonx</strong><span class="classifier">boolean to assess the order of the coordinates,</span></dt><dd><p>for lon,lat (default) = True, for lat,lon = False</p>
+<dd class="field-odd"><dl>
+<dt><strong>p0</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">first</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">as</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> <a class="reference external" href="https://docs.python.org/3.6/library/decimal.html#module-decimal" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decimal</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">degrees</span></code></span></dt><dd></dd>
+<dt><strong>p1</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">second</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">as</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> <a class="reference external" href="https://docs.python.org/3.6/library/decimal.html#module-decimal" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">decimal</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">degrees</span></code></span></dt><dd></dd>
+<dt><strong>lonx</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">assess</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">order</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> coordinates,</span></dt><dd><p>for lon,lat (default) = True, for lat,lon = False</p>
 </dd>
-<dt><strong>radius</strong><span class="classifier">radius of the earth at the equator as a sphere</span></dt><dd><p>default: RADIUS_EARTH_KM (6371.0 km)
+<dt><strong>radius</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">earth</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">equator</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">as</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">sphere</span></code></span></dt><dd><p>default: RADIUS_EARTH_KM (6371.0 km)
 options: RADIUS_EARTH_MILES (3959.0 miles), None (for result in radians)</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>d</strong><span class="classifier">distance in units specified, km, miles or radians (for None)</span></dt><dd></dd>
+<dd class="field-even"><dl>
+<dt><strong>d</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">units</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">specified</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">km</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">miles</span></code> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">radians</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>)</span></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -194,7 +194,7 @@ options: RADIUS_EARTH_MILES (3959.0 miles), None (for result in radians)</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>
