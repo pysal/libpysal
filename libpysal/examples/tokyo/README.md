@@ -31,3 +31,4 @@ For testing against GWR4 software
 * tokyo_GS_F_summary.txt: Gaussian fixed kernel model summary
 * tokyo_GS_F.ctl: Gaussian fixed kernel control file
 
+Source: Nakaya T, Fotheringham A, Brunsdon C, Charlton M. Geographically weighted poisson regression for disease association mapping. Statistics in Medicine. 2005;24(17):2695–2717. https://doi.org/10.1002/sim.2129
