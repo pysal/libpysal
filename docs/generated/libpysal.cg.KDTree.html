@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-kdtree">
 <h1>libpysal.cg.KDTree<a class="headerlink" href="#libpysal-cg-kdtree" title="Permalink to this headline">¶</a></h1>
@@ -145,19 +145,19 @@ or greater uses the scipy.spatial.cKDTree, otherwise uses
 scipy.spatial.KDTree. Offers both Arc distance and Euclidean distance.
 Note that Arc distance is only appropriate when points in latitude and
 longitude, and the radius set to meaningful value (see docs below).</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data</strong><span class="classifier">array</span></dt><dd><p>The data points to be indexed. This array is not copied,
+<dd class="field-odd"><dl>
+<dt><strong>data</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>The data points to be indexed. This array is not copied,
 and so modifying this data will result in bogus results.
 Typically nx2.</p>
 </dd>
-<dt><strong>leafsize</strong><span class="classifier">int</span></dt><dd><p>The number of points at which the algorithm switches over
+<dt><strong>leafsize</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of points at which the algorithm switches over
 to brute-force. Has to be positive. Optional, default is 10.</p>
 </dd>
-<dt><strong>distance_metric</strong><span class="classifier">string</span></dt><dd><p>Options: “Euclidean” (default) and “Arc”.</p>
+<dt><strong>distance_metric</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>Options: “Euclidean” (default) and “Arc”.</p>
 </dd>
-<dt><strong>radius</strong><span class="classifier">float</span></dt><dd><p>Radius of the sphere on which to compute distances.
+<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Radius of the sphere on which to compute distances.
 Assumes data in latitude and longitude. Ignored if
 distance_metric=”Euclidean”. Typical values:
 pysal.cg.RADIUS_EARTH_KM  (default)
@@ -190,7 +190,7 @@ pysal.cg.RADIUS_EARTH_MILES</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

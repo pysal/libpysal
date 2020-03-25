@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-arcdist">
 <h1>libpysal.cg.arcdist<a class="headerlink" href="#libpysal-cg-arcdist" title="Permalink to this headline">¶</a></h1>
@@ -144,18 +144,18 @@
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>pt0</strong><span class="classifier">point</span></dt><dd><p>assumed to be in form (lng,lat)</p>
+<dt><strong>pt0</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code></span></dt><dd><p>assumed to be in form (lng,lat)</p>
 </dd>
-<dt><strong>pt1</strong><span class="classifier">point</span></dt><dd><p>assumed to be in form (lng,lat)</p>
+<dt><strong>pt1</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code></span></dt><dd><p>assumed to be in form (lng,lat)</p>
 </dd>
-<dt><strong>radius</strong><span class="classifier">radius of the sphere</span></dt><dd><p>defaults to Earth’s radius</p>
+<dt><strong>radius</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">sphere</span></code></span></dt><dd><p>defaults to Earth’s radius</p>
 <p>Source: <a class="reference external" href="http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html">http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html</a></p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt>The arc distance between pt0 and pt1 using supplied radius</dt><dd></dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">The</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">arc</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">between</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">pt0</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">and</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">pt1</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">using</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">supplied</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code></dt><dd></dd>
 </dl>
 </dd>
 </dl>
@@ -191,7 +191,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

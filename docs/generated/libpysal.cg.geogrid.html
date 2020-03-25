@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-geogrid">
 <h1>libpysal.cg.geogrid<a class="headerlink" href="#libpysal-cg-geogrid" title="Permalink to this headline">¶</a></h1>
@@ -142,19 +142,19 @@
 <code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">geogrid</code><span class="sig-paren">(</span><em class="sig-param">pup</em>, <em class="sig-param">pdown</em>, <em class="sig-param">k</em>, <em class="sig-param">lonx=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#geogrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.geogrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes a k+1 by k+1 set of grid points for a bounding box in lat-lon
 uses geointerpolate</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>pup</strong><span class="classifier">tuple with lat-lon or lon-lat for upper left corner of bounding box</span></dt><dd></dd>
-<dt><strong>pdown</strong><span class="classifier">tuple with lat-lon or lon-lat for lower right corner of bounding box</span></dt><dd></dd>
-<dt><strong>k</strong><span class="classifier">number of grid cells (grid points will be one more)</span></dt><dd></dd>
-<dt><strong>lonx</strong><span class="classifier">boolean to assess the order of the coordinates,</span></dt><dd><p>for lon,lat (default) = True, for lat,lon = False</p>
+<dd class="field-odd"><dl>
+<dt><strong>pup</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">with</span></code> lat-lon or lon-lat <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">upper</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">left</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">corner</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">box</span></code></span></dt><dd></dd>
+<dt><strong>pdown</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">with</span></code> lat-lon or lon-lat <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">lower</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">right</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">corner</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">box</span></code></span></dt><dd></dd>
+<dt><strong>k</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">cells</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">points</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">will</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">be</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">one</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">more</span></code>)</span></dt><dd></dd>
+<dt><strong>lonx</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">assess</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">order</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> coordinates,</span></dt><dd><p>for lon,lat (default) = True, for lat,lon = False</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>grid</strong><span class="classifier">list of tuples with lat-lon or lon-lat for grid points, row by row,</span></dt><dd><p>starting with the top row and moving to the bottom; coordinate tuples
+<dd class="field-even"><dl>
+<dt><strong>grid</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuples</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">with</span></code> lat-lon or lon-lat <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">points</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">row</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">by</span></code> row,</span></dt><dd><p>starting with the top row and moving to the bottom; coordinate tuples
 are returned in same order as input</p>
 </dd>
 </dl>
@@ -191,7 +191,7 @@ are returned in same order as input</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-cg-alpha-shape-auto">
 <h1>libpysal.cg.alpha_shape_auto<a class="headerlink" href="#libpysal-cg-alpha-shape-auto" title="Permalink to this headline">¶</a></h1>
@@ -150,25 +150,25 @@ point and all the other ones in the set with smaller radii results in a
 single polygon. If that is the case, it moves to the next point;
 otherwise, it retains the previous alpha value and returns the polygon
 as <cite>shapely</cite> geometry.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>xys</strong><span class="classifier">ndarray</span></dt><dd><p>Nx2 array with one point per row and coordinates structured as X
+<dd class="field-odd"><dl>
+<dt><strong>xys</strong><span class="classifier"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ndarray</span></code></a></span></dt><dd><p>Nx2 array with one point per row and coordinates structured as X
 and Y</p>
 </dd>
-<dt><strong>step</strong><span class="classifier">int</span></dt><dd><p>[Optional. Default=1]
+<dt><strong>step</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>[Optional. Default=1]
 Number of points in <cite>xys</cite> to jump ahead after checking whether the
 largest possible alpha that includes the point and all the
 other ones with smaller radii</p>
 </dd>
-<dt><strong>verbose</strong><span class="classifier">Boolean</span></dt><dd><p>[Optional. Default=False] If True, it prints alpha values being
+<dt><strong>verbose</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Boolean</span></code></span></dt><dd><p>[Optional. Default=False] If True, it prints alpha values being
 tried at every step.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>poly</strong><span class="classifier">shapely.Polygon</span></dt><dd><p>Tightest alpha-shape polygon containing all points in <cite>xys</cite></p>
+<dd class="field-even"><dl>
+<dt><strong>poly</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shapely.Polygon</span></code></span></dt><dd><p>Tightest alpha-shape polygon containing all points in <cite>xys</cite></p>
 </dd>
 </dl>
 </dd>
@@ -212,7 +212,7 @@ tried at every step.</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

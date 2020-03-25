@@ -16,6 +16,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="_static/js/jquery-1.11.0.min.js"></script>
+    <script src="_static/js/jquery-fix.js"></script>
+    <script src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
@@ -23,10 +27,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -129,7 +129,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
 
 <h1 id="index">Index</h1>
@@ -196,6 +196,8 @@
         <li><a href="generated/libpysal.weights.Queen.html#libpysal.weights.Queen.__init__">(libpysal.weights.Queen method)</a>
 </li>
         <li><a href="generated/libpysal.weights.Rook.html#libpysal.weights.Rook.__init__">(libpysal.weights.Rook method)</a>
+</li>
+        <li><a href="generated/libpysal.weights.W.html#libpysal.weights.W.__init__">(libpysal.weights.W method)</a>
 </li>
         <li><a href="generated/libpysal.weights.WSP.html#libpysal.weights.WSP.__init__">(libpysal.weights.WSP method)</a>
 </li>
@@ -265,6 +267,8 @@
       <li><a href="generated/libpysal.weights.build_lattice_shapefile.html#libpysal.weights.build_lattice_shapefile">build_lattice_shapefile() (in module libpysal.weights)</a>
 </li>
       <li><a href="generated/libpysal.cg.Polygon.html#libpysal.cg.Polygon.build_quad_tree_structure">build_quad_tree_structure() (libpysal.cg.Polygon method)</a>
+</li>
+      <li><a href="generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.by_row">by_row() (libpysal.io.fileio.FileIO property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -340,6 +344,8 @@
 </li>
       <li><a href="generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO">FileIO (class in libpysal.io.fileio)</a>
 </li>
+      <li><a href="generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.flush">flush() (libpysal.io.fileio.FileIO method)</a>
+</li>
       <li><a href="generated/libpysal.weights.W.html#libpysal.weights.W.from_adjlist">from_adjlist() (libpysal.weights.W class method)</a>
 </li>
       <li><a href="generated/libpysal.weights.DistanceBand.html#libpysal.weights.DistanceBand.from_array">from_array() (libpysal.weights.DistanceBand class method)</a>
@@ -362,6 +368,8 @@
         <li><a href="generated/libpysal.weights.Rook.html#libpysal.weights.Rook.from_dataframe">(libpysal.weights.Rook class method)</a>
 </li>
       </ul></li>
+      <li><a href="generated/libpysal.weights.W.html#libpysal.weights.W.from_file">from_file() (libpysal.weights.W class method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_iterable">from_iterable() (libpysal.weights.Queen class method)</a>
@@ -383,8 +391,12 @@
 </li>
         <li><a href="generated/libpysal.weights.Rook.html#libpysal.weights.Rook.from_shapefile">(libpysal.weights.Rook class method)</a>
 </li>
+        <li><a href="generated/libpysal.weights.W.html#libpysal.weights.W.from_shapefile">(libpysal.weights.W class method)</a>
+</li>
       </ul></li>
       <li><a href="generated/libpysal.weights.WSP.html#libpysal.weights.WSP.from_W">from_W() (libpysal.weights.WSP class method)</a>
+</li>
+      <li><a href="generated/libpysal.weights.W.html#libpysal.weights.W.from_WSP">from_WSP() (libpysal.weights.W class method)</a>
 </li>
       <li><a href="generated/libpysal.weights.full.html#libpysal.weights.full">full() (in module libpysal.weights)</a>
 
@@ -483,6 +495,8 @@
       <li><a href="generated/libpysal.weights.W.html#libpysal.weights.W.id_order">id_order() (libpysal.weights.W property)</a>
 </li>
       <li><a href="generated/libpysal.weights.W.html#libpysal.weights.W.id_order_set">id_order_set() (libpysal.weights.W property)</a>
+</li>
+      <li><a href="generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.ids">ids() (libpysal.io.fileio.FileIO property)</a>
 </li>
       <li><a href="generated/libpysal.cg.Grid.html#libpysal.cg.Grid.in_grid">in_grid() (libpysal.cg.Grid method)</a>
 </li>
@@ -706,6 +720,8 @@
 </li>
       <li><a href="generated/libpysal.weights.KNN.html#libpysal.weights.KNN.reweight">reweight() (libpysal.weights.KNN method)</a>
 </li>
+      <li><a href="generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO.rIds">rIds() (libpysal.io.fileio.FileIO property)</a>
+</li>
       <li><a href="generated/libpysal.weights.Rook.html#libpysal.weights.Rook">Rook (class in libpysal.weights)</a>
 </li>
   </ul></td>
@@ -876,7 +892,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

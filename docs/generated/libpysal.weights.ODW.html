@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-weights-odw">
 <h1>libpysal.weights.ODW<a class="headerlink" href="#libpysal-weights-odw" title="Permalink to this headline">¶</a></h1>
@@ -143,20 +143,20 @@
 <dd><p>Constructs an o*d by o*d origin-destination style spatial weight for o*d
 flows using standard spatial weights on o origins and d destinations. Input
 spatial weights must be binary or able to be sutiably transformed to binary.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>Wo</strong><span class="classifier">W object for origin locations</span></dt><dd><p>o x o spatial weight object amongst o origins</p>
+<dd class="field-odd"><dl>
+<dt><strong>Wo</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a> <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">locations</span></code></span></dt><dd><p>o x o spatial weight object amongst o origins</p>
 </dd>
-<dt><strong>Wd</strong><span class="classifier">W object for destination locations</span></dt><dd><p>d x d spatial weight object amongst d destinations</p>
+<dt><strong>Wd</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a> <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">destination</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">locations</span></code></span></dt><dd><p>d x d spatial weight object amongst d destinations</p>
 </dd>
-<dt><strong>transform</strong><span class="classifier">Transformation for standardization of final OD spatial weight; default</span></dt><dd><p>is ‘r’ for row standardized</p>
+<dt><strong>transform</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Transformation</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">standardization</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">final</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">OD</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">spatial</span></code> weight; <code class="xref py py-obj docutils literal notranslate"><span class="pre">default</span></code></span></dt><dd><p>is ‘r’ for row standardized</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>W</strong><span class="classifier">spatial contiguity W object for assocations between flows</span></dt><dd><p>o*d x o*d spatial weight object amongst o*d flows between o
+<dd class="field-even"><dl>
+<dt><strong>W</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spatial</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">contiguity</span></code> <a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a> <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">assocations</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">between</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">flows</span></code></span></dt><dd><p>o*d x o*d spatial weight object amongst o*d flows between o
 origins and d destinations</p>
 </dd>
 </dl>
@@ -200,7 +200,7 @@ origins and d destinations</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

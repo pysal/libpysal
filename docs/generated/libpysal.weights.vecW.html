@@ -15,6 +15,10 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -24,10 +28,6 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -133,7 +133,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="body col-md-12 content" role="main">
+    <div class="col-md-12 content">
       
   <div class="section" id="libpysal-weights-vecw">
 <h1>libpysal.weights.vecW<a class="headerlink" href="#libpysal-weights-vecw" title="Permalink to this headline">¶</a></h1>
@@ -143,43 +143,43 @@
 <dd><p>Distance-based spatial weight for vectors that is computed using a
 4-dimensional distance between the origin x,y-coordinates and the
 destination x,y-coordinates</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>origin_x</strong><span class="classifier">list or array</span></dt><dd><p>of vector origin x-coordinates</p>
+<dd class="field-odd"><dl>
+<dt><strong>origin_x</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of vector origin x-coordinates</p>
 </dd>
-<dt><strong>origin_y</strong><span class="classifier">list or array</span></dt><dd><p>of vector origin y-coordinates</p>
+<dt><strong>origin_y</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of vector origin y-coordinates</p>
 </dd>
-<dt><strong>dest_x</strong><span class="classifier">list or array</span></dt><dd><p>of vector destination x-coordinates</p>
+<dt><strong>dest_x</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of vector destination x-coordinates</p>
 </dd>
-<dt><strong>dest_y</strong><span class="classifier">list or array</span></dt><dd><p>of vector destination y-coordinates</p>
+<dt><strong>dest_y</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>of vector destination y-coordinates</p>
 </dd>
-<dt><strong>threshold</strong><span class="classifier">float</span></dt><dd><p>distance band</p>
+<dt><strong>threshold</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>distance band</p>
 </dd>
-<dt><strong>p</strong><span class="classifier">float</span></dt><dd><p>Minkowski p-norm distance metric parameter:
+<dt><strong>p</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Minkowski p-norm distance metric parameter:
 1&lt;=p&lt;=infinity
 2: Euclidean distance
 1: Manhattan distance</p>
 </dd>
-<dt><strong>binary</strong><span class="classifier">boolean</span></dt><dd><p>If true w_{ij}=1 if d_{i,j}&lt;=threshold, otherwise w_{i,j}=0
+<dt><strong>binary</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>If true w_{ij}=1 if d_{i,j}&lt;=threshold, otherwise w_{i,j}=0
 If false wij=dij^{alpha}</p>
 </dd>
-<dt><strong>alpha</strong><span class="classifier">float</span></dt><dd><p>distance decay parameter for weight (default -1.0)
+<dt><strong>alpha</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>distance decay parameter for weight (default -1.0)
 if alpha is positive the weights will not decline with
 distance. If binary is True, alpha is ignored</p>
 </dd>
-<dt><strong>ids</strong><span class="classifier">list</span></dt><dd><p>values to use for keys of the neighbors and weights dicts</p>
+<dt><strong>ids</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>values to use for keys of the neighbors and weights dicts</p>
 </dd>
-<dt><strong>build_sp</strong><span class="classifier">boolean</span></dt><dd><p>True to build sparse distance matrix and false to build dense
+<dt><strong>build_sp</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>True to build sparse distance matrix and false to build dense
 distance matrix; significant speed gains may be obtained
 dending on the sparsity of the of distance_matrix and
 threshold that is applied</p>
 </dd>
-<dt><strong>**kwargs</strong><span class="classifier">keyword arguments</span></dt><dd><p>optional arguments for <code class="xref py py-class docutils literal notranslate"><span class="pre">pysal.weights.W</span></code></p>
+<dt><strong>**kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.6/library/keyword.html#module-keyword" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyword</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">arguments</span></code></span></dt><dd><p>optional arguments for <code class="xref py py-class docutils literal notranslate"><span class="pre">pysal.weights.W</span></code></p>
 </dd>
 <dt><strong>Returns</strong></dt><dd></dd>
 <dt><strong>——</strong></dt><dd></dd>
-<dt><strong>W</strong><span class="classifier">DistanceBand W object that uses 4-dimenional distances between</span></dt><dd><p>vectors origin and destination coordinates.</p>
+<dt><strong>W</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.DistanceBand.html#libpysal.weights.DistanceBand" title="libpysal.weights.DistanceBand"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DistanceBand</span></code></a> <a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a> <a class="reference external" href="https://docs.python.org/3.6/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">object</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">that</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">uses</span></code> 4-dimenional <code class="xref py py-obj docutils literal notranslate"><span class="pre">distances</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">between</span></code></span></dt><dd><p>vectors origin and destination coordinates.</p>
 </dd>
 </dl>
 </dd>
@@ -222,7 +222,7 @@ threshold that is applied</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
     </p>
   </div>
 </footer>

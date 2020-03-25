@@ -531,7 +531,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
 
 def w_local_cluster(w):
     r"""
-    Local clustering coefficients for each unit as a node in a graph. [ws]_
+    Local clustering coefficients for each unit as a node in a graph.
 
     Parameters
     ----------
@@ -552,13 +552,13 @@ def w_local_cluster(w):
     The local clustering coefficient :math:`c_i` quantifies how close the
     neighbors of observation :math:`i` are to being a clique:
 
-            .. math::
-
-               c_i = | \{w_{j,k}\} |/ (k_i(k_i - 1)): j,k \in N_i
+    .. math::
+    
+       c_i = | \{w_{j,k}\} |/ (k_i(k_i - 1)): j,k \in N_i
 
     where :math:`N_i` is the set of neighbors to :math:`i`, :math:`k_i =
     |N_i|` and :math:`\{w_{j,k}\}` is the set of non-zero elements of the
-    weights between pairs in :math:`N_i`.    :cite:`Watts1998`._
+    weights between pairs in :math:`N_i` :cite:`Watts1998`.
 
     Examples
     --------

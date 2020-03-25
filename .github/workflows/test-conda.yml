@@ -17,6 +17,7 @@ jobs:
            activate-environment: test
            environment-file: ci/travis/36-latest-conda-forge.yaml
            python-version: 3.6
+           auto-update-conda: true
            auto-activate-base: false
       - shell: bash -l {0}
         run: |
@@ -35,6 +36,7 @@ jobs:
            activate-environment: test
            environment-file: ci/travis/37-latest-conda-forge.yaml
            python-version: 3.7
+           auto-update-conda: true
            auto-activate-base: false
       - shell: bash -l {0}
         run: |
@@ -53,6 +55,7 @@ jobs:
            activate-environment: test
            environment-file: ci/travis/38-latest-conda-forge.yaml
            python-version: 3.8
+           auto-update-conda: true
            auto-activate-base: false
       - shell: bash -l {0}
         run: |
@@ -60,7 +63,4 @@ jobs:
           conda list
           python setup.py install
           python -c 'import libpysal; libpysal.examples.fetch_all()'
-          py.test libpysal 
-
-
-
+          py.test libpysal
