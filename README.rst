@@ -1,11 +1,9 @@
 Python Spatial Analysis Library Core
 ====================================
 
-.. image:: https://travis-ci.org/pysal/libpysal.svg
-   :target: https://travis-ci.org/pysal/libpysal
 
-.. image:: https://ci.appveyor.com/api/projects/status/1dg7939hqjx64ta4?svg=true
-   :target: https://ci.appveyor.com/project/pysal/libpysal
+.. image:: https://github.com/pysal/libpysal/workflows/.github/workflows/unittests.yml/badge.svg
+   :target: .github/workflows/unittests.yml
    
 .. image:: https://codecov.io/gh/pysal/libpysal/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/pysal/libpysal
