@@ -11,8 +11,6 @@ dependencies:
   - pytest
   - pytest-cov
   - codecov
-  - nose
-  - codecov
   - matplotlib
   # optional
   - geopandas
