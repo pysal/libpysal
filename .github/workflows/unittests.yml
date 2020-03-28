@@ -16,7 +16,7 @@
      strategy:
        matrix:
          os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
-         environment-file: [ci/travis/36-latest-conda-forge.yaml, ci/travis/37-latest-conda-forge.yaml, ci/travis/38-latest-conda-forge.yaml]
+         environment-file: [ci/36.yaml, ci/37.yaml, ci/38.yaml]
      steps:
        - uses: actions/checkout@v2
        - uses: goanpeca/setup-miniconda@v1
