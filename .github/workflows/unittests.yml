@@ -6,7 +6,7 @@
      branches:
      - '*'
    schedule:
-     - cron: '59 11 * * *'
+     - cron: '59 21 * * *'
 
  jobs:
    unittests:
