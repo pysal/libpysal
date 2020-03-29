@@ -18,7 +18,6 @@ Python Spatial Analysis Library Core
    :target: https://zenodo.org/badge/latestdoi/81501824
 
 
-
 ****************
 libpysal modules
 ****************
@@ -35,6 +34,7 @@ Example Notebooks
 - `Spatial Weights  <notebooks/weights.ipynb>`_
 - `Voronoi  <notebooks/voronoi.ipynb>`_
 - `Input and Output <notebooks/io.ipynb>`_
+
 
 ***********
 Development
