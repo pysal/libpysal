@@ -3,7 +3,7 @@ Python Spatial Analysis Library Core
 
 
 .. image:: https://github.com/pysal/libpysal/workflows/.github/workflows/unittests.yml/badge.svg
-   :target: .github/workflows/unittests.yml
+   :target: https://github.com/pysal/libpysal/actions?query=workflow%3A.github%2Fworkflows%2Funittests.yml
    
 .. image:: https://codecov.io/gh/pysal/libpysal/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/pysal/libpysal
