@@ -27,13 +27,17 @@
             environment-file: ${{ matrix.environment-file }}
             activate-environment: test
        - shell: bash -l {0}
-         run: |
-           conda info
-           conda list
-           conda config --show-sources
-           conda config --show
-           python -c 'import libpysal; libpysal.examples.fetch_all()'
-           py.test -v libpysal --cov=libpysal --cov-report=xml
+         run: conda info --all
+       - shell: bash -l {0}
+         run: conda list
+       - shell: bash -l {0}
+         run: conda config --show-sources
+       - shell: bash -l {0}
+         run: conda config --show
+       - shell: bash -l {0}
+         run: python -c 'import libpysal; libpysal.examples.fetch_all()'
+       - shell: bash -l {0}
+         run: py.test -v libpysal --cov=libpysal --cov-report=xml
        - name: codecov (${{ matrix.os }}, ${{ matrix.environment-file }})
          uses: codecov/codecov-action@v1
          with:
