@@ -31,6 +31,10 @@
        - shell: bash -l {0}
          run: conda list
        - shell: bash -l {0}
+         run: conda config --show-sources
+       - shell: bash -l {0}
+         run: conda config --show
+       - shell: bash -l {0}
          run: python -c 'import libpysal; libpysal.examples.fetch_all()'
        - shell: bash -l {0}
          run: py.test -v libpysal --cov=libpysal --cov-report=xml
