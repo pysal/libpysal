@@ -47,7 +47,7 @@ def KDTree(data, leafsize=10, distance_metric='Euclidean',
     """
 
     if distance_metric.lower() == 'euclidean':
-        if int(scipy.version.version.split(".")[1]) < 12:
+        if int(scipy.version.version.split(".")[1]) < 12 and int(scipy.version.version.split(".")[0]) == 0:
             return scipy.spatial.KDTree(data, leafsize)
         else:
             return scipy.spatial.cKDTree(data, leafsize)
@@ -56,7 +56,7 @@ def KDTree(data, leafsize=10, distance_metric='Euclidean',
 
 
 # internal hack for the Arc_KDTree class inheritance
-if int(scipy.version.version.split(".")[1]) < 12:
+if int(scipy.version.version.split(".")[1]) < 12 and int(scipy.version.version.split(".")[0]) == 0:
     temp_KDTree = scipy.spatial.KDTree
 else:
     temp_KDTree = scipy.spatial.cKDTree

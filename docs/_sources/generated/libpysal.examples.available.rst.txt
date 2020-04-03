@@ -1,0 +1,6 @@
+libpysal.examples.available
+===========================
+
+.. currentmodule:: libpysal.examples
+
+.. autofunction:: available

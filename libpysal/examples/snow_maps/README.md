@@ -1,7 +1,7 @@
 snow_maps
 =========
 
-Public water pumps and Cholera deaths in London 1954 (Snow's Map)
+Public water pumps and Cholera deaths in London 1854 (John Snow's Cholera Map)
 -----------------------------------------------------------------
 
 * SohoPeople.dbf: attribute data for Cholera deaths. (k=2)
@@ -22,3 +22,5 @@ Public water pumps and Cholera deaths in London 1954 (Snow's Map)
 * Soho_Network.sbx: spatial index.
 * Soho_Network.shp: Line shapefile for street network. (n=118)
 * Soho_Network.shx: spatial index.
+
+Original data: Snow, J. (1849). On the Mode of Communication of Cholera. London: John Churchill, New Burlington Street.

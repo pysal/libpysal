@@ -1,0 +1,17 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.6
+  - six
+  - scipy
+  - beautifulsoup4
+  # required
+  # testing
+  - pytest
+  - pytest-cov
+  - codecov
+  - matplotlib
+  # optional
+  - geopandas
+  - zstd

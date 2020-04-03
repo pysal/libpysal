@@ -1,7 +1,7 @@
 10740
 =====
 
-Albuquerque, New Mexico, Census 2000 Tract Data
+Albuquerque, New Mexico, Census 2000 Tract Data. 10740 is the Core Based Statistical Area (CBSA) code for Albuquerque, New Mexico.
 -----------------------------------------------
 
 * 10740.dbf: attribute data. (k=5) 

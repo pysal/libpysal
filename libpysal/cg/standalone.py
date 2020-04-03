@@ -854,16 +854,15 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
 
 
 def distance_matrix(X, p=2.0, threshold=5e7):
-    """
-    Distance Matrices
+    """Calculate a distance matrix
 
     XXX Needs optimization/integration with other weights in pysal
 
     Parameters
     ----------
-    X          : An, n by k numpy.ndarray
-                    Where n is number of observations
-                    k is number of dimmensions (2 for x,y)
+    X          : numpy.ndarray
+                    An n by k array where n is the number of observations and
+                    k is the number of dimensions (2 for x,y).
     p          : float
                     Minkowski p-norm distance metric parameter:
                     1<=p<=infinity
@@ -871,13 +870,18 @@ def distance_matrix(X, p=2.0, threshold=5e7):
                     1: Manhattan distance
     threshold  : positive integer
                     If (n**2)*32 > threshold use scipy.spatial.distance_matrix instead
-                    of working in ram, this is roughly the ammount of ram (in bytes) that will be used.
+                    of working in RAM, this is roughly the amount of RAM (in bytes) that will be used.
 
+    Returns
+    -------
+    D          : numpy.ndarray
+                    An n by m p-norm distance matrix.
+    
     Examples
     --------
-    >>> x,y=[r.flatten() for r in np.indices((3,3))]
-    >>> data = np.array([x,y]).T
-    >>> d=distance_matrix(data)
+    >>> x, y = [r.flatten() for r in np.indices((3, 3))]
+    >>> data = np.array([x, y]).T
+    >>> d = distance_matrix(data)
     >>> np.array(d)
     array([[0.        , 1.        , 2.        , 1.        , 1.41421356,
             2.23606798, 2.        , 2.23606798, 2.82842712],
@@ -901,7 +905,8 @@ def distance_matrix(X, p=2.0, threshold=5e7):
     if X.ndim == 1:
         X.shape = (X.shape[0], 1)
     if X.ndim > 2:
-        raise TypeError("wtf?")
+        msg = "Should be 2D point coordinates: %s dimensions present." % X.ndim
+        raise TypeError(msg)
     n, k = X.shape
 
     if (n ** 2) * 32 > threshold:

@@ -3,8 +3,10 @@ omit =
     __init__.py
     */contrib/*
     */test/*
+include=libpysal/*
 [report]
 omit = 
     __init__.py 
     */contrib/* 
     */test/*
+

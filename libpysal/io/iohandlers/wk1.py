@@ -20,7 +20,7 @@ class Wk1IO(fileio.FileIO):
     Wk1 starts the row (column) number from 0 and
     uses little endian binary endcoding.
     In PySAL, when the number of observations is n,
-    it is assumed that each cell of a n\*n(=m) matrix either is a blank or
+    it is assumed that each cell of a n\\*n(=m) matrix either is a blank or
     have a number.
 
     The internal structure of a Wk1 file written by PySAL is as follows:
