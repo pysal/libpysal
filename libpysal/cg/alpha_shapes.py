@@ -646,8 +646,8 @@ def alpha_shape_auto(xys, step=1, verbose=False,
         if return_circles:
             out.append(construct_bounding_circles(out[0], radi_prev))
         return out
-    return geoms_prev[0]
     # Return a shapely polygon
+    return geoms_prev[0]
 
 
 def construct_bounding_circles(alpha_shape, radius):
@@ -677,9 +677,11 @@ def construct_bounding_circles(alpha_shape, radius):
     return centers
 
 
+@jit(nopython=True)
 def _construct_centers(a, b, radius):
-    midpoint = np.mean(np.row_stack((a, b)), axis=0)
-    d = spat.distance.euclidean(a, b)
+    midpoint_x = (a[0] + b[0])*.5
+    midpoint_y = (a[1] + b[1])*.5
+    d = ((a[0] - b[0])**2 + (a[1] - b[1])**2)**.5
     if b[0] - a[0] == 0:
         m = np.inf
         axis_rotation = np.pi/2
@@ -693,17 +695,19 @@ def _construct_centers(a, b, radius):
     dx = chord * np.sin(axis_rotation)
     dy = chord * np.cos(axis_rotation)
 
-    up = midpoint[0] - dx, midpoint[1] + dy
-    down = midpoint[0] + dx, midpoint[1] - dy
+    up_x = midpoint_x - dx
+    up_y = midpoint_y + dy
+    down_x = midpoint_x + dx
+    down_y = midpoint_y - dy
 
     # sign gives us direction of point, since
     # shapely shapes are clockwise-defined
-    sign = np.sign((b[0]-a[0])*(up[1] - a[1])
-                   - (b[1] - a[1])*(up[0] - a[0]))
+    sign = np.sign((b[0]-a[0])*(up_y - a[1])
+                   - (b[1] - a[1])*(up_x - a[0]))
     if sign == 1:
-        return up
+        return up_x, up_y
     else:
-        return down
+        return down_x, down_y
 
 
 if __name__ == '__main__':
