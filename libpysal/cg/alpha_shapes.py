@@ -585,9 +585,12 @@ def alpha_shape_auto(xys, step=1, verbose=False,
         return_radius = True
     if xys.shape[0] < 4:
         from shapely import ops
-        multipoint = ops.cascaded_union([geom.Point(xy)
-                                         for xy in xys])
-        alpha_shape = multipoint.convex_hull.buffer(0)
+        if xys.shape[0] == 3:
+            multipoint = ops.cascaded_union([geom.Point(xy)
+                                             for xy in xys])
+            alpha_shape = multipoint.convex_hull.buffer(0)
+        else:
+            alpha_shape = geom.Polygon([])
         if xys.shape[0] == 1:
             if return_radius:
                 if return_circles:
