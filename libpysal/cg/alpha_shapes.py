@@ -522,8 +522,10 @@ def _valid_hull(geoms, points):
             flag = False
     return flag
 
+
 @requires('geopandas', 'shapely')
-def alpha_shape_auto(xys, step=1, verbose=False):
+def alpha_shape_auto(xys, step=1, verbose=False,
+                     return_alpha=False, return_disks=False):
     '''
     Computation of alpha-shape delineation with automated selection of alpha.
     ...
@@ -574,46 +576,115 @@ def alpha_shape_auto(xys, step=1, verbose=False):
     Edelsbrunner, H., Kirkpatrick, D., & Seidel, R. (1983). On the shape of
         a set of points in the plane. IEEE Transactions on information theory,
         29(4), 551-559.
-    
+
     '''
     if not HAS_JIT:
         warn(NUMBA_WARN)
     from shapely import geometry as geom
+    if return_disks:
+        return_alpha = True
     if xys.shape[0] < 4:
         from shapely import ops
-        return ops.cascaded_union([geom.Point(xy)
-                                   for xy in xys])\
-                  .convex_hull.buffer(0)
+        multipoint = ops.cascaded_union([geom.Point(xy)
+                                         for xy in xys])
+        alpha_shape = multipoint.convex_hull.buffer(0)
+        if return_alpha:
+            radius = r_circumcircle_triangle(*xys)
+            out = [alpha_shape, radius]
+            if return_disks:
+                circles = construct_bounding_circles(alpha_shape, radius)
+                out = [alpha_shape, radius, circles]
+            return out
+        return alpha_shape
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
     a_pts = triangles[:, 0, :]
     b_pts = triangles[:, 1, :]
     c_pts = triangles[:, 2, :]
     radii = r_circumcircle_triangle(a_pts, b_pts, c_pts)
-    radii[np.isnan(radii)] = 0 # "Line" triangles to be kept for sure
+    radii[np.isnan(radii)] = 0  # "Line" triangles to be kept for sure
     del triangles, a_pts, b_pts, c_pts
     radii_sorted_i = radii.argsort()
     triangles = triangulation.simplices[radii_sorted_i][::-1]
     radii = radii[radii_sorted_i][::-1]
     geoms_prev = alpha_geoms((1/radii.max())-EPS, triangles, radii, xys)
-    xys_bb = np.array([*xys.min(axis=0), *xys.max(axis=0)])
     points = [geom.Point(pnt) for pnt in xys]
     if verbose:
-        print('Step set to %i'%step)
+        print('Step set to %i' % step)
     for i in range(0, len(radii), step):
         radi = radii[i]
         alpha = (1 / radi) - EPS
         if verbose:
-            print('%.2f%% | Trying a = %f'\
-            %((i+1)/radii.shape[0], alpha))
+            print('%.2f%% | Trying a = %f'
+                  % ((i+1)/radii.shape[0], alpha))
         geoms = alpha_geoms(alpha, triangles, radii, xys)
         if _valid_hull(geoms, points):
             geoms_prev = geoms
+            radi_prev = radi
         else:
             break
     if verbose:
         print(geoms_prev.shape)
-    return geoms_prev[0] # Return a shapely polygon
+    if return_alpha:
+        out = [geoms_prev[0], radi_prev]
+        if return_disks:
+            out.append(construct_bounding_circles(out[0], radi_prev))
+        return out
+    return geoms_prev[0]
+    # Return a shapely polygon
+
+
+def construct_bounding_circles(alpha_shape, radius):
+    """
+    Construct the bounding circles for an alpha shape, given the radius 
+    computed from the `alpha_shape_auto` method. 
+
+    Arguments
+    ---------
+    alpha_shape : shapely.Polygon
+                  an alpha-hull with the input radius. 
+    radius      : float
+                  the radius of the input alpha_shape.
+
+    Returns
+    -------
+    numpy.ndarray of shape (n,2) containing the centers of the circles
+    defining the alpha_shape. 
+
+    """
+    coordinates = list(alpha_shape.boundary.coords)
+    n_coordinates = len(coordinates)
+    centers = []
+    for i in range(n_coordinates-1):
+        a, b = coordinates[i], coordinates[i+1]
+        centers.append(_construct_centers(a, b, radius))
+    return centers
+
+
+def _construct_centers(a, b, radius):
+    midpoint = np.mean(np.row_stack((a, b)), axis=0)
+    d = spat.distance.euclidean(a, b)
+    m = (b[1] - a[1]) / (b[0] - a[0])
+    axis_rotation = np.arctan(m)
+    # altitude is perpendicular bisector of AB
+    interior_angle = np.arccos(.5 * d / radius)
+    chord = np.sin(interior_angle) * radius
+
+    dx = chord * np.sin(axis_rotation)
+    dy = chord * np.cos(axis_rotation)
+
+    up = midpoint[0] - dx, midpoint[1] + dy
+    down = midpoint[0] + dx, midpoint[1] - dy
+
+    # sign gives us direction of point, since
+    # shapely shapes are clockwise-defined
+    sign = np.sign((b[0]-a[0])*(up[1] - a[1])
+                   - (b[1] - a[1])*(up[0] - a[0]))
+    if sign == 1:
+        return up
+    else:
+        return down
+
 
 if __name__ == '__main__':
 
