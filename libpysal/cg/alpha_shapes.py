@@ -605,7 +605,7 @@ def alpha_shape_auto(xys, step=1, verbose=False,
                     return [alpha_shape, r, circle]
                 return [alpha_shape, r]
             return alpha_shape
-        elif return_radius:
+        elif return_radius:  # this handles xys.shape[0] == 3
             radius = r_circumcircle_triangle_single(xys[0], xys[1], xys[2])
             if return_circles:
                 circles = construct_bounding_circles(alpha_shape, radius)
