@@ -588,13 +588,26 @@ def alpha_shape_auto(xys, step=1, verbose=False,
         multipoint = ops.cascaded_union([geom.Point(xy)
                                          for xy in xys])
         alpha_shape = multipoint.convex_hull.buffer(0)
-        if return_radius:
-            radius = r_circumcircle_triangle(*xys)
-            out = [alpha_shape, radius]
+        if xys.shape[0] == 1:
+            if return_radius:
+                if return_circles:
+                    out = [alpha_shape, 0, alpha_shape]
+                return alpha_shape, 0
+            return alpha_shape
+        elif xys.shape[0] == 2:
+            if return_radius:
+                r = spat.distance.euclidean(xys[0], xys[1])/2
+                if return_circles:
+                    circle = _construct_centers(xys[0], xys[1], r)
+                    return [alpha_shape, r, circle]
+                return [alpha_shape, r]
+            return alpha_shape
+        elif return_radius:
+            radius = r_circumcircle_triangle_single(xys[0], xys[1], xys[2])
             if return_circles:
                 circles = construct_bounding_circles(alpha_shape, radius)
-                out = [alpha_shape, radius, circles]
-            return out
+                return [alpha_shape, radius, circles]
+            return [alpha_shape, radius]
         return alpha_shape
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
