@@ -677,8 +677,12 @@ def construct_bounding_circles(alpha_shape, radius):
 def _construct_centers(a, b, radius):
     midpoint = np.mean(np.row_stack((a, b)), axis=0)
     d = spat.distance.euclidean(a, b)
-    m = (b[1] - a[1]) / (b[0] - a[0])
-    axis_rotation = np.arctan(m)
+    if b[0] - a[0] == 0:
+        m = np.inf
+        axis_rotation = np.pi/2
+    else:
+        m = (b[1] - a[1]) / (b[0] - a[0])
+        axis_rotation = np.arctan(m)
     # altitude is perpendicular bisector of AB
     interior_angle = np.arccos(.5 * d / radius)
     chord = np.sin(interior_angle) * radius
