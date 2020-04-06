@@ -254,6 +254,12 @@ class TestW(unittest.TestCase):
         disco = W(disco)
         assert disco.n_components == 2
 
+    def test_roundtrip_write(self):
+        self.w.to_file('./tmp.gal')
+        new = W.from_file('./tmp.gal')
+        np.testing.assert_array_equal(self.w.sparse.toarray(), 
+                                      new.sparse.toarray())
+
 class Test_WSP_Back_To_W(unittest.TestCase):
     # Test to make sure we get back to the same W functionality
     def setUp(self):

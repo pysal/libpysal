@@ -175,10 +175,48 @@ class W(object):
         """Reset properties."""
         self._cache = {}
 
+    def to_file(self, path='', format=None):
+        """
+        Write a weights to a file. The format is guessed automatically 
+        from the path, but can be overridden with the format argument. 
+
+        See libpysal.io.FileIO for more information. 
+
+        Arguments
+        ---------
+        path    :   string
+                    location to save the file
+        format  :   string
+                    string denoting the format to write the weights to. 
+
+
+        Returns
+        -------
+        None
+        """
+        f = popen(dataPath=path, mode='w', dataFormat=format)
+        f.write(self)
+        f.close()
+        
+
     @classmethod
-    def from_file(cls, path="", format=None, **kwargs):
-        f = popen(dataPath=path, mode="r", dataFormat=format)
-        w = f.read(**kwargs)
+    def from_file(cls, path='', format=None):
+        """
+        Read a weights file into a W object. 
+
+        Arguments
+        ---------
+        path    :   string
+                    location to save the file
+        format  :   string
+                    string denoting the format to write the weights to. 
+
+        Returns
+        -------
+        W object
+        """
+        f = popen(dataPath=path, mode='r', dataFormat=format)
+        w = f.read()
         f.close()
         return w
 
