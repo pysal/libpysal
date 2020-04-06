@@ -525,7 +525,7 @@ def _valid_hull(geoms, points):
 
 @requires('geopandas', 'shapely')
 def alpha_shape_auto(xys, step=1, verbose=False,
-                     return_alpha=False, return_disks=False):
+                     return_radius=False, return_circles=False):
     '''
     Computation of alpha-shape delineation with automated selection of alpha.
     ...
@@ -581,17 +581,17 @@ def alpha_shape_auto(xys, step=1, verbose=False,
     if not HAS_JIT:
         warn(NUMBA_WARN)
     from shapely import geometry as geom
-    if return_disks:
-        return_alpha = True
+    if return_circles:
+        return_radius = True
     if xys.shape[0] < 4:
         from shapely import ops
         multipoint = ops.cascaded_union([geom.Point(xy)
                                          for xy in xys])
         alpha_shape = multipoint.convex_hull.buffer(0)
-        if return_alpha:
+        if return_radius:
             radius = r_circumcircle_triangle(*xys)
             out = [alpha_shape, radius]
-            if return_disks:
+            if return_circles:
                 circles = construct_bounding_circles(alpha_shape, radius)
                 out = [alpha_shape, radius, circles]
             return out
@@ -625,9 +625,9 @@ def alpha_shape_auto(xys, step=1, verbose=False,
             break
     if verbose:
         print(geoms_prev.shape)
-    if return_alpha:
+    if return_radius:
         out = [geoms_prev[0], radi_prev]
-        if return_disks:
+        if return_circles:
             out.append(construct_bounding_circles(out[0], radi_prev))
         return out
     return geoms_prev[0]
