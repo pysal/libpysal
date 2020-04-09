@@ -248,6 +248,8 @@ class Testutil(unittest.TestCase):
         wf = fuzzy_contiguity(rs_df)
         self.assertEqual(wf.islands, [])
         self.assertEqual(set(wf.neighbors[0]), set([239, 59, 152, 23, 107]))
+        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=.1)
+        self.assertEqual(set(buff.neighbors[0]), set([119, 239, 59, 152, 23, 107]))
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testutil)
