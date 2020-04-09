@@ -517,7 +517,7 @@ def _valid_hull(geoms, points):
     flag = True
     # if there is not exactly one polygon
     if geoms.shape[0] != 1:
-        flag = False
+        return False
     # if any (xys) points do not intersect the polygon
     if HAS_PYGEOS:
         return pygeos.intersects(pygeos.from_shapely(geoms[0]), points).all()
