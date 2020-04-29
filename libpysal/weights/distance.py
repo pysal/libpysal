@@ -119,7 +119,7 @@ class KNN(W):
         if ids is None:
             ids = list(full_indices)
 
-        neighbors = dict(zip(ids, map(list, not_self_indices)))
+        neighbors = {idx: list(indices) for idx, indices in zip(ids, not_self_indices)}
 
         W.__init__(self, neighbors, id_order=ids, **kwargs)
 
