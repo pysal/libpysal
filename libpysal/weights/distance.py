@@ -12,12 +12,6 @@ from scipy.spatial import distance_matrix
 import scipy.sparse as sp
 import numpy as np
 
-try:
-    import pandas
-    PANDAS=True
-except ImportError:
-    PANDAS=False
-
 def duplicated(array):
     """Identify duplicate rows in an array
     Parameters
@@ -49,6 +43,7 @@ def duplicated(array):
     >>> duplicated(a)[:,0].any()
     True
     """
+    array = np.asarray(array)
     n = array.shape[0]
     duplicate = np.zeros((n,3), dtype=int)
     unq, count = np.unique(array, axis=0, return_counts=True)
@@ -108,11 +103,16 @@ class KNN(W):
 
     Ties between neighbors of equal distance are arbitrarily broken.
 
-    In the case of coincident points, the first record in a set of duplicates
-    (i.e., points with same coordinates) is defined as the coincident seed and
-    the remaining points in the set are coincident duplicates. Initial neighbors are identified using the the set of unique+coincident seed points (i.e., the
-    coincident duplicates are not included initially). Then, each coincident
-    duplicate has its neighbors set equal to that of its coincident seed.
+    Coincident points can cause challenges for distance based weights since the
+    distance separating a pair of coincident points is 0 by definition. We
+    handle this situation as follows. Define `P` as the set of indices for all
+    points in a data set. The first record in a set of duplicates (i.e., points
+    with same coordinates) is defined as the coincident seed and the remaining
+    points that are coincident with the seed are coincident duplicates. Define
+    `D` as the set of indices for the coincident duplicates. Initial neighbors
+    are identified using the set `S = P\D` (i.e., the coincident duplicates are
+    not included initially). Then, each coincident duplicate has its neighbors
+    set equal to that of its coincident seed.
 
 
     Examples
@@ -139,6 +139,24 @@ class KNN(W):
     {1: 1.0, 4: 1.0}
     >>> 0 in wnn2.neighbors
     False
+
+    coincident points
+    >>> points = [(10, 10), (20, 10), (10,10), (20,10), (40, 10),
+                  (15, 20), (30, 20), (30, 30)]
+    >>> wknn2 = KNN.from_array(points, 2)
+    >>> wknn2.neighbors
+    {0: [1, 5],
+     1: [0, 5],
+     4: [6, 1],
+     5: [1, 0],
+     6: [7, 1],
+     7: [6, 5],
+     2: [1, 5],
+     3: [0, 5]}
+
+​
+
+
     """
     def __init__(self, data, k=2, p=2, ids=None, radius=None,
                  distance_metric='euclidean', **kwargs):
