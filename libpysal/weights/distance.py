@@ -61,16 +61,6 @@ def duplicated(array):
 
     return duplicate
 
-def _check_duplicates(data):
-    if PANDAS:
-        df = pandas.DataFrame(data)
-        return df.duplicated()
-    else:
-        print('pandas is required for _check_duplicates')
-        return None
-
-
-
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
     """
     This is deprecated. Use the pysal.weights.KNN class instead. 
@@ -109,6 +99,22 @@ class KNN(W):
                 instance
                 Weights object with binary weights
 
+    See Also
+    --------
+    :class:`libpysal.weights.weights.W`
+
+    Notes
+    -----
+
+    Ties between neighbors of equal distance are arbitrarily broken.
+
+    In the case of coincident points, the first record in a set of duplicates
+    (i.e., points with same coordinates) is defined as the coincident seed and
+    the remaining points in the set are coincident duplicates. Initial neighbors are identified using the the set of unique+coincident seed points (i.e., the
+    coincident duplicates are not included initially). Then, each coincident
+    duplicate has its neighbors set equal to that of its coincident seed.
+
+
     Examples
     --------
     >>> import libpysal
@@ -133,15 +139,6 @@ class KNN(W):
     {1: 1.0, 4: 1.0}
     >>> 0 in wnn2.neighbors
     False
-
-    Notes
-    -----
-
-    Ties between neighbors of equal distance are arbitrarily broken.
-
-    See Also
-    --------
-    :class:`libpysal.weights.weights.W`
     """
     def __init__(self, data, k=2, p=2, ids=None, radius=None,
                  distance_metric='euclidean', **kwargs):
@@ -177,25 +174,24 @@ class KNN(W):
         neighbors = {}
         if coincident:
             unique_ids = np.nonzero(duplicates[:,1]==0)[0]
-            print(unique_ids)
             for i, row in enumerate(to_weight):
                 row = row.tolist()
                 row.remove(i)
                 row = [unique_ids[j] for j in row]
                 focal = unique_ids[i]
                 neighbors[focal] = row
-            print(neighbors)
             for row in duplicate_ids[0]:
                 neighbors[row] = neighbors[duplicates[row, 2]]
             n = self.data.shape[0]
             ids = list(range(n))
         else:
-           for i,row in enumerate(to_weight):
-               row = row.tolist()
-               row.remove(i)
-               row = [ids[j] for j in row]
-               focal = ids[i]
-               neighbors[focal] = row
+            for i, row in enumerate(to_weight):
+                row = row.tolist()
+                row.remove(i)
+                row = [ids[j] for j in row]
+                focal = ids[i]
+                neighbors[focal] = row
+
         W.__init__(self, neighbors, id_order=ids, **kwargs)
 
     @classmethod
@@ -336,37 +332,18 @@ class KNN(W):
                     if iterable, a list of ids to use for the W
                     if None, df.index is used.
 
-        Notes
-        -----
-        In the case of coincident points, the first record in a set of duplicates (i.e., points with same coordinates) is defined as the coincident seed and the remaining points in the set are coincident duplicates. Initial weights are defined on the set of unique+coincident seed points (i.e., the coincident duplicates are not included initially). Then each coincident point has its neighbors set equal to that of its coincident seed.
-
+        
         See Also
         --------
         :class:`libpysal.weights.weights.W`
         """
-        duplicate = df[geom_col].duplicated()
-        coincident = duplicate.any()
-        if coincident:
-            df['coincident'] = duplicate.values
-            pts = get_points_array(df[~duplicate][geom_col])
-        else:
-            pts = get_points_array(df[geom_col])
+        pts = get_points_array(df[geom_col])
 
         if ids is None:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
 
-        if coincident:
-            ids = [idx for j,idx in enumerate(ids) if not duplicate.values[j]]
-            df.reset_index(inplace=True)
-            tmp = cls(pts, *args, ids=ids, **kwargs)
-            neighbors = copy.deepcopy(tmp.neighbors)
-            for index, value in df[df['coincident']].iterrows():
-                match = value['index']
-                neighbors[index] = neighbors[match]
-            w = W(neighbors=neighbors)
-            return w
         return cls(pts, *args, ids=ids, **kwargs)
 
     def reweight(self, k=None, p=None, new_data=None, new_ids=None, inplace=True):
