@@ -12,6 +12,23 @@ from scipy.spatial import distance_matrix
 import scipy.sparse as sp
 import numpy as np
 
+try:
+    import pandas
+    PANDAS=True
+except ImportError:
+    PANDAS=False
+
+
+
+def _check_duplicates(data):
+    if PANDAS:
+        df = pandas.DataFrame(data)
+        return df.duplicated()
+    else:
+        print('pandas is required for _check_duplicates')
+        return None
+
+
 
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
     """
@@ -20,6 +37,7 @@ def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
     #Warn('This function is deprecated. Please use pysal.weights.KNN', UserWarning)
     return KNN(data, k=k, p=p, ids=ids, radius=radius,
             distance_metric=distance_metric)
+
 
 class KNN(W):
     """
@@ -86,6 +104,8 @@ class KNN(W):
     """
     def __init__(self, data, k=2, p=2, ids=None, radius=None,
                  distance_metric='euclidean', **kwargs):
+
+
         if radius is not None: 
             distance_metric='arc'
         if isKDTree(data):
@@ -249,16 +269,40 @@ class KNN(W):
                     if iterable, a list of ids to use for the W
                     if None, df.index is used.
 
+        Notes
+        -----
+        In the case of coincident points, the first record in a set of duplicates (i.e., points with same coordinates) is defined as the coincident seed and the remaining points in the set are coincident duplicates. Initial weights are defined on the set of unique+coincident seed points (i.e., the coincident duplicates are not included initially). Then each coincident point has its neighbors set equal to that of its coincident seed.
+
         See Also
         --------
         :class:`libpysal.weights.weights.W`
         """
-        pts = get_points_array(df[geom_col])
+        duplicate = df[geom_col].duplicated()
+        coincident = duplicate.any()
+        if coincident:
+            df['coincident'] = duplicate.values
+            pts = get_points_array(df[~duplicate][geom_col])
+        else:
+            pts = get_points_array(df[geom_col])
+
         if ids is None:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
-        return cls(pts, *args, ids=ids, **kwargs)
+
+        if coincident:
+            ids = [idx for j,idx in enumerate(ids) if not duplicate.values[j]]
+            df.reset_index(inplace=True)
+            tmp = cls(pts, *args, ids=ids, **kwargs)
+            neighbors = copy.deepcopy(tmp.neighbors)
+            for index, value in df[df['coincident']].iterrows():
+                match = value['index']
+                neighbors[index] = neighbors[match]
+            w = W(neighbors=neighbors)
+            w.k = k
+            w.p = p
+            return w
+        return cls(pts, *args, ids=ids, coincident=coincident, **kwargs)
 
     def reweight(self, k=None, p=None, new_data=None, new_ids=None, inplace=True):
         """
