@@ -110,16 +110,28 @@ class KNN(W):
             self.data = self.kdtree.data
         self.k = k
         self.p = p
+        # these are both n x k+1
         distances, indices = self.kdtree.query(self.data, k=k + 1, p=p)
         full_indices = np.arange(self.kdtree.n)
+
+        # if an element in the indices matrix is equal to the corresponding
+        # index for that row, we want to mask that site from its neighbors
         not_self_mask = indices != full_indices.reshape(-1, 1)
-        not_self_indices = indices[not_self_mask].reshape(self.kdtree.n, k)
+        # if there are *too many duplicates per site*, then we may get some
+        # rows where the site index is not in the set of k+1 neighbors
+        # So, we need to know where these sites are
+        has_one_too_many = not_self_mask.sum(axis=1) == (k + 1)
+        # if a site has k+1 neighbors, drop its k+1th neighbor
+        not_self_mask[has_one_too_many, -1] &= False
+        not_self_indices = indices[not_self_mask].reshape(self.kdtree.n, -1)
 
         to_weight = not_self_indices
         if ids is None:
             ids = list(full_indices)
-
-        neighbors = {idx: list(indices) for idx, indices in zip(ids, not_self_indices)}
+            named_indices = not_self_indices
+        else:
+            named_indices = np.asarray(ids)[not_self_indices]
+        neighbors = {idx: list(indices) for idx, indices in zip(ids, named_indices)}
 
         W.__init__(self, neighbors, id_order=ids, **kwargs)
 
