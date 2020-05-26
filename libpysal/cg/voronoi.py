@@ -55,9 +55,9 @@ def voronoi(points, radius=None):
            [ -9.22691341,  -4.58994414]])
     
     """
-    
+
     vor = voronoi_regions(Voronoi(points), radius=radius)
-    
+
     return vor
 
 
@@ -81,7 +81,7 @@ def voronoi_regions(vor, radius=None):
         and an array Voronoi vertex coordinates.
     
     """
-    
+
     new_regions = []
     new_vertices = vor.vertices.tolist()
 
@@ -127,9 +127,9 @@ def voronoi_regions(vor, radius=None):
         new_region = np.array(new_region)[np.argsort(angles)]
 
         new_regions.append(new_region.tolist())
-    
+
     regions_vertices = new_regions, np.asarray(new_vertices)
-    
+
     return regions_vertices
 
 
@@ -160,7 +160,7 @@ def as_dataframes(regions, vertices, points):
         Originator points as geometries.
     
     """
-    
+
     try:
         import geopandas as gpd
     except ImportError:
@@ -251,14 +251,14 @@ def voronoi_frames(points, radius=None, clip="extent"):
     True
 
     """
-    
+
     regions, vertices = voronoi(points, radius=radius)
     regions, vertices = as_dataframes(regions, vertices, points)
     if clip:
         regions = clip_voronoi_frames_to_extent(regions, vertices, clip=clip)
-    
+
     reg_vtx = regions, vertices
-    
+
     return reg_vtx
 
 
