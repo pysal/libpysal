@@ -18,7 +18,7 @@ try:
 except ImportError:
     PatsyError = Exception
 
-RTOL = .00001
+RTOL = 0.00001
 ATOL = 1e-7
 MISSINGVALUE = None
 
@@ -29,26 +29,34 @@ MISSINGVALUE = None
 # import numba.jit OR create mimic decorator and set existence flag
 try:
     from numba import jit
+
     HAS_JIT = True
 except ImportError:
+
     def jit(function=None, **kwargs):
         """Mimic numba.jit() with synthetic wrapper
         """
         if function is not None:
+
             def wrapped(*original_args, **original_kw):
                 """Case 1 - structure of a standard decorator
                 i.e., jit(function)(*args, **kwargs)
                 """
                 return function(*original_args, **original_kw)
+
             return wrapped
         else:
+
             def partial_inner(func):
                 """Case 2 - returns Case 1
                 i.e., jit()(function)(*args, **kwargs)
                 """
                 return jit(func)
+
             return partial_inner
+
     HAS_JIT = False
+
 
 def simport(modname):
     """
@@ -89,10 +97,11 @@ def simport(modname):
     The first idiom makes it work kind of a like a with statement.
     """
     try:
-        exec('import {}'.format(modname))
+        exec("import {}".format(modname))
         return True, eval(modname)
     except:
         return False, None
+
 
 def requires(*args, **kwargs):
     """
@@ -110,19 +119,23 @@ def requires(*args, **kwargs):
     Original function is all arg in args are importable, otherwise returns a
     function that passes.
     """
-    v = kwargs.pop('verbose', True)
+    v = kwargs.pop("verbose", True)
     wanted = copy.deepcopy(args)
+
     def inner(function):
         available = [simport(arg)[0] for arg in args]
         if all(available):
             return function
         else:
-            def passer(*args,**kwargs):
+
+            def passer(*args, **kwargs):
                 if v:
                     missing = [arg for i, arg in enumerate(wanted) if not available[i]]
-                    print(('missing dependencies: {d}'.format(d=missing)))
-                    print(('not running {}'.format(function.__name__)))
+                    print(("missing dependencies: {d}".format(d=missing)))
+                    print(("not running {}".format(function.__name__)))
                 else:
                     pass
+
             return passer
+
     return inner
