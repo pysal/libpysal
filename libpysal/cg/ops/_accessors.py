@@ -1,18 +1,29 @@
 import functools as _f
 
-__all__ = [ 'area', 'bbox', 'bounding_box', 'centroid', 'holes', 'len', 
-            'parts', 'perimeter', 'segments', 'vertices']
+__all__ = [
+    "area",
+    "bbox",
+    "bounding_box",
+    "centroid",
+    "holes",
+    "len",
+    "parts",
+    "perimeter",
+    "segments",
+    "vertices",
+]
 
-def get_attr(df, geom_col='geometry', inplace=False, attr=None):
+
+def get_attr(df, geom_col="geometry", inplace=False, attr=None):
     outval = df[geom_col].apply(lambda x: x.__getattribute__(attr))
     if inplace:
-        outcol = 'shape_{}'.format(func.__name__)
+        outcol = "shape_{}".format(func.__name__)
         df[outcol] = outval
         return None
     return outval
 
-_doc_template =\
-""" 
+
+_doc_template = """ 
 Tabular accessor to grab a geometric object's {n} attribute
 
 Arguments
@@ -32,9 +43,11 @@ If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
 returns a series. 
 
 See Also
----------
+--------
+
 For further documentation about the attributes of the object in question, refer
 to shape classes in pysal.cg.shapes
+
 """
 
 _accessors = dict()
