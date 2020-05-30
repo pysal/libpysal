@@ -574,7 +574,7 @@ def w_local_cluster(w):
     neighbors of observation :math:`i` are to being a clique:
 
     .. math::
-    
+
        c_i = | \{w_{j,k}\} |/ (k_i(k_i - 1)): j,k \in N_i
 
     where :math:`N_i` is the set of neighbors to :math:`i`, :math:`k_i =
@@ -1497,7 +1497,9 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
 
 
 @requires("geopandas")
-def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, **kwargs):
+def fuzzy_contiguity(
+    gdf, tolerance=0.005, buffering=False, drop=True, buffer=None, **kwargs
+):
     """
     Fuzzy contiguity spatial weights
 
@@ -1515,6 +1517,10 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, **kwargs)
 
     drop: boolean
           If True (default), the buffered features are removed from the GeoDataFrame. If False, buffered features are added to the GeoDataFrame.
+
+    buffer : float
+             Specify exact buffering distance. Ignores `tolerance`.
+
     **kwargs: keyword arguments
               optional arguments for :class:`pysal.weights.W`
 
@@ -1588,13 +1594,12 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, **kwargs)
 
     """
     if buffering:
-        # buffer each shape
-        minx, miny, maxx, maxy = gdf.total_bounds
-        buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
+        if not buffer:
+            # buffer each shape
+            minx, miny, maxx, maxy = gdf.total_bounds
+            buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
         # create new geometry column
-        new_geometry = gpd.GeoSeries(
-            [feature.buffer(buffer) for feature in gdf.geometry]
-        )
+        new_geometry = gdf.geometry.buffer(buffer)
         gdf["_buffer"] = new_geometry
         old_geometry_name = gdf.geometry.name
         gdf.set_geometry("_buffer", inplace=True)

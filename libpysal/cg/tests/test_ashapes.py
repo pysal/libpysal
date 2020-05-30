@@ -26,33 +26,40 @@ class Test_Alpha_Shapes(TestCase):
         self.vertices = eberly_vertices
 
         self.a05 = (
-            geopandas.read_file(os.path.join(this_directory, "data/alpha_05.shp"))
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_05.gpkg"))
             .geometry.to_numpy()
             .item()
         )
         self.a10 = (
-            geopandas.read_file(os.path.join(this_directory, "data/alpha_tenth.shp"))
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_tenth.gpkg"))
             .geometry.to_numpy()
             .item()
         )
         self.a2 = (
-            geopandas.read_file(os.path.join(this_directory, "data/alpha_fifth.shp"))
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_fifth.gpkg"))
             .geometry.to_numpy()
             .item()
         )
         self.a25 = (
-            geopandas.read_file(os.path.join(this_directory, "data/alpha_fourth.shp"))
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_fourth.gpkg"))
             .geometry.to_numpy()
             .item()
         )
         self.a25 = (
-            geopandas.read_file(os.path.join(this_directory, "data/alpha_fourth.shp"))
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_fourth.gpkg"))
             .geometry.to_numpy()
             .item()
+        )
+        circles = geopandas.read_file(
+            os.path.join(this_directory, "data/eberly_bounding_circles.gpkg")
+        )
+        self.circle_radii = circles.radius.iloc[0]
+        self.circle_verts = np.column_stack(
+            (circles.geometry.x.values, circles.geometry.y.values)
         )
 
         self.autoalpha = geopandas.read_file(
-            os.path.join(this_directory, "data/alpha_auto.shp")
+            os.path.join(this_directory, "data/alpha_auto.gpkg")
         ).geometry[0]
 
     def test_alpha_shapes(self):
@@ -78,3 +85,16 @@ class Test_Alpha_Shapes(TestCase):
         assert isinstance(new_duo, geometry.Polygon)
         new_triple = alpha_shape(self.vertices[:2], 0.5)
         assert isinstance(new_triple, geometry.Polygon)
+        new_triple = alpha_shape_auto(
+            self.vertices[0].reshape(1, -1), return_circles=True
+        )
+        assert isinstance(new_triple[0], geometry.Polygon)
+        new_triple = alpha_shape_auto(self.vertices[:1], return_circles=True)
+        assert isinstance(new_triple[0], geometry.Polygon)
+        new_triple = alpha_shape_auto(self.vertices[:2], return_circles=True)
+        assert isinstance(new_triple[0], geometry.Polygon)
+
+    def test_circles(self):
+        ashape, radius, centers = alpha_shape_auto(self.vertices, return_circles=True)
+        np.testing.assert_allclose(radius, self.circle_radii)
+        np.testing.assert_allclose(centers, self.circle_verts)
