@@ -9,27 +9,29 @@ import math
 
 
 def cwt(a, b, tolerance=1e-9):
-    """
-    compare_with_tolerance
-    For the float value comparing, there are some situlation that two values are actually the same but been shown
-    differently, e.g 1.230 and 1.2300000000000001. Especially after some calculation. This function is used to
-    compare two float value with some tolerance
+    """compare_with_tolerance
+
+    For the float value comparing, there are some situlation that two values
+    are actually the same but been shown differently, e.g 1.230 and
+    1.2300000000000001. Especially after some calculation. This function is
+    used to compare two float value with some tolerance
+
     Parameters
     ----------
-    a           : float
-                  the first value
-    b           : float
-                  the second value
-    tolerance   : float
-                  tolerance for the comparing
+    a : float
+        The first value
+
+    b : float
+        The second value
+
+    tolerance : float
+        Tolerance for the comparing
 
     Returns
     -------
     if_bigger_than  : int
-                      if a is bigger than b
-                      1: a > b
-                      0: a == b
-                      -1: a < b
+        if a is bigger than b 1: a > b 0: a == b -1: a < b
+
     """
     tolerance = math.fabs(tolerance)
     if a - b > tolerance:
@@ -41,55 +43,73 @@ def cwt(a, b, tolerance=1e-9):
 
 
 class Cell(object):
-    """
-    Basic rectangle geometry used for dividing research area (polygon) into quadtree structure
+    """Basic rectangle geometry used for dividing research area (polygon) into quadtree structure
+
     Attributes
-    --------------
-    level       : int
-                  on which quadtree level this cell belongs to. Begins with 0
-    min_x       : float
-                  min x coordinate of this cell
-    min_y       : float
-                  min y coordinate of this cell
-    length_x    : float
-                  width of this cell
-    length_y    : float
-                  height of this cell
-    arcs        : list
-                  detected arc list which are within this cell
-    status      : str
-                  enum status of this cell, indicating this cell's spatial relationship with the research area
+    ----------
+    level : int
+        Quadtree level this cell belongs to. Begins with 0
+
+    min_x : float
+        min x coordinate of this cell
+
+    min_y : float
+        min y coordinate of this cell
+
+    length_x : float
+        width of this cell
+
+    length_y : float
+        height of this cell
+
+    arcs : list
+        detected arc list which are within this cell
+
+    status : str
+        enum status of this cell, indicating this cell's spatial relationship with the research area
                   "in"      : this cell lies totally inside of the research area
                   "out"     : this cell lies totally outside of the research area
                   "maybe"   : this cell intersects with the research area's boundary
-    children_l_b: Cell
-                  children of current cell, left-bottom
-    children_l_t: Cell
-                  children of current cell, left-top
-    children_r_b: Cell
-                  children of current cell, right-bottom
-    children_t_t: Cell
-                  children of current cell, right-top
+
+    children_l_b : Cell
+        children of current cell, left-bottom
+
+    children_l_t : Cell
+        children of current cell, left-top
+
+    children_r_b : Cell
+        children of current cell, right-bottom
+
+    children_t_t : Cell
+        children of current cell, right-top
+
     """
 
     def __init__(self, level, min_x, min_y, length_x, length_y, arcs, status):
         """
+
         Parameters
         ----------
-        level       : int
-                      on which quadtree level this cell belongs to. Begins with 0
-        min_x       : float
-                      min x coordinate of this cell
-        min_y       : float
-                      min y coordinate of this cell
-        length_x    : float
-                      width of this cell
-        length_y    : float
-                      height of this cell
-        arcs        : list
-                      detected arc list which are within this cell
-        status      : str
-                      enum status of this cell, indicating this cell's spatial relationship with the research area
+        level : int
+            on which quadtree level this cell belongs to. Begins with 0
+
+        min_x : float
+            min x coordinate of this cell
+
+        min_y : float
+            min y coordinate of this cell
+
+        length_x : float
+            width of this cell
+
+        length_y : float
+            height of this cell
+
+        arcs : list
+            detected arc list which are within this cell
+
+        status : str
+            enum status of this cell, indicating this cell's spatial relationship with the research area
                       "in"      : this cell lies totally inside of the research area
                       "out"     : this cell lies totally outside of the research area
                       "maybe"   : this cell intersects with the research area's boundary
@@ -110,10 +130,12 @@ class Cell(object):
 
     @property
     def rings(self):
-        """
-        the list of rings which are formed by the intersection of this cell and the arcs pass them
+        """ the list of rings which are formed by the intersection of this cell and the arcs pass them
+
         Returns
         -------
+
+        rings : list
 
         """
         if self._rings is None:
@@ -134,11 +156,9 @@ class Cell(object):
         return self._rings
 
     def split(self):
-        """
-        equally split current cell into 4 sub cells
+        """equally split current cell into 4 sub cells
+
         if this cell in needed to be splitted into four parts, add the result cells as children to current cell
-        Returns
-        -------
         """
 
         if self.status == "in" or self.status == "out":
@@ -693,15 +713,17 @@ class Cell(object):
     #     ===================
 
     def contains_point(self, point):
-        """
-        Decide if this cell (rectangle) contains a given point
+        """Decide if this cell (rectangle) contains a given point
+
         Parameters
         ----------
-        point       : list
-                      the point structure, like [x, y]
+        point : list
+            Point structure, like [x, y]
+
         Returns
         -------
         if_contains : bool
+
         """
         if self.status == "out":
             return False
@@ -726,34 +748,43 @@ def extract_connecting_borders_between_points(
     cell_min_point, cell_length_x, cell_length_y, point_begin, point_end, zero_tolerance
 ):
 
-    """
-    There is an rectangle and two points on the border, this function is used to extract the borders connecting
-    these two points. The segments must be clockwise
+    """There is an rectangle and two points on the border, this function is
+    used to extract the borders connecting these two points. The segments must
+    be clockwise
+
     Parameters
     ----------
-    cell_min_point      : list
-                          the bottom-left point of the cell, like [x0, y0]
-    cell_length_x       : float
-                          width of the cell
-    cell_length_y       : float
-                          height of the cell
-    point_begin         : list
-                          the first point on the cell's border. like [xa, ya]
-    point_end           : list
-                          the second point on the cell's border. like [xb, yb]
-    result_type         : str
-                          MUST be one of ["segments", "border_ids"]. Indicts which kind of result will return.
-                          "segments": return the segments list which connecting these two points
-                          "border_ids" return a list of ids of the orders of the cell connceting these two points
-    zero_tolerance      : float
-                          value of zero_tolerance for determining if two float values are equal
+    cell_min_point : list
+        the bottom-left point of the cell, like [x0, y0]
+
+    cell_length_x : float
+        width of the cell
+
+    cell_length_y : float
+        height of the cell
+
+    point_begin  : list
+        the first point on the cell's border. like [xa, ya]
+
+    point_end : list
+        the second point on the cell's border. like [xb, yb]
+
+    result_type : str
+        MUST be one of ["segments", "border_ids"]. Indicts which kind of result
+        will return. "segments": return the segments list which connecting
+        these two points "border_ids" return a list of ids of the orders of the
+        cell connecting these two points
+
+    zero_tolerance : float
+        value of zero_tolerance for determining if two float values are equal
 
     Returns
     -------
-    segments_and_ids    : tuple
-                          like (segments, involved_border_ids)
-                          1. list of points, including the start and end points
-                          2. list of border ids being involved in the segments, not necessary to be in the original order
+    segments_and_ids : tuple
+        like (segments, involved_border_ids) 1. list of points, including the
+        start and end points 2. list of border ids being involved in the
+        segments, not necessary to be in the original order
+
     """
     if point_begin == point_end:
         return ([], [])
@@ -857,26 +888,32 @@ def extract_connecting_borders_between_points(
 def get_relative_location_on_cell_border(
     cell_min_point, cell_length_x, cell_length_y, point, zero_tolerance
 ):
-    """
-    When a point is on the border of a cell, this function can be used to calculate the relative location of the point
+    """When a point is on the border of a cell, this function can be used to
+    calculate the relative location of the point
+
     to cell's left-bottom corner.
     Parameters
     ----------
-    cell_min_point      : list
-                          the bottom-left point of the cell, like [x0, y0]
-    cell_length_x       : float
-                          width of the cell
-    cell_length_y       : float
-                          height of the cell
-    point               : list
-                          the point on the cell's border. like [x, y]
-    zero_tolerance      : float
-                          value of zero_tolerance for determining if two float values are equal
+    cell_min_point : list
+        the bottom-left point of the cell, like [x0, y0]
+
+    cell_length_x : float
+        width of the cell
+
+    cell_length_y : float
+        height of the cell
+
+    point : list
+         the point on the cell's border. like [x, y]
+
+    zero_tolerance : float
+        value of zero_tolerance for determining if two float values are equal
 
     Returns
     -------
-    distance            : float
-                          range from 0 to 4
+    distance : float
+        range from 0 to 4
+
     """
     border_id_p = -1
     if cwt(point[0], cell_min_point[0], zero_tolerance) == 0:
@@ -897,31 +934,37 @@ def get_relative_location_on_cell_border(
 def extract_segments_from_cell_with_arcs(
     cell_min_point, cell_length_x, cell_length_y, arcs, zero_tolerance
 ):
-    """
-    At the end of study area quadtree dividing, there will be some node cells intersect with arcs. The arcs are segments
-    of original study border and the begin and end points of the arcs MUST lie on node cell border. This function can
-    intersect the node cell and
+    """At the end of study area quadtree dividing, there will be some node
+    cells intersect with arcs. The arcs are segments of original study border
+    and the begin and end points of the arcs MUST lie on node cell border. This
+    function can intersect the node cell and
+
     Parameters
     ----------
-    cell_min_point      : array
-                          the bottom-left point of the cell, like [x0, y0]
-    cell_length_x       : float
-                          width of the cell
-    cell_length_y       : float
-                          height of the cell
-    arcs                : array
-                          array of point lists
-    zero_tolerance      : float
-                          value of zero_tolerance for determining if two float values are equal
+    cell_min_point : array
+        the bottom-left point of the cell, like [x0, y0]
+
+    cell_length_x : float
+        width of the cell
+
+    cell_length_y : float
+        height of the cell
+
+    arcs : array
+        array of point lists
+
+    zero_tolerance : float
+        value of zero_tolerance for determining if two float values are equal
 
     Returns
     -------
     rings_and_border_ids : tuple
-                           like (rings, involved_border_ids)
-                           1. the list of rings extracted, each ring contains a sequence of points -  the begin and end
-                              points are the same. Note that there might be multiple rings extracted in a cell.
-                           2. the ids of borders of the cell who are involved in the ring. Duplicated ids are removed
-                              and they may not be in the original order
+        like (rings, involved_border_ids) 1. the list of rings extracted, each
+        ring contains a sequence of points - the begin and end points are the
+        same. Note that there might be multiple rings extracted in a cell. 2.
+        the ids of borders of the cell who are involved in the ring. Duplicated
+        ids are removed and they may not be in the original order
+
     """
     arc_begin_points = []  # beginning points of each arc
     arc_begin_points_location = []  # location of beginning points of each arc
@@ -1060,23 +1103,25 @@ def extract_segments_from_cell_with_arcs(
 
 
 class QuadTreeStructureSingleRing(object):
-    """
-    This class is the main manager of cells. By giving a study area. This class can construct a cell list depicting
-    the study area. When given a new point. This class could rapidly determine whether the point lies in the study area
+    """This class is the main manager of cells.
+
+    By giving a study area. This class can construct a cell list depicting the
+    study area. When given a new point. This class could rapidly determine
+    whether the point lies in the study area
+
     Attributes
     __________
-    root_cell       : Cell
-                      The Cell structure for storing the quad-tree for this ring
+    root_cell : Cell
+        The Cell structure for storing the quad-tree for this ring
     """
 
     def __init__(self, ring):
         """
-        Constructing function
         Parameters
         ----------
-        ring            : Ring
-                          the point list of study area. But in the class of Ring in PySAL
-                          Example: Ring([[0.0, 0.0], [3.0, 2.0], [5.0, 1.0]])
+        ring : Ring
+            the point list of study area. But in the class of Ring in PySAL
+            Example: Ring([[0.0, 0.0], [3.0, 2.0], [5.0, 1.0]])
 
         """
         self.ring = ring
@@ -1119,12 +1164,12 @@ class QuadTreeStructureSingleRing(object):
             cells_for_processing = result_cell_list
 
     def contains_point(self, point):
-        """
-        Quickly determine if the study area contains a point
+        """Quickly determine if the study area contains a point
+
         Parameters
         ----------
-        point       : list
-                      the point structure, like [x, y]
+        point : list
+            the point structure, like [x, y]
 
         Returns
         -------
@@ -1173,79 +1218,3 @@ class QuadTreeStructureSingleRing(object):
     @property
     def min_y(self):
         return self.ring.bounding_box.lower
-
-
-# class QuadTreeStructure(object):
-#     """
-#     This class is the main manager of quadtree cells. By giving a polygon (study area). This class can construct a cell list depicting
-#     the study area. When given a new point. This class could rapidly determine whether the point lies in the study area
-#     """
-#
-#     def __init__(self, polygon, quad_tree_level=7):
-#         """
-#         Constructing function
-#         Parameters
-#         ----------
-#         polygon             : Polygon
-#                               The polygon class from pysal.cg.shapes.Polygon, could include part rings and holes
-#         quad_tree_level     : int
-#                               the level for quad dividing the study area. Result tree node size equals quad_tree_level**4
-#                               e.g. for the default value 7,  result tree node size = 16384
-#                               The value should no larger than 9 (node size = 4**10 = 26,2144)
-#         """
-#         if quad_tree_level > 9:
-#             raise Exception("quad_tree_level exceed the max value 9!")
-#         if quad_tree_level < 1:
-#             raise Exception("quad_tree_level exceed the min value 1!")
-#         self.polygon = polygon
-#         self.cell_structures_part = []
-#         self.cell_structures_hole = []
-#
-#         for ring in self.polygon._part_rings:
-#             self.cell_structures_part.append(_QuadTreeStructureSingleRing(ring, quad_tree_level))
-#         for ring in self.polygon._hole_rings:
-#             self.cell_structures_hole.append(_QuadTreeStructureSingleRing(ring, quad_tree_level))
-#
-#     @property
-#     def region_width(self):
-#         return self.polygon.bounding_box.width
-#
-#     @property
-#     def region_height(self):
-#         return self.polygon.bounding_box.height
-#
-#     @property
-#     def min_x(self):
-#         return self.polygon.bounding_box.left
-#
-#     @property
-#     def min_y(self):
-#         return self.polygon.bounding_box.lower
-#
-#     def contains_point(self, point):
-#         """
-#         Quickly determine if the study area contains a point
-#         Parameters
-#         ----------
-#         point       : list
-#                       the point structure, like [x, y]
-#
-#         Returns
-#         -------
-#         if_contains : bool
-#
-#         """
-#         if point[0] < self.min_x or point[0] > self.min_x + self.region_width or point[1] < self.min_y or point[1] > self.min_y + self.region_height:
-#             return False
-#
-#         for qts_hole in self.cell_structures_hole:
-#             if qts_hole.contains_point(point):
-#                 return False
-#
-#         for qts_part in self.cell_structures_part:
-#             if qts_part.contains_point(point):
-#                 return True
-#
-#         return False
-
-# Import essential libraries for following calculation
