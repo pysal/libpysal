@@ -44,14 +44,14 @@ class ArcGISSwmIO(fileio.FileIO):
 
     """
 
-    FORMATS = ['swm']
-    MODES = ['r', 'w']
+    FORMATS = ["swm"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
-        self._varName = 'Unknown'
+        self._varName = "Unknown"
         self._srs = "Unknow"
         fileio.FileIO.__init__(self, *args, **kwargs)
-        self.file = open(self.dataPath, self.mode + 'b')
+        self.file = open(self.dataPath, self.mode + "b")
 
     def _set_varName(self, val):
         if issubclass(type(val), str):
@@ -129,23 +129,25 @@ class ArcGISSwmIO(fileio.FileIO):
         :param header:
         :return:
         """
-        id_var, srs = header[:-1].split(';')
+        id_var, srs = header[:-1].split(";")
         self.varName = id_var
         self.srs = srs
         self.header_len = len(header) + 8
-        no_obs, row_std = tuple(unpack('<2l', self.file.read(8)))
+        no_obs, row_std = tuple(unpack("<2l", self.file.read(8)))
         neighbors = {}
         weights = {}
         for i in range(no_obs):
-            origin, no_nghs = tuple(unpack('<2l', self.file.read(8)))
+            origin, no_nghs = tuple(unpack("<2l", self.file.read(8)))
             neighbors[origin] = []
             weights[origin] = []
             if no_nghs > 0:
-                neighbors[origin] = list(unpack('<%il' %
-                                                no_nghs, self.file.read(4 * no_nghs)))
-                weights[origin] = list(unpack('<%id' %
-                                              no_nghs, self.file.read(8 * no_nghs)))
-                w_sum = list(unpack('<d', self.file.read(8)))[0]
+                neighbors[origin] = list(
+                    unpack("<%il" % no_nghs, self.file.read(4 * no_nghs))
+                )
+                weights[origin] = list(
+                    unpack("<%id" % no_nghs, self.file.read(8 * no_nghs))
+                )
+                w_sum = list(unpack("<d", self.file.read(8)))[0]
 
         self.pos += 1
         return W(neighbors, weights)
@@ -168,26 +170,28 @@ class ArcGISSwmIO(fileio.FileIO):
 
         fixedWeights = False
         if "FIXEDWEIGHTS" in headerDict:
-            fixedWeights = headerDict["FIXEDWEIGHTS"].upper().strip() == 'TRUE'
+            fixedWeights = headerDict["FIXEDWEIGHTS"].upper().strip() == "TRUE"
 
-        no_obs, row_std = tuple(unpack('<2l', self.file.read(8)))
+        no_obs, row_std = tuple(unpack("<2l", self.file.read(8)))
         is_row_standard = row_std == 1
 
         neighbors = {}
         weights = {}
         for i in range(no_obs):
-            origin, no_nghs = tuple(unpack('<2l', self.file.read(8)))
+            origin, no_nghs = tuple(unpack("<2l", self.file.read(8)))
             neighbors[origin] = []
             weights[origin] = []
             if no_nghs > 0:
-                neighbors[origin] = list(unpack('<%il' %
-                                                no_nghs, self.file.read(4 * no_nghs)))
+                neighbors[origin] = list(
+                    unpack("<%il" % no_nghs, self.file.read(4 * no_nghs))
+                )
                 if fixedWeights:
-                    weights[origin] = list(unpack('<d', self.file.read(8))) * no_nghs
+                    weights[origin] = list(unpack("<d", self.file.read(8))) * no_nghs
                 else:
-                    weights[origin] = list(unpack('<%id' %
-                                              no_nghs, self.file.read(8 * no_nghs)))
-                w_sum = list(unpack('<d', self.file.read(8)))[0]
+                    weights[origin] = list(
+                        unpack("<%id" % no_nghs, self.file.read(8 * no_nghs))
+                    )
+                w_sum = list(unpack("<d", self.file.read(8)))[0]
 
         self.pos += 1
         return W(neighbors, weights)
@@ -255,25 +259,24 @@ class ArcGISSwmIO(fileio.FileIO):
 
         self._complain_ifclosed(self.closed)
         if not issubclass(type(obj), W):
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))
         if not (type(obj.id_order[0]) in (np.int32, np.int64, int)) and not useIdIndex:
             raise TypeError("ArcGIS SWM files support only integer IDs")
         if useIdIndex:
             id2i = obj.id2i
             obj = remap_ids(obj, id2i)
 
-        unk = str('%s;%s\n' % (self.varName, self.srs)).encode()
+        unk = str("%s;%s\n" % (self.varName, self.srs)).encode()
         self.file.write(unk)
-        self.file.write(pack('<l', obj.n))
-        self.file.write(pack('<l', obj.transform.upper() == 'R'))
+        self.file.write(pack("<l", obj.n))
+        self.file.write(pack("<l", obj.transform.upper() == "R"))
         for obs in obj.weights:
-            self.file.write(pack('<l', obs))
+            self.file.write(pack("<l", obs))
             no_nghs = len(obj.weights[obs])
-            self.file.write(pack('<l', no_nghs))
-            self.file.write(pack('<%il' % no_nghs, *obj.neighbors[obs]))
-            self.file.write(pack('<%id' % no_nghs, *obj.weights[obs]))
-            self.file.write(pack('<d', sum(obj.weights[obs])))
+            self.file.write(pack("<l", no_nghs))
+            self.file.write(pack("<%il" % no_nghs, *obj.neighbors[obs]))
+            self.file.write(pack("<%id" % no_nghs, *obj.weights[obs]))
+            self.file.write(pack("<d", sum(obj.weights[obs])))
         self.pos += 1
 
     def close(self):

@@ -6,7 +6,7 @@ from .remotes import datasets as remote_datasets
 from .remotes import download as fetch_all
 from .builtin import datasets as builtin_datasets
 
-__all__ = ['get_path', 'available', 'explain', 'fetch_all']
+__all__ = ["get_path", "available", "explain", "fetch_all"]
 
 example_manager.add_examples(remote_datasets)
 example_manager.add_examples(builtin_datasets)

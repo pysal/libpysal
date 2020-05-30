@@ -2,8 +2,9 @@ from ...cg.shapes import asShape as pShape
 from ...common import requires as _requires
 from warnings import warn
 
-@_requires('geopandas')
-def to_df(df, geom_col='geometry', **kw):
+
+@_requires("geopandas")
+def to_df(df, geom_col="geometry", **kw):
     """
     Convert a Geopandas dataframe into a normal pandas dataframe with a column
     containing PySAL shapes. 
@@ -24,13 +25,15 @@ def to_df(df, geom_col='geometry', **kw):
     """
     import pandas as pd
     from geopandas import GeoDataFrame, GeoSeries
+
     df[geom_col] = df[geom_col].apply(pShape)
     if isinstance(df, (GeoDataFrame, GeoSeries)):
         df = pd.DataFrame(df, **kw)
     return df
 
-@_requires('geopandas')
-def to_gdf(df, geom_col='geometry', **kw):
+
+@_requires("geopandas")
+def to_gdf(df, geom_col="geometry", **kw):
     """
     Convert a pandas dataframe with geometry column to a GeoPandas dataframe
 
@@ -50,8 +53,10 @@ def to_gdf(df, geom_col='geometry', **kw):
     """
     from geopandas import GeoDataFrame
     from shapely.geometry import asShape as sShape
+
     df[geom_col] = df[geom_col].apply(sShape)
     return GeoDataFrame(df, geometry=geom_col, **kw)
+
 
 def insert_metadata(df, obj, name=None, inplace=True, overwrite=False):
     if not inplace:
@@ -62,9 +67,11 @@ def insert_metadata(df, obj, name=None, inplace=True, overwrite=False):
         name = type(obj).__name__
     if hasattr(df, name):
         if overwrite:
-            warn('Overwriting attribute {}! This may break the dataframe!'.format(name))
+            warn("Overwriting attribute {}! This may break the dataframe!".format(name))
         else:
-            raise Exception('Dataframe already has attribute {}. Cowardly refusing '
-                        'to break dataframe. '.format(name))
+            raise Exception(
+                "Dataframe already has attribute {}. Cowardly refusing "
+                "to break dataframe. ".format(name)
+            )
     df._metadata.append(name)
-    df.__setattr__(name, obj) 
+    df.__setattr__(name, obj)

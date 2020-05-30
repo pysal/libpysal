@@ -60,8 +60,8 @@ class StataTextIO(fileio.FileIO):
 
     """
 
-    FORMATS = ['stata_text']
-    MODES = ['r', 'w']
+    FORMATS = ["stata_text"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
         args = args[:2]
@@ -111,17 +111,19 @@ class StataTextIO(fileio.FileIO):
 
         n = int(self.file.readline().strip())
         line1 = self.file.readline().strip()
-        obs_01 = line1.split(' ')
+        obs_01 = line1.split(" ")
         matrix_form = False
         if len(obs_01) == 1 or float(obs_01[1]) != 0.0:
+
             def line2wgt(line):
-                row = [int(i) for i in line.strip().split(' ')]
+                row = [int(i) for i in line.strip().split(" ")]
                 return row[0], row[1:], [1.0] * len(row[1:])
+
         else:
             matrix_form = True
 
             def line2wgt(line):
-                row = line.strip().split(' ')
+                row = line.strip().split(" ")
                 obs = int(float(row[0]))
                 ngh, wgt = [], []
                 for i in range(n):
@@ -204,23 +206,26 @@ class StataTextIO(fileio.FileIO):
         """
         self._complain_ifclosed(self.closed)
         if issubclass(type(obj), W):
-            header = '%s\n' % obj.n
+            header = "%s\n" % obj.n
             self.file.write(header)
             if matrix_form:
+
                 def wgt2line(obs_id, neighbor, weight):
-                    w = ['0.0'] * obj.n
+                    w = ["0.0"] * obj.n
                     for ngh, wgt in zip(neighbor, weight):
                         w[obj.id2i[ngh]] = str(wgt)
                     return [str(obs_id)] + w
+
             else:
+
                 def wgt2line(obs_id, neighbor, weight):
                     return [str(obs_id)] + [str(ngh) for ngh in neighbor]
+
             for id in obj.id_order:
                 line = wgt2line(id, obj.neighbors[id], obj.weights[id])
-                self.file.write('%s\n' % ' '.join(line))
+                self.file.write("%s\n" % " ".join(line))
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))
 
     def close(self):
         self.file.close()

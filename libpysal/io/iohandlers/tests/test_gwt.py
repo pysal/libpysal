@@ -9,8 +9,8 @@ import warnings
 
 class test_GwtIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('juvenile.gwt')
-        self.obj = GwtIO(test_file, 'r')
+        self.test_file = test_file = pysal_examples.get_path("juvenile.gwt")
+        self.obj = GwtIO(test_file, "r")
 
     def test_close(self):
         f = self.obj
@@ -21,7 +21,7 @@ class test_GwtIO(unittest.TestCase):
         w = self.obj.read()
         self.assertEqual(168, w.n)
         self.assertEqual(16.678571428571427, w.mean_neighbors)
-        w.transform = 'B'
+        w.transform = "B"
         self.assertEqual([1.0], list(w[1].values()))
 
     def test_seek(self):
@@ -35,21 +35,20 @@ class test_GwtIO(unittest.TestCase):
     # Added back by CRS,
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(
-            suffix='.gwt', dir=pysal_examples.get_path(''))
+        f = tempfile.NamedTemporaryFile(suffix=".gwt", dir=pysal_examples.get_path(""))
         fname = f.name
         f.close()
-        o = psopen(fname, 'w')
-        #copy the shapefile and ID variable names from the old gwt.
+        o = psopen(fname, "w")
+        # copy the shapefile and ID variable names from the old gwt.
         # this is only available after the read() method has been called.
-        #o.shpName = self.obj.shpName
-        #o.varName = self.obj.varName
+        # o.shpName = self.obj.shpName
+        # o.varName = self.obj.varName
         o.write(w)
         o.close()
-        wnew = psopen(fname, 'r').read()
+        wnew = psopen(fname, "r").read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
         os.remove(fname)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

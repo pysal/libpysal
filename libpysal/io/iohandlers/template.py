@@ -5,19 +5,20 @@
 """
 
 from .. import fileio as FileIO
+
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
-__all__ = ['TemplateWriter', 'TemplateReaderWriter']
+__all__ = ["TemplateWriter", "TemplateReaderWriter"]
 
 
 # Always subclass FileIO
 class TemplateWriter(FileIO.FileIO):
-    #REQUIRED, List the formats this class supports.
-    FORMATS = ['foo']
-    #REQUIRED, List the modes supported by this class.
+    # REQUIRED, List the formats this class supports.
+    FORMATS = ["foo"]
+    # REQUIRED, List the modes supported by this class.
     # One class can support both reading and writing.
     # For simplicity this class will only support one.
     # You could support custom modes, but these could be hard to document.
-    MODES = ['w']
+    MODES = ["w"]
 
     # use .__init__ to open any need file handlers
     def __init__(self, *args, **kwargs):
@@ -29,7 +30,7 @@ class TemplateWriter(FileIO.FileIO):
 
         self.fileObj = open(self.dataPath, self.mode)
 
-    #writers must subclass .write
+    # writers must subclass .write
     def write(self, obj):
         """ .write method of the 'foobar' template, receives an obj """
 
@@ -40,50 +41,57 @@ class TemplateWriter(FileIO.FileIO):
         # we will support writing string objects in this example, all string are derived from basestring...
         if issubclass(type(obj), str):
 
-            #Non-essential ...
+            # Non-essential ...
             def foobar(c):
-                if c in 'foobar':
+                if c in "foobar":
                     return True
                 else:
                     return False
-            result = list(filter(foobar, obj))  # e.g.   'foobara' == filter(foobar,'my little foobar example')
 
-            #do the actual writing...
-            self.fileObj.write(result + '\n')
-            #REQUIRED, increment the internal pos pointer.
+            result = list(
+                filter(foobar, obj)
+            )  # e.g.   'foobara' == filter(foobar,'my little foobar example')
+
+            # do the actual writing...
+            self.fileObj.write(result + "\n")
+            # REQUIRED, increment the internal pos pointer.
             self.pos += 1
 
         else:
             raise TypeError("Expected a string, got: %s" % (type(obj)))
 
-    #default is to raise "NotImplementedError"
+    # default is to raise "NotImplementedError"
     def flush(self):
         self._complain_ifclosed(self.closed)
         self.fileObj.flush()
 
-    #REQUIRED
+    # REQUIRED
     def close(self):
         self.fileObj.close()
-        #clean up the parent class too....
+        # clean up the parent class too....
         FileIO.close(self)
 
 
 class TemplateReaderWriter(FileIO.FileIO):
-    FORMATS = ['bar']
-    MODES = ['r', 'w']
+    FORMATS = ["bar"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
         FileIO.__init__(self, *args, **kwargs)
         self.fileObj = open(self.dataPath, self.mode)
-    #Notice reading is a bit different
+
+    # Notice reading is a bit different
 
     def _filter(self, st):
         def foobar(c):
-            if c in 'foobar':
+            if c in "foobar":
                 return True
             else:
                 return False
-        return list(filter(foobar, st))  # e.g.   'foobara' == filter(foobar,'my little foobar example')
+
+        return list(
+            filter(foobar, st)
+        )  # e.g.   'foobara' == filter(foobar,'my little foobar example')
 
     def _read(self):
         """ the _read method should return only ONE object and raise StopIteration at the EOF."""
@@ -91,7 +99,7 @@ class TemplateReaderWriter(FileIO.FileIO):
         obj = self._filter(line)
         self.pos += 1  # REQUIRED
         if line:
-            return obj + '\n'
+            return obj + "\n"
         else:
             raise StopIteration  # REQUIRED
 
@@ -100,7 +108,7 @@ class TemplateReaderWriter(FileIO.FileIO):
         self._complain_ifclosed(self.closed)
         if issubclass(type(obj), str):
             result = self._filter(obj)
-            self.fileObj.write(result + '\n')
+            self.fileObj.write(result + "\n")
             self.pos += 1
         else:
             raise TypeError("Expected a string, got: %s" % (type(obj)))
@@ -114,31 +122,33 @@ class TemplateReaderWriter(FileIO.FileIO):
         FileIO.close(self)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     "note, by running OR importing this module it's automatically added to the pysal fileIO registry."
     pysal.open.check()
 
-    lines = ['This is an example of template FileIO classes',
-             'Each call to write expects a string object',
-             'that string is filtered and only letters "f,o,b,a,r" are kept',
-             'these kept letters are written to the file and a new line char is appends to each line',
-             'likewise the reader filters each line from a file']
-    f = pysal.open('test.foo', 'w')
+    lines = [
+        "This is an example of template FileIO classes",
+        "Each call to write expects a string object",
+        'that string is filtered and only letters "f,o,b,a,r" are kept',
+        "these kept letters are written to the file and a new line char is appends to each line",
+        "likewise the reader filters each line from a file",
+    ]
+    f = pysal.open("test.foo", "w")
     for line in lines:
         f.write(line)
     f.close()
 
-    f = pysal.open('test.bar', 'w')
+    f = pysal.open("test.bar", "w")
     for line in lines:
         f.write(line)
     f.close()
 
-    f = pysal.open('test.bar', 'r')
-    s = ''.join(f.read())
+    f = pysal.open("test.bar", "r")
+    s = "".join(f.read())
     f.close()
     print(s)
 
-    f = open('test.foo', 'r')
+    f = open("test.foo", "r")
     s2 = f.read()
     f.close()
     print(s == s2)

@@ -3,16 +3,38 @@ Handle local builtin datasets
 """
 
 import os
-from .base import  get_list_of_files
-
+from .base import get_list_of_files
 
 
 dirs = [
-    "10740", "arcgis", "baltim", "berlin", "book", "burkitt", "calemp",
-    "chicago", "columbus", "desmith", "geodanet", "georgia",
-    "juvenile", "Line", "mexico", "networks", "Point", "Polygon",
-    "Polygon_Holes", "sids2", "snow_maps", "stl", "street_net_pts", "tests",
-    "tokyo", "us_income", "virginia", "wmat"
+    "10740",
+    "arcgis",
+    "baltim",
+    "berlin",
+    "book",
+    "burkitt",
+    "calemp",
+    "chicago",
+    "columbus",
+    "desmith",
+    "geodanet",
+    "georgia",
+    "juvenile",
+    "Line",
+    "mexico",
+    "networks",
+    "Point",
+    "Polygon",
+    "Polygon_Holes",
+    "sids2",
+    "snow_maps",
+    "stl",
+    "street_net_pts",
+    "tests",
+    "tokyo",
+    "us_income",
+    "virginia",
+    "wmat",
 ]
 
 
@@ -20,6 +42,7 @@ class LocalExample:
     """
     Builtin pysal example dataset
     """
+
     def __init__(self, name, dirname):
         self.name = name
         self.dirname = dirname
@@ -47,16 +70,14 @@ class LocalExample:
         Provide a description of the example
         """
         description = [f for f in self.get_file_list() if "README.md" in f][0]
-        with open(description, 'r', encoding="utf8") as f:
+        with open(description, "r", encoding="utf8") as f:
             print(f.read())
 
     def get_description(self):
         description = [f for f in self.get_file_list() if "README.md" in f][0]
-        with open(description, 'r', encoding="utf8") as f:
+        with open(description, "r", encoding="utf8") as f:
             lines = f.readlines()
         return lines[3].strip()
-
-
 
 
 builtin_root = os.path.dirname(__file__)

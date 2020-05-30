@@ -8,11 +8,12 @@ from sys import version as V
 
 PY3 = int(V[0]) > 2
 
+
 class test_csvWrapper(unittest.TestCase):
     def setUp(self):
-        stl = pysal_examples.load_example('stl')
-        self.test_file = test_file = stl.get_path('stl_hom.csv')
-        self.obj = csvWrapper.csvWrapper(test_file, 'r')
+        stl = pysal_examples.load_example("stl")
+        self.test_file = test_file = stl.get_path("stl_hom.csv")
+        self.obj = csvWrapper.csvWrapper(test_file, "r")
 
     def test_len(self):
         self.assertEqual(len(self.obj), 78)
@@ -45,8 +46,25 @@ class test_csvWrapper(unittest.TestCase):
             self.assertEqual(rowA, rowB)
 
     def test_casting(self):
-        self.obj.cast('WKT', WKTParser())
-        verts = [(-89.585220336914062, 39.978794097900391), (-89.581146240234375, 40.094867706298828), (-89.603988647460938, 40.095306396484375), (-89.60589599609375, 40.136119842529297), (-89.6103515625, 40.3251953125), (-89.269027709960938, 40.329566955566406), (-89.268562316894531, 40.285579681396484), (-89.154655456542969, 40.285774230957031), (-89.152763366699219, 40.054969787597656), (-89.151618957519531, 39.919403076171875), (-89.224777221679688, 39.918678283691406), (-89.411857604980469, 39.918041229248047), (-89.412437438964844, 39.931644439697266), (-89.495201110839844, 39.933486938476562), (-89.4927978515625, 39.980186462402344), (-89.585220336914062, 39.978794097900391)]
+        self.obj.cast("WKT", WKTParser())
+        verts = [
+            (-89.585220336914062, 39.978794097900391),
+            (-89.581146240234375, 40.094867706298828),
+            (-89.603988647460938, 40.095306396484375),
+            (-89.60589599609375, 40.136119842529297),
+            (-89.6103515625, 40.3251953125),
+            (-89.269027709960938, 40.329566955566406),
+            (-89.268562316894531, 40.285579681396484),
+            (-89.154655456542969, 40.285774230957031),
+            (-89.152763366699219, 40.054969787597656),
+            (-89.151618957519531, 39.919403076171875),
+            (-89.224777221679688, 39.918678283691406),
+            (-89.411857604980469, 39.918041229248047),
+            (-89.412437438964844, 39.931644439697266),
+            (-89.495201110839844, 39.933486938476562),
+            (-89.4927978515625, 39.980186462402344),
+            (-89.585220336914062, 39.978794097900391),
+        ]
         if PY3:
             for i, pt in enumerate(self.obj.__next__()[0].vertices):
                 self.assertEqual(pt[:], verts[i])
@@ -60,11 +78,12 @@ class test_csvWrapper(unittest.TestCase):
 
     def test_slicing(self):
         chunk = self.obj[50:55, 1:3]
-        self.assertEqual(chunk[0], ['Jefferson', 'Missouri'])
-        self.assertEqual(chunk[1], ['Jefferson', 'Illinois'])
-        self.assertEqual(chunk[2], ['Miller', 'Missouri'])
-        self.assertEqual(chunk[3], ['Maries', 'Missouri'])
-        self.assertEqual(chunk[4], ['White', 'Illinois'])
+        self.assertEqual(chunk[0], ["Jefferson", "Missouri"])
+        self.assertEqual(chunk[1], ["Jefferson", "Illinois"])
+        self.assertEqual(chunk[2], ["Miller", "Missouri"])
+        self.assertEqual(chunk[3], ["Maries", "Missouri"])
+        self.assertEqual(chunk[4], ["White", "Illinois"])
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -1,6 +1,7 @@
-nose
-nose-progressive
-nose-exclude
 coverage
-sphinx>=1.4.3
 coveralls
+nose
+nose-exclude
+nose-progressive
+pre-commit
+sphinx>=1.4.3

@@ -10,7 +10,7 @@ from scipy.spatial import Voronoi
 
 __author__ = "Serge Rey <sjsrey@gmail.com>"
 
-__all__ = ['voronoi_frames']
+__all__ = ["voronoi_frames"]
 
 
 def voronoi(points, radius=None):
@@ -161,25 +161,24 @@ def as_dataframes(regions, vertices, points):
 
     if gpd is not None:
         region_df = gpd.GeoDataFrame()
-        region_df['geometry'] = [
-            Polygon(vertices[region]) for region in regions
-        ]
+        region_df["geometry"] = [Polygon(vertices[region]) for region in regions]
 
         point_df = gpd.GeoDataFrame()
-        point_df['geometry'] = gpd.GeoSeries(Point(pnt) for pnt in points)
+        point_df["geometry"] = gpd.GeoSeries(Point(pnt) for pnt in points)
     else:
         import pandas as pd
+
         region_df = pd.DataFrame()
-        region_df['geometry'] = [
+        region_df["geometry"] = [
             Polygon(vertices[region].tolist()) for region in regions
         ]
         point_df = pd.DataFrame()
-        point_df['geometry'] = [Point(pnt) for pnt in points]
+        point_df["geometry"] = [Point(pnt) for pnt in points]
 
     return region_df, point_df
 
 
-def voronoi_frames(points, radius=None, clip='extent'):
+def voronoi_frames(points, radius=None, clip="extent"):
     """
     Composite helper to return Voronoi regions and generator points as individual dataframes
 
@@ -241,7 +240,7 @@ def voronoi_frames(points, radius=None, clip='extent'):
     return regions, vertices
 
 
-def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
+def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
     """
     Arguments
     ---------
@@ -277,34 +276,48 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
     try:
         import geopandas
     except ImportError:
-        raise ImportError('geopandas is required to clip voronoi regions')
+        raise ImportError("geopandas is required to clip voronoi regions")
 
     if isinstance(clip, Polygon):
         clipper = geopandas.GeoDataFrame(geometry=[clip])
     elif clip is None:
         return regions
-    elif clip.lower() == 'none':
+    elif clip.lower() == "none":
         return regions
-    elif clip.lower() in ('bounds', 'bounding box', 'bbox', 'extent'):
+    elif clip.lower() in ("bounds", "bounding box", "bbox", "extent"):
         min_x, min_y, max_x, max_y = vertices.total_bounds
-        bounding_poly = Polygon([(min_x, min_y), (min_x, max_y),
-                                 (max_x, max_y), (max_x, min_y),
-                                 (min_x, min_y)])
+        bounding_poly = Polygon(
+            [
+                (min_x, min_y),
+                (min_x, max_y),
+                (max_x, max_y),
+                (max_x, min_y),
+                (min_x, min_y),
+            ]
+        )
         clipper = geopandas.GeoDataFrame(geometry=[bounding_poly])
-    elif clip.lower() in ('chull', 'convex hull', 'convex_hull'):
-        clipper = geopandas.GeoDataFrame(geometry=[vertices.geometry\
-                                                           .unary_union\
-                                                           .convex_hull])
-    elif clip.lower() in ('ahull', 'alpha hull', 'alpha_hull', 'ashape',
-                          'alpha shape', 'alpha_shape'):
+    elif clip.lower() in ("chull", "convex hull", "convex_hull"):
+        clipper = geopandas.GeoDataFrame(
+            geometry=[vertices.geometry.unary_union.convex_hull]
+        )
+    elif clip.lower() in (
+        "ahull",
+        "alpha hull",
+        "alpha_hull",
+        "ashape",
+        "alpha shape",
+        "alpha_shape",
+    ):
         from .alpha_shapes import alpha_shape_auto
         from ..weights.distance import get_points_array
+
         coordinates = get_points_array(vertices.geometry)
-        clipper = geopandas.GeoDataFrame(
-            geometry=[alpha_shape_auto(coordinates)])
+        clipper = geopandas.GeoDataFrame(geometry=[alpha_shape_auto(coordinates)])
     else:
-        raise ValueError('clip type "{}" not understood. Try one '
-                         ' of the supported options: [None, "extent", '
-                         '"chull", "ahull"]'.format(clip))
-    clipped_regions = geopandas.overlay(regions, clipper, how='intersection')
+        raise ValueError(
+            'clip type "{}" not understood. Try one '
+            ' of the supported options: [None, "extent", '
+            '"chull", "ahull"]'.format(clip)
+        )
+    clipped_regions = geopandas.overlay(regions, clipper, how="intersection")
     return clipped_regions

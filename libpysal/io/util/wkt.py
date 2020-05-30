@@ -2,7 +2,8 @@ from ... import cg
 import re
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
-__all__ = ['WKTParser']
+__all__ = ["WKTParser"]
+
 
 class WKTParser:
     """ Class to represent OGC WKT, supports reading and writing
@@ -56,39 +57,40 @@ class WKTParser:
     See local doctest output for the items not tested...
 
     """
+
     regExes = {
-        'typeStr': re.compile(r'^\s*([\w\s]+)\s*\(\s*(.*)\s*\)\s*$'),
-        'spaces': re.compile(r'\s+'),
-        'parenComma': re.compile(r'\)\s*,\s*\('),
-        'doubleParenComma': re.compile(r'\)\s*\)\s*,\s*\(\s*\('),  # can't use {2} here
-        'trimParens': re.compile(r'^\s*\(?(.*?)\)?\s*$'),
+        "typeStr": re.compile(r"^\s*([\w\s]+)\s*\(\s*(.*)\s*\)\s*$"),
+        "spaces": re.compile(r"\s+"),
+        "parenComma": re.compile(r"\)\s*,\s*\("),
+        "doubleParenComma": re.compile(r"\)\s*\)\s*,\s*\(\s*\("),  # can't use {2} here
+        "trimParens": re.compile(r"^\s*\(?(.*?)\)?\s*$"),
     }
 
     def __init__(self):
         self.parsers = p = {}
-        p['point'] = self.Point
-        p['linestring'] = self.LineString
-        p['polygon'] = self.Polygon
+        p["point"] = self.Point
+        p["linestring"] = self.LineString
+        p["polygon"] = self.Polygon
 
     def Point(self, geoStr):
-        coords = self.regExes['spaces'].split(geoStr.strip())
+        coords = self.regExes["spaces"].split(geoStr.strip())
         return cg.Point((coords[0], coords[1]))
 
     def LineString(self, geoStr):
-        points = geoStr.strip().split(',')
+        points = geoStr.strip().split(",")
         points = list(map(self.Point, points))
         return cg.Chain(points)
 
     def Polygon(self, geoStr):
-        rings = self.regExes['parenComma'].split(geoStr.strip())
+        rings = self.regExes["parenComma"].split(geoStr.strip())
         for i, ring in enumerate(rings):
-            ring = self.regExes['trimParens'].match(ring).groups()[0]
+            ring = self.regExes["trimParens"].match(ring).groups()[0]
             ring = self.LineString(ring).vertices
             rings[i] = ring
         return cg.Polygon(rings)
 
     def fromWKT(self, wkt):
-        matches = self.regExes['typeStr'].match(wkt)
+        matches = self.regExes["typeStr"].match(wkt)
         if matches:
             geoType, geoStr = matches.groups()
             geoType = geoType.lower().strip()
@@ -98,20 +100,25 @@ class WKTParser:
                 raise NotImplementedError("Unsupported WKT Type: %s" % geoType)
         else:
             return None
+
     __call__ = fromWKT
-if __name__ == '__main__':
-    p = 'POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))'
-    pt = 'POINT(6 10)'
-    l = 'LINESTRING(3 4,10 50,20 25)'
-    wktExamples = ['POINT(6 10)',
-                   'LINESTRING(3 4,10 50,20 25)',
-                   'POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))',
-                   'MULTIPOINT(3.5 5.6,4.8 10.5)',
-                   'MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4))',
-                   'MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))',
-                   'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))',
-                   'POINT ZM (1 1 5 60)',
-                   'POINT M (1 1 80)',
-                   'POINT EMPTY',
-                   'MULTIPOLYGON EMPTY']
+
+
+if __name__ == "__main__":
+    p = "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))"
+    pt = "POINT(6 10)"
+    l = "LINESTRING(3 4,10 50,20 25)"
+    wktExamples = [
+        "POINT(6 10)",
+        "LINESTRING(3 4,10 50,20 25)",
+        "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))",
+        "MULTIPOINT(3.5 5.6,4.8 10.5)",
+        "MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4))",
+        "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))",
+        "GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))",
+        "POINT ZM (1 1 5 60)",
+        "POINT M (1 1 80)",
+        "POINT EMPTY",
+        "MULTIPOLYGON EMPTY",
+    ]
     wkt = WKTParser()

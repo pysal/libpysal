@@ -7,6 +7,7 @@ import os
 try:
     import geopandas
     from shapely import geometry
+
     GEOPANDAS_EXTINCT = False
 except ImportError:
     GEOPANDAS_EXTINCT = True
@@ -14,26 +15,51 @@ except ImportError:
 this_directory = os.path.dirname(__file__)
 
 
-@skipIf(GEOPANDAS_EXTINCT, 'Geopandas is missing, so test will not run')
+@skipIf(GEOPANDAS_EXTINCT, "Geopandas is missing, so test will not run")
 class Test_Alpha_Shapes(TestCase):
     def setUp(self):
-        eberly = geopandas.read_file(get_path('eberly_net.shp'))
-        eberly_vertices = eberly.geometry.apply(lambda x: np.hstack(x.xy).reshape(2, 2).T).values
+        eberly = geopandas.read_file(get_path("eberly_net.shp"))
+        eberly_vertices = eberly.geometry.apply(
+            lambda x: np.hstack(x.xy).reshape(2, 2).T
+        ).values
         eberly_vertices = np.vstack(eberly_vertices)
         self.vertices = eberly_vertices
 
-        self.a05 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_05.shp')).geometry.to_numpy().item()
-        self.a10 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_tenth.shp')).geometry.to_numpy().item()
-        self.a2  = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fifth.shp')).geometry.to_numpy().item()
-        self.a25 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fourth.shp')).geometry.to_numpy().item()
-        self.a25 = geopandas.read_file(os.path.join(this_directory, 'data/alpha_fourth.shp')).geometry.to_numpy().item()
+        self.a05 = (
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_05.shp"))
+            .geometry.to_numpy()
+            .item()
+        )
+        self.a10 = (
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_tenth.shp"))
+            .geometry.to_numpy()
+            .item()
+        )
+        self.a2 = (
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_fifth.shp"))
+            .geometry.to_numpy()
+            .item()
+        )
+        self.a25 = (
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_fourth.shp"))
+            .geometry.to_numpy()
+            .item()
+        )
+        self.a25 = (
+            geopandas.read_file(os.path.join(this_directory, "data/alpha_fourth.shp"))
+            .geometry.to_numpy()
+            .item()
+        )
 
-        self.autoalpha = geopandas.read_file(os.path.join(this_directory, 'data/alpha_auto.shp')).geometry[0]
+        self.autoalpha = geopandas.read_file(
+            os.path.join(this_directory, "data/alpha_auto.shp")
+        ).geometry[0]
+
     def test_alpha_shapes(self):
-        new_a05 = alpha_shape(self.vertices, .05).to_numpy().item()
-        new_a10 = alpha_shape(self.vertices, .10).to_numpy().item()
-        new_a2  = alpha_shape(self.vertices, .2).to_numpy().item()
-        new_a25 = alpha_shape(self.vertices, .25).to_numpy().item()
+        new_a05 = alpha_shape(self.vertices, 0.05).to_numpy().item()
+        new_a10 = alpha_shape(self.vertices, 0.10).to_numpy().item()
+        new_a2 = alpha_shape(self.vertices, 0.2).to_numpy().item()
+        new_a25 = alpha_shape(self.vertices, 0.25).to_numpy().item()
 
         assert new_a05.equals(self.a05)
         assert new_a10.equals(self.a10)
@@ -46,9 +72,9 @@ class Test_Alpha_Shapes(TestCase):
         assert self.autoalpha.equals(auto_alpha)
 
     def test_small_n(self):
-        new_singleton = alpha_shape(self.vertices[0].reshape(1,-1), .5)
+        new_singleton = alpha_shape(self.vertices[0].reshape(1, -1), 0.5)
         assert isinstance(new_singleton, geometry.Polygon)
-        new_duo = alpha_shape(self.vertices[:1], .5)
+        new_duo = alpha_shape(self.vertices[:1], 0.5)
         assert isinstance(new_duo, geometry.Polygon)
-        new_triple = alpha_shape(self.vertices[:2], .5)
+        new_triple = alpha_shape(self.vertices[:2], 0.5)
         assert isinstance(new_triple, geometry.Polygon)

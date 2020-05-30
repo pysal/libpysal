@@ -839,9 +839,9 @@ class W(object):
             for j, neigh_list in list(self.neighbors.items()):
                 self.__neighbors_0[j] = [id2i[neigh] for neigh in neigh_list]
             self._cache["neighbors_0"] = self.__neighbors_0
-        
+
         neighbor_list = self.__neighbors_0
-        
+
         return neighbor_list
 
     def get_transform(self):

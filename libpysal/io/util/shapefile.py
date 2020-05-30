@@ -22,17 +22,17 @@ import sys
 import io
 
 
-if sys.byteorder == 'little':
-    SYS_BYTE_ORDER = '<'
+if sys.byteorder == "little":
+    SYS_BYTE_ORDER = "<"
 else:
-    SYS_BYTE_ORDER = '>'
+    SYS_BYTE_ORDER = ">"
 STRUCT_ITEMSIZE = {}
-STRUCT_ITEMSIZE['i'] = calcsize('i')
-STRUCT_ITEMSIZE['d'] = calcsize('d')
+STRUCT_ITEMSIZE["i"] = calcsize("i")
+STRUCT_ITEMSIZE["d"] = calcsize("d")
 
-__all__ = ['shp_file', 'shx_file']
+__all__ = ["shp_file", "shx_file"]
 
-#SHAPEFILE Globals
+# SHAPEFILE Globals
 
 
 def struct2arrayinfo(struct):
@@ -45,44 +45,51 @@ def struct2arrayinfo(struct):
     lname, ltype, lorder = struct.pop(0)
     groups = {}
     g = 0
-    groups[g] = {'names': [lname], 'size': STRUCT_ITEMSIZE[ltype],
-                 'fmt': ltype, 'order': lorder}
+    groups[g] = {
+        "names": [lname],
+        "size": STRUCT_ITEMSIZE[ltype],
+        "fmt": ltype,
+        "order": lorder,
+    }
     while struct:
         name, type, order = struct.pop(0)
         if order == lorder:
-            groups[g]['names'].append(name)
-            groups[g]['size'] += STRUCT_ITEMSIZE[type]
-            groups[g]['fmt'] += type
+            groups[g]["names"].append(name)
+            groups[g]["size"] += STRUCT_ITEMSIZE[type]
+            groups[g]["fmt"] += type
         else:
             g += 1
-            groups[g] = {'names': [name], 'size': STRUCT_ITEMSIZE[
-                type], 'fmt': type, 'order': order}
+            groups[g] = {
+                "names": [name],
+                "size": STRUCT_ITEMSIZE[type],
+                "fmt": type,
+                "order": order,
+            }
         lname, ltype, lorder = name, type, order
     return [groups[x] for x in range(g + 1)]
 
 
 HEADERSTRUCT = (
-    ('File Code', 'i', '>'),
-    ('Unused0', 'i', '>'),
-    ('Unused1', 'i', '>'),
-    ('Unused2', 'i', '>'),
-    ('Unused3', 'i', '>'),
-    ('Unused4', 'i', '>'),
-    ('File Length', 'i', '>'),
-    ('Version', 'i', '<'),
-    ('Shape Type', 'i', '<'),
-    ('BBOX Xmin', 'd', '<'),
-    ('BBOX Ymin', 'd', '<'),
-    ('BBOX Xmax', 'd', '<'),
-    ('BBOX Ymax', 'd', '<'),
-    ('BBOX Zmin', 'd', '<'),
-    ('BBOX Zmax', 'd', '<'),
-    ('BBOX Mmin', 'd', '<'),
-    ('BBOX Mmax', 'd', '<'))
+    ("File Code", "i", ">"),
+    ("Unused0", "i", ">"),
+    ("Unused1", "i", ">"),
+    ("Unused2", "i", ">"),
+    ("Unused3", "i", ">"),
+    ("Unused4", "i", ">"),
+    ("File Length", "i", ">"),
+    ("Version", "i", "<"),
+    ("Shape Type", "i", "<"),
+    ("BBOX Xmin", "d", "<"),
+    ("BBOX Ymin", "d", "<"),
+    ("BBOX Xmax", "d", "<"),
+    ("BBOX Ymax", "d", "<"),
+    ("BBOX Zmin", "d", "<"),
+    ("BBOX Zmax", "d", "<"),
+    ("BBOX Mmin", "d", "<"),
+    ("BBOX Mmax", "d", "<"),
+)
 UHEADERSTRUCT = struct2arrayinfo(HEADERSTRUCT)
-RHEADERSTRUCT = (
-    ('Record Number', 'i', '>'),
-    ('Content Length', 'i', '>'))
+RHEADERSTRUCT = (("Record Number", "i", ">"), ("Content Length", "i", ">"))
 URHEADERSTRUCT = struct2arrayinfo(RHEADERSTRUCT)
 
 
@@ -132,9 +139,8 @@ def _unpackDict(structure, fileObj):
     """
     d = {}
     for struct in structure:
-        items = unpack(struct['order'] + struct['fmt'],
-                       fileObj.read(struct['size']))
-        for i, name in enumerate(struct['names']):
+        items = unpack(struct["order"] + struct["fmt"], fileObj.read(struct["size"]))
+        for i, name in enumerate(struct["names"]):
             d[name] = items[i]
     return d
 
@@ -180,7 +186,7 @@ def _packDict(structure, d):
     (1, 2)
     
     """
-    string = b''
+    string = b""
     for name, dtype, order in structure:
         if len(dtype) > 1:
             string += pack(order + dtype, *d[name])
@@ -204,37 +210,56 @@ class shp_file:
     The header of both the SHP and SHX files are indentical.
     
     """
-    SHAPE_TYPES = {'POINT': 1, 'ARC': 3, 'POLYGON': 5, 'MULTIPOINT': 8, 'POINTZ': 11, 'ARCZ': 13, 'POLYGONZ': 15, 'MULTIPOINTZ': 18, 'POINTM': 21, 'ARCM': 23, 'POLYGONM': 25, 'MULTIPOINTM': 28, 'MULTIPATCH': 31}
-    
+
+    SHAPE_TYPES = {
+        "POINT": 1,
+        "ARC": 3,
+        "POLYGON": 5,
+        "MULTIPOINT": 8,
+        "POINTZ": 11,
+        "ARCZ": 13,
+        "POLYGONZ": 15,
+        "MULTIPOINTZ": 18,
+        "POINTM": 21,
+        "ARCM": 23,
+        "POLYGONM": 25,
+        "MULTIPOINTM": 28,
+        "MULTIPATCH": 31,
+    }
+
     def __iswritable(self):
         try:
-            assert self.__mode == 'w'
+            assert self.__mode == "w"
         except AssertionError:
             raise IOError("[Errno 9] Bad file descriptor")
         return True
-    
+
     def __isreadable(self):
         try:
-            assert self.__mode == 'r'
+            assert self.__mode == "r"
         except AssertionError:
             raise IOError("[Errno 9] Bad file descriptor")
         return True
-    
-    def __init__(self, fileName, mode='r', shape_type=None):
+
+    def __init__(self, fileName, mode="r", shape_type=None):
         self.__mode = mode
-        if fileName.lower().endswith('.shp') or fileName.lower().endswith('.shx') or fileName.lower().endswith('.dbf'):
+        if (
+            fileName.lower().endswith(".shp")
+            or fileName.lower().endswith(".shx")
+            or fileName.lower().endswith(".dbf")
+        ):
             fileName = fileName[:-4]
         self.fileName = fileName
-    
-        if mode == 'r':
+
+        if mode == "r":
             self._open_shp_file()
-        elif mode == 'w':
+        elif mode == "w":
             if shape_type not in self.SHAPE_TYPES:
-                raise Exception('Attempt to create shp/shx file of invalid type')
+                raise Exception("Attempt to create shp/shx file of invalid type")
             self._create_shp_file(shape_type)
         else:
             raise Exception('Only "w" and "r" modes are supported')
-    
+
     def _open_shp_file(self):
         """Opens a shp/shx file.
         
@@ -260,19 +285,18 @@ class shp_file:
         """
         self.__isreadable()
         fileName = self.fileName
-        self.fileObj = open(fileName + '.shp', 'rb')
+        self.fileObj = open(fileName + ".shp", "rb")
         self._shx = shx_file(fileName)
         self.header = _unpackDict(UHEADERSTRUCT, self.fileObj)
-        self.shape = TYPE_DISPATCH[self.header['Shape Type']]
+        self.shape = TYPE_DISPATCH[self.header["Shape Type"]]
         self.__lastShape = 0
         # localizing for convenience
         self.__numRecords = self._shx.numRecords
         # constructing bounding box from header
         h = self.header
-        self.bbox = [h['BBOX Xmin'], h['BBOX Ymin'],
-                     h['BBOX Xmax'], h['BBOX Ymax']]
-        self.shapeType = self.header['Shape Type']
-    
+        self.bbox = [h["BBOX Xmin"], h["BBOX Ymin"], h["BBOX Xmax"], h["BBOX Ymax"]]
+        self.shapeType = self.header["Shape Type"]
+
     def _create_shp_file(self, shape_type):
         """Creates a shp/shx file.
         
@@ -307,40 +331,39 @@ class shp_file:
         """
         self.__iswritable()
         fileName = self.fileName
-        self.fileObj = open(fileName + '.shp', 'wb')
-        self._shx = shx_file(fileName, 'w')
+        self.fileObj = open(fileName + ".shp", "wb")
+        self._shx = shx_file(fileName, "w")
         self.header = {}
-        self.header['Shape Type'] = self.SHAPE_TYPES[shape_type]
-        self.header['Version'] = 1000
-        self.header['Unused0'] = 0
-        self.header['Unused1'] = 0
-        self.header['Unused2'] = 0
-        self.header['Unused3'] = 0
-        self.header['Unused4'] = 0
-        self.header['File Code'] = 9994
+        self.header["Shape Type"] = self.SHAPE_TYPES[shape_type]
+        self.header["Version"] = 1000
+        self.header["Unused0"] = 0
+        self.header["Unused1"] = 0
+        self.header["Unused2"] = 0
+        self.header["Unused3"] = 0
+        self.header["Unused4"] = 0
+        self.header["File Code"] = 9994
         self.__file_Length = 100
-        self.header['File Length'] = 0
-        self.header['BBOX Xmax'] = None
-        self.header['BBOX Ymax'] = None
-        self.header['BBOX Mmax'] = None
-        self.header['BBOX Zmax'] = None
-        self.header['BBOX Xmin'] = None
-        self.header['BBOX Ymin'] = None
-        self.header['BBOX Mmin'] = None
-        self.header['BBOX Zmin'] = None
-        self.shape = TYPE_DISPATCH[self.header['Shape Type']]
-        #self.__numRecords = self._shx.numRecords
-    
-    
+        self.header["File Length"] = 0
+        self.header["BBOX Xmax"] = None
+        self.header["BBOX Ymax"] = None
+        self.header["BBOX Mmax"] = None
+        self.header["BBOX Zmax"] = None
+        self.header["BBOX Xmin"] = None
+        self.header["BBOX Ymin"] = None
+        self.header["BBOX Mmin"] = None
+        self.header["BBOX Zmin"] = None
+        self.shape = TYPE_DISPATCH[self.header["Shape Type"]]
+        # self.__numRecords = self._shx.numRecords
+
     def __len__(self):
         return self.__numRecords
-    
+
     def __iter__(self):
         return self
-    
+
     def type(self):
         return self.shape.String_Type
-    
+
     def __next__(self):
         """returns the next shape in the shapefile
         
@@ -360,55 +383,55 @@ class shp_file:
         else:
             self.__lastShape = nextShape + 1
             return self.get_shape(nextShape)
-    
+
     def __seek(self, pos):
         if pos != self.fileObj.tell():
             self.fileObj.seek(pos)
-    
+
     def __read(self, pos, size):
         self.__isreadable()
         if pos != self.fileObj.tell():
             self.fileObj.seek(pos)
         return self.fileObj.read(size)
-    
+
     def get_shape(self, shpId):
         self.__isreadable()
         if shpId + 1 > self.__numRecords:
             raise IndexError
         fPosition, byts = self._shx.index[shpId]
         self.__seek(fPosition)
-        #the index does not include the 2 byte record header (which contains, Record ID and Content Length)
+        # the index does not include the 2 byte record header (which contains, Record ID and Content Length)
         rec_id, con_len = _unpackDict(URHEADERSTRUCT, self.fileObj)
         return self.shape.unpack(io.BytesIO(self.fileObj.read(byts)))
-        #return self.shape.unpack(self.fileObj.read(bytes))
-    
+        # return self.shape.unpack(self.fileObj.read(bytes))
+
     def __update_bbox(self, s):
         h = self.header
-        if s.get('Shape Type') == 1:
-            h['BBOX Xmax'] = noneMax(h['BBOX Xmax'], s.get('X'))
-            h['BBOX Ymax'] = noneMax(h['BBOX Ymax'], s.get('Y'))
-            h['BBOX Mmax'] = noneMax(h['BBOX Mmax'], s.get('M'))
-            h['BBOX Zmax'] = noneMax(h['BBOX Zmax'], s.get('Z'))
-            h['BBOX Xmin'] = noneMin(h['BBOX Xmin'], s.get('X'))
-            h['BBOX Ymin'] = noneMin(h['BBOX Ymin'], s.get('Y'))
-            h['BBOX Mmin'] = noneMin(h['BBOX Mmin'], s.get('M'))
-            h['BBOX Zmin'] = noneMin(h['BBOX Zmin'], s.get('Z'))
+        if s.get("Shape Type") == 1:
+            h["BBOX Xmax"] = noneMax(h["BBOX Xmax"], s.get("X"))
+            h["BBOX Ymax"] = noneMax(h["BBOX Ymax"], s.get("Y"))
+            h["BBOX Mmax"] = noneMax(h["BBOX Mmax"], s.get("M"))
+            h["BBOX Zmax"] = noneMax(h["BBOX Zmax"], s.get("Z"))
+            h["BBOX Xmin"] = noneMin(h["BBOX Xmin"], s.get("X"))
+            h["BBOX Ymin"] = noneMin(h["BBOX Ymin"], s.get("Y"))
+            h["BBOX Mmin"] = noneMin(h["BBOX Mmin"], s.get("M"))
+            h["BBOX Zmin"] = noneMin(h["BBOX Zmin"], s.get("Z"))
         else:
-            h['BBOX Xmax'] = noneMax(h['BBOX Xmax'], s.get('BBOX Xmax'))
-            h['BBOX Ymax'] = noneMax(h['BBOX Ymax'], s.get('BBOX Ymax'))
-            h['BBOX Mmax'] = noneMax(h['BBOX Mmax'], s.get('BBOX Mmax'))
-            h['BBOX Zmax'] = noneMax(h['BBOX Zmax'], s.get('BBOX Zmax'))
-            h['BBOX Xmin'] = noneMin(h['BBOX Xmin'], s.get('BBOX Xmin'))
-            h['BBOX Ymin'] = noneMin(h['BBOX Ymin'], s.get('BBOX Ymin'))
-            h['BBOX Mmin'] = noneMin(h['BBOX Mmin'], s.get('BBOX Mmin'))
-            h['BBOX Zmin'] = noneMin(h['BBOX Zmin'], s.get('BBOX Zmin'))
+            h["BBOX Xmax"] = noneMax(h["BBOX Xmax"], s.get("BBOX Xmax"))
+            h["BBOX Ymax"] = noneMax(h["BBOX Ymax"], s.get("BBOX Ymax"))
+            h["BBOX Mmax"] = noneMax(h["BBOX Mmax"], s.get("BBOX Mmax"))
+            h["BBOX Zmax"] = noneMax(h["BBOX Zmax"], s.get("BBOX Zmax"))
+            h["BBOX Xmin"] = noneMin(h["BBOX Xmin"], s.get("BBOX Xmin"))
+            h["BBOX Ymin"] = noneMin(h["BBOX Ymin"], s.get("BBOX Ymin"))
+            h["BBOX Mmin"] = noneMin(h["BBOX Mmin"], s.get("BBOX Mmin"))
+            h["BBOX Zmin"] = noneMin(h["BBOX Zmin"], s.get("BBOX Zmin"))
         if not self.shape.HASM:
-            self.header['BBOX Mmax'] = 0.0
-            self.header['BBOX Mmin'] = 0.0
+            self.header["BBOX Mmax"] = 0.0
+            self.header["BBOX Mmin"] = 0.0
         if not self.shape.HASZ:
-            self.header['BBOX Zmax'] = 0.0
-            self.header['BBOX Zmin'] = 0.0
-    
+            self.header["BBOX Zmax"] = 0.0
+            self.header["BBOX Zmin"] = 0.0
+
     def add_shape(self, s):
         self.__iswritable()
         self.__update_bbox(s)
@@ -417,13 +440,13 @@ class shp_file:
         self.__file_Length += con_len + 8
         rec_id, pos = self._shx.add_record(con_len)
         self.__seek(pos)
-        self.fileObj.write(pack('>ii', rec_id, con_len // 2))
+        self.fileObj.write(pack(">ii", rec_id, con_len // 2))
         self.fileObj.write(rec)
-    
+
     def close(self):
         self._shx.close(self.header)
-        if self.__mode == 'w':
-            self.header['File Length'] = self.__file_Length // 2
+        if self.__mode == "w":
+            self.header["File Length"] = self.__file_Length // 2
             self.__seek(0)
             self.fileObj.write(_packDict(HEADERSTRUCT, self.header))
         self.fileObj.close()
@@ -439,31 +462,36 @@ class shx_file:
     numRecords -- int -- Number of records
     
     """
+
     def __iswritable(self):
         try:
-            assert self.__mode == 'w'
+            assert self.__mode == "w"
         except AssertionError:
             raise IOError("[Errno 9] Bad file descriptor")
         return True
-    
+
     def __isreadable(self):
         try:
-            assert self.__mode == 'r'
+            assert self.__mode == "r"
         except AssertionError:
             raise IOError("[Errno 9] Bad file descriptor")
         return True
-    
-    def __init__(self, fileName=None, mode='r'):
+
+    def __init__(self, fileName=None, mode="r"):
         self.__mode = mode
-        if fileName.endswith('.shp') or fileName.endswith('.shx') or fileName.endswith('.dbf'):
+        if (
+            fileName.endswith(".shp")
+            or fileName.endswith(".shx")
+            or fileName.endswith(".dbf")
+        ):
             fileName = fileName[:-4]
         self.fileName = fileName
-        
-        if mode == 'r':
+
+        if mode == "r":
             self._open_shx_file()
-        elif mode == 'w':
+        elif mode == "w":
             self._create_shx_file()
-    
+
     def _open_shx_file(self):
         """Opens the SHX file.
         
@@ -487,16 +515,15 @@ class shx_file:
         
         """
         self.__isreadable()
-        self.fileObj = open(self.fileName + '.shx', 'rb')
+        self.fileObj = open(self.fileName + ".shx", "rb")
         self._header = _unpackDict(UHEADERSTRUCT, self.fileObj)
-        self.numRecords = numRecords = (self._header['File Length'] - 50) // 4
+        self.numRecords = numRecords = (self._header["File Length"] - 50) // 4
         index = {}
-        fmt = '>%di' % (2 * numRecords)
+        fmt = ">%di" % (2 * numRecords)
         size = calcsize(fmt)
         dat = unpack(fmt, self.fileObj.read(size))
-        self.index = [(dat[i] * 2, dat[i + 1] * 2) for i in range(
-            0, len(dat), 2)]
-    
+        self.index = [(dat[i] * 2, dat[i + 1] * 2) for i in range(0, len(dat), 2)]
+
     def _create_shx_file(self):
         """ Creates the SHX file.
         
@@ -517,14 +544,14 @@ class shx_file:
         True
         
         """
-        
+
         self.__iswritable()
-        self.fileObj = open(self.fileName + '.shx', 'wb')
+        self.fileObj = open(self.fileName + ".shx", "wb")
         self.numRecords = 0
         self.index = []
         self.__offset = 100  # length of header
         self.__next_rid = 1  # record IDs start at 1
-    
+
     def add_record(self, size):
         """Add a record to the shx index.
         
@@ -563,7 +590,7 @@ class shx_file:
         >>> os.remove('test.shx')
         
         """
-        
+
         self.__iswritable()
         pos = self.__offset
         rec_id = self.__next_rid
@@ -572,15 +599,14 @@ class shx_file:
         self.numRecords += 1
         self.__next_rid += 1
         return rec_id, pos
-    
+
     def close(self, header):
-        if self.__mode == 'w':
+        if self.__mode == "w":
             self.__iswritable()
-            header['File Length'] = (
-                self.numRecords * calcsize('>ii') + 100) // 2
+            header["File Length"] = (self.numRecords * calcsize(">ii") + 100) // 2
             self.fileObj.seek(0)
             self.fileObj.write(_packDict(HEADERSTRUCT, header))
-            fmt = '>%di' % (2 * self.numRecords)
+            fmt = ">%di" % (2 * self.numRecords)
             values = []
             for off, size in self.index:
                 values.extend([off // 2, size // 2])
@@ -590,13 +616,13 @@ class shx_file:
 
 class NullShape:
     Shape_Type = 0
-    STRUCT = (('Shape Type', 'i', '<'))
-    
+    STRUCT = ("Shape Type", "i", "<")
+
     def unpack(self):
         return None
-    
+
     def pack(self, x=None):
-        return pack('<i', 0)
+        return pack("<i", 0)
 
 
 class Point(object):
@@ -616,20 +642,20 @@ class Point(object):
     True
     
     """
+
     Shape_Type = 1
-    String_Type = 'POINT'
+    String_Type = "POINT"
     HASZ = False
     HASM = False
-    STRUCT = (('Shape Type', 'i', '<'),
-              ('X', 'd', '<'),
-              ('Y', 'd', '<'))
-    USTRUCT = [{'fmt': 'idd', 'order': '<', 'names': ['Shape Type',
-                                                      'X', 'Y'], 'size': 20}]
-    
+    STRUCT = (("Shape Type", "i", "<"), ("X", "d", "<"), ("Y", "d", "<"))
+    USTRUCT = [
+        {"fmt": "idd", "order": "<", "names": ["Shape Type", "X", "Y"], "size": 20}
+    ]
+
     @classmethod
     def unpack(cls, dat):
         return _unpackDict(cls.USTRUCT, dat)
-    
+
     @classmethod
     def pack(cls, record):
         rheader = _packDict(cls.STRUCT, record)
@@ -641,13 +667,21 @@ class PointZ(Point):
     String_Type = "POINTZ"
     HASZ = True
     HASM = True
-    STRUCT = (('Shape Type', 'i', '<'),
-              ('X', 'd', '<'),
-              ('Y', 'd', '<'),
-              ('Z', 'd', '<'),
-              ('M', 'd', '<'))
-    USTRUCT = [{'fmt': 'idddd', 'order': '<', 'names': ['Shape Type',
-                                                        'X', 'Y', 'Z', 'M'], 'size': 36}]
+    STRUCT = (
+        ("Shape Type", "i", "<"),
+        ("X", "d", "<"),
+        ("Y", "d", "<"),
+        ("Z", "d", "<"),
+        ("M", "d", "<"),
+    )
+    USTRUCT = [
+        {
+            "fmt": "idddd",
+            "order": "<",
+            "names": ["Shape Type", "X", "Y", "Z", "M"],
+            "size": 36,
+        }
+    ]
 
 
 class PolyLine:
@@ -667,46 +701,69 @@ class PolyLine:
     True
     
     """
+
     HASZ = False
     HASM = False
-    String_Type = 'ARC'
-    STRUCT = (('Shape Type', 'i', '<'),
-              ('BBOX Xmin', 'd', '<'),
-              ('BBOX Ymin', 'd', '<'),
-              ('BBOX Xmax', 'd', '<'),
-              ('BBOX Ymax', 'd', '<'),
-              ('NumParts', 'i', '<'),
-              ('NumPoints', 'i', '<'))
-    USTRUCT = [{'fmt': 'iddddii', 'order': '<', 'names': ['Shape Type', 'BBOX Xmin', 'BBOX Ymin', 'BBOX Xmax', 'BBOX Ymax', 'NumParts', 'NumPoints'], 'size': 44}]
-    
+    String_Type = "ARC"
+    STRUCT = (
+        ("Shape Type", "i", "<"),
+        ("BBOX Xmin", "d", "<"),
+        ("BBOX Ymin", "d", "<"),
+        ("BBOX Xmax", "d", "<"),
+        ("BBOX Ymax", "d", "<"),
+        ("NumParts", "i", "<"),
+        ("NumPoints", "i", "<"),
+    )
+    USTRUCT = [
+        {
+            "fmt": "iddddii",
+            "order": "<",
+            "names": [
+                "Shape Type",
+                "BBOX Xmin",
+                "BBOX Ymin",
+                "BBOX Xmax",
+                "BBOX Ymax",
+                "NumParts",
+                "NumPoints",
+            ],
+            "size": 44,
+        }
+    ]
+
     @classmethod
     def unpack(cls, dat):
         record = _unpackDict(cls.USTRUCT, dat)
-        contentStruct = (('Parts Index', ('i', record['NumParts']), '<'),
-                         ('Vertices', ('d', 2 * record['NumPoints']), '<'))
+        contentStruct = (
+            ("Parts Index", ("i", record["NumParts"]), "<"),
+            ("Vertices", ("d", 2 * record["NumPoints"]), "<"),
+        )
         _unpackDict2(record, contentStruct, dat)
-        #record['Vertices'] = [(record['Vertices'][i],record['Vertices'][i+1]) for i in xrange(0,record['NumPoints']*2,2)]
-        verts = record['Vertices']
-        #Next line is equivalent to: zip(verts[::2],verts[1::2])
-        record['Vertices'] = list(zip(
-            islice(verts, 0, None, 2), islice(verts, 1, None, 2)))
-        if not record['Parts Index']:
-            record['Parts Index'] = [0]
+        # record['Vertices'] = [(record['Vertices'][i],record['Vertices'][i+1]) for i in xrange(0,record['NumPoints']*2,2)]
+        verts = record["Vertices"]
+        # Next line is equivalent to: zip(verts[::2],verts[1::2])
+        record["Vertices"] = list(
+            zip(islice(verts, 0, None, 2), islice(verts, 1, None, 2))
+        )
+        if not record["Parts Index"]:
+            record["Parts Index"] = [0]
         return record
-        #partsIndex = list(partsIndex)
-        #partsIndex.append(None)
-        #parts = [vertices[partsIndex[i]:partsIndex[i+1]] for i in xrange(header['NumParts'])]
-    
+        # partsIndex = list(partsIndex)
+        # partsIndex.append(None)
+        # parts = [vertices[partsIndex[i]:partsIndex[i+1]] for i in xrange(header['NumParts'])]
+
     @classmethod
     def pack(cls, record):
         rheader = _packDict(cls.STRUCT, record)
-        contentStruct = (('Parts Index', '%di' % record['NumParts'], '<'),
-                         ('Vertices', '%dd' % (2 * record['NumPoints']), '<'))
+        contentStruct = (
+            ("Parts Index", "%di" % record["NumParts"], "<"),
+            ("Vertices", "%dd" % (2 * record["NumPoints"]), "<"),
+        )
         content = {}
-        content['Parts Index'] = record['Parts Index']
+        content["Parts Index"] = record["Parts Index"]
         verts = []
-        [verts.extend(vert) for vert in record['Vertices']]
-        content['Vertices'] = verts
+        [verts.extend(vert) for vert in record["Vertices"]]
+        content["Vertices"] = verts
         content = _packDict(contentStruct, content)
         return rheader + content
 
@@ -714,56 +771,78 @@ class PolyLine:
 class PolyLineZ(object):
     HASZ = True
     HASM = True
-    String_Type = 'ARC'
-    STRUCT = (('Shape Type', 'i', '<'),
-              ('BBOX Xmin', 'd', '<'),
-              ('BBOX Ymin', 'd', '<'),
-              ('BBOX Xmax', 'd', '<'),
-              ('BBOX Ymax', 'd', '<'),
-              ('NumParts', 'i', '<'),
-              ('NumPoints', 'i', '<'))
-    USTRUCT = [{'fmt': 'iddddii', 'order': '<', 'names': ['Shape Type', 'BBOX Xmin', 'BBOX Ymin', 'BBOX Xmax', 'BBOX Ymax', 'NumParts', 'NumPoints'], 'size': 44}]
-    
+    String_Type = "ARC"
+    STRUCT = (
+        ("Shape Type", "i", "<"),
+        ("BBOX Xmin", "d", "<"),
+        ("BBOX Ymin", "d", "<"),
+        ("BBOX Xmax", "d", "<"),
+        ("BBOX Ymax", "d", "<"),
+        ("NumParts", "i", "<"),
+        ("NumPoints", "i", "<"),
+    )
+    USTRUCT = [
+        {
+            "fmt": "iddddii",
+            "order": "<",
+            "names": [
+                "Shape Type",
+                "BBOX Xmin",
+                "BBOX Ymin",
+                "BBOX Xmax",
+                "BBOX Ymax",
+                "NumParts",
+                "NumPoints",
+            ],
+            "size": 44,
+        }
+    ]
+
     @classmethod
     def unpack(cls, dat):
         record = _unpackDict(cls.USTRUCT, dat)
-        contentStruct = (('Parts Index', ('i', record['NumParts']), '<'),
-                         ('Vertices', ('d', 2 * record['NumPoints']), '<'),
-                         ('Zmin', ('d', 1), '<'),
-                         ('Zmax', ('d', 1), '<'),
-                         ('Zarray', ('d', record['NumPoints']), '<'),
-                         ('Mmin', ('d', 1), '<'),
-                         ('Mmax', ('d', 1), '<'),
-                         ('Marray', ('d', record['NumPoints']), '<'),)
+        contentStruct = (
+            ("Parts Index", ("i", record["NumParts"]), "<"),
+            ("Vertices", ("d", 2 * record["NumPoints"]), "<"),
+            ("Zmin", ("d", 1), "<"),
+            ("Zmax", ("d", 1), "<"),
+            ("Zarray", ("d", record["NumPoints"]), "<"),
+            ("Mmin", ("d", 1), "<"),
+            ("Mmax", ("d", 1), "<"),
+            ("Marray", ("d", record["NumPoints"]), "<"),
+        )
         _unpackDict2(record, contentStruct, dat)
-        verts = record['Vertices']
-        record['Vertices'] = list(zip(
-            islice(verts, 0, None, 2), islice(verts, 1, None, 2)))
-        if not record['Parts Index']:
-            record['Parts Index'] = [0]
-        record['Zmin'] = record['Zmin'][0]
-        record['Zmax'] = record['Zmax'][0]
-        record['Mmin'] = record['Mmin'][0]
-        record['Mmax'] = record['Mmax'][0]
+        verts = record["Vertices"]
+        record["Vertices"] = list(
+            zip(islice(verts, 0, None, 2), islice(verts, 1, None, 2))
+        )
+        if not record["Parts Index"]:
+            record["Parts Index"] = [0]
+        record["Zmin"] = record["Zmin"][0]
+        record["Zmax"] = record["Zmax"][0]
+        record["Mmin"] = record["Mmin"][0]
+        record["Mmax"] = record["Mmax"][0]
         return record
-    
+
     @classmethod
     def pack(cls, record):
         rheader = _packDict(cls.STRUCT, record)
-        contentStruct = (('Parts Index', '%di' % record['NumParts'], '<'),
-                         ('Vertices', '%dd' % (2 * record['NumPoints']), '<'),
-                         ('Zmin', 'd', '<'),
-                         ('Zmax', 'd', '<'),
-                         ('Zarray', '%dd' % (record['NumPoints']), '<'),
-                         ('Mmin', 'd', '<'),
-                         ('Mmax', 'd', '<'),
-                         ('Marray', '%dd' % (record['NumPoints']), '<'))
+        contentStruct = (
+            ("Parts Index", "%di" % record["NumParts"], "<"),
+            ("Vertices", "%dd" % (2 * record["NumPoints"]), "<"),
+            ("Zmin", "d", "<"),
+            ("Zmax", "d", "<"),
+            ("Zarray", "%dd" % (record["NumPoints"]), "<"),
+            ("Mmin", "d", "<"),
+            ("Mmax", "d", "<"),
+            ("Marray", "%dd" % (record["NumPoints"]), "<"),
+        )
         content = {}
         content.update(record)
-        content['Parts Index'] = record['Parts Index']
+        content["Parts Index"] = record["Parts Index"]
         verts = []
-        [verts.extend(vert) for vert in record['Vertices']]
-        content['Vertices'] = verts
+        [verts.extend(vert) for vert in record["Vertices"]]
+        content["Vertices"] = verts
         content = _packDict(contentStruct, content)
         return rheader + content
 
@@ -785,61 +864,89 @@ class Polygon(PolyLine):
     True
     
     """
-    String_Type = 'POLYGON'
+
+    String_Type = "POLYGON"
 
 
 class MultiPoint:
     String_Type = "MULTIPOINT"
+
     def __init__(self):
         raise NotImplementedError("No MultiPoint support at this time.")
 
 
 class PolygonZ(PolyLineZ):
-    String_Type = 'POLYGONZ'
+    String_Type = "POLYGONZ"
 
 
 class MultiPointZ:
     String_Type = "MULTIPOINTZ"
+
     def __init__(self):
         raise NotImplementedError("No MultiPointZ support at this time.")
 
 
 class PointM:
     String_Type = "POINTM"
+
     def __init__(self):
         raise NotImplementedError("No PointM support at this time.")
 
 
 class PolyLineM:
     String_Type = "ARCM"
+
     def __init__(self):
         raise NotImplementedError("No PolyLineM support at this time.")
 
 
 class PolygonM:
     String_Type = "POLYGONM"
+
     def __init__(self):
         raise NotImplementedError("No PolygonM support at this time.")
 
 
 class MultiPointM:
     String_Type = "MULTIPOINTM"
+
     def __init__(self):
         raise NotImplementedError("No MultiPointM support at this time.")
 
 
 class MultiPatch:
     String_Type = "MULTIPATCH"
+
     def __init__(self):
         raise NotImplementedError("No MultiPatch support at this time.")
 
 
-TYPE_DISPATCH = {0: NullShape, 1: Point, 3: PolyLine, 5: Polygon,
-                 8: MultiPoint, 11: PointZ, 13: PolyLineZ, 15: PolygonZ,
-                 18: MultiPointZ, 21: PointM, 23: PolyLineM, 25: PolygonM,
-                 28: MultiPointM, 31: MultiPatch, 'POINT': Point,
-                 'POINTZ': PointZ, 'POINTM': PointM, 'ARC': PolyLine,
-                 'ARCZ': PolyLineZ, 'ARCM': PolyLineM, 'POLYGON': Polygon,
-                 'POLYGONZ': PolygonZ, 'POLYGONM': PolygonM,
-                 'MULTIPOINT': MultiPoint, 'MULTIPOINTZ': MultiPointZ,
-                 'MULTIPOINTM': MultiPointM, 'MULTIPATCH': MultiPatch}
+TYPE_DISPATCH = {
+    0: NullShape,
+    1: Point,
+    3: PolyLine,
+    5: Polygon,
+    8: MultiPoint,
+    11: PointZ,
+    13: PolyLineZ,
+    15: PolygonZ,
+    18: MultiPointZ,
+    21: PointM,
+    23: PolyLineM,
+    25: PolygonM,
+    28: MultiPointM,
+    31: MultiPatch,
+    "POINT": Point,
+    "POINTZ": PointZ,
+    "POINTM": PointM,
+    "ARC": PolyLine,
+    "ARCZ": PolyLineZ,
+    "ARCM": PolyLineM,
+    "POLYGON": Polygon,
+    "POLYGONZ": PolygonZ,
+    "POLYGONM": PolygonM,
+    "MULTIPOINT": MultiPoint,
+    "MULTIPOINTZ": MultiPointZ,
+    "MULTIPOINTM": MultiPointM,
+    "MULTIPATCH": MultiPatch,
+}
