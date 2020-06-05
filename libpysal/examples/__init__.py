@@ -13,23 +13,17 @@ example_manager.add_examples(builtin_datasets)
 
 
 def available():
-    """
-    List available datasets
-    """
+    """List available datasets."""
     return example_manager.available()
 
 
 def explain(name):
-    """
-    Explain a dataset by name
-    """
+    """Explain a dataset by name."""
     return example_manager.explain(name)
 
 
 def load_example(example_name):
-    """
-    Load example dataset instance
-    """
+    """Load example dataset instance."""
     return example_manager.load(example_name)
 
 
