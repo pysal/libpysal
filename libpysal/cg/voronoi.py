@@ -19,16 +19,13 @@ def voronoi(points, radius=None):
 
     Parameters
     ----------
-    
     points : array-like
         An nx2 array of points.
-
     radius : float (optional)
         The distance to 'points at infinity'.
 
     Returns
     -------
-    
     vor : tuple
         A two-element tuple consisting of a list and an array. Each element of
         the list contains the sequence of the indices of Voronoi vertices
@@ -66,16 +63,13 @@ def voronoi_regions(vor, radius=None):
 
     Parameters
     ----------
-
     vor : scipy.spatial.Voronoi
         A planar Voronoi diagram.
-
     radius : float (optional)
         Distance to 'points at infinity'.
     
     Returns
     -------
-    
     regions_vertices : tuple
         A two-element tuple consisting of a list of finite voronoi regions
         and an array Voronoi vertex coordinates.
@@ -139,23 +133,18 @@ def as_dataframes(regions, vertices, points):
 
     Parameters
     ----------
-
     regions : list
         Each element of the list contains sequence of the indexes of
         voronoi vertices composing a vornoi polygon (region).
-
     vertices : array
         The coordinates of the vornoi vertices.
-
     points : array-like
         The originator points.
 
     Returns
     -------
-
     region_df : geopandas.GeoDataFrame
         Finite Voronoi polygons as geometries.
-
     points_df : geopandas.GeoDataFrame
         Originator points as geometries.
     
@@ -196,13 +185,10 @@ def voronoi_frames(points, radius=None, clip="extent"):
 
     Parameters
     ----------
-
     points  : array-like
         The originator points.
-
     radius : float
         The distance to "points at infinity" used in building voronoi cells.
-
     clip : str, shapely.geometry.Polygon
         An overloaded option about how to clip the voronoi cells.
         The options are:
@@ -218,14 +204,12 @@ def voronoi_frames(points, radius=None, clip="extent"):
             contains all points (e.g. the smallest alphashape,
             using ``libpysal.cg.alpha_shape_auto``).
           - Polygon: Clip to an arbitrary Polygon.
-
     tolerance : float
         The percent of map width to use to buffer the extent of the map,
         if clipping (default: .01, or 1 percent).
 
     Returns
     -------
-
     reg_vtx : tuple
         Two ``geopandas.GeoDataFrame`` (or ``pandas.DataFrame`` if ``geopandas``
         is unavailable) objects--``(region_df, points_df)``--of finite 
@@ -268,13 +252,10 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
     
     Parameters
     ----------
-    
     regions : geopandas.GeoDataFrame
         A (geo)dataframe containing voronoi cells to clip.
-    
     vertices : geopandas.GeoDataFrame
         A (geo)dataframe containing vertices used to build voronoi cells.
-    
     clip : str, shapely.geometry.Polygon
         An overloaded option about how to clip the voronoi cells.
         The options are:
@@ -293,7 +274,6 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
     
     Returns
     -------
-    
     clipped_regions : geopandas.GeoDataFrame
         A ``geopandas.GeoDataFrame`` of clipped voronoi regions.
 
