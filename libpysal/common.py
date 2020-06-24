@@ -67,13 +67,11 @@ def simport(modname):
 
     Parameters
     ----------
-    
     modname : str
         Module name needed to import.
     
     Returns
     -------
-    
     _simport : tuple
         Either (True, Module) or (False, None) depending
         on whether the import succeeded.
@@ -118,19 +116,15 @@ def requires(*args, **kwargs):
 
     Parameters
     ----------
-    
     args : list
         Modules names as strings to import.
-    
     verbose : bool
         Set as ``True`` to print a warning message on import failure.
     
     Returns
     -------
-    
     inner : func
         The original function if all arg in args are importable.
-    
     passer : func
         A function that passes if ``inner`` fails.
     
