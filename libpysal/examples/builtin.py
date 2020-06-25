@@ -39,9 +39,7 @@ dirs = [
 
 
 class LocalExample:
-    """
-    Builtin pysal example dataset
-    """
+    """Builtin pysal example dataset."""
 
     def __init__(self, name, dirname):
         self.name = name
@@ -50,12 +48,12 @@ class LocalExample:
         self.description = self.get_description()
 
     def get_file_list(self):
+        """
+        """
         return get_list_of_files(self.dirname)
 
     def get_path(self, file_name, verbose=True):
-        """
-        get path for local file
-        """
+        """Get path for local file."""
         file_list = self.get_file_list()
         for file_path in file_list:
             base_name = os.path.basename(file_path)
@@ -66,14 +64,14 @@ class LocalExample:
         return None
 
     def explain(self):
-        """
-        Provide a description of the example
-        """
+        """Provide a description of the example."""
         description = [f for f in self.get_file_list() if "README.md" in f][0]
         with open(description, "r", encoding="utf8") as f:
             print(f.read())
 
     def get_description(self):
+        """
+        """
         description = [f for f in self.get_file_list() if "README.md" in f][0]
         with open(description, "r", encoding="utf8") as f:
             lines = f.readlines()

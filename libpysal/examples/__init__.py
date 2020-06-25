@@ -1,5 +1,5 @@
-"""
-The :mod:`libpysal.examples` module includes a number of small built-in example datasets as well as functions to fetch larger datasets.
+""" The :mod:`libpysal.examples` module includes a number of small built-in
+    example datasets as well as functions to fetch larger datasets.
 """
 from .base import example_manager
 from .remotes import datasets as remote_datasets
@@ -18,19 +18,19 @@ def available():
     return example_manager.available()
 
 
-def explain(name):
+def explain(name: str) -> str:
     """Explain a dataset by name."""
 
     return example_manager.explain(name)
 
 
-def load_example(example_name):
+def load_example(example_name: str):
     """Load example dataset instance."""
 
     return example_manager.load(example_name)
 
 
-def get_path(file_name):
+def get_path(file_name: str) -> str:
     """Get the path for a file by searching installed datasets."""
 
     installed = example_manager.get_installed_names()

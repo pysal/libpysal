@@ -28,7 +28,6 @@ def get_data_home():
     
     Returns
     -------
-    
     data_home : str
         The system path where the data is/will be stored.
      
@@ -46,11 +45,13 @@ def get_list_of_files(dir_name):
     
     Parameters
     ----------
-    
+    dir_name : 
+        ....
     
     Returns
     -------
-    
+    all_files : list
+        ....
     
     """
     # names in the given directory
@@ -81,6 +82,8 @@ def type_of_script():
     
     Returns
     -------
+    .... : str
+        ....
     
     """
 
@@ -102,35 +105,27 @@ class Example:
         
         Parameters
         ----------
-        
         name : 
             ....
-        
-        description  : 
+        description : 
             ....
-        
         n : 
             ....
-        
         k : 
             ....
-        
         download_url : 
             ....
-        
         explain_url : 
             ....
         
         Attributes
         ----------
-        
         root : str
             ....
-        
         installed : 
-        
+            ....
         zipfile : 
-        
+            ....
         """
 
         self.name = name
@@ -206,9 +201,7 @@ class Example:
         return None
 
     def json_dict(self):
-        """
-        container for example meta data
-        """
+        """Container for example meta data."""
         meta = {}
         meta["name"] = self.name
         meta["description"] = self.description
@@ -218,27 +211,20 @@ class Example:
         return meta
 
     def load(self, file_name):
-        """
-        dispatch to libpysal.io to open file
-        """
+        """Dispatch to libpysal.io to open file."""
         pth = self.get_path(file_name)
         if pth:
             return ps_open(pth)
 
 
 class Examples:
-    """
-    Manager for pysal example datasets.
-
-    """
+    """Manager for pysal example datasets."""
 
     def __init__(self):
         self.datasets = {}
 
     def add_examples(self, examples):
-        """
-        add examples to the set of datasets available
-        """
+        """Add examples to the set of datasets available."""
         self.datasets.update(examples)
 
     def explain(self, example_name):
@@ -248,9 +234,7 @@ class Examples:
             print("not available")
 
     def available(self):
-        """
-        report available datasets
-        """
+        """Report available datasets."""
         datasets = self.datasets
         names = list(datasets.keys())
         names.sort()
@@ -266,9 +250,7 @@ class Examples:
         print(datasets.to_string())
 
     def load(self, example_name):
-        """
-        load example dataset, download if not locally available
-        """
+        """Load example dataset, download if not locally available."""
         if example_name in self.datasets:
             example = self.datasets[example_name]
             if example.installed:
@@ -282,10 +264,7 @@ class Examples:
             return None
 
     def download_remotes(self):
-        """
-        Dowload all remotes
-
-        """
+        """Download all remotes."""
         names = list(self.remotes.keys())
         names.sort()
 
@@ -298,7 +277,7 @@ class Examples:
                 print("Example not downloaded: {}".format(name))
 
     def get_installed_names(self):
-        """Return names of all currently installed datasets"""
+        """Return names of all currently installed datasets."""
         ds = self.datasets
         return [name for name in ds if ds[name].installed]
 

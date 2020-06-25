@@ -94,9 +94,7 @@ datasets = poll_remotes()
 
 
 def download(datasets=datasets):
-    """
-    Download all known remotes
-    """
+    """Download all known remotes."""
     names = list(datasets.keys())
     names.sort()
     for name in names:
