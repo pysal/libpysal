@@ -16,7 +16,7 @@ def poll_remotes():
         Example datasets keyed by the dataset name.
         
     """
-    
+
     # Geoda Center Datasets
     url = "https://geodacenter.github.io/data-and-lab//"
     try:
