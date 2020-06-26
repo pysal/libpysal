@@ -16,7 +16,7 @@ import pandas
 from bs4 import BeautifulSoup
 from ..io import open as ps_open
 
-from typing import Union
+# from typing import Union ######################################################################################
 
 PYSALDATA = "pysal_data"
 
@@ -137,7 +137,8 @@ class Example:
 
         return join(path, self.root)
 
-    def get_path(self, file_name, verbose=True) -> Union[str, None]:
+    #def get_path(self, file_name, verbose=True) -> Union[str, None]: ######################################################################################
+    def get_path(self, file_name, verbose=True):
         """Get the path for local file."""
 
         file_list = self.get_file_list()
@@ -188,7 +189,8 @@ class Example:
             self.zipfile = archive
             self.installed = True
 
-    def get_file_list(self) -> Union[list, None]:
+    #def get_file_list(self) -> Union[list, None]: ######################################################################################
+    def get_file_list(self):
         """Get the list of local files for the example."""
         path = self.get_local_path()
         if os.path.isdir(path):
@@ -244,7 +246,8 @@ class Examples:
         datasets.style.set_properties(subset=["text"], **{"width": "300px"})
         print(datasets.to_string())
 
-    def load(self, example_name: str) -> Example:
+    #def load(self, example_name: str) -> Example: ######################################################################################
+    def load(self, example_name: str):
         """Load example dataset, download if not locally available."""
         if example_name in self.datasets:
             example = self.datasets[example_name]
