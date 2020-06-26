@@ -1,5 +1,4 @@
-"""
-Handle local builtin datasets
+"""Handle local builtin datasets.
 """
 
 import os
@@ -41,18 +40,17 @@ dirs = [
 class LocalExample:
     """Builtin pysal example dataset."""
 
-    def __init__(self, name, dirname):
+    def __init__(self, name: str, dirname: str):
         self.name = name
         self.dirname = dirname
         self.installed = True
         self.description = self.get_description()
 
-    def get_file_list(self):
-        """
-        """
+    def get_file_list(self) -> list:
+        """Return a list of file names."""
         return get_list_of_files(self.dirname)
 
-    def get_path(self, file_name, verbose=True):
+    def get_path(self, file_name: str, verbose=True) -> str:
         """Get path for local file."""
         file_list = self.get_file_list()
         for file_path in file_list:
@@ -64,14 +62,13 @@ class LocalExample:
         return None
 
     def explain(self):
-        """Provide a description of the example."""
+        """Provide a printed description of the example."""
         description = [f for f in self.get_file_list() if "README.md" in f][0]
         with open(description, "r", encoding="utf8") as f:
             print(f.read())
 
-    def get_description(self):
-        """
-        """
+    def get_description(self) -> str:
+        """Dataset description."""
         description = [f for f in self.get_file_list() if "README.md" in f][0]
         with open(description, "r", encoding="utf8") as f:
             lines = f.readlines()
