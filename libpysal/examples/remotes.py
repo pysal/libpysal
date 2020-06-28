@@ -18,6 +18,7 @@ def poll_remotes():
     """
 
     # Geoda Center Datasets
+
     url = "https://geodacenter.github.io/data-and-lab//"
     try:
         page = requests.get(url)
@@ -35,11 +36,13 @@ def poll_remotes():
         n = data[2].text
         k = data[3].text
         targets = row.find_all("a")
-        download_url = targets[1].attrs["href"]
+        download_url = url + targets[1].attrs["href"]
         explain_url = targets[0].attrs["href"]
         datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
-    # Other Remote Datasets
+    # Other Remotes
+
+
     # rio
     name = "Rio Grande do Sul"
     description = "Cities of the Brazilian State of Rio Grande do Sul"
@@ -98,6 +101,7 @@ datasets = poll_remotes()
 
 def download(datasets=datasets):
     """Download all known remotes."""
+
     names = list(datasets.keys())
     names.sort()
     for name in names:
