@@ -29,6 +29,7 @@ libpysal.weights.W
       ~W.symmetrize
       ~W.to_WSP
       ~W.to_adjlist
+      ~W.to_file
       ~W.to_networkx
    
    
