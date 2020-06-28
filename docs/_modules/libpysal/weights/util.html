@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.util &#8212; libpysal v4.2.2 Manual</title>
+    <title>libpysal.weights.util &#8212; libpysal v4.3.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -15,10 +15,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script src="../../../_static/js/jquery-1.11.0.min.js"></script>
-    <script src="../../../_static/js/jquery-fix.js"></script>
-    <script src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script src="../../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -26,6 +22,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,18 +68,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/weights.html">Weights from GeoDataFrames</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/weights.html#Weights-from-shapefiles-(without-geopandas)">Weights from shapefiles (without geopandas)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/weights.html#Lattice-Weights">Lattice Weights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/weights.html#Handling-nonplanar-geometries">Handling nonplanar geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/voronoi.html">Voronoi Polygons for 2-D Point Sets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/voronoi.html#Voronoi-Weights">Voronoi Weights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/examples.html">Datasets for use with libpysal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/examples.html#Backwards-compatibility-is-maintained">Backwards compatibility is maintained</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/examples.html#available-is-updated"><code class="docutils literal notranslate"><span class="pre">available</span></code> is updated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/examples.html#Remote-datasets">Remote datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/examples.html#Other-Remotes">Other Remotes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../notebooks/examples.html#Grabbing-all-the-remotes">Grabbing all the remotes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#example-datasets">Example Datasets</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">API</a><ul>
@@ -128,7 +118,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <h1>Source code for libpysal.weights.util</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">..io.fileio</span> <span class="kn">import</span> <span class="n">FileIO</span> <span class="k">as</span> <span class="n">psopen</span>
@@ -686,7 +676,7 @@
 <span class="sd">    neighbors of observation :math:`i` are to being a clique:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">    </span>
+
 <span class="sd">       c_i = | \{w_{j,k}\} |/ (k_i(k_i - 1)): j,k \in N_i</span>
 
 <span class="sd">    where :math:`N_i` is the set of neighbors to :math:`i`, :math:`k_i =</span>
@@ -1587,7 +1577,7 @@
     <span class="k">return</span> <span class="n">w</span></div>
 
 <div class="viewcode-block" id="fuzzy_contiguity"><a class="viewcode-back" href="../../../generated/libpysal.weights.fuzzy_contiguity.html#libpysal.weights.fuzzy_contiguity">[docs]</a><span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;geopandas&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">fuzzy_contiguity</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fuzzy_contiguity</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fuzzy contiguity spatial weights</span>
 
@@ -1605,6 +1595,10 @@
 
 <span class="sd">    drop: boolean</span>
 <span class="sd">          If True (default), the buffered features are removed from the GeoDataFrame. If False, buffered features are added to the GeoDataFrame.</span>
+
+<span class="sd">    buffer : float</span>
+<span class="sd">             Specify exact buffering distance. Ignores `tolerance`.</span>
+
 <span class="sd">    **kwargs: keyword arguments</span>
 <span class="sd">              optional arguments for :class:`pysal.weights.W`</span>
 
@@ -1678,11 +1672,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">buffering</span><span class="p">:</span>
-        <span class="c1"># buffer each shape</span>
-        <span class="n">minx</span><span class="p">,</span> <span class="n">miny</span><span class="p">,</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">maxy</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">total_bounds</span>
-        <span class="n">buffer</span> <span class="o">=</span> <span class="n">tolerance</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">maxx</span><span class="o">-</span><span class="n">minx</span><span class="p">,</span> <span class="n">maxy</span><span class="o">-</span><span class="n">miny</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="c1"># buffer each shape</span>
+            <span class="n">minx</span><span class="p">,</span> <span class="n">miny</span><span class="p">,</span> <span class="n">maxx</span><span class="p">,</span> <span class="n">maxy</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">total_bounds</span>
+            <span class="n">buffer</span> <span class="o">=</span> <span class="n">tolerance</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">maxx</span><span class="o">-</span><span class="n">minx</span><span class="p">,</span> <span class="n">maxy</span><span class="o">-</span><span class="n">miny</span><span class="p">))</span>
         <span class="c1"># create new geometry column</span>
-        <span class="n">new_geometry</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">([</span><span class="n">feature</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span><span class="p">])</span>
+        <span class="n">new_geometry</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
         <span class="n">gdf</span><span class="p">[</span><span class="s1">&#39;_buffer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_geometry</span>
         <span class="n">old_geometry_name</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">name</span>
         <span class="n">gdf</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="s1">&#39;_buffer&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

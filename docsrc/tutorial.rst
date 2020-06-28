@@ -1,11 +1,22 @@
-Tutorial
-========
+libpysal Tutorial
+=================
+
+
+Spatial Weights
+---------------
 
 .. toctree::
-    :maxdepth: 1
-    :caption: Contents:
+    :glob:
 
-    notebooks/weights.ipynb
-    notebooks/voronoi.ipynb
-    notebooks/examples.ipynb
+    Spatial Weights <notebooks/weights.ipynb>
+    Voronoi <notebooks/voronoi.ipynb>
+
+
+Example Datasets
+----------------
+
+.. toctree::
+    :glob:
+
+    Example Data <notebooks/examples.ipynb>
 
