@@ -1,6 +1,6 @@
+"""Handle remote datasets.
 """
-Handle remote datasets
-"""
+
 from bs4 import BeautifulSoup
 import requests
 import warnings
@@ -8,13 +8,18 @@ from .base import PYSALDATA, Example, get_list_of_files, get_data_home
 
 
 def poll_remotes():
+    """Fetch remote data and generate example datasets.
+    
+    Returns
+    -------
+    datasets : dict
+        Example datasets keyed by the dataset name.
+        
+    """
 
-    # Geoda Center Data Sets
+    # Geoda Center Datasets
 
     url = "https://geodacenter.github.io/data-and-lab//"
-
-    # requests.exceptions.ConnectionError
-
     try:
         page = requests.get(url)
     except:
@@ -36,6 +41,7 @@ def poll_remotes():
         datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
     # Other Remotes
+
 
     # rio
     name = "Rio Grande do Sul"
@@ -94,9 +100,8 @@ datasets = poll_remotes()
 
 
 def download(datasets=datasets):
-    """
-    Download all known remotes
-    """
+    """Download all known remotes."""
+
     names = list(datasets.keys())
     names.sort()
     for name in names:

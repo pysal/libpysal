@@ -1,43 +1,40 @@
 """
-Voronoi tesslation of 2-d point sets
-
+Voronoi tesslation of 2-d point sets.
 
 Adapted from https://gist.github.com/pv/8036995
 
 """
+
 import numpy as np
 from scipy.spatial import Voronoi
 
 __author__ = "Serge Rey <sjsrey@gmail.com>"
 
-__all__ = ['voronoi_frames']
+__all__ = ["voronoi_frames"]
 
 
 def voronoi(points, radius=None):
-    """
-    Determine finite Voronoi diagram for a 2-d point set 
-
+    """Determine finite Voronoi diagram for a 2-d point set.
+    See also ``voronoi_regions()``.
 
     Parameters
     ----------
-    points      : array-like
-                  nx2 array of points
-
-    radius      : float (optional) 
-                  distance to 'points at infinity'
+    points : array-like
+        An nx2 array of points.
+    radius : float (optional)
+        The distance to 'points at infinity'.
 
     Returns
     -------
-
-    regions    : list
-                  each element of the list contains sequence of the indexes of Voronoi vertices composing a Voronoi polygon (region)
-
-    coordinates : array
-                  coordinates of the Voronoi vertices
-
-
+    vor : tuple
+        A two-element tuple consisting of a list and an array. Each element of
+        the list contains the sequence of the indices of Voronoi vertices
+        composing a Voronoi polygon (region), whereas the array contains
+        the Voronoi vertex coordinates.
+    
     Examples
     --------
+    
     >>> points = [(10.2, 5.1), (4.7, 2.2), (5.3, 5.7), (2.7, 5.3)]
     >>> regions, coordinates = voronoi(points)
     >>> regions
@@ -53,24 +50,32 @@ def voronoi(points, radius=None):
            [  9.4642193 ,  19.3994576 ],
            [  1.78491801,  19.89803294],
            [ -9.22691341,  -4.58994414]])
+    
     """
-    vor = Voronoi(points)
-    return voronoi_regions(vor, radius=radius)
+
+    vor = voronoi_regions(Voronoi(points), radius=radius)
+
+    return vor
 
 
 def voronoi_regions(vor, radius=None):
-    """
-    Finite voronoi regions for a 2-d point set.
-
+    """Finite voronoi regions for a 2-d point set. See also ``voronoi()``.
 
     Parameters
     ----------
-
-    vor:  Voronoi (scipy.spatial)
-
-    radius: float (optional)
-            Distance to 'points at infinity'
+    vor : scipy.spatial.Voronoi
+        A planar Voronoi diagram.
+    radius : float (optional)
+        Distance to 'points at infinity'.
+    
+    Returns
+    -------
+    regions_vertices : tuple
+        A two-element tuple consisting of a list of finite voronoi regions
+        and an array Voronoi vertex coordinates.
+    
     """
+
     new_regions = []
     new_vertices = vor.vertices.tolist()
 
@@ -117,38 +122,34 @@ def voronoi_regions(vor, radius=None):
 
         new_regions.append(new_region.tolist())
 
-    return new_regions, np.asarray(new_vertices)
+    regions_vertices = new_regions, np.asarray(new_vertices)
+
+    return regions_vertices
 
 
 def as_dataframes(regions, vertices, points):
-    """
-    Helper function to store finite Voronoi regions and originator points as
-    geopandas (or pandas) data frames
-
+    """Helper function to store finite Voronoi regions and
+    originator points as geopandas (or pandas) data frames.
 
     Parameters
     ----------
-
-    regions     : list
-                  each element of the list contains sequence of the indexes of
-                  voronoi vertices composing a vornoi polygon (region)
-
-    vertices    : array
-                  coordinates of the vornoi vertices
-
-    points      : array-like
-                  originator points
-
+    regions : list
+        Each element of the list contains sequence of the indexes of
+        voronoi vertices composing a vornoi polygon (region).
+    vertices : array
+        The coordinates of the vornoi vertices.
+    points : array-like
+        The originator points.
 
     Returns
     -------
-
-    region_df   : GeoDataFrame
-                  Finite Voronoi polygons as geometries
-
-    points_df   : GeoDataFrame
-                  Originator points as geometries
+    region_df : geopandas.GeoDataFrame
+        Finite Voronoi polygons as geometries.
+    points_df : geopandas.GeoDataFrame
+        Originator points as geometries.
+    
     """
+
     try:
         import geopandas as gpd
     except ImportError:
@@ -161,71 +162,71 @@ def as_dataframes(regions, vertices, points):
 
     if gpd is not None:
         region_df = gpd.GeoDataFrame()
-        region_df['geometry'] = [
-            Polygon(vertices[region]) for region in regions
-        ]
+        region_df["geometry"] = [Polygon(vertices[region]) for region in regions]
 
         point_df = gpd.GeoDataFrame()
-        point_df['geometry'] = gpd.GeoSeries(Point(pnt) for pnt in points)
+        point_df["geometry"] = gpd.GeoSeries(Point(pnt) for pnt in points)
     else:
         import pandas as pd
+
         region_df = pd.DataFrame()
-        region_df['geometry'] = [
+        region_df["geometry"] = [
             Polygon(vertices[region].tolist()) for region in regions
         ]
         point_df = pd.DataFrame()
-        point_df['geometry'] = [Point(pnt) for pnt in points]
+        point_df["geometry"] = [Point(pnt) for pnt in points]
 
     return region_df, point_df
 
 
-def voronoi_frames(points, radius=None, clip='extent'):
-    """
-    Composite helper to return Voronoi regions and generator points as individual dataframes
+def voronoi_frames(points, radius=None, clip="extent"):
+    """Composite helper to return Voronoi regions and
+    generator points as individual dataframes.
 
     Parameters
     ----------
-
-    points      : array-like
-                  originator points
-
-    radius      : float
-                  distance to "points at infinity" used in building voronoi cells
-
-    clip        : str, or shapely.geometry.Polygon
-                  an overloaded option about how to clip the voronoi
-                  cells. The options are:
-                  - 'none'/None: no clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.
-                  - 'bbox'/'extent'/'bounding box': clip the voronoi cells to the bounding box of the input points.
-                  - 'chull'/'convex hull': clip the voronoi cells to the convex hull of the input points.
-                  - 'ashape'/'ahull': clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using libpysal.cg.alpha_shape_auto)
-                  - Polygon: clip to an arbitrary Polygon
-
-    tolerance   : float
-                  percent of map width to use to buffer the extent of the map, if clipping (default: .01, or 1 percent)
+    points  : array-like
+        The originator points.
+    radius : float
+        The distance to "points at infinity" used in building voronoi cells.
+    clip : str, shapely.geometry.Polygon
+        An overloaded option about how to clip the voronoi cells.
+        The options are:
+          - 'none'/None: No clip is applied. Voronoi cells may be arbitrarily
+            larger that the source map. Note that this may lead to cells that
+            are many orders of magnitude larger in extent than
+            the original map. Not recommended.
+          - 'bbox'/'extent'/'bounding box': Clip the voronoi cells to the
+            bounding box of the input points.
+          - 'chull'/'convex hull': Clip the voronoi cells to the
+            convex hull of the input points.
+          - 'ashape'/'ahull': Clip the voronoi cells to the tightest hull that
+            contains all points (e.g. the smallest alphashape,
+            using ``libpysal.cg.alpha_shape_auto``).
+          - Polygon: Clip to an arbitrary Polygon.
+    tolerance : float
+        The percent of map width to use to buffer the extent of the map,
+        if clipping (default: .01, or 1 percent).
 
     Returns
     -------
-
-    _           : tuple
-                  (region_df, points_df)
-
-                  region_df   : GeoDataFrame (if geopandas available, otherwise Pandas DataFrame)
-                                Finite Voronoi polygons as geometries
-
-                  points_df   : GeoDataFrame (if geopandas available, otherwise Pandas DataFrame)
-                                Originator points as geometries
+    reg_vtx : tuple
+        Two ``geopandas.GeoDataFrame`` (or ``pandas.DataFrame`` if ``geopandas``
+        is unavailable) objects--``(region_df, points_df)``--of finite 
+        Voronoi polygons and the originator points as geometries.
 
     Notes
     -----
 
-    If Geopandas is not available the return types will be Pandas DataFrames
-    each with a geometry column populated with PySAL shapes. If Geopandas is
-    available, return types are GeoDataFrames with a geometry column populated
+    If ``geopandas`` is not available the return types will be
+    ``pandas.DataFrame`` objects, each with a geometry column populated
+    with PySAL shapes. If ``geopandas`` is available, return types are
+    ``pandas.GeoDataFrame`` objects with a geometry column populated
     with shapely geometry types.
 
     Examples
     --------
+    
     >>> points = [(10.2, 5.1), (4.7, 2.2), (5.3, 5.7), (2.7, 5.3)]
     >>> regions_df, points_df = voronoi_frames(points)
     >>> regions_df.shape
@@ -234,40 +235,47 @@ def voronoi_frames(points, radius=None, clip='extent'):
     True
 
     """
+
     regions, vertices = voronoi(points, radius=radius)
     regions, vertices = as_dataframes(regions, vertices, points)
     if clip:
         regions = clip_voronoi_frames_to_extent(regions, vertices, clip=clip)
-    return regions, vertices
+
+    reg_vtx = regions, vertices
+
+    return reg_vtx
 
 
-def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
-    """
-    Arguments
-    ---------
-    regions :   geopandas geodataframe
-                dataframe containing voronoi cells to clip
-    vertices:   geopandas geodataframe
-                dataframe containing vertices used to build voronoi cells
-    clip        : str, or shapely.geometry.Polygon
-                  an overloaded option about how to clip the voronoi
-                  cells. The options are:
-                  - 'none'/None: no clip is applied. Voronoi cells may be arbitrarily
-                                 larger that the source map. Note that this may lead
-                                 to cells that are many orders of magnitude larger
-                                 in extent than the original map. Not recommended. 
-                  - 'bbox'/'extent'/'bounding box': clip the voronoi cells to the 
-                                                    bounding box of the input points.
-                  - 'chull'/'convex hull': clip the voronoi cells to the convex hull
-                                           of the input points.
-                  - 'ashape'/'ahull': clip the voronoi cells to the tightest hull that
-                                      contains all points (e.g. the smallest alphashape,
-                                      using libpysal.cg.alpha_shape_auto)
-                  - Polygon: clip to an arbitrary shapely.geometry.Polygon
+def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
+    """Generate a geopandas.GeoDataFrame of Voronoi cells clipped to
+    a specified extent.
+    
+    Parameters
+    ----------
+    regions : geopandas.GeoDataFrame
+        A (geo)dataframe containing voronoi cells to clip.
+    vertices : geopandas.GeoDataFrame
+        A (geo)dataframe containing vertices used to build voronoi cells.
+    clip : str, shapely.geometry.Polygon
+        An overloaded option about how to clip the voronoi cells.
+        The options are:
+          - 'none'/None: No clip is applied. Voronoi cells may be arbitrarily
+            larger that the source map. Note that this may lead to cells that
+            are many orders of magnitude larger in extent than
+            the original map. Not recommended.
+          - 'bbox'/'extent'/'bounding box': Clip the voronoi cells to the
+            bounding box of the input points.
+          - 'chull'/'convex hull': Clip the voronoi cells to the
+            convex hull of the input points.
+          - 'ashape'/'ahull': Clip the voronoi cells to the tightest hull that
+            contains all points (e.g. the smallest alphashape,
+            using ``libpysal.cg.alpha_shape_auto``).
+          - Polygon: Clip to an arbitrary Polygon.
     
     Returns
     -------
-    a geodataframe of clipped voronoi regions
+    clipped_regions : geopandas.GeoDataFrame
+        A ``geopandas.GeoDataFrame`` of clipped voronoi regions.
 
     """
     try:
@@ -277,34 +285,48 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip='extent'):
     try:
         import geopandas
     except ImportError:
-        raise ImportError('geopandas is required to clip voronoi regions')
+        raise ImportError("geopandas is required to clip voronoi regions")
 
     if isinstance(clip, Polygon):
         clipper = geopandas.GeoDataFrame(geometry=[clip])
     elif clip is None:
         return regions
-    elif clip.lower() == 'none':
+    elif clip.lower() == "none":
         return regions
-    elif clip.lower() in ('bounds', 'bounding box', 'bbox', 'extent'):
+    elif clip.lower() in ("bounds", "bounding box", "bbox", "extent"):
         min_x, min_y, max_x, max_y = vertices.total_bounds
-        bounding_poly = Polygon([(min_x, min_y), (min_x, max_y),
-                                 (max_x, max_y), (max_x, min_y),
-                                 (min_x, min_y)])
+        bounding_poly = Polygon(
+            [
+                (min_x, min_y),
+                (min_x, max_y),
+                (max_x, max_y),
+                (max_x, min_y),
+                (min_x, min_y),
+            ]
+        )
         clipper = geopandas.GeoDataFrame(geometry=[bounding_poly])
-    elif clip.lower() in ('chull', 'convex hull', 'convex_hull'):
-        clipper = geopandas.GeoDataFrame(geometry=[vertices.geometry\
-                                                           .unary_union\
-                                                           .convex_hull])
-    elif clip.lower() in ('ahull', 'alpha hull', 'alpha_hull', 'ashape',
-                          'alpha shape', 'alpha_shape'):
+    elif clip.lower() in ("chull", "convex hull", "convex_hull"):
+        clipper = geopandas.GeoDataFrame(
+            geometry=[vertices.geometry.unary_union.convex_hull]
+        )
+    elif clip.lower() in (
+        "ahull",
+        "alpha hull",
+        "alpha_hull",
+        "ashape",
+        "alpha shape",
+        "alpha_shape",
+    ):
         from .alpha_shapes import alpha_shape_auto
         from ..weights.distance import get_points_array
+
         coordinates = get_points_array(vertices.geometry)
-        clipper = geopandas.GeoDataFrame(
-            geometry=[alpha_shape_auto(coordinates)])
+        clipper = geopandas.GeoDataFrame(geometry=[alpha_shape_auto(coordinates)])
     else:
-        raise ValueError('clip type "{}" not understood. Try one '
-                         ' of the supported options: [None, "extent", '
-                         '"chull", "ahull"]'.format(clip))
-    clipped_regions = geopandas.overlay(regions, clipper, how='intersection')
+        raise ValueError(
+            'clip type "{}" not understood. Try one '
+            ' of the supported options: [None, "extent", '
+            '"chull", "ahull"]'.format(clip)
+        )
+    clipped_regions = geopandas.overlay(regions, clipper, how="intersection")
     return clipped_regions

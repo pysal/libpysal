@@ -1,42 +1,40 @@
+""" The :mod:`libpysal.examples` module includes a number of small built-in
+    example datasets as well as functions to fetch larger datasets.
 """
-The :mod:`libpysal.examples` module includes a number of small built-in example datasets as well as functions to fetch larger datasets.
-"""
+
 from .base import example_manager
 from .remotes import datasets as remote_datasets
 from .remotes import download as fetch_all
 from .builtin import datasets as builtin_datasets
 
-__all__ = ['get_path', 'available', 'explain', 'fetch_all']
+from typing import Union
+
+__all__ = ["get_path", "available", "explain", "fetch_all"]
 
 example_manager.add_examples(remote_datasets)
 example_manager.add_examples(builtin_datasets)
 
 
-def available():
-    """
-    List available datasets
-    """
+def available() -> str:
+    """List available datasets."""
+
     return example_manager.available()
 
 
-def explain(name):
-    """
-    Explain a dataset by name
-    """
+def explain(name: str) -> str:
+    """Explain a dataset by name."""
+
     return example_manager.explain(name)
 
 
-def load_example(example_name):
-    """
-    Load example dataset instance
-    """
+def load_example(example_name: str) -> Union[base.Example, builtin.LocalExample]:
+    """Load example dataset instance."""
+
     return example_manager.load(example_name)
 
 
-def get_path(file_name):
-    """
-    get the path for a file by searching installed datasets
-    """
+def get_path(file_name: str) -> str:
+    """Get the path for a file by searching installed datasets."""
 
     installed = example_manager.get_installed_names()
     for name in installed:
