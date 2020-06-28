@@ -7,7 +7,7 @@ from .remotes import datasets as remote_datasets
 from .remotes import download as fetch_all
 from .builtin import datasets as builtin_datasets
 
-#from typing import Union ######################################################################################
+from typing import Union
 
 __all__ = ["get_path", "available", "explain", "fetch_all"]
 
@@ -27,8 +27,7 @@ def explain(name: str) -> str:
     return example_manager.explain(name)
 
 
-#def load_example(example_name: str) -> Union[base.Example, builtin.LocalExample]: ######################################################################################
-def load_example(example_name: str):
+def load_example(example_name: str) -> Union[base.Example, builtin.LocalExample]:
     """Load example dataset instance."""
 
     return example_manager.load(example_name)
