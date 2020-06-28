@@ -69,7 +69,7 @@ def setup_package():
         long_description=long_description,
         maintainer="PySAL Developers",
         maintainer_email="pysal-dev@googlegroups.com",
-        url="http://pysal.org",
+        url="http://pysal.org/libpysal",
         download_url="https://pypi.python.org/pypi/libpysal",
         license="BSD",
         py_modules=["libpysal"],
@@ -88,7 +88,7 @@ def setup_package():
             "Programming Language :: Python",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
-            "Programming Language :: Python :: 3.8"
+            "Programming Language :: Python :: 3.8",
         ],
         package_data={"libpysal": list(example_data_files)},
         install_requires=install_reqs,
