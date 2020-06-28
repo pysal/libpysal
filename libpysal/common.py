@@ -22,35 +22,39 @@ RTOL = 0.00001
 ATOL = 1e-7
 MISSINGVALUE = None
 
-######################
-# Decorators/Utils   #
-######################
+####################
+# Decorators/Utils #
+####################
 
 # import numba.jit OR create mimic decorator and set existence flag
 try:
     from numba import jit
 
     HAS_JIT = True
+
 except ImportError:
 
     def jit(function=None, **kwargs):
-        """Mimic numba.jit() with synthetic wrapper
-        """
+        """Mimic numba.jit() with synthetic wrapper."""
+
         if function is not None:
 
             def wrapped(*original_args, **original_kw):
                 """Case 1 - structure of a standard decorator
-                i.e., jit(function)(*args, **kwargs)
+                i.e., jit(function)(*args, **kwargs).
                 """
+
                 return function(*original_args, **original_kw)
 
             return wrapped
+
         else:
 
             def partial_inner(func):
                 """Case 2 - returns Case 1
-                i.e., jit()(function)(*args, **kwargs)
+                i.e., jit()(function)(*args, **kwargs).
                 """
+
                 return jit(func)
 
             return partial_inner
@@ -59,26 +63,26 @@ except ImportError:
 
 
 def simport(modname):
-    """
-    Safely import a module without raising an error.
+    """Safely import a module without raising an error.
 
     Parameters
-    -----------
+    ----------
     modname : str
-              module name needed to import
+        Module name needed to import.
     
     Returns
-    --------
-    tuple of (True, Module) or (False, None) depending on whether the import
-    succeeded.
+    -------
+    _simport : tuple
+        Either (True, Module) or (False, None) depending
+        on whether the import succeeded.
 
     Notes
-    ------
-    Wrapping this function around an iterative context or a with context would
-    allow the module to be used without necessarily attaching it permanently in
-    the global namespace:
-
+    -----
     
+    Wrapping this function around an iterative context or a with
+    context would allow the module to be used without necessarily
+    attaching it permanently in the global namespace:
+
         for t,mod in simport('pandas'):
             if t:
                 mod.DataFrame()
@@ -95,30 +99,38 @@ def simport(modname):
             #do alternative behavior here
 
     The first idiom makes it work kind of a like a with statement.
+    
     """
+
     try:
         exec("import {}".format(modname))
-        return True, eval(modname)
+        _simport = True, eval(modname)
     except:
-        return False, None
+        _simport = False, None
+
+    return _simport
+
 
 
 def requires(*args, **kwargs):
-    """
-    Decorator to wrap functions with extra dependencies:
+    """Decorator to wrap functions with extra dependencies.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     args : list
-            list of strings containing module to import
+        Modules names as strings to import.
     verbose : bool
-                boolean describing whether to print a warning message on import
-                failure
+        Set as ``True`` to print a warning message on import failure.
+    
     Returns
     -------
-    Original function is all arg in args are importable, otherwise returns a
-    function that passes.
+    inner : func
+        The original function if all arg in args are importable.
+    passer : func
+        A function that passes if ``inner`` fails.
+    
     """
+
     v = kwargs.pop("verbose", True)
     wanted = copy.deepcopy(args)
 

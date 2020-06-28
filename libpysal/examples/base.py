@@ -1,5 +1,5 @@
 """
-Base class for managing example datasets
+Base class for managing example datasets.
 """
 
 # Authors: Serge Rey
@@ -16,22 +16,24 @@ import pandas
 from bs4 import BeautifulSoup
 from ..io import open as ps_open
 
+
+from typing import Union
+
 PYSALDATA = "pysal_data"
 
 
 def get_data_home():
-    """Return the path of the libpysal data directory.
-
-
-    This folder (~/pysal_data)is used by some large dataset loaders to avoid
-    downloading the data multiple times.
-
-
-    Alternatively, it can be set by the 'PYSALDATA' environment variable or
-    programmatically by giving an explicit folder path. The '~' symbol is
-    expanded to the user home folder
-
-    If the folder does not already exisit, it is automatically created.
+    """Return the path of the ``libpysal`` data directory. This folder (``~/pysal_data``)
+    is used by some large dataset loaders to avoid downloading the data multiple times.
+    Alternatively, it can be set by the 'PYSALDATA' environment variable or programmatically
+    by giving an explicit folder path. The ``'~'`` symbol is expanded to the user home
+    folder If the folder does not already exist, it is automatically created.
+    
+    Returns
+    -------
+    data_home : str
+        The system path where the data is/will be stored.
+     
     """
 
     data_home = environ.get("PYSALDATA", join("~", PYSALDATA))
@@ -42,9 +44,25 @@ def get_data_home():
 
 
 def get_list_of_files(dir_name):
+    """Create a list of files and sub-directories in ``dir_name``.
+    
+    Parameters
+    ----------
+    dir_name : str
+        The path to the directory or examples.
+    
+    Returns
+    -------
+    all_files : list
+        All file and directory paths.
+    
+    Raises
+    ------
+    FileNotFoundError
+        If the file or directory is not found.
+    
     """
-    create a list of file and sub directories in dir_name
-    """
+
     # names in the given directory
     all_files = list()
     try:
@@ -64,8 +82,10 @@ def get_list_of_files(dir_name):
     return all_files
 
 
-def type_of_script():
-    """Helper function to determine run context"""
+
+def type_of_script() -> str:
+    """Helper function to determine run context."""
+
     try:
         ipy_str = str(type(get_ipython()))
         if "zmqshell" in ipy_str:
@@ -77,8 +97,32 @@ def type_of_script():
 
 
 class Example:
-    """
-    Example Dataset
+    """An example dataset.
+
+    Parameters
+    ----------
+    name : str
+        The example dataset name.
+    description : str
+        The example dataset description.
+    n : int
+        The number of records in the dataset.
+    k : int
+        The number of fields in the dataset.
+    download_url : str
+        The URL to download the dataset.
+    explain_url : str
+        The URL to the dataset's READEME file.
+    
+    Attributes
+    ----------
+    root : str
+        The ``name`` parameter with filled spaces (_).
+    installed : bool
+        ``True`` if the example is installed, otherwise ``False``.
+    zipfile : zipfile.ZipFile
+        The archived dataset.
+    
     """
 
     def __init__(self, name, description, n, k, download_url, explain_url):
@@ -91,14 +135,14 @@ class Example:
         self.root = name.replace(" ", "_")
         self.installed = self.downloaded()
 
-    def get_local_path(self, path=get_data_home()):
-        """Get local path for example"""
+    def get_local_path(self, path=get_data_home()) -> str:
+        """Get the local path for example."""
+
         return join(path, self.root)
 
-    def get_path(self, file_name, verbose=True):
-        """
-        get path for local file
-        """
+    def get_path(self, file_name, verbose=True) -> Union[str, None]:
+        """Get the path for local file."""
+
         file_list = self.get_file_list()
         for file_path in file_list:
             base_name = os.path.basename(file_path)
@@ -108,20 +152,19 @@ class Example:
             print("{} is not a file in this example".format(file_name))
         return None
 
-    def downloaded(self):
-        """
-        Check if example has already been installed
-        """
+    def downloaded(self) -> bool:
+        """Check if the example has already been installed."""
+
         path = self.get_local_path()
         if os.path.isdir(path):
             self.installed = True
             return True
         return False
 
-    def explain(self):
-        """
-        Provide a description of the example.
-        """
+
+    def explain(self) -> None:
+        """Provide a description of the example."""
+
         file_name = self.explain_url.split("/")[-1]
         if file_name == "README.md":
             explain_page = requests.get(self.explain_url)
@@ -136,9 +179,8 @@ class Example:
         return IFrame(self.explain_url, width=700, height=350)
 
     def download(self, path=get_data_home()):
-        """
-        Download the files for the example.
-        """
+        """Download the files for the example."""
+
         if self.downloaded():
             print("Already downloaded")
         else:
@@ -150,19 +192,16 @@ class Example:
             self.zipfile = archive
             self.installed = True
 
-    def get_file_list(self):
-        """
-        Get list of local files for the example.
-        """
+    def get_file_list(self) -> Union[list, None]:
+        """Get the list of local files for the example."""
         path = self.get_local_path()
         if os.path.isdir(path):
             return get_list_of_files(path)
         return None
 
-    def json_dict(self):
-        """
-        container for example meta data
-        """
+
+    def json_dict(self) -> dict:
+        """Container for example meta data."""
         meta = {}
         meta["name"] = self.name
         meta["description"] = self.description
@@ -171,40 +210,32 @@ class Example:
         meta["root"] = self.root
         return meta
 
-    def load(self, file_name):
-        """
-        dispatch to libpysal.io to open file
-        """
+    def load(self, file_name) -> io.FileIO:
+        """Dispatch to libpysal.io to open file."""
         pth = self.get_path(file_name)
         if pth:
             return ps_open(pth)
 
 
 class Examples:
-    """
-    Manager for pysal example datasets.
-
-    """
+    """Manager for pysal example datasets."""
 
     def __init__(self):
         self.datasets = {}
 
     def add_examples(self, examples):
-        """
-        add examples to the set of datasets available
-        """
+        """Add examples to the set of datasets available."""
         self.datasets.update(examples)
 
-    def explain(self, example_name):
+
+    def explain(self, example_name) -> str:
         if example_name in self.datasets:
             return self.datasets[example_name].explain()
         else:
             print("not available")
 
     def available(self):
-        """
-        report available datasets
-        """
+        """Report available datasets."""
         datasets = self.datasets
         names = list(datasets.keys())
         names.sort()
@@ -219,10 +250,9 @@ class Examples:
         datasets.style.set_properties(subset=["text"], **{"width": "300px"})
         print(datasets.to_string())
 
-    def load(self, example_name):
-        """
-        load example dataset, download if not locally available
-        """
+
+    def load(self, example_name: str) -> Example:
+        """Load example dataset, download if not locally available."""
         if example_name in self.datasets:
             example = self.datasets[example_name]
             if example.installed:
@@ -236,10 +266,7 @@ class Examples:
             return None
 
     def download_remotes(self):
-        """
-        Dowload all remotes
-
-        """
+        """Download all remotes."""
         names = list(self.remotes.keys())
         names.sort()
 
@@ -251,8 +278,9 @@ class Examples:
             except:
                 print("Example not downloaded: {}".format(name))
 
-    def get_installed_names(self):
-        """Return names of all currently installed datasets"""
+
+    def get_installed_names(self) -> list:
+        """Return names of all currently installed datasets."""
         ds = self.datasets
         return [name for name in ds if ds[name].installed]
 
