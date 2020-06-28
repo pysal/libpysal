@@ -1,3 +1,108 @@
+# Version 4.3.0 (2020-06-28)
+
+We closed a total of 85 issues (enhancements and bug fixes) through 27 pull requests, since our last release on 2020-02-01.
+
+## Issues Closed
+  - Standardize libpysal/examples/*.py docstrings (#294)
+  - Fetch (#295)
+  - Mac builds seem to take longer — bump up timeout (#273)
+  - Voronoi_frames function causes jupyter notebook kernel to die (#281)
+  - ENH: allow specific buffer in fuzzy_contiguity (#280)
+  - Return alpha option & use pygeos for alphashaping if available (#278)
+  - add weights writing as a method on weights.  (#276)
+  - Docs ci badge (#277)
+  - [rough edge] libpysal.examples w/o internet? (#259)
+  - removing six from ci (#275)
+  - Handle connection errors for remote datasets (#274)
+  - examples directory prevents installing with pyInstaller (#263)
+  - GH-263: Don't implicitly import examples when importing base library (#264)
+  - Error in the internal hack for the Arc_KDTree class inheritance and the KDTree function (#254)
+  - GitHub Actions failures (#271)
+  - Bugfix (#255)
+  - dropping nose in ci/36.yml (#270)
+  - Follow-up To Do for GH Actions (#268)
+  - Polish up GitHub Action residuals (#269)
+  - TEST: turning off 3.6 on github actions (#266)
+  - Initializing complete Github Actions CI (#267)
+  - fix for issue #153 (#256)
+  - DOC: Udpdating citations, minor description editing (#265)
+  - Cleaning up weights/weights.py docs (#262)
+  - Unused code in weights.from_networkx()? (#261)
+  - redirect pysal/#934 to libpysal (#9)
+  - defaulting to using the dataframe index as the id set (#35)
+  - Handling coincident points in KNN (#23)
+  - MGWR_Georgia_example.ipynb fails due to different sample data shapes (#67)
+  - Kernel docstring does not mention unique Gaussian kernel behavior (#47)
+  - MGWR_Georgia_example.ipynb missing pickle import statement (#69)
+  - weights.Voronoi is a function, not a class.  (#99)
+  - some weights util functions are lost in __ini__.py (#121)
+  - Current weight plot method is time consuming for a large data set (#123)
+  - [ENH][WIP] Adding a `rasterW` to extract `W` from raster and align values (#150)
+  - network kernel weights (#151)
+  - Add `from_sparse` and `from_numpy` methods, to match the other `from_` methods (#173)
+  - Weight Object Question (#208)
+  - ENH: setting up github actions (#258)
+  - deprecate or test shapely_ext (#114)
+  - Tests failures under Python 3.8 (#177)
+  - Update reqs for tests (#250)
+  - Nbdocs (#253)
+  - test_fiiter fails on 3.8 but passes on < 3.8 (#249)
+  - 3.8 (#251)
+  - rebuild docs; (#235)
+  - DOC: Fix invalid section headings. (#243)
+  - Fix syntax errors (#242)
+  - Remove calls to deprecated/removed time.clock. (#240)
+  - Fix and simplify filter_adjlist. (#244)
+  - set up appveyor or circle ci for multiplatform testing (#219)
+  - Nose is unmaintained (#241)
+  - Add appveyor badge (#248)
+  - Appveyor (#247)
+  - correct name for beautifulsoup4 (#239)
+  - REL: version bump for bug fix release (#238)
+  - test_map breakage due to pandas 1.0 deprecation of ufunc.outer (#236)
+  - BUG:  ufunc.outer deprecated (#237)
+
+## Pull Requests
+  - Standardize libpysal/examples/*.py docstrings (#294)
+  - Fetch (#295)
+  - Mac builds seem to take longer — bump up timeout (#273)
+  - ENH: allow specific buffer in fuzzy_contiguity (#280)
+  - Return alpha option & use pygeos for alphashaping if available (#278)
+  - add weights writing as a method on weights.  (#276)
+  - Docs ci badge (#277)
+  - removing six from ci (#275)
+  - Handle connection errors for remote datasets (#274)
+  - GH-263: Don't implicitly import examples when importing base library (#264)
+  - Bugfix (#255)
+  - dropping nose in ci/36.yml (#270)
+  - Polish up GitHub Action residuals (#269)
+  - Initializing complete Github Actions CI (#267)
+  - DOC: Udpdating citations, minor description editing (#265)
+  - Cleaning up weights/weights.py docs (#262)
+  - ENH: setting up github actions (#258)
+  - Update reqs for tests (#250)
+  - Nbdocs (#253)
+  - 3.8 (#251)
+  - DOC: Fix invalid section headings. (#243)
+  - Fix syntax errors (#242)
+  - Fix and simplify filter_adjlist. (#244)
+  - Appveyor (#247)
+  - correct name for beautifulsoup4 (#239)
+  - REL: version bump for bug fix release (#238)
+  - BUG:  ufunc.outer deprecated (#237)
+
+The following individuals contributed to this release:
+
+  - Serge Rey
+  - James Gaboardi
+  - Martin Fleischmann
+  - Dani Arribas-Bel
+  - Levi John Wolf
+  - Bryan Bennett
+  - Jeffery Sauer
+  - Elliott Sales De Andrade
+  - Joshua Wagner
+
 # Version 4.2.2 (2020-02-01)
 
 This is a bug fix release.
