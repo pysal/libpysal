@@ -43,8 +43,6 @@ class W(object):
        By default ``libpysal`` will print a warning if the dataset contains
        any disconnected components or islands. To silence this warning set this
        parameter to ``True``.
-    ids : list
-        Values to use for keys of the neighbors and weights ``dict`` objects.
 
     Attributes
     ----------
@@ -132,9 +130,7 @@ class W(object):
 
     """
 
-    def __init__(
-        self, neighbors, weights=None, id_order=None, silence_warnings=False, ids=None
-    ):
+    def __init__(self, neighbors, weights=None, id_order=None, silence_warnings=False):
         self.silence_warnings = silence_warnings
         self.transformations = {}
         self.neighbors = neighbors
@@ -175,7 +171,7 @@ class W(object):
         """Reset properties."""
         self._cache = {}
 
-    def to_file(self, path='', format=None):
+    def to_file(self, path="", format=None):
         """
         Write a weights to a file. The format is guessed automatically 
         from the path, but can be overridden with the format argument. 
@@ -194,13 +190,12 @@ class W(object):
         -------
         None
         """
-        f = popen(dataPath=path, mode='w', dataFormat=format)
+        f = popen(dataPath=path, mode="w", dataFormat=format)
         f.write(self)
         f.close()
-        
 
     @classmethod
-    def from_file(cls, path='', format=None):
+    def from_file(cls, path="", format=None):
         """
         Read a weights file into a W object. 
 
@@ -215,7 +210,7 @@ class W(object):
         -------
         W object
         """
-        f = popen(dataPath=path, mode='r', dataFormat=format)
+        f = popen(dataPath=path, mode="r", dataFormat=format)
         w = f.read()
         f.close()
         return w
@@ -877,9 +872,9 @@ class W(object):
             for j, neigh_list in list(self.neighbors.items()):
                 self.__neighbors_0[j] = [id2i[neigh] for neigh in neigh_list]
             self._cache["neighbors_0"] = self.__neighbors_0
-        
+
         neighbor_list = self.__neighbors_0
-        
+
         return neighbor_list
 
     def get_transform(self):
