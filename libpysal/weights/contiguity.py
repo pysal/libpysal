@@ -7,6 +7,7 @@ from ..io.fileio import FileIO
 from ._contW_lists import ContiguityWeightsLists
 from .util import get_ids, get_points_array
 from .weights import WSP, W
+from .raster import da2W, da2WSP
 
 try:
     from shapely.geometry import Point as shapely_point
@@ -39,6 +40,7 @@ class Rook(W):
     ---------
     :class:`libpysal.weights.weights.W`
     """
+
     def __init__(self, polygons, **kw):
         criterion = 'rook'
         ids = kw.pop('ids', None)
@@ -183,6 +185,31 @@ class Rook(W):
                                  id_order=id_order,
                                  **kwargs)
 
+    @classmethod
+    def from_xarray(cls, da, band=None, sparse=False, **kwargs):
+        """
+        Construct a W object from a xarray.DataArray object.
+
+        Parameters
+        ----------
+        da         : xarray.DataArray
+                    raster file accessed using xarray.open_rasterio method
+        band       : int
+                    select band for raster with multiple bands
+        sparse     : boolean
+                    type of weight object. Default is dense. For sparse, sparse = True
+        **kwargs   : keyword arguments
+                    optional arguments for :class:`pysal.weights.W`
+        See Also
+        --------
+        :class:`libpysal.weights.weights.W`   
+        """
+        if sparse:
+            w = da2WSP(da, 'rook', band)
+        else:
+            w = da2W(da, 'rook', band, **kwargs)
+        return w
+
 
 class Queen(W):
     """
@@ -201,6 +228,7 @@ class Queen(W):
     --------
     :class:`libpysal.weights.weights.W`
     """
+
     def __init__(self, polygons, **kw):
         criterion = 'queen'
         ids = kw.pop('ids', None)
@@ -348,6 +376,31 @@ class Queen(W):
                               **kwargs)
         return w
 
+    @classmethod
+    def from_xarray(cls, da, band=None, sparse=False, **kwargs):
+        """
+        Construct a W object from a xarray.DataArray object.
+
+        Parameters
+        ----------
+        da         : xarray.DataArray
+                    raster file accessed using xarray.open_rasterio method
+        band       : int
+                    select band for raster with multiple bands
+        sparse     : boolean
+                    type of weight object. Default is dense. For sparse, sparse = True
+        **kwargs   : keyword arguments
+                    optional arguments for :class:`pysal.weights.W`
+        See Also
+        --------
+        :class:`libpysal.weights.weights.W`   
+        """
+        if sparse:
+            w = da2WSP(da, 'queen', band)
+        else:
+            w = da2W(da, 'queen', band, **kwargs)
+        return w
+
 
 def Voronoi(points, criterion='rook', clip='ahull', **kwargs):
     """
@@ -463,7 +516,7 @@ def _build(polygons, criterion="rook", ids=None):
     neighbor_data = ContiguityWeightsLists(polygons, wttype=wttype).w
 
     neighbors = {}
-    #weights={}
+    # weights={}
     if ids:
         for key in neighbor_data:
             ida = ids[key]
@@ -488,7 +541,7 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     It builds a contiguity W from the polygons provided. As such, it is now
     identical to calling the class constructors for Rook or Queen. 
     """
-    #Warn('This function is deprecated. Please use the Rook or Queen classes',
+    # Warn('This function is deprecated. Please use the Rook or Queen classes',
     #        UserWarning)
     if criterion.lower() == 'rook':
         return Rook(polygons, ids=ids)
