@@ -30,8 +30,7 @@ class test_ArcGISSwmIO(unittest.TestCase):
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(
-            suffix='.swm', dir=pysal_examples.get_path(''))
+        f = tempfile.NamedTemporaryFile(suffix='.swm')
         fname = f.name
         f.close()
         o = psopen(fname, 'w')

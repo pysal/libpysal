@@ -30,8 +30,7 @@ class test_DatIO(unittest.TestCase):
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(
-            suffix='.dat', dir=pysal_examples.get_path(''))
+        f = tempfile.NamedTemporaryFile(suffix='.dat')
         fname = f.name
         f.close()
         o = psopen(fname, 'w')

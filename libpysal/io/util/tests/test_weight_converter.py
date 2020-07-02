@@ -11,7 +11,6 @@ from .... import examples as pysal_examples
 @unittest.skip('This function is deprecated')
 class test_WeightConverter(unittest.TestCase):
     def setUp(self):
-        self.base_dir = pysal_examples.get_path('')
         test_files = ['arcgis_ohio.dbf', 'arcgis_txt.txt', 'ohio.swm',
                            'wmat.dat', 'wmat.mtx', 'sids2.gal', 'juvenile.gwt',
                            'geobugs_scot', 'stata_full.txt', 'stata_sparse.txt',
@@ -50,8 +49,7 @@ class test_WeightConverter(unittest.TestCase):
             for ext, dataformat in self.fileformats:
                 if f.lower().endswith(ext):
                     continue
-                temp_f = tempfile.NamedTemporaryFile(
-                    suffix='.%s' % ext, dir=self.base_dir)
+                temp_f = tempfile.NamedTemporaryFile(suffix='.%s' % ext)
                 temp_fname = temp_f.name
                 temp_f.close()
 
@@ -105,8 +103,7 @@ class test_WeightConverter(unittest.TestCase):
             for ext, dataformat in self.fileformats:
                 if f.lower().endswith(ext):
                     continue
-                temp_f = tempfile.NamedTemporaryFile(
-                    suffix='.%s' % ext, dir=self.base_dir)
+                temp_f = tempfile.NamedTemporaryFile(suffix='.%s' % ext)
                 outFile = temp_f.name
                 temp_f.close()
                 outDataFormat, useIdIndex, matrix_form = dataformat, False, False

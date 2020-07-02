@@ -35,8 +35,7 @@ class test_GwtIO(unittest.TestCase):
     # Added back by CRS,
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(
-            suffix='.gwt', dir=pysal_examples.get_path(''))
+        f = tempfile.NamedTemporaryFile(suffix='.gwt')
         fname = f.name
         f.close()
         o = psopen(fname, 'w')

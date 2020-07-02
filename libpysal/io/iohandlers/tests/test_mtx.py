@@ -40,8 +40,7 @@ class test_MtxIO(unittest.TestCase):
         for i in [False, True]:
             self.obj.seek(0)
             w = self.obj.read(sparse=i)
-            f = tempfile.NamedTemporaryFile(
-                suffix='.mtx', dir=pysal_examples.get_path(''))
+            f = tempfile.NamedTemporaryFile(suffix='.mtx')
             fname = f.name
             f.close()
             o = psopen(fname, 'w')

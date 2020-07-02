@@ -31,8 +31,7 @@ class test_MatIO(unittest.TestCase):
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(
-            suffix='.mat', dir=pysal_examples.get_path(''))
+        f = tempfile.NamedTemporaryFile(suffix='.mat')
         fname = f.name
         f.close()
         o = psopen(fname, 'w')

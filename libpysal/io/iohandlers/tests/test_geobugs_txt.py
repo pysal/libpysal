@@ -43,8 +43,7 @@ class test_GeoBUGSTextIO(unittest.TestCase):
     def test_write(self):
         for obj in [self.obj_scot, self.obj_col]:
             w = obj.read()
-            f = tempfile.NamedTemporaryFile(
-                suffix='', dir=pysal_examples.get_path(''))
+            f = tempfile.NamedTemporaryFile(suffix='')
             fname = f.name
             f.close()
             o = psopen(fname, 'w', 'geobugs_text')
