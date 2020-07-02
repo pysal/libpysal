@@ -329,6 +329,50 @@ class W(object):
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
         return nx.from_scipy_sparse_matrix(self.sparse, create_using=G)
 
+    def to_xarray(self, data, coords=None):
+        """
+        converts calculated results to ``xarray.DataArray`` object
+
+        Arguments
+        ---------
+        data    :   array
+                    data values stored in 1d array
+        coords  :   Dictionary/xarray.core.coordinates.DataArrayCoordinates
+                    coordinates from original DataArray
+        Returns
+        -------
+
+        da : xarray.DataArray
+            instance of xarray.DataArray
+        """
+        try:
+            from xarray import DataArray
+            from affine import Affine
+        except ImportError:
+            raise ImportError(
+                "xarray and affine must be installed to use this functionality")
+        attrs = self.attrs
+        dims = attrs.pop('dims')
+        shape = attrs.pop('shape')
+        if coords is not None:
+            shape = tuple(len(value) for value in coords.values())
+            dims = tuple(key for key in coords.keys())
+        else:
+            coords = {}
+            nx, ny = shape[2], shape[1]
+            transform = Affine(*attrs["transform"])
+            x, _ = transform * (np.arange(nx) + 0.5, np.zeros(nx) + 0.5)
+            _, y = transform * (np.zeros(ny) + 0.5, np.arange(ny) + 0.5)
+            coords["band"] = np.ones(1)
+            coords["y"] = y
+            coords["x"] = x
+        n = shape[1]*shape[2]
+        temp = np.full((n), attrs['nodatavals'][0])
+        temp[self.id_order] = data
+        data = temp.reshape((shape))
+        da = DataArray(data=data, dims=dims, coords=coords, attrs=attrs)
+        return da
+
     @classmethod
     def from_networkx(cls, graph, weight_col="weight"):
         """Convert a ``networkx`` graph to a PySAL ``W`` object.
