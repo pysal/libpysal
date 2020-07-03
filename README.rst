@@ -50,12 +50,20 @@ as well as gitter_.
 
 .. _gitter : https://gitter.im/pysal/pysal?
 
-****************
-Getting Involved
-****************
+************
+Contributing
+************
 
-If you are interested in contributing to PySAL please see our
-`development guidelines  <https://github.com/pysal/pysal/wiki>`_.
+PySAL-libpysal is under active development and contributors are welcome.
+If you have any suggestions, feature requests, or bug reports, 
+please open new `issues <https://github.com/pysal/libpysal/issues>`_ on GitHub. 
+To submit patches, please review `PySAL: Getting Started <http://pysal.org/getting_started#for-developers>`_, 
+the PySAL `development guidelines <https://github.com/pysal/pysal/wiki>`_, 
+the `libpysal contributing guidelines <https://github.com/pysal/libpysal/blob/master/.github/CONTRIBUTING.md>`_
+before  opening a `pull request <https://github.com/pysal/libpysal/pulls>`_. 
+Once your changes get merged, you’ll automatically be added to 
+the `Contributors List <https://github.com/pysal/libpysal/graphs/contributors>`_.
+
 
 ***********
 Bug reports
