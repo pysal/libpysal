@@ -30,8 +30,7 @@ class test_Wk1IO(unittest.TestCase):
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(
-            suffix='.wk1', dir=pysal_examples.get_path(''))
+        f = tempfile.NamedTemporaryFile(suffix='.wk1')
         fname = f.name
         f.close()
         o = psopen(fname, 'w')

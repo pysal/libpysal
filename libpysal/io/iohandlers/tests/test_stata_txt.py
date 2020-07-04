@@ -44,8 +44,7 @@ class test_StataTextIO(unittest.TestCase):
     def test_write(self):
         for obj in [self.obj_sparse, self.obj_full]:
             w = obj.read()
-            f = tempfile.NamedTemporaryFile(
-                suffix='.txt', dir=pysal_examples.get_path(''))
+            f = tempfile.NamedTemporaryFile(suffix='.txt')
             fname = f.name
             f.close()
             o = psopen(fname, 'w', 'stata_text')
