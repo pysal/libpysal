@@ -19,10 +19,26 @@ try:
 except ImportError:
     warn('geopandas not available. Some functionality will be disabled.')
 
+try:
+    from numba import njit, jit
+except (ImportError, ModuleNotFoundError):
+
+    def jit(*dec_args, **dec_kwargs):
+        """
+        decorator mimicking numba.jit
+        """
+
+        def intercepted_function(f, *f_args, **f_kwargs):
+            return f
+
+        return intercepted_function
+
+    njit = jit
+
 __all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
            'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
            'insert_diagonal', 'get_ids', 'get_points_array_from_shapefile',
-           'min_threshold_distance', 'lat2SW', 'w_local_cluster',
+           'min_threshold_distance', 'lat2SW', 'lat2SW2', 'lat2W2', 'w_local_cluster',
            'higher_order_sp', 'hexLat2W', 'attach_islands',
            'nonplanar_neighbors', 'fuzzy_contiguity']
 
@@ -210,6 +226,50 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
         weights = alt_weights
     return W(w, weights, ids=ids, id_order=ids[:], **kwargs)
 
+def lat2W2(nrows=5, ncols=5, contiguity="rook", id_type='int', **kwargs):
+    """
+    Create a W object for a regular lattice.
+    Parameters
+    ----------
+    nrows      : int
+                 number of rows
+    ncols      : int
+                 number of columns
+    contiguity : {"rook", "queen", "bishop"}
+                 type of contiguity. Default is rook.
+    id_type    : string
+                 string defining the type of IDs to use in the final W object;
+                 options are 'int' (0, 1, 2 ...; default), 'float' (0.0,
+                 1.0, 2.0, ...) and 'string' ('id0', 'id1', 'id2', ...)
+    **kwargs   : keyword arguments
+                 optional arguments for :class:`pysal.weights.W`
+    Returns
+    -------
+    w : W
+        instance of spatial weights class W
+    Notes
+    -----
+    Observations are row ordered: first k observations are in row 0, next k in row 1, and so on.
+    Examples
+    --------
+    >>> from libpysal.weights import lat2W
+    >>> w9 = lat2W(3,3)
+    >>> "%.3f"%w9.pct_nonzero
+    '29.630'
+    >>> w9[0] == {1: 1.0, 3: 1.0}
+    True
+    >>> w9[3] == {0: 1.0, 4: 1.0, 6: 1.0}
+    True
+    """
+    sw = lat2SW2(nrows, ncols, contiguity)
+    w = WSP(sw, list(range(nrows*ncols))).to_W(**kwargs)
+    if id_type == 'string':
+        ids = ['id' + str(i) for i in w.id_order]
+        w.remap_ids(ids)
+    elif id_type == 'float':
+        ids = [i * 1. for i in w.id_order]
+        w.remap_ids(ids)
+    return w
 
 def block_weights(regimes, ids=None, sparse=False, **kwargs):
     """
@@ -1199,6 +1259,93 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     if row_st:
         m = sparse.spdiags(1. / m.sum(1).T, 0, *m.shape) * m
     return m
+
+
+def lat2SW2(nrows=3, ncols=5, criterion="rook", row_st=False):
+    """
+    Create a sparse W matrix for a regular lattice.
+
+    Parameters
+    ----------
+
+    nrows   : int
+              number of rows
+    ncols   : int
+              number of columns
+    rook    : {"rook", "queen", "bishop"}
+              type of contiguity. Default is rook.
+    row_st  : boolean
+              If True, the created sparse W object is row-standardized so
+              every row sums up to one. Defaults to False.
+
+    Returns
+    -------
+
+    w : scipy.sparse.dia_matrix
+        instance of a scipy sparse matrix
+
+    Notes
+    -----
+
+    Observations are row ordered: first k observations are in row 0, next k in row 1, and so on.
+    This method directly creates the W matrix using the strucuture of the contiguity type.
+
+    Examples
+    --------
+
+    >>> from libpysal.weights import lat2SW
+    >>> w9 = lat2SW(3,3)
+    >>> w9[0,1] == 1
+    True
+    >>> w9[3,6] == 1
+    True
+    >>> w9r = lat2SW(3,3, row_st=True)
+    >>> w9r[3,6] == 1./3
+    True
+    """
+    n = nrows * ncols
+    data, offsets = _buildsw(nrows, ncols, criterion="rook")
+    m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8)
+    m = m + m.T
+    if row_st:
+        m = sparse.spdiags(1. / m.sum(1).T, 0, *m.shape) * m
+    return m
+
+
+@njit(fastmath=True)
+def _buildsw(nrows, ncols, criterion="rook"):
+    n = nrows * ncols
+    diagonals = np.empty((4, n), dtype=np.int8)
+    offsets = []
+    if criterion == "rook" or criterion == "queen":
+        d = np.ones(n, dtype=np.int8)
+        for i in range(ncols - 1, n, ncols):
+            d[i] = 0
+        diagonals[0] = (d)
+        offsets.append(-1)
+
+        d = np.ones(n, dtype=np.int8)
+        diagonals[1] = (d)
+        offsets.append(-ncols)
+
+    if criterion == "queen" or criterion == "bishop":
+        d = np.ones(n, dtype=np.int8)
+        for i in range(0, n, ncols):
+            d[i] = 0
+        diagonals[2] = (d)
+        offsets.append(-(ncols - 1))
+
+        d = np.ones(n, dtype=np.int8)
+        for i in range(ncols - 1, n, ncols):
+            d[i] = 0
+        diagonals[3] = (d)
+        offsets.append(-(ncols + 1))
+    if criterion == "queen":
+        data = diagonals
+    else:
+        data = diagonals[:2]
+    offsets = np.array(offsets)
+    return data, offsets
 
 
 def write_gal(file, k=10):
