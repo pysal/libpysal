@@ -175,7 +175,7 @@ class W(object):
         """Reset properties."""
         self._cache = {}
 
-    def to_file(self, path='', format=None):
+    def to_file(self, path="", format=None):
         """
         Write a weights to a file. The format is guessed automatically 
         from the path, but can be overridden with the format argument. 
@@ -194,13 +194,12 @@ class W(object):
         -------
         None
         """
-        f = popen(dataPath=path, mode='w', dataFormat=format)
+        f = popen(dataPath=path, mode="w", dataFormat=format)
         f.write(self)
         f.close()
-        
 
     @classmethod
-    def from_file(cls, path='', format=None):
+    def from_file(cls, path="", format=None):
         """
         Read a weights file into a W object. 
 
@@ -215,7 +214,7 @@ class W(object):
         -------
         W object
         """
-        f = popen(dataPath=path, mode='r', dataFormat=format)
+        f = popen(dataPath=path, mode="r", dataFormat=format)
         w = f.read()
         f.close()
         return w
