@@ -262,13 +262,15 @@ class W(object):
         if try_weightcol is None:
             adjlist = adjlist.copy(deep=True)
             adjlist["weight"] = 1
-        all_ids = set(adjlist[focal_col].tolist())
-        all_ids |= set(adjlist[neighbor_col].tolist())
         grouper = adjlist.groupby(focal_col)
-        neighbors = grouper[neighbor_col].apply(list).to_dict()
-        weights = grouper[weight_col].apply(list).to_dict()
-        neighbors.update({k: [] for k in all_ids.difference(list(neighbors.keys()))})
-        weights.update({k: [] for k in all_ids.difference(list(weights.keys()))})
+        neighbors = dict()
+        weights = dict()
+        for ix, chunk in grouper:
+            neighbors_to_ix = chunk[neighbor_col].values
+            weights_to_ix = chunk[weight_col].values
+            mask = neighbors_to_ix != ix
+            neighbors[ix] = neighbors_to_ix[mask].tolist()
+            weights[ix] = weights_to_ix[mask].tolist()
         return cls(neighbors=neighbors, weights=weights)
 
     def to_adjlist(
