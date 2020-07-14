@@ -154,7 +154,7 @@ class W(object):
             self._id_order_set = True
         self._reset()
         self._n = len(self.weights)
-        if not self.silence_warnings and self.n_components > 1:
+        if (not self.silence_warnings) and (self.n_components > 1):
             message = (
                 "The weights matrix is not fully connected: "
                 "\n There are %d disconnected components." % self.n_components
@@ -877,9 +877,9 @@ class W(object):
             for j, neigh_list in list(self.neighbors.items()):
                 self.__neighbors_0[j] = [id2i[neigh] for neigh in neigh_list]
             self._cache["neighbors_0"] = self.__neighbors_0
-        
+
         neighbor_list = self.__neighbors_0
-        
+
         return neighbor_list
 
     def get_transform(self):
