@@ -309,7 +309,7 @@ class W(object):
         links = []
         for idx, neighb in self:
             if len(neighb) == 0:
-                links.append((idx, None, numpy.nan))
+                links.append((idx, None, np.nan))
                 continue
             for n, w in neighb.items():
                 links.append((idx, n, w))
