@@ -309,7 +309,7 @@ class W(object):
         if n_islands > 0 and (not self.silence_warnings):
             warnings.warn(
                 "{} islands in this weights matrix. Conversion to an "
-                "adjacency list will drop these observations!"
+                "adjacency list will drop these observations!".format(len(self.islands))
             )
         adjlist = pd.DataFrame(
             ((idx, n, w) for idx, neighb in self for n, w in list(neighb.items())),
