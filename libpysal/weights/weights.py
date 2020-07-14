@@ -311,10 +311,15 @@ class W(object):
                 "{} islands in this weights matrix. Conversion to an "
                 "adjacency list will drop these observations!".format(len(self.islands))
             )
-        adjlist = pd.DataFrame(
-            ((idx, n, w) for idx, neighb in self for n, w in list(neighb.items())),
-            columns=("focal", "neighbor", "weight"),
-        )
+        links = []
+        for idx, neighb in self:
+            if len(neighb) == 0:
+                links.append((idx, None, numpy.nan))
+                continue
+            for n, w in neighb.items():
+                links.append((idx, n, w))
+        adjlist = pd.DataFrame(links, columns=[focal_col, neighbor_col, weight_col])
+
         return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
 
     def to_networkx(self):
