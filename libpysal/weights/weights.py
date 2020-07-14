@@ -301,8 +301,10 @@ class W(object):
         """
         try:
             import pandas as pd
-        except ImportError:
-            raise ImportError("pandas must be installed to use this method")
+        except (ImportError, ModuleNotFoundError):
+            raise ImportError(
+                "pandas must be installed & importable to use this method"
+            )
         n_islands = len(self.islands)
         if n_islands > 0 and (not self.silence_warnings):
             warnings.warn(
