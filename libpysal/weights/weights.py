@@ -306,11 +306,6 @@ class W(object):
                 "pandas must be installed & importable to use this method"
             )
         n_islands = len(self.islands)
-        if n_islands > 0 and (not self.silence_warnings):
-            warnings.warn(
-                "{} islands in this weights matrix. Conversion to an "
-                "adjacency list will drop these observations!".format(len(self.islands))
-            )
         links = []
         for idx, neighb in self:
             if len(neighb) == 0:
