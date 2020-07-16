@@ -15,10 +15,10 @@ try:
 except ImportError:
     PANDAS_MISSING = True
 
-@ut.skipIf(PANDAS_MISSING, 'Pandas is gone')
+@ut.skipIf(PANDAS_MISSING, "Pandas is gone")
 class Test_Adjlist(ut.TestCase):
     def setUp(self):
-        self.knownW = io.open(examples.get_path('columbus.gal')).read()
+        self.knownW = io.open(examples.get_path("columbus.gal")).read()
 
     def test_round_trip(self):
         adjlist = self.knownW.to_adjlist(remove_symmetric=False).astype(int)
