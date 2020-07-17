@@ -8,6 +8,7 @@ from os.path import basename as BASENAME
 import math
 import warnings
 import numpy as np
+import pandas as pd
 import scipy.sparse
 from scipy.sparse.csgraph import connected_components
 
@@ -329,21 +330,21 @@ class W(object):
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
         return nx.from_scipy_sparse_matrix(self.sparse, create_using=G)
 
-    def to_xarray(self, data, coords=None, attrs=None):
+    def to_xarray(self, data, attrs, coords=None):
         """
-        converts calculated results to ``xarray.DataArray`` object
+        Creates DataArray object from passed data
 
         Arguments
         ---------
-        data    :   array
-                    data values stored in 1d array
-        coords  :   Dictionary/xarray.core.coordinates.DataArrayCoordinates
-                    coordinates corresponding to DataArray
-        attrs   :   Dictionary
-                    Attributes stored in dict related to DataArray
+        data : array/list
+            numpy 1d array or list with dimensionality conforming to w
+        attrs : Dictionary
+            Attributes stored in dict related to DataArray e.g. da.attrs
+        coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
+            coordinates corresponding to DataArray e.g. da.coords
+
         Returns
         -------
-
         da : xarray.DataArray
             instance of xarray.DataArray
         """
@@ -353,10 +354,8 @@ class W(object):
         except ImportError:
             raise ImportError(
                 "xarray and affine must be installed to use this functionality")
-        dims = self.attrs.pop('dims')
-        shape = self.attrs.pop('shape')
-        if attrs is None:
-            attrs = self.attrs
+        shape = attrs["shape"]
+        dims = self.index.names
         if coords is not None:
             shape = tuple(len(value) for value in coords.values())
             dims = tuple(key for key in coords.keys())
@@ -369,11 +368,11 @@ class W(object):
             coords["band"] = np.ones(1)
             coords["y"] = y
             coords["x"] = x
-        n = shape[1]*shape[2]
-        temp = np.full((n), attrs['nodatavals'][0])
-        temp[self.id_order] = data
-        data = temp.reshape((shape))
-        da = DataArray(data=data, dims=dims, coords=coords, attrs=attrs)
+        og_index = pd.MultiIndex.from_product([i for i in coords.values()], names=dims)
+        ser = pd.Series(attrs["nodatavals"][0], index=og_index)
+        ser[self.index] = data
+        data = ser.to_numpy().reshape(shape)
+        da = DataArray(data, coords=coords, dims=dims, attrs=attrs)
         return da
 
     @classmethod
@@ -1400,7 +1399,7 @@ class WSP(object):
 
     """
 
-    def __init__(self, sparse, id_order=None):
+    def __init__(self, sparse, id_order=None, index=None):
         if not scipy.sparse.issparse(sparse):
             raise ValueError("must pass a scipy sparse object")
         rows, cols = sparse.shape
@@ -1414,6 +1413,15 @@ class WSP(object):
                     "Number of values in id_order must match shape of sparse"
                 )
         self.id_order = id_order
+        # temp addition of index attribute
+        if index is not None:
+            if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
+                raise TypeError("index must be an instance of pandas.Index dtype")
+            if len(index) != self.n:
+                raise ValueError(
+                    "Number of values in index must match shape of sparse"
+                )
+        self.index = index
         self._cache = {}
 
     @property

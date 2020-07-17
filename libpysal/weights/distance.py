@@ -267,16 +267,15 @@ class KNN(W):
     @classmethod
     def from_xarray(cls, da, band=None, *args, **kwargs):
         """
-        Construct a weights object from a xarray dataarray.
+        Construct a weights object from a xarray.DataArray.
 
         Parameters
         ----------
-        da         : xarray.DataArray
-                    raster file accessed using xarray.open_rasterio method
-        band       : int
-                    select band for raster with multiple bands
-        **kwargs   : keyword arguments
-                    optional arguments for :class:`pysal.weights.W`
+        da : xarray.DataArray
+            raster file accessed using xarray.open_rasterio method
+        band : int
+            select band for raster with multiple bands
+
         See Also
         --------
         :class:`libpysal.weights.weights.W`   
@@ -290,11 +289,8 @@ class KNN(W):
         w = cls(array, *args, **kwargs)
         w.remap_ids(id_order)
         ser = ser[ser != da.nodatavals[0]]
-        w.coords = ser.index
-        attrs = da.attrs
-        attrs["dims"] = da.dims
-        attrs["shape"] = da.shape
-        w.attrs = attrs
+        # temp adding index attribute for W object
+        w.index = ser.index
         return w
 
     def reweight(self, k=None, p=None, new_data=None, new_ids=None, inplace=True):

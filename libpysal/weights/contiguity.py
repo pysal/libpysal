@@ -188,21 +188,23 @@ class Rook(W):
     @classmethod
     def from_xarray(cls, da, band=None, sparse=False, **kwargs):
         """
-        Construct a W object from a xarray.DataArray object.
+        Construct a weights object from a xarray DataArray.
 
         Parameters
         ----------
-        da         : xarray.DataArray
-                    raster file accessed using xarray.open_rasterio method
-        band       : int
-                    select band for raster with multiple bands
-        sparse     : boolean
-                    type of weight object. Default is dense. For sparse, sparse = True
-        **kwargs   : keyword arguments
-                    optional arguments for :class:`pysal.weights.W`
+        da : xarray.DataArray
+            raster file accessed using xarray.open_rasterio method
+        band : int
+            select band for raster with multiple bands
+        sparse : boolean
+            type of weight object. Default is dense. For sparse, sparse = True
+        **kwargs : keyword arguments
+            optional arguments passed when sparse = False 
+
         See Also
         --------
-        :class:`libpysal.weights.weights.W`   
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
             w = da2WSP(da, 'rook', band)
@@ -379,21 +381,23 @@ class Queen(W):
     @classmethod
     def from_xarray(cls, da, band=None, sparse=False, **kwargs):
         """
-        Construct a W object from a xarray.DataArray object.
+        Construct a weights object from a xarray DataArray.
 
         Parameters
         ----------
-        da         : xarray.DataArray
-                    raster file accessed using xarray.open_rasterio method
-        band       : int
-                    select band for raster with multiple bands
-        sparse     : boolean
-                    type of weight object. Default is dense. For sparse, sparse = True
-        **kwargs   : keyword arguments
-                    optional arguments for :class:`pysal.weights.W`
+        da : xarray.DataArray
+            raster file accessed using xarray.open_rasterio method
+        band : int
+            select band for raster with multiple bands
+        sparse : boolean
+            type of weight object. Default is dense. For sparse, sparse = True
+        **kwargs : keyword arguments
+            optional arguments passed when sparse = False 
+
         See Also
         --------
-        :class:`libpysal.weights.weights.W`   
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
             w = da2WSP(da, 'queen', band)
