@@ -1,12 +1,10 @@
 from .util import lat2SW
 from .weights import WSP
 import numpy as np
-import pandas as pd
 from warnings import warn
 
 try:
     from xarray import DataArray
-    from affine import Affine
 except ImportError:
     raise ImportError(
         "xarray must be installed to use this functionality")
@@ -64,9 +62,7 @@ def da2WSP(da, criterion="rook", band=None):
     da = da[band-1:band]
     sw = lat2SW(*da[0].shape, criterion)
     ser = da.to_series()
-    nodata = np.where(ser == da.nodatavals[0])[0]
-    mask = np.ones((sw.shape[0],), dtype=np.bool)
-    mask[nodata] = False
+    mask = (ser != da.nodatavals[0]).to_numpy()
     sw = sw[mask]
     sw = sw[:, mask]
     ser = ser[ser != da.nodatavals[0]]
@@ -75,45 +71,51 @@ def da2WSP(da, criterion="rook", band=None):
     return wsp
 
 
-def w2da(data, w, attrs, coords=None):
+def w2da(data, w, attrs={}, coords=None):
     """
     Creates DataArray object from passed data
 
     Arguments
     ---------
-    data : array/list
-       numpy 1d array or list with dimensionality conforming to w
+    data : array/list/pd.Series
+        1d array-like data with dimensionality conforming to w
     w : libpysal.weights.W
-       Spatial weights object aligned with passed data
+        Spatial weights object aligned with passed data
     attrs : Dictionary
         Attributes stored in dict related to DataArray, e.g. da.attrs
     coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
-       coordinates corresponding to DataArray, e.g. da.coords
+        coordinates corresponding to DataArray, e.g. da.coords
 
     Returns
     -------
     da : xarray.DataArray
         instance of xarray.DataArray
     """
-    shape = attrs["shape"]
-    dims = w.index.names
-    if coords is not None:
+    data = np.array(data).flatten()
+    if coords is None:
+        idx = w.index
+        dims = idx.names
+        shape = tuple(lev.size for lev in idx.levels)
+        indexer = tuple(idx.codes)
+        missing = np.prod(shape) > idx.shape[0]
+        if missing:
+            if attrs:
+                fill_value = attrs["nodatavals"][0]
+            else:
+                fill_value = np.floor(np.min(data)) - 1
+                attrs["nodatavals"] = tuple([fill_value])
+            data_complete = np.full(shape, fill_value, data.dtype)
+        else:
+            data_complete = np.empty(shape, data.dtype)
+        data_complete[indexer] = data
+        coords = {}
+        for dim, lev in zip(dims, idx.levels):
+            coords[dim] = lev.to_numpy()
+    else:
         shape = tuple(len(value) for value in coords.values())
         dims = tuple(key for key in coords.keys())
-    else:
-        coords = {}
-        nx, ny = shape[2], shape[1]
-        transform = Affine(*attrs["transform"])
-        x, _ = transform * (np.arange(nx) + 0.5, np.zeros(nx) + 0.5)
-        _, y = transform * (np.zeros(ny) + 0.5, np.arange(ny) + 0.5)
-        coords["band"] = np.ones(1)
-        coords["y"] = y
-        coords["x"] = x
-    og = pd.MultiIndex.from_product([i for i in coords.values()], names=dims)
-    ser = pd.Series(attrs["nodatavals"][0], index=og)
-    ser[w.index] = data
-    data = ser.to_numpy().reshape(shape)
-    da = DataArray(data, coords=coords, dims=dims, attrs=attrs)
+        data_complete = np.array(data).reshape(shape)
+    da = DataArray(data_complete, coords=coords, dims=dims, attrs=attrs)
     return da
 
 
@@ -143,5 +145,4 @@ def da_checker(da, band):
         if da.sizes['band'] != 1:
             warn('Multiple bands detected in da. Using band 1 as default band')
         band = 1
-    da.attrs["shape"] = da.shape
     return band

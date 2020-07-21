@@ -275,6 +275,10 @@ class KNN(W):
             raster file accessed using xarray.open_rasterio method
         band : int
             select band for raster with multiple bands
+        *args : KNN class arguments
+            arguments for :class:`pysal.distance.KNN`
+        **kwargs : keyword arguments
+            optional arguments for :class:`pysal.weights.W`
 
         See Also
         --------

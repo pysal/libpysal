@@ -8,7 +8,6 @@ from os.path import basename as BASENAME
 import math
 import warnings
 import numpy as np
-import pandas as pd
 import scipy.sparse
 from scipy.sparse.csgraph import connected_components
 
@@ -330,7 +329,7 @@ class W(object):
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
         return nx.from_scipy_sparse_matrix(self.sparse, create_using=G)
 
-    def to_xarray(self, data, attrs, coords=None):
+    def to_xarray(self, data, attrs={}, coords=None):
         """
         Creates DataArray object from passed data
 
@@ -348,31 +347,8 @@ class W(object):
         da : xarray.DataArray
             instance of xarray.DataArray
         """
-        try:
-            from xarray import DataArray
-            from affine import Affine
-        except ImportError:
-            raise ImportError(
-                "xarray and affine must be installed to use this functionality")
-        shape = attrs["shape"]
-        dims = self.index.names
-        if coords is not None:
-            shape = tuple(len(value) for value in coords.values())
-            dims = tuple(key for key in coords.keys())
-        else:
-            coords = {}
-            nx, ny = shape[2], shape[1]
-            transform = Affine(*attrs["transform"])
-            x, _ = transform * (np.arange(nx) + 0.5, np.zeros(nx) + 0.5)
-            _, y = transform * (np.zeros(ny) + 0.5, np.arange(ny) + 0.5)
-            coords["band"] = np.ones(1)
-            coords["y"] = y
-            coords["x"] = x
-        og_index = pd.MultiIndex.from_product([i for i in coords.values()], names=dims)
-        ser = pd.Series(attrs["nodatavals"][0], index=og_index)
-        ser[self.index] = data
-        data = ser.to_numpy().reshape(shape)
-        da = DataArray(data, coords=coords, dims=dims, attrs=attrs)
+        from .raster import w2da
+        da = w2da(data, self, attrs, coords)
         return da
 
     @classmethod
@@ -1414,7 +1390,8 @@ class WSP(object):
                 )
         self.id_order = id_order
         # temp addition of index attribute
-        if index is not None:
+        if index is not None:    
+            import pandas as pd # will be removed after refactoring is done
             if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
                 raise TypeError("index must be an instance of pandas.Index dtype")
             if len(index) != self.n:
@@ -1538,3 +1515,25 @@ class WSP(object):
         w._sparse = copy.deepcopy(self.sparse)
         w._cache["sparse"] = w._sparse
         return w
+
+    def to_xarray(self, data, attrs={}, coords=None):
+        """
+        Creates DataArray object from passed data
+
+        Arguments
+        ---------
+        data : array/list
+            numpy 1d array or list with dimensionality conforming to w
+        attrs : Dictionary
+            Attributes stored in dict related to DataArray e.g. da.attrs
+        coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
+            coordinates corresponding to DataArray e.g. da.coords
+
+        Returns
+        -------
+        da : xarray.DataArray
+            instance of xarray.DataArray
+        """
+        from .raster import w2da
+        da = w2da(data, self, attrs, coords)
+        return da
