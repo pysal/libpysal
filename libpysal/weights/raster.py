@@ -75,7 +75,7 @@ def w2da(data, w, attrs={}, coords=None):
     """
     Creates DataArray object from passed data
 
-    Arguments
+    Parameters
     ---------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to w
@@ -92,17 +92,18 @@ def w2da(data, w, attrs={}, coords=None):
         instance of xarray.DataArray
     """
     data = np.array(data).flatten()
+    idx = w.index
+    indexer = tuple(idx.codes)
     if coords is None:
-        idx = w.index
         dims = idx.names
         shape = tuple(lev.size for lev in idx.levels)
-        indexer = tuple(idx.codes)
         missing = np.prod(shape) > idx.shape[0]
         if missing:
-            if attrs:
+            if 'nodatavals' in attrs:
                 fill_value = attrs["nodatavals"][0]
             else:
-                fill_value = np.floor(np.min(data)) - 1
+                min_data = np.min(data)
+                fill_value = min_data - 1 if min_data < 0 else -1
                 attrs["nodatavals"] = tuple([fill_value])
             data_complete = np.full(shape, fill_value, data.dtype)
         else:
@@ -114,7 +115,8 @@ def w2da(data, w, attrs={}, coords=None):
     else:
         shape = tuple(len(value) for value in coords.values())
         dims = tuple(key for key in coords.keys())
-        data_complete = np.array(data).reshape(shape)
+        data_complete = np.full(shape, attrs["nodatavals"][0], data.dtype)
+        data_complete[indexer] = data
     da = DataArray(data_complete, coords=coords, dims=dims, attrs=attrs)
     return da
 
@@ -122,6 +124,7 @@ def w2da(data, w, attrs={}, coords=None):
 def da_checker(da, band):
     """
     xarray dataarray checker
+
     Parameters
     ----------
     da : xarray.DataArray

@@ -201,6 +201,11 @@ class Rook(W):
         **kwargs : keyword arguments
             optional arguments passed when sparse = False 
 
+        Returns
+        -------
+        w : libpysal.weights.W/libpysal.weights.WSP
+        instance of spatial weights class W or WSP
+
         See Also
         --------
         :class:`libpysal.weights.weights.W`
@@ -392,7 +397,12 @@ class Queen(W):
         sparse : boolean
             type of weight object. Default is dense. For sparse, sparse = True
         **kwargs : keyword arguments
-            optional arguments passed when sparse = False 
+            optional arguments passed when sparse = False
+
+        Returns
+        -------
+        w : libpysal.weights.W/libpysal.weights.WSP
+        instance of spatial weights class W or WSP
 
         See Also
         --------

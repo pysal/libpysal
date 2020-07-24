@@ -333,7 +333,7 @@ class W(object):
         """
         Creates DataArray object from passed data
 
-        Arguments
+        Parameters
         ---------
         data : array/list
             numpy 1d array or list with dimensionality conforming to w
@@ -1390,14 +1390,16 @@ class WSP(object):
                 )
         self.id_order = id_order
         # temp addition of index attribute
-        if index is not None:    
-            import pandas as pd # will be removed after refactoring is done
+        import pandas as pd  # will be removed after refactoring is done
+        if index is not None:
             if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
                 raise TypeError("index must be an instance of pandas.Index dtype")
             if len(index) != self.n:
                 raise ValueError(
                     "Number of values in index must match shape of sparse"
                 )
+        else:
+            index = pd.RangeIndex(self.n)
         self.index = index
         self._cache = {}
 
@@ -1520,7 +1522,7 @@ class WSP(object):
         """
         Creates DataArray object from passed data
 
-        Arguments
+        Parameters
         ---------
         data : array/list
             numpy 1d array or list with dimensionality conforming to w

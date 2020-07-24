@@ -280,6 +280,10 @@ class KNN(W):
         **kwargs : keyword arguments
             optional arguments for :class:`pysal.weights.W`
 
+        Returns
+        -------
+        w : libpysal.distance.KNN
+
         See Also
         --------
         :class:`libpysal.weights.weights.W`   
