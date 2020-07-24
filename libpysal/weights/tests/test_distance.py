@@ -20,6 +20,9 @@ class Distance_Mixin(object):
     arc_path = pysal_examples.get_path('stl_hom.shp')
     points = [(10, 10), (20, 10), (40, 10), 
               (15, 20), (30, 20), (30, 30)]
+    coincident_points = [(10, 10), (20, 10), (10,10),
+                         (20,10), (40, 10), (15, 20),
+                         (30, 20), (30, 30)]
     euclidean_kdt = KDTree(points, distance_metric='euclidean')
     
     polygon_f = psopen(polygon_path) # our file handler
@@ -74,6 +77,10 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         self.known_w2 = [1, 3, 9, 12]
         self.known_wi3 = 40
         self.known_w3 = [31, 38, 45, 49]
+        self.known_coincident_neighbors = {0: [1, 5], 1: [0, 5],
+                                           4: [6, 1], 5: [1, 0],
+                                           6: [7, 1], 7: [6, 5],
+                                           2: [1, 5], 3: [0, 5]}
     
     ##########################
     # Classmethod tests      #
@@ -94,15 +101,23 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         w = d.KNN.from_array(self.poly_centroids, k=4)
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+        w = d.KNN.from_array(self.coincident_points)
+        self.assertEqual(w.neighbors, self.known_coincident_neighbors)
 
     def test_from_shapefile(self):
         w = d.KNN.from_shapefile(self.polygon_path, k=4)    
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
 
+
     ##########################
     # Function/User tests    #
     ##########################
+
+    def test_duplicated(self):
+        p = self.coincident_points
+        self.assertTrue(d.duplicated(p)[:,0].any())
+
 
     def test_reweight(self):
         w = d.KNN(self.points, k=2)

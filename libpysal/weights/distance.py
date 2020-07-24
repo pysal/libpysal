@@ -12,6 +12,49 @@ from scipy.spatial import distance_matrix
 import scipy.sparse as sp
 import numpy as np
 
+def duplicated(array):
+    """Identify duplicate rows in an array
+    Parameters
+    ----------
+    array     : np.ndarray
+                (n,k)
+    Returns
+    -------
+    duplicate : np.ndarray
+                (n, 3)
+                First column indicates if the row is a duplicate
+                Second column indicates if the row is a duplicate of a row with
+                a lower index
+                Third column contains the index of the first row that
+                duplicates current row
+    Examples
+    ---------
+    >>> a = np.array([[1,1,1],[2,2,2],[3,3,3],[4,4,4],[5,5,5],[1,1,1],
+                     [2,2,2], [1,1,1]])
+    >>> duplicated(a)
+    array([[1, 0, 0],
+           [1, 0, 0],
+           [0, 0, 0],
+           [0, 0, 0],
+           [0, 0, 0],
+           [1, 1, 0],
+           [1, 1, 1],
+           [1, 1, 0]])
+    >>> duplicated(a)[:,0].any()
+    True
+    """
+    array = np.asarray(array)
+    n = array.shape[0]
+    duplicate = np.zeros((n,3), dtype=int)
+    unq, count = np.unique(array, axis=0, return_counts=True)
+    repeated_groups = unq[count > 1]
+    for repeated_group in repeated_groups:
+        repeated_idx = np.argwhere(np.all(array == repeated_group, axis=1))
+        duplicate[repeated_idx, 0] = 1
+        duplicate[repeated_idx[1:], 1] = 1
+        duplicate[repeated_idx[1:], 2] = repeated_idx[0]
+
+    return duplicate
 
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
     """
@@ -20,6 +63,7 @@ def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
     #Warn('This function is deprecated. Please use pysal.weights.KNN', UserWarning)
     return KNN(data, k=k, p=p, ids=ids, radius=radius,
             distance_metric=distance_metric)
+
 
 class KNN(W):
     """
@@ -50,6 +94,27 @@ class KNN(W):
                 instance
                 Weights object with binary weights
 
+    See Also
+    --------
+    :class:`libpysal.weights.weights.W`
+
+    Notes
+    -----
+
+    Ties between neighbors of equal distance are arbitrarily broken.
+
+    Coincident points can cause challenges for distance based weights since the
+    distance separating a pair of coincident points is 0 by definition. We
+    handle this situation as follows. Define `P` as the set of indices for all
+    points in a data set. The first record in a set of duplicates (i.e., points
+    with same coordinates) is defined as the coincident seed and the remaining
+    points that are coincident with the seed are coincident duplicates. Define
+    `D` as the set of indices for the coincident duplicates. Initial neighbors
+    are identified using the set `S = P\D` (i.e., the coincident duplicates are
+    not included initially). Then, each coincident duplicate has its neighbors
+    set equal to that of its coincident seed.
+
+
     Examples
     --------
     >>> import libpysal
@@ -75,17 +140,28 @@ class KNN(W):
     >>> 0 in wnn2.neighbors
     False
 
-    Notes
-    -----
+    coincident points
+    >>> points = [(10, 10), (20, 10), (10,10), (20,10), (40, 10),
+                  (15, 20), (30, 20), (30, 30)]
+    >>> wknn2 = KNN.from_array(points, 2)
+    >>> wknn2.neighbors
+    {0: [1, 5],
+     1: [0, 5],
+     4: [6, 1],
+     5: [1, 0],
+     6: [7, 1],
+     7: [6, 5],
+     2: [1, 5],
+     3: [0, 5]}
 
-    Ties between neighbors of equal distance are arbitrarily broken.
+​
 
-    See Also
-    --------
-    :class:`libpysal.weights.weights.W`
+
     """
     def __init__(self, data, k=2, p=2, ids=None, radius=None,
                  distance_metric='euclidean', **kwargs):
+
+
         if radius is not None: 
             distance_metric='arc'
         if isKDTree(data):
@@ -94,21 +170,46 @@ class KNN(W):
         else:
             self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
             self.data = self.kdtree.data
+
+        duplicates = duplicated(self.data)
+        coincident = duplicates[:,1].any()
+
+        self.duplicates = duplicates
         self.k = k 
         self.p = p
-        this_nnq = self.kdtree.query(self.data, k=k+1, p=p)
+        data = self.data
+        if coincident:
+            duplicate_ids = np.nonzero(duplicates[:,1])
+            data = self.data[np.nonzero(duplicates[:,1]==0)]
+            self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
+
+        this_nnq = self.kdtree.query(data, k=k+1, p=p)
 
         to_weight = this_nnq[1]
         if ids is None:
             ids = list(range(to_weight.shape[0]))
 
         neighbors = {}
-        for i,row in enumerate(to_weight):
-            row = row.tolist()
-            row.remove(i)
-            row = [ids[j] for j in row]
-            focal = ids[i]
-            neighbors[focal] = row
+        if coincident:
+            unique_ids = np.nonzero(duplicates[:,1]==0)[0]
+            for i, row in enumerate(to_weight):
+                row = row.tolist()
+                row.remove(i)
+                row = [unique_ids[j] for j in row]
+                focal = unique_ids[i]
+                neighbors[focal] = row
+            for row in duplicate_ids[0]:
+                neighbors[row] = neighbors[duplicates[row, 2]]
+            n = self.data.shape[0]
+            ids = list(range(n))
+        else:
+            for i, row in enumerate(to_weight):
+                row = row.tolist()
+                row.remove(i)
+                row = [ids[j] for j in row]
+                focal = ids[i]
+                neighbors[focal] = row
+
         W.__init__(self, neighbors, id_order=ids, **kwargs)
 
     @classmethod
@@ -249,15 +350,18 @@ class KNN(W):
                     if iterable, a list of ids to use for the W
                     if None, df.index is used.
 
+        
         See Also
         --------
         :class:`libpysal.weights.weights.W`
         """
         pts = get_points_array(df[geom_col])
+
         if ids is None:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
+
         return cls(pts, *args, ids=ids, **kwargs)
 
     def reweight(self, k=None, p=None, new_data=None, new_ids=None, inplace=True):
