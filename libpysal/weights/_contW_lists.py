@@ -17,7 +17,9 @@ def _get_boundary_points(shape):
     Recursively handle polygons vs. multipolygons to
     extract the boundary point set from each. 
     """
-    if shape.type.lower() == "polygon" and 'rings' in shape:
+    if shape.type.lower() == "polygon" and \
+       isinstance(shape, dict) and \
+       'rings' in shape:
         return _get_boundary_points(shape.boundary()) # returns a polyline (path)        
     elif shape.type.lower() == 'polygon':
         shape = shape.boundary
