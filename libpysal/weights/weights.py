@@ -329,28 +329,6 @@ class W(object):
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
         return nx.from_scipy_sparse_matrix(self.sparse, create_using=G)
 
-    def to_xarray(self, data, attrs={}, coords=None):
-        """
-        Creates DataArray object from passed data
-
-        Parameters
-        ---------
-        data : array/list
-            numpy 1d array or list with dimensionality conforming to w
-        attrs : Dictionary
-            Attributes stored in dict related to DataArray e.g. da.attrs
-        coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
-            coordinates corresponding to DataArray e.g. da.coords
-
-        Returns
-        -------
-        da : xarray.DataArray
-            instance of xarray.DataArray
-        """
-        from .raster import w2da
-        da = w2da(data, self, attrs, coords)
-        return da
-
     @classmethod
     def from_networkx(cls, graph, weight_col="weight"):
         """Convert a ``networkx`` graph to a PySAL ``W`` object.
@@ -1517,25 +1495,3 @@ class WSP(object):
         w._sparse = copy.deepcopy(self.sparse)
         w._cache["sparse"] = w._sparse
         return w
-
-    def to_xarray(self, data, attrs={}, coords=None):
-        """
-        Creates DataArray object from passed data
-
-        Parameters
-        ---------
-        data : array/list
-            numpy 1d array or list with dimensionality conforming to w
-        attrs : Dictionary
-            Attributes stored in dict related to DataArray e.g. da.attrs
-        coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
-            coordinates corresponding to DataArray e.g. da.coords
-
-        Returns
-        -------
-        da : xarray.DataArray
-            instance of xarray.DataArray
-        """
-        from .raster import w2da
-        da = w2da(data, self, attrs, coords)
-        return da

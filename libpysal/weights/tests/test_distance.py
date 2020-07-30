@@ -4,6 +4,7 @@ from ...cg.kdtree import KDTree, RADIUS_EARTH_KM
 from ..util import get_points_array
 from ... import cg
 from ... import weights
+from .. import raster
 from .. import distance as d, contiguity as c
 from ...io import geotable as pdio
 from ...io.fileio import FileIO as psopen
@@ -21,6 +22,8 @@ class Distance_Mixin(object):
     points = [(10, 10), (20, 10), (40, 10), 
               (15, 20), (30, 20), (30, 30)]
     euclidean_kdt = KDTree(points, distance_metric='euclidean')
+
+    da = raster.testDataArray() # sample xarray.DataArray
     
     polygon_f = psopen(polygon_path) # our file handler
     poly_centroids = get_points_array(polygon_f) # our iterable
@@ -74,6 +77,11 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         self.known_w2 = [1, 3, 9, 12]
         self.known_wi3 = 40
         self.known_w3 = [31, 38, 45, 49]
+
+        self.known_wi0_da = 7
+        self.known_w0_da = [11, 2, 5, 9]
+        self.known_wi1_da = 0
+        self.known_w1_da = [4, 5, 2, 9]
     
     ##########################
     # Classmethod tests      #
@@ -99,6 +107,11 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         w = d.KNN.from_shapefile(self.polygon_path, k=4)    
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+
+    def test_from_xarray(self):
+        w = d.KNN.from_xarray(self.da, k=4)    
+        self.assertEqual(w.neighbors[self.known_wi0_da], self.known_w0_da)
+        self.assertEqual(w.neighbors[self.known_wi1_da], self.known_w1_da)
 
     ##########################
     # Function/User tests    #

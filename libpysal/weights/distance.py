@@ -6,8 +6,7 @@ from ..cg.kdtree import KDTree
 from .weights import W, WSP
 from .util import isKDTree, get_ids, get_points_array_from_shapefile,\
     get_points_array, WSP2W
-from .set_operations import w_subset
-from .raster import da_checker
+from .raster import _da_checker
 import copy
 from warnings import warn as Warn
 from scipy.spatial import distance_matrix
@@ -265,16 +264,20 @@ class KNN(W):
         return cls(pts, *args, ids=ids, **kwargs)
 
     @classmethod
-    def from_xarray(cls, da, band=None, *args, **kwargs):
+    def from_xarray(cls, da, layer=None, dims=None, *args, **kwargs):
         """
         Construct a weights object from a xarray.DataArray.
 
         Parameters
         ----------
         da : xarray.DataArray
-            raster file accessed using xarray.open_rasterio method
-        band : int
-            select band for raster with multiple bands
+            Input 2D or 3D DataArray with shape=(layer, height, width)
+        layer : int/string/float
+            Select the layer of 3D DataArray with multiple layers
+        dims : dictionary
+            Pass custom dimensions for coordinates and layers if they
+            do not belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
         *args : KNN class arguments
             arguments for :class:`pysal.distance.KNN`
         **kwargs : keyword arguments
@@ -288,12 +291,14 @@ class KNN(W):
         --------
         :class:`libpysal.weights.weights.W`   
         """
-        band = da_checker(da, band)
-        da = da[band-1:band]
+        layer_id, dims = _da_checker(da, layer, dims)
+        if layer_id:
+            da = da[layer_id-1:layer_id]
         ser = da.to_series()
         id_order = np.where(ser != da.nodatavals[0])[0]
         array = np.dstack(
-            np.meshgrid(da.y, da.x, indexing='ij')).reshape(-1, 2)[id_order]
+            np.meshgrid(da[dims["lat"]], da[dims["lon"]], indexing='ij'))
+        array = array.reshape(-1, 2)[id_order]
         w = cls(array, *args, **kwargs)
         w.remap_ids(id_order)
         ser = ser[ser != da.nodatavals[0]]
