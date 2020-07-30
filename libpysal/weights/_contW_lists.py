@@ -32,7 +32,7 @@ def _get_boundary_points(shape):
                                  for shape in shape)))
     elif shape.type.lower() == 'polyline':
         coords = []
-        r = [coords.extend([tuple(p) for p in path]) for path in shape['paths']]   
+        [coords.extend([tuple(p) for p in path]) for path in shape['paths']]   
         return coords
     elif shape.type.lower() == 'multipolygon':
         return list(it.chain(*(_get_boundary_points(part.boundary) 
