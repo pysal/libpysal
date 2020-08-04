@@ -264,7 +264,7 @@ class KNN(W):
         return cls(pts, *args, ids=ids, **kwargs)
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims=None, *args, **kwargs):
+    def from_xarray(cls, da, layer=None, dims={}, **kwargs):
         """
         Construct a weights object from a xarray.DataArray.
 
@@ -275,11 +275,10 @@ class KNN(W):
         layer : int/string/float
             Select the layer of 3D DataArray with multiple layers
         dims : dictionary
-            Pass custom dimensions for coordinates and layers if they
-            do not belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
-        *args : KNN class arguments
-            arguments for :class:`pysal.distance.KNN`
+            Pass dimensions for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. dims= {"lat": "latitude", "lon": "longitude", "layer": "year"}
+            Default is {} empty dictionary.
         **kwargs : keyword arguments
             optional arguments for :class:`pysal.weights.W`
 
@@ -292,16 +291,20 @@ class KNN(W):
         :class:`libpysal.weights.weights.W`   
         """
         layer_id, dims = _da_checker(da, layer, dims)
+        id_order = None
         if layer_id:
             da = da[layer_id-1:layer_id]
         ser = da.to_series()
-        id_order = np.where(ser != da.nodatavals[0])[0]
         array = np.dstack(
             np.meshgrid(da[dims["lat"]], da[dims["lon"]], indexing='ij'))
-        array = array.reshape(-1, 2)[id_order]
-        w = cls(array, *args, **kwargs)
-        w.remap_ids(id_order)
-        ser = ser[ser != da.nodatavals[0]]
+        array = array.reshape(-1, 2)
+        if 'nodatavals' in da.attrs:
+            id_order = np.where(ser != da.nodatavals[0])[0]
+            array = array[id_order]
+            ser = ser[ser != da.nodatavals[0]]
+        w = cls(array, **kwargs)
+        if id_order is not None:
+            w.remap_ids(id_order)
         # temp adding index attribute for W object
         w.index = ser.index
         return w

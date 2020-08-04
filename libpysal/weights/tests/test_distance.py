@@ -23,7 +23,9 @@ class Distance_Mixin(object):
               (15, 20), (30, 20), (30, 30)]
     euclidean_kdt = KDTree(points, distance_metric='euclidean')
 
-    da = raster.testDataArray() # sample xarray.DataArray
+    da1 = raster.testDataArray((2, 15, 10)) # sample xarray.DataArray
+    da2 = raster.testDataArray((1, 4, 4), missing_vals=False).rename(
+        {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
     
     polygon_f = psopen(polygon_path) # our file handler
     poly_centroids = get_points_array(polygon_f) # our iterable
@@ -79,9 +81,11 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         self.known_w3 = [31, 38, 45, 49]
 
         self.known_wi0_da = 7
-        self.known_w0_da = [11, 2, 5, 9]
-        self.known_wi1_da = 0
-        self.known_w1_da = [4, 5, 2, 9]
+        self.known_w0_da1 = [17, 37, 8, 6, 38, 57, 48, 56]
+        self.known_wi1_da = 6
+        self.known_w1_da1 = [7, 17, 37, 56, 57, 4, 8, 14]
+        self.known_w0_da2 = [11, 3]
+        self.known_w1_da2 = [10, 2]
     
     ##########################
     # Classmethod tests      #
@@ -109,9 +113,18 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
 
     def test_from_xarray(self):
-        w = d.KNN.from_xarray(self.da, k=4)    
-        self.assertEqual(w.neighbors[self.known_wi0_da], self.known_w0_da)
-        self.assertEqual(w.neighbors[self.known_wi1_da], self.known_w1_da)
+        w = d.KNN.from_xarray(self.da1, k=8)    
+        self.assertEqual(w.neighbors[self.known_wi0_da], self.known_w0_da1)
+        self.assertEqual(w.neighbors[self.known_wi1_da], self.known_w1_da1)
+        dims = {
+            "layer": "layer",
+            "lat": "latitude",
+            "lon": "longitude"
+        }
+        w = d.KNN.from_xarray(self.da2, dims=dims, k=2)    
+        self.assertEqual(w.neighbors[self.known_wi0_da], self.known_w0_da2)
+        self.assertEqual(w.neighbors[self.known_wi1_da], self.known_w1_da2)
+        
 
     ##########################
     # Function/User tests    #

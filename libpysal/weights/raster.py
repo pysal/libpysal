@@ -3,32 +3,26 @@ from .weights import WSP, W
 import numpy as np
 from warnings import warn
 
-try:
-    from xarray import DataArray
-except ImportError:
-    raise ImportError(
-        "xarray must be installed to use this functionality")
-
-
 __all__ = ['da2W', 'da2WSP', 'w2da', 'wsp2da', 'testDataArray']
 
 
-def da2W(da, criterion="queen", layer=None, dims=None, **kwargs):
+def da2W(da, criterion="queen", layer=None, dims={}, **kwargs):
     """
     Create a W object from xarray.DataArray
 
     Parameters
     ----------
     da : xarray.DataArray
-       Input 2D or 3D DataArray with shape=(layer, height, width)
+        Input 2D or 3D DataArray with shape=(layer, lat, lon)
     criterion : {"rook", "queen"}
-       Type of contiguity. Default is queen.
+        Type of contiguity. Default is queen.
     layer : int/string/float
-       Select the layer of 3D DataArray with multiple layers
+        Select the layer of 3D DataArray with multiple layers.
     dims : dictionary
-       Pass custom dimensions for coordinates and layers if they
-       do not belong to default dimensions, which are (band/time, y/lat, x/lon)
-       e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        Pass dimensions for coordinates and layers if they do not
+        belong to default dimensions, which are (band/time, y/lat, x/lon)
+        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        Default is {} empty dictionary.
     **kwargs : keyword arguments
         Optional arguments for :class:`libpysal.weights.W`
 
@@ -40,8 +34,12 @@ def da2W(da, criterion="queen", layer=None, dims=None, **kwargs):
     Examples
     --------
     >>> from libpysal.raster import da2W, testDataArray
-    >>> da = testDataArray(time=False)
-    >>> w = da2W(da, layer=2)
+    >>> da = testDataArray().rename(
+            {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
+    >>> da.dims
+    ('layer', 'latitude', 'longitude')
+    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
+    >>> w = da2W(da, layer=2, dims=dims)
     >>> da.shape
     (3, 4, 4)
     >>> "%.3f"%w.pct_nonzero
@@ -63,22 +61,23 @@ def da2W(da, criterion="queen", layer=None, dims=None, **kwargs):
     return w
 
 
-def da2WSP(da, criterion="queen", layer=None, dims=None):
+def da2WSP(da, criterion="queen", layer=None, dims={}):
     """
     Create a WSP object from xarray.DataArray
 
     Parameters
     ----------
     da : xarray.DataArray
-       Input 2D or 3D DataArray with shape=(layer, height, width)
+        Input 2D or 3D DataArray with shape=(layer, lat, lon)
     criterion : {"rook", "queen"}
-       Type of contiguity. Default is queen.
+        Type of contiguity. Default is queen.
     layer : int/string/float
-       Select the layer of 3D DataArray with multiple layers
+        Select the layer of 3D DataArray with multiple layers.
     dims : dictionary
-       Pass custom dimensions for coordinates and layers if they
-       do not belong to default dimensions, which are (band/time, y/lat, x/lon)
-       e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        Pass dimensions for coordinates and layers if they do not
+        belong to default dimensions, which are (band/time, y/lat, x/lon)
+        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        Default is {} empty dictionary.
 
     Returns
     -------
@@ -88,10 +87,14 @@ def da2WSP(da, criterion="queen", layer=None, dims=None):
     Examples
     --------
     >>> from libpysal.raster import da2WSP, testDataArray
-    >>> da = testDataArray(time=False)
+    >>> da = testDataArray().rename(
+            {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
+    >>> da.dims
+    ('layer', 'latitude', 'longitude')
     >>> da.shape
     (3, 4, 4)
-    >>> wsp = da2WSP(da, layer=2)
+    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
+    >>> wsp = da2WSP(da, layer=2, dims=dims)
     >>> wsp.n
     7
     >>> pct_sp = wsp.sparse.nnz *1. / wsp.n**2
@@ -113,19 +116,22 @@ def da2WSP(da, criterion="queen", layer=None, dims=None):
         shape = da[0].shape
     sw = lat2SW(*shape, criterion)
     ser = da.to_series()
+    id_order = np.arange(len(ser))
     if 'nodatavals' in da.attrs:
         mask = (ser != da.nodatavals[0]).to_numpy()
+        # temp
+        id_order = np.where(mask)[0]
         sw = sw[mask]
         sw = sw[:, mask]
         ser = ser[ser != da.nodatavals[0]]
     index = ser.index
-    wsp = WSP(sw, index=index)
+    wsp = WSP(sw, id_order=id_order.tolist(), index=index)
     return wsp
 
 
 def w2da(data, w, attrs={}, coords=None):
     """
-    Creates DataArray object from passed data aligned with W object.
+    Creates xarray.DataArray object from passed data aligned with W object.
 
     Parameters
     ---------
@@ -135,6 +141,7 @@ def w2da(data, w, attrs={}, coords=None):
         Spatial weights object aligned with passed data
     attrs : Dictionary
         Attributes stored in dict related to DataArray, e.g. da.attrs
+        Default is {} empty dictionary.
     coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
         Coordinates corresponding to DataArray, e.g. da.coords
 
@@ -142,6 +149,17 @@ def w2da(data, w, attrs={}, coords=None):
     -------
     da : xarray.DataArray
         instance of xarray.DataArray
+
+    Examples
+    --------
+    >>> from libpysal.raster import da2W, testDataArray, w2da
+    >>> da = testDataArray()
+    >>> da.shape
+    (3, 4, 4)
+    >>> w = da2W(da, layer=2)
+    >>> data = np.random.randint(0, 255, len(w.index))
+    >>> da1 = w2da(data, w)
+
     """
     if not isinstance(w, W):
         raise TypeError("w must be an instance of weights.W")
@@ -154,16 +172,17 @@ def w2da(data, w, attrs={}, coords=None):
 
 def wsp2da(data, wsp, attrs={}, coords=None):
     """
-    Creates DataArray object from passed data aligned with WSP object.
+    Creates xarray.DataArray object from passed data aligned with WSP object.
 
     Parameters
     ---------
     data : array/list/pd.Series
-        1d array-like data with dimensionality conforming to w
+        1d array-like data with dimensionality conforming to wsp
     wsp : libpysal.weights.WSP
         Sparse weights object aligned with passed data
     attrs : Dictionary
         Attributes stored in dict related to DataArray, e.g. da.attrs
+        Default is {} empty dictionary.
     coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
         coordinates corresponding to DataArray, e.g. da.coords
 
@@ -171,6 +190,17 @@ def wsp2da(data, wsp, attrs={}, coords=None):
     -------
     da : xarray.DataArray
         instance of xarray.DataArray
+
+    Examples
+    --------
+    >>> from libpysal.raster import da2WSP, testDataArray, wsp2da
+    >>> da = testDataArray()
+    >>> da.shape
+    (3, 4, 4)
+    >>> wsp = da2WSP(da, layer=2)
+    >>> data = np.random.randint(0, 255, len(wsp.index))
+    >>> da1 = w2da(data, wsp)
+
     """
     if not isinstance(wsp, WSP):
         raise TypeError("wsp must be an instance of weights.WSP")
@@ -183,15 +213,17 @@ def wsp2da(data, wsp, attrs={}, coords=None):
 
 def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     """
-    Creates 3D test DataArray object
+    Creates 2 or 3 dimensional test xarray.DataArray object
 
     Parameters
     ---------
     shape : tuple
         Tuple containing shape of the DataArray aligned with
-        following dimension= (layer, y, x)
+        following dimension = (lat, lon) or (layer, lat, lon)
+        Default shape = (3, 4, 4)
     time : boolean
         Type of layer, if True then layer=time else layer=band
+        Default is False.
     rand : boolean
         If True, creates a DataArray filled with unique and random data.
         Default is false (generates seeded random data)
@@ -203,22 +235,28 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     da : xarray.DataArray
         instance of xarray.DataArray
     """
+    try:
+        from xarray import DataArray
+    except ImportError:
+        raise ModuleNotFoundError(
+            "xarray must be installed to use this functionality")
     if not rand:
-        np.random.seed(123)
-    r1 = np.random.randint(100)
-    r2 = np.random.randint(100)
-    layer = "time" if time else "band"
-    dims = (layer, 'y', 'x')
-    if time:
-        layers = np.arange(np.datetime64('2020-07-30'),
-                           shape[0], dtype='datetime64[D]')
-    else:
-        layers = np.arange(1, shape[0]+1)
-    coords = {
-        dims[0]: layers,
-        dims[1]: np.linspace(r1+shape[1]*0.1, r1+0.1, shape[1]),
-        dims[2]: np.linspace(r2+0.1, r2+shape[2]*0.1, shape[2])
-    }
+        np.random.seed(12345)
+    coords = {}
+    n = len(shape)
+    if n != 2:
+        layer = "time" if time else "band"
+        dims = (layer, 'y', 'x')
+        if time:
+            layers = np.arange(
+                np.datetime64('2020-07-30'),
+                shape[0], dtype='datetime64[D]'
+            )
+        else:
+            layers = np.arange(1, shape[0]+1)
+        coords[dims[-3]] = layers
+    coords[dims[-2]] = np.linspace(90, -90, shape[-2])
+    coords[dims[-1]] = np.linspace(-180, 180, shape[-1])
     data = np.random.randint(0, 255, shape)
     attrs = {'nodatavals': (-32768.0,)}
     if missing_vals:
@@ -235,13 +273,13 @@ def _da_checker(da, layer, dims):
     Parameters
     ----------
     da : xarray.DataArray
-       Input 2D or 3D DataArray with shape=(layer, height, width)
+        Input 2D or 3D DataArray with shape=(layer, lat, lon)
     layer : int/string/float
-       Select the layer of 3D DataArray with multiple layers
+        Select the layer of 3D DataArray with multiple layers
     dims : dictionary
-       Pass custom dimensions for coordinates and layers if they
-       do not belong to default dimensions, which are (band/time, y/lat, x/lon)
-       e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        Pass dimensions for coordinates and layers if they do not
+        belong to default dimensions, which are (band/time, y/lat, x/lon)
+        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
 
     Returns
     -------
@@ -250,40 +288,51 @@ def _da_checker(da, layer, dims):
     dims : dictionary
         Mapped dimensions of the DataArray
     """
+    try:
+        from xarray import DataArray
+    except ImportError:
+        raise ModuleNotFoundError(
+            "xarray must be installed to use this functionality")
     if not isinstance(da, DataArray):
         raise TypeError("da must be an instance of xarray.DataArray")
     if da.ndim not in [2, 3]:
         raise ValueError("da must be 2D or 3D")
-    if dims is None:
-        # default dimensions
-        dims = {
-            "lon": "x" if hasattr(da, "x") else "lon",
-            "lat": "y" if hasattr(da, "y") else "lat"
-        }
-        if da.ndim == 3:
-            dims["layer"] = "band" if hasattr(da, "band") else "time"
+    if not (np.issubdtype(da.values.dtype, np.integer) or
+            np.issubdtype(da.values.dtype, np.floating)):
+        raise ValueError(
+            "da must be an array of integers or float")
+    # default dimensions
+    def_dims = {
+        "lon": dims["lon"] if 'lon' in dims else (
+            "x" if hasattr(da, "x") else "lon"),
+        "lat": dims["lat"] if 'lat' in dims else (
+            "y" if hasattr(da, "y") else "lat")
+    }
+    if da.ndim == 3:
+        def_dims["layer"] = dims["layer"] if 'layer' in dims else (
+            "band" if hasattr(da, "band") else "time")
     if da.ndim == 3:
         layer_id = 1
         if layer is None:
-            if da.sizes[dims["layer"]] != 1:
-                warn('Multiple layers detected in da. Using first layer as default.')
+            if da.sizes[def_dims["layer"]] != 1:
+                warn('Multiple layers detected. Using first layer as default.')
         else:
-            layer_id += tuple(da[dims["layer"]]).index(layer)
+            layer_id += tuple(da[def_dims["layer"]]).index(layer)
     else:
         layer_id = None
-    return layer_id, dims
+    return layer_id, def_dims
 
 
 def _index2da(data, index, attrs, coords):
     """
-    Creates DataArray object from passed data
+    Creates xarray.DataArray object from passed data
 
     Parameters
     ---------
     data : array/list/pd.Series
-        1d array-like data with dimensionality conforming to w
-    w : libpysal.weights.W
-        Spatial weights object aligned with passed data
+        1d array-like data with dimensionality conforming to index
+    index : pd.MultiIndex
+        indices of the DataArray when converted to pd.Series
     attrs : Dictionary
         Attributes stored in dict related to DataArray, e.g. da.attrs
     coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
@@ -294,12 +343,17 @@ def _index2da(data, index, attrs, coords):
     da : xarray.DataArray
         instance of xarray.DataArray
     """
+    try:
+        from xarray import DataArray
+    except ImportError:
+        raise ModuleNotFoundError(
+            "xarray must be installed to use this functionality")
     data = np.array(data).flatten()
     idx = index
+    dims = idx.names
     indexer = tuple(idx.codes)
+    shape = tuple(lev.size for lev in idx.levels)
     if coords is None:
-        dims = idx.names
-        shape = tuple(lev.size for lev in idx.levels)
         missing = np.prod(shape) > idx.shape[0]
         if missing:
             if 'nodatavals' in attrs:
@@ -316,9 +370,9 @@ def _index2da(data, index, attrs, coords):
         for dim, lev in zip(dims, idx.levels):
             coords[dim] = lev.to_numpy()
     else:
-        shape = tuple(value.size for value in coords.values())
-        dims = tuple(key for key in coords.keys())
-        data_complete = np.full(shape, attrs["nodatavals"][0], data.dtype)
+        fill = attrs["nodatavals"][0] if 'nodatavals' in attrs else 0
+        data_complete = np.full(shape, fill, data.dtype)
         data_complete[indexer] = data
+        data_complete = data_complete[:, ::-1]
     da = DataArray(data_complete, coords=coords, dims=dims, attrs=attrs)
-    return da
+    return da.sortby(dims[-2], False)

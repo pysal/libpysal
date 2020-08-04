@@ -11,4 +11,3 @@ numba
 numexpr
 networkx
 sqlalchemy
-xarray

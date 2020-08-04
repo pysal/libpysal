@@ -186,22 +186,23 @@ class Rook(W):
                                  **kwargs)
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims=None, sparse=False, **kwargs):
+    def from_xarray(cls, da, layer=None, dims={}, sparse=False, **kwargs):
         """
-        Construct a weights object from a xarray DataArray.
+        Construct a weights object from a xarray.DataArray.
 
         Parameters
-            ----------
+        ----------
         da : xarray.DataArray
-            Input 2D or 3D DataArray with shape=(layer, height, width)
+            Input 2D or 3D DataArray with shape=(layer, lat, lon)
         layer : int/string/float
             Select the layer of 3D DataArray with multiple layers
         dims : dictionary
-            Pass custom dimensions for coordinates and layers if they
-            do not belong to default dimensions, which are (band/time, y/lat, x/lon)
+            Pass dimensions for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
             e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+            Default is {} empty dictionary.
         sparse : boolean
-            type of weight object. Default is dense. For sparse, sparse = True
+            type of weight object. Default is False. For sparse, sparse = True
         **kwargs : keyword arguments
             optional arguments passed when sparse = False
 
@@ -388,22 +389,23 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims=None, sparse=False, **kwargs):
+    def from_xarray(cls, da, layer=None, dims={}, sparse=False, **kwargs):
         """
-        Construct a weights object from a xarray DataArray.
+        Construct a weights object from a xarray.DataArray.
 
         Parameters
-            ----------
+        ----------
         da : xarray.DataArray
-            Input 2D or 3D DataArray with shape=(layer, height, width)
+            Input 2D or 3D DataArray with shape=(layer, lat, lon)
         layer : int/string/float
             Select the layer of 3D DataArray with multiple layers
         dims : dictionary
-            Pass custom dimensions for coordinates and layers if they
-            do not belong to default dimensions, which are (band/time, y/lat, x/lon)
+            Pass dimensions for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
             e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+            Default is {} empty dictionary.
         sparse : boolean
-            type of weight object. Default is dense. For sparse, sparse = True
+            type of weight object. Default is False. For sparse, sparse = True
         **kwargs : keyword arguments
             optional arguments passed when sparse = False
 
