@@ -42,7 +42,9 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
         import pandas as pd
     except ImportError:
         raise ImportError("pandas must be installed to use this function")
+
     W, alist = _get_W_and_alist(W, alist, skip_verify=skip_verify)
+
     if len(X.shape) > 1:
         if X.shape[-1] > 1:
             return _adjlist_mvapply(
@@ -50,6 +52,7 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
             )
     else:
         vec = np.asarray(X).flatten()
+
     ids = np.asarray(W.id_order)[:, None]
     table = pd.DataFrame(ids, columns=["id"])
     table = pd.concat((table, pd.DataFrame(vec[:, None], columns=("att",))), axis=1)
@@ -79,9 +82,13 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
         import pandas as pd
     except ImportError:
         raise ImportError("pandas must be installed to use this function")
+
     assert len(X.shape) == 2, "data is not two-dimensional"
+
     W, alist = _get_W_and_alist(W=W, alist=alist, skip_verify=skip_verify)
+
     assert X.shape[0] == W.n, "number of samples in X does not match W"
+
     try:
         names = X.columns.tolist()
     except AttributeError:
@@ -128,12 +135,15 @@ def _get_W_and_alist(W, alist, skip_verify=False):
 
     if (alist is None) and (W is not None):
         alist = W.to_adjlist()
+
     elif (W is None) and (alist is not None):
         from .weights import W
 
         W = W.from_adjlist(alist)
+
     elif (W is None) and (alist is None):
         raise ValueError("Either W or Adjacency List must be provided")
+
     elif (W is not None) and (alist is not None) and (not skip_verify):
         from .weights import W as W_
 
@@ -187,21 +197,28 @@ def adjlist_map(
         import pandas as pd
     except ImportError:
         raise ImportError("pandas must be installed to use this function")
+
     if isinstance(data, pd.DataFrame):
         names = data.columns
         data = data.values
     else:
         names = [str(i) for i in range(data.shape[1])]
+
     assert data.shape[0] == W.n, "shape of data does not match shape of adjacency"
+
     if callable(funcs):
         funcs = (funcs,)
+
     if len(funcs) == 1:
         funcs = [funcs[0] for _ in range(data.shape[1])]
+
     assert data.shape[1] == len(
         funcs
     ), "shape of data does not match the number of functions provided"
     W, alist = _get_W_and_alist(W, alist)
+
     fnames = set([f.__name__ for f in funcs])
+
     for i, (column, function) in enumerate(zip(data.T, funcs)):
         alist = adjlist_apply(X=column, W=W, alist=alist, skip_verify=True)
         alist.drop(["att_focal", "att_neighbor"], axis=1, inplace=True)
@@ -209,6 +226,7 @@ def adjlist_map(
             columns={function.__name__: "_".join((function.__name__, names[i]))}
         )
         fnames.update((function.__name__,))
+
     return alist
 
 
@@ -238,6 +256,7 @@ def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
     edges = adjlist.loc[:, [focal_col, neighbor_col]]
     undirected = set()
     to_remove = []
+
     for index, *edge in edges.itertuples(name=None):
         edge = tuple(edge)
         if edge in undirected or edge[::-1] in undirected:
@@ -246,4 +265,5 @@ def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
             undirected.add(edge)
             undirected.add(edge[::-1])
     adjlist = adjlist.drop(to_remove)
+
     return adjlist
