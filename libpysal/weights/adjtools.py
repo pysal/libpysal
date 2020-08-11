@@ -69,6 +69,7 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     alist_atts[func.__name__] = alist_atts[["att_focal", "att_neighbor"]].apply(
         lambda x: func(x.att_focal, x.att_neighbor), axis=1
     )
+
     return alist_atts
 
 
@@ -93,6 +94,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
         names = X.columns.tolist()
     except AttributeError:
         names = list(map(str, list(range(X.shape[1]))))
+
     ids = np.asarray(W.id_order)[:, None]
     table = pd.DataFrame(ids, columns=["id"])
     table = pd.concat((table, pd.DataFrame(X, columns=names)), axis=1)
@@ -105,6 +107,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
         right_on="id",
         suffixes=("_focal", "_neighbor"),
     )
+
     alist_atts.drop(["id_focal", "id_neighbor"], axis=1, inplace=True)
     alist_atts[func.__name__] = list(
         map(
@@ -117,6 +120,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
             ),
         )
     )
+
     return alist_atts
 
 
@@ -150,6 +154,7 @@ def _get_W_and_alist(W, alist, skip_verify=False):
         np.testing.assert_allclose(
             W.sparse.toarray(), W_.from_adjlist(alist).sparse.toarray()
         )
+
     return W, alist
 
 
