@@ -186,7 +186,7 @@ class Rook(W):
                                  **kwargs)
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims={}, sparse=False, **kwargs):
+    def from_xarray(cls, da, layer=None, dims={}, sparse=False, n_jobs=1, **kwargs):
         """
         Construct a weights object from a xarray.DataArray.
 
@@ -203,6 +203,9 @@ class Rook(W):
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
+        n_jobs : int
+            Number of cores to be used in the sparse weight construction. If -1,
+            all available cores are used.
         **kwargs : keyword arguments
             optional arguments passed when sparse = False
 
@@ -217,9 +220,9 @@ class Rook(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'rook', layer, dims)
+            w = da2WSP(da, 'rook', layer, dims, n_jobs)
         else:
-            w = da2W(da, 'rook', layer, dims, **kwargs)
+            w = da2W(da, 'rook', layer, dims, n_jobs, **kwargs)
         return w
 
 
@@ -389,7 +392,7 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims={}, sparse=False, **kwargs):
+    def from_xarray(cls, da, layer=None, dims={}, sparse=False, n_jobs=1, **kwargs):
         """
         Construct a weights object from a xarray.DataArray.
 
@@ -406,6 +409,9 @@ class Queen(W):
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
+        n_jobs : int
+            Number of cores to be used in the sparse weight construction. If -1,
+            all available cores are used.
         **kwargs : keyword arguments
             optional arguments passed when sparse = False
 
@@ -420,9 +426,9 @@ class Queen(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'queen', layer, dims)
+            w = da2WSP(da, 'queen', layer, n_jobs, dims)
         else:
-            w = da2W(da, 'queen', layer, dims, **kwargs)
+            w = da2W(da, 'queen', layer, dims, n_jobs, **kwargs)
         return w
 
 

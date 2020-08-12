@@ -1,12 +1,14 @@
-from .util import lat2SW
-from .weights import WSP, W
 import numpy as np
 from warnings import warn
+from numba import njit
+import os
+from scipy import sparse
+from .weights import WSP, W
 
 __all__ = ['da2W', 'da2WSP', 'w2da', 'wsp2da', 'testDataArray']
 
 
-def da2W(da, criterion="queen", layer=None, dims={}, **kwargs):
+def da2W(da, criterion="queen", layer=None, dims={}, n_jobs=1, **kwargs):
     """
     Create a W object from xarray.DataArray
 
@@ -61,75 +63,7 @@ def da2W(da, criterion="queen", layer=None, dims={}, **kwargs):
     return w
 
 
-def da2WSP(da, criterion="queen", layer=None, dims={}):
-    """
-    Create a WSP object from xarray.DataArray
-
-    Parameters
-    ----------
-    da : xarray.DataArray
-        Input 2D or 3D DataArray with shape=(layer, lat, lon)
-    criterion : {"rook", "queen"}
-        Type of contiguity. Default is queen.
-    layer : int/string/float
-        Select the layer of 3D DataArray with multiple layers.
-    dims : dictionary
-        Pass dimensions for coordinates and layers if they do not
-        belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
-        Default is {} empty dictionary.
-
-    Returns
-    -------
-    w : libpysal.weights.WSP
-       instance of spatial weights class WSP
-
-    Examples
-    --------
-    >>> from libpysal.raster import da2WSP, testDataArray
-    >>> da = testDataArray().rename(
-            {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
-    >>> da.dims
-    ('layer', 'latitude', 'longitude')
-    >>> da.shape
-    (3, 4, 4)
-    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
-    >>> wsp = da2WSP(da, layer=2, dims=dims)
-    >>> wsp.n
-    7
-    >>> pct_sp = wsp.sparse.nnz *1. / wsp.n**2
-    >>> "%.3f"%pct_sp
-    '0.286'
-    >>> print(wsp.sparse[4].todense())
-    [[0 0 0 1 0 1 0]]
-    >>> len(w.index)
-    7
-
-    See Also
-    --------
-    :class:`libpysal.weights.weights.WSP`
-    """
-    layer_id = _da_checker(da, layer, dims)[0]
-    shape = da.shape
-    if layer_id:
-        da = da[layer_id-1:layer_id]
-        shape = da[0].shape
-    sw = lat2SW(*shape, criterion)
-    ser = da.to_series()
-    id_order = np.arange(len(ser))
-    if 'nodatavals' in da.attrs:
-        mask = (ser != da.nodatavals[0]).to_numpy()
-        # temp
-        id_order = np.where(mask)[0]
-        sw = sw[mask]
-        sw = sw[:, mask]
-        ser = ser[ser != da.nodatavals[0]]
-    index = ser.index
-    wsp = WSP(sw, id_order=id_order.tolist(), index=index)
-    return wsp
-
-
-def w2da(data, w, attrs={}, coords=None):
+def w2da(data, w, attrs={}, coords=None, n_jobs=1):
     """
     Creates xarray.DataArray object from passed data aligned with W object.
 
@@ -144,6 +78,9 @@ def w2da(data, w, attrs={}, coords=None):
         Default is {} empty dictionary.
     coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
         Coordinates corresponding to DataArray, e.g. da.coords
+    n_jobs : int
+        Number of cores to be used in the sparse weight construction. If -1,
+        all available cores are used.
 
     Returns
     -------
@@ -311,7 +248,6 @@ def _da_checker(da, layer, dims):
     if da.ndim == 3:
         def_dims["layer"] = dims["layer"] if 'layer' in dims else (
             "band" if hasattr(da, "band") else "time")
-    if da.ndim == 3:
         layer_id = 1
         if layer is None:
             if da.sizes[def_dims["layer"]] != 1:
@@ -376,3 +312,360 @@ def _index2da(data, index, attrs, coords):
         data_complete = data_complete[:, ::-1]
     da = DataArray(data_complete, coords=coords, dims=dims, attrs=attrs)
     return da.sortby(dims[-2], False)
+
+
+def da2WSP(da, criterion="queen", layer=None, dims={}, n_jobs=1):
+    """
+    Create a WSP object from xarray.DataArray
+
+    Parameters
+    ----------
+    da : xarray.DataArray
+        Input 2D or 3D DataArray with shape=(layer, lat, lon)
+    criterion : {"rook", "queen"}
+        Type of contiguity. Default is queen.
+    layer : int/string/float
+        Select the layer of 3D DataArray with multiple layers.
+    dims : dictionary
+        Pass dimensions for coordinates and layers if they do not
+        belong to default dimensions, which are (band/time, y/lat, x/lon)
+        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        Default is {} empty dictionary.
+    n_jobs : int
+        Number of cores to be used in the sparse weight construction. If -1,
+        all available cores are used.
+
+    Returns
+    -------
+    w : libpysal.weights.WSP
+       instance of spatial weights class WSP
+
+    Examples
+    --------
+    >>> from libpysal.raster import da2WSP, testDataArray
+    >>> da = testDataArray().rename(
+            {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
+    >>> da.dims
+    ('layer', 'latitude', 'longitude')
+    >>> da.shape
+    (3, 4, 4)
+    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
+    >>> wsp = da2WSP(da, layer=2, dims=dims)
+    >>> wsp.n
+    7
+    >>> pct_sp = wsp.sparse.nnz *1. / wsp.n**2
+    >>> "%.3f"%pct_sp
+    '0.286'
+    >>> print(wsp.sparse[4].todense())
+    [[0 0 0 1 0 1 0]]
+    >>> len(w.index)
+    7
+
+    See Also
+    --------
+    :class:`libpysal.weights.weights.WSP`
+    """
+    layer_id = _da_checker(da, layer, dims)[0]
+    shape = da.shape
+    if layer_id:
+        da = da[layer_id-1:layer_id]
+        shape = da[0].shape
+    ser = da.to_series()
+    mask = (ser != da.nodatavals[0]).to_numpy()
+    ids = np.where(mask)[0]
+    dtype = np.uint32 if (shape[0] * shape[1]) < 65535**2 else np.uint64
+    n = len(ids)
+    ser = ser[ser != da.nodatavals[0]]
+    index = ser.index
+
+    if n_jobs != 1:
+        try:
+            import joblib
+        except (ModuleNotFoundError, ImportError):
+            warn(
+                f"Parallel processing is requested (n_jobs={n_jobs}),"
+                f" but joblib cannot be imported. n_jobs will be set"
+                f" to 1.",
+                stacklevel=2,
+            )
+            n_jobs = 1
+    if n_jobs == 1:
+        wsp = WSP(
+            sparse.coo_matrix(
+                _SWbuilder(
+                    *shape,
+                    ids,
+                    _idmap(ids, mask, dtype),
+                    criterion,
+                    dtype,
+                ),
+                shape=(n, n),
+                dtype=np.int8,
+            ),
+            index=index,
+        )
+    else:
+        if n_jobs == -1:
+            n_jobs = os.cpu_count()
+        # Parallel implementation
+        wsp = WSP(
+            sparse.coo_matrix(
+                _parSWbuilder(
+                    *shape,
+                    ids,
+                    _idmap(ids, mask, dtype),
+                    criterion,
+                    dtype,
+                    n_jobs,
+                ),
+                shape=(n, n),
+                dtype=np.int8,
+            ),
+            index=index,
+        )
+
+    return wsp
+
+
+@njit(fastmath=True)
+def _idmap(ids, mask, dtype):
+    """
+    Utility function computes id_map of non-missing raster data
+
+    Parameters
+    ----------
+    ids : ndarray
+        1D array containing ids of non-missing raster data
+    mask : ndarray
+        1D array mask array
+    dtype : type
+        Data type of the id_map array
+
+    Returns
+    -------
+    id_map : ndarray
+        1D array containing id_maps of non-missing raster data
+    """
+    id_map = mask * 1
+    id_map[ids] = np.arange(len(ids), dtype=dtype)
+    return id_map
+
+
+@njit(fastmath=True)
+def _SWbuilder(
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    dtype,
+):
+    """
+    Computes data and orders rows, cols, data for a single chunk
+
+    Parameters
+    ----------
+    nrows : int
+        Number of rows in the raster data
+    ncols : int
+        Number of columns in the raster data
+    ids : ndarray
+        1D array containing ids of non-missing raster data
+    id_map : ndarray
+        1D array containing id_maps of non-missing raster data
+    criterion : str
+        Type of contiguity.
+    dtype : type
+        Data type of the id_map array
+
+    Returns
+    -------
+    data : ndarray
+        1D ones array containing weight of each neighbor
+    rows : ndarray
+        1D ones array containing row value of each id
+        in the sparse weight object
+    cols : ndarray
+        1D ones array containing columns value of each id
+        in the sparse weight object
+    """
+    rows, cols = compute_chunk(
+        nrows,
+        ncols,
+        ids,
+        id_map,
+        criterion,
+        dtype,
+    )
+    data = np.ones_like(rows, dtype=np.int8)
+    return (data, (rows, cols))
+
+
+@njit(fastmath=True, nogil=True)
+def compute_chunk(
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    dtype,
+):
+    """
+    Computes rows cols for a single chunk
+
+    Parameters
+    ----------
+    nrows : int
+        Number of rows in the raster data
+    ncols : int
+        Number of columns in the raster data
+    ids : ndarray
+        1D array containing ids of non-missing raster data
+    id_map : ndarray
+        1D array containing id_maps of non-missing raster data
+    criterion : str
+        Type of contiguity.
+    dtype : type
+        Data type of the id_map array
+
+    Returns
+    -------
+    rows : ndarray
+        1D ones array containing row value of each id
+        in the sparse weight object
+    cols : ndarray
+        1D ones array containing columns value of each id
+        in the sparse weight object
+    """
+    n = len(ids)
+    d = 4 if criterion == "rook" else 8
+    nd = d * n
+    # preallocating rows and cols
+    rows = np.empty(nd, dtype=dtype)
+    cols = np.empty_like(rows)
+    ni = 0
+    for i in range(n):
+        id_i = ids[i]
+        og_id = id_map[id_i]
+        if ((id_i+1) % ncols) != 0:
+            id_neighbor = id_map[id_i + 1]
+            if id_neighbor:
+                rows[ni], cols[ni] = og_id, id_neighbor
+                ni += 1
+                rows[ni], cols[ni] = id_neighbor, og_id
+                ni += 1
+        if (id_i // ncols) < (nrows - 1):
+            id_neighbor = id_map[id_i+ncols]
+            if id_neighbor:
+                rows[ni], cols[ni] = og_id, id_neighbor
+                ni += 1
+                rows[ni], cols[ni] = id_neighbor, og_id
+                ni += 1
+        if criterion == "queen":
+            if (id_i // ncols) < (nrows - 1):
+                if (id_i % ncols) != 0:
+                    id_neighbor = id_map[id_i+ncols-1]
+                    if id_neighbor:
+                        rows[ni], cols[ni] = og_id, id_neighbor
+                        ni += 1
+                        rows[ni], cols[ni] = id_neighbor, og_id
+                        ni += 1
+                if ((id_i+1) % ncols) != 0:
+                    id_neighbor = id_map[id_i+ncols+1]
+                    if id_neighbor:
+                        rows[ni], cols[ni] = og_id, id_neighbor
+                        ni += 1
+                        rows[ni], cols[ni] = id_neighbor, og_id
+                        ni += 1
+    rows = rows[:ni].copy()
+    cols = cols[:ni].copy()
+    return rows, cols
+
+
+@njit(fastmath=True)
+def chunk_generator(
+    n_jobs,
+    starts,
+    ids,
+):
+    """
+    Construct chunks to iterate over within numba in parallel
+
+    Parameters
+    ----------
+    n_jobs : int
+        Number of cores to be used in the sparse weight construction. If -1,
+        all available cores are used.
+    starts : ndarray
+        (n_chunks+1,) array of positional starts for ids chunk
+    ids : ndarray
+        1D array containing ids of non-missing raster data
+
+    Yields
+    ------
+    ids_chunk : numpy.ndarray
+        (n_chunk,) array containing the chunk of non-missing raster data
+    """
+    chunk_size = starts[1] - starts[0]
+    for i in range(n_jobs):
+        start = starts[i]
+        ids_chunk = ids[start: (start + chunk_size)]
+        yield (ids_chunk,)
+
+
+def _parSWbuilder(
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    dtype,
+    n_jobs,
+):
+    """
+    Computes data and orders rows, cols, data in parallel using numba
+
+    Parameters
+    ----------
+    nrows : int
+        Number of rows in the raster data
+    ncols : int
+        Number of columns in the raster data
+    ids : ndarray
+        1D array containing ids of non-missing raster data
+    id_map : ndarray
+        1D array containing id_maps of non-missing raster data
+    criterion : str
+        Type of contiguity.
+    dtype : type
+        Data type of the id_map array
+    n_jobs : int
+        Number of cores to be used in the sparse weight construction. If -1,
+        all available cores are used.
+
+    Returns
+    -------
+    data : ndarray
+        1D ones array containing weight of each neighbor
+    rows : ndarray
+        1D ones array containing row value of each id
+        in the sparse weight object
+    cols : ndarray
+        1D ones array containing columns value of each id
+        in the sparse weight object
+    """
+    from joblib import Parallel, delayed
+
+    n = len(ids)
+    chunk_size = n // n_jobs + 1
+    starts = np.arange(n_jobs + 1) * chunk_size
+    chunk = chunk_generator(n_jobs, starts, ids)
+    worker_out = Parallel(n_jobs=n_jobs, backend="threading")(
+        delayed(compute_chunk)(nrows, ncols, *pars, id_map, criterion, dtype)
+        for pars in chunk
+    )
+
+    rows = np.concatenate([i[0] for i in worker_out], axis=None)
+    cols = np.concatenate([i[1] for i in worker_out], axis=None)
+    data = np.ones_like(rows, dtype=np.int8)
+    return (data, (rows, cols))

@@ -17,8 +17,8 @@ class Testraster(unittest.TestCase):
 
     def test_da2W(self):
         w1 = raster.da2W(self.da1, "queen")
-        self.assertEqual(w1[13], {14: 1, 8: 1})
-        self.assertEqual(w1[14], {11: 1, 13: 1})
+        self.assertEqual(w1[3], {1: 1, 4: 1})
+        self.assertEqual(w1[4], {2: 1, 3: 1})
         self.assertEqual(w1.n, 5)
         self.assertEqual(w1.index.names, self.da1.to_series().index.names)
         self.assertEqual(w1.index.tolist()[0], (1, 90.0, 180.0))
@@ -27,7 +27,7 @@ class Testraster(unittest.TestCase):
         self.assertEqual(w1.index.tolist()[3], (1, -90.0, -60.0))
         w2 = raster.da2W(self.da2, "rook")
         self.assertEqual(w2[6], {10: 1, 7: 1, 2: 1, 5: 1})
-        self.assertEqual(w2.neighbors[2], [6, 3, 1])
+        self.assertEqual(w2.neighbors[2], [1, 3, 6])
         self.assertEqual(w2.n, 16)
         self.assertEqual(w2.index.names, self.da2.to_series().index.names)
         self.assertEqual(w2.index.tolist(), self.da2.to_series().index.tolist())
@@ -38,7 +38,7 @@ class Testraster(unittest.TestCase):
         }
         w3 = raster.da2W(self.da3, layer=1, dims=dims)
         self.assertEqual(w3[6], {11: 1, 9: 1, 10: 1, 7: 1, 1: 1, 3: 1, 2: 1, 5: 1})
-        self.assertEqual(w3.neighbors[2], [7, 5, 6, 3, 1])
+        self.assertEqual(w3.neighbors[2], [1, 3, 5, 6, 7])
         self.assertEqual(w3.n, 16)
         self.assertEqual(w3.index.names, self.da3.to_series().index.names)
         self.assertEqual(w3.index.tolist(), self.da3.to_series().index.tolist())
