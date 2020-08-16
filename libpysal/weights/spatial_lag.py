@@ -1,37 +1,38 @@
+"""Spatial lag operations.
 """
-Spatial lag operations.
-"""
-__author__ = "Sergio J. Rey <srey@asu.edu>, David C. Folch <david.folch@asu.edu>, Levi John Wolf <ljw2@asu.edu"
-__all__ = ['lag_spatial', 'lag_categorical']
+
+__author__ = (
+    "Sergio J. Rey <sjsrey@gmail.com>,"
+    "David C. Folch <David.Folch@nau.edu>,"
+    "Levi John Wolf <levi.john.wolf@gmail.com>"
+)
+__all__ = ["lag_spatial", "lag_categorical"]
 
 import numpy as np
 
-def lag_spatial(w, y):
-    """
-    Spatial lag operator.
 
-    If w is row standardized, returns the average of each observation's neighbors;
-    if not, returns the weighted sum of each observation's neighbors.
+def lag_spatial(w, y):
+    """A spatial lag operator. If ``w`` is row standardized, this function
+    returns the average of each observation's neighbors. If it is not, the
+    weighted sum of each observation's neighbors is returned.
 
     Parameters
     ----------
-
-    w                   : W
-                          libpysal spatial weightsobject
-    y                   : array
-                          numpy array with dimensionality conforming to w (see examples)
+    w : libpysal.weights.weights.W
+        A PySAL spatial weights object.
+    y : array-like
+        A ``numpy`` array with dimensionality conforming to ``w`` (see examples).
 
     Returns
     -------
-
-    wy                  : array
-                          array of numeric values for the spatial lag
+    wy : numpy.ndarray
+        An array of numeric values for the spatial lag.
 
     Examples
     --------
 
-    Setup a 9x9 binary spatial weights matrix and vector of data; compute the
-    spatial lag of the vector.
+    Setup a 9x9 binary spatial weights matrix and vector of data,
+    then compute the spatial lag of the vector.
 
     >>> import libpysal
     >>> import numpy as np
@@ -41,7 +42,7 @@ def lag_spatial(w, y):
     >>> yl
     array([ 4.,  6.,  6., 10., 16., 14., 10., 18., 12.])
 
-    Row standardize the weights matrix and recompute the spatial lag
+    Row standardize the weights matrix and recompute the spatial lag.
 
     >>> w.transform = 'r'
     >>> yl = libpysal.weights.lag_spatial(w, y)
@@ -50,7 +51,7 @@ def lag_spatial(w, y):
            4.66666667, 5.        , 6.        , 6.        ])
 
 
-    Explicitly define data vector as 9x1 and recompute the spatial lag
+    Explicitly define data vector as 9x1 and recompute the spatial lag.
 
     >>> y.shape = (9, 1)
     >>> yl = libpysal.weights.lag_spatial(w, y)
@@ -66,7 +67,7 @@ def lag_spatial(w, y):
            [6.        ]])
 
 
-    Take the spatial lag of a 9x2 data matrix
+    Take the spatial lag of a 9x2 data matrix.
 
     >>> yr = np.arange(8, -1, -1)
     >>> yr.shape = (9, 1)
@@ -84,48 +85,53 @@ def lag_spatial(w, y):
            [6.        , 2.        ]])
 
     """
+
     return w.sparse * y
 
 
-def lag_categorical(w, y, ties='tryself'):
-    """
-    Spatial lag operator for categorical variables.
-
-    Constructs the most common categories of neighboring observations, weighted
-    by their weight strength.
+def lag_categorical(w, y, ties="tryself"):
+    """A spatial lag operator for categorical variables. This function
+    constructs the most common categories of neighboring observations
+    weighted by their weight strength.
 
     Parameters
     ----------
-
-    w                   : W
-                          PySAL spatial weightsobject
-    y                   : iterable
-                          iterable collection of categories (either int or
-                          string) with dimensionality conforming to w (see examples)
-    ties                : str
-                          string describing the method to use when resolving
-                          ties. By default, the option is "tryself",
-                          and the category of the focal observation
-                          is included with its neighbors to try
-                          and break a tie. If this does not resolve the tie,
-                          a winner is chosen randomly. To just use random choice to
-                          break ties, pass "random" instead.
+    w : libpysal.weights.weights.W
+        PySAL spatial weights object.
+    y : iterable
+        An iterable collection of categories (either ``int`` or ``str``)
+        with dimensionality conforming to ``w`` (see examples).
+    ties : str
+        The method to use when resolving ties. By default, the option is ``'tryself'``,
+        and the category of the focal observation is included with its neighbors to try
+        and break a tie. If this does not resolve the tie, a winner is chosen randomly.
+        To just use random choice to break ties, pass ``'random'`` instead.
+        All supported options include:
+          1. ``'tryself'``: Use the focal observation's label to tiebreak.
+                If this doesn't successfully break the tie, (which only occurs
+                if it induces a new tie), decide randomly.;
+          2. ``'random'``: Resolve the tie randomly amongst winners.;
+          3. ``'lowest'``: Pick the lowest-value label amongst winners.; 
+          4. ``'highest'``: Pick the highest-value label amongst winners.
+    
     Returns
     -------
-    an (n x k) column vector containing the most common neighboring observation
+    output : numpy.ndarray
+        An (n x k) column vector containing the most common neighboring observation.
 
     Notes
     -----
-    This works on any array where the number of unique elements along the column
-    axis is less than the number of elements in the array, for any dtype.
-    That means the routine should work on any dtype that np.unique() can
-    compare.
+    
+    This works on any array where the number of unique elements
+    along the column axis is less than the number of elements in
+    the array, for any ``dtype``. That means the routine should
+    work on any ``dtype`` that ``numpy.unique()`` can compare.
 
     Examples
     --------
 
-    Set up a 9x9 weights matrix describing a 3x3 regular lattice. Lag one list of
-    categorical variables with no ties.
+    Set up a 9x9 weights matrix describing a 3x3 regular lattice.
+    Lag one list of categorical variables with no ties.
 
     >>> import libpysal
     >>> import numpy as np
@@ -136,7 +142,7 @@ def lag_categorical(w, y, ties='tryself'):
     >>> np.array_equal(y_l, np.array(['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b']))
     True
 
-    Explicitly reshape y into a (9x1) array and calculate lag again
+    Explicitly reshape ``y`` into a (9x1) array and calculate lag again.
 
     >>> yvect = np.array(y).reshape(9,1)
     >>> yvect_l = libpysal.weights.lag_categorical(w,yvect)
@@ -144,7 +150,7 @@ def lag_categorical(w, y, ties='tryself'):
     >>> np.array_equal(yvect_l, check)
     True
 
-    compute the lag of a 9x2 matrix of categories
+    Compute the lag of a 9x2 matrix of categories.
 
     >>> y2 = ['a', 'c', 'c', 'd', 'b', 'a', 'd', 'd', 'c']
     >>> ym = np.vstack((y,y2)).T
@@ -154,84 +160,92 @@ def lag_categorical(w, y, ties='tryself'):
     True
 
     """
+
     if isinstance(y, list):
         y = np.array(y)
     orig_shape = y.shape
     if len(orig_shape) > 1:
         if orig_shape[1] > 1:
-            return np.vstack([lag_categorical(w,col) for col in y.T]).T
+            return np.vstack([lag_categorical(w, col) for col in y.T]).T
     y = y.flatten()
     output = np.zeros_like(y)
     labels = np.unique(y)
     normalized_labels = np.zeros(y.shape, dtype=np.int)
-    for i,label in enumerate(labels):
-       normalized_labels[y == label] = i
-    for focal_name,neighbors in w:
+    for i, label in enumerate(labels):
+        normalized_labels[y == label] = i
+    for focal_name, neighbors in w:
         focal_idx = w.id2i[focal_name]
         neighborhood_tally = np.zeros(labels.shape)
         for neighb_name, weight in list(neighbors.items()):
             neighb_idx = w.id2i[neighb_name]
             neighb_label = normalized_labels[neighb_idx]
             neighborhood_tally[neighb_label] += weight
-        out_label_idx = _resolve_ties(focal_idx, normalized_labels,
-                               neighborhood_tally, neighbors, ties, w)
+        out_label_idx = _resolve_ties(
+            focal_idx, normalized_labels, neighborhood_tally, neighbors, ties, w
+        )
         output[focal_idx] = labels[out_label_idx]
-    return output.reshape(orig_shape)
+
+    output = output.reshape(orig_shape)
+
+    return output
 
 
-def _resolve_ties(idx,normalized_labels,tally,neighbors,method,w):
-    """
-    Helper function to resolve ties if lag is multimodal
+def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
+    """Helper function to resolve ties if lag is multimodal. First, if this function
+    gets called when there's actually no tie, then the correct value will be picked.
+    If ``'random'`` is selected as the method, a random tiebeaker is picked. If
+    ``'tryself'`` is selected, then the observation's own value will be used in an
+    attempt to break the tie, but if it fails, a random tiebreaker will be selected.
 
-    first, if this function gets called when there's actually no tie, then the
-    correct value will be picked.
-
-    if 'random' is selected as the method, a random tiebeaker is picked
-
-    if 'tryself' is selected, then the observation's own value will be used in
-    an attempt to break the tie, but if it fails, a random tiebreaker will be
-    selected.
-
-    Arguments
+    Parameters
     ---------
-    idx                 : int
-                          index (aligned with `normalized_labels`) of the 
-                          current observation being resolved.
-    normalized_labels   : (n,) array of ints
-                          normalized array of labels for each observation
-    tally               : (p,) array of floats
-                          current tally of neighbors' labels around `idx` to resolve.
-    neighbors           : dict of (neighbor_name : weight)
-                          the elements of the weights object, identical to w[idx]
-    method              : string
-                          configuration option to use a specific tiebreaking method. 
-                          supported options are:
-                          1. tryself: Use the focal observation's label to tiebreak.
-                                      If this doesn't successfully break the tie, 
-                                      (which only occurs if it induces a new tie),
-                                      decide randomly. 
-                          2. random: Resolve the tie randomly amongst winners.
-                          3. lowest: Pick the lowest-value label amongst winners.
-                          4. highest: Pick the highest-value label amongst winners.
-    w                   : pysal.W object
-                          a PySAL weights object aligned with normalized_labels. 
+    idx : int
+        The index (aligned with ``normalized_labels``) of
+        the current observation being resolved.
+    normalized_labels : numpy.ndarray
+        A `(n,)` normalized array of labels for each observation.
+    tally : numpy.ndarray
+        The current tally of `(p,)` neighbors' labels around ``idx`` to resolve.
+    neighbors : dict of (neighbor_name : weight)
+        The elements of the weights object (identical to ``w[idx]``)
+        in the form ``{neighbor_name : weight}``.
+    method : str
+        The configuration option to use a specific tiebreaking method.
+        See ``lag_categorical()`` for all supported options.
+    w : libpysal.weights.weights.W
+        A PySAL weights object aligned with ``normalized_labels``.
 
     Returns
     -------
-    integer denoting which label to use to label the observation.
+    label : int
+        An integer denoting which label to use to label the observation.
+    
     """
-    ties, = np.where(tally == tally.max()) #returns a tuple for flat arrays
-    if len(tally[tally==tally.max()]) <= 1: #no tie, pick the highest
-        return np.argmax(tally).astype(int)
-    elif method.lower() == 'random': #choose randomly from tally
-        return np.random.choice(np.squeeze(ties)).astype(int)
-    elif method.lower() == 'lowest': # pick lowest tied value
-        return ties[0].astype(int)
-    elif method.lower() == 'highest': #pick highest tied value
-        return ties[-1].astype(int)
-    elif method.lower() == 'tryself': # add self-label as observation, try again, random if fail
+
+    m = method.lower()
+
+    # returns a tuple for flat arrays
+    (ties,) = np.where(tally == tally.max())
+
+    # no tie, pick the highest
+    if len(tally[tally == tally.max()]) <= 1:
+        label = np.argmax(tally).astype(int)
+    # choose randomly from tally
+    elif m == "random":
+        label = np.random.choice(np.squeeze(ties)).astype(int)
+    # pick lowest tied value
+    elif m == "lowest":
+        label = ties[0].astype(int)
+    # pick highest tied value
+    elif m == "highest":
+        label = ties[-1].astype(int)
+    # add self-label as observation, try again, random if fail
+    elif m == "tryself":
         mean_neighbor_value = np.mean(list(neighbors.values()))
         tally[normalized_labels[idx]] += mean_neighbor_value
-        return _resolve_ties(idx,normalized_labels,tally,neighbors,'random', w)
+        label = _resolve_ties(idx, normalized_labels, tally, neighbors, "random", w)
     else:
-        raise KeyError('Tie-breaking method for categorical lag not recognized')
+        msg = "Tie-breaking method for categorical lag not recognized: %s" % m
+        raise KeyError(msg)
+
+    return label

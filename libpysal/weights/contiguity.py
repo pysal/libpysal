@@ -75,7 +75,7 @@ class Rook(W):
 
         Returns
         -------
-        w : W
+        w : libpysal.weights.weights.W
             An instance of spatial weights.
 
         Examples
@@ -248,7 +248,7 @@ class Queen(W):
 
         Returns
         -------
-        w : W
+        w : libpysal.weights.weights.W
             An instance of spatial weights.
 
         Examples
@@ -394,7 +394,7 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
 
     Returns
     -------
-    w : W
+    w : libpysal.weights.weights.W
         An instance of spatial weights.
 
     Examples
@@ -435,7 +435,7 @@ def _from_dataframe(df, **kwargs):
 
     Returns
     -------
-    w : W
+    w : libpysal.weights.weights.W
         An instance of spatial weights.
     
     Notes
