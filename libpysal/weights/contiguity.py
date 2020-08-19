@@ -186,7 +186,7 @@ class Rook(W):
                                  **kwargs)
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims={}, sparse=False, n_jobs=1, **kwargs):
+    def from_xarray(cls, da, layer=None, dims={}, sparse=False, k=1, n_jobs=1, **kwargs):
         """
         Construct a weights object from a xarray.DataArray.
 
@@ -203,6 +203,10 @@ class Rook(W):
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
+        k : int
+            Order of queen contiguity, if k=1 max neighbors of a point
+            will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
+            Default is 1
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
             all available cores are used.
@@ -220,9 +224,9 @@ class Rook(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'rook', layer, dims, n_jobs)
+            w = da2WSP(da, 'rook', layer, dims, k, n_jobs)
         else:
-            w = da2W(da, 'rook', layer, dims, n_jobs, **kwargs)
+            w = da2W(da, 'rook', layer, dims, k, n_jobs, **kwargs)
         return w
 
 
@@ -392,7 +396,7 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims={}, sparse=False, n_jobs=1, **kwargs):
+    def from_xarray(cls, da, layer=None, dims={}, sparse=False, k=1, n_jobs=1, **kwargs):
         """
         Construct a weights object from a xarray.DataArray.
 
@@ -409,6 +413,10 @@ class Queen(W):
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
+        k : int
+            Order of queen contiguity, if k=1 max neighbors of a point
+            will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
+            Default is 1
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
             all available cores are used.
@@ -426,9 +434,9 @@ class Queen(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'queen', layer, n_jobs, dims)
+            w = da2WSP(da, 'queen', layer, dims, k, n_jobs)
         else:
-            w = da2W(da, 'queen', layer, dims, n_jobs, **kwargs)
+            w = da2W(da, 'queen', layer, dims, k, n_jobs, **kwargs)
         return w
 
 

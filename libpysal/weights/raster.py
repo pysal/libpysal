@@ -8,7 +8,7 @@ from .weights import WSP, W
 __all__ = ['da2W', 'da2WSP', 'w2da', 'wsp2da', 'testDataArray']
 
 
-def da2W(da, criterion="queen", layer=None, dims={}, n_jobs=1, **kwargs):
+def da2W(da, criterion="queen", layer=None, dims={}, k=1, n_jobs=1, **kwargs):
     """
     Create a W object from xarray.DataArray
 
@@ -25,6 +25,11 @@ def da2W(da, criterion="queen", layer=None, dims={}, n_jobs=1, **kwargs):
         belong to default dimensions, which are (band/time, y/lat, x/lon)
         e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
         Default is {} empty dictionary.
+    k : int
+        Order of queen contiguity.
+    n_jobs : int
+        Number of cores to be used in the sparse weight construction. If -1,
+        all available cores are used.
     **kwargs : keyword arguments
         Optional arguments for :class:`libpysal.weights.W`
 
@@ -57,13 +62,13 @@ def da2W(da, criterion="queen", layer=None, dims={}, n_jobs=1, **kwargs):
     --------
     :class:`libpysal.weights.weights.W`
     """
-    wsp = da2WSP(da, criterion, layer, dims)
+    wsp = da2WSP(da, criterion, layer, dims, k, n_jobs)
     w = wsp.to_W(**kwargs)
     w.index = wsp.index
     return w
 
 
-def w2da(data, w, attrs={}, coords=None, n_jobs=1):
+def w2da(data, w, attrs={}, coords=None):
     """
     Creates xarray.DataArray object from passed data aligned with W object.
 
@@ -78,9 +83,6 @@ def w2da(data, w, attrs={}, coords=None, n_jobs=1):
         Default is {} empty dictionary.
     coords : Dictionary/xarray.core.coordinates.DataArrayCoordinates
         Coordinates corresponding to DataArray, e.g. da.coords
-    n_jobs : int
-        Number of cores to be used in the sparse weight construction. If -1,
-        all available cores are used.
 
     Returns
     -------
@@ -314,7 +316,7 @@ def _index2da(data, index, attrs, coords):
     return da.sortby(dims[-2], False)
 
 
-def da2WSP(da, criterion="queen", layer=None, dims={}, n_jobs=1):
+def da2WSP(da, criterion="queen", layer=None, dims={}, k=1, n_jobs=1):
     """
     Create a WSP object from xarray.DataArray
 
@@ -331,6 +333,10 @@ def da2WSP(da, criterion="queen", layer=None, dims={}, n_jobs=1):
         belong to default dimensions, which are (band/time, y/lat, x/lon)
         e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
         Default is {} empty dictionary.
+    k : int
+        Order of queen contiguity, if k=1 max neighbors of a point
+        will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
+        Default is 1
     n_jobs : int
         Number of cores to be used in the sparse weight construction. If -1,
         all available cores are used.
@@ -373,7 +379,7 @@ def da2WSP(da, criterion="queen", layer=None, dims={}, n_jobs=1):
     ser = da.to_series()
     mask = (ser != da.nodatavals[0]).to_numpy()
     ids = np.where(mask)[0]
-    dtype = np.uint32 if (shape[0] * shape[1]) < 65535**2 else np.uint64
+    dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
     n = len(ids)
     ser = ser[ser != da.nodatavals[0]]
     index = ser.index
@@ -397,12 +403,15 @@ def da2WSP(da, criterion="queen", layer=None, dims={}, n_jobs=1):
                     ids,
                     _idmap(ids, mask, dtype),
                     criterion,
+                    k,
                     dtype,
                 ),
                 shape=(n, n),
                 dtype=np.int8,
             ),
             index=index,
+            # temp
+            id_order=ids.tolist()
         )
     else:
         if n_jobs == -1:
@@ -415,6 +424,7 @@ def da2WSP(da, criterion="queen", layer=None, dims={}, n_jobs=1):
                     ids,
                     _idmap(ids, mask, dtype),
                     criterion,
+                    k,
                     dtype,
                     n_jobs,
                 ),
@@ -422,6 +432,8 @@ def da2WSP(da, criterion="queen", layer=None, dims={}, n_jobs=1):
                 dtype=np.int8,
             ),
             index=index,
+            # temp
+            id_order=ids.tolist()
         )
 
     return wsp
@@ -458,6 +470,7 @@ def _SWbuilder(
     ids,
     id_map,
     criterion,
+    k,
     dtype,
 ):
     """
@@ -475,6 +488,10 @@ def _SWbuilder(
         1D array containing id_maps of non-missing raster data
     criterion : str
         Type of contiguity.
+    k : int
+        Order of queen contiguity, if k=1 max neighbors of a point
+        will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
+        Default is 1
     dtype : type
         Data type of the id_map array
 
@@ -495,6 +512,7 @@ def _SWbuilder(
         ids,
         id_map,
         criterion,
+        k,
         dtype,
     )
     data = np.ones_like(rows, dtype=np.int8)
@@ -508,6 +526,7 @@ def compute_chunk(
     ids,
     id_map,
     criterion,
+    k,
     dtype,
 ):
     """
@@ -525,6 +544,10 @@ def compute_chunk(
         1D array containing id_maps of non-missing raster data
     criterion : str
         Type of contiguity.
+    k : int
+        Order of queen contiguity, if k=1 max neighbors of a point
+        will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
+        Default is 1
     dtype : type
         Data type of the id_map array
 
@@ -538,48 +561,85 @@ def compute_chunk(
         in the sparse weight object
     """
     n = len(ids)
-    d = 4 if criterion == "rook" else 8
-    nd = d * n
+    d = 4 if criterion == "rook" else 8  # -> used for row, col preallocation
+    if k > 1:
+        # only queen contiguity is supported right now
+        # this will capture all the circling neighbors
+        # of order <= K.
+        d = int((k/2)*(2*8+(k-1)*8))
     # preallocating rows and cols
-    rows = np.empty(nd, dtype=dtype)
+    rows = np.empty(d*n, dtype=dtype)
     cols = np.empty_like(rows)
     ni = 0
-    for i in range(n):
-        id_i = ids[i]
-        og_id = id_map[id_i]
-        if ((id_i+1) % ncols) != 0:
-            id_neighbor = id_map[id_i + 1]
-            if id_neighbor:
-                rows[ni], cols[ni] = og_id, id_neighbor
-                ni += 1
-                rows[ni], cols[ni] = id_neighbor, og_id
-                ni += 1
-        if (id_i // ncols) < (nrows - 1):
-            id_neighbor = id_map[id_i+ncols]
-            if id_neighbor:
-                rows[ni], cols[ni] = og_id, id_neighbor
-                ni += 1
-                rows[ni], cols[ni] = id_neighbor, og_id
-                ni += 1
-        if criterion == "queen":
-            if (id_i // ncols) < (nrows - 1):
-                if (id_i % ncols) != 0:
-                    id_neighbor = id_map[id_i+ncols-1]
-                    if id_neighbor:
-                        rows[ni], cols[ni] = og_id, id_neighbor
-                        ni += 1
-                        rows[ni], cols[ni] = id_neighbor, og_id
-                        ni += 1
-                if ((id_i+1) % ncols) != 0:
-                    id_neighbor = id_map[id_i+ncols+1]
-                    if id_neighbor:
-                        rows[ni], cols[ni] = og_id, id_neighbor
-                        ni += 1
-                        rows[ni], cols[ni] = id_neighbor, og_id
-                        ni += 1
-    rows = rows[:ni].copy()
-    cols = cols[:ni].copy()
-    return rows, cols
+    for order in range(1, k+1):
+        for i in range(n):
+            id_i = ids[i]
+            og_id = id_map[id_i]
+            if ((id_i+order) % ncols) >= order:
+                # east neighbor
+                id_neighbor = id_map[id_i + order]
+                if id_neighbor:
+                    rows[ni], cols[ni] = og_id, id_neighbor
+                    ni += 1
+                    rows[ni], cols[ni] = id_neighbor, og_id
+                    ni += 1
+                for j in range(order-1):
+                    if (id_i // ncols) < (nrows - j - 1):
+                        id_neighbor = id_map[(id_i+order)+(ncols*(j+1))]
+                        if id_neighbor:
+                            rows[ni], cols[ni] = og_id, id_neighbor
+                            ni += 1
+                            rows[ni], cols[ni] = id_neighbor, og_id
+                            ni += 1
+                    if (id_i // ncols) >= j+1:
+                        id_neighbor = id_map[(id_i+order)-(ncols*(j+1))]
+                        if id_neighbor:
+                            rows[ni], cols[ni] = og_id, id_neighbor
+                            ni += 1
+                            rows[ni], cols[ni] = id_neighbor, og_id
+                            ni += 1
+            if (id_i // ncols) < (nrows - order):
+                # south neighbor
+                id_neighbor = id_map[id_i+(ncols*order)]
+                if id_neighbor:
+                    rows[ni], cols[ni] = og_id, id_neighbor
+                    ni += 1
+                    rows[ni], cols[ni] = id_neighbor, og_id
+                    ni += 1
+                for j in range(order-1):
+                    if (id_i % ncols) >= j+1:
+                        id_neighbor = id_map[id_i+(ncols*order)-j-1]
+                        if id_neighbor:
+                            rows[ni], cols[ni] = og_id, id_neighbor
+                            ni += 1
+                            rows[ni], cols[ni] = id_neighbor, og_id
+                            ni += 1
+                    if ((id_i+j+1) % ncols) >= j+1:
+                        id_neighbor = id_map[id_i+(ncols*order)+j+1]
+                        if id_neighbor:
+                            rows[ni], cols[ni] = og_id, id_neighbor
+                            ni += 1
+                            rows[ni], cols[ni] = id_neighbor, og_id
+                            ni += 1
+                if d != 4:
+                    if (id_i % ncols) >= order:
+                        # south-west neighbor
+                        id_neighbor = id_map[id_i+(ncols*order)-order]
+                        if id_neighbor:
+                            rows[ni], cols[ni] = og_id, id_neighbor
+                            ni += 1
+                            rows[ni], cols[ni] = id_neighbor, og_id
+                            ni += 1
+                    if ((id_i+order) % ncols) >= order:
+                        # south-east neighbor
+                        id_neighbor = id_map[id_i+(ncols*order)+order]
+                        if id_neighbor:
+                            rows[ni], cols[ni] = og_id, id_neighbor
+                            ni += 1
+                            rows[ni], cols[ni] = id_neighbor, og_id
+                            ni += 1
+    ni_arr = np.arange(ni, dtype=dtype)
+    return rows[ni_arr, ], cols[ni_arr, ]
 
 
 @njit(fastmath=True)
@@ -619,6 +679,7 @@ def _parSWbuilder(
     ids,
     id_map,
     criterion,
+    k,
     dtype,
     n_jobs,
 ):
@@ -637,6 +698,10 @@ def _parSWbuilder(
         1D array containing id_maps of non-missing raster data
     criterion : str
         Type of contiguity.
+    k : int
+        Order of queen contiguity, if k=1 max neighbors of a point
+        will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
+        Default is 1
     dtype : type
         Data type of the id_map array
     n_jobs : int
@@ -654,18 +719,26 @@ def _parSWbuilder(
         1D ones array containing columns value of each id
         in the sparse weight object
     """
-    from joblib import Parallel, delayed
+    from joblib import Parallel, delayed, parallel_backend
 
     n = len(ids)
     chunk_size = n // n_jobs + 1
     starts = np.arange(n_jobs + 1) * chunk_size
     chunk = chunk_generator(n_jobs, starts, ids)
-    worker_out = Parallel(n_jobs=n_jobs, backend="threading")(
-        delayed(compute_chunk)(nrows, ncols, *pars, id_map, criterion, dtype)
-        for pars in chunk
-    )
-
-    rows = np.concatenate([i[0] for i in worker_out], axis=None)
-    cols = np.concatenate([i[1] for i in worker_out], axis=None)
+    with parallel_backend("threading"):
+        worker_out = Parallel(n_jobs=n_jobs)(
+            delayed(compute_chunk)(
+                nrows,
+                ncols,
+                *pars,
+                id_map,
+                criterion,
+                k,
+                dtype
+            )
+            for pars in chunk
+        )
+    rows = np.concatenate([i[0] for i in worker_out])
+    cols = np.concatenate([i[1] for i in worker_out])
     data = np.ones_like(rows, dtype=np.int8)
     return (data, (rows, cols))

@@ -17,8 +17,8 @@ class Testraster(unittest.TestCase):
 
     def test_da2W(self):
         w1 = raster.da2W(self.da1, "queen")
-        self.assertEqual(w1[3], {1: 1, 4: 1})
-        self.assertEqual(w1[4], {2: 1, 3: 1})
+        self.assertEqual(w1[13], {8: 1, 14: 1})
+        self.assertEqual(w1[14], {11: 1, 13: 1})
         self.assertEqual(w1.n, 5)
         self.assertEqual(w1.index.names, self.da1.to_series().index.names)
         self.assertEqual(w1.index.tolist()[0], (1, 90.0, 180.0))

@@ -100,7 +100,6 @@ class Contiguity_Mixin(object):
     def test_from_xarray(self):
         w = self.cls.from_xarray(self.da)
         self.assertEqual(w[self.known_wi_da], self.known_w_da)
-        print(w.neighbors)
         ws = self.cls.from_xarray(self.da, sparse=True)
         srowvec = ws.sparse[self.known_wi_da].todense().tolist()[0]
         this_w = {i:k for i,k in enumerate(srowvec) if k>0}
