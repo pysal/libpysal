@@ -22,8 +22,8 @@ import numpy as np
 
 
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric="euclidean"):
-    """This is deprecated. Use the ``pysal.weights.KNN class instead.``"""
-    # Warn('This function is deprecated. Please use pysal.weights.KNN', UserWarning)
+    """This is deprecated. Use the ``libpysal.weights.KNN class instead.``"""
+    # Warn("This function is deprecated. Please use pysal.weights.KNN", UserWarning)
     return KNN(data, k=k, p=p, ids=ids, radius=radius, distance_metric=distance_metric)
 
 
@@ -32,31 +32,32 @@ class KNN(W):
 
     Parameters
     ----------
-    kdtree : {libpysal.cg.kdtree.KDTree, libpysal.cg.kdtree.ArcKDTree}
+    data : {libpysal.cg.kdtree.KDTree, libpysal.cg.kdtree.ArcKDTree}
         An ``(n,k)`` array of `n` observations on `k` characteristics
         used to measure distances between the `n` objects.
     k : int
-        The number of nearest neighbors.
+        The number of nearest neighbors. Default is ``2``.
     p : float
         Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
         ``2`` is Euclidean distance and ``1`` is Manhattan distance.
         This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
+        Default is ``2``.
     ids : list
-        Identifiers to attach to each observation.
-    
-    radius : 
-        -------------- see KDTree
-    
-    distance_metric :
-        -------------- see KDTree
-    
+        Identifiers to attach to each observation. Default is ``None``.
+    radius : float
+        If supplied arc distances will be calculated based on the given radius
+        and ``p`` will be ignored. Default is ``None``.
+        See ``libpysal.cg.kdtree.KDTree`` for more details.
+    distance_metric : str
+        Either ``'euclidean'`` or ``'arc'``. Default is ``'euclidean'``.
+        See ``libpysal.cg.kdtree.KDTree`` for more details.
     **kwargs : dict
         Keyword arguments for ``libpysal.weights.weights.W``.
     
     Returns
     -------
     w : libpysal.weights.distance.KNN
-        A weights object instance with binary weights.
+        A `k` nearest neighbors weights instance.
 
     Examples
     --------
@@ -144,26 +145,18 @@ class KNN(W):
 
         Parameters
         ----------
-
-        data : str
+        filepath : str
             The name of polygon shapefile (including the file extension)
             containing attribute data.
-        k : int
-            The number of nearest neighbors.
-        p : float
-            Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
-            ``2`` is Euclidean distance and ``1`` is Manhattan distance.
-            This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
-        ids : list
-            Identifiers to attach to each observation.
-        radius : float
-            If supplied arc distances will be calculated
-            based on the given radius and ``p`` will be ignored.
+        *args : iterable
+            Positional arguments for ``libpysal.weights.distance.KNN``.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.distance.KNN``.
 
         Returns
         -------
         w : libpysal.weights.distance.KNN
-                    instance; Weights object with binary weights.
+            A `k` nearest neighbors weights instance.
 
         Examples
         --------
@@ -210,22 +203,22 @@ class KNN(W):
 
     @classmethod
     def from_array(cls, array, *args, **kwargs):
-        """
-        Creates nearest neighbor weights matrix based on k nearest
-        neighbors.
+        """Creates nearest neighbor weights matrix based on `k` nearest neighbors.
 
         Parameters
         ----------
-        array : np.ndarray
-                      (n, k) array representing n observations on 
-                      k characteristics used to measure distances 
-                      between the n objects
-        **kwargs : keyword arguments, see Rook
+        array : numpy.ndarray
+            ``(n, k)`` array representing `n` observations on `k` characteristics
+            used to measure distances between the `n` objects.
+        *args : iterable
+            Positional arguments for ``libpysal.weights.distance.KNN``.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.distance.KNN``.
 
         Returns
         -------
         w : libpysal.weights.distance.KNN
-            A  binary weights instance.
+            A `k` nearest neighbors weights instance.
 
         Examples
         --------
@@ -269,25 +262,29 @@ class KNN(W):
 
     @classmethod
     def from_dataframe(cls, df, geom_col="geometry", ids=None, *args, **kwargs):
-        """
-        Make KNN weights from a dataframe.
+        """Make KNN weights from a dataframe.
 
         Parameters
         ----------
         df : pandas.DataFrame
-            A dataframe with a geometry column that can be used to construct a W object
+            A dataframe with a geometry column that can be used
+            to construct a `W` object.
         geom_col : string
             The column name of the geometry stored in ``df``.
+            Default is ``geometry``.
         ids : {str, iterable}
-            
-            if string, the column name of the indices from the dataframe
-            if iterable, a list of ids to use for the W
-            if None, df.index is used.
+            If string, the column name of the indices from the dataframe.
+            If iterable, a list of ids to use for the `W`.
+            If ``None``, ``df.index`` is used. Default is ``None``.
+        *args : iterable
+            Positional arguments for ``libpysal.weights.distance.KNN``.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.distance.KNN``.
 
         Returns
         -------
         w : libpysal.weights.distance.KNN
-            A  binary weights instance.
+            A `k` nearest neighbors weights instance.
         
         See Also
         --------
@@ -312,32 +309,31 @@ class KNN(W):
 
         Parameters
         ----------
-        
-        k           : int
-                      number of nearest neighbors
-        p           : float
-                      Minkowski p-norm distance metric parameter:
-                      1<=p<=infinity
-                      2: Euclidean distance
-                      1: Manhattan distance
-                      Ignored if the KDTree is an ArcKDTree
-        
-        new_data    : np.ndarray
-                      an array containing additional data to use in the KNN
-                      weight
-        new_ids     : list
-                      a list aligned with new_data that provides the ids for
-                      each new observation
-        inplace     : bool
-                      a flag denoting whether to modify the KNN object 
-                      in place or to return a new KNN object
+        k : int
+            The number of nearest neighbors. Default is ``None``.
+        p : float
+            Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
+            ``2`` is Euclidean distance and ``1`` is Manhattan distance.
+            This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
+            Default is ``None``.
+        new_data : numpy.ndarray
+            An array containing additional data to use in the ``KNN`` weight.
+            Default is ``None``.
+        new_ids : list
+            A list aligned with ``new_data`` that provides the ids
+            for each new observation. Default is ``None``.
+        inplace : bool
+            A flag denoting whether to modify the ``KNN`` object 
+            in place or to return a new ``KNN`` object.  Default is ``True``.
         
         Returns
         -------
-        A copy of the object using the new parameterization, or None if the
-        object is reweighted in place.
-        
+        w : libpysal.weights.distance.KNN
+            A copy of the `k` nearest neighbors weights instance using the
+            new parameterization, or ``None`` if the object is reweighted in place.
+
         """
+
         if new_data is not None:
             new_data = np.asarray(new_data).reshape(-1, 2)
             data = np.vstack((self.data, new_data)).reshape(-1, 2)
@@ -352,15 +348,19 @@ class KNN(W):
             ids = self.id_order
         elif (new_data is None) and (new_ids is not None):
             Warn("Remapping ids must be done using w.remap_ids")
+
         if k is None:
             k = self.k
         if p is None:
             p = self.p
+
         if inplace:
             self._reset()
             self.__init__(data, ids=ids, k=k, p=p)
         else:
-            return KNN(data, ids=ids, k=k, p=p)
+            w = KNN(data, ids=ids, k=k, p=p)
+
+            return w
 
 
 class Kernel(W):
@@ -388,8 +388,22 @@ class Kernel(W):
                   If true, set diagonal weights = 1.0, if false (default),
                   diagonals weights are set to value according to kernel
                   function.
-    function    : {'triangular','uniform','quadratic','quartic','gaussian'}
-                  kernel function defined as follows with
+    
+    eps : float
+        The adjustment to ensure the `knn` distance range
+        is closed on the `knn`th observations. Default is ``1.0000001``.
+    ids : list
+        Identifiers to attach to each observation. Default is ``None``.
+    radius : float
+        If supplied arc distances will be calculated based on the given radius
+        and ``p`` will be ignored. Default is ``None``.
+        See ``libpysal.cg.kdtree.KDTree`` for more details.
+    distance_metric : str
+        Either ``'euclidean'`` or ``'arc'``. Default is ``'euclidean'``.
+        See ``libpysal.cg.kdtree.KDTree`` for more details.
+    function : str
+        Either ``'triangular'``, ``'uniform'``, ``'quadratic'``, ``'quartic'``,
+        or ``'gaussian'``. The kernel function is defined as follows with
 
                   .. math::
 
@@ -425,18 +439,17 @@ class Kernel(W):
 
                       K(z) = (2\\pi)^{(-1/2)} exp(-z^2 / 2)
 
-    eps         : float
-                  adjustment to ensure knn distance range is closed on the
-                  knnth observations
+    **kwargs : dict
+        Keyword arguments for ``libpysal.weights.weights.W``.
 
     Attributes
     ----------
     weights : dict
-        Dictionary keyed by id with a list of weights for each neighbor
+        Dictionary keyed by id with a list of weights for each neighbor.
     neighbors : dict
-        of lists of neighbors keyed by observation id
-    bandwidth : array
-        array of bandwidths
+        Lists of neighbors keyed by observation id.
+    bandwidth : array-like
+        An array of bandwidths.
 
     Examples
     --------
@@ -468,7 +481,7 @@ class Kernel(W):
            [15.],
            [15.]])
 
-    Adaptive bandwidths user specified
+    Adaptive bandwidths user specified:
 
     >>> bw=[25.0,15.0,25.0,16.0,14.5,25.0]
     >>> kwa=Kernel(points,bandwidth=bw)
@@ -484,7 +497,7 @@ class Kernel(W):
            [14.5],
            [25. ]])
 
-    Endogenous adaptive bandwidths
+    Endogenous adaptive bandwidths:
 
     >>> kwea=Kernel(points,fixed=False)
     >>> kwea.weights[0]
@@ -499,7 +512,7 @@ class Kernel(W):
            [14.14213704],
            [18.02775818]])
 
-    Endogenous adaptive bandwidths with Gaussian kernel
+    Endogenous adaptive bandwidths with Gaussian kernel:
 
     >>> kweag=Kernel(points,fixed=False,function='gaussian')
     >>> kweag.weights[0]
@@ -512,7 +525,7 @@ class Kernel(W):
            [14.14213704],
            [18.02775818]])
 
-    Diagonals to 1.0
+    Diagonals to 1.0:
 
     >>> kq = Kernel(points,function='gaussian')
     >>> kq.weights
@@ -529,12 +542,12 @@ class Kernel(W):
         bandwidth=None,
         fixed=True,
         k=2,
-        function="triangular",
+        diagonal=False,
         eps=1.0000001,
         ids=None,
-        diagonal=False,
-        distance_metric="euclidean",
         radius=None,
+        distance_metric="euclidean",
+        function="triangular",
         **kwargs
     ):
 
@@ -575,8 +588,7 @@ class Kernel(W):
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, **kwargs):
-        """
-        Kernel based weights from shapefile
+        """Kernel based weights from shapefile
 
         Parameters
         ----------
@@ -587,7 +599,8 @@ class Kernel(W):
             shapefile name with shp suffix
         idVariable : str
             The name of the column in shapefile's DBF to use for ids.
-        
+        ... : ....
+            ............
 
         Returns
         -------
@@ -615,6 +628,19 @@ class Kernel(W):
         Construct a Kernel weights from an array. Supports all the same options
         as :class:`libpysal.weights.Kernel`
 
+        
+        Parameters
+        ----------
+        ... : ....
+            ............
+        ... : ....
+            ............
+        
+        Returns
+        -------
+        Kernel Weights Object
+        
+        
         See Also
         --------
         
@@ -631,15 +657,23 @@ class Kernel(W):
 
         Parameters
         ----------
-        df      :   pandas.dataframe
-                    a dataframe with a geometry column that can be used to
-                    construct a W object
-        geom_col :   string
-                    column name of the geometry stored in df
+        df : pandas.DataFrame
+            A dataframe with a geometry column that can be used
+            to construct a PySAL ``W`` object.
+        geom_col : str
+            The column name of the geometry stored in ``df``.
+            Default is ``geometry``.
         ids     :   string or iterable
                     if string, the column name of the indices from the dataframe
                     if iterable, a list of ids to use for the W
                     if None, df.index is used.
+        **kwargs : dict
+            .......................
+        
+        Returns
+        -------
+        .... : .....
+            ..... Kernel Weights Object
 
         See Also
         --------
@@ -659,6 +693,11 @@ class Kernel(W):
 
     def _k_to_W(self, ids=None):
         """
+        
+        Parameters
+        ----------
+        ids : ....
+            ......
         
         Returns
         -------
@@ -689,7 +728,7 @@ class Kernel(W):
         return allneighbors, weights
 
     def _set_bw(self):
-        """
+        """Set binary weights?...............................................
         """
 
         dmat, neigh = self.kdtree.query(self.data, k=self.k)
@@ -708,7 +747,7 @@ class Kernel(W):
             self.neigh = nnq[1]
 
     def _eval_kernel(self):
-        """
+        """Evaluate kernel................................................ ?
         """
 
         # get points within bandwidth distance of each point
@@ -755,39 +794,42 @@ class DistanceBand(W):
 
     Parameters
     ----------
-
-    data        : array
-                  (n,k) or KDTree where KDtree.data is array (n,k)
-                  n observations on k characteristics used to measure
-                  distances between the n objects
-    threshold  : float
-                 distance band
-    p          : float
-                 Minkowski p-norm distance metric parameter:
-                 1<=p<=infinity
-                 2: Euclidean distance
-                 1: Manhattan distance
-    binary     : boolean
-                 If true w_{ij}=1 if d_{i,j}<=threshold, otherwise w_{i,j}=0
-                 If false wij=dij^{alpha}
-    alpha      : float
-                 distance decay parameter for weight (default -1.0)
-                 if alpha is positive the weights will not decline with
-                 distance. If binary is True, alpha is ignored
-
-    ids         : list
-                  values to use for keys of the neighbors and weights dicts
-
-    build_sp    : boolean
-                  True to build sparse distance matrix and false to build dense
-                  distance matrix; significant speed gains may be obtained
-                  dending on the sparsity of the of distance_matrix and
-                  threshold that is applied
-    silent      : boolean
-                  By default libpysal will print a warning if the
-                  dataset contains any disconnected observations or
-                  islands. To silence this warning set this
-                  parameter to True.
+    data : {array-like, libpysal.cg.kdtree.KDTree}
+        ``(n,k)`` or ``KDTree`` where ``KDtree.data`` is an ``(n,k)`` array 
+        of `n` observations on `k` characteristics used to measure
+        distances between the `n` objects
+    threshold : float
+        The distance band.
+    p : float
+        Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
+        ``2`` is Euclidean distance and ``1`` is Manhattan distance.
+        This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
+        Default is ``2``.
+    binary : bool
+        If set to ``True``, :math:`w_{ij}=1 if d_{i,j}<=threshold`,
+        otherwise :math:`w_{i,j}=0`. If set to ``False``, :math:`wij=dij^{alpha}`.
+        Default is ``True``.
+    alpha : float
+        The distance decay parameter for weights. Default is ``-1.0``.
+        If ``alpha`` is positive the weights will not decline with distance.
+        If ``binary`` is set to ``True``, ``alpha`` is ignored.
+    ids : list
+        Identifiers to attach to each observation. Default is ``None``.
+    build_sp : boolean
+        Set to ``True`` to build a sparse distance matrix and ``False`` to build dense
+        distance matrix. Significant speed gains may be obtained depending on the
+        sparsity of the of distance matrix and the ``threshold`` that is applied.
+        Default is ``True``.
+    silence_warnings : bool
+        By default (`True``) libpysal will print a warning if the dataset contains any
+        disconnected observations or islands. To silence this warning set to ``True``.
+    radius : float
+        If supplied arc distances will be calculated based on the given radius
+        and ``p`` will be ignored. Default is ``None``.
+        See ``libpysal.cg.kdtree.KDTree`` for more details.
+    distance_metric : str
+        Either ``'euclidean'`` or ``'arc'``. Default is ``'euclidean'``.
+        See ``libpysal.cg.kdtree.KDTree`` for more details.
 
     Attributes
     ----------
@@ -850,13 +892,13 @@ class DistanceBand(W):
         data,
         threshold,
         p=2,
-        alpha=-1.0,
         binary=True,
+        alpha=-1.0,
         ids=None,
         build_sp=True,
         silence_warnings=False,
-        distance_metric="euclidean",
         radius=None,
+        distance_metric="euclidean",
     ):
         """Casting to floats is a work around for a bug in scipy.spatial.
         --> See detail in pysal issue #126.
@@ -907,9 +949,15 @@ class DistanceBand(W):
 
         Parameters
         ----------
-        shapefile   : string
+        shapefile   : str
                       shapefile name with shp suffix
-        idVariable  : string
+        
+        threshold : float
+            The distance band.
+        
+        
+        
+        idVariable  : str
                       name of column in shapefile's DBF to use for ids
 
         Returns
@@ -932,10 +980,20 @@ class DistanceBand(W):
         """Construct a DistanceBand weights from an array.
         Supports all the same options as ``libpysal.weights.DistanceBand``.
         
-        
+        Parameters
+        ----------
+        array : ...
+            ......
+        threshold : float
+            The distance band.
+        **kwargs : ...
+            ......
         
         Returns
         -------
+        ... : ....
+            ............
+        
         
         """
 
@@ -951,18 +1009,29 @@ class DistanceBand(W):
         df : pandas.DataFrame
             A dataframe with a geometry column that can be used
             to construct a PySAL ``W`` object.
+        threshold : float
+            The distance band.
         geom_col : str
             The column name of the geometry stored in ``df``.
+            Default is ``geometry``.
         ids : {str, iterable}
             If string, the column name of the indices from the dataframe
                     
                     if iterable, a list of ids to use for the W
                     
                     if None, df.index is used.
+                    
+                    Default is ``None``.
+        
+        
+        **kwargs : ...
+            ........
+        
         
         Returns
         -------
-        
+        ... : ....
+            ............
         
         """
 
@@ -994,11 +1063,19 @@ class DistanceBand(W):
     def _distance_to_W(self, ids=None):
         """
         
+        Parameters
+        ----------
+        ids : ...
+            ........ Default is ``None``.
+        
+        
         Returns
         -------
-        neighbors : 
+        neighbors : ...
+            ........
         
-        weights : 
+        weights : dict
+            ........
         
         
         """
@@ -1029,10 +1106,21 @@ class DistanceBand(W):
     def _spdistance_matrix(self, x, y, threshold=None):
         """
         
+        Parameters
+        ----------
+        x : ...
+            ........
+        y : ...
+            ........
+        threshold : ...
+            ........ Default is ``None``.
+        
         
         Returns
         -------
         
+        ... : ....
+            ............
         
         """
 
