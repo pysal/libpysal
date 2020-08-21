@@ -136,7 +136,7 @@ class Rook(W):
             A collection of of shapes to be cast to PySAL shapes. Must
             support iteration. Can be either Shapely or PySAL shapes.
         sparse : bool
-            Generate ``WSP`` object.
+            Generate ``WSP`` object. Default is ``False``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Rook``.
         
@@ -176,7 +176,7 @@ class Rook(W):
             A ``pandas.DataFrame` containing geometries to use for spatial weights.
         geom_col : str
             The name of the column in ``df`` that contains the
-            geometries. Default is ``geometry``.
+            geometries. Default is ``'geometry'``.
         idVariable : str
             The name of the column to use as IDs. If nothing is provided, the
             dataframe index is used. Default is ``None``.
@@ -338,7 +338,7 @@ class Queen(W):
             A collection of of shapes to be cast to PySAL shapes. Must
             support iteration. Can be either Shapely or PySAL shapes.
         sparse : bool
-            Generate ``WSP`` object.
+            Generate ``WSP`` object. Default is ``False``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Queen``.
         
@@ -376,17 +376,7 @@ class Queen(W):
             A ``pandas.DataFrame` containing geometries to use for spatial weights.
         geom_col : str
             The name of the column in ``df`` that contains the
-            geometries. Default is ``geometry``.
-        idVariable : str
-            The name of the column to use as IDs. If nothing is provided, the
-            dataframe index is used. Default is ``None``.
-        ids : list
-            A list of ids to use to index the spatial weights object.
-            Order is not respected from this list. Default is ``None``.
-        id_order : list
-            An ordered list of ids to use to index the spatial weights object. If
-            used, the resulting weights object will iterate over results in the
-            order of the names provided in this argument. Default is ``None``.
+            geometries. Default is ``'geometry'``.
         
         Returns
         -------
@@ -537,7 +527,7 @@ def _build(polygons, criterion="rook", ids=None):
         Option of which kind of contiguity to build, either ``'rook'`` or ``'queen'``.
         Default is ``'rook'``.
     ids : list
-        A list of ids to use to index the neighbor dictionary.
+        A list of ids to use to index the neighbor dictionary. Default is ``None``.
 
     Returns
     -------

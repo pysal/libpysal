@@ -11,14 +11,15 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
         must take 2 arguments and return a single reduction. If `P`>1, then ``func``
         must take two `P`-length arrays and return a single reduction of them.
     W : libpysal.weights.W
-        A weights object that provides adjacency information.
+        A weights object that provides adjacency information. Default is ``None``.
     alist : pandas.DataFrame
         A table containing an adajacency list representation of a `W` matrix.
+        Default is ``None``.
     func : callable
         A function taking two arguments and returning a single argument. This will
         be evaluated for every (focal, neighbor) pair, or each row of the adjacency
         list. If ``X`` has more than one column, this function should take two arrays
-        and provide a single scalar in return.
+        and provide a single scalar in return. Default is ``np.subtract``.
         Example scalars include:
             ``lambda x,y: x < y, np.subtract``
         Example multivariates: 
@@ -29,6 +30,7 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
         Whether or not to skip verifying that the `W` is the same as an adjacency
         list. Do this if you are certain the adjacency list and ``W`` agree and
         would like to avoid re-instantiating a `W` from the adjacency list. 
+        Default is ``False``.
 
     Returns
     -------
@@ -126,15 +128,11 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
 
 
 def _get_W_and_alist(W, alist, skip_verify=False):
-    """ Either:
-        1. compute a `W` from an alist
-        2. adjacencylist from a W
-        3. raise ValueError if neither are provided,
-        4. raise AssertionError if both W and adjlist are provided and don't match.
-    
-    If this completes successfully, the `W` and ``adjlist``
-    will both be returned and are checked for equality.
-    See ``libpysal.weights.adjtools.adjlist_apply()``
+    """ Either (1) compute a ``W`` from an ``alist``; (2) compute an adjacency list
+    from a ``W``; (3) raise a ``ValueError`` if neither are provided; or (4) raise an
+    ``AssertionError`` if both ``W`` and ``adjlist`` are provided and don't match.
+    If this completes successfully, the ``W`` and ``adjlist`` will both be returned and
+    are checked for equality. See ``libpysal.weights.adjtools.adjlist_apply()``
     for parameters and returns information.
     
     """
@@ -179,18 +177,21 @@ def adjlist_map(
         list of functions to apply to each column of `P`. This function
         must take two arguments, compare them, and return a value. Examples
         may be ``lambda x,y: x < y`` or ``np.subtract``.
+         Default is ``(np.subtract,)``.
     W : libpysal.weights.W
         A PySAL weights object. If not provided, one is
-        constructed from the given adjacency list.
+        constructed from the given adjacency list. Default is ``None``.
     alist : pandas.Dataframe
         An adjacency list representation of a weights matrix. If not
         provided, one is constructed from the weights object. If both are
         provided, they are validated against one another to ensure they
-        provide identical weights matrices. 
+        provide identical weights matrices. Default is ``None``.
     focal_col : str
         The name of column in ``alist`` containing the focal observation ids.
+        Default is ``'focal'``.
     neighbor_col : str
         The name of column in ``alist`` containing the neighboring observation ids.
+        Default is ``'neighbor'``.
 
     Returns
     -------
@@ -250,9 +251,10 @@ def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
     adjlist : pandas.DataFrame
         A dataframe that contains focal and neighbor columns.
     focal_col : str
-        The name of the column with the focal observation id.
+        The name of the column with the focal observation id. Default is ``'focal'``.
     neighbor_col : str
         The name of the column with the neighbor observation id.
+        Default is ``'neighbor'``.
 
     Returns
     -------

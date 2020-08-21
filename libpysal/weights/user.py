@@ -58,7 +58,7 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     radius : float
         If supplied ``arc_distances`` will be calculated
         based on the given radius and ``p`` will be ignored.
-    p : float
+    p : {int, float}
         Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
         ``2`` is Euclidean distance and ``1`` is Manhattan distance. Default is ``2 ``.
 

@@ -37,7 +37,7 @@ class KNN(W):
         used to measure distances between the `n` objects.
     k : int
         The number of nearest neighbors. Default is ``2``.
-    p : float
+    p : {int, float}
         Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
         ``2`` is Euclidean distance and ``1`` is Manhattan distance.
         This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
@@ -271,7 +271,7 @@ class KNN(W):
             to construct a `W` object.
         geom_col : string
             The column name of the geometry stored in ``df``.
-            Default is ``geometry``.
+            Default is ``'geometry'``.
         ids : {str, iterable}
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
@@ -311,7 +311,7 @@ class KNN(W):
         ----------
         k : int
             The number of nearest neighbors. Default is ``None``.
-        p : float
+        p : {int, float}
             Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
             ``2`` is Euclidean distance and ``1`` is Manhattan distance.
             This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
@@ -399,7 +399,8 @@ class Kernel(W):
         See ``libpysal.cg.KDTree`` for more details.
     function : str
         Either ``'triangular'``, ``'uniform'``, ``'quadratic'``, ``'quartic'``,
-        or ``'gaussian'``. The kernel function is defined as follows with
+        or ``'gaussian'``. Default is ``'triangular'``.
+        The kernel function is defined as follows with
 
                   .. math::
 
@@ -593,6 +594,7 @@ class Kernel(W):
             containing attribute data.
         idVariable : str
             The name of the column in shapefile's DBF to use for ids.
+            Default is ``None``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Kernel``.
 
@@ -658,7 +660,7 @@ class Kernel(W):
             to construct a PySAL ``W`` object.
         geom_col : str
             The column name of the geometry stored in ``df``.
-            Default is ``geometry``.
+            Default is ``'geometry'``.
         ids : {str, iterable}
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
@@ -695,7 +697,7 @@ class Kernel(W):
         Parameters
         ----------
         ids : list
-            See ``ids`` in ``Kernel``.
+            See ``ids`` in ``Kernel``. Default is ``None``.
         
         Returns
         -------
@@ -793,10 +795,10 @@ class DistanceBand(W):
     data : {array-like, libpysal.cg.KDTree}
         ``(n,k)`` or ``KDTree`` where ``KDtree.data`` is an ``(n,k)`` array 
         of `n` observations on `k` characteristics used to measure
-        distances between the `n` objects
+        distances between the `n` objects.
     threshold : float
         The distance band.
-    p : float
+    p : {int, float}
         Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
         ``2`` is Euclidean distance and ``1`` is Manhattan distance.
         This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
@@ -817,7 +819,7 @@ class DistanceBand(W):
         sparsity of the of distance matrix and the ``threshold`` that is applied.
         Default is ``True``.
     silence_warnings : bool
-        By default (`True``) libpysal will print a warning if the dataset contains any
+        By default (`False``) libpysal will print a warning if the dataset contains any
         disconnected observations or islands. To silence this warning set to ``True``.
     radius : float
         If supplied arc distances will be calculated based on the given radius
@@ -952,6 +954,7 @@ class DistanceBand(W):
             The distance band.
         idVariable : str
             The name of the column in shapefile's DBF to use for ids.
+            Default is ``None``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.DistanceBand``.
 
@@ -1011,7 +1014,7 @@ class DistanceBand(W):
             The distance band.
         geom_col : str
             The column name of the geometry stored in ``df``.
-            Default is ``geometry``.
+            Default is ``'geometry'``.
         ids : {str, iterable}
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
@@ -1059,7 +1062,7 @@ class DistanceBand(W):
         Parameters
         ----------
         ids : list
-            See ``ids`` in ``DistanceBand``.
+            See ``ids`` in ``DistanceBand``. Default is ``None``.
         
         Returns
         -------
@@ -1104,7 +1107,7 @@ class DistanceBand(W):
         y : array-like
             Y values.
         threshold : float
-            See ``threshold`` in ``DistanceBand``.
+            See ``threshold`` in ``DistanceBand``. Default is ``None``.
         
         Returns
         -------
