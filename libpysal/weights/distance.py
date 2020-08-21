@@ -208,8 +208,8 @@ class KNN(W):
         Parameters
         ----------
         array : numpy.ndarray
-            ``(n, k)`` array representing `n` observations on `k` characteristics
-            used to measure distances between the `n` objects.
+            An ``(n, k)`` array representing `n` observations on `k`
+            characteristics used to measure distances between the `n` objects.
         *args : iterable
             Positional arguments for ``libpysal.weights.distance.KNN``.
         **kwargs : dict
@@ -368,27 +368,23 @@ class Kernel(W):
 
     Parameters
     ----------
-    data : array
-                  (n,k) or KDTree where KDtree.data is array (n,k)
-                  n observations on k characteristics used to measure
-                  distances between the n objects
-    bandwidth   : float
-                  or array-like (optional)
-                  the bandwidth :math:`h_i` for the kernel.
-    fixed       : binary
-                  If true then :math:`h_i=h \\forall i`. If false then
-                  bandwidth is adaptive across observations.
-    k           : int
-                  the number of nearest neighbors to use for determining
-                  bandwidth. For fixed bandwidth, :math:`h_i=max(dknn) \\forall i`
-                  where :math:`dknn` is a vector of k-nearest neighbor
-                  distances (the distance to the kth nearest neighbor for each
-                  observation).  For adaptive bandwidths, :math:`h_i=dknn_i`
-    diagonal    : boolean
-                  If true, set diagonal weights = 1.0, if false (default),
-                  diagonals weights are set to value according to kernel
-                  function.
-    
+    data : {libpysal.cg.kdtree.KDTree, libpysal.cg.kdtree.ArcKDTree}
+        An ``(n,k)`` array of `n` observations on `k` characteristics
+        used to measure distances between the `n` objects.
+    k : int
+        The number of nearest neighbors to use for determining the bandwidth. For a
+        fixed bandwidth, :math:`h_i=max(dknn) \\forall i` where :math:`dknn` is a
+        vector of `k``-nearest neighbor distances (the distance to the `k`th nearest
+        neighbor for each observation). For adaptive bandwidths, :math:`h_i=dknn_i`.
+        Default is ``2``.
+    bandwidth : {float, array-like}
+        The bandwidth :math:`h_i` for the kernel. Default is ``None``.
+    fixed : bool
+        If ``True`` then :math:`h_i=h \\forall i`. If ``False`` then
+        bandwidth is adaptive across observations. Default is ``True``.
+    diagonal : bool
+        If ``True``, set diagonal weights to ``1.0``. If ``False`` diagonal weights
+        are set to values according to the kernel function. Default is ``False``.
     eps : float
         The adjustment to ensure the `knn` distance range
         is closed on the `knn`th observations. Default is ``1.0000001``.
@@ -539,9 +535,9 @@ class Kernel(W):
     def __init__(
         self,
         data,
+        k=2,
         bandwidth=None,
         fixed=True,
-        k=2,
         diagonal=False,
         eps=1.0000001,
         ids=None,
@@ -588,23 +584,22 @@ class Kernel(W):
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, **kwargs):
-        """Kernel based weights from shapefile
+        """Construct kernel-based weights from a shapefile.
 
         Parameters
         ----------
-        
-        cls : 
-            
         filepath : str
-            shapefile name with shp suffix
+            The name of polygon shapefile (including the file extension)
+            containing attribute data.
         idVariable : str
             The name of the column in shapefile's DBF to use for ids.
-        ... : ....
-            ............
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.distance.Kernel``.
 
         Returns
         -------
-        Kernel Weights Object
+        w : libpysal.weights.distance.Kernel
+            A kernel weights instance.
 
         See Also
         ---------
@@ -620,26 +615,26 @@ class Kernel(W):
         else:
             ids = None
 
-        return cls.from_array(points, ids=ids, **kwargs)
+        w = cls.from_array(points, ids=ids, **kwargs)
+
+        return w
 
     @classmethod
     def from_array(cls, array, **kwargs):
-        """
-        Construct a Kernel weights from an array. Supports all the same options
-        as :class:`libpysal.weights.Kernel`
-
+        """Construct kernel-based weights from an array.
         
         Parameters
         ----------
-        ... : ....
-            ............
-        ... : ....
-            ............
+        array : numpy.ndarray
+            An ``(n, k)`` array representing `n` observations on `k`
+            characteristics used to measure distances between the `n` objects.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.distance.Kernel``.
         
         Returns
         -------
-        Kernel Weights Object
-        
+        w : libpysal.weights.distance.Kernel
+            A kernel weights instance.
         
         See Also
         --------
@@ -648,12 +643,13 @@ class Kernel(W):
         
         """
 
-        return cls(array, **kwargs)
+        w = cls(array, **kwargs)
+
+        return w
 
     @classmethod
     def from_dataframe(cls, df, geom_col="geometry", ids=None, **kwargs):
-        """
-        Make Kernel weights from a dataframe.
+        """Construct kernel-based weights from a dataframe.
 
         Parameters
         ----------
@@ -663,17 +659,17 @@ class Kernel(W):
         geom_col : str
             The column name of the geometry stored in ``df``.
             Default is ``geometry``.
-        ids     :   string or iterable
-                    if string, the column name of the indices from the dataframe
-                    if iterable, a list of ids to use for the W
-                    if None, df.index is used.
+        ids : {str, iterable}
+            If string, the column name of the indices from the dataframe.
+            If iterable, a list of ids to use for the `W`.
+            If ``None``, ``df.index`` is used. Default is ``None``.
         **kwargs : dict
-            .......................
+            Keyword arguments for ``libpysal.weights.distance.Kernel``.
         
         Returns
         -------
-        .... : .....
-            ..... Kernel Weights Object
+        w : libpysal.weights.distance.Kernel
+            A kernel weights instance.
 
         See Also
         --------
@@ -689,25 +685,27 @@ class Kernel(W):
         elif isinstance(ids, str):
             ids = df[ids].tolist()
 
-        return cls(pts, ids=ids, **kwargs)
+        w = cls(pts, ids=ids, **kwargs)
+
+        return w
 
     def _k_to_W(self, ids=None):
-        """
+        """Internal method for converting `k` neighbors to weights.
         
         Parameters
         ----------
-        ids : ....
-            ......
+        ids : list
+            See ``ids`` in ``Kernel``.
         
         Returns
         -------
-        allneighbors : ...
-            ...
-        
-        weights : ...
-            ...
+        allneighbors : dict
+            Index lookup of all neighbors.
+        weights : dict
+            Index lookup of neighbor weights.
         
         """
+
         allneighbors = {}
         weights = {}
 
@@ -728,8 +726,7 @@ class Kernel(W):
         return allneighbors, weights
 
     def _set_bw(self):
-        """Set binary weights?...............................................
-        """
+        """Internal method for setting binary weights."""
 
         dmat, neigh = self.kdtree.query(self.data, k=self.k)
 
@@ -747,8 +744,7 @@ class Kernel(W):
             self.neigh = nnq[1]
 
     def _eval_kernel(self):
-        """Evaluate kernel................................................ ?
-        """
+        """Internal method for evaluate the kernel function."""
 
         # get points within bandwidth distance of each point
         if not hasattr(self, "neigh"):
@@ -945,24 +941,24 @@ class DistanceBand(W):
 
     @classmethod
     def from_shapefile(cls, filepath, threshold, idVariable=None, **kwargs):
-        """Distance-band based weights from shapefile.
+        """Construct a distance band weights object from a shapefile.
 
         Parameters
         ----------
-        shapefile   : str
-                      shapefile name with shp suffix
-        
+        filepath : str
+            The name of polygon shapefile (including the file extension)
+            containing attribute data.
         threshold : float
             The distance band.
-        
-        
-        
-        idVariable  : str
-                      name of column in shapefile's DBF to use for ids
+        idVariable : str
+            The name of the column in shapefile's DBF to use for ids.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.distance.DistanceBand``.
 
         Returns
         -------
-        Kernel Weights Object
+        w : libpysal.weights.distance.DistanceBand
+            A distance band weights instance.
 
         """
 
@@ -973,36 +969,38 @@ class DistanceBand(W):
         else:
             ids = None
 
-        return cls.from_array(points, threshold, ids=ids, **kwargs)
+        w = cls.from_array(points, threshold, ids=ids, **kwargs)
+
+        return w
 
     @classmethod
     def from_array(cls, array, threshold, **kwargs):
-        """Construct a DistanceBand weights from an array.
-        Supports all the same options as ``libpysal.weights.DistanceBand``.
+        """Construct a distance band weights object from an array.
         
         Parameters
         ----------
-        array : ...
-            ......
+        array : numpy.ndarray
+            An ``(n, k)`` array representing `n` observations on `k`
+            characteristics used to measure distances between the `n` objects.
         threshold : float
             The distance band.
-        **kwargs : ...
-            ......
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.distance.DistanceBand``.
         
         Returns
         -------
-        ... : ....
-            ............
-        
+        w : libpysal.weights.distance.DistanceBand
+            A distance band weights instance.
         
         """
 
-        return cls(array, threshold, **kwargs)
+        w = cls(array, threshold, **kwargs)
+
+        return w
 
     @classmethod
     def from_dataframe(cls, df, threshold, geom_col="geometry", ids=None, **kwargs):
-        """
-        Make DistanceBand weights from a dataframe.
+        """Construct a distance band weights object from a dataframe.
 
         Parameters
         ----------
@@ -1015,23 +1013,16 @@ class DistanceBand(W):
             The column name of the geometry stored in ``df``.
             Default is ``geometry``.
         ids : {str, iterable}
-            If string, the column name of the indices from the dataframe
-                    
-                    if iterable, a list of ids to use for the W
-                    
-                    if None, df.index is used.
-                    
-                    Default is ``None``.
-        
-        
-        **kwargs : ...
-            ........
-        
+            If string, the column name of the indices from the dataframe.
+            If iterable, a list of ids to use for the `W`.
+            If ``None``, ``df.index`` is used. Default is ``None``.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.distance.DistanceBand``.
         
         Returns
         -------
-        ... : ....
-            ............
+        w : libpysal.weights.distance.DistanceBand
+            A distance band weights instance.
         
         """
 
@@ -1042,10 +1033,12 @@ class DistanceBand(W):
         elif isinstance(ids, str):
             ids = df[ids].tolist()
 
-        return cls(pts, threshold, ids=ids, **kwargs)
+        w = cls(pts, threshold, ids=ids, **kwargs)
+
+        return w
 
     def _band(self):
-        """Find all pairs within threshold."""
+        """Internal function for finding all pairs within the threshold."""
 
         if self.build_sp:
             self.dmat = self.kdtree.sparse_distance_matrix(
@@ -1061,24 +1054,22 @@ class DistanceBand(W):
             self.dmat = self._spdistance_matrix(self.data, self.data, self.threshold)
 
     def _distance_to_W(self, ids=None):
-        """
+        """Internal method for converting distance band neighbors to weights.
         
         Parameters
         ----------
-        ids : ...
-            ........ Default is ``None``.
-        
+        ids : list
+            See ``ids`` in ``DistanceBand``.
         
         Returns
         -------
-        neighbors : ...
-            ........
-        
+        neighbors : dict
+            Index lookup of all neighbors.
         weights : dict
-            ........
-        
+            Index lookup of neighbor weights.
         
         """
+
         if self.binary:
             self.dmat[self.dmat > 0] = 1
             self.dmat.eliminate_zeros()
@@ -1104,23 +1095,27 @@ class DistanceBand(W):
             return neighbors, weights
 
     def _spdistance_matrix(self, x, y, threshold=None):
-        """
+        """Internal method for converting a distance matrix into a CSR matrix.
         
         Parameters
         ----------
-        x : ...
-            ........
-        y : ...
-            ........
-        threshold : ...
-            ........ Default is ``None``.
-        
+        x : array-like
+            X values.
+        y : array-like
+            Y values.
+        threshold : float
+            See ``threshold`` in ``DistanceBand``.
         
         Returns
         -------
+        sp_mtx : scipy.sparse.csr_matrix
+            A Compressed Sparse Row matrix.
         
-        ... : ....
-            ............
+        See Also
+        --------
+        
+        scipy.spatial.distance_matrix
+        scipy.sparse.csr_matrix
         
         """
 
@@ -1130,7 +1125,9 @@ class DistanceBand(W):
             zeros = dist > threshold
             dist[zeros] = 0
 
-        return sp.csr_matrix(dist)
+        sp_mtx = sp.csr_matrix(dist)
+
+        return sp_mtx
 
 
 def _test():
