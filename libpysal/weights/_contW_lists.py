@@ -16,10 +16,10 @@ def _get_verts(shape):
 
 
 def _get_boundary_points(shape) -> list:
+    """Recursively handle polygons vs. multipolygons
+    to extract the boundary point set from each.
     """
-    Recursively handle polygons vs. multipolygons to
-    extract the boundary point set from each.
-    """
+
     if shape.type.lower() == "polygon":
         shape = shape.boundary
         return _get_boundary_points(shape)
@@ -38,9 +38,8 @@ def _get_boundary_points(shape) -> list:
 
 
 class ContiguityWeightsLists:
-    """
-    Contiguity for a collection of polygons using high performance
-    list, set, and dict containers.
+    """Contiguity for a collection of polygons using high
+    performance ``list``, ``set``, and ``dict`` containers.
     """
 
     def __init__(self, collection, wttype=1):
@@ -54,11 +53,13 @@ class ContiguityWeightsLists:
             1: Queen; 2: Rook
         
         """
+
         self.collection = list(collection)
         self.wttype = wttype
         self.jcontiguity()
 
     def jcontiguity(self):
+
         numPoly = len(self.collection)
 
         w = {}
@@ -119,4 +120,5 @@ class ContiguityWeightsLists:
                         pass
         else:
             raise Exception("Weight type {} not understood!".format(self.wttype))
+
         self.w = w

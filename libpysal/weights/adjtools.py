@@ -10,9 +10,9 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
         An `(N,P)`-length iterable to apply ``func`` to. If (N,1), then ``func``
         must take 2 arguments and return a single reduction. If `P`>1, then ``func``
         must take two `P`-length arrays and return a single reduction of them.
-    W : pysal.weights.W object
+    W : libpysal.weights.W
         A weights object that provides adjacency information.
-    alist : pandas DataFrame
+    alist : pandas.DataFrame
         A table containing an adajacency list representation of a `W` matrix.
     func : callable
         A function taking two arguments and returning a single argument. This will
@@ -33,15 +33,15 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     Returns
     -------
     alist_atts : list
-        An adjacency list (or modifies alist inplace) with the
-        function applied to each row.
+        An adjacency list (or modifies ``alist`` inplace)
+        with the function applied to each row.
     
     """
 
     try:
         import pandas as pd
     except ImportError:
-        raise ImportError("pandas must be installed to use this function")
+        raise ImportError("Pandas must be installed to use this function.")
 
     W, alist = _get_W_and_alist(W, alist, skip_verify=skip_verify)
 
@@ -75,20 +75,21 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
 
 def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
     """This function is used when ``X`` is multi-dimensional.
-    See ``weights.adjtools.adjlist_apply()`` for Parameters and Returns information.
+    See ``libpysal.weights.adjtools.adjlist_apply()``
+    for parameters and returns information.
     
     """
 
     try:
         import pandas as pd
     except ImportError:
-        raise ImportError("pandas must be installed to use this function")
+        raise ImportError("Pandas must be installed to use this function.")
 
-    assert len(X.shape) == 2, "data is not two-dimensional"
+    assert len(X.shape) == 2, "Data is not two-dimensional."
 
     W, alist = _get_W_and_alist(W=W, alist=alist, skip_verify=skip_verify)
 
-    assert X.shape[0] == W.n, "number of samples in X does not match W"
+    assert X.shape[0] == W.n, "The number of samples in X does not match W."
 
     try:
         names = X.columns.tolist()
@@ -131,9 +132,10 @@ def _get_W_and_alist(W, alist, skip_verify=False):
         3. raise ValueError if neither are provided,
         4. raise AssertionError if both W and adjlist are provided and don't match.
     
-    If this completes successfully, the `W` and ``adjlist`` will both
-    be returned and are checked for equality. See ``weights.adjtools.adjlist_apply()``
-    for Parameters and Returns information.
+    If this completes successfully, the `W` and ``adjlist``
+    will both be returned and are checked for equality.
+    See ``libpysal.weights.adjtools.adjlist_apply()``
+    for parameters and returns information.
     
     """
 
@@ -146,7 +148,7 @@ def _get_W_and_alist(W, alist, skip_verify=False):
         W = W.from_adjlist(alist)
 
     elif (W is None) and (alist is None):
-        raise ValueError("Either W or Adjacency List must be provided")
+        raise ValueError("Either W or Adjacency List must be provided.")
 
     elif (W is not None) and (alist is not None) and (not skip_verify):
         from .weights import W as W_
@@ -166,7 +168,7 @@ def adjlist_map(
     focal_col="focal",
     neighbor_col="neighbor",
 ):
-    """ Map a set of functions over a `W` or adjacency list.
+    """Map a set of functions over a `W` or an adjacency list.
 
     Parameters
     ----------
@@ -177,8 +179,8 @@ def adjlist_map(
         list of functions to apply to each column of `P`. This function
         must take two arguments, compare them, and return a value. Examples
         may be ``lambda x,y: x < y`` or ``np.subtract``.
-    W : pysal.weights.W
-        A pysal weights object. If not provided, one is
+    W : libpysal.weights.W
+        A PySAL weights object. If not provided, one is
         constructed from the given adjacency list.
     alist : pandas.Dataframe
         An adjacency list representation of a weights matrix. If not
@@ -201,7 +203,7 @@ def adjlist_map(
     try:
         import pandas as pd
     except ImportError:
-        raise ImportError("pandas must be installed to use this function")
+        raise ImportError("Pandas must be installed to use this function.")
 
     if isinstance(data, pd.DataFrame):
         names = data.columns
@@ -209,7 +211,9 @@ def adjlist_map(
     else:
         names = [str(i) for i in range(data.shape[1])]
 
-    assert data.shape[0] == W.n, "shape of data does not match shape of adjacency"
+    assert (
+        data.shape[0] == W.n
+    ), "The shape of 'data' does not match the shape of 'adjacency'."
 
     if callable(funcs):
         funcs = (funcs,)
@@ -219,7 +223,7 @@ def adjlist_map(
 
     assert data.shape[1] == len(
         funcs
-    ), "shape of data does not match the number of functions provided"
+    ), "The shape of 'data' does not match the number of functions provided."
     W, alist = _get_W_and_alist(W, alist)
 
     fnames = set([f.__name__ for f in funcs])
@@ -236,11 +240,10 @@ def adjlist_map(
 
 
 def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
-    """
-    This deduplicates an adjacency list by examining both ``(a,b)` and `(b,a)`
+    """This deduplicates an adjacency list by examining both `(a,b)` and `(b,a)`
     when `(a,b)` is encountered. The removal is done in order of the iteration
     order of the input adjacency list. So, if a special order of removal is
-    desired, you need to sort the list before this function. 
+    desired, you need to sort the list before this function.
 
     Parameters
     ----------
@@ -254,7 +257,7 @@ def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
     Returns
     -------
     adjlist : pandas.DataFrame
-        An adjacency table with reversible entries removed. 
+        An adjacency table with reversible entries removed.
     
     """
 
