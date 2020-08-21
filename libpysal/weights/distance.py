@@ -22,8 +22,8 @@ import numpy as np
 
 
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric="euclidean"):
-    """This is deprecated. Use the ``libpysal.weights.KNN class instead.``"""
-    # Warn("This function is deprecated. Please use pysal.weights.KNN", UserWarning)
+    """This is deprecated. Use the ``libpysal.weights.KNN`` class instead."""
+    # Warn("This function is deprecated. Please use libpysal.weights.KNN", UserWarning)
     return KNN(data, k=k, p=p, ids=ids, radius=radius, distance_metric=distance_metric)
 
 
@@ -32,7 +32,7 @@ class KNN(W):
 
     Parameters
     ----------
-    data : {libpysal.cg.kdtree.KDTree, libpysal.cg.kdtree.ArcKDTree}
+    data : {libpysal.cg.KDTree, libpysal.cg.ArcKDTree}
         An ``(n,k)`` array of `n` observations on `k` characteristics
         used to measure distances between the `n` objects.
     k : int
@@ -47,16 +47,16 @@ class KNN(W):
     radius : float
         If supplied arc distances will be calculated based on the given radius
         and ``p`` will be ignored. Default is ``None``.
-        See ``libpysal.cg.kdtree.KDTree`` for more details.
+        See ``libpysal.cg.KDTree`` for more details.
     distance_metric : str
         Either ``'euclidean'`` or ``'arc'``. Default is ``'euclidean'``.
-        See ``libpysal.cg.kdtree.KDTree`` for more details.
+        See ``libpysal.cg.KDTree`` for more details.
     **kwargs : dict
-        Keyword arguments for ``libpysal.weights.weights.W``.
+        Keyword arguments for ``libpysal.weights.W``.
     
     Returns
     -------
-    w : libpysal.weights.distance.KNN
+    w : libpysal.weights.KNN
         A `k` nearest neighbors weights instance.
 
     Examples
@@ -94,7 +94,7 @@ class KNN(W):
     See Also
     --------
     
-    libpysal.weights.weights.W
+    libpysal.weights.W
     
     """
 
@@ -149,13 +149,13 @@ class KNN(W):
             The name of polygon shapefile (including the file extension)
             containing attribute data.
         *args : iterable
-            Positional arguments for ``libpysal.weights.distance.KNN``.
+            Positional arguments for ``libpysal.weights.KNN``.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.KNN``.
+            Keyword arguments for ``libpysal.weights.KNN``.
 
         Returns
         -------
-        w : libpysal.weights.distance.KNN
+        w : libpysal.weights.KNN
             A `k` nearest neighbors weights instance.
 
         Examples
@@ -193,7 +193,7 @@ class KNN(W):
         See Also
         --------
         
-        libpysal.weights.weights.W
+        libpysal.weights.W
         
         """
 
@@ -211,13 +211,13 @@ class KNN(W):
             An ``(n, k)`` array representing `n` observations on `k`
             characteristics used to measure distances between the `n` objects.
         *args : iterable
-            Positional arguments for ``libpysal.weights.distance.KNN``.
+            Positional arguments for ``libpysal.weights.KNN``.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.KNN``.
+            Keyword arguments for ``libpysal.weights.KNN``.
 
         Returns
         -------
-        w : libpysal.weights.distance.KNN
+        w : libpysal.weights.KNN
             A `k` nearest neighbors weights instance.
 
         Examples
@@ -252,7 +252,7 @@ class KNN(W):
         See Also
         --------
         
-        libpysal.weights.weights.W
+        libpysal.weights.W
         
         """
 
@@ -277,19 +277,19 @@ class KNN(W):
             If iterable, a list of ids to use for the `W`.
             If ``None``, ``df.index`` is used. Default is ``None``.
         *args : iterable
-            Positional arguments for ``libpysal.weights.distance.KNN``.
+            Positional arguments for ``libpysal.weights.KNN``.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.KNN``.
+            Keyword arguments for ``libpysal.weights.KNN``.
 
         Returns
         -------
-        w : libpysal.weights.distance.KNN
+        w : libpysal.weights.KNN
             A `k` nearest neighbors weights instance.
         
         See Also
         --------
         
-        libpysal.weights.weights.W
+        libpysal.weights.W
         
         """
 
@@ -328,7 +328,7 @@ class KNN(W):
         
         Returns
         -------
-        w : libpysal.weights.distance.KNN
+        w : libpysal.weights.KNN
             A copy of the `k` nearest neighbors weights instance using the
             new parameterization, or ``None`` if the object is reweighted in place.
 
@@ -368,7 +368,7 @@ class Kernel(W):
 
     Parameters
     ----------
-    data : {libpysal.cg.kdtree.KDTree, libpysal.cg.kdtree.ArcKDTree}
+    data : {libpysal.cg.KDTree, libpysal.cg.ArcKDTree}
         An ``(n,k)`` array of `n` observations on `k` characteristics
         used to measure distances between the `n` objects.
     k : int
@@ -393,10 +393,10 @@ class Kernel(W):
     radius : float
         If supplied arc distances will be calculated based on the given radius
         and ``p`` will be ignored. Default is ``None``.
-        See ``libpysal.cg.kdtree.KDTree`` for more details.
+        See ``libpysal.cg.KDTree`` for more details.
     distance_metric : str
         Either ``'euclidean'`` or ``'arc'``. Default is ``'euclidean'``.
-        See ``libpysal.cg.kdtree.KDTree`` for more details.
+        See ``libpysal.cg.KDTree`` for more details.
     function : str
         Either ``'triangular'``, ``'uniform'``, ``'quadratic'``, ``'quartic'``,
         or ``'gaussian'``. The kernel function is defined as follows with
@@ -436,7 +436,7 @@ class Kernel(W):
                       K(z) = (2\\pi)^{(-1/2)} exp(-z^2 / 2)
 
     **kwargs : dict
-        Keyword arguments for ``libpysal.weights.weights.W``.
+        Keyword arguments for ``libpysal.weights.W``.
 
     Attributes
     ----------
@@ -594,17 +594,17 @@ class Kernel(W):
         idVariable : str
             The name of the column in shapefile's DBF to use for ids.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.Kernel``.
+            Keyword arguments for ``libpysal.weights.Kernel``.
 
         Returns
         -------
-        w : libpysal.weights.distance.Kernel
+        w : libpysal.weights.Kernel
             A kernel weights instance.
 
         See Also
         ---------
         
-        libpysal.weights.weights.W
+        libpysal.weights.W
         
         """
 
@@ -629,17 +629,17 @@ class Kernel(W):
             An ``(n, k)`` array representing `n` observations on `k`
             characteristics used to measure distances between the `n` objects.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.Kernel``.
+            Keyword arguments for ``libpysal.weights.Kernel``.
         
         Returns
         -------
-        w : libpysal.weights.distance.Kernel
+        w : libpysal.weights.Kernel
             A kernel weights instance.
         
         See Also
         --------
         
-        libpysal.weights.weights.W
+        libpysal.weights.W
         
         """
 
@@ -664,17 +664,17 @@ class Kernel(W):
             If iterable, a list of ids to use for the `W`.
             If ``None``, ``df.index`` is used. Default is ``None``.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.Kernel``.
+            Keyword arguments for ``libpysal.weights.Kernel``.
         
         Returns
         -------
-        w : libpysal.weights.distance.Kernel
+        w : libpysal.weights.Kernel
             A kernel weights instance.
 
         See Also
         --------
         
-        libpysal.weights.weights.W
+        libpysal.weights.W
         
         """
 
@@ -790,7 +790,7 @@ class DistanceBand(W):
 
     Parameters
     ----------
-    data : {array-like, libpysal.cg.kdtree.KDTree}
+    data : {array-like, libpysal.cg.KDTree}
         ``(n,k)`` or ``KDTree`` where ``KDtree.data`` is an ``(n,k)`` array 
         of `n` observations on `k` characteristics used to measure
         distances between the `n` objects
@@ -822,10 +822,10 @@ class DistanceBand(W):
     radius : float
         If supplied arc distances will be calculated based on the given radius
         and ``p`` will be ignored. Default is ``None``.
-        See ``libpysal.cg.kdtree.KDTree`` for more details.
+        See ``libpysal.cg.KDTree`` for more details.
     distance_metric : str
         Either ``'euclidean'`` or ``'arc'``. Default is ``'euclidean'``.
-        See ``libpysal.cg.kdtree.KDTree`` for more details.
+        See ``libpysal.cg.KDTree`` for more details.
 
     Attributes
     ----------
@@ -953,11 +953,11 @@ class DistanceBand(W):
         idVariable : str
             The name of the column in shapefile's DBF to use for ids.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.DistanceBand``.
+            Keyword arguments for ``libpysal.weights.DistanceBand``.
 
         Returns
         -------
-        w : libpysal.weights.distance.DistanceBand
+        w : libpysal.weights.DistanceBand
             A distance band weights instance.
 
         """
@@ -985,11 +985,11 @@ class DistanceBand(W):
         threshold : float
             The distance band.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.DistanceBand``.
+            Keyword arguments for ``libpysal.weights.DistanceBand``.
         
         Returns
         -------
-        w : libpysal.weights.distance.DistanceBand
+        w : libpysal.weights.DistanceBand
             A distance band weights instance.
         
         """
@@ -1017,11 +1017,11 @@ class DistanceBand(W):
             If iterable, a list of ids to use for the `W`.
             If ``None``, ``df.index`` is used. Default is ``None``.
         **kwargs : dict
-            Keyword arguments for ``libpysal.weights.distance.DistanceBand``.
+            Keyword arguments for ``libpysal.weights.DistanceBand``.
         
         Returns
         -------
-        w : libpysal.weights.distance.DistanceBand
+        w : libpysal.weights.DistanceBand
             A distance band weights instance.
         
         """

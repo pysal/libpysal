@@ -32,27 +32,31 @@ class Rook(W):
     ----------
     polygons : list
         A collection of PySAL shapes from which to build weights.
-    **kw : keyword arguments
-        Optional arguments for ``pysal.weights.W``. The parameter ``ids``,
+    **kwargs : dict
+        Keyword arguments for ``libpysal.weights.W``. The parameter ``ids``,
         a list of names to use to build the weights, should be included here.
 
     See Also
     --------
     
-    libpysal.weights.weights.W
+    libpysal.weights.W
     
     """
 
-    def __init__(self, polygons, **kw):
+    def __init__(self, polygons, **kwargs):
+
         criterion = "rook"
-        ids = kw.pop("ids", None)
+        ids = kwargs.pop("ids", None)
         polygons, backup = itertools.tee(polygons)
         first_shape = next(iter(backup))
+
         if isinstance(first_shape, point_type):
             polygons, vertices = voronoi_frames(get_points_array(polygons))
             polygons = list(polygons.geometry)
+
         neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
-        W.__init__(self, neighbors, ids=ids, **kw)
+
+        W.__init__(self, neighbors, ids=ids, **kwargs)
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
@@ -69,14 +73,15 @@ class Rook(W):
             Write out the entire path for a shapefile (``True``) or
             only the base of the shapefile without extension (``False``).
             Default is ``False``.
-         **kwargs : keyword arguments
-            ``'sparse'`` should be included here.
-            If ``True`` return `WSP` instance. If ``False`` return `W` instance.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.Rook``. ``'sparse'``
+            should be included here.  If ``True`` return `WSP` instance.
+            If ``False`` return `W` instance.
 
         Returns
         -------
-        w : libpysal.weights.weights.W
-            An instance of spatial weights.
+        w : libpysal.weights.Rook
+            A rook-style instance of spatial weights.
 
         Examples
         --------
@@ -100,20 +105,24 @@ class Rook(W):
         See Also
         --------
         
-        libpysal.weights.weights.W
-        libpysal.weights.contiguity.Rook
+        libpysal.weights.W
+        libpysal.weights.Rook
         
         """
 
         sparse = kwargs.pop("sparse", False)
+
         if idVariable is not None:
             ids = get_ids(filepath, idVariable)
         else:
             ids = None
+
         w = cls(FileIO(filepath), ids=ids, **kwargs)
         w.set_shapefile(filepath, idVariable=idVariable, full=full)
+
         if sparse:
             w = w.to_WSP()
+
         return w
 
     @classmethod
@@ -128,22 +137,29 @@ class Rook(W):
             support iteration. Can be either Shapely or PySAL shapes.
         sparse : bool
             Generate ``WSP`` object.
-        **kwargs : keyword arguments
-            Optional arguments for ``pysal.weights.W``.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.Rook``.
+        
+        Returns
+        -------
+        w : libpysal.weights.Rook
+            A rook-style instance of spatial weights.
         
         See Also
         --------
         
-        libpysal.weights.weights.W
-        libpysal.weights.weights.WSP
-        libpysal.weights.contiguity.Rook
+        libpysal.weights.W
+        libpysal.weights.WSP
+        libpysal.weights.Rook
         
         """
 
         new_iterable = iter(iterable)
         w = cls(new_iterable, **kwargs)
+
         if sparse:
             w = WSP.from_W(w)
+
         return w
 
     @classmethod
@@ -167,16 +183,23 @@ class Rook(W):
         ids : list
             A list of ids to use to index the spatial weights object.
             Order is not respected from this list. Default is ``None``.
-        id_order    : list
+        id_order : list
             An ordered list of ids to use to index the spatial weights object. If
             used, the resulting weights object will iterate over results in the
             order of the names provided in this argument. Default is ``None``.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.Rook``.
 
+        Returns
+        -------
+        w : w : libpysal.weights.Rook
+            A rook-style instance of spatial weights.
+        
         See Also
         --------
         
-        libpysal.weights.weights.W
-        libpysal.weights.contiguity.Rook
+        libpysal.weights.W
+        libpysal.weights.Rook
         
         """
 
@@ -191,9 +214,12 @@ class Rook(W):
             ids = df.get(idVariable).tolist()
         elif isinstance(ids, str):
             ids = df.get(ids).tolist()
-        return cls.from_iterable(
+
+        w = cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
+
+        return w
 
 
 class Queen(W):
@@ -204,27 +230,31 @@ class Queen(W):
     ----------
     polygons : list
         A collection of PySAL shapes from which to build weights.
-    **kw : keyword arguments
-        Optional arguments for ``pysal.weights.W``. The parameter ``ids``,
+    **kwargs : dict
+        Keyword arguments for ``pysal.weights.W``. The parameter ``ids``,
         a list of names to use to build the weights, should be included here.
 
     See Also
     --------
     
-    libpysal.weights.weights.W
+    libpysal.weights.W
     
     """
 
-    def __init__(self, polygons, **kw):
+    def __init__(self, polygons, **kwargs):
+
         criterion = "queen"
-        ids = kw.pop("ids", None)
+        ids = kwargs.pop("ids", None)
         polygons, backup = itertools.tee(polygons)
         first_shape = next(iter(backup))
+
         if isinstance(first_shape, point_type):
             polygons, vertices = voronoi_frames(get_points_array(polygons))
             polygons = list(polygons.geometry)
+
         neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
-        W.__init__(self, neighbors, ids=ids, **kw)
+
+        W.__init__(self, neighbors, ids=ids, **kwargs)
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
@@ -242,14 +272,15 @@ class Queen(W):
             Write out the entire path for a shapefile (``True``) or
             only the base of the shapefile without extension (``False``).
             Default is ``False``.
-         **kwargs : keyword arguments
-            ``'sparse'`` should be included here.
-            If ``True`` return `WSP` instance. If ``False`` return `W` instance.
+         **kwargs : dict
+            Keyword arguments for ``libpysal.weights.Queen``. ``'sparse'``
+            should be included here.  If ``True`` return `WSP` instance.
+            If ``False`` return `W` instance.
 
         Returns
         -------
-        w : libpysal.weights.weights.W
-            An instance of spatial weights.
+        w : libpysal.weights.Queen
+            A queen-style instance of spatial weights.
 
         Examples
         --------
@@ -276,20 +307,24 @@ class Queen(W):
         See Also
         --------
         
-        libpysal.weights.weights.W
-        libpysal.weights.contiguity.Queen
+        libpysal.weights.W
+        libpysal.weights.Queen
         
         """
 
         sparse = kwargs.pop("sparse", False)
+
         if idVariable is not None:
             ids = get_ids(filepath, idVariable)
         else:
             ids = None
+
         w = cls(FileIO(filepath), ids=ids, **kwargs)
         w.set_shapefile(filepath, idVariable=idVariable, full=full)
+
         if sparse:
             w = w.to_WSP()
+
         return w
 
     @classmethod
@@ -304,22 +339,29 @@ class Queen(W):
             support iteration. Can be either Shapely or PySAL shapes.
         sparse : bool
             Generate ``WSP`` object.
-        **kwargs : keyword arguments
-            Optional arguments for ``pysal.weights.W``.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.Queen``.
+        
+        Returns
+        -------
+        w : libpysal.weights.Queen
+            A queen-style instance of spatial weights.
         
         See Also
         --------
         
-        libpysal.weights.weights.W
-        libpysal.weights.weights.WSP
-        libpysal.weights.contiguity.Queen
+        libpysal.weights.W
+        libpysal.weights.WSP
+        libpysal.weights.Queen
         
         """
 
         new_iterable = iter(iterable)
         w = cls(new_iterable, **kwargs)
+
         if sparse:
             w = WSP.from_W(w)
+
         return w
 
     @classmethod
@@ -341,22 +383,28 @@ class Queen(W):
         ids : list
             A list of ids to use to index the spatial weights object.
             Order is not respected from this list. Default is ``None``.
-        id_order    : list
+        id_order : list
             An ordered list of ids to use to index the spatial weights object. If
             used, the resulting weights object will iterate over results in the
             order of the names provided in this argument. Default is ``None``.
-
+        
+        Returns
+        -------
+        w : libpysal.weights.Queen
+            A queen-style instance of spatial weights.
+        
         See Also
         --------
         
-        libpysal.weights.weights.W
-        libpysal.weights.contiguity.Queen
+        libpysal.weights.W
+        libpysal.weights.Queen
         
         """
 
         idVariable = kwargs.pop("idVariable", None)
         ids = kwargs.pop("ids", None)
         id_order = kwargs.pop("id_order", None)
+
         if id_order is not None:
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
@@ -370,9 +418,11 @@ class Queen(W):
             ids = df.get(idVariable).tolist()
         elif isinstance(ids, str):
             ids = df.get(ids).tolist()
+
         w = cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
+
         return w
 
 
@@ -383,19 +433,19 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
     Parameters
     ----------
     points : array-like
-        An array-like (n,2) object of coordinates for point locations.
+        An array-like ``(n,2)`` object of coordinates for point locations.
     criterion : str
         The weight criterion, either ``'rook'`` or ``'queen'``. Default is ``'rook'``.
     clip :  : str, shapely.geometry.Polygon
         An overloaded option about how to clip the voronoi cells. Default is ``'ahull'``.
-        See ``libpysal.cg.voronoi.voronoi_frames()`` for more explanation.
-    **kwargs : keyword arguments
-        The arguments to pass to ``Rook``, the underlying contiguity class.
+        See ``libpysal.cg.voronoi_frames()`` for more explanation.
+    **kwargs : dict
+        Keyword arguments to pass to ``libpysal.weights.Voronoi``.
 
     Returns
     -------
-    w : libpysal.weights.weights.W
-        An instance of spatial weights.
+    w : libpysal.weights.Voronoi
+        A voronoi-style instance of spatial weights.
 
     Examples
     --------
@@ -413,6 +463,7 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
     from ..cg.voronoi import voronoi_frames
 
     region_df, _ = voronoi_frames(points, clip=clip)
+
     if criterion.lower() == "queen":
         cls = Queen
     elif criterion.lower() == "rook":
@@ -422,7 +473,10 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
             "Contiguity criterion {} not supported. "
             'Only "rook" and "queen" are supported.'.format(criterion)
         )
-    return cls.from_dataframe(region_df, **kwargs)
+
+    w = cls.from_dataframe(region_df, **kwargs)
+
+    return w
 
 
 def _from_dataframe(df, **kwargs):
@@ -432,11 +486,13 @@ def _from_dataframe(df, **kwargs):
     ----------
     df : pandas.DataFrame
         A dataframe containing point geometries for a Voronoi diagram.
+    **kwargs : dict
+        Keyword arguments to pass to ``libpysal.weights.Voronoi``.
 
     Returns
     -------
-    w : libpysal.weights.weights.W
-        An instance of spatial weights.
+    w : libpysal.weights.Vornoi
+        A voronoi-style instance of spatial weights.
     
     Notes
     -----
@@ -461,7 +517,10 @@ def _from_dataframe(df, **kwargs):
             "You may consider using df.centroid."
         )
     coords = numpy.column_stack((x, y))
-    return Voronoi(coords, **kwargs)
+
+    w = Voronoi(coords, **kwargs)
+
+    return w
 
 
 Voronoi.from_dataframe = _from_dataframe
@@ -537,8 +596,7 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     constructors for ``Rook`` or ``Queen``.
     """
 
-    # Warn('This function is deprecated. Please use the Rook or Queen classes',
-    #        UserWarning)
+    # Warn('This function is deprecated. Please use the Rook or Queen classes', UserWarning)
     if criterion.lower() == "rook":
         return Rook(polygons, ids=ids)
     elif criterion.lower() == "queen":
