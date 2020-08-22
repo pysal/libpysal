@@ -31,12 +31,12 @@ class Testraster(unittest.TestCase):
         self.assertEqual(w2.n, 16)
         self.assertEqual(w2.index.names, self.da2.to_series().index.names)
         self.assertEqual(w2.index.tolist(), self.da2.to_series().index.tolist())
-        dims = {
-            "layer": "layer",
-            "lat": "latitude",
-            "lon": "longitude"
+        coords_labels = {
+            "z_label": "layer",
+            "y_label": "latitude",
+            "x_label": "longitude"
         }
-        w3 = raster.da2W(self.da3, layer=1, dims=dims)
+        w3 = raster.da2W(self.da3, z_value=1, coords_labels=coords_labels)
         self.assertEqual(w3[6], {11: 1, 9: 1, 10: 1, 7: 1, 1: 1, 3: 1, 2: 1, 5: 1})
         self.assertEqual(w3.neighbors[2], [7, 5, 6, 3, 1])
         self.assertEqual(w3.n, 16)

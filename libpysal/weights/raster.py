@@ -3,25 +3,27 @@ from .weights import WSP, W
 import numpy as np
 from warnings import warn
 
+__author__ = "Mragank Shekhar <yesthisismrshekhar@gmail.com>"
+
 __all__ = ['da2W', 'da2WSP', 'w2da', 'wsp2da', 'testDataArray']
 
 
-def da2W(da, criterion="queen", layer=None, dims={}, **kwargs):
+def da2W(da, criterion="queen", z_value=None, coords_labels={}, **kwargs):
     """
     Create a W object from xarray.DataArray
 
     Parameters
     ----------
     da : xarray.DataArray
-        Input 2D or 3D DataArray with shape=(layer, lat, lon)
+        Input 2D or 3D DataArray with shape=(z, y, x)
     criterion : {"rook", "queen"}
         Type of contiguity. Default is queen.
-    layer : int/string/float
-        Select the layer of 3D DataArray with multiple layers.
-    dims : dictionary
-        Pass dimensions for coordinates and layers if they do not
+    z_value : int/string/float
+        Select the z_value of 3D DataArray with multiple layers.
+    coords_labels : dictionary
+        Pass dimension labels for coordinates and layers if they do not
         belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
         Default is {} empty dictionary.
     **kwargs : keyword arguments
         Optional arguments for :class:`libpysal.weights.W`
@@ -38,8 +40,12 @@ def da2W(da, criterion="queen", layer=None, dims={}, **kwargs):
             {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
     >>> da.dims
     ('layer', 'latitude', 'longitude')
-    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
-    >>> w = da2W(da, layer=2, dims=dims)
+    >>> coords_labels = {
+        "z_label": "layer",
+        "y_label": "latitude",
+        "x_label": "longitude"
+    }
+    >>> w = da2W(da, layer=2, coords_labels=coords_labels)
     >>> da.shape
     (3, 4, 4)
     >>> "%.3f"%w.pct_nonzero
@@ -55,28 +61,28 @@ def da2W(da, criterion="queen", layer=None, dims={}, **kwargs):
     --------
     :class:`libpysal.weights.weights.W`
     """
-    wsp = da2WSP(da, criterion, layer, dims)
+    wsp = da2WSP(da, criterion, z_value, coords_labels)
     w = wsp.to_W(**kwargs)
     w.index = wsp.index
     return w
 
 
-def da2WSP(da, criterion="queen", layer=None, dims={}):
+def da2WSP(da, criterion="queen", z_value=None, coords_labels={}):
     """
-    Create a WSP object from xarray.DataArray
+    Create a W object from xarray.DataArray
 
     Parameters
     ----------
     da : xarray.DataArray
-        Input 2D or 3D DataArray with shape=(layer, lat, lon)
+        Input 2D or 3D DataArray with shape=(z, y, x)
     criterion : {"rook", "queen"}
         Type of contiguity. Default is queen.
-    layer : int/string/float
-        Select the layer of 3D DataArray with multiple layers.
-    dims : dictionary
-        Pass dimensions for coordinates and layers if they do not
+    z_value : int/string/float
+        Select the z_value of 3D DataArray with multiple layers.
+    coords_labels : dictionary
+        Pass dimension labels for coordinates and layers if they do not
         belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
         Default is {} empty dictionary.
 
     Returns
@@ -93,8 +99,12 @@ def da2WSP(da, criterion="queen", layer=None, dims={}):
     ('layer', 'latitude', 'longitude')
     >>> da.shape
     (3, 4, 4)
-    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
-    >>> wsp = da2WSP(da, layer=2, dims=dims)
+    >>> coords_labels = {
+        "z_label": "layer",
+        "y_label": "latitude",
+        "x_label": "longitude"
+    }
+    >>> wsp = da2WSP(da, z_value=2, coords_labels=coords_labels)
     >>> wsp.n
     7
     >>> pct_sp = wsp.sparse.nnz *1. / wsp.n**2
@@ -109,23 +119,27 @@ def da2WSP(da, criterion="queen", layer=None, dims={}):
     --------
     :class:`libpysal.weights.weights.WSP`
     """
-    layer_id = _da_checker(da, layer, dims)[0]
+    z_id, coords_labels = _da_checker(da, z_value, coords_labels)
     shape = da.shape
-    if layer_id:
-        da = da[layer_id-1:layer_id]
-        shape = da[0].shape
+    if z_id:
+        da = da[z_id-1:z_id]
+        shape = tuple(
+            [da.sizes[coords_labels["y_label"]],
+             da.sizes[coords_labels["x_label"]]]
+        )
     sw = lat2SW(*shape, criterion)
     ser = da.to_series()
-    id_order = np.arange(len(ser))
+    id_order = None
     if 'nodatavals' in da.attrs:
-        mask = (ser != da.nodatavals[0]).to_numpy()
-        # temp
-        id_order = np.where(mask)[0]
-        sw = sw[mask]
-        sw = sw[:, mask]
-        ser = ser[ser != da.nodatavals[0]]
+        if da.nodatavals:
+            mask = (ser != da.nodatavals[0]).to_numpy()
+            # temp
+            id_order = np.where(mask)[0].tolist()
+            sw = sw[mask]
+            sw = sw[:, mask]
+            ser = ser[ser != da.nodatavals[0]]
     index = ser.index
-    wsp = WSP(sw, id_order=id_order.tolist(), index=index)
+    wsp = WSP(sw, id_order=id_order, index=index)
     return wsp
 
 
@@ -266,24 +280,25 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     return da
 
 
-def _da_checker(da, layer, dims):
+def _da_checker(da, z_value, coords_labels):
     """
     xarray.dataarray checker for raster interface
 
     Parameters
     ----------
     da : xarray.DataArray
-        Input 2D or 3D DataArray with shape=(layer, lat, lon)
-    layer : int/string/float
-        Select the layer of 3D DataArray with multiple layers
-    dims : dictionary
-        Pass dimensions for coordinates and layers if they do not
+        Input 2D or 3D DataArray with shape=(z, y, x)
+    z_value : int/string/float
+        Select the z_value of 3D DataArray with multiple layers.
+    coords_labels : dictionary
+        Pass dimension labels for coordinates and layers if they do not
         belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+        Default is {} empty dictionary.
 
     Returns
     -------
-    layer_id : int
+    z_id : int
         Returns the index of layer
     dims : dictionary
         Mapped dimensions of the DataArray
@@ -302,25 +317,25 @@ def _da_checker(da, layer, dims):
         raise ValueError(
             "da must be an array of integers or float")
     # default dimensions
-    def_dims = {
-        "lon": dims["lon"] if 'lon' in dims else (
+    def_labels = {
+        "x_label": coords_labels["x_label"] if 'x_label' in coords_labels else (
             "x" if hasattr(da, "x") else "lon"),
-        "lat": dims["lat"] if 'lat' in dims else (
+        "y_label": coords_labels["y_label"] if 'y_label' in coords_labels else (
             "y" if hasattr(da, "y") else "lat")
     }
     if da.ndim == 3:
-        def_dims["layer"] = dims["layer"] if 'layer' in dims else (
+        def_labels["z_label"] = coords_labels["z_label"] if 'z_label' in coords_labels else (
             "band" if hasattr(da, "band") else "time")
     if da.ndim == 3:
-        layer_id = 1
-        if layer is None:
-            if da.sizes[def_dims["layer"]] != 1:
+        z_id = 1
+        if z_value is None:
+            if da.sizes[def_labels["z_label"]] != 1:
                 warn('Multiple layers detected. Using first layer as default.')
         else:
-            layer_id += tuple(da[def_dims["layer"]]).index(layer)
+            z_id += tuple(da[def_labels["z_label"]]).index(z_value)
     else:
-        layer_id = None
-    return layer_id, def_dims
+        z_id = None
+    return z_id, def_labels
 
 
 def _index2da(data, index, attrs, coords):

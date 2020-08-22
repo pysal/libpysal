@@ -186,20 +186,20 @@ class Rook(W):
                                  **kwargs)
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims={}, sparse=False, **kwargs):
+    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
         """
         Construct a weights object from a xarray.DataArray.
 
         Parameters
         ----------
         da : xarray.DataArray
-            Input 2D or 3D DataArray with shape=(layer, lat, lon)
-        layer : int/string/float
-            Select the layer of 3D DataArray with multiple layers
-        dims : dictionary
-            Pass dimensions for coordinates and layers if they do not
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        z_value : int/string/float
+            Select the z_value of 3D DataArray with multiple layers.
+        coords_labels : dictionary
+            Pass dimension labels for coordinates and layers if they do not
             belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+            e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
@@ -217,9 +217,9 @@ class Rook(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'rook', layer, dims)
+            w = da2WSP(da, 'rook', z_value, coords_labels)
         else:
-            w = da2W(da, 'rook', layer, dims, **kwargs)
+            w = da2W(da, 'rook', z_value, coords_labels, **kwargs)
         return w
 
 
@@ -389,20 +389,20 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims={}, sparse=False, **kwargs):
+    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
         """
         Construct a weights object from a xarray.DataArray.
 
         Parameters
         ----------
         da : xarray.DataArray
-            Input 2D or 3D DataArray with shape=(layer, lat, lon)
-        layer : int/string/float
-            Select the layer of 3D DataArray with multiple layers
-        dims : dictionary
-            Pass dimensions for coordinates and layers if they do not
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        z_value : int/string/float
+            Select the z_value of 3D DataArray with multiple layers.
+        coords_labels : dictionary
+            Pass dimension labels for coordinates and layers if they do not
             belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+            e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
@@ -420,9 +420,9 @@ class Queen(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'queen', layer, dims)
+            w = da2WSP(da, 'queen', z_value, coords_labels)
         else:
-            w = da2W(da, 'queen', layer, dims, **kwargs)
+            w = da2W(da, 'queen', z_value, coords_labels, **kwargs)
         return w
 
 
