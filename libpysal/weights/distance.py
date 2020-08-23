@@ -799,14 +799,14 @@ class DistanceBand(W):
     threshold : float
         The distance band.
     p : {int, float}
-        Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
+        Minkowski `p`-norm distance metric parameter where :math:`1<=\mathtt{p}<=\infty`.
         ``2`` is Euclidean distance and ``1`` is Manhattan distance.
         This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
         Default is ``2``.
     binary : bool
-        If set to ``True``, :math:`w_{ij}=1 if d_{i,j}<=threshold`,
-        otherwise :math:`w_{i,j}=0`. If set to ``False``, :math:`wij=dij^{alpha}`.
-        Default is ``True``.
+        If set to ``True``, :math:`w_{ij}=1` if :math:`d_{i,j}<=\mathtt{threshold}`,
+        otherwise :math:`w_{i,j}=0`. If set to ``False``,
+        :math:`wij=dij^{\mathtt{alpha}}`. Default is ``True``.
     alpha : float
         The distance decay parameter for weights. Default is ``-1.0``.
         If ``alpha`` is positive the weights will not decline with distance.
@@ -819,7 +819,7 @@ class DistanceBand(W):
         sparsity of the of distance matrix and the ``threshold`` that is applied.
         Default is ``True``.
     silence_warnings : bool
-        By default (`False``) libpysal will print a warning if the dataset contains any
+        By default (``False``) libpysal will print a warning if the dataset contains any
         disconnected observations or islands. To silence this warning set to ``True``.
     radius : float
         If supplied arc distances will be calculated based on the given radius
@@ -842,26 +842,30 @@ class DistanceBand(W):
     >>> import libpysal
     >>> points=[(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
     >>> wcheck = libpysal.weights.W({0: [1, 3], 1: [0, 3], 2: [], 3: [0, 1], 4: [5], 5: [4]})
+    UserWarning: The weights matrix is not fully connected: 
+    There are 3 disconnected components.
+    There is 1 island with id: 2.
 
-    WARNING: there is one disconnected observation (no neighbors)
-    Island id:  [2]
-    >>> w=libpysal.weights.DistanceBand(points,threshold=11.2)
+    >>> w = libpysal.weights.DistanceBand(points, threshold=11.2)
+    UserWarning: The weights matrix is not fully connected: 
+    There are 3 disconnected components.
+    There is 1 island with id: 2.
 
-    WARNING: there is one disconnected observation (no neighbors)
-    Island id:  [2]
     >>> libpysal.weights.util.neighbor_equality(w, wcheck)
     True
-    >>> w=libpysal.weights.DistanceBand(points,threshold=14.2)
+    
+    >>> w = libpysal.weights.DistanceBand(points, threshold=14.2)
     >>> wcheck = libpysal.weights.W({0: [1, 3], 1: [0, 3, 4], 2: [4], 3: [1, 0], 4: [5, 2, 1], 5: [4]})
     >>> libpysal.weights.util.neighbor_equality(w, wcheck)
     True
 
     Inverse distance weights:
 
-    >>> w=libpysal.weights.DistanceBand(points,threshold=11.2,binary=False)
-
-    WARNING: there is one disconnected observation (no neighbors)
-    Island id:  [2]
+    >>> w = libpysal.weights.DistanceBand(points, threshold=11.2, binary=False)
+    UserWarning: The weights matrix is not fully connected: 
+    There are 3 disconnected components.
+    There is 1 island with id: 2.
+    
     >>> w.weights[0]
     [0.1, 0.08944271909999159]
     >>> w.neighbors[0].tolist()
@@ -869,10 +873,11 @@ class DistanceBand(W):
 
     Gravity weights:
 
-    >>> w=libpysal.weights.DistanceBand(points,threshold=11.2,binary=False,alpha=-2.)
-
-    WARNING: there is one disconnected observation (no neighbors)
-    Island id:  [2]
+    >>> w = libpysal.weights.DistanceBand(points, threshold=11.2, binary=False, alpha=-2.)
+    UserWarning: The weights matrix is not fully connected: 
+    There are 3 disconnected components.
+    There is 1 island with id: 2.
+    
     >>> w.weights[0]
     [0.01, 0.007999999999999998]
 
@@ -898,8 +903,8 @@ class DistanceBand(W):
         radius=None,
         distance_metric="euclidean",
     ):
-        """Casting to floats is a work around for a bug in scipy.spatial.
-        --> See detail in pysal issue #126.
+        """Casting to floats is a work around for a bug in ``scipy.spatial``.
+        See details in `pysal/pysal#126 <https://github.com/pysal/pysal/issues/126>`_.
         """
 
         if ids is not None:

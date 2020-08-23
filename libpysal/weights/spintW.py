@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 
 def ODW(Wo, Wd, transform="r", silence_warnings=True):
-    """Construct an :math:`o \cdot d \times o \cdot d`
+    """Construct an :math:`(o \cdot d)\cdot(o \cdot d)`
     origin-destination style spatial weight for :math:`o \cdot d`
     flows using standard spatial weights on :math:`o` origins
     and :math:`d` destinations. Input spatial weights must be
@@ -30,7 +30,7 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
         A transformation for standardization of final the
         `OD` spatial weights. Default is ``'r'`` for row standardized.
     silence_warnings : bool
-        By default (`True``) libpysal will silence a warning if the dataset contains any
+        By default (``True``) libpysal will silence a warning if the dataset contains any
         disconnected observations or islands. To print this warning set to ``False``.
 
     Returns
@@ -38,7 +38,7 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
     Ww : libpysal.weights.WSP
         A sparse spatial contiguity `W` object for assocations between flows
         between :math:`o` origins and :math:`d` destinations,
-        :math:`o \cdot d \times o \cdot d`.
+        :math:`(o \cdot d)\cdot(o \cdot d)`.
 
     Examples
     --------
@@ -119,6 +119,7 @@ def netW(link_list, share="A", transform="r", **kwargs):
 
     Examples
     --------
+    
     >>> import libpysal
     >>> links = [('a','b'), ('a','c'), ('a','d'), ('c','d'), ('c', 'b'), ('c','a')]
     >>> O = libpysal.weights.netW(links, share='O')
@@ -204,7 +205,7 @@ def vecW(
     threshold : float
         The distance band.
     p : {int, float}
-        Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
+        Minkowski `p`-norm distance metric parameter where :math:`1<=p<=\infty`.
         ``2`` is Euclidean distance and ``1`` is Manhattan distance.
         This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
         Default is ``2``.
@@ -213,7 +214,7 @@ def vecW(
         If ``alpha`` is positive the weights will not decline with distance.
         If ``binary`` is set to ``True``, ``alpha`` is ignored.
     binary : bool
-        If set to ``True``, :math:`w_{ij}=1 if d_{i,j}<=threshold`,
+        If set to ``True``, :math:`w_{ij}=1` if :math:`d_{i,j}<=threshold`,
         otherwise :math:`w_{i,j}=0`. If set to ``False``, :math:`wij=dij^{alpha}`.
         Default is ``True``.
     ids : list
@@ -225,7 +226,7 @@ def vecW(
         sparsity of the of distance matrix and the ``threshold`` that is applied.
         Default is ``True``.
     **kwargs : dict
-        Optional keyword arguments arguments for ``libpysal.weights.W``
+        Optional keyword arguments arguments for ``libpysal.weights.W``.
 
     Returns
     ------
