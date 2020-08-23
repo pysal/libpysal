@@ -88,10 +88,10 @@ class Rook(W):
         
         >>> from libpysal.weights import Rook
         >>> import libpysal
-        >>> wr=Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), "POLYID")
+        >>> wr = Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), "POLYID")
         >>> "%.3f"%wr.pct_nonzero
         '8.330'
-        >>> wr=Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
+        >>> wr = Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
         >>> pct_sp = wr.sparse.nnz *1. / wr.n**2
         >>> "%.3f"%pct_sp
         '0.083'
@@ -173,7 +173,7 @@ class Rook(W):
         Parameters
         ----------
         df : pandas.DataFrame
-            A ``pandas.DataFrame` containing geometries to use for spatial weights.
+            A ``pandas.DataFrame`` containing geometries to use for spatial weights.
         geom_col : str
             The name of the column in ``df`` that contains the
             geometries. Default is ``'geometry'``.
@@ -258,8 +258,7 @@ class Queen(W):
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
-        """
-        Queen contiguity weights from a polygon shapefile.
+        """Queen contiguity weights from a polygon shapefile.
 
         Parameters
         ----------
@@ -272,7 +271,7 @@ class Queen(W):
             Write out the entire path for a shapefile (``True``) or
             only the base of the shapefile without extension (``False``).
             Default is ``False``.
-         **kwargs : dict
+        **kwargs : dict
             Keyword arguments for ``libpysal.weights.Queen``. ``'sparse'``
             should be included here.  If ``True`` return `WSP` instance.
             If ``False`` return `W` instance.
@@ -373,10 +372,12 @@ class Queen(W):
         Parameters
         ----------
         df : pandas.DataFrame
-            A ``pandas.DataFrame` containing geometries to use for spatial weights.
+            A ``pandas.DataFrame`` containing geometries to use for spatial weights.
         geom_col : str
             The name of the column in ``df`` that contains the
             geometries. Default is ``'geometry'``.
+        **kwargs : dict
+            Keyword arguments for ``libpysal.weights.Queen``.
         
         Returns
         -------

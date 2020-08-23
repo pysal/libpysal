@@ -414,10 +414,10 @@ def w_clip(w1, w2, outSP=True, **kwargs):
 
     Parameters
     ----------
-    w1 : {libpysal.weights.W, scipy.sparse.csr.csr_matrix}
+    w1 : {libpysal.weights.W, scipy.sparse.csr_matrix}
         The potentially continuous weights matrix to be clipped. The clipped
         matrix, ``wc``, will have at most the same elements as ``w1``.
-    w2 : {libpysal.weights.W, scipy.sparse.csr.csr_matrix}
+    w2 : {libpysal.weights.W, scipy.sparse.csr_matrix}
         The weights matrix to use as a shell to clip ``w1``. It is automatically
         converted to binary format. Only non-zero elements in ``w2`` will be
         kept non-zero in ``wc``. It is assumed to be of the same shape as ``w1``.
@@ -429,7 +429,7 @@ def w_clip(w1, w2, outSP=True, **kwargs):
 
     Returns
     -------
-    wc : {libpysal.weights.W, scipy.sparse.csr.csr_matrix}
+    wc : {libpysal.weights.W, scipy.sparse.csr_matrix}
         A clipped `W` object that is sparse if ``outSP`` is set to ``True``.
         It inherits ``id_order`` from ``w1``.
     

@@ -38,10 +38,10 @@ class KNN(W):
     k : int
         The number of nearest neighbors. Default is ``2``.
     p : {int, float}
-        Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
-        ``2`` is Euclidean distance and ``1`` is Manhattan distance.
-        This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
-        Default is ``2``.
+        Minkowski `p`-norm distance metric parameter where
+        :math:`1<=\mathtt{p}<=\infty`. ``2`` is Euclidean distance and
+        ``1`` is Manhattan distance. This parameter is ignored if the
+        ``KDTree`` is an ``ArcKDTree``. Default is ``2``.
     ids : list
         Identifiers to attach to each observation. Default is ``None``.
     radius : float
@@ -165,12 +165,12 @@ class KNN(W):
         
         >>> import libpysal
         >>> from libpysal.weights import KNN
-        >>> wc=KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"))
+        >>> wc = KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"))
         >>> "%.4f"%wc.pct_nonzero
         '4.0816'
         >>> set([2,1]) == set(wc.neighbors[0])
         True
-        >>> wc3=KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"),k=3)
+        >>> wc3 = KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"),k=3)
         >>> set(wc3.neighbors[0]) == set([2,1,3])
         True
         >>> set(wc3.neighbors[2]) == set([4,3,0])
@@ -178,10 +178,10 @@ class KNN(W):
 
         From a point shapefile:
 
-        >>> w=KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"))
+        >>> w = KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"))
         >>> w.pct_nonzero
         1.1904761904761905
-        >>> w1=KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"),k=1)
+        >>> w1 = KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"),k=1)
         >>> "%.3f"%w1.pct_nonzero
         '0.595'
 
@@ -312,10 +312,10 @@ class KNN(W):
         k : int
             The number of nearest neighbors. Default is ``None``.
         p : {int, float}
-            Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
-            ``2`` is Euclidean distance and ``1`` is Manhattan distance.
-            This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
-            Default is ``None``.
+            Minkowski `p`-norm distance metric parameter where
+            :math:`1<=\mathtt{p}<=\infty`. ``2`` is Euclidean distance and
+            ``1`` is Manhattan distance. This parameter is ignored if the
+            ``KDTree`` is an ``ArcKDTree``. Default is ``None``.
         new_data : numpy.ndarray
             An array containing additional data to use in the ``KNN`` weight.
             Default is ``None``.
@@ -369,18 +369,18 @@ class Kernel(W):
     Parameters
     ----------
     data : {libpysal.cg.KDTree, libpysal.cg.ArcKDTree}
-        An ``(n,k)`` array of `n` observations on `k` characteristics
-        used to measure distances between the `n` objects.
+        An :math:`(n,k)` array of :math:`n` observations on :math:`k`
+        characteristics used to measure distances between the :math:`n` objects.
     k : int
         The number of nearest neighbors to use for determining the bandwidth. For a
-        fixed bandwidth, :math:`h_i=max(dknn) \\forall i` where :math:`dknn` is a
-        vector of `k``-nearest neighbor distances (the distance to the `k`th nearest
-        neighbor for each observation). For adaptive bandwidths, :math:`h_i=dknn_i`.
-        Default is ``2``.
+        fixed bandwidth, :math:`h_i = max(dknn) \\forall i` where :math:`dknn` is a
+        vector of :math:`k`-nearest neighbor distances (the distance to the
+        :math:`k`th nearest neighbor for each observation). For adaptive bandwidths,
+        :math:`h_i=dknn_i`. Default is ``2``.
     bandwidth : {float, array-like}
         The bandwidth :math:`h_i` for the kernel. Default is ``None``.
     fixed : bool
-        If ``True`` then :math:`h_i=h \\forall i`. If ``False`` then
+        If ``True`` then :math:`h_i = h \\forall i`. If ``False`` then
         bandwidth is adaptive across observations. Default is ``True``.
     diagonal : bool
         If ``True``, set diagonal weights to ``1.0``. If ``False`` diagonal weights
@@ -402,39 +402,39 @@ class Kernel(W):
         or ``'gaussian'``. Default is ``'triangular'``.
         The kernel function is defined as follows with
 
-                  .. math::
+        .. math::
 
-                      z_{i,j} = d_{i,j}/h_i
+          z_{i,j} = d_{i,j}/h_i
 
-                  triangular
+        triangular
 
-                  .. math::
+        .. math::
 
-                      K(z) = (1 - |z|) \\ if |z| \\le 1
+          K(z) = (1 - |z|) \\ if |z| \\le 1
 
-                  uniform
+        uniform
 
-                  .. math::
+        .. math::
 
-                      K(z) = 1/2 \\ if |z| \\le 1
+          K(z) = 1/2 \\ if |z| \\le 1
 
-                  quadratic
+        quadratic
 
-                  .. math::
+        .. math::
 
-                      K(z) = (3/4)(1-z^2) \\ if |z| \\le 1
+          K(z) = (3/4)(1-z^2) \\ if |z| \\le 1
 
-                  quartic
+        quartic
 
-                  .. math::
+        .. math::
 
-                      K(z) = (15/16)(1-z^2)^2 \\ if |z| \\le 1
+          K(z) = (15/16)(1-z^2)^2 \\ if |z| \\le 1
 
-                  gaussian
+        gaussian
 
-                  .. math::
+        .. math::
 
-                      K(z) = (2\\pi)^{(-1/2)} exp(-z^2 / 2)
+          K(z) = (2\\pi)^{(-1/2)} exp(-z^2 / 2)
 
     **kwargs : dict
         Keyword arguments for ``libpysal.weights.W``.
@@ -452,8 +452,8 @@ class Kernel(W):
     --------
     
     >>> from libpysal.weights import Kernel
-    >>> points=[(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
-    >>> kw=Kernel(points)
+    >>> points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
+    >>> kw = Kernel(points)
     >>> kw.weights[0]
     [1.0, 0.500000049999995, 0.4409830615267465]
     >>> kw.neighbors[0]
@@ -465,7 +465,7 @@ class Kernel(W):
            [20.000002],
            [20.000002],
            [20.000002]])
-    >>> kw15=Kernel(points,bandwidth=15.0)
+    >>> kw15 = Kernel(points,bandwidth=15.0)
     >>> kw15[0]
     {0: 1.0, 1: 0.33333333333333337, 3: 0.2546440075000701}
     >>> kw15.neighbors[0]
@@ -480,8 +480,8 @@ class Kernel(W):
 
     Adaptive bandwidths user specified:
 
-    >>> bw=[25.0,15.0,25.0,16.0,14.5,25.0]
-    >>> kwa=Kernel(points,bandwidth=bw)
+    >>> bw = [25.0,15.0,25.0,16.0,14.5,25.0]
+    >>> kwa = Kernel(points,bandwidth=bw)
     >>> kwa.weights[0]
     [1.0, 0.6, 0.552786404500042, 0.10557280900008403]
     >>> kwa.neighbors[0]
@@ -496,7 +496,7 @@ class Kernel(W):
 
     Endogenous adaptive bandwidths:
 
-    >>> kwea=Kernel(points,fixed=False)
+    >>> kwea = Kernel(points,fixed=False)
     >>> kwea.weights[0]
     [1.0, 0.10557289844279438, 9.99999900663795e-08]
     >>> kwea.neighbors[0]
@@ -511,7 +511,7 @@ class Kernel(W):
 
     Endogenous adaptive bandwidths with Gaussian kernel:
 
-    >>> kweag=Kernel(points,fixed=False,function='gaussian')
+    >>> kweag = Kernel(points,fixed=False,function='gaussian')
     >>> kweag.weights[0]
     [0.3989422804014327, 0.2674190291577696, 0.2419707487162134]
     >>> kweag.bandwidth
@@ -840,7 +840,7 @@ class DistanceBand(W):
     --------
     
     >>> import libpysal
-    >>> points=[(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
+    >>> points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
     >>> wcheck = libpysal.weights.W({0: [1, 3], 1: [0, 3], 2: [], 3: [0, 1], 4: [5], 5: [4]})
     UserWarning: The weights matrix is not fully connected: 
     There are 3 disconnected components.

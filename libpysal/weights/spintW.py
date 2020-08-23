@@ -229,8 +229,8 @@ def vecW(
         Optional keyword arguments arguments for ``libpysal.weights.W``.
 
     Returns
-    ------
-    W : libpysal.weights.DistanceBand
+    -------
+    w : libpysal.weights.DistanceBand
         A ``libpysal.weights.DistanceBand`` `W` object that uses 4-dimenional
         distances between vectors of origin and destination coordinates.
 
@@ -253,7 +253,7 @@ def vecW(
 
     data = list(zip(origin_x, origin_y, dest_x, dest_y))
 
-    W = DistanceBand(
+    w = DistanceBand(
         data,
         threshold=threshold,
         p=p,
@@ -264,7 +264,7 @@ def vecW(
         **kwargs
     )
 
-    return W
+    return w
 
 
 def mat2L(edge_matrix):

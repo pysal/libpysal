@@ -102,22 +102,23 @@ def lag_categorical(w, y, ties="tryself"):
         An iterable collection of categories (either ``int`` or ``str``)
         with dimensionality conforming to ``w`` (see examples).
     ties : str
-        The method to use when resolving ties. By default, the option is ``'tryself'``,
-        and the category of the focal observation is included with its neighbors to try
-        and break a tie. If this does not resolve the tie, a winner is chosen randomly.
-        To just use random choice to break ties, pass ``'random'`` instead.
-        All supported options include:
-          1. ``'tryself'``: Use the focal observation's label to tiebreak.
-                If this doesn't successfully break the tie, (which only occurs
-                if it induces a new tie), decide randomly.;
-          2. ``'random'``: Resolve the tie randomly amongst winners.;
-          3. ``'lowest'``: Pick the lowest-value label amongst winners.; 
-          4. ``'highest'``: Pick the highest-value label amongst winners.
+        The method to use when resolving ties. By default, the option is
+        ``'tryself'``, and the category of the focal observation is included
+        with its neighbors to try and break a tie. If this does not resolve
+        the tie, a winner is chosen randomly. To just use random choice to
+        break ties, pass ``'random'`` instead. 
+        The following are supported options
+        
+        * ``'tryself'`` -- Use the focal observation's label to tiebreak. If this doesn't successfully break the tie, which only occurs if it induces a new tie, decide randomly.;
+        * ``'random'`` -- Resolve the tie randomly amongst winners.;
+        * ``'lowest'`` -- Pick the lowest-value label amongst winners.;
+        * ``'highest'`` -- Pick the highest-value label amongst winners.
     
     Returns
     -------
     output : numpy.ndarray
-        An (n x k) column vector containing the most common neighboring observation.
+        An :math:`(n \cdot k)` column vector containing
+        the most common neighboring observation.
 
     Notes
     -----
@@ -203,9 +204,9 @@ def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
         The index (aligned with ``normalized_labels``) of
         the current observation being resolved.
     normalized_labels : numpy.ndarray
-        A `(n,)` normalized array of labels for each observation.
+        A :math:`(n,)` normalized array of labels for each observation.
     tally : numpy.ndarray
-        The current tally of `(p,)` neighbors' labels around ``idx`` to resolve.
+        The current tally of :math:`(p,)` neighbors' labels around ``idx`` to resolve.
     neighbors : dict of (neighbor_name : weight)
         The elements of the weights object (identical to ``w[idx]``)
         in the form ``{neighbor_name : weight}``.
