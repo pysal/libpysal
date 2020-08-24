@@ -7,9 +7,10 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     Parameters
     ----------
     X : iterable
-        An `(N,P)`-length iterable to apply ``func`` to. If (N,1), then ``func``
-        must take 2 arguments and return a single reduction. If `P`>1, then ``func``
-        must take two `P`-length arrays and return a single reduction of them.
+        An :math:`(N,P)`-length iterable to apply ``func`` to. If :math:`(N,1)`,
+        then ``func`` must take 2 arguments and return a single reduction.
+        If :math:`P`>1`, then ``func`` must take two :math:`P`-length arrays
+        and return a single reduction of them.
     W : libpysal.weights.W
         A weights object that provides adjacency information. Default is ``None``.
     alist : pandas.DataFrame
@@ -128,10 +129,10 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
 
 
 def _get_W_and_alist(W, alist, skip_verify=False):
-    """ Either (1) compute a ``W`` from an ``alist``; (2) compute an adjacency list
-    from a ``W``; (3) raise a ``ValueError`` if neither are provided; or (4) raise an
-    ``AssertionError`` if both ``W`` and ``adjlist`` are provided and don't match.
-    If this completes successfully, the ``W`` and ``adjlist`` will both be returned and
+    """ Either (1) compute a `W` from an ``alist``; (2) compute an adjacency list
+    from a `W`; (3) raise a ``ValueError`` if neither are provided; or (4) raise an
+    ``AssertionError`` if both `W` and ``adjlist`` are provided and don't match.
+    If this completes successfully, the `W` and ``adjlist`` will both be returned and
     are checked for equality. See ``libpysal.weights.adjtools.adjlist_apply()``
     for parameters and returns information.
     
