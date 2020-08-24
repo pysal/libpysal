@@ -1,62 +1,81 @@
 from ..io.fileio import FileIO as psopen
 from .weights import W, WSP
 from .set_operations import w_subset
+from ..common import requires
+
+from collections import defaultdict
+import copy
+from itertools import tee
+import numbers
+import os
+from warnings import warn
+
 import numpy as np
+import scipy
 from scipy import sparse
 from scipy.spatial import KDTree
-import copy
 import scipy.spatial
-import os
-import scipy
-from warnings import warn
-import numbers
-from collections import defaultdict
-from itertools import tee
-from ..common import requires
 
 try:
     import geopandas as gpd
 except ImportError:
-    warn('geopandas not available. Some functionality will be disabled.')
+    warn("geopandas not available. Some functionality will be disabled.")
 
-__all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
-           'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
-           'insert_diagonal', 'get_ids', 'get_points_array_from_shapefile',
-           'min_threshold_distance', 'lat2SW', 'w_local_cluster',
-           'higher_order_sp', 'hexLat2W', 'attach_islands',
-           'nonplanar_neighbors', 'fuzzy_contiguity']
+__all__ = [
+    "lat2W",
+    "block_weights",
+    "comb",
+    "order",
+    "higher_order",
+    "shimbel",
+    "remap_ids",
+    "full2W",
+    "full",
+    "WSP2W",
+    "insert_diagonal",
+    "get_ids",
+    "get_points_array_from_shapefile",
+    "min_threshold_distance",
+    "lat2SW",
+    "w_local_cluster",
+    "higher_order_sp",
+    "hexLat2W",
+    "attach_islands",
+    "nonplanar_neighbors",
+    "fuzzy_contiguity",
+]
 
 
 KDTREE_TYPES = [scipy.spatial.KDTree, scipy.spatial.cKDTree]
 
+
 def hexLat2W(nrows=5, ncols=5, **kwargs):
-    """
-    Create a W object for a hexagonal lattice.
+    """Create a `W` object for a hexagonal lattice.
 
     Parameters
     ----------
-    nrows      : int
-                 number of rows
-    ncols      : int
-                 number of columns
-    **kwargs   : keyword arguments
-                 optional arguments for :class:`pysal.weights.W`
-
+    nrows : int
+        The number of rows.
+    ncols : int
+        The number of columns.
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
-    w : W
-        instance of spatial weights class W
+    w : libpysal.weights.W
+        An instance of spatial weights, `W`.
 
     Notes
     -----
-    Observations are row ordered: first k observations are in row 0, next k in row 1, and so on.
-
-    Construction is based on shifting every other column of a regular lattice
-    down 1/2 of a cell.
+    
+    Observations are row ordered with the first :math:`k` observations being
+    in row 0, the next :math:`k` in row 1, and so on. Construction is based
+    on shifting every other column of a regular lattice down 1/2 of a cell.
 
     Examples
     --------
+    
     >>> from libpysal.weights import lat2W, hexLat2W
     >>> w = lat2W()
     >>> w.neighbors[1]
@@ -68,6 +87,7 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
     [0, 6, 2, 5, 7]
     >>> wh.neighbors[21]
     [16, 20, 22]
+    
     """
 
     if nrows == 1 or ncols == 1:
@@ -82,8 +102,10 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
     c1 = ncols - 1
 
     w = lat2W(nrows, ncols).neighbors
+
     for i in range(n):
         odd = cid[i] % 2
+
         if odd:
             if rid[i] < r1:  # odd col index above last row
                 # new sw neighbor
@@ -110,41 +132,43 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
                     w[i] = w.get(i, []) + jne
                     w[i] = w.get(i, []) + jnw
 
+    w = W(w, **kwargs)
 
     return W(w, **kwargs)
 
 
-def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
-    """
-    Create a W object for a regular lattice.
+def lat2W(nrows=5, ncols=5, rook=True, id_type="int", **kwargs):
+    """Create a `W` object for a regular lattice.
 
     Parameters
     ----------
+    nrows : int
+        The number of rows.
+    ncols : int
+        The number of columns.
+    rook : bool
+        The type of contiguity. Default is `Rook`. For `Queen` set to ``False``.
+    id_type : str
+        The type of IDs to use in the final `W` object. The options are as
+        follows with ``'int'`` being the default.
 
-    nrows      : int
-                 number of rows
-    ncols      : int
-                 number of columns
-    rook       : boolean
-                 type of contiguity. Default is rook. For queen, rook =False
-    id_type    : string
-                 string defining the type of IDs to use in the final W object;
-                 options are 'int' (0, 1, 2 ...; default), 'float' (0.0,
-                 1.0, 2.0, ...) and 'string' ('id0', 'id1', 'id2', ...)
-    **kwargs   : keyword arguments
-                 optional arguments for :class:`pysal.weights.W`
+        * ``'int'`` -- ``(0, 1, 2, ...)``
+        * ``'float'`` -- ``(0.0, 1.0, 2.0, ...)``
+        * ``'string'`` -- ``('id0', 'id1', 'id2', ...)``
 
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
-
-    w : W
-        instance of spatial weights class W
+    w : libpysal.weights.W
+        An instance of spatial weights, `W`.
 
     Notes
     -----
-
-    Observations are row ordered: first k observations are in row 0, next k in row 1, and so on.
+    
+    Observations are row ordered with the first :math:`k` observations being
+    in row 0, the next :math:`k` in row 1, and so on.
 
     Examples
     --------
@@ -157,15 +181,19 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
     True
     >>> w9[3] == {0: 1.0, 4: 1.0, 6: 1.0}
     True
+    
     """
+
     n = nrows * ncols
     r1 = nrows - 1
     c1 = ncols - 1
-    rid = [i // ncols for i in range(n)] #must be floor!
+    rid = [i // ncols for i in range(n)]  # must be floor!
     cid = [i % ncols for i in range(n)]
     w = {}
     r = below = 0
+
     for i in range(n - 1):
+
         if rid[i] < r1:
             below = rid[i] + 1
             r = below * ncols + cid[i]
@@ -190,14 +218,17 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
 
     neighbors = {}
     weights = {}
+
     for key in w:
-        weights[key] = [1.] * len(w[key])
+        weights[key] = [1.0] * len(w[key])
     ids = list(range(n))
-    if id_type == 'string':
-        ids = ['id' + str(i) for i in ids]
-    elif id_type == 'float':
-        ids = [i * 1. for i in ids]
-    if id_type == 'string' or id_type == 'float':
+
+    if id_type == "string":
+        ids = ["id" + str(i) for i in ids]
+    elif id_type == "float":
+        ids = [i * 1.0 for i in ids]
+
+    if id_type == "string" or id_type == "float":
         id_dict = dict(list(zip(list(range(n)), ids)))
         alt_w = {}
         alt_weights = {}
@@ -208,38 +239,38 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
             alt_weights[key] = weights[i]
         w = alt_w
         weights = alt_weights
-    return W(w, weights, ids=ids, id_order=ids[:], **kwargs)
+
+    w = W(w, weights, ids=ids, id_order=ids[:], **kwargs)
+
+    return w
 
 
 def block_weights(regimes, ids=None, sparse=False, **kwargs):
-    """
-    Construct spatial weights for regime neighbors.
-
-    Block contiguity structures are relevant when defining neighbor relations
-    based on membership in a regime. For example, all counties belonging to
-    the same state could be defined as neighbors, in an analysis of all
-    counties in the US.
+    """Construct spatial weights for regime neighbors. Block contiguity structures
+    are relevant when defining neighbor relations based on membership in a regime.
+    For example, all counties belonging to the same state could be defined as
+    neighbors, in an analysis of all counties in the US.
 
     Parameters
     ----------
-    regimes     : list, array
-                  ids of which regime an observation belongs to
-    ids         : list, array
-                  Ordered sequence of IDs for the observations
-    sparse      : boolean
-                  If True return WSP instance
-                  If False return W instance
-    **kwargs    : keyword arguments
-                  optional arguments for :class:`pysal.weights.W`
-
+    regimes : {list, numpy.ndarray}
+        The ids of the regime to which an observation belongs.
+    ids : {list, numpy.ndarray}
+        An ordered sequence of IDs for the observations.
+    sparse : bool
+        If ``True`` return `WSP` instance, otherwise return `W` instance
+        (``False``). Default is ``False``.
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
-
-    W : spatial weights instance
+    w : {libpysal.weights.W, libpysal.weights.WSP}
+        An instance of spatial weights (`W`), or a thin version (`WSP`).
 
     Examples
     --------
+    
     >>> from libpysal.weights import block_weights
     >>> import numpy as np
     >>> regimes = np.ones(25)
@@ -248,57 +279,64 @@ def block_weights(regimes, ids=None, sparse=False, **kwargs):
     >>> regimes
     array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 2., 2., 2., 2.,
            2., 2., 2., 1., 3., 3., 3., 3.])
+    
     >>> w = block_weights(regimes)
     >>> w.weights[0]
     [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    
     >>> w.neighbors[0]
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
+    
     >>> regimes = ['n','n','s','s','e','e','w','w','e']
     >>> n = len(regimes)
     >>> w = block_weights(regimes)
     >>> w.neighbors == {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
     True
+    
     """
+
     rids = np.unique(regimes)
     neighbors = {}
     NPNZ = np.nonzero
     regimes = np.array(regimes)
+
     for rid in rids:
         members = NPNZ(regimes == rid)[0]
         for member in members:
             neighbors[member] = members[NPNZ(members != member)[0]].tolist()
+
     w = W(neighbors, **kwargs)
+
     if ids is not None:
         w.remap_ids(ids)
+
     if sparse:
         w = WSP(w.sparse, id_order=ids)
+
     return w
 
 
 def comb(items, n=None):
-    """
-    Combinations of size n taken from items
+    """Combinations of size :math:`n` taken from items.
 
     Parameters
     ----------
-
     items : list
-            items to be drawn from
-    n     : integer
-            size of combinations to take from items
+        The items to be drawn from.
+    n : int
+        The size of combinations to take from items.
 
-    Returns
+    Yields 
     -------
-
     implicit : generator
-               combinations of size n taken from items
-
+        The combinations of size :math:`n` taken from items.
+    
     Examples
     --------
+    
     >>> x = range(4)
     >>> for c in comb(x, 2):
     ...     print(c)
-    ...
     [0, 1]
     [0, 2]
     [0, 3]
@@ -307,52 +345,54 @@ def comb(items, n=None):
     [2, 3]
 
     """
+
     items = list(items)
+
     if n is None:
         n = len(items)
+
     for i in list(range(len(items))):
-        v = items[i:i + 1]
+        v = items[i : i + 1]
+
         if n == 1:
             yield v
         else:
-            rest = items[i + 1:]
+            rest = items[i + 1 :]
             for c in comb(rest, n - 1):
                 yield v + c
 
 
 def order(w, kmax=3):
-    """
-    Determine the non-redundant order of contiguity up to a specific
-    order.
+    """Determine the non-redundant order of contiguity up to a specific order.
 
     Parameters
     ----------
-
-    w       : W
-              spatial weights object
-
-    kmax    : int
-              maximum order of contiguity
+    w : libpysal.weights.W
+        An instance of spatial weights, `W`.
+    kmax : int
+        The maximum order of contiguity. Default is ``3``.
 
     Returns
     -------
-
-    info : dictionary
-           observation id is the key, value is a list of contiguity
-           orders with a negative 1 in the ith position
+    info : dict
+        The observation ID are the keys and the values are lists of contiguity
+        orders with a -1 in the :math:`i`-th position.
 
     Notes
     -----
+    
     Implements the algorithm in :cite:`Anselin1996b`.
 
     Examples
     --------
+    
     >>> from libpysal.weights import order, Rook
     >>> import libpysal
     >>> w = Rook.from_shapefile(libpysal.examples.get_path('10740.shp'))
-
-    WARNING: there is one disconnected observation (no neighbors)
-    Island id:  [163]
+    The weights matrix is not fully connected: 
+    There are 2 disconnected components.
+    There is 1 island with id: 163.
+    
     >>> w3 = order(w, kmax = 3)
     >>> w3[1][0:5]
     [1, -1, 1, 2, 1]
@@ -361,6 +401,7 @@ def order(w, kmax=3):
 
     ids = w.id_order
     info = {}
+
     for id_ in ids:
         s = [0] * w.n
         s[ids.index(id_)] = -1
@@ -381,82 +422,99 @@ def order(w, kmax=3):
                             s[nid] = knext
             k = knext
         info[id_] = s
+
     return info
 
 
 def higher_order(w, k=2, **kwargs):
-    """
-    Contiguity weights object of order k.
+    """Contiguity weights object of order :math:`k`.
 
     Parameters
     ----------
-
-    w        : W
-               spatial weights object
-    k        : int
-               order of contiguity
-    **kwargs : keyword arguments
-               optional arguments for :class:`pysal.weights.W`
+    w : libpysal.weights.W
+        An instance of spatial weights, `W`.
+    k : int
+        The order of contiguity. Default is ``2``.
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
-
-    implicit : W
-               spatial weights object
+    w : libpysal.weights.W
+        An instance of spatial weights, `W`.
 
     Notes
     -----
-    Proper higher order neighbors are returned such that i and j are k-order
-    neighbors iff the shortest path from i-j is of length k.
+    
+    Proper higher order neighbors are returned such that :math:`i` and :math:`j`
+    are :math:`k`-order neighbors if and only if ('iff') the shortest path from
+    :math:`i`-:math:`j` is of length :math:`k`.
 
     Examples
     --------
+    
     >>> from libpysal.weights import lat2W, higher_order
     >>> w10 = lat2W(10, 10)
     >>> w10_2 = higher_order(w10, 2)
     >>> w10_2[0] ==  {2: 1.0, 11: 1.0, 20: 1.0}
     True
+    
     >>> w5 = lat2W()
     >>> w5[0] ==  {1: 1.0, 5: 1.0}
     True
+    
     >>> w5[1] == {0: 1.0, 2: 1.0, 6: 1.0}
     True
+    
     >>> w5_2 = higher_order(w5,2)
     >>> w5_2[0] == {10: 1.0, 2: 1.0, 6: 1.0}
     True
+    
     """
-    return higher_order_sp(w, k, **kwargs)
+
+    w = higher_order_sp(w, k, **kwargs)
+
+    return w
 
 
 def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
-    """
-    Contiguity weights for either a sparse W or W  for order k.
+    """Contiguity weights for either a `WSP` or `W` for order :math:`k`.
 
     Parameters
     ----------
-    w             : W
-		            sparse_matrix, spatial weights object or
-		            scipy.sparse.csr.csr_instance
-    k             : int
-                    Order of contiguity
-    shortest_path : boolean
-                    True: i,j and k-order neighbors if the
-                    shortest path for i,j is k.
-                    False: i,j are k-order neighbors if there
-                    is a path from i,j of length k.
-    diagonal      : boolean
-                    True:  keep k-order (i,j) joins when i==j
-                    False: remove k-order (i,j) joins when i==j
-    **kwargs      : keyword arguments
-                    optional arguments for :class:`pysal.weights.W`
+    w : {libpysal.weights.W, libpysal.weights.WSP, scipy.sparse.csr_instance}
+        A sparse matrix or spatial weights object.
+    k : int
+        The order of contiguity. Default is ``2``.
+    shortest_path : bool
+        Set to ``True`` to define :math:`i,j` are :math:`k`-order neighbors if the
+        shortest path for :math:`i,j` is :math:`k`. Set to ``False`` to define
+        :math:`i,j` and :math:`k`-order neighbors if there is a path from
+        :math:`i,j` of length :math:`k`. Default is ``True``.
+    diagonal : bool
+        Set to ``True`` to keep :math:`k`-order :math:`(i,j)` joins when :math:`i==j`.
+        Set to ``False`` to remove :math:`k`-order :math:`(i,j)` joins when :math:`i==j`.
+        Default is ``False``.
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
-    wk : W
-	     WSP, type matches type of w argument
+    wk : {libpysal.weights.W, libpysal.weights.WSP}
+        WSP, type matches type of w argument
 
+    Raises
+    ------
+    ValueError
+        The input `W` weights are not binary.
+    ValueError
+        The input ``scipy.sparse.csr_instance`` weights are not binary.
+    TypeError
+        The input weights are in the correct format and/or are not binary.
+    
     Notes
     -----
+    
     Lower order contiguities are removed.
 
     Examples
@@ -466,58 +524,73 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     >>> w25 = lat2W(5,5)
     >>> w25.n
     25
+    
     >>> w25[0] == {1: 1.0, 5: 1.0}
     True
+    
     >>> w25_2 = higher_order_sp(w25, 2)
     >>> w25_2[0] == {10: 1.0, 2: 1.0, 6: 1.0}
     True
+    
     >>> w25_2 = higher_order_sp(w25, 2, diagonal=True)
     >>> w25_2[0] ==  {0: 1.0, 10: 1.0, 2: 1.0, 6: 1.0}
     True
+    
     >>> w25_3 = higher_order_sp(w25, 3)
     >>> w25_3[0] == {15: 1.0, 3: 1.0, 11: 1.0, 7: 1.0}
     True
+    
     >>> w25_3 = higher_order_sp(w25, 3, shortest_path=False)
     >>> w25_3[0] == {1: 1.0, 3: 1.0, 5: 1.0, 7: 1.0, 11: 1.0, 15: 1.0}
     True
 
     """
+
     id_order = None
+
     if issubclass(type(w), W) or isinstance(w, W):
         if np.unique(np.hstack(list(w.weights.values()))) == np.array([1.0]):
             id_order = w.id_order
             w = w.sparse
         else:
-            raise ValueError('Weights are not binary (0,1)')
+            raise ValueError("Weights are not binary (0,1).")
     elif scipy.sparse.isspmatrix_csr(w):
         if not np.unique(w.data) == np.array([1.0]):
-            raise ValueError('Sparse weights matrix is not binary (0,1) weights matrix.')
+            raise ValueError(
+                "Sparse weights matrix is not binary (0,1) weights matrix."
+            )
     else:
-        raise TypeError("Weights provided are neither a binary W object nor "
-                        "a scipy.sparse.csr_matrix")
+        raise TypeError(
+            "Weights provided are neither a binary 'W' object nor "
+            "a 'scipy.sparse.csr_matrix'."
+        )
 
-    wk = w**k
+    wk = w ** k
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck))
 
     if shortest_path:
         for j in range(1, k):
-            wj = w**j
+            wj = w ** j
             rj, cj = wj.nonzero()
             sj = set(zip(rj, cj))
             sk.difference_update(sj)
 
     if not diagonal:
-        sk = set([(i,j) for i,j in sk if i!=j])
+        sk = set([(i, j) for i, j in sk if i != j])
 
     if id_order:
-        d = dict([(i,[]) for i in id_order])
+        d = dict([(i, []) for i in id_order])
         for pair in sk:
             k, v = pair
             k = id_order[k]
             v = id_order[v]
             d[k].append(v)
-        return W(neighbors=d, **kwargs)
+
+        wk = W(neighbors=d, **kwargs)
+
+        return wk
+
     else:
         d = {}
         for pair in sk:
@@ -526,25 +599,25 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
                 d[k].append(v)
             else:
                 d[k] = [v]
-        return WSP(W(neighbors=d, **kwargs).sparse)
+
+        wk = WSP(W(neighbors=d, **kwargs).sparse)
+
+        return wk
 
 
 def w_local_cluster(w):
-    r"""
-    Local clustering coefficients for each unit as a node in a graph.
+    r"""Local clustering coefficients for each unit as a node in a graph.
 
     Parameters
     ----------
-
-    w   : W
-          spatial weights object
+    w : libpysal.weights.W
+        An instance of spatial weights, `W`.
 
     Returns
     -------
-
-    c     : array
-            (w.n,1)
-            local clustering coefficients
+    c : numpy.ndarray
+        An array of local clustering coefficients with
+        dimensions :math:`(\mathtt{w}.n,1)`.
 
     Notes
     -----
@@ -556,12 +629,14 @@ def w_local_cluster(w):
 
        c_i = | \{w_{j,k}\} |/ (k_i(k_i - 1)): j,k \in N_i
 
-    where :math:`N_i` is the set of neighbors to :math:`i`, :math:`k_i =
-    |N_i|` and :math:`\{w_{j,k}\}` is the set of non-zero elements of the
-    weights between pairs in :math:`N_i` :cite:`Watts1998`.
+    where :math:`N_i` is the set of neighbors to :math:`i`,
+    :math:`k_i = |N_i|` and :math:`\{w_{j,k}\}` is the set
+    of non-zero elements of the weights between pairs in
+    :math:`N_i` :cite:`Watts1998`.
 
     Examples
     --------
+    
     >>> from libpysal.weights import lat2W, w_local_cluster
     >>> w = lat2W(3,3, rook=False)
     >>> w_local_cluster(w)
@@ -578,7 +653,7 @@ def w_local_cluster(w):
     """
 
     c = np.zeros((w.n, 1), float)
-    w.transformation = 'b'
+    w.transformation = "b"
     for i, id in enumerate(w.id_order):
         ki = max(w.cardinalities[id], 1)  # deal with islands
         Ni = w.neighbors[id]
@@ -588,23 +663,23 @@ def w_local_cluster(w):
 
 
 def shimbel(w):
-    """
-    Find the Shimbel matrix for first order contiguity matrix.
+    """Find the Shimbel matrix for first order contiguity matrix.
 
     Parameters
     ----------
-    w     : W
-            spatial weights object
+    w : libpysal.weights.W
+        An instance of spatial weights, `W`.
 
     Returns
     -------
 
-    info  : list
-            list of lists; one list for each observation which stores
-            the shortest order between it and each of the the other observations.
+    info : list
+        A list of lists; one list for each observation which stores
+        the shortest order between it and each of the other observations.
 
     Examples
     --------
+    
     >>> from libpysal.weights import lat2W, shimbel
     >>> w5 = lat2W()
     >>> w5_shimbel = shimbel(w5)
@@ -612,6 +687,7 @@ def shimbel(w):
     8
     >>> w5_shimbel[0][0:4]
     [-1, 1, 2, 3]
+    
     """
 
     info = {}
@@ -637,12 +713,12 @@ def shimbel(w):
             k = knext
             flag = s.count(0)
         info[i] = s
+
     return info
 
 
 def full(w):
-    """
-    Generate a full numpy array.
+    """Generate a full ``numpy.ndarray``.
 
     Parameters
     ----------
@@ -652,7 +728,7 @@ def full(w):
     Returns
     -------
     (fullw, keys) : tuple
-                    first element being the full numpy array and second element
+                    first element being the full ``numpy.ndarray`` and second element
                     keys being the ids associated with each row in the array.
 
     Examples
@@ -668,12 +744,14 @@ def full(w):
            [0., 1., 0.]])
     >>> ids
     ['first', 'second', 'third']
+    
     """
+
     return w.full()
 
+
 def full2W(m, ids=None, **kwargs):
-    '''
-    Create a PySAL W object from a full array.
+    """Create a PySAL `W` object from a full array.
 
     Parameters
     ----------
@@ -681,10 +759,9 @@ def full2W(m, ids=None, **kwargs):
                  nxn array with the full weights matrix
     ids        : list
                  User ids assumed to be aligned with m
-    **kwargs   : keyword arguments
-                 optional arguments for :class:`pysal.weights.W`
-
-
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
+    
     Returns
     -------
     w       : W
@@ -692,6 +769,7 @@ def full2W(m, ids=None, **kwargs):
 
     Examples
     --------
+    
     >>> from libpysal.weights import full2W
     >>> import numpy as np
 
@@ -724,35 +802,40 @@ def full2W(m, ids=None, **kwargs):
            [ True,  True,  True,  True],
            [ True,  True,  True,  True],
            [ True,  True,  True,  True]])
-    '''
+    """
+
     if m.shape[0] != m.shape[1]:
-        raise ValueError('Your array is not square')
+        raise ValueError("Your array is not square")
+
     neighbors, weights = {}, {}
+
     for i in range(m.shape[0]):
-    # for i, row in enumerate(m):
         row = m[i]
+
         if ids:
             i = ids[i]
+
         ngh = list(row.nonzero()[0])
         weights[i] = list(row[ngh])
         ngh = list(ngh)
+
         if ids:
             ngh = [ids[j] for j in ngh]
+
         neighbors[i] = ngh
+
     return W(neighbors, weights, id_order=ids, **kwargs)
 
 
 def WSP2W(wsp, **kwargs):
-
-    """
-    Convert a pysal WSP object (thin weights matrix) to a pysal W object.
+    """Convert a pysal `WSP` object (thin weights matrix) to a pysal `W` object.
 
     Parameters
     ----------
     wsp                     : WSP
                               PySAL sparse weights object
-    **kwargs                : keyword arguments
-                              optional arguments for :class:`pysal.weights.W`
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
@@ -761,6 +844,7 @@ def WSP2W(wsp, **kwargs):
 
     Examples
     --------
+    
     >>> from libpysal.weights import lat2W, WSP, WSP2W
 
     Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
@@ -770,6 +854,7 @@ def WSP2W(wsp, **kwargs):
     >>> wsp = WSP(sp)
     >>> wsp.n
     10
+    
     >>> wsp.sparse[0].todense()
     matrix([[0, 1, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=int8)
 
@@ -778,56 +863,61 @@ def WSP2W(wsp, **kwargs):
     >>> w = WSP2W(wsp)
     >>> w.n
     10
+    
     >>> print(w.full()[0][0])
     [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
 
-
     """
+
     wsp.sparse
     indices = wsp.sparse.indices
     data = wsp.sparse.data
     indptr = wsp.sparse.indptr
     id_order = wsp.id_order
+
     if id_order:
         # replace indices with user IDs
         indices = [id_order[i] for i in indices]
     else:
         id_order = list(range(wsp.n))
+
     neighbors, weights = {}, {}
     start = indptr[0]
+
     for i in range(wsp.n):
         oid = id_order[i]
         end = indptr[i + 1]
         neighbors[oid] = indices[start:end]
         weights[oid] = data[start:end]
         start = end
+
     ids = copy.copy(wsp.id_order)
     w = W(neighbors, weights, ids, **kwargs)
     w._sparse = copy.deepcopy(wsp.sparse)
-    w._cache['sparse'] = w._sparse
+    w._cache["sparse"] = w._sparse
+
     return w
 
+
 def insert_diagonal(w, val=1.0, wsp=False):
-    warn('This function is deprecated. Use fill_diagonal instead.')
+    warn("This function is deprecated. Use fill_diagonal instead.")
     return fill_diagonal(w, val=val, wsp=wsp)
 
+
 def fill_diagonal(w, val=1.0, wsp=False):
-    """
-    Returns a new weights object with values inserted along the main diagonal.
+    """Returns a new weights object with values inserted along the main diagonal.
 
     Parameters
     ----------
     w        : W
                Spatial weights object
-
     diagonal : float, int or array
                Defines the value(s) to which the weights matrix diagonal should
                be set. If a constant is passed then each element along the
                diagonal will get this value (default is 1.0). An array of length
                w.n can be passed to set explicit values to each element along
                the diagonal (assumed to be in the same order as w.id_order).
-
-    wsp      : boolean
+    wsp      : bool
                If True return a thin weights object of the type WSP, if False
                return the standard W object.
 
@@ -838,6 +928,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
 
     Examples
     --------
+    
     >>> from libpysal.weights import lat2W
     >>> import numpy as np
 
@@ -862,6 +953,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
 
     w_new = copy.deepcopy(w.sparse)
     w_new = w_new.tolil()
+
     if issubclass(type(val), np.ndarray):
         if w.n != val.shape[0]:
             raise Exception("shape of w and diagonal do not match")
@@ -870,7 +962,9 @@ def fill_diagonal(w, val=1.0, wsp=False):
         w_new.setdiag([val] * w.n)
     else:
         raise Exception("Invalid value passed to diagonal")
+
     w_out = WSP(w_new, copy.copy(w.id_order))
+
     if wsp:
         return w_out
     else:
@@ -878,44 +972,44 @@ def fill_diagonal(w, val=1.0, wsp=False):
 
 
 def remap_ids(w, old2new, id_order=[], **kwargs):
-    """
-    Remaps the IDs in a spatial weights object.
+    """Remaps the IDs in a spatial weights object.
 
     Parameters
     ----------
     w        : W
                Spatial weights object
-
     old2new  : dictionary
                Dictionary where the keys are the IDs in w (i.e. "old IDs") and
                the values are the IDs to replace them (i.e. "new IDs")
-
     id_order : list
                An ordered list of new IDs, which defines the order of observations when
                iterating over W. If not set then the id_order in w will be
                used.
-    **kwargs : keyword arguments
-               optional arguments for :class:`pysal.weights.W`
-
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
-
     implicit : W
                Spatial weights object with new IDs
 
     Examples
     --------
+    
     >>> from libpysal.weights import lat2W
     >>> w = lat2W(3,2)
     >>> w.id_order
     [0, 1, 2, 3, 4, 5]
+    
     >>> w.neighbors[0]
     [2, 1]
+    
     >>> old_to_new = {0:'a', 1:'b', 2:'c', 3:'d', 4:'e', 5:'f'}
     >>> w_new = remap_ids(w, old_to_new)
+    
     >>> w_new.id_order
     ['a', 'b', 'c', 'd', 'e', 'f']
+    
     >>> w_new.neighbors['a']
     ['c', 'b']
 
@@ -925,11 +1019,13 @@ def remap_ids(w, old2new, id_order=[], **kwargs):
         raise Exception("w must be a spatial weights object")
     new_neigh = {}
     new_weights = {}
+
     for key, value in list(w.neighbors.items()):
         new_values = [old2new[i] for i in value]
         new_key = old2new[key]
         new_neigh[new_key] = new_values
         new_weights[new_key] = copy.copy(w.weights[key])
+
     if id_order:
         return W(new_neigh, new_weights, id_order, **kwargs)
     else:
@@ -941,17 +1037,16 @@ def remap_ids(w, old2new, id_order=[], **kwargs):
 
 
 def get_ids(in_shps, idVariable):
-    """
-    Gets the IDs from the DBF file that moves with a given shape file or
-    a geopandas.GeoDataFrame.
+    """Gets the IDs from the ``DBF`` file that moves with
+    a given shape file or a ``geopandas.GeoDataFrame``.
 
     Parameters
     ----------
-    in_shps      : str or geopandas.GeoDataFrame
+    in_shps : str or geopandas.GeoDataFrame
                    The input geographic data. Either
                    (1) a path to a shapefile including suffix (str); or
                    (2) a geopandas.GeoDataFrame.
-    idVariable   : str
+    idVariable : str
                    name of a column in the shapefile's DBF or the
                    geopandas.GeoDataFrame to use for ids.
 
@@ -959,9 +1054,17 @@ def get_ids(in_shps, idVariable):
     -------
     ids          : list
                    a list of IDs
-
+    
+    Raises
+    ------
+    IOError
+        descripiton of error........
+    KeyError
+        descripiton of error........
+    
     Examples
     --------
+    
     >>> from libpysal.weights.util import get_ids
     >>> import libpysal
     >>> polyids = get_ids(libpysal.examples.get_path("columbus.shp"), "POLYID")
@@ -985,7 +1088,7 @@ def get_ids(in_shps, idVariable):
 
     try:
         if type(in_shps) == str:
-            dbname = os.path.splitext(in_shps)[0] + '.dbf'
+            dbname = os.path.splitext(in_shps)[0] + ".dbf"
             db = psopen(dbname)
             cols = db.header
             var = db.by_col[idVariable]
@@ -993,21 +1096,28 @@ def get_ids(in_shps, idVariable):
         else:
             cols = list(in_shps.columns)
             var = list(in_shps[idVariable])
+
         return var
 
     except IOError:
-        msg = 'The shapefile "%s" appears to be missing its DBF file. '\
-              + ' The DBF file "%s" could not be found.' % (in_shps, dbname)
+        msg = (
+            'The shapefile "%s" appears to be missing its DBF file. '
+            + ' The DBF file "%s" could not be found.' % (in_shps, dbname)
+        )
         raise IOError(msg)
+
     except (AttributeError, KeyError):
-        msg = 'The variable "%s" not found in the DBF/GDF. The the following '\
-              + 'variables are present: %s.' % (idVariable, ','.join(cols))
+        msg = (
+            'The variable "%s" not found in the DBF/GDF. The the following '
+            + "variables are present: %s." % (idVariable, ",".join(cols))
+        )
+
         raise KeyError(msg)
 
 
 def get_points_array(iterable):
-    """
-    Gets a data array of x and y coordinates from a given iterable
+    """Gets a data array of `x` and `y` coordinates from a given iterable.
+    
     Parameters
     ----------
     iterable      : iterable
@@ -1017,25 +1127,28 @@ def get_points_array(iterable):
     -------
     points        : array
                     (n, 2)
-                    a data array of x and y coordinates
-
+                    a data array of `x` and `y` coordinates
+    
     Notes
     -----
+    
     If the given shape file includes polygons,
-    this function returns x and y coordinates of the polygons' centroids
+    this function returns `x` and `y` coordinates of the polygons' centroids.
 
     """
+
     first_choice, backup = tee(iterable)
+
     try:
         data = np.vstack([np.array(shape.centroid) for shape in first_choice])
     except AttributeError:
         data = np.vstack([shape for shape in backup])
+
     return data
 
 
 def get_points_array_from_shapefile(shapefile):
-    """
-    Gets a data array of x and y coordinates from a given shapefile.
+    """Gets a data array of `x` and `y` coordinates from a given shapefile.
 
     Parameters
     ----------
@@ -1046,15 +1159,17 @@ def get_points_array_from_shapefile(shapefile):
     -------
     points        : array
                     (n, 2)
-                    a data array of x and y coordinates
+                    a data array of `x` and `y` coordinates
 
     Notes
     -----
+    
     If the given shape file includes polygons,
-    this function returns x and y coordinates of the polygons' centroids
+    this function returns `x` and `y` coordinates of the polygons' centroids
 
     Examples
     --------
+    
     Point shapefile
 
     >>> import libpysal
@@ -1065,7 +1180,6 @@ def get_points_array_from_shapefile(shapefile):
            [80., 95.],
            [79., 90.]])
 
-
     Polygon shapefile
 
     >>> xy = get_points_array_from_shapefile(libpysal.examples.get_path('columbus.shp'))
@@ -1073,36 +1187,35 @@ def get_points_array_from_shapefile(shapefile):
     array([[ 8.82721847, 14.36907602],
            [ 8.33265837, 14.03162401],
            [ 9.01226541, 13.81971908]])
+    
     """
 
     f = psopen(shapefile)
     data = get_points_array(f)
+
     return data
 
 
 def min_threshold_distance(data, p=2):
-    """
-    Get the maximum nearest neighbor distance.
+    """Get the maximum nearest neighbor distance.
 
     Parameters
     ----------
-
-    data    : array
-              (n,k) or KDTree where KDtree.data is array (n,k)
-              n observations on k attributes
-    p       : float
-              Minkowski p-norm distance metric parameter:
-              1<=p<=infinity
-              2: Euclidean distance
-              1: Manhattan distance
+    data : numpy.ndarray
+        :math:`(n,k)` or ``KDTree``` where ``KDtree.data`` is an
+        :math:`(n,k)` array of :math:`n` observations on :math:`k` attributes.s
+    p : float
+        Minkowski `p`-norm distance metric parameter where :math:`1<=\mathtt{p}<=\infty`.
+        ``2`` is Euclidean distance and ``1`` is Manhattan distance. Default is ``2``.
 
     Returns
     -------
-    nnd    : float
-             maximum nearest neighbor distance between the n observations
+    nnd : float
+        The maximum nearest neighbor distance between the :math:`n` observations.
 
     Examples
     --------
+    
     >>> from libpysal.weights.util import min_threshold_distance
     >>> import numpy as np
     >>> x, y = np.indices((5, 5))
@@ -1113,23 +1226,24 @@ def min_threshold_distance(data, p=2):
     1.0
 
     """
+
     if issubclass(type(data), scipy.spatial.KDTree):
         kd = data
         data = kd.data
     else:
         kd = KDTree(data)
+
     nn = kd.query(data, k=2, p=p)
     nnd = nn[0].max(axis=0)[1]
+
     return nnd
 
 
 def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
-    """
-    Create a sparse W matrix for a regular lattice.
+    """Create a sparse `W` matrix for a regular lattice.
 
     Parameters
     ----------
-
     nrows   : int
               number of rows
     ncols   : int
@@ -1142,15 +1256,15 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
 
     Returns
     -------
-
-    w : scipy.sparse.dia_matrix
-        instance of a scipy sparse matrix
+    m : scipy.sparse.dia_matrix
+        An instance of a ``scipy`` sparse matrix.
 
     Notes
     -----
 
-    Observations are row ordered: first k observations are in row 0, next k in row 1, and so on.
-    This method directly creates the W matrix using the strucuture of the contiguity type.
+    Observations are row ordered: first :math:`k` observations are in row 0,
+    next k in row 1, and so on. This method directly creates the `W`
+    matrix using the strucuture of the contiguity type.
 
     Examples
     --------
@@ -1164,15 +1278,19 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     >>> w9r = lat2SW(3,3, row_st=True)
     >>> w9r[3,6] == 1./3
     True
+    
     """
 
     n = nrows * ncols
     diagonals = []
     offsets = []
+
     if criterion == "rook" or criterion == "queen":
         d = np.ones((1, n))
+
         for i in range(ncols - 1, n, ncols):
             d[0, i] = 0
+
         diagonals.append(d)
         offsets.append(-1)
 
@@ -1182,6 +1300,7 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
 
     if criterion == "queen" or criterion == "bishop":
         d = np.ones((1, n))
+
         for i in range(0, n, ncols):
             d[0, i] = 0
         diagonals.append(d)
@@ -1192,19 +1311,24 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
             d[0, i] = 0
         diagonals.append(d)
         offsets.append(-(ncols + 1))
+
     data = np.concatenate(diagonals)
     offsets = np.array(offsets)
     m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8)
     m = m + m.T
+
     if row_st:
-        m = sparse.spdiags(1. / m.sum(1).T, 0, *m.shape) * m
+        m = sparse.spdiags(1.0 / m.sum(1).T, 0, *m.shape) * m
+
     return m
 
 
 def write_gal(file, k=10):
-    f = open(file, 'w')
+
+    f = open(file, "w")
     n = k * k
     f.write("0 %d" % n)
+
     for i in range(n):
         row = i / k
         col = i % k
@@ -1212,11 +1336,12 @@ def write_gal(file, k=10):
         neighs = [j for j in neighs if j >= 0 and j < n]
         f.write("\n%d %d\n" % (i, len(neighs)))
         f.write(" ".join(map(str, neighs)))
+
     f.close()
 
+
 def neighbor_equality(w1, w2):
-    """
-    Test if the neighbor sets are equal between two weights objects
+    """Test if the neighbor sets are equal between two weights objects.
 
     Parameters
     ----------
@@ -1239,62 +1364,70 @@ def neighbor_equality(w1, w2):
 
     Examples
     --------
+    
     >>> from libpysal.weights.util import neighbor_equality
     >>> from libpysal.weights import lat2W, W
     >>> w1 = lat2W(3,3)
     >>> w2 = lat2W(3,3)
     >>> neighbor_equality(w1, w2)
     True
+    
     >>> w3 = lat2W(5,5)
     >>> neighbor_equality(w1, w3)
     False
+    
     >>> n4 = w1.neighbors.copy()
     >>> n4[0] = [1]
     >>> n4[1] = [4, 2]
     >>> w4 = W(n4)
     >>> neighbor_equality(w1, w4)
     False
+    
     >>> n5 = w1.neighbors.copy()
     >>> n5[0]
     [3, 1]
+    
     >>> n5[0] = [1, 3]
     >>> w5 = W(n5)
     >>> neighbor_equality(w1, w5)
     True
 
     """
+
     n1 = w1.neighbors
     n2 = w2.neighbors
     ids_1 = set(n1.keys())
     ids_2 = set(n2.keys())
+
     if ids_1 != ids_2:
         return False
+
     for i in ids_1:
         if set(w1.neighbors[i]) != set(w2.neighbors[i]):
             return False
+
     return True
 
+
 def isKDTree(obj):
+    """This is a utility function to determine whether or not an object is a
+    KDTree, since KDTree and cKDTree have no common parent type.
     """
-    This is a utility function to determine whether or not an object is a
-    KDTree, since KDTree and cKDTree have no common parent type
-    """
+
     return any([issubclass(type(obj), KDTYPE) for KDTYPE in KDTREE_TYPES])
 
+
 def attach_islands(w, w_knn1, **kwargs):
-    """
-    Attach nearest neighbor to islands in spatial weight w.
+    """Attach nearest neighbor to islands in spatial weight ``w``.
 
     Parameters
     ----------
-
     w            : libpysal.weights.W
                    pysal spatial weight object (unstandardized).
     w_knn1       : libpysal.weights.W
                    Nearest neighbor pysal spatial weight object (k=1).
-    **kwargs     : keyword arguments
-                   optional arguments for :class:`pysal.weights.W`
-
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
@@ -1303,56 +1436,63 @@ def attach_islands(w, w_knn1, **kwargs):
 
     Examples
     --------
+    
     >>> from libpysal.weights import lat2W, Rook, KNN, attach_islands
     >>> import libpysal
     >>> w = Rook.from_shapefile(libpysal.examples.get_path('10740.shp'))
     >>> w.islands
     [163]
+    
     >>> w_knn1 = KNN.from_shapefile(libpysal.examples.get_path('10740.shp'),k=1)
     >>> w_attach = attach_islands(w, w_knn1)
     >>> w_attach.islands
     []
+    
     >>> w_attach[w.islands[0]]
     {166: 1.0}
 
     """
 
     neighbors, weights = copy.deepcopy(w.neighbors), copy.deepcopy(w.weights)
+
     if not len(w.islands):
         print("There are no disconnected observations (no islands)!")
         return w
+
     else:
         for island in w.islands:
             nb = w_knn1.neighbors[island][0]
+
             if type(island) is float:
                 nb = float(nb)
+
             neighbors[island] = [nb]
             weights[island] = [1.0]
             neighbors[nb] = neighbors[nb] + [island]
             weights[nb] = weights[nb] + [1.0]
+
         return W(neighbors, weights, id_order=w.id_order, **kwargs)
 
-def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
-    """
-    Detect neighbors for non-planar polygon collections
 
+def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
+    """Detect neighbors for non-planar polygon collections.
 
     Parameters
     ----------
 
-    w:   pysal W
+    w:   libpysal.weights.W
          A spatial weights object with reported islands
 
 
-    geodataframe: GeoDataframe
+    geodataframe: geopandas.GeoDataframe
                   The polygon dataframe from which w was constructed.
 
     tolerance: float
                The percentage of the minimum horizontal or vertical extent (minextent) of
                the dataframe to use in defining  a buffering distance to allow for fuzzy
                contiguity detection. The buffering distance is equal to tolerance*minextent.
-    **kwargs:  keyword arguments
-               optional arguments for :class:`pysal.weights.W`
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
 
     Attributes
@@ -1393,17 +1533,21 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     >>> w = libpysal.weights.Queen.from_dataframe(df)
     >>> w.islands
     [0, 4, 23, 27, 80, 94, 101, 107, 109, 119, 122, 139, 169, 175, 223, 239, 247, 253, 254, 255, 256, 261, 276, 291, 294, 303, 321, 357, 374]
+    
     >>> wnp = libpysal.weights.nonplanar_neighbors(w, df)
     >>> wnp.islands
     []
+    
     >>> w.neighbors[0]
     []
+    
     >>> wnp.neighbors[0]
     [23, 59, 152, 239]
+    
     >>> wnp.neighbors[23]
     [0, 45, 59, 107, 152, 185, 246]
 
-    Also see `nonplanarweights.ipynb`
+    Also see `nonplanarweights.ipynb`. <----------------------------- ADD LINK -----------------------
 
     References
     ----------
@@ -1414,7 +1558,10 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     """
 
     gdf = geodataframe
-    assert gdf.sindex, 'GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed'
+    assert (
+        gdf.sindex
+    ), "GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed"
+
     islands = w.islands
     joins = copy.deepcopy(w.neighbors)
     candidates = gdf.geometry
@@ -1423,9 +1570,16 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     # first check for intersecting polygons
     for island in islands:
         focal = gdf.iloc[island].geometry
-        neighbors = [j for j, candidate in enumerate(candidates) if focal.intersects(candidate) and j!= island]
+        neighbors = [
+            j
+            for j, candidate in enumerate(candidates)
+            if focal.intersects(candidate) and j != island
+        ]
+
         if len(neighbors) > 0:
+
             for neighbor in neighbors:
+
                 if neighbor not in joins[island]:
                     fixes[island].append(neighbor)
                     joins[island].append(neighbor)
@@ -1435,13 +1589,21 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
 
     # if any islands remain, dilate them and check for intersection
     if islands:
-        x0,y0,x1,y1 = gdf.total_bounds
-        distance = tolerance * min(x1-x0, y1-y0)
+        x0, y0, x1, y1 = gdf.total_bounds
+        distance = tolerance * min(x1 - x0, y1 - y0)
+
         for island in islands:
             dilated = gdf.iloc[island].geometry.buffer(distance)
-            neighbors = [j for j, candidate in enumerate(candidates) if dilated.intersects(candidate) and j!= island]
+            neighbors = [
+                j
+                for j, candidate in enumerate(candidates)
+                if dilated.intersects(candidate) and j != island
+            ]
+
             if len(neighbors) > 0:
+
                 for neighbor in neighbors:
+
                     if neighbor not in joins[island]:
                         fixes[island].append(neighbor)
                         joins[island].append(neighbor)
@@ -1451,39 +1613,35 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
 
     w = W(joins, **kwargs)
     w.non_planar_joins = fixes
+
     return w
 
-@requires('geopandas')
-def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=None, **kwargs):
-    """
-    Fuzzy contiguity spatial weights
+
+@requires("geopandas")
+def fuzzy_contiguity(
+    gdf, tolerance=0.005, buffering=False, drop=True, buffer=None, **kwargs
+):
+    """Fuzzy contiguity spatial weights.
 
     Parameters
     ----------
-
-    gdf:   GeoDataFrame
-
-    tolerance: float
+    gdf : geopandas.GeoDataFrame
+        ..........................
+    tolerance : float
                The percentage of the length of the minimum side of the bounding rectangle for the GeoDataFrame to use in determining the buffering distance.
-
-    buffering: boolean
+    buffering : bool
                If False (default) joins will only be detected for features that intersect (touch, contain, within).
                If True then features will be buffered and intersections will be based on buffered features.
-
-    drop: boolean
+    drop: bool
           If True (default), the buffered features are removed from the GeoDataFrame. If False, buffered features are added to the GeoDataFrame.
-
     buffer : float
              Specify exact buffering distance. Ignores `tolerance`.
-
-    **kwargs: keyword arguments
-              optional arguments for :class:`pysal.weights.W`
-
+    **kwargs : dict
+        Optional keyword arguments for ``libpysal.weights.W``.
 
     Returns
     -------
-
-    w:  PySAL W
+    w : libpysal.weights.W
         Spatial weights based on fuzzy contiguity. Weights are binary.
 
     Examples
@@ -1497,11 +1655,14 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
     >>> wq = libpysal.weights.Queen.from_dataframe(rs_df)
     >>> len(wq.islands)
     29
+    
     >>> wq[0]
     {}
+    
     >>> wf = fuzzy_contiguity(rs_df)
     >>> wf.islands
     []
+    
     >>> wf[0] == dict({239: 1.0, 59: 1.0, 152: 1.0, 23: 1.0, 107: 1.0})
     True
 
@@ -1516,9 +1677,11 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
     >>> wf = fuzzy_contiguity(gdf)
     >>> wf.islands
     [2]
+    
     >>> wfb = fuzzy_contiguity(gdf, buffering=True)
     >>> wfb.islands
     []
+    
     >>> wfb[2]
     {1: 1.0}
 
@@ -1540,7 +1703,6 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
 
     The buffering check assumes the geometry coordinates are projected.
 
-
     References
     ----------
 
@@ -1548,20 +1710,26 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
 
 
     """
+
     if buffering:
         if not buffer:
             # buffer each shape
             minx, miny, maxx, maxy = gdf.total_bounds
-            buffer = tolerance * 0.5 * abs(min(maxx-minx, maxy-miny))
+            buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
         # create new geometry column
         new_geometry = gdf.geometry.buffer(buffer)
-        gdf['_buffer'] = new_geometry
+        gdf["_buffer"] = new_geometry
         old_geometry_name = gdf.geometry.name
-        gdf.set_geometry('_buffer', inplace=True)
-    assert gdf.sindex, 'GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed'
+        gdf.set_geometry("_buffer", inplace=True)
+
+    assert (
+        gdf.sindex
+    ), "GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed"
+
     tree = gdf.sindex
     neighbors = {}
-    n,k = gdf.shape
+    n, k = gdf.shape
+
     for i in range(n):
         geom = gdf.geometry.iloc[i]
         hits = list(tree.intersection(geom.bounds))
@@ -1572,20 +1740,22 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
 
     if buffering:
         gdf.set_geometry(old_geometry_name, inplace=True)
+
         if drop:
-            gdf.drop(columns=['_buffer'], inplace=True)
+            gdf.drop(columns=["_buffer"], inplace=True)
 
     return W(neighbors, **kwargs)
-
 
 
 if __name__ == "__main__":
 
     from libpysal.weights import lat2W
+
     assert (lat2W(5, 5).sparse.todense() == lat2SW(5, 5).todense()).all()
     assert (lat2W(5, 3).sparse.todense() == lat2SW(5, 3).todense()).all()
-    assert (lat2W(5, 3, rook=False).sparse.todense() == lat2SW(5, 3,
-                                                               'queen').todense()).all()
-    assert (lat2W(50, 50, rook=False).sparse.todense() == lat2SW(50,
-
-                                                                 50, 'queen').todense()).all()
+    assert (
+        lat2W(5, 3, rook=False).sparse.todense() == lat2SW(5, 3, "queen").todense()
+    ).all()
+    assert (
+        lat2W(50, 50, rook=False).sparse.todense() == lat2SW(50, 50, "queen").todense()
+    ).all()

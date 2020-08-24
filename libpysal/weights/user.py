@@ -18,7 +18,7 @@ __all__ = [
 
 
 def spw_from_gal(galfile):
-    """Sparse ``scipy`` matrix for w from a ``.gal`` file.
+    """Sparse ``scipy`` matrix for a `W` from a ``.gal`` file.
 
     Parameters
     ----------
@@ -27,8 +27,8 @@ def spw_from_gal(galfile):
 
     Returns
     -------
-    spw : libpysal.weights.weights.WSP
-        The sparse matrix in CSR format (``scipy.sparse.csr.csr_matrix``) can
+    spw : libpysal.weights.WSP
+        The sparse matrix in CSR format (``scipy.sparse.csr_matrix``) can
         be accessed through ``spw.sparse``.
 
     Examples
@@ -44,7 +44,9 @@ def spw_from_gal(galfile):
 
     """
 
-    return ps_open(galfile, "r").read(sparse=True)
+    spw = ps_open(galfile, "r").read(sparse=True)
+
+    return spw
 
 
 def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
@@ -53,18 +55,18 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
 
     Parameters
     ----------
-    shapefile  : str
+    shapefile : str
         The shapefile name including the ``.shp`` file extension.
     radius : float
-        If supplied ``arc_distances`` will be calculated
-        based on the given radius and ``p`` will be ignored.
+        If supplied ``arc_distances`` will be calculated based on the given
+        radius and ``p`` will be ignored. Default is ``None``.
     p : {int, float}
-        Minkowski `p`-norm distance metric parameter where ``1<=p<=infinity``.
-        ``2`` is Euclidean distance and ``1`` is Manhattan distance. Default is ``2 ``.
+        Minkowski `p`-norm distance metric parameter where :math:`1<=\mathtt{p}<=\infty`.
+        ``2`` is Euclidean distance and ``1`` is Manhattan distance. Default is ``2``.
 
     Returns
     -------
-    d : float
+    nnd : float
         The maximum nearest neighbor distance between the ``n`` observations.
 
     Examples
@@ -88,11 +90,14 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     """
 
     points = get_points_array_from_shapefile(shapefile)
+
     if radius is not None:
         kdt = cg.kdtree.Arc_KDTree(points, radius=radius)
         nn = kdt.query(kdt.data, k=2)
         nnd = nn[0].max(axis=0)[1]
+
         return nnd
+
     return min_threshold_distance(points, p)
 
 
