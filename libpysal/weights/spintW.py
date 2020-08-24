@@ -205,7 +205,7 @@ def vecW(
     threshold : float
         The distance band.
     p : {int, float}
-        Minkowski `p`-norm distance metric parameter where :math:`1<=p<=\infty`.
+        Minkowski `p`-norm distance metric parameter where :math:`1<=\mathtt{p}<=\infty`.
         ``2`` is Euclidean distance and ``1`` is Manhattan distance.
         This parameter is ignored if the ``KDTree`` is an ``ArcKDTree``.
         Default is ``2``.
@@ -214,9 +214,9 @@ def vecW(
         If ``alpha`` is positive the weights will not decline with distance.
         If ``binary`` is set to ``True``, ``alpha`` is ignored.
     binary : bool
-        If set to ``True``, :math:`w_{ij}=1` if :math:`d_{i,j}<=threshold`,
-        otherwise :math:`w_{i,j}=0`. If set to ``False``, :math:`wij=dij^{alpha}`.
-        Default is ``True``.
+        If set to ``True``, :math:`w_{ij}=1` if :math:`d_{i,j}<=\mathtt{threshold}`,
+        otherwise :math:`w_{i,j}=0`. If set to ``False``,
+        :math:`w_{ij}=d_{ij}^{\mathtt{alpha}}`. Default is ``True``.
     ids : list
         Identifiers to attach to each observation in ``neighbors``
         and ``weights``. Default is ``None``.

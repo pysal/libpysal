@@ -28,7 +28,7 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
             ``sklearn.metrics.euclidean_distance``
     skip_verify: bool
         Whether or not to skip verifying that the `W` is the same as an adjacency
-        list. Do this if you are certain the adjacency list and ``W`` agree and
+        list. Do this if you are certain the adjacency list and `W` agree and
         would like to avoid re-instantiating a `W` from the adjacency list. 
         Default is ``False``.
 

@@ -2,7 +2,7 @@
 Spatial Weights.
 """
 
-__author__ = "Sergio J. Rey <srey@asu.edu>"
+__author__ = "Sergio J. Rey <sjsrey@gmail.com>"
 
 import copy
 from os.path import basename as BASENAME
@@ -206,7 +206,7 @@ class W(object):
 
     @classmethod
     def from_file(cls, path="", format=None):
-        """Read a weights file into a `W` object. 
+        """Read a weights file into a `W` object.
 
         Parameters
         ----------
@@ -232,10 +232,10 @@ class W(object):
     def from_shapefile(cls, *args, **kwargs):
         """Construct a weights object from a shapefile."""
 
-        # we could also just "do the right thing," but I think it'd make sense to
-        # try and get people to use `Rook.from_shapefile(shapefile)` rather than
-        # W.from_shapefile(shapefile, type=`rook`), otherwise we'd need to build
-        # a type dispatch table. Generic W should be for stuff we don't know
+        # we could also just 'do the right thing,' but I think it'd make sense to
+        # try and get people to use ``Rook.from_shapefile(shapefile)`` rather than
+        # `W`.from_shapefile(shapefile, type=`rook`), otherwise we'd need to build
+        # a type dispatch table. Generic `W` should be for stuff we don't know
         # anything about.
 
         msg = (
@@ -245,7 +245,7 @@ class W(object):
 
     @classmethod
     def from_WSP(cls, WSP, silence_warnings=True):
-        """Construct a weights object from a ``WSP`` object."""
+        """Construct a weights object from a `WSP` object."""
 
         w = WSP2W(WSP, silence_warnings=silence_warnings)
 
@@ -273,7 +273,7 @@ class W(object):
         Returns
         -------
         w : libpysal.weights.W
-            NEED.......................................................................................
+            A PySAL `W` spatial weights object.
         
         """
 
@@ -310,24 +310,24 @@ class W(object):
         Parameters
         ----------
         remove_symmetric : bool
-            Whether or not to remove symmetric entries. If the ``W``
+            Whether or not to remove symmetric entries. If the `W`
             is symmetric, a standard directed adjacency list will contain
             both the forward and backward links by default because adjacency
             lists are a directed graph representation. If this is ``True``,
-            a ``W`` created from this adjacency list **MAY NOT BE THE SAME**
-            as the original ``W``. If you would like to consider (1,2) and
+            a `W` created from this adjacency list **MAY NOT BE THE SAME**
+            as the original `W`. If you would like to consider (1,2) and
             (2,1) as distinct links, leave this as ``False``.
         focal_col : str
-            Name of the column in which to store "source" node ids.
+            Name of the column in which to store 'source' node ids.
         neighbor_col : str
-            Name of the column in which to store "destination" node ids.
+            Name of the column in which to store 'destination' node ids.
         weight_col : str
             Name of the column in which to store weight information.
         
         Returns
         -------
-        NEED : NEED
-            NEED......................................................................................
+        adjlist : pandas.DataFrame
+            An adjacency list representation within a dataframe.
         
         """
 
@@ -348,7 +348,9 @@ class W(object):
             columns=("focal", "neighbor", "weight"),
         )
 
-        return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
+        adjlist = adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
+
+        return adjlist
 
     def to_networkx(self):
         """Convert a weights object to a ``networkx`` graph.
@@ -840,7 +842,7 @@ class W(object):
             self._reset()
 
     def __set_id_order(self, ordered_ids):
-        """Set the iteration order in w. ``W`` can be iterated over. On
+        """Set the iteration order in ``w``. `W` can be iterated over. On
         construction the iteration order is set to the lexicographic order of
         the keys in the ``w.weights`` dictionary. If a specific order
         is required it can be set with this method.
@@ -1172,7 +1174,7 @@ class W(object):
             return ijs
 
     def symmetrize(self, inplace=False):
-        """Construct a symmetric ``KNN`` weight. This ensures that the neighbors
+        """Construct a symmetric `KNN` weight. This ensures that the neighbors
         of each focal observation consider the focal observation itself as
         a neighbor. This returns a generic `W` object, since the object is no
         longer guaranteed to have ``k`` neighbors for each observation.
@@ -1254,7 +1256,7 @@ class W(object):
         return (wfull, keys)
 
     def to_WSP(self):
-        """Generate a ``WSP`` object.
+        """Generate a `WSP` object.
 
         Returns
         -------
@@ -1288,8 +1290,7 @@ class W(object):
         return w
 
     def set_shapefile(self, shapefile, idVariable=None, full=False):
-        """
-        Adding metadata for writing headers of ``.gal`` and ``.gwt`` files.
+        """Adding metadata for writing headers of ``.gal`` and ``.gwt`` files.
 
         Parameters
         ----------
@@ -1321,7 +1322,7 @@ class W(object):
         Parameters
         ----------
         gdf : geopandas.GeoDataFrame
-            The original shapes whose topological relations are modelled in ``W``.
+            The original shapes whose topological relations are modelled in `W`.
         indexed_on : str 
             Column of ``geopandas.GeoDataFrame`` that the weights object uses
             as an index. Default is ``None``, so the index of the 
@@ -1435,11 +1436,11 @@ class WSP(object):
     Attributes
     ----------
     n : int
-        description....................................................................................................
+        The number of rows in ``sparse``.
     s0 : float
-        description....................................................................................................
+        :math:`s0=\sum_i \sum_j w_{i,j}`.
     trcWtW_WW : float
-        description....................................................................................................
+        Trace of :math:`W^{'}W + WW`.
 
     Examples
     --------

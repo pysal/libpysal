@@ -40,19 +40,18 @@ def _get_boundary_points(shape) -> list:
 class ContiguityWeightsLists:
     """Contiguity for a collection of polygons using high
     performance ``list``, ``set``, and ``dict`` containers.
+    
+    Parameters
+    ----------
+    collection: PySAL PolygonCollection
+        A collection of polygons.
+    wttype: int
+        Set to ``1`` for Queen contiguity or set to ``2`` for Rook contiguity.
+        Default is ``1``.
+    
     """
 
     def __init__(self, collection, wttype=1):
-        """
-        
-        Parameters
-        ----------
-        collection: PySAL PolygonCollection
-            
-        wttype: int
-            1: Queen; 2: Rook
-        
-        """
 
         self.collection = list(collection)
         self.wttype = wttype

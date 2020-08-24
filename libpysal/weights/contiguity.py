@@ -60,7 +60,7 @@ class Rook(W):
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
-        """Rook contiguity weights from a polygon shapefile.
+        """`Rook` contiguity weights from a polygon shapefile.
 
         Parameters
         ----------
@@ -99,7 +99,7 @@ class Rook(W):
         Notes
         -----
 
-        Rook contiguity defines as neighbors any pair of polygons
+        `Rook` contiguity defines as neighbors any pair of polygons
         that share a common edge in their polygon definitions.
 
         See Also
@@ -136,7 +136,7 @@ class Rook(W):
             A collection of of shapes to be cast to PySAL shapes. Must
             support iteration. Can be either Shapely or PySAL shapes.
         sparse : bool
-            Generate ``WSP`` object. Default is ``False``.
+            Generate a `WSP` object. Default is ``False``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Rook``.
         
@@ -258,7 +258,7 @@ class Queen(W):
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
-        """Queen contiguity weights from a polygon shapefile.
+        """`Queen` contiguity weights from a polygon shapefile.
 
         Parameters
         ----------
@@ -286,13 +286,13 @@ class Queen(W):
         
         >>> from libpysal.weights import Queen
         >>> import libpysal
-        >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"))
+        >>> wq = Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"))
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"),"POLYID")
+        >>> wq = Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"),"POLYID")
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
+        >>> wq = Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
         >>> pct_sp = wq.sparse.nnz *1. / wq.n**2
         >>> "%.3f"%pct_sp
         '0.098'
@@ -300,7 +300,7 @@ class Queen(W):
         Notes
         -----
 
-        Queen contiguity defines as neighbors any pair of polygons that share at
+        `Queen` contiguity defines as neighbors any pair of polygons that share at
         least one vertex in their polygon definitions.
 
         See Also
@@ -337,7 +337,7 @@ class Queen(W):
             A collection of of shapes to be cast to PySAL shapes. Must
             support iteration. Can be either Shapely or PySAL shapes.
         sparse : bool
-            Generate ``WSP`` object. Default is ``False``.
+            Generate a `WSP` object. Default is ``False``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Queen``.
         
@@ -444,7 +444,7 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
     >>> import numpy as np
     >>> from libpysal.weights import Voronoi
     >>> np.random.seed(12345)
-    >>> points= np.random.random((5,2))*10 + 10
+    >>> points = np.random.random((5,2))*10 + 10
     >>> w = Voronoi(points)
     >>> w.neighbors
     {0: [2, 3, 4], 1: [2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
@@ -584,7 +584,7 @@ def _build(polygons, criterion="rook", ids=None):
 def buildContiguity(polygons, criterion="rook", ids=None):
     """This is a deprecated function. It builds a contiguity `W` from the
     polygons provided. As such, it is now identical to calling the class
-    constructors for ``Rook`` or ``Queen``.
+    constructors for `Rook` or `Queen`.
     """
 
     # Warn('This function is deprecated. Please use the Rook or Queen classes', UserWarning)

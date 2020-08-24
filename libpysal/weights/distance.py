@@ -262,7 +262,7 @@ class KNN(W):
 
     @classmethod
     def from_dataframe(cls, df, geom_col="geometry", ids=None, *args, **kwargs):
-        """Make KNN weights from a dataframe.
+        """Make `KNN` weights from a dataframe.
 
         Parameters
         ----------
@@ -317,14 +317,14 @@ class KNN(W):
             ``1`` is Manhattan distance. This parameter is ignored if the
             ``KDTree`` is an ``ArcKDTree``. Default is ``None``.
         new_data : numpy.ndarray
-            An array containing additional data to use in the ``KNN`` weight.
+            An array containing additional data to use in the `KNN` weight.
             Default is ``None``.
         new_ids : list
             A list aligned with ``new_data`` that provides the ids
             for each new observation. Default is ``None``.
         inplace : bool
-            A flag denoting whether to modify the ``KNN`` object 
-            in place or to return a new ``KNN`` object.  Default is ``True``.
+            A flag denoting whether to modify the `KNN` object 
+            in place or to return a new `KNN` object.  Default is ``True``.
         
         Returns
         -------
@@ -657,7 +657,7 @@ class Kernel(W):
         ----------
         df : pandas.DataFrame
             A dataframe with a geometry column that can be used
-            to construct a PySAL ``W`` object.
+            to construct a PySAL `W` object.
         geom_col : str
             The column name of the geometry stored in ``df``.
             Default is ``'geometry'``.
@@ -697,7 +697,7 @@ class Kernel(W):
         Parameters
         ----------
         ids : list
-            See ``ids`` in ``Kernel``. Default is ``None``.
+            See ``ids`` in ``libpysal.weights.Kernel``. Default is ``None``.
         
         Returns
         -------
@@ -806,7 +806,7 @@ class DistanceBand(W):
     binary : bool
         If set to ``True``, :math:`w_{ij}=1` if :math:`d_{i,j}<=\mathtt{threshold}`,
         otherwise :math:`w_{i,j}=0`. If set to ``False``,
-        :math:`wij=dij^{\mathtt{alpha}}`. Default is ``True``.
+        :math:`w_{ij}=d_{ij}^{\mathtt{alpha}}`. Default is ``True``.
     alpha : float
         The distance decay parameter for weights. Default is ``-1.0``.
         If ``alpha`` is positive the weights will not decline with distance.
@@ -1014,7 +1014,7 @@ class DistanceBand(W):
         ----------
         df : pandas.DataFrame
             A dataframe with a geometry column that can be used
-            to construct a PySAL ``W`` object.
+            to construct a PySAL `W` object.
         threshold : float
             The distance band.
         geom_col : str
@@ -1067,7 +1067,7 @@ class DistanceBand(W):
         Parameters
         ----------
         ids : list
-            See ``ids`` in ``DistanceBand``. Default is ``None``.
+            See ``ids`` in ``libpysal.weights.DistanceBand``. Default is ``None``.
         
         Returns
         -------
