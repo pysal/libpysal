@@ -186,27 +186,37 @@ class Rook(W):
                                  **kwargs)
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims={}, sparse=False, k=1, n_jobs=1, **kwargs):
+    def from_xarray(
+        cls,
+        da,
+        z_value=None,
+        coords_labels={},
+        k=1,
+        distance_band=False,
+        sparse=False,
+        **kwargs,
+    ):
         """
         Construct a weights object from a xarray.DataArray.
 
         Parameters
         ----------
         da : xarray.DataArray
-            Input 2D or 3D DataArray with shape=(layer, lat, lon)
-        layer : int/string/float
-            Select the layer of 3D DataArray with multiple layers
-        dims : dictionary
-            Pass dimensions for coordinates and layers if they do not
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        z_value : int/string/float
+            Select the z_value of 3D DataArray with multiple layers.
+        coords_labels : dictionary
+            Pass dimension labels for coordinates and layers if they do not
             belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+            e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
         k : int
-            Order of queen contiguity, if k=1 max neighbors of a point
-            will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
-            Default is 1
+            Order of contiguity, Default is 1
+        distance_band : boolean
+            If true missing values will be assumed as non-missing when
+            selecting higher_order neighbors, Default is False
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
             all available cores are used.
@@ -224,9 +234,24 @@ class Rook(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'rook', layer, dims, k, n_jobs)
+            w = da2WSP(
+                da,
+                'rook',
+                z_value,
+                coords_labels,
+                k,
+                distance_band
+            )
         else:
-            w = da2W(da, 'rook', layer, dims, k, n_jobs, **kwargs)
+            w = da2W(
+                da,
+                'rook',
+                z_value,
+                coords_labels,
+                k,
+                distance_band,
+                **kwargs
+            )
         return w
 
 
@@ -396,27 +421,37 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, layer=None, dims={}, sparse=False, k=1, n_jobs=1, **kwargs):
+    def from_xarray(
+        cls,
+        da,
+        z_value=None,
+        coords_labels={},
+        k=1,
+        distance_band=False,
+        sparse=False,
+        **kwargs,
+    ):
         """
         Construct a weights object from a xarray.DataArray.
 
         Parameters
         ----------
         da : xarray.DataArray
-            Input 2D or 3D DataArray with shape=(layer, lat, lon)
-        layer : int/string/float
-            Select the layer of 3D DataArray with multiple layers
-        dims : dictionary
-            Pass dimensions for coordinates and layers if they do not
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        z_value : int/string/float
+            Select the z_value of 3D DataArray with multiple layers.
+        coords_labels : dictionary
+            Pass dimension labels for coordinates and layers if they do not
             belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+            e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
         k : int
-            Order of queen contiguity, if k=1 max neighbors of a point
-            will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
-            Default is 1
+            Order of contiguity, Default is 1
+        distance_band : boolean
+            If true missing values will be assumed as non-missing when
+            selecting higher_order neighbors, Default is False
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
             all available cores are used.
@@ -431,12 +466,27 @@ class Queen(W):
         See Also
         --------
         :class:`libpysal.weights.weights.W`
-        :class:`libpysal.weights.weights.WSP`   
+        :class:`libpysal.weights.weights.WSP`
         """
         if sparse:
-            w = da2WSP(da, 'queen', layer, dims, k, n_jobs)
+            w = da2WSP(
+                da,
+                'queen',
+                z_value,
+                coords_labels,
+                k,
+                distance_band
+            )
         else:
-            w = da2W(da, 'queen', layer, dims, k, n_jobs, **kwargs)
+            w = da2W(
+                da,
+                'queen',
+                z_value,
+                coords_labels,
+                k,
+                distance_band,
+                **kwargs
+            )
         return w
 
 

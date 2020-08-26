@@ -1,32 +1,46 @@
+from .weights import WSP, W
 import numpy as np
 from warnings import warn
 from numba import njit
 import os
 from scipy import sparse
-from .weights import WSP, W
+
+__author__ = "Mragank Shekhar <yesthisismrshekhar@gmail.com>"
 
 __all__ = ['da2W', 'da2WSP', 'w2da', 'wsp2da', 'testDataArray']
 
 
-def da2W(da, criterion="queen", layer=None, dims={}, k=1, n_jobs=1, **kwargs):
+def da2W(
+    da,
+    criterion="queen",
+    z_value=None,
+    coords_labels={},
+    k=1,
+    distance_band=False,
+    n_jobs=1,
+    **kwargs
+):
     """
     Create a W object from xarray.DataArray
 
     Parameters
     ----------
     da : xarray.DataArray
-        Input 2D or 3D DataArray with shape=(layer, lat, lon)
+        Input 2D or 3D DataArray with shape=(z, y, x)
     criterion : {"rook", "queen"}
         Type of contiguity. Default is queen.
-    layer : int/string/float
-        Select the layer of 3D DataArray with multiple layers.
-    dims : dictionary
-        Pass dimensions for coordinates and layers if they do not
+    z_value : int/string/float
+        Select the z_value of 3D DataArray with multiple layers.
+    coords_labels : dictionary
+        Pass dimension labels for coordinates and layers if they do not
         belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
         Default is {} empty dictionary.
     k : int
-        Order of queen contiguity.
+        Order of contiguity, Default is 1
+    distance_band : boolean
+        If true missing values will be assumed as non-missing when
+        selecting higher_order neighbors, Default is False
     n_jobs : int
         Number of cores to be used in the sparse weight construction. If -1,
         all available cores are used.
@@ -38,6 +52,10 @@ def da2W(da, criterion="queen", layer=None, dims={}, k=1, n_jobs=1, **kwargs):
     w : libpysal.weights.W
        instance of spatial weights class W
 
+    Notes
+    -----
+    Lower order contiguities are also selected.
+
     Examples
     --------
     >>> from libpysal.raster import da2W, testDataArray
@@ -45,8 +63,12 @@ def da2W(da, criterion="queen", layer=None, dims={}, k=1, n_jobs=1, **kwargs):
             {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
     >>> da.dims
     ('layer', 'latitude', 'longitude')
-    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
-    >>> w = da2W(da, layer=2, dims=dims)
+    >>> coords_labels = {
+        "z_label": "layer",
+        "y_label": "latitude",
+        "x_label": "longitude"
+    }
+    >>> w = da2W(da, layer=2, coords_labels=coords_labels)
     >>> da.shape
     (3, 4, 4)
     >>> "%.3f"%w.pct_nonzero
@@ -62,10 +84,151 @@ def da2W(da, criterion="queen", layer=None, dims={}, k=1, n_jobs=1, **kwargs):
     --------
     :class:`libpysal.weights.weights.W`
     """
-    wsp = da2WSP(da, criterion, layer, dims, k, n_jobs)
+    wsp = da2WSP(
+        da,
+        criterion,
+        z_value,
+        coords_labels,
+        k,
+        distance_band,
+        n_jobs
+    )
     w = wsp.to_W(**kwargs)
     w.index = wsp.index
     return w
+
+
+def da2WSP(
+    da,
+    criterion="queen",
+    z_value=None,
+    coords_labels={},
+    k=1,
+    distance_band=False,
+    n_jobs=1,
+):
+    """
+    Create a W object from xarray.DataArray
+
+    Parameters
+    ----------
+    da : xarray.DataArray
+        Input 2D or 3D DataArray with shape=(z, y, x)
+    criterion : {"rook", "queen"}
+        Type of contiguity. Default is queen.
+    z_value : int/string/float
+        Select the z_value of 3D DataArray with multiple layers.
+    coords_labels : dictionary
+        Pass dimension labels for coordinates and layers if they do not
+        belong to default dimensions, which are (band/time, y/lat, x/lon)
+        e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+        Default is {} empty dictionary.
+    k : int
+        Order of contiguity, Default is 1
+    distance_band : boolean
+        If true missing values will be assumed as non-missing when
+        selecting higher_order neighbors, Default is False
+    n_jobs : int
+        Number of cores to be used in the sparse weight construction. If -1,
+        all available cores are used.
+
+    Returns
+    -------
+    w : libpysal.weights.WSP
+       instance of spatial weights class WSP
+
+    Examples
+    --------
+    >>> from libpysal.raster import da2WSP, testDataArray
+    >>> da = testDataArray().rename(
+            {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
+    >>> da.dims
+    ('layer', 'latitude', 'longitude')
+    >>> da.shape
+    (3, 4, 4)
+    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
+    >>> wsp = da2WSP(da, layer=2, dims=dims)
+    >>> wsp.n
+    7
+    >>> pct_sp = wsp.sparse.nnz *1. / wsp.n**2
+    >>> "%.3f"%pct_sp
+    '0.286'
+    >>> print(wsp.sparse[4].todense())
+    [[0 0 0 1 0 1 0]]
+    >>> len(w.index)
+    7
+
+    See Also
+    --------
+    :class:`libpysal.weights.weights.WSP`
+    """
+    z_id, coords_labels = _da_checker(da, z_value, coords_labels)
+    shape = da.shape
+    if z_id:
+        slice_dict = {}
+        slice_dict[coords_labels["z_label"]] = 0
+        shape = da[slice_dict].shape
+        slice_dict[coords_labels["z_label"]] = slice(z_id-1, z_id)
+        da = da[slice_dict]
+    ser = da.to_series()
+    mask = (ser != da.nodatavals[0]).to_numpy()
+    ids = np.where(mask)[0]
+    dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
+    n = len(ids)
+    ser = ser[ser != da.nodatavals[0]]
+    index = ser.index
+    threshold = k if distance_band else 1
+
+    if n_jobs != 1:
+        try:
+            import joblib
+        except (ModuleNotFoundError, ImportError):
+            warn(
+                f"Parallel processing is requested (n_jobs={n_jobs}),"
+                f" but joblib cannot be imported. n_jobs will be set"
+                f" to 1.",
+                stacklevel=2,
+            )
+            n_jobs = 1
+    if n_jobs == 1:
+        sw = sparse.csr_matrix(
+            _SWbuilder(
+                *shape,
+                ids,
+                _idmap(ids, mask, dtype),
+                criterion,
+                threshold,
+                dtype,
+            ),
+            shape=(n, n),
+            dtype=np.int8,
+        )
+    else:
+        if n_jobs == -1:
+            n_jobs = os.cpu_count()
+        # Parallel implementation
+        sw = sparse.csr_matrix(
+            _parSWbuilder(
+                *shape,
+                ids,
+                _idmap(ids, mask, dtype),
+                criterion,
+                threshold,
+                dtype,
+                n_jobs,
+            ),
+            shape=(n, n),
+            dtype=np.int8,
+        )
+
+    if k > 1 and not distance_band:
+        sw = sum(map(lambda x: sw ** x, range(1, k + 1)))
+        sw.setdiag(0)
+        sw.eliminate_zeros()
+        sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
+
+    wsp = WSP(sw, index=index, id_order=ids.tolist())
+    return wsp
 
 
 def w2da(data, w, attrs={}, coords=None):
@@ -105,7 +268,8 @@ def w2da(data, w, attrs={}, coords=None):
     if hasattr(w, 'index'):
         da = _index2da(data, w.index, attrs, coords)
     else:
-        raise AttributeError("Cannot convert deprecated W with no index attribute")
+        raise AttributeError(
+            "Cannot convert deprecated W with no index attribute")
     return da
 
 
@@ -146,7 +310,8 @@ def wsp2da(data, wsp, attrs={}, coords=None):
     if hasattr(wsp, 'index'):
         da = _index2da(data, wsp.index, attrs, coords)
     else:
-        raise AttributeError("Cannot convert deprecated wsp object with no index attribute")
+        raise AttributeError(
+            "Cannot convert deprecated wsp object with no index attribute")
     return da
 
 
@@ -205,24 +370,25 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     return da
 
 
-def _da_checker(da, layer, dims):
+def _da_checker(da, z_value, coords_labels):
     """
     xarray.dataarray checker for raster interface
 
     Parameters
     ----------
     da : xarray.DataArray
-        Input 2D or 3D DataArray with shape=(layer, lat, lon)
-    layer : int/string/float
-        Select the layer of 3D DataArray with multiple layers
-    dims : dictionary
-        Pass dimensions for coordinates and layers if they do not
+        Input 2D or 3D DataArray with shape=(z, y, x)
+    z_value : int/string/float
+        Select the z_value of 3D DataArray with multiple layers.
+    coords_labels : dictionary
+        Pass dimension labels for coordinates and layers if they do not
         belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
+        e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+        Default is {} empty dictionary.
 
     Returns
     -------
-    layer_id : int
+    z_id : int
         Returns the index of layer
     dims : dictionary
         Mapped dimensions of the DataArray
@@ -241,24 +407,28 @@ def _da_checker(da, layer, dims):
         raise ValueError(
             "da must be an array of integers or float")
     # default dimensions
-    def_dims = {
-        "lon": dims["lon"] if 'lon' in dims else (
-            "x" if hasattr(da, "x") else "lon"),
-        "lat": dims["lat"] if 'lat' in dims else (
-            "y" if hasattr(da, "y") else "lat")
+    def_labels = {
+        "x_label": coords_labels["x_label"] if 'x_label' in coords_labels else (
+            "x" if hasattr(da, "x") else "lon"
+        ),
+        "y_label": coords_labels["y_label"] if 'y_label' in coords_labels else (
+            "y" if hasattr(da, "y") else "lat"
+        )
     }
     if da.ndim == 3:
-        def_dims["layer"] = dims["layer"] if 'layer' in dims else (
-            "band" if hasattr(da, "band") else "time")
-        layer_id = 1
-        if layer is None:
-            if da.sizes[def_dims["layer"]] != 1:
+        def_labels["z_label"] = coords_labels["z_label"] if 'z_label' in coords_labels else (
+            "band" if hasattr(da, "band") else "time"
+        )
+    if da.ndim == 3:
+        z_id = 1
+        if z_value is None:
+            if da.sizes[def_labels["z_label"]] != 1:
                 warn('Multiple layers detected. Using first layer as default.')
         else:
-            layer_id += tuple(da[def_dims["layer"]]).index(layer)
+            z_id += tuple(da[def_labels["z_label"]]).index(z_value)
     else:
-        layer_id = None
-    return layer_id, def_dims
+        z_id = None
+    return z_id, def_labels
 
 
 def _index2da(data, index, attrs, coords):
@@ -316,129 +486,6 @@ def _index2da(data, index, attrs, coords):
     return da.sortby(dims[-2], False)
 
 
-def da2WSP(da, criterion="queen", layer=None, dims={}, k=1, n_jobs=1):
-    """
-    Create a WSP object from xarray.DataArray
-
-    Parameters
-    ----------
-    da : xarray.DataArray
-        Input 2D or 3D DataArray with shape=(layer, lat, lon)
-    criterion : {"rook", "queen"}
-        Type of contiguity. Default is queen.
-    layer : int/string/float
-        Select the layer of 3D DataArray with multiple layers.
-    dims : dictionary
-        Pass dimensions for coordinates and layers if they do not
-        belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. dims = {"lat": "latitude", "lon": "longitude", "layer": "year"}
-        Default is {} empty dictionary.
-    k : int
-        Order of queen contiguity, if k=1 max neighbors of a point
-        will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
-        Default is 1
-    n_jobs : int
-        Number of cores to be used in the sparse weight construction. If -1,
-        all available cores are used.
-
-    Returns
-    -------
-    w : libpysal.weights.WSP
-       instance of spatial weights class WSP
-
-    Examples
-    --------
-    >>> from libpysal.raster import da2WSP, testDataArray
-    >>> da = testDataArray().rename(
-            {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
-    >>> da.dims
-    ('layer', 'latitude', 'longitude')
-    >>> da.shape
-    (3, 4, 4)
-    >>> dims = {"layer": "layer", "lat": "latitude", "lon": "longitude"}
-    >>> wsp = da2WSP(da, layer=2, dims=dims)
-    >>> wsp.n
-    7
-    >>> pct_sp = wsp.sparse.nnz *1. / wsp.n**2
-    >>> "%.3f"%pct_sp
-    '0.286'
-    >>> print(wsp.sparse[4].todense())
-    [[0 0 0 1 0 1 0]]
-    >>> len(w.index)
-    7
-
-    See Also
-    --------
-    :class:`libpysal.weights.weights.WSP`
-    """
-    layer_id = _da_checker(da, layer, dims)[0]
-    shape = da.shape
-    if layer_id:
-        da = da[layer_id-1:layer_id]
-        shape = da[0].shape
-    ser = da.to_series()
-    mask = (ser != da.nodatavals[0]).to_numpy()
-    ids = np.where(mask)[0]
-    dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
-    n = len(ids)
-    ser = ser[ser != da.nodatavals[0]]
-    index = ser.index
-
-    if n_jobs != 1:
-        try:
-            import joblib
-        except (ModuleNotFoundError, ImportError):
-            warn(
-                f"Parallel processing is requested (n_jobs={n_jobs}),"
-                f" but joblib cannot be imported. n_jobs will be set"
-                f" to 1.",
-                stacklevel=2,
-            )
-            n_jobs = 1
-    if n_jobs == 1:
-        wsp = WSP(
-            sparse.coo_matrix(
-                _SWbuilder(
-                    *shape,
-                    ids,
-                    _idmap(ids, mask, dtype),
-                    criterion,
-                    k,
-                    dtype,
-                ),
-                shape=(n, n),
-                dtype=np.int8,
-            ),
-            index=index,
-            # temp
-            id_order=ids.tolist()
-        )
-    else:
-        if n_jobs == -1:
-            n_jobs = os.cpu_count()
-        # Parallel implementation
-        wsp = WSP(
-            sparse.coo_matrix(
-                _parSWbuilder(
-                    *shape,
-                    ids,
-                    _idmap(ids, mask, dtype),
-                    criterion,
-                    k,
-                    dtype,
-                    n_jobs,
-                ),
-                shape=(n, n),
-                dtype=np.int8,
-            ),
-            index=index,
-            # temp
-            id_order=ids.tolist()
-        )
-
-    return wsp
-
-
 @njit(fastmath=True)
 def _idmap(ids, mask, dtype):
     """
@@ -489,9 +536,7 @@ def _SWbuilder(
     criterion : str
         Type of contiguity.
     k : int
-        Order of queen contiguity, if k=1 max neighbors of a point
-        will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
-        Default is 1
+        Order of contiguity, Default is 1
     dtype : type
         Data type of the id_map array
 
@@ -506,7 +551,7 @@ def _SWbuilder(
         1D ones array containing columns value of each id
         in the sparse weight object
     """
-    rows, cols = compute_chunk(
+    rows, cols, ni = compute_chunk(
         nrows,
         ncols,
         ids,
@@ -515,7 +560,7 @@ def _SWbuilder(
         k,
         dtype,
     )
-    data = np.ones_like(rows, dtype=np.int8)
+    data = np.ones(ni, dtype=np.int8)
     return (data, (rows, cols))
 
 
@@ -545,11 +590,9 @@ def compute_chunk(
     criterion : str
         Type of contiguity.
     k : int
-        Order of queen contiguity, if k=1 max neighbors of a point
-        will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
-        Default is 1
+        Order of contiguity, Default is 1
     dtype : type
-        Data type of the id_map array
+        Data type of the rows and cols array
 
     Returns
     -------
@@ -559,19 +602,21 @@ def compute_chunk(
     cols : ndarray
         1D ones array containing columns value of each id
         in the sparse weight object
+    ni : int
+        Number of rows and cols
     """
     n = len(ids)
     d = 4 if criterion == "rook" else 8  # -> used for row, col preallocation
     if k > 1:
-        # only queen contiguity is supported right now
-        # this will capture all the circling neighbors
-        # of order <= K.
         d = int((k/2)*(2*8+(k-1)*8))
     # preallocating rows and cols
     rows = np.empty(d*n, dtype=dtype)
     cols = np.empty_like(rows)
     ni = 0
     for order in range(1, k+1):
+        condition = (order-1) if criterion == "queen" else (
+            (k-order) if ((k-order) < order) else (order-1)
+        )
         for i in range(n):
             id_i = ids[i]
             og_id = id_map[id_i]
@@ -583,7 +628,7 @@ def compute_chunk(
                     ni += 1
                     rows[ni], cols[ni] = id_neighbor, og_id
                     ni += 1
-                for j in range(order-1):
+                for j in range(condition):
                     if (id_i // ncols) < (nrows - j - 1):
                         id_neighbor = id_map[(id_i+order)+(ncols*(j+1))]
                         if id_neighbor:
@@ -606,7 +651,7 @@ def compute_chunk(
                     ni += 1
                     rows[ni], cols[ni] = id_neighbor, og_id
                     ni += 1
-                for j in range(order-1):
+                for j in range(condition):
                     if (id_i % ncols) >= j+1:
                         id_neighbor = id_map[id_i+(ncols*order)-j-1]
                         if id_neighbor:
@@ -621,7 +666,7 @@ def compute_chunk(
                             ni += 1
                             rows[ni], cols[ni] = id_neighbor, og_id
                             ni += 1
-                if d != 4:
+                if criterion == "queen" or ((k/order) >= 2.0):
                     if (id_i % ncols) >= order:
                         # south-west neighbor
                         id_neighbor = id_map[id_i+(ncols*order)-order]
@@ -638,8 +683,7 @@ def compute_chunk(
                             ni += 1
                             rows[ni], cols[ni] = id_neighbor, og_id
                             ni += 1
-    ni_arr = np.arange(ni, dtype=dtype)
-    return rows[ni_arr, ], cols[ni_arr, ]
+    return rows[:ni], cols[:ni], ni
 
 
 @njit(fastmath=True)
@@ -699,11 +743,9 @@ def _parSWbuilder(
     criterion : str
         Type of contiguity.
     k : int
-        Order of queen contiguity, if k=1 max neighbors of a point
-        will be 8 just like queen contiguity, for k=2 it'll be 8+16 and so on
-        Default is 1
+        Order of contiguity, Default is 1
     dtype : type
-        Data type of the id_map array
+        Data type of the rows and cols array
     n_jobs : int
         Number of cores to be used in the sparse weight construction. If -1,
         all available cores are used.
@@ -738,7 +780,6 @@ def _parSWbuilder(
             )
             for pars in chunk
         )
-    rows = np.concatenate([i[0] for i in worker_out])
-    cols = np.concatenate([i[1] for i in worker_out])
-    data = np.ones_like(rows, dtype=np.int8)
-    return (data, (rows, cols))
+    return (np.ones(sum([i[2] for i in worker_out]), dtype=np.int8), (
+        np.concatenate([i[0] for i in worker_out]),
+        np.concatenate([i[1] for i in worker_out])))
