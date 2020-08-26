@@ -105,9 +105,13 @@ def w_intersection(w1, w2, w_shape="w1", **kwargs):
 
     Returns
     -------
-
     w : libpysal.weights.W
         The intersection of two PySAL weights objects.
+
+    Raises
+    ------
+    ValueError
+        An invalid string value was passed to ``w_shape``.
 
     Notes
     -----
@@ -143,7 +147,7 @@ def w_intersection(w1, w2, w_shape="w1", **kwargs):
     elif w_shape == "min":
         neigh_keys = set(w1.neighbors.keys()).intersection(set(w2.neighbors.keys()))
     else:
-        raise Exception("invalid string passed to w_shape")
+        raise ValueError("Invalid string passed to w_shape.")
 
     neighbors = {}
     for i in neigh_keys:
@@ -188,6 +192,13 @@ def w_difference(w1, w2, w_shape="w1", constrained=True, **kwargs):
     w : libpysal.weights.W
         The difference of two PySAL weights objects.
 
+    Raises
+    ------
+    RuntimeError
+        An empty weights matrix was returned.
+    ValueError
+        An invalid string value was passed to ``w_shape``.
+    
     Notes
     -----
     
@@ -226,9 +237,9 @@ def w_difference(w1, w2, w_shape="w1", constrained=True, **kwargs):
     elif w_shape == "min":
         neigh_keys = set(w1.neighbors.keys()).difference(set(w2.neighbors.keys()))
         if not neigh_keys:
-            raise Exception("returned an empty weights matrix")
+            raise RuntimeError("Returned an empty weights matrix.")
     else:
-        raise Exception("invalid string passed to w_shape")
+        raise ValueError("Invalid string passed to w_shape.")
 
     neighbors = {}
     for i in neigh_keys:
@@ -283,6 +294,11 @@ def w_symmetric_difference(w1, w2, w_shape="all", constrained=True, **kwargs):
     w : libpysal.weights.W
         The symmetric difference of two PySAL weights objects.
 
+    Raises
+    ------
+    ValueError
+        An invalid string value was passed to ``w_shape``.
+    
     Notes
     -----
     
@@ -320,7 +336,7 @@ def w_symmetric_difference(w1, w2, w_shape="all", constrained=True, **kwargs):
             set(w2.neighbors.keys())
         )
     else:
-        raise Exception("invalid string passed to w_shape")
+        raise ValueError("Invalid string passed to w_shape.")
 
     neighbors = {}
     for i in neigh_keys:

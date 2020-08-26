@@ -112,11 +112,16 @@ def build_lattice_shapefile(nrows, ncols, out_file_name):
         The number of columns.
     out_file_name : str
         The shapefile name including the ``.shp`` file extension.
-
+    
+    Raises
+    ------
+    ValueError
+        An unrecognized file extension was given.
+    
     """
 
     if not out_file_name.endswith(".shp"):
-        raise ValueError("``out_file_name`` must end with .shp")
+        raise ValueError("'out_file_name' must end with '.shp'.")
     o = ps_open(out_file_name, "w")
     dbf_name = out_file_name.split(".")[0] + ".dbf"
     d = ps_open(dbf_name, "w")

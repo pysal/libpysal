@@ -836,6 +836,11 @@ class DistanceBand(W):
     neighbors : dict
         Neighbors keyed by observation id.
 
+    Raises
+    ------
+    Value Error
+        An array was unable to be instantiated with ``data``.
+    
     Examples
     --------
     
@@ -934,7 +939,7 @@ class DistanceBand(W):
                     )
                     self.data = self.kdtree.data
                 except:
-                    raise ValueError("Could not make array from data")
+                    raise ValueError("Could not make array from data.")
             else:
                 self.data = data
                 self.kdtree = None

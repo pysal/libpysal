@@ -437,7 +437,12 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
     -------
     w : libpysal.weights.Voronoi
         A voronoi-style instance of spatial weights.
-
+    
+    Raises
+    ------
+    ValueError
+        An unsupported value of ``criterion`` was passed in.
+    
     Examples
     --------
     
@@ -492,7 +497,6 @@ def _from_dataframe(df, **kwargs):
     
     Raises
     ------
-    
     NotImplementedError
         If the input dataframe is of any other geometry type than ``Point``,
         a ``ValueError`` is caught and raised as a ``NotImplementedError``.
@@ -536,7 +540,12 @@ def _build(polygons, criterion="rook", ids=None):
         The contents are ``(neighbors, ids)``, where ``neighbors`` is
         a dictionary describing contiguity relations and ``ids`` is the
         list of ids used to index that dictionary.
-
+    
+    Raises
+    ------
+    ValueError
+        The argument to the ``ids`` parameter contains duplicate entries.
+    
     Notes
     -----
     
@@ -585,6 +594,7 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     """This is a deprecated function. It builds a contiguity `W` from the
     polygons provided. As such, it is now identical to calling the class
     constructors for `Rook` or `Queen`.
+    
     """
 
     # Warn('This function is deprecated. Please use the Rook or Queen classes', UserWarning)

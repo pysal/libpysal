@@ -230,7 +230,14 @@ class W(object):
 
     @classmethod
     def from_shapefile(cls, *args, **kwargs):
-        """Construct a weights object from a shapefile."""
+        """Construct a weights object from a shapefile.
+        
+        Raises
+        ------
+        NotImplementedError
+            Use type-specific constructors, like Rook, Queen, DistanceBand, or Kernel.
+        
+        """
 
         # we could also just 'do the right thing,' but I think it'd make sense to
         # try and get people to use ``Rook.from_shapefile(shapefile)`` rather than
@@ -324,6 +331,11 @@ class W(object):
         weight_col : str
             Name of the column in which to store weight information.
         
+        Raises
+        ------
+        ImportError
+            Pandas must be installed to use this function.
+        
         Returns
         -------
         adjlist : pandas.DataFrame
@@ -360,6 +372,11 @@ class W(object):
         netx : networkx.Graph
             A ``networkx`` graph representation of the `W` object.
         
+        Raises
+        ------
+        ImportError
+            NetworkX must be installed to use this function.
+        
         """
 
         try:
@@ -390,6 +407,11 @@ class W(object):
         w : libpysal.weights.WSP
             A `WSP` object containing the same graph as the ``networkx`` graph.
         
+        Raises
+        ------
+        ImportError
+            NetworkX must be installed to use this function.
+            
         """
 
         try:
@@ -790,7 +812,14 @@ class W(object):
             first element of ``new_ids`` will replace the first element
             of ``w.id_order``, the second element of ``new_ids`` replaces
             the second element of ``w.id_order`` and so on.
-
+        
+        Raises
+        ------
+        ValueError
+            The length of ``old_ids`` does not match that of ``new_ids``.
+        ValueError
+            The list ``new_ids`` contains duplicates.
+        
         Examples
         --------
 
@@ -851,7 +880,12 @@ class W(object):
         ----------
         ordered_ids : sequence
             Identifiers for observations in specified order.
-
+        
+        Raises
+        ------
+        ValueError
+            The ``ordered_ids`` argument does not align with ``W.ids``.
+        
         Notes
         -----
 
@@ -900,7 +934,7 @@ class W(object):
             self._id_order_set = True
             self._reset()
         else:
-            raise Exception("'ordered_ids' do not align with 'W.ids'.")
+            raise ValueError("'ordered_ids' do not align with 'W.ids'.")
 
     def __get_id_order(self):
         """Returns the ids for the observations in the order in which they
@@ -1349,6 +1383,11 @@ class W(object):
         ax : matplotlib.axes.Axes
             Axis on which the plot is made.
         
+        Raises
+        ------
+        ImportError
+            Matplotlib must be installed to use this function.
+        
         Notes
         -----
         If you'd like to overlay the actual shapes from the 
@@ -1441,7 +1480,16 @@ class WSP(object):
         :math:`s0=\sum_i \sum_j w_{i,j}`.
     trcWtW_WW : float
         Trace of :math:`W^{'}W + WW`.
-
+    
+    Raises
+    ------
+    ValueError
+        A scipy sparse object must be passed in.
+    ValueError
+        The weights object must be square.
+    ValueError
+        The number of values in ``id_order`` must match shape of ``sparse``.
+    
     Examples
     --------
 
@@ -1476,7 +1524,7 @@ class WSP(object):
 
         if id_order:
             if len(id_order) != self.n:
-                msg = "The Number of values in 'id_order' must match shape of 'sparse'."
+                msg = "The number of values in 'id_order' must match shape of 'sparse'."
                 raise ValueError(msg)
 
         self.id_order = id_order

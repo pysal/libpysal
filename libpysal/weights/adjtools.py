@@ -39,6 +39,11 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
         An adjacency list (or modifies ``alist`` inplace)
         with the function applied to each row.
     
+    Raises
+    ------
+    ImportError
+        Pandas must be installed to use this function.
+    
     """
 
     try:
@@ -77,9 +82,9 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
 
 
 def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
-    """This function is used when ``X`` is multi-dimensional.
-    See ``libpysal.weights.adjtools.adjlist_apply()``
-    for parameters and returns information.
+    """This function is used when ``X`` is multi-dimensional. See
+    ``libpysal.weights.adjtools.adjlist_apply()`` for
+    Parameters, Returns, and Raises information.
     
     """
 
@@ -135,6 +140,11 @@ def _get_W_and_alist(W, alist, skip_verify=False):
     If this completes successfully, the `W` and ``adjlist`` will both be returned and
     are checked for equality. See ``libpysal.weights.adjtools.adjlist_apply()``
     for parameters and returns information.
+    
+    Raises
+    ------
+    ValueError
+        Either W or Adjacency List must be provided.
     
     """
 
@@ -199,6 +209,11 @@ def adjlist_map(
     alist : list
         An adjacency list (or modifies one if provided) with each function
         applied to the column of the data.
+    
+    Raises
+    ------
+    ImportError
+        Pandas must be installed to use this function.
     
     """
 

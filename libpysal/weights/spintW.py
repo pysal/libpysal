@@ -39,7 +39,14 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
         A sparse spatial contiguity `W` object for assocations between flows
         between :math:`o` origins and :math:`d` destinations,
         :math:`(o \cdot d)\cdot(o \cdot d)`.
-
+    
+    Raises
+    ------
+    AttributeError
+        The ``Wo`` argument is not binary.
+    AttributeError
+        The ``Wd`` argument is not binary.
+    
     Examples
     --------
 
@@ -116,7 +123,12 @@ def netW(link_list, share="A", transform="r", **kwargs):
         A nodal contiguity `W` object for network edges or
         flows representing the binary adjacency of the network
         edges given a definition of nodal relationships.
-
+    
+    Raises
+    ------
+    AttributeError
+        The ``share`` parameter must be ``'O'``, ``'D'``, ``'OD'``, or ``'C'``.
+    
     Examples
     --------
     
@@ -166,7 +178,7 @@ def netW(link_list, share="A", transform="r", **kwargs):
                     neighbors[key].append(neigh)
             else:
                 raise AttributeError(
-                    "Parameter 'share' must be 'O', 'D'," " 'OD', or 'C'"
+                    "Parameter 'share' must be 'O', 'D', 'OD', or 'C'."
                 )
 
     netW = W(neighbors, **kwargs)
@@ -277,7 +289,12 @@ def mat2L(edge_matrix):
         A matrix where rows denote network edge origins, columns denote
         network edge destinations, and non-zero entries denote the
         existence of an edge between a given origin and destination.
-
+    
+    Raises
+    ------
+    AttributeError
+        The input matrix is not two dimensional.
+    
     Returns
     -------
     edge_list : list
@@ -291,7 +308,7 @@ def mat2L(edge_matrix):
             "Matrix of network edges should be two dimensions"
             "with edge origins on one axis and edge destinations on the"
             "second axis with non-zero matrix entires denoting an edge"
-            "between and origin and destination"
+            "between and origin and destination."
         )
 
     edge_list = []

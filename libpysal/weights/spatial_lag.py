@@ -165,13 +165,17 @@ def lag_categorical(w, y, ties="tryself"):
     if isinstance(y, list):
         y = np.array(y)
     orig_shape = y.shape
+
     if len(orig_shape) > 1:
         if orig_shape[1] > 1:
-            return np.vstack([lag_categorical(w, col) for col in y.T]).T
+            output = np.vstack([lag_categorical(w, col) for col in y.T]).T
+            return output
+
     y = y.flatten()
     output = np.zeros_like(y)
     labels = np.unique(y)
     normalized_labels = np.zeros(y.shape, dtype=np.int)
+
     for i, label in enumerate(labels):
         normalized_labels[y == label] = i
     for focal_name, neighbors in w:
@@ -220,6 +224,11 @@ def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
     -------
     label : int
         An integer denoting which label to use to label the observation.
+    
+    Raises
+    ------
+    KeyError
+        The tie-breaking method for categorical lag is not recognized.
     
     """
 
