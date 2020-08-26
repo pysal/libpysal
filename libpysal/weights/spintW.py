@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 
 def ODW(Wo, Wd, transform="r", silence_warnings=True):
-    """Construct an :math:`(o \cdot d)\cdot(o \cdot d)`
+    """Construct an :math:`(o \cdot d)\\times(o \cdot d)`
     origin-destination style spatial weight for :math:`o \cdot d`
     flows using standard spatial weights on :math:`o` origins
     and :math:`d` destinations. Input spatial weights must be
@@ -38,7 +38,7 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
     Ww : libpysal.weights.WSP
         A sparse spatial contiguity `W` object for assocations between flows
         between :math:`o` origins and :math:`d` destinations,
-        :math:`(o \cdot d)\cdot(o \cdot d)`.
+        :math:`(o \cdot d)\\times(o \cdot d)`.
     
     Raises
     ------
