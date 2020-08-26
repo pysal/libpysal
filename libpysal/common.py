@@ -1,3 +1,6 @@
+"""Function used throughout the PySAL ecosystem.
+"""
+
 import copy
 import sys
 import time
@@ -73,7 +76,7 @@ def simport(modname):
     Returns
     -------
     _simport : tuple
-        Either (True, Module) or (False, None) depending
+        Either (``True``, ``<MODULE>``) or (``False``, None) depending
         on whether the import succeeded.
 
     Notes

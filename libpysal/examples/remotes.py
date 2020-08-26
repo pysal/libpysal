@@ -25,10 +25,12 @@ def poll_remotes():
     except:
         warnings.warn("Remote data sets not available. Check connection.")
         return {}
+
     soup = BeautifulSoup(page.text, "html.parser")
     samples = soup.find(class_="samples")
     rows = samples.find_all("tr")
     datasets = {}
+
     for row in rows[1:]:
         data = row.find_all("td")
         name = data[0].text.strip()
@@ -41,7 +43,6 @@ def poll_remotes():
         datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
     # Other Remotes
-
 
     # rio
     name = "Rio Grande do Sul"
@@ -104,9 +105,11 @@ def download(datasets=datasets):
 
     names = list(datasets.keys())
     names.sort()
+
     for name in names:
         print(name)
         example = datasets[name]
+
         try:
             example.download()
         except:

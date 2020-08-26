@@ -1,5 +1,5 @@
-""" The :mod:`libpysal.examples` module includes a number of small built-in
-    example datasets as well as functions to fetch larger datasets.
+"""The ``libpysal.examples`` module includes a number of small built-in
+example datasets as well as functions to fetch larger datasets.
 """
 
 from .base import example_manager

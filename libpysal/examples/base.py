@@ -22,10 +22,11 @@ PYSALDATA = "pysal_data"
 
 
 def get_data_home():
-    """Return the path of the ``libpysal`` data directory. This folder (``~/pysal_data``)
-    is used by some large dataset loaders to avoid downloading the data multiple times.
-    Alternatively, it can be set by the 'PYSALDATA' environment variable or programmatically
-    by giving an explicit folder path. The ``'~'`` symbol is expanded to the user home
+    """Return the path of the ``libpysal`` data directory. This folder
+    (``~/pysal_data``) is used by some large dataset loaders to avoid
+    downloading the data multiple times. Alternatively, it can be set
+    by the 'PYSALDATA' environment variable or programmatically by giving
+    an explicit folder path. The ``'~'`` symbol is expanded to the user home
     folder If the folder does not already exist, it is automatically created.
     
     Returns
@@ -39,6 +40,7 @@ def get_data_home():
     data_home = expanduser(data_home)
     if not exists(data_home):
         makedirs(data_home)
+
     return data_home
 
 
@@ -55,12 +57,8 @@ def get_list_of_files(dir_name):
     all_files : list
         All file and directory paths.
     
-    Raises
-    ------
-    FileNotFoundError
-        If the file or directory is not found.
-    
     """
+
     # names in the given directory
     all_files = list()
     try:
@@ -89,7 +87,7 @@ def type_of_script() -> str:
             return "jupyter"
         if "terminal" in ipy_str:
             return "ipython"
-    except:
+    except NameError:
         return "terminal"
 
 
@@ -114,7 +112,7 @@ class Example:
     Attributes
     ----------
     root : str
-        The ``name`` parameter with filled spaces (_).
+        The ``name`` parameter with filled underscores (``'_`'`).
     installed : bool
         ``True`` if the example is installed, otherwise ``False``.
     zipfile : zipfile.ZipFile
@@ -141,12 +139,15 @@ class Example:
         """Get the path for local file."""
 
         file_list = self.get_file_list()
+
         for file_path in file_list:
             base_name = os.path.basename(file_path)
             if file_name == base_name:
                 return file_path
+
         if verbose:
             print("{} is not a file in this example".format(file_name))
+
         return None
 
     def downloaded(self) -> bool:
@@ -156,20 +157,24 @@ class Example:
         if os.path.isdir(path):
             self.installed = True
             return True
+
         return False
 
     def explain(self) -> None:
         """Provide a description of the example."""
 
         file_name = self.explain_url.split("/")[-1]
+
         if file_name == "README.md":
             explain_page = requests.get(self.explain_url)
             crawled = BeautifulSoup(explain_page.text, "html.parser")
             print(crawled.text)
             return None
+
         if type_of_script() == "terminal":
             webbrowser.open(self.explain_url)
             return None
+
         from IPython.display import IFrame
 
         return IFrame(self.explain_url, width=700, height=350)
@@ -190,24 +195,31 @@ class Example:
 
     def get_file_list(self) -> Union[list, None]:
         """Get the list of local files for the example."""
+
         path = self.get_local_path()
+
         if os.path.isdir(path):
             return get_list_of_files(path)
+
         return None
 
     def json_dict(self) -> dict:
         """Container for example meta data."""
+
         meta = {}
         meta["name"] = self.name
         meta["description"] = self.description
         meta["download_url"] = self.download_url
         meta["explain_url"] = self.explain_url
         meta["root"] = self.root
+
         return meta
 
     def load(self, file_name) -> io.FileIO:
         """Dispatch to libpysal.io to open file."""
+
         pth = self.get_path(file_name)
+
         if pth:
             return ps_open(pth)
 
@@ -230,24 +242,30 @@ class Examples:
 
     def available(self):
         """Report available datasets."""
+
         datasets = self.datasets
         names = list(datasets.keys())
         names.sort()
         rows = []
+
         for name in names:
             description = datasets[name].description
             installed = datasets[name].installed
             rows.append([name, description, installed])
+
         datasets = pandas.DataFrame(
             data=rows, columns=["Name", "Description", "Installed"]
         )
+
         datasets.style.set_properties(subset=["text"], **{"width": "300px"})
         print(datasets.to_string())
 
-    def load(self, example_name: str) -> Example:
+    def load(self, example_name: str) -> Union[Example, None]:
         """Load example dataset, download if not locally available."""
+
         if example_name in self.datasets:
             example = self.datasets[example_name]
+
             if example.installed:
                 return example
             else:
@@ -260,6 +278,7 @@ class Examples:
 
     def download_remotes(self):
         """Download all remotes."""
+
         names = list(self.remotes.keys())
         names.sort()
 
@@ -273,7 +292,9 @@ class Examples:
 
     def get_installed_names(self) -> list:
         """Return names of all currently installed datasets."""
+
         ds = self.datasets
+
         return [name for name in ds if ds[name].installed]
 
 
