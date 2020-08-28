@@ -347,15 +347,15 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         return obj
 
     def seek(self, n: int):
-        """Seek the `FileObj` to the beginning of the n'th record.
-        If ids are set, seeks to the beginning of the record at id, ``n``.
+        """Seek the `FileObj` to the beginning of the ``n``'th record.
+        If IDs are set, seeks to the beginning of the record at ID, ``n``.
         """
 
         self._complain_ifclosed(self.closed)
         self.pos = n
 
     def tell(self) -> int:
-        """Return id (or offset) of next object."""
+        """Return ID (or offset) of next object."""
 
         self._complain_ifclosed(self.closed)
 
