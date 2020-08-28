@@ -5,7 +5,8 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, Levi John Wolf <levi.john.wolf@gmail
 from ..cg.kdtree import KDTree
 from .weights import W, WSP
 from .util import isKDTree, get_ids, get_points_array_from_shapefile,\
-                  get_points_array, WSP2W
+    get_points_array, WSP2W
+from .raster import _da_checker
 import copy
 from warnings import warn as Warn
 from scipy.spatial import distance_matrix
@@ -17,7 +18,7 @@ def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
     """
     This is deprecated. Use the pysal.weights.KNN class instead. 
     """
-    #Warn('This function is deprecated. Please use pysal.weights.KNN', UserWarning)
+    # Warn('This function is deprecated. Please use pysal.weights.KNN', UserWarning)
     return KNN(data, k=k, p=p, ids=ids, radius=radius,
             distance_metric=distance_metric)
 
@@ -84,17 +85,19 @@ class KNN(W):
     --------
     :class:`libpysal.weights.weights.W`
     """
+
     def __init__(self, data, k=2, p=2, ids=None, radius=None,
                  distance_metric='euclidean', **kwargs):
-        if radius is not None: 
-            distance_metric='arc'
+        if radius is not None:
+            distance_metric = 'arc'
         if isKDTree(data):
             self.kdtree = data
             self.data = self.kdtree.data
         else:
-            self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
+            self.kdtree = KDTree(data, radius=radius,
+                                 distance_metric=distance_metric)
             self.data = self.kdtree.data
-        self.k = k 
+        self.k = k
         self.p = p
         this_nnq = self.kdtree.query(self.data, k=k+1, p=p)
 
@@ -103,7 +106,7 @@ class KNN(W):
             ids = list(range(to_weight.shape[0]))
 
         neighbors = {}
-        for i,row in enumerate(to_weight):
+        for i, row in enumerate(to_weight):
             row = row.tolist()
             row.remove(i)
             row = [ids[j] for j in row]
@@ -290,8 +293,8 @@ class KNN(W):
         object is reweighted in place.
         """
         if (new_data is not None):
-            new_data = np.asarray(new_data).reshape(-1,2)
-            data = np.vstack((self.data, new_data)).reshape(-1,2)
+            new_data = np.asarray(new_data).reshape(-1, 2)
+            data = np.vstack((self.data, new_data)).reshape(-1, 2)
             if new_ids is not None:
                 ids = copy.deepcopy(self.id_order)
                 ids.extend(list(new_ids))
@@ -312,6 +315,7 @@ class KNN(W):
             self.__init__(data, ids=ids, k=k, p=p)
         else:
             return KNN(data, ids=ids, k=k, p=p)
+
 
 class Kernel(W):
     """
@@ -475,13 +479,14 @@ class Kernel(W):
     {0: [1.0, 0.35206533556593145, 0.3412334260702758], 1: [0.35206533556593145, 1.0, 0.2419707487162134, 0.3412334260702758, 0.31069657591175387], 2: [0.2419707487162134, 1.0, 0.31069657591175387], 3: [0.3412334260702758, 0.3412334260702758, 1.0, 0.3011374490937829, 0.26575287272131043], 4: [0.31069657591175387, 0.31069657591175387, 0.3011374490937829, 1.0, 0.35206533556593145], 5: [0.26575287272131043, 0.35206533556593145, 1.0]}
 
     """
+
     def __init__(self, data, bandwidth=None, fixed=True, k=2,
                  function='triangular', eps=1.0000001, ids=None,
-                 diagonal=False, 
-                 distance_metric='euclidean', radius=None, 
+                 diagonal=False,
+                 distance_metric='euclidean', radius=None,
                  **kwargs):
         if radius is not None:
-            distance_metric='arc'
+            distance_metric = 'arc'
         if isKDTree(data):
             self.kdtree = data
             self.data = self.kdtree.data
@@ -626,7 +631,8 @@ class Kernel(W):
             if not isinstance(di, np.ndarray):
                 di = np.asarray([di] * len(nids))
                 ni = np.asarray([ni] * len(nids))
-            zi = np.array([dict(list(zip(ni, di)))[nid] for nid in nids]) / bw[i]
+            zi = np.array([dict(list(zip(ni, di)))[nid]
+                           for nid in nids]) / bw[i]
             z.append(zi)
         zs = z
         # functions follow Anselin and Rey (2010) table 5.4
@@ -743,8 +749,8 @@ class DistanceBand(W):
     """
 
     def __init__(self, data, threshold, p=2, alpha=-1.0, binary=True, ids=None,
-            build_sp=True, silence_warnings=False, 
-            distance_metric='euclidean', radius=None):
+                 build_sp=True, silence_warnings=False,
+                 distance_metric='euclidean', radius=None):
         """Casting to floats is a work around for a bug in scipy.spatial.
         See detail in pysal issue #126.
 
@@ -752,7 +758,7 @@ class DistanceBand(W):
         if ids is not None:
             ids = list(ids)
         if radius is not None:
-            distance_metric='arc'
+            distance_metric = 'arc'
         self.p = p
         self.threshold = threshold
         self.binary = binary
@@ -769,18 +775,19 @@ class DistanceBand(W):
                     data = np.asarray(data)
                     if data.dtype.kind != 'f':
                         data = data.astype(float)
-                    self.kdtree = KDTree(data, 
-                                         distance_metric=distance_metric, 
+                    self.kdtree = KDTree(data,
+                                         distance_metric=distance_metric,
                                          radius=radius)
                     self.data = self.kdtree.data
                 except:
-                    raise ValueError("Could not make array from data")        
+                    raise ValueError("Could not make array from data")
             else:
                 self.data = data
-                self.kdtree = None       
+                self.kdtree = None
         self._band()
         neighbors, weights = self._distance_to_W(ids)
-        W.__init__(self, neighbors, weights, ids, silence_warnings=self.silence_warnings)
+        W.__init__(self, neighbors, weights, ids,
+                   silence_warnings=self.silence_warnings)
 
     @classmethod
     def from_shapefile(cls, filepath, threshold, idVariable=None, **kwargs):
@@ -846,42 +853,47 @@ class DistanceBand(W):
         """
         if self.build_sp:
             self.dmat = self.kdtree.sparse_distance_matrix(
-                    self.kdtree, max_distance=self.threshold, p=self.p).tocsr()
+                self.kdtree, max_distance=self.threshold, p=self.p).tocsr()
         else:
             if str(self.kdtree).split('.')[-1][0:10] == 'Arc_KDTree':
                 raise TypeError('Unable to calculate dense arc distance matrix;'
-            	        ' parameter "build_sp" must be set to True for arc'
-            	        ' distance type weight')
-            self.dmat = self._spdistance_matrix(self.data, self.data, self.threshold)
-
+                                ' parameter "build_sp" must be set to True for arc'
+                                ' distance type weight')
+            self.dmat = self._spdistance_matrix(
+                self.data, self.data, self.threshold)
 
     def _distance_to_W(self, ids=None):
         if self.binary:
-            self.dmat[self.dmat>0] = 1
+            self.dmat[self.dmat > 0] = 1
             self.dmat.eliminate_zeros()
-            tempW = WSP2W(WSP(self.dmat, id_order=ids), silence_warnings=self.silence_warnings)
+            tempW = WSP2W(WSP(self.dmat, id_order=ids),
+                          silence_warnings=self.silence_warnings)
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
             weight_vals = list(tempW.weights.values())
-            weights = dict(list(zip(weight_keys, list(map(list, weight_vals)))))
+            weights = dict(
+                list(zip(weight_keys, list(map(list, weight_vals)))))
             return neighbors, weights
         else:
             weighted = self.dmat.power(self.alpha)
-            weighted[weighted==np.inf] = 0
+            weighted[weighted == np.inf] = 0
             weighted.eliminate_zeros()
-            tempW = WSP2W(WSP(weighted, id_order=ids), silence_warnings=self.silence_warnings)
+            tempW = WSP2W(WSP(weighted, id_order=ids),
+                          silence_warnings=self.silence_warnings)
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
             weight_vals = list(tempW.weights.values())
-            weights = dict(list(zip(weight_keys, list(map(list, weight_vals)))))
+            weights = dict(
+                list(zip(weight_keys, list(map(list, weight_vals)))))
             return neighbors, weights
 
-    def _spdistance_matrix(self, x,y, threshold=None):
-        dist = distance_matrix(x,y)
+    def _spdistance_matrix(self, x, y, threshold=None):
+        dist = distance_matrix(x, y)
         if threshold is not None:
             zeros = dist > threshold
             dist[zeros] = 0
         return sp.csr_matrix(dist)
+
 
 def _test():
     import doctest
@@ -891,6 +903,7 @@ def _test():
     np.set_printoptions(suppress=True)
     doctest.testmod()
     np.set_printoptions(suppress=start_suppress)
+
 
 if __name__ == '__main__':
     _test()

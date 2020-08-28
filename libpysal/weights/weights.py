@@ -1353,7 +1353,7 @@ class WSP(object):
 
     """
 
-    def __init__(self, sparse, id_order=None):
+    def __init__(self, sparse, id_order=None, index=None):
         if not scipy.sparse.issparse(sparse):
             raise ValueError("must pass a scipy sparse object")
         rows, cols = sparse.shape
@@ -1367,6 +1367,18 @@ class WSP(object):
                     "Number of values in id_order must match shape of sparse"
                 )
         self.id_order = id_order
+        # temp addition of index attribute
+        import pandas as pd  # will be removed after refactoring is done
+        if index is not None:
+            if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
+                raise TypeError("index must be an instance of pandas.Index dtype")
+            if len(index) != self.n:
+                raise ValueError(
+                    "Number of values in index must match shape of sparse"
+                )
+        else:
+            index = pd.RangeIndex(self.n)
+        self.index = index
         self._cache = {}
 
     @property
