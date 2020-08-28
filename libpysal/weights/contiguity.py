@@ -192,7 +192,7 @@ class Rook(W):
         z_value=None,
         coords_labels={},
         k=1,
-        distance_band=False,
+        include_nas=False,
         sparse=False,
         **kwargs,
     ):
@@ -208,14 +208,15 @@ class Rook(W):
         coords_labels : dictionary
             Pass dimension labels for coordinates and layers if they do not
             belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+            e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
         k : int
-            Order of contiguity, Default is 1
-        distance_band : boolean
-            If true missing values will be assumed as non-missing when
+            Order of contiguity, this will select all neighbors upto kth order.
+            Default is 1.
+        include_nas : boolean
+            If True, missing values will be assumed as non-missing when
             selecting higher_order neighbors, Default is False
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
@@ -231,27 +232,12 @@ class Rook(W):
         See Also
         --------
         :class:`libpysal.weights.weights.W`
-        :class:`libpysal.weights.weights.WSP`   
+        :class:`libpysal.weights.weights.WSP`
         """
         if sparse:
-            w = da2WSP(
-                da,
-                'rook',
-                z_value,
-                coords_labels,
-                k,
-                distance_band
-            )
+            w = da2WSP(da, "rook", z_value, coords_labels, k, include_nas)
         else:
-            w = da2W(
-                da,
-                'rook',
-                z_value,
-                coords_labels,
-                k,
-                distance_band,
-                **kwargs
-            )
+            w = da2W(da, "rook", z_value, coords_labels, k, include_nas, **kwargs)
         return w
 
 
@@ -427,7 +413,7 @@ class Queen(W):
         z_value=None,
         coords_labels={},
         k=1,
-        distance_band=False,
+        include_nas=False,
         sparse=False,
         **kwargs,
     ):
@@ -443,14 +429,15 @@ class Queen(W):
         coords_labels : dictionary
             Pass dimension labels for coordinates and layers if they do not
             belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+            e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
             type of weight object. Default is False. For sparse, sparse = True
         k : int
-            Order of contiguity, Default is 1
-        distance_band : boolean
-            If true missing values will be assumed as non-missing when
+            Order of contiguity, this will select all neighbors upto kth order.
+            Default is 1.
+        include_nas : boolean
+            If True, missing values will be assumed as non-missing when
             selecting higher_order neighbors, Default is False
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
@@ -469,24 +456,9 @@ class Queen(W):
         :class:`libpysal.weights.weights.WSP`
         """
         if sparse:
-            w = da2WSP(
-                da,
-                'queen',
-                z_value,
-                coords_labels,
-                k,
-                distance_band
-            )
+            w = da2WSP(da, "queen", z_value, coords_labels, k, include_nas)
         else:
-            w = da2W(
-                da,
-                'queen',
-                z_value,
-                coords_labels,
-                k,
-                distance_band,
-                **kwargs
-            )
+            w = da2W(da, "queen", z_value, coords_labels, k, include_nas, **kwargs)
         return w
 
 

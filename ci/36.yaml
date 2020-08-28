@@ -12,7 +12,5 @@ dependencies:
   - matplotlib
   # optional
   - geopandas
-  - numba
   - xarray
-  - joblib
   - zstd
