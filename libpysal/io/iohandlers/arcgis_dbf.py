@@ -83,17 +83,19 @@ class ArcGISDbfIO(fileio.FileIO):
         Raises
         ------
         ValueError
+            Raised when the weights data structure is incorrect.
         TypeError
+            Raised when the IDs are not integers.
         
         Examples
         --------
 
-        Type 'dir(w)' at the interpreter to see what methods are supported.
+        Type ``dir(w)`` at the interpreter to see what methods are supported.
         Open an ArcGIS ``.dbf`` file and read it into a PySAL weights object.
 
         >>> import libpysal
         >>> w = libpysal.io.open(
-        ...     libpysal.examples.get_path('arcgis_ohio.dbf'),'r','arcgis_dbf'
+        ...     libpysal.examples.get_path('arcgis_ohio.dbf'), 'r', 'arcgis_dbf'
         ... ).read()
 
         Get the number of observations from the header.
@@ -133,7 +135,7 @@ class ArcGISDbfIO(fileio.FileIO):
         id_spec = self.file.field_spec[startPos]
 
         if id_spec[0] != "N":
-            raise TypeError("The data type for ids should be integer.")
+            raise TypeError("The data type for IDs should be integer.")
         self.id_var = id_var
 
         weights = {}
@@ -162,18 +164,22 @@ class ArcGISDbfIO(fileio.FileIO):
         ----------
         obj : libpysal.weights.W
             A ``libpysal.weights.W`` object.
+        useIdIndex : bool
+            Use the `W` IDs and remap (``True``). Default is ``False``.
 
         Raises
         ------
         TypeError
+            Raised when the IDs in input ``obj`` are not integers.
         TypeError
+            Raised when the input ``obj`` is not a PySAL `W`.
 
         Examples
         --------
 
         >>> import tempfile, libpysal, os
         >>> testfile = libpysal.io.open(
-        ...     libpysal.examples.get_path('arcgis_ohio.dbf'),'r','arcgis_dbf'
+        ...     libpysal.examples.get_path('arcgis_ohio.dbf'), 'r', 'arcgis_dbf'
         ... )
         >>> w = testfile.read()
 
@@ -181,7 +187,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
         >>> f = tempfile.NamedTemporaryFile(suffix='.dbf')
 
-        Reassign to new variable.
+        Reassign to a new variable.
 
         >>> fname = f.name
 
@@ -191,7 +197,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
         Open the new file in write mode.
 
-        >>> o = libpysal.io.open(fname,'w','arcgis_dbf')
+        >>> o = libpysal.io.open(fname, 'w', 'arcgis_dbf')
 
         Write the Weights object into the open file.
 
@@ -200,7 +206,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
         Read in the newly created text file.
 
-        >>> wnew =  libpysal.io.open(fname,'r','arcgis_dbf').read()
+        >>> wnew =  libpysal.io.open(fname, 'r', 'arcgis_dbf').read()
 
         Compare values from old to new.
 
