@@ -8,8 +8,8 @@ import os
 
 class test_Wk1IO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('spat-sym-us.wk1')
-        self.obj = Wk1IO(test_file, 'r')
+        self.test_file = test_file = pysal_examples.get_path("spat-sym-us.wk1")
+        self.obj = Wk1IO(test_file, "r")
 
     def test_close(self):
         f = self.obj
@@ -30,15 +30,16 @@ class test_Wk1IO(unittest.TestCase):
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix='.wk1')
+        f = tempfile.NamedTemporaryFile(suffix=".wk1")
         fname = f.name
         f.close()
-        o = psopen(fname, 'w')
+        o = psopen(fname, "w")
         o.write(w)
         o.close()
-        wnew = psopen(fname, 'r').read()
+        wnew = psopen(fname, "r").read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
         os.remove(fname)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -9,8 +9,8 @@ import warnings
 
 class test_ArcGISDbfIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('arcgis_ohio.dbf')
-        self.obj = ArcGISDbfIO(test_file, 'r')
+        self.test_file = test_file = pysal_examples.get_path("arcgis_ohio.dbf")
+        self.obj = ArcGISDbfIO(test_file, "r")
 
     def test_close(self):
         f = self.obj
@@ -23,7 +23,10 @@ class test_ArcGISDbfIO(unittest.TestCase):
             w = self.obj.read()
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
-                assert "Missing Value Found, setting value to pysal.MISSINGVALUE" in str(warn[0].message)
+                assert (
+                    "Missing Value Found, setting value to libpysal.MISSINGVALUE."
+                    in str(warn[0].message)
+                )
         self.assertEqual(88, w.n)
         self.assertEqual(5.25, w.mean_neighbors)
         self.assertEqual([1.0, 1.0, 1.0, 1.0], list(w[1].values()))
@@ -40,18 +43,22 @@ class test_ArcGISDbfIO(unittest.TestCase):
             w = self.obj.read()
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
-                assert "Missing Value Found, setting value to pysal.MISSINGVALUE" in str(warn[0].message)
-        f = tempfile.NamedTemporaryFile(suffix='.dbf')
+                assert (
+                    "Missing Value Found, setting value to libpysal.MISSINGVALUE."
+                    in str(warn[0].message)
+                )
+        f = tempfile.NamedTemporaryFile(suffix=".dbf")
         fname = f.name
         f.close()
-        o = psopen(fname, 'w', 'arcgis_dbf')
+        o = psopen(fname, "w", "arcgis_dbf")
         o.write(w)
         o.close()
-        f = psopen(fname, 'r', 'arcgis_dbf')
+        f = psopen(fname, "r", "arcgis_dbf")
         wnew = f.read()
         f.close()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
         os.remove(fname)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
