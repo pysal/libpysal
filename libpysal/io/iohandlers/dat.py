@@ -33,7 +33,11 @@ class DatIO(gwt.GwtIO):
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-
+        
+        Raises
+        ------
+        StopIteration
+        
         Examples
         --------
 

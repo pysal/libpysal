@@ -82,6 +82,8 @@ class ArcGISDbfIO(fileio.FileIO):
         
         Raises
         ------
+        StopIteration
+        
         ValueError
             Raised when the weights data structure is incorrect.
         TypeError

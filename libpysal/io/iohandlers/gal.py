@@ -52,10 +52,18 @@ class GalIO(fileio.FileIO):
         return self._typ
 
     def _set_data_type(self, typ):
+        """
+        
+        Raises
+        ------
+        TypeError
+            Raised when ``typ`` is not a callable.
+        
+        """
         if callable(typ):
             self._typ = typ
         else:
-            raise TypeError("Expecting a callable")
+            raise TypeError("Expecting a callable.")
 
     data_type = property(fset=_set_data_type, fget=_get_data_type)
 

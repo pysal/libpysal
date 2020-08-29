@@ -73,6 +73,8 @@ class ArcGISTextIO(gwt.GwtIO):
         
         Raises
         ------
+        StopIteration
+        
         TypeError
             Raised when the IDs are not integers.
         

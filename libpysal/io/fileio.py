@@ -211,6 +211,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         Raises
         ------
         AssertionError
+            Raised when IDs are not unique.
         
         """
 
@@ -252,6 +253,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         Raises
         ------
         ValueError
+            Raised when a file is already closed.
         
         """
         if closed:
@@ -263,8 +265,9 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         Raises
         ------
         TypeError
-        
+            Raised when a cast object in not callable.
         KeyError
+            Raised when a key is not present.
         
         """
         if key in self.header:
@@ -277,7 +280,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                     assert hasattr(typ, "__call__")
                     self._spec[self.header.index(key)] = typ
                 except AssertionError:
-                    raise TypeError("Cast Objects must be callable.")
+                    raise TypeError("Cast objects must be callable.")
         else:
             raise KeyError("%s" % key)
 
@@ -287,6 +290,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         Raises
         ------
         ValueError
+            Raised when a value could not be cast a particular type.
         
         """
         if self._spec and row:
@@ -300,11 +304,10 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                             raise ValueError
                         r.append(f(v))
                     except ValueError:
-                        warn(
-                            "Value '%r' could not be cast to %s, value set to MISSINGVALUE"
-                            % (v, str(f)),
-                            RuntimeWarning,
-                        )
+                        msg = "Value '%r' could not be cast to %s, "
+                        msg += "value set to MISSINGVALUE."
+                        msg = msg % (v, str(f))
+                        warn(msg, RuntimeWarning)
                         r.append(MISSINGVALUE)
                 return r
 
@@ -317,7 +320,8 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         Raises
         ------
         StopIteration
-        
+            Raised when a row is empty.
+            
         """
 
         self._complain_ifclosed(self.closed)
@@ -365,6 +369,12 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         """Read at most ``n`` objects, less if read hits EOF.
         If size is negative or omitted read all objects until EOF.
         Returns ``None`` if EOF is reached before any objects.
+        
+        Raises
+        ------
+        StopIteration
+            Raised when a row is empty.
+        
         """
 
         self._complain_ifclosed(self.closed)
@@ -390,7 +400,14 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
             return result
 
     def __read(self) -> list:
-        """Gets one row from the file handler, and if necessary casts it's objects."""
+        """Gets one row from the file handler, and if necessary casts it's objects.
+        
+        Raises
+        ------
+        StopIteration
+            Raised when a row is empty.
+        
+        """
 
         row = self._read()
         if row is None:
