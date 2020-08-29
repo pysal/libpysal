@@ -63,8 +63,25 @@ class GwtIO(FileIO.FileIO):
     shpName = property(fget=_get_shpName, fset=_set_shpName)
 
     def read(self, n=-1):
+        """
+        
+        Parameters
+        ----------
+        n : int
+            Read at most ``n`` objects. Default is ``-1``.
+        
+        Returns
+        -------
+        w : libpysal.weights.W
+            A PySAL `W` object.
+        
+        """
+
         self._complain_ifclosed(self.closed)
-        return self._read()
+
+        w = self._read()
+
+        return w
 
     def seek(self, pos):
         if pos == 0:
@@ -271,7 +288,7 @@ class GwtIO(FileIO.FileIO):
 
         >>> o = libpysal.io.open(fname, 'w')
 
-        Write the Weights object into the open file.
+        Write the weights object into the open file.
 
         >>> o.write(w)
         >>> o.close()

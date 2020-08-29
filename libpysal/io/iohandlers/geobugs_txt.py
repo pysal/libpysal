@@ -75,8 +75,8 @@ class GeoBUGSTextIO(fileio.FileIO):
 
         Returns
         -------
-        w : 
-            a pysal.weights.weights.W object
+        w : libpysal.weights.W
+            A PySAL `W` object.
 
         Examples
         --------
@@ -86,7 +86,7 @@ class GeoBUGSTextIO(fileio.FileIO):
 
         >>> import libpysal
         >>> w = libpysal.io.open(
-        ...     libpysal.examples.get_path('geobugs_scot'), 'r',' geobugs_text'
+        ...     libpysal.examples.get_path('geobugs_scot'), 'r', 'geobugs_text'
         ... ).read()
 
         Get the number of observations from the header.
