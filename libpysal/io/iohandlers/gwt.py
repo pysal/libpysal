@@ -148,6 +148,7 @@ class GwtIO(FileIO.FileIO):
         Raises
         ------
         StopIteration
+            Raised at the EOF.
         
         Examples
         --------
@@ -302,7 +303,7 @@ class GwtIO(FileIO.FileIO):
         >>> wnew.pct_nonzero == w.pct_nonzero
         True
 
-        Clean up temporary file created for this example
+        Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
         

@@ -74,6 +74,7 @@ class ArcGISTextIO(gwt.GwtIO):
         Raises
         ------
         StopIteration
+            Raised at the EOF.
         
         TypeError
             Raised when the IDs are not integers.
@@ -213,7 +214,7 @@ class ArcGISTextIO(gwt.GwtIO):
         >>> wnew.pct_nonzero == w.pct_nonzero
         True
 
-        Clean up temporary file created for this example.
+        Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
         

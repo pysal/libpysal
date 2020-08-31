@@ -320,7 +320,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         Raises
         ------
         StopIteration
-            Raised when a row is empty.
+            Raised at the EOF.
             
         """
 
@@ -373,7 +373,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         Raises
         ------
         StopIteration
-            Raised when a row is empty.
+            Raised at the EOF.
         
         """
 
@@ -405,7 +405,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         Raises
         ------
         StopIteration
-            Raised when a row is empty.
+            Raised at the EOF.
         
         """
 

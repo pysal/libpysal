@@ -35,21 +35,11 @@ TYPE_TO_STRING = {
 class PurePyShpWrapper(fileio.FileIO):
     """FileIO handler for ESRI ShapeFiles.
 
-
-
     Notes
     -----
     
     This class wraps ``_pyShpIO``'s ``shp_file`` class with the PySAL `FileIO` API.
     shp_file can be used without PySAL.
-
-    Attributes
-    ----------
-
-    Formats     : list
-                  A list of support file extensions
-    Modes       : list
-                  A list of support file modes
 
     Examples
     --------
@@ -101,12 +91,12 @@ class PurePyShpWrapper(fileio.FileIO):
 
     def __open(self):
         """
-        
+
         Raises
         ------
         TypeError
-            Raised when ..........................
-            
+            Raised when an invalid shape is passed in.
+
         """
 
         self.dataObj = shp_file(self.dataPath)
@@ -125,10 +115,12 @@ class PurePyShpWrapper(fileio.FileIO):
 
     def __firstWrite(self, shape):
         """
+
         Parameters
         ----------
         shape : libpysal.cg.{Point, Chain, Polygon}
             Geometric shape.
+
         """
 
         self.type = TYPE_TO_STRING[type(shape)]
@@ -143,17 +135,17 @@ class PurePyShpWrapper(fileio.FileIO):
 
     def __writer(self, shape):
         """
-        
+
         Parameters
         ----------
         shape : libpysal.cg.{Point, Chain, Polygon}
             Geometric shape.
-        
+
         Raises
         ------
         TypeError
             Raised when an invalid shape is passed in.
-        
+
         """
 
         if TYPE_TO_STRING[type(shape)] != self.type:
@@ -196,12 +188,12 @@ class PurePyShpWrapper(fileio.FileIO):
 
     def _read(self):
         """
-        
+
         Returns
         -------
-        shape : libpysal.cg.{Point, Line, LineSegement, Chain, Polygon}
+        shape : libpysal.cg.{Point, Chain, Polygon}
             Geometric shape.
-        
+
         """
         try:
             rec = self.dataObj.get_shape(self.pos)

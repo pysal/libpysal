@@ -63,6 +63,9 @@ class MtxIO(fileio.FileIO):
         ----------
         n : int
             Read at most ``n`` objects. Default is ``-1``.
+        sparse : bool
+            Flag for returning a sparse weights matrix (``True``).
+            Default is ``False``.
         
         Returns
         -------
@@ -91,6 +94,7 @@ class MtxIO(fileio.FileIO):
         Raises
         ------
         StopIteration
+            Raised at the EOF.
         
         Examples
         --------
@@ -238,7 +242,7 @@ class MtxIO(fileio.FileIO):
         >>> wsp_new.s0 == wsp.s0
         True
 
-        Clean up temporary file created for this example.
+        Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
 

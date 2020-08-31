@@ -135,7 +135,7 @@ class DBF(tables.DataTable):
         Raises
         ------
         AttributeError
-            Raised when a field does not exist in the header..
+            Raised when a field does not exist in the header.
         
         """
 

@@ -85,6 +85,7 @@ class MatIO(fileio.FileIO):
         Raises
         ------
         StopIteration
+            Raised at the EOF.
         
         Examples
         --------

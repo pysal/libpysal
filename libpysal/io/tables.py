@@ -53,15 +53,24 @@ class DataTable(fileio.FileIO):
         return self._By_Col(self)
 
     def _get_col(self, key):
-        """Returns the column vector."""
+        """Returns the column vector.
+        
+        Raises
+        ------
+        AttributeError
+            Raised when the header is not set.
+        AttributeError
+            Raised when a field does not exist.
+            
+        """
 
         if not self.header:
-            raise AttributeError("Please set the header")
+            raise AttributeError("Please set the header.")
 
         if key in self.header:
             return self[:, self.header.index(key)]
         else:
-            raise AttributeError("Field: %s does not exist in header" % key)
+            raise AttributeError("Field: %s does not exist in header." % key)
 
     def by_col_array(self, *args):
         """Return columns of table as a ``numpy.ndarray``.
@@ -177,6 +186,9 @@ class DataTable(fileio.FileIO):
         Raises
         ------
         TypeError
+            Raised when two dimensions are not provided for slicing.
+        TypeError
+            Raised when an unknown key is present.
         
         """
 
@@ -190,15 +202,13 @@ class DataTable(fileio.FileIO):
             cols = None
         elif len(key) > 2:
             raise TypeError(
-                "DataTables support two dimmensional slicing,  % d slices provided"
+                "DataTables support two dimmensional slicing, % d slices provided."
                 % len(key)
             )
         elif len(key) == 2:
             rows, cols = key
         else:
-            raise TypeError(
-                "Key: % r,  is confusing me.  I don't know what to do" % key
-            )
+            raise TypeError("Key: % r, is confusing me. I don't know what to do." % key)
 
         if isinstance(rows, slice):
             row_start, row_stop, row_step = rows.indices(len(self))

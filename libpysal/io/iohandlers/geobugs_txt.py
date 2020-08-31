@@ -123,6 +123,7 @@ class GeoBUGSTextIO(fileio.FileIO):
         Raises
         ------
         StopIteration
+            Raised at the EOF.
         
         Returns
         -------
@@ -253,7 +254,7 @@ class GeoBUGSTextIO(fileio.FileIO):
         >>> wnew.pct_nonzero == w.pct_nonzero
         True
 
-        Clean up temporary file created for this example.
+        Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
 
