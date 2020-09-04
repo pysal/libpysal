@@ -193,7 +193,7 @@ class Rook(W):
         coords_labels={},
         k=1,
         include_nas=False,
-        sparse=False,
+        sparse=True,
         **kwargs,
     ):
         """
@@ -211,7 +211,7 @@ class Rook(W):
             e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
-            type of weight object. Default is False. For sparse, sparse = True
+            type of weight object. Default is True. For libpysal.weights.W, sparse = False
         k : int
             Order of contiguity, this will select all neighbors upto kth order.
             Default is 1.
@@ -414,7 +414,7 @@ class Queen(W):
         coords_labels={},
         k=1,
         include_nas=False,
-        sparse=False,
+        sparse=True,
         **kwargs,
     ):
         """
@@ -432,7 +432,7 @@ class Queen(W):
             e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
-            type of weight object. Default is False. For sparse, sparse = True
+            type of weight object. Default is True. For libpysal.weights.W, sparse = False
         k : int
             Order of contiguity, this will select all neighbors upto kth order.
             Default is 1.

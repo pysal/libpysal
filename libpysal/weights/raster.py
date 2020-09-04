@@ -220,21 +220,21 @@ def da2WSP(
                 n_jobs = 1
 
         if n_jobs == 1:
-            sw = sparse.csr_matrix(
-                _SWbuilder(*shape, ids, id_map, criterion, k_nas, dtype),
-                shape=(n, n),
-                dtype=np.int8,
-            )
+            sw_tup = _SWbuilder(
+                *shape, ids, id_map, criterion, k_nas, dtype)  # -> (data, (row, col))
         else:
             if n_jobs == -1:
                 n_jobs = os.cpu_count()
             # Parallel implementation
-            sw = sparse.csr_matrix(
-                _parSWbuilder(*shape, ids, id_map, criterion, k_nas, dtype, n_jobs),
-                shape=(n, n),
-                dtype=np.int8,
-            )
+            sw_tup = _parSWbuilder(
+                *shape, ids, id_map, criterion, k_nas, dtype, n_jobs)  # -> (data, (row, col))
 
+        sw = sparse.csr_matrix(
+            sw_tup,
+            shape=(n, n),
+            dtype=np.int8,
+        )
+        del sw_tup
     # Higher_order functionality, this uses idea from
     # libpysal#313 for adding higher order neighbors.
     # Since diagonal elements are also added in the result,
@@ -250,7 +250,7 @@ def da2WSP(
     # Since a raster can contain missing data, and some
     # of the functionality in pysal uses id_order property.
     # Therefore, ids array is shipped to the WSP builder
-    # as this contains ids of only non-missing values which 
+    # as this contains ids of only non-missing values which
     # differ from range(len(ids)).
     wsp = WSP(sw, index=ser.index, id_order=ids.tolist())
     return wsp
@@ -623,7 +623,7 @@ def _compute_chunk(
         d = int((k / 2) * (2 * 8 + (k - 1) * 8))
     rows = np.empty(d * n, dtype=dtype)
     cols = np.empty_like(rows)
-    ni = 0  # -> Pointer to store rows and cols in array 
+    ni = 0  # -> Pointer to store rows and cols in array
     for order in range(1, k + 1):
         condition = (
             (order - 1)
@@ -645,14 +645,16 @@ def _compute_chunk(
                 # north-east to south-east neighbors
                 for j in range(condition):
                     if (id_i // ncols) < (nrows - j - 1):
-                        id_neighbor = id_map[(id_i + order) + (ncols * (j + 1))]
+                        id_neighbor = id_map[(
+                            id_i + order) + (ncols * (j + 1))]
                         if id_neighbor:
                             rows[ni], cols[ni] = og_id, id_neighbor
                             ni += 1
                             rows[ni], cols[ni] = id_neighbor, og_id
                             ni += 1
                     if (id_i // ncols) >= j + 1:
-                        id_neighbor = id_map[(id_i + order) - (ncols * (j + 1))]
+                        id_neighbor = id_map[(
+                            id_i + order) - (ncols * (j + 1))]
                         if id_neighbor:
                             rows[ni], cols[ni] = og_id, id_neighbor
                             ni += 1
@@ -778,7 +780,8 @@ def _parSWbuilder(
     chunk = _chunk_generator(n_jobs, starts, ids)
     with parallel_backend("threading"):
         worker_out = Parallel(n_jobs=n_jobs)(
-            delayed(_compute_chunk)(nrows, ncols, *ids, id_map, criterion, k, dtype)
+            delayed(_compute_chunk)(nrows, ncols, *
+                                    ids, id_map, criterion, k, dtype)
             for ids in chunk
         )
     data = np.ones(np.sum([i[2] for i in worker_out]), dtype=np.int8)

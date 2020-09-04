@@ -98,9 +98,9 @@ class Contiguity_Mixin(object):
         self.assertEqual(w[self.known_name], self.known_namedw)
 
     def test_from_xarray(self):
-        w = self.cls.from_xarray(self.da)
+        w = self.cls.from_xarray(self.da, sparse=False)
         self.assertEqual(w[self.known_wi_da], self.known_w_da)
-        ws = self.cls.from_xarray(self.da, sparse=True)
+        ws = self.cls.from_xarray(self.da)
         srowvec = ws.sparse[self.known_wi_da].todense().tolist()[0]
         this_w = {i:k for i,k in enumerate(srowvec) if k>0}
         self.assertEqual(this_w, self.known_w_da)
