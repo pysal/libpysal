@@ -163,21 +163,23 @@ def get_bounding_box(items):
 
 def get_angle_between(ray1, ray2):
     """Returns the angle formed between a pair of rays which share an origin.
-    
-    ``get_angle_between(Ray, Ray)`` -> number
 
     Parameters
     ----------
-    ray1 :
+    ray1 : libpysal.cg.Ray
         A ray forming the beginning of the angle measured.
-    ray2 :
+    ray2 : libpysal.cg.Ray
         A ray forming the end of the angle measured.
     
     Returns
     -------
     angle : float
-        ................
+        The angle between ``ray1`` and ``ray2``.
     
+    Raises
+    ------
+    ValueError
+        Raised when rays do not have the same origin.
     
     Examples
     --------
@@ -207,26 +209,27 @@ def get_angle_between(ray1, ray2):
         rot_matrix[1][0] * vec2[0] + rot_matrix[1][1] * vec2[1],
     )
 
-    return math.atan2(rot_vec2[1], rot_vec2[0])
+    angle = math.atan2(rot_vec2[1], rot_vec2[0])
+
+    return angle
 
 
 def is_collinear(p1, p2, p3):
-    """
-    Returns whether a triplet of points is collinear.
-
-    is_collinear(Point, Point, Point) -> bool
+    """Returns whether a triplet of points is collinear.
 
     Parameters
     ----------
-    p1 : a point (Point)
-    
-    p2 : another point (Point)
-    
-    p3 : yet another point (Point)
+    p1 : libpysal.cg.Point
+        A point.
+    p2 : libpysal.cg.Point
+        A point.
+    p3 : libpysal.cg.Point
+        A point.
 
     Returns
     -------
-    
+    collinear : bool
+        ``True`` if ``{p1, p2, p3}`` are collinear, otherwise ``False``.
 
     Examples
     --------
@@ -241,10 +244,15 @@ def is_collinear(p1, p2, p3):
 
     eps = np.finfo(type(p1[0])).eps
 
-    return (
-        abs((p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]))
-        < EPSILON_SCALER * eps
+    slope_diff = abs(
+        (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0])
     )
+
+    very_small_dist = EPSILON_SCALER * eps
+
+    collinear = slope_diff < very_small_dist
+
+    return collinear
 
 
 def get_segments_intersect(seg1, seg2):
@@ -330,23 +338,19 @@ def get_segments_intersect(seg1, seg2):
 
 
 def get_segment_point_intersect(seg, pt):
-    """
-    Returns the intersection of a segment and point.
-
-    get_segment_point_intersect(LineSegment, Point) -> Point
+    """Returns the intersection of a segment and point.
 
     Parameters
     ----------
-    seg : 
-        a segment to check intersection for
-    pt : 
-        a point to check intersection for
+    seg : libpysal.cg.LineSegment
+        A segment to check for an intersection.
+    pt : libpysal.cg.Point
+        A point to check ``seg`` for an intersection.
 
     Returns
     -------
-
-
-
+    pt : {libpysal.cg.Point, None}
+        The intersection of a ``seg`` and ``pt`` if one exists, otherwise ``None``.
 
     Examples
     --------
@@ -366,37 +370,36 @@ def get_segment_point_intersect(seg, pt):
 
     if is_collinear(pt, seg.p1, seg.p2):
         if get_segment_point_dist(seg, pt)[0] < EPSILON_SCALER * eps:
-            return pt
+            pass
         else:
-            return None
+            pt = None
+    else:
+        vec1 = (pt[0] - seg.p1[0], pt[1] - seg.p1[1])
+        vec2 = (seg.p2[0] - seg.p1[0], seg.p2[1] - seg.p1[1])
 
-    vec1 = (pt[0] - seg.p1[0], pt[1] - seg.p1[1])
-    vec2 = (seg.p2[0] - seg.p1[0], seg.p2[1] - seg.p1[1])
+        if abs(vec1[0] * vec2[1] - vec1[1] * vec2[0]) < eps:
+            pass
+        else:
+            pt = None
 
-    if abs(vec1[0] * vec2[1] - vec1[1] * vec2[0]) < eps:
-        return pt
-
-    return None
+    return pt
 
 
 def get_polygon_point_intersect(poly, pt):
-    """
-    Returns the intersection of a polygon and point.
-
-    get_polygon_point_intersect(Polygon, Point) -> Point
+    """Returns the intersection of a polygon and point.
 
     Parameters
     ----------
-    poly : 
-        a polygon to check intersection for
-    pt : 
-        a point to check intersection for
+    poly : libpysal.cg.Polygon
+        A polygon to check for an intersection.
+    pt : libpysal.cg.Point
+        A point to check ``poly`` for an intersection.
 
     Returns
     -------
-    ret : 
-        ............
-    
+    ret : {libpysal.cg.Point, None}
+        The intersection of a ``poly`` and ``pt`` if one exists, otherwise ``None``.
+
     Examples
     --------
     
@@ -411,53 +414,48 @@ def get_polygon_point_intersect(poly, pt):
     
     """
 
-    def pt_lies_on_part_boundary(pt, vertices):
-        return [
-            i
-            for i in range(-1, len(vertices) - 1)
-            if get_segment_point_dist(LineSegment(vertices[i], vertices[i + 1]), pt)[0]
-            == 0
-        ] != []
+    def pt_lies_on_part_boundary(p, vx):
+        vx_range = range(-1, len(vx) - 1)
+        seg = lambda i: LineSegment(vx[i], vx[i + 1])
+        return [i for i in vx_range if get_segment_point_dist(seg(i), p)[0] == 0] != []
 
     ret = None
-    if (
-        get_rectangle_point_intersect(poly.bounding_box, pt) is None
-    ):  # Weed out points that aren't even close
-        return None
-    elif [
-        verts for verts in poly._vertices if pt_lies_on_part_boundary(pt, verts)
-    ] != []:
-        ret = pt
-    elif [verts for verts in poly._vertices if _point_in_vertices(pt, verts)] != []:
-        ret = pt
-    if poly._holes != [[]]:
-        if [verts for verts in poly.holes if pt_lies_on_part_boundary(pt, verts)] != []:
-            # pt lies on boundary of hole.
-            pass
-        if [verts for verts in poly.holes if _point_in_vertices(pt, verts)] != []:
-            # pt lines inside a hole.
-            ret = None
-        # raise NotImplementedError, 'Cannot compute containment for polygon with holes'
+
+    # Weed out points that aren't even close
+    if get_rectangle_point_intersect(poly.bounding_box, pt) is None:
+        pass
+    else:
+        if [vxs for vxs in poly._vertices if pt_lies_on_part_boundary(pt, vxs)] != []:
+            ret = pt
+        elif [vxs for vxs in poly._vertices if _point_in_vertices(pt, vxs)] != []:
+            ret = pt
+        if poly._holes != [[]]:
+            if [vxs for vxs in poly.holes if pt_lies_on_part_boundary(pt, vxs)] != []:
+                # pt lies on boundary of hole.
+                pass
+            if [vxs for vxs in poly.holes if _point_in_vertices(pt, vxs)] != []:
+                # pt lines inside a hole.
+                ret = None
+            # raise NotImplementedError,
+            # 'Cannot compute containment for polygon with holes'
 
     return ret
 
 
 def get_rectangle_point_intersect(rect, pt):
-    """
-    Returns the intersection of a rectangle and point.
-
-    get_rectangle_point_intersect(Rectangle, Point) -> Point
+    """Returns the intersection of a rectangle and point.
 
     Parameters
     ----------
-    rect : 
-        a rectangle to check intersection for
-    pt : 
-        a point to check intersection for
+    rect : libpysal.cg.Rectangle
+        A rectangle to check for an intersection.
+    pt : libpysal.cg.Point
+        A point to check ``rect`` for an intersection.
 
     Returns
     -------
-
+    pt : {libpysal.cg.Point, None}
+        The intersection of a ``rect`` and ``pt`` if one exists, otherwise ``None``.
 
     Examples
     --------
@@ -474,14 +472,15 @@ def get_rectangle_point_intersect(rect, pt):
     """
 
     if rect.left <= pt[0] <= rect.right and rect.lower <= pt[1] <= rect.upper:
-        return pt
+        pass
+    else:
+        pt = None
 
-    return None
+    return pt
 
 
 def get_ray_segment_intersect(ray, seg):
-    """
-    Returns the intersection of a ray and line segment.
+    """Returns the intersection of a ray and line segment.
 
     get_ray_segment_intersect(Ray, Point) -> Point or LineSegment
 
@@ -516,13 +515,14 @@ def get_ray_segment_intersect(ray, seg):
     
     """
 
+    # Upper bound on origin to segment dist (+1)
     d = (
         max(
             math.hypot(seg.p1[0] - ray.o[0], seg.p1[1] - ray.o[1]),
             math.hypot(seg.p2[0] - ray.o[0], seg.p2[1] - ray.o[1]),
         )
         + 1
-    )  # Upper bound on origin to segment dist (+1)
+    )
     ratio = d / math.hypot(ray.o[0] - ray.p[0], ray.o[1] - ray.p[1])
     ray_seg = LineSegment(
         ray.o,
@@ -538,8 +538,7 @@ def get_ray_segment_intersect(ray, seg):
 
 
 def get_rectangle_rectangle_intersection(r0, r1, checkOverlap=True):
-    """
-    Returns the intersection between two rectangles.
+    """Returns the intersection between two rectangles.
 
     Note: Algorithm assumes the rectangles overlap.
           checkOverlap=False should be used with extreme caution.
@@ -676,7 +675,11 @@ def get_segment_point_dist(seg, pt):
     ----------
     seg  : a line segment to compute distance from
     pt   : a point to compute distance from
-
+    
+    
+    Returns
+    -------
+    
 
     Examples
     --------
@@ -1109,6 +1112,11 @@ def distance_matrix(X, p=2.0, threshold=5e7):
     -------
     D : numpy.ndarray
         An n by :math:`m` :math:`p`-norm distance matrix.
+    
+    Raises
+    ------
+    TypeError
+        Raised when an invalid dimensional array is passed in.
     
     Notes
     -----
