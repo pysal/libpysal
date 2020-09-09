@@ -482,20 +482,24 @@ def get_rectangle_point_intersect(rect, pt):
 def get_ray_segment_intersect(ray, seg):
     """Returns the intersection of a ray and line segment.
 
-    get_ray_segment_intersect(Ray, Point) -> Point or LineSegment
-
     Parameters
     ----------
-
-    ray : 
-        a ray to check intersection for
-    seg : 
-        a line segment to check intersection for
+    ray : libpysal.cg.Ray
+        A ray to check for an intersection.
+    seg : libpysal.cg.LineSegment
+        A segment to check for an intersection against ``ray``.
 
     Returns
     -------
+    intersection : {libpysal.cg.Point, libpysal.cg.LineSegment, None}
+        The intersecting point or line between ``ray`` and
+        ``seg`` if an intersection exists or ``None`` if
+        ``ray`` and ``seg`` do not intersect.
     
+    See Also
+    --------
     
+    libpysal.cg.get_segments_intersect
     
     
     Examples
@@ -534,39 +538,53 @@ def get_ray_segment_intersect(ray, seg):
         ),
     )
 
-    return get_segments_intersect(seg, ray_seg)
+    intersection = get_segments_intersect(seg, ray_seg)
+
+    return intersection
 
 
 def get_rectangle_rectangle_intersection(r0, r1, checkOverlap=True):
     """Returns the intersection between two rectangles.
 
-    Note: Algorithm assumes the rectangles overlap.
-          checkOverlap=False should be used with extreme caution.
-
-    get_rectangle_rectangle_intersection(r0, r1) -> Rectangle, Segment, Point or None
-
     Parameters
     ----------
-    r0   : a Rectangle
-    r1   : a Rectangle
-
+    r0 : libpysal.cg.Rectangle
+        A rectangle to check for an intersection.
+    r1 : libpysal.cg.Rectangle
+        A rectangle to check for an intersection against ``r0``.
+    checkOverlap : bool
+        Call ``bbcommon(r0, r1)`` prior to complex geometry
+        checking. Default is ``True``. Prior to setting as
+        ``False`` see the Notes section. 
+    
     Returns
     -------
-    out_geom : 
-        .........
+    intersection : {libpysal.cg.Point, libpysal.cg.LineSegment, libpysal.cg.Rectangle, None}
+        The intersecting point, line, or rectangle between 
+        `r0`` and ``r1`` if an intersection exists or ``None``
+        if ``r0`` and ``r1`` do not intersect.
+
+    Notes
+    -----
+    
+    The algorithm assumes the rectangles overlap. The keyword
+    ``checkOverlap=False`` should be used with extreme caution.
 
     Examples
     --------
+    
     >>> r0 = Rectangle(0,4,6,9)
     >>> r1 = Rectangle(4,0,9,7)
     >>> ri = get_rectangle_rectangle_intersection(r0,r1)
     >>> ri[:]
     [4.0, 4.0, 6.0, 7.0]
+    
     >>> r0 = Rectangle(0,0,4,4)
     >>> r1 = Rectangle(2,1,6,3)
     >>> ri = get_rectangle_rectangle_intersection(r0,r1)
     >>> ri[:]
     [2.0, 1.0, 4.0, 3.0]
+    
     >>> r0 = Rectangle(0,0,4,4)
     >>> r1 = Rectangle(2,1,3,2)
     >>> ri = get_rectangle_rectangle_intersection(r0,r1)
@@ -575,23 +593,30 @@ def get_rectangle_rectangle_intersection(r0, r1, checkOverlap=True):
     
     """
 
+    intersection = None
+    common_bb = True
+
     if checkOverlap:
         if not bbcommon(r0, r1):
             # raise ValueError, "Rectangles do not intersect"
-            return None
-    left = max(r0.left, r1.left)
-    lower = max(r0.lower, r1.lower)
-    right = min(r0.right, r1.right)
-    upper = min(r0.upper, r1.upper)
+            common_bb = False
 
-    if upper == lower and left == right:
-        return Point((left, lower))
-    elif upper == lower:
-        return LineSegment(Point((left, lower)), Point((right, lower)))
-    elif left == right:
-        return LineSegment(Point((left, lower)), Point((left, upper)))
+    if common_bb:
+        left = max(r0.left, r1.left)
+        lower = max(r0.lower, r1.lower)
+        right = min(r0.right, r1.right)
+        upper = min(r0.upper, r1.upper)
 
-    return Rectangle(left, lower, right, upper)
+        if upper == lower and left == right:
+            intersection = Point((left, lower))
+        elif upper == lower:
+            intersection = LineSegment(Point((left, lower)), Point((right, lower)))
+        elif left == right:
+            intersection = LineSegment(Point((left, lower)), Point((left, upper)))
+        else:
+            intersection = Rectangle(left, lower, right, upper)
+
+    return intersection
 
 
 def get_polygon_point_dist(poly, pt):
@@ -767,6 +792,7 @@ def get_point_at_angle_and_dist(ray, angle, dist):
     v = (ray.p[0] - ray.o[0], ray.p[1] - ray.o[1])
     cur_angle = math.atan2(v[1], v[0])
     dest_angle = cur_angle + angle
+
     return Point(
         (ray.o[0] + dist * math.cos(dest_angle), ray.o[1] + dist * math.sin(dest_angle))
     )
