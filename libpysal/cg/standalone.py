@@ -1,5 +1,5 @@
 """
-Helper functions for computational geometry in PySAL
+Helper functions for computational geometry in PySAL.
 
 """
 
@@ -317,22 +317,21 @@ def get_segments_intersect(seg1, seg2):
                 p1 = a if a else b
                 p2 = c if c else d
                 intersection = LineSegment(p1, p2)
-        return intersection
+    else:
+        a_inv = d / det
+        b_inv = -b / det
+        c_inv = -c / det
+        d_inv = a / det
+        m = p3[0] - p1[0]
+        n = p3[1] - p1[1]
+        x = a_inv * m + b_inv * n
+        y = c_inv * m + d_inv * n
+        intersect_exists = 0 <= x <= 1 and 0 <= y <= 1
 
-    a_inv = d / det
-    b_inv = -b / det
-    c_inv = -c / det
-    d_inv = a / det
-    m = p3[0] - p1[0]
-    n = p3[1] - p1[1]
-    x = a_inv * m + b_inv * n
-    y = c_inv * m + d_inv * n
-    intersect_exists = 0 <= x <= 1 and 0 <= y <= 1
-
-    if not intersect_exists:
-        return intersection
-
-    intersection = Point((p1[0] + x * (p2[0] - p1[0]), p1[1] + x * (p2[1] - p1[1])))
+        if intersect_exists:
+            intersection = Point(
+                (p1[0] + x * (p2[0] - p1[0]), p1[1] + x * (p2[1] - p1[1]))
+            )
 
     return intersection
 
@@ -620,17 +619,21 @@ def get_rectangle_rectangle_intersection(r0, r1, checkOverlap=True):
 
 
 def get_polygon_point_dist(poly, pt):
-    """
-    Returns the distance between a polygon and point.
-
-    get_polygon_point_dist(Polygon, Point) -> number
+    """Returns the distance between a polygon and point.
 
     Parameters
     ----------
-    poly : a polygon to compute distance from
-    pt   : a point to compute distance from
+    poly : libpysal.cg.Polygon
+        A polygon to compute distance from.
+    
+    pt : libpysal.cg.Point
+        a point to compute distance from
 
-
+    Returns
+    -------
+    dist : float
+        The distance between ``poly`` and ``point``.
+    
     Examples
     --------
     
@@ -646,35 +649,35 @@ def get_polygon_point_dist(poly, pt):
     """
 
     if get_polygon_point_intersect(poly, pt) is not None:
-        return 0.0
-    part_prox = []
-    for vertices in poly._vertices:
-        part_prox.append(
-            min(
-                [
-                    get_segment_point_dist(
-                        LineSegment(vertices[i], vertices[i + 1]), pt
-                    )[0]
-                    for i in range(-1, len(vertices) - 1)
-                ]
-            )
-        )
+        dist = 0.0
+    else:
+        part_prox = []
+        for vertices in poly._vertices:
+            vx_range = range(-1, len(vertices) - 1)
+            seg = lambda i: LineSegment(vertices[i], vertices[i + 1])
+            _min_dist = min([get_segment_point_dist(seg(i), pt)[0] for i in vx_range])
+            part_prox.append(_min_dist)
+        dist = min(part_prox)
 
-    return min(part_prox)
+    return dist
 
 
 def get_points_dist(pt1, pt2):
-    """
-    Returns the distance between a pair of points.
-
-    get_points_dist(Point, Point) -> number
+    """Returns the distance between a pair of points.
 
     Parameters
     ----------
-    pt1 : a point
-    pt2 : the other point
-
-
+    pt1 : libpysal.cg.Point
+        A point.
+    
+    pt2 : libpysal.cg.Point
+        The other point.
+    
+    Returns
+    -------
+    dist : float
+        The distance between ``pt1`` and ``pt2``.
+    
     Examples
     --------
     
@@ -686,25 +689,30 @@ def get_points_dist(pt1, pt2):
     
     """
 
-    return math.hypot(pt1[0] - pt2[0], pt1[1] - pt2[1])
+    dist = math.hypot(pt1[0] - pt2[0], pt1[1] - pt2[1])
+
+    return dist
 
 
 def get_segment_point_dist(seg, pt):
-    """
-    Returns the distance between a line segment and point and distance along the segment of the closest
-    point on the segment to the point as a ratio of the length of the segment.
-
-    get_segment_point_dist(LineSegment, Point) -> (number, number)
+    """Returns (1) the distance between a line segment and point
+    and (2) the distance along the segment to the closest location on the
+    segment from the point as a ratio of the length of the segment.
 
     Parameters
     ----------
-    seg  : a line segment to compute distance from
-    pt   : a point to compute distance from
-    
+    seg : libpysal.cg.LineSegment
+        A line segment to compute distance from.
+    pt : libpysal.cg.Point
+        A point to compute distance from.
     
     Returns
     -------
-    
+    dist : float
+        The distance between ``seg`` and ``pt``.
+    ratio : float
+        The distance along ``seg`` to the closest location on
+        ``seg`` from ``pt`` as a ratio of the length of ``seg``.
 
     Examples
     --------
@@ -733,45 +741,52 @@ def get_segment_point_dist(seg, pt):
 
     segment_length = get_points_dist(src_p, dest_p)
 
-    # Meh, robustness...maybe should incorporate this into a more general
-    # approach later
+    # Meh, robustness...
+    # maybe should incorporate this into a more general approach later
     if segment_length == 0:
-        return (get_points_dist(pt, src_p), 0)
+        dist, ratio = get_points_dist(pt, src_p), 0
 
-    u_x = points_4 / segment_length
-    u_y = points_5 / segment_length
-
-    inter_x = u_x * u_x * points_0 + u_x * u_y * points_1
-    inter_y = u_x * u_y * points_0 + u_y * u_y * points_1
-
-    src_proj_dist = get_points_dist((0, 0), (inter_x, inter_y))
-    dest_proj_dist = get_points_dist((inter_x, inter_y), (points_4, points_5))
-
-    if src_proj_dist > segment_length or dest_proj_dist > segment_length:
-        src_pt_dist = get_points_dist((points_2, points_3), (points_0, points_1))
-        dest_pt_dist = get_points_dist((points_4, points_5), (points_0, points_1))
-        if src_pt_dist < dest_pt_dist:
-            return (src_pt_dist, 0)
-        else:
-            return (dest_pt_dist, 1)
     else:
-        return (
-            get_points_dist((inter_x, inter_y), (points_0, points_1)),
-            src_proj_dist / segment_length,
-        )
+        u_x = points_4 / segment_length
+        u_y = points_5 / segment_length
+
+        inter_x = u_x * u_x * points_0 + u_x * u_y * points_1
+        inter_y = u_x * u_y * points_0 + u_y * u_y * points_1
+
+        src_proj_dist = get_points_dist((0, 0), (inter_x, inter_y))
+        dest_proj_dist = get_points_dist((inter_x, inter_y), (points_4, points_5))
+
+        if src_proj_dist > segment_length or dest_proj_dist > segment_length:
+            src_pt_dist = get_points_dist((points_2, points_3), (points_0, points_1))
+            dest_pt_dist = get_points_dist((points_4, points_5), (points_0, points_1))
+
+            if src_pt_dist < dest_pt_dist:
+                dist, ratio = src_pt_dist, 0
+            else:
+                dist, ratio = dest_pt_dist, 1
+        else:
+            dist = get_points_dist((inter_x, inter_y), (points_0, points_1))
+            ratio = src_proj_dist / segment_length
+
+    return dist, ratio
 
 
 def get_point_at_angle_and_dist(ray, angle, dist):
-    """
-    Returns the point at a distance and angle relative to the origin of a ray.
-
-    get_point_at_angle_and_dist(Ray, number, number) -> Point
+    """Returns the point at a distance and angle relative to the origin of a ray.
 
     Parameters
     ----------
-    ray   : the ray which the angle and distance are relative to
-    angle : the angle relative to the ray at which the point is located
-    dist  : the distance from the ray origin at which the point is located
+    ray : libpysal.cg.Ray
+        The ray to which ``angle`` and ``dist`` are relative.
+    angle : float
+        The angle relative to ``ray`` at which ``point`` is located.
+    dist : float
+        The distance from the origin of ``ray`` at which ``point`` is located.
+    
+    Returns
+    -------
+    point : libpysal.cg.Point
+        The point at ``dist`` and ``angle`` relative to the origin of ``ray``.
 
     Examples
     --------
@@ -793,21 +808,25 @@ def get_point_at_angle_and_dist(ray, angle, dist):
     cur_angle = math.atan2(v[1], v[0])
     dest_angle = cur_angle + angle
 
-    return Point(
+    point = Point(
         (ray.o[0] + dist * math.cos(dest_angle), ray.o[1] + dist * math.sin(dest_angle))
     )
 
+    return point
+
 
 def convex_hull(points):
-    """
-    Returns the convex hull of a set of points.
-
-    convex_hull(Point list) -> Polygon
-
+    """Returns the convex hull of a set of points.
+    
     Parameters
     ----------
-    points : a list of points to compute the convex hull for
+    points : list
+        A list of points for computing the convex hull.
 
+    Returns
+    -------
+    stack : list
+        A list of points representing the convex hull.
     
     Examples
     --------
@@ -817,6 +836,14 @@ def convex_hull(points):
     [(0.0, 0.0), (4.0, 0.0), (4.0, 4.0)]
     
     """
+
+    def right_turn(p1, p2, p3) -> bool:
+        """Returns if ``p1`` -> ``p2`` -> ``p3`` forms a 'right turn'."""
+        vec1 = (p2[0] - p1[0], p2[1] - p1[1])
+        vec2 = (p3[0] - p2[0], p3[1] - p2[1])
+        _rt = vec2[0] * vec1[1] - vec2[1] * vec1[0] >= 0
+        return _rt
+
     points = copy.copy(points)
     lowest = min(points, key=lambda p: (p[1], p[0]))
 
@@ -824,12 +851,6 @@ def convex_hull(points):
     points.sort(key=lambda p: math.atan2(p[1] - lowest[1], p[0] - lowest[0]))
 
     stack = [lowest]
-
-    def right_turn(p1, p2, p3):
-        # Returns if p1 -> p2 -> p3 forms a 'right turn'
-        vec1 = (p2[0] - p1[0], p2[1] - p1[1])
-        vec2 = (p3[0] - p2[0], p3[1] - p2[1])
-        return vec2[0] * vec1[1] - vec2[1] * vec1[0] >= 0
 
     for p in points:
         stack.append(p)
@@ -840,17 +861,24 @@ def convex_hull(points):
 
 
 def is_clockwise(vertices):
-    """
-    Returns whether a list of points describing a polygon are clockwise or counterclockwise.
-
-    is_clockwise(Point list) -> bool
-
+    """Returns whether a list of points describing
+    a polygon are clockwise or counterclockwise.
+    
     Parameters
     ----------
-    vertices : a list of points that form a single ring
+    vertices : list
+        A list of points that form a single ring.
 
-
-
+    Returns
+    -------
+    clockwise : bool
+        ``True`` if ``vertices`` are clockwise, otherwise ``False``.
+    
+    See Also
+    --------
+    
+    libpysal.cg.ccw
+    
     Examples
     --------
     
@@ -860,27 +888,108 @@ def is_clockwise(vertices):
     >>> is_clockwise([Point((0, 0)), Point((0, 10)), Point((10, 0))])
     True
     
-    >>> v = [(-106.57798, 35.174143999999998), (-106.583412, 35.174141999999996), (-106.58417999999999, 35.174143000000001), (-106.58377999999999, 35.175542999999998), (-106.58287999999999, 35.180543), (-106.58263099999999, 35.181455), (-106.58257999999999, 35.181643000000001), (-106.58198299999999, 35.184615000000001), (-106.58148, 35.187242999999995), (-106.58127999999999, 35.188243), (-106.58138, 35.188243), (-106.58108, 35.189442999999997), (-106.58104, 35.189644000000001), (-106.58028, 35.193442999999995), (-106.580029, 35.194541000000001), (-106.57974399999999, 35.195785999999998), (-106.579475, 35.196961999999999), (-106.57922699999999, 35.198042999999998), (-106.578397, 35.201665999999996), (-106.57827999999999, 35.201642999999997), (-106.57737999999999, 35.201642999999997), (-106.57697999999999, 35.201543000000001), (-106.56436599999999, 35.200311999999997), (-106.56058, 35.199942999999998), (-106.56048, 35.197342999999996), (-106.56048, 35.195842999999996), (-106.56048, 35.194342999999996), (-106.56048, 35.193142999999999), (-106.56048, 35.191873999999999), (-106.56048, 35.191742999999995), (-106.56048, 35.190242999999995), (-106.56037999999999, 35.188642999999999), (-106.56037999999999, 35.187242999999995), (-106.56037999999999, 35.186842999999996), (-106.56037999999999, 35.186552999999996), (-106.56037999999999, 35.185842999999998), (-106.56037999999999, 35.184443000000002), (-106.56037999999999, 35.182943000000002), (-106.56037999999999, 35.181342999999998), (-106.56037999999999, 35.180433000000001), (-106.56037999999999, 35.179943000000002), (-106.56037999999999, 35.178542999999998), (-106.56037999999999, 35.177790999999999), (-106.56037999999999, 35.177143999999998), (-106.56037999999999, 35.175643999999998), (-106.56037999999999, 35.174444000000001), (-106.56037999999999, 35.174043999999995), (-106.560526, 35.174043999999995), (-106.56478, 35.174043999999995), (-106.56627999999999, 35.174143999999998), (-106.566541, 35.174144999999996), (-106.569023, 35.174157000000001), (-106.56917199999999, 35.174157999999998), (-106.56938, 35.174143999999998), (-106.57061499999999, 35.174143999999998), (-106.57097999999999, 35.174143999999998), (-106.57679999999999, 35.174143999999998), (-106.57798, 35.174143999999998)]
+    >>> v = [
+    ...     (-106.57798, 35.174143999999998),
+    ...     (-106.583412, 35.174141999999996),
+    ...     (-106.58417999999999, 35.174143000000001),
+    ...     (-106.58377999999999, 35.175542999999998),
+    ...     (-106.58287999999999, 35.180543),
+    ...     (-106.58263099999999, 35.181455),
+    ...     (-106.58257999999999, 35.181643000000001),
+    ...     (-106.58198299999999, 35.184615000000001),
+    ...     (-106.58148, 35.187242999999995),
+    ...     (-106.58127999999999, 35.188243),
+    ...     (-106.58138, 35.188243),
+    ...     (-106.58108, 35.189442999999997),
+    ...     (-106.58104, 35.189644000000001),
+    ...     (-106.58028, 35.193442999999995),
+    ...     (-106.580029, 35.194541000000001),
+    ...     (-106.57974399999999, 35.195785999999998),
+    ...     (-106.579475, 35.196961999999999),
+    ...     (-106.57922699999999, 35.198042999999998),
+    ...     (-106.578397, 35.201665999999996),
+    ...     (-106.57827999999999, 35.201642999999997),
+    ...     (-106.57737999999999, 35.201642999999997),
+    ...     (-106.57697999999999, 35.201543000000001),
+    ...     (-106.56436599999999, 35.200311999999997),
+    ...     (-106.56058, 35.199942999999998),
+    ...     (-106.56048, 35.197342999999996),
+    ...     (-106.56048, 35.195842999999996),
+    ...     (-106.56048, 35.194342999999996),
+    ...     (-106.56048, 35.193142999999999),
+    ...     (-106.56048, 35.191873999999999),
+    ...     (-106.56048, 35.191742999999995),
+    ...     (-106.56048, 35.190242999999995),
+    ...     (-106.56037999999999, 35.188642999999999),
+    ...     (-106.56037999999999, 35.187242999999995),
+    ...     (-106.56037999999999, 35.186842999999996),
+    ...     (-106.56037999999999, 35.186552999999996),
+    ...     (-106.56037999999999, 35.185842999999998),
+    ...     (-106.56037999999999, 35.184443000000002),
+    ...     (-106.56037999999999, 35.182943000000002),
+    ...     (-106.56037999999999, 35.181342999999998),
+    ...     (-106.56037999999999, 35.180433000000001),
+    ...     (-106.56037999999999, 35.179943000000002),
+    ...     (-106.56037999999999, 35.178542999999998),
+    ...     (-106.56037999999999, 35.177790999999999),
+    ...     (-106.56037999999999, 35.177143999999998),
+    ...     (-106.56037999999999, 35.175643999999998),
+    ...     (-106.56037999999999, 35.174444000000001),
+    ...     (-106.56037999999999, 35.174043999999995),
+    ...     (-106.560526, 35.174043999999995),
+    ...     (-106.56478, 35.174043999999995),
+    ...     (-106.56627999999999, 35.174143999999998),
+    ...     (-106.566541, 35.174144999999996),
+    ...     (-106.569023, 35.174157000000001),
+    ...     (-106.56917199999999, 35.174157999999998),
+    ...     (-106.56938, 35.174143999999998),
+    ...     (-106.57061499999999, 35.174143999999998),
+    ...     (-106.57097999999999, 35.174143999999998),
+    ...     (-106.57679999999999, 35.174143999999998),
+    ...     (-106.57798, 35.174143999999998)
+    ... ]
     >>> is_clockwise(v)
     True
     
     """
-    if len(vertices) < 3:
-        return True
-    area = 0.0
-    ax, ay = vertices[0]
-    for bx, by in vertices[1:]:
+
+    clockwise = True
+
+    if not len(vertices) < 3:
+        area = 0.0
+        ax, ay = vertices[0]
+        for bx, by in vertices[1:]:
+            area += ax * by - ay * bx
+            ax, ay = bx, by
+        bx, by = vertices[0]
         area += ax * by - ay * bx
-        ax, ay = bx, by
-    bx, by = vertices[0]
-    area += ax * by - ay * bx
-    return area < 0.0
+
+        clockwise = area < 0.0
+
+    return clockwise
 
 
 def ccw(vertices):
-    """
-    Returns whether a list of points is counterclockwise
+    """Returns whether a list of points is counterclockwise.
+    
+    Parameters
+    ----------
+    vertices : list
+        A list of points that form a single ring.
 
+    Returns
+    -------
+    counter_clockwise : bool
+        ``True`` if ``vertices`` are counter clockwise, otherwise ``False``.
+    
+    See Also
+    --------
+    
+    libpysal.cg.is_clockwise
+    
+    Examples
+    --------
+    
     >>> ccw([Point((0, 0)), Point((10, 0)), Point((0, 10))])
     True
     
@@ -889,16 +998,35 @@ def ccw(vertices):
     
     """
 
+    counter_clockwise = True
+
     if is_clockwise(vertices):
-        return False
-    else:
-        return True
+        counter_clockwise = False
+
+    return counter_clockwise
 
 
 def seg_intersect(a, b, c, d):
-    """
-    Tests if two segments (a,b) (c,d) intersect
-
+    """Tests if two segments (a,b) and (c,d) intersect.
+    
+    Parameters
+    ----------
+    a : libpysal.cg.Point
+        The first vertex for the first segment.
+    b : libpysal.cg.Point
+        The second vertex for the first segment.
+    c : libpysal.cg.Point
+        The first vertex for the second segment.
+    d : libpysal.cg.Point
+        The second vertex for the second segment.
+    
+    Returns
+    -------
+    segments_intersect : bool
+        ``True`` if segments ``(a,b)`` and ``(c,d)``, otherwise ``False``.
+    
+    Examples
+    --------
     
     >>> a = Point((0,1))
     >>> b = Point((0,10))
@@ -912,30 +1040,34 @@ def seg_intersect(a, b, c, d):
     False
     
     """
-    if ccw([a, c, d]) == ccw([b, c, d]):
-        return False
-    elif ccw([a, b, c]) == ccw([a, b, d]):
-        return False
-    else:
-        return True
+
+    segments_intersect = True
+
+    acd_bcd = ccw([a, c, d]) == ccw([b, c, d])
+
+    abc_abd = ccw([a, b, c]) == ccw([a, b, d])
+
+    if acd_bcd or abc_abd:
+        segments_intersect = False
+
+    return segments_intersect
 
 
 def _point_in_vertices(pt, vertices):
-    """
-    HELPER METHOD. DO NOT CALL.
-
-    Returns whether a point is contained in a polygon specified by a sequence of vertices.
-
-    _point_in_vertices(Point, Point list) -> bool
+    """**HELPER METHOD. DO NOT CALL.** Returns whether a point
+    is contained in a polygon specified by a sequence of vertices.
 
     Parameters
     ----------
-
+    pt : libpysal.cg.Point
+        A point.
+    vertices : list
+        A list of vertices representing as polygon.
+    
     Returns
     -------
-
-
-
+    pt_in_poly : bool
+        ``True`` if ``pt`` is contained in ``vertices``, otherwise ``False``.
 
     Examples
     --------
@@ -948,23 +1080,30 @@ def _point_in_vertices(pt, vertices):
     
     """
 
-    def neg_ray_intersect(p1, p2, p3):
-        # Returns whether a ray in the negative-x direction from p3 intersects the segment between
+    def neg_ray_intersect(p1, p2, p3) -> bool:
+        """Returns whether a ray in the negative-x
+        direction from ``p3`` intersects the segment between.
+        """
+
         if not min(p1[1], p2[1]) <= p3[1] <= max(p1[1], p2[1]):
-            return False
-        if p1[1] > p2[1]:
-            vec1 = (p2[0] - p1[0], p2[1] - p1[1])
+            nr_inters = False
         else:
-            vec1 = (p1[0] - p2[0], p1[1] - p2[1])
-        vec2 = (p3[0] - p1[0], p3[1] - p1[1])
-        return vec1[0] * vec2[1] - vec2[0] * vec1[1] >= 0
+            if p1[1] > p2[1]:
+                vec1 = (p2[0] - p1[0], p2[1] - p1[1])
+            else:
+                vec1 = (p1[0] - p2[0], p1[1] - p2[1])
+
+            vec2 = (p3[0] - p1[0], p3[1] - p1[1])
+
+            nr_inters = vec1[0] * vec2[1] - vec2[0] * vec1[1] >= 0
+
+        return nr_inters
 
     vert_y_set = set([v[1] for v in vertices])
     while pt[1] in vert_y_set:
-        pt = (
-            pt[0],
-            pt[1] + -1e-14 + random.random() * 2e-14,
-        )  # Perturb the location very slightly
+        # Perturb the location very slightly
+        pt = pt[0], pt[1] + -1e-14 + random.random() * 2e-14
+
     inters = 0
     for i in range(-1, len(vertices) - 1):
         v1 = vertices[i]
@@ -972,7 +1111,9 @@ def _point_in_vertices(pt, vertices):
         if neg_ray_intersect(v1, v2, pt):
             inters += 1
 
-    return inters % 2 == 1
+    pt_in_poly = inters % 2 == 1
+
+    return pt_in_poly
 
 
 def point_touches_rectangle(point, rect):
