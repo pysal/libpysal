@@ -8,39 +8,69 @@ __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow, Hu Shao
 import math
 from .sphere import arcdist
 
-__all__ = ['Point', 'LineSegment', 'Line', 'Ray', 'Chain', 'Polygon',
-           'Rectangle', 'asShape']
+from typing import Union
+
+__all__ = [
+    "Point",
+    "LineSegment",
+    "Line",
+    "Ray",
+    "Chain",
+    "Polygon",
+    "Rectangle",
+    "asShape",
+]
 
 
 def asShape(obj):
+    """Returns a PySAL shape object from ``obj``, which
+    must support the ``__geo_interface__``.
+    
+    Parameters
+    ----------
+    obj : ....
+        ........
+    
+    
+    Returns
+    -------
+    
+    
+    Raises
+    ------
+    TypeError
+    
+    NotImplementedError
+    
+    
     """
-    Returns a pysal shape object from obj.
-    obj must support the __geo_interface__.
-    """
+
     if isinstance(obj, (Point, LineSegment, Line, Ray, Chain, Polygon)):
         return obj
-    if hasattr(obj, '__geo_interface__'):
+    if hasattr(obj, "__geo_interface__"):
         geo = obj.__geo_interface__
     else:
         geo = obj
-    if hasattr(geo, 'type'):
-        raise TypeError('%r does not appear to be a shape object' % (obj))
-    geo_type = geo['type'].lower()
-    #if geo_type.startswith('multi'):
+    if hasattr(geo, "type"):
+        raise TypeError("%r does not appear to be a shape object" % (obj))
+    geo_type = geo["type"].lower()
+    # if geo_type.startswith('multi'):
     #    raise NotImplementedError, "%s are not supported at this time."%geo_type
     if geo_type in _geoJSON_type_to_Pysal_type:
         return _geoJSON_type_to_Pysal_type[geo_type].__from_geo_interface__(geo)
     else:
-        raise NotImplementedError(
-            "%s is not supported at this time." % geo_type)
+        raise NotImplementedError("%s is not supported at this time." % geo_type)
+
 
 class Geometry(object):
     """
     A base class to help implement is_geometry and make geometric types
     extendable.
     """
+
     def __init__(self):
         pass
+
 
 class Point(Geometry):
     """
@@ -50,6 +80,7 @@ class Point(Geometry):
     ----------
     None
     """
+
     def __init__(self, loc):
         """
         Returns an instance of a Point object.
@@ -74,11 +105,11 @@ class Point(Geometry):
 
     @classmethod
     def __from_geo_interface__(cls, geo):
-        return cls(geo['coordinates'])
+        return cls(geo["coordinates"])
 
     @property
     def __geo_interface__(self):
-        return {'type': 'Point', 'coordinates': self.__loc}
+        return {"type": "Point", "coordinates": self.__loc}
 
     def __lt__(self, other):
         """
@@ -401,8 +432,9 @@ class LineSegment(Geometry):
 
     def __str__(self):
         return "LineSegment(" + str(self._p1) + ", " + str(self._p2) + ")"
-        return "LINESTRING ({} {}, {} {})".format(self._p1[0], self._p1[1],
-                                                  self._p2[0], self._p2[1])
+        return "LINESTRING ({} {}, {} {})".format(
+            self._p1[0], self._p1[1], self._p2[0], self._p2[1]
+        )
 
     def __eq__(self, other):
         """
@@ -419,9 +451,9 @@ class LineSegment(Geometry):
         """
         if not isinstance(other, self.__class__):
             return False
-        if (other.p1 == self._p1 and other.p2 == self._p2):
+        if other.p1 == self._p1 and other.p2 == self._p2:
             return True
-        elif (other.p2 == self._p1 and other.p1 == self._p2):
+        elif other.p2 == self._p1 and other.p1 == self._p2:
             return True
         return False
 
@@ -451,9 +483,7 @@ class LineSegment(Geometry):
         ccw3 = other.sw_ccw(self.p1)
         ccw4 = other.sw_ccw(self.p2)
 
-        return ccw1*ccw2 <= 0 and ccw3*ccw4 <=0
-
-
+        return ccw1 * ccw2 <= 0 and ccw3 * ccw4 <= 0
 
     def _reset_props(self):
         """
@@ -645,19 +675,16 @@ class LineSegment(Geometry):
         dx2 = p2[0] - p0[0]
         dy2 = p2[1] - p0[1]
 
-        if dy1*dx2 < dy2*dx1:
+        if dy1 * dx2 < dy2 * dx1:
             return 1
-        if dy1*dx2 > dy2*dx1:
+        if dy1 * dx2 > dy2 * dx1:
             return -1
-        if (dx1*dx2 < 0 or dy1*dy2 <0):
-                return -1
-        if dx1*dx1 + dy1*dy1 >= dx2*dx2 + dy2*dy2:
+        if dx1 * dx2 < 0 or dy1 * dy2 < 0:
+            return -1
+        if dx1 * dx1 + dy1 * dy1 >= dx2 * dx2 + dy2 * dy2:
             return 0
         else:
             return 1
-
-
-
 
     def get_swap(self):
         """
@@ -711,14 +738,21 @@ class LineSegment(Geometry):
         >>> ls.bounding_box.upper
         6.0
         """
-        if self._bounding_box is None:  # If LineSegment attributes p1, p2 changed, recompute
+        if (
+            self._bounding_box is None
+        ):  # If LineSegment attributes p1, p2 changed, recompute
             self._bounding_box = Rectangle(
-                min([self._p1[0], self._p2[0]]), min([
-                    self._p1[1], self._p2[1]]),
-                max([self._p1[0], self._p2[0]]), max([self._p1[1], self._p2[1]]))
+                min([self._p1[0], self._p2[0]]),
+                min([self._p1[1], self._p2[1]]),
+                max([self._p1[0], self._p2[0]]),
+                max([self._p1[1], self._p2[1]]),
+            )
         return Rectangle(
-            self._bounding_box.left, self._bounding_box.lower, self._bounding_box.right,
-            self._bounding_box.upper)
+            self._bounding_box.left,
+            self._bounding_box.lower,
+            self._bounding_box.right,
+            self._bounding_box.upper,
+        )
 
     @property
     def len(self):
@@ -740,8 +774,7 @@ class LineSegment(Geometry):
         3.0
         """
         if self._len is None:  # If LineSegment attributes p1, p2 changed, recompute
-            self._len = math.hypot(self._p1[0] - self._p2[0],
-                                   self._p1[1] - self._p2[1])
+            self._len = math.hypot(self._p1[0] - self._p2[0], self._p1[1] - self._p2[1])
         return self._len
 
     @property
@@ -789,6 +822,7 @@ class VerticalLine(Geometry):
     x       : float
               x-intercept
     """
+
     def __init__(self, x):
         """
         Returns a VerticalLine object.
@@ -811,8 +845,8 @@ class VerticalLine(Geometry):
         nan
         """
         self._x = float(x)
-        self.m = float('inf')
-        self.b = float('nan')
+        self.m = float("inf")
+        self.b = float("nan")
 
     def x(self, y):
         """
@@ -854,7 +888,7 @@ class VerticalLine(Geometry):
         >>> l.y(1)
         nan
         """
-        return float('nan')
+        return float("nan")
 
 
 class Line(Geometry):
@@ -895,8 +929,8 @@ class Line(Geometry):
         >>> ls.b
         0.0
         """
-        if m == float('inf') or m == float('inf'):
-            raise ArithmeticError('Slope cannot be infinite.')
+        if m == float("inf") or m == float("inf"):
+            raise ArithmeticError("Slope cannot be infinite.")
         self.m = float(m)
         self.b = float(b)
 
@@ -920,7 +954,7 @@ class Line(Geometry):
         0.5
         """
         if self.m == 0:
-            raise ArithmeticError('Cannot solve for X when slope is zero.')
+            raise ArithmeticError("Cannot solve for X when slope is zero.")
         return (y - self.b) / self.m
 
     def y(self, x):
@@ -1025,20 +1059,20 @@ class Chain(Geometry):
 
     @classmethod
     def __from_geo_interface__(cls, geo):
-        if geo['type'].lower() == 'linestring':
-            verts = [Point(pt) for pt in geo['coordinates']]
-        elif geo['type'].lower() == 'multilinestring':
-            verts = [list(map(Point, part)) for part in geo['coordinates']]
+        if geo["type"].lower() == "linestring":
+            verts = [Point(pt) for pt in geo["coordinates"]]
+        elif geo["type"].lower() == "multilinestring":
+            verts = [list(map(Point, part)) for part in geo["coordinates"]]
         else:
-            raise TypeError('%r is not a Chain'%geo)
+            raise TypeError("%r is not a Chain" % geo)
         return cls(verts)
 
     @property
     def __geo_interface__(self):
         if len(self.parts) == 1:
-            return {'type': 'LineString', 'coordinates': self.vertices}
+            return {"type": "LineString", "coordinates": self.vertices}
         else:
-            return {'type': 'MultiLineString', 'coordinates': self.parts}
+            return {"type": "MultiLineString", "coordinates": self.parts}
 
     def _reset_props(self):
         """
@@ -1123,8 +1157,11 @@ class Chain(Geometry):
         if self._bounding_box is None:
             vertices = self.vertices
             self._bounding_box = Rectangle(
-                min([v[0] for v in vertices]), min([v[1] for v in vertices]),
-                max([v[0] for v in vertices]), max([v[1] for v in vertices]))
+                min([v[0] for v in vertices]),
+                min([v[1] for v in vertices]),
+                max([v[0] for v in vertices]),
+                max([v[1] for v in vertices]),
+            )
         return self._bounding_box
 
     @property
@@ -1146,6 +1183,7 @@ class Chain(Geometry):
         >>> c.len
         4.0
         """
+
         def dist(v1, v2):
             return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
@@ -1169,11 +1207,14 @@ class Chain(Geometry):
         Examples
         --------
         """
+
         def part_perimeter(part):
-            return sum([arcdist(part[i], part[i + 1]) * 1000. for i in range(len(part) - 1)])
+            return sum(
+                [arcdist(part[i], part[i + 1]) * 1000.0 for i in range(len(part) - 1)]
+            )
+
         if self._arclen is None:
-            self._arclen = sum(
-                [part_perimeter(part) for part in self._vertices])
+            self._arclen = sum([part_perimeter(part) for part in self._vertices])
         return self._arclen
 
     @property
@@ -1181,7 +1222,10 @@ class Chain(Geometry):
         """
         Returns the segments that compose the Chain
         """
-        return [[LineSegment(a, b) for (a, b) in zip(part[:-1], part[1:])] for part in self._vertices]
+        return [
+            [LineSegment(a, b) for (a, b) in zip(part[:-1], part[1:])]
+            for part in self._vertices
+        ]
 
 
 class Ring(Geometry):
@@ -1216,10 +1260,11 @@ class Ring(Geometry):
                     : object
                       The quad tree structure for the ring. This structure could help test if a point is inside the ring
     """
+
     def __init__(self, vertices):
         if vertices[0] != vertices[-1]:
             vertices = vertices[:] + vertices[0:1]
-            #raise ValueError, "Supplied vertices do not form a closed ring, the first and last vertices are not the same"
+            # raise ValueError, "Supplied vertices do not form a closed ring, the first and last vertices are not the same"
         self.vertices = tuple(vertices)
         self._perimeter = None
         self._bounding_box = None
@@ -1243,8 +1288,9 @@ class Ring(Geometry):
         if self._perimeter is None:
             dist = self.dist
             v = self.vertices
-            self._perimeter = sum([dist(v[i], v[i + 1])
-                                   for i in range(-1, len(self) - 1)])
+            self._perimeter = sum(
+                [dist(v[i], v[i + 1]) for i in range(-1, len(self) - 1)]
+            )
         return self._perimeter
 
     @property
@@ -1298,8 +1344,7 @@ class Ring(Geometry):
 
             A = 0.0
             for i in range(N - 1):
-                A += (x[i] + x[i + 1]) * \
-                    (y[i] - y[i + 1])
+                A += (x[i] + x[i + 1]) * (y[i] - y[i + 1])
             A = A * 0.5
             self._area = -A
         return self._area
@@ -1332,7 +1377,7 @@ class Ring(Geometry):
             cx = 0
             cy = 0
             for i in range(N - 1):
-                f = (x[i] * y[i + 1] - x[i + 1] * y[i])
+                f = x[i] * y[i + 1] - x[i + 1] * y[i]
                 cx += (x[i] + x[i + 1]) * f
                 cy += (y[i] + y[i + 1]) * f
             cx = 1.0 / (6 * A) * cx
@@ -1346,7 +1391,7 @@ class Ring(Geometry):
         :return:
         """
         self._quad_tree_structure = QuadTreeStructureSingleRing(self)
-		
+
     def contains_point(self, point):
         """
         Point containment using winding number
@@ -1368,22 +1413,22 @@ class Ring(Geometry):
                 return False
 
             rn = len(self.vertices)
-            xs = [ self.vertices[i][0] - point[0] for i in range(rn) ]
-            ys = [ self.vertices[i][1] - point[1] for i in range(rn) ]
+            xs = [self.vertices[i][0] - point[0] for i in range(rn)]
+            ys = [self.vertices[i][1] - point[1] for i in range(rn)]
             w = 0
             for i in range(len(self.vertices) - 1):
                 yi = ys[i]
-                yj = ys[i+1]
+                yj = ys[i + 1]
                 xi = xs[i]
-                xj = xs[i+1]
-                if yi*yj < 0:
-                    r = xi + yi * (xj-xi) / (yi - yj)
+                xj = xs[i + 1]
+                if yi * yj < 0:
+                    r = xi + yi * (xj - xi) / (yi - yj)
                     if r > 0:
                         if yi < 0:
                             w += 1
                         else:
                             w -= 1
-                elif yi==0 and xi > 0:
+                elif yi == 0 and xi > 0:
                     if yj > 0:
                         w += 0.5
                     else:
@@ -1393,14 +1438,12 @@ class Ring(Geometry):
                         w += 0.5
                     else:
                         w -= 0.5
-            if w==0:
+            if w == 0:
                 return False
             else:
                 return True
         else:
             return self._quad_tree_structure.contains_point(point)
-
-
 
 
 class Polygon(Geometry):
@@ -1480,11 +1523,11 @@ class Polygon(Geometry):
         In GEOS, etc, polygons may only have a single exterior ring, all other parts are holes.
         MultiPolygons are simply a list of polygons.
         """
-        geo_type = geo['type'].lower()
-        if geo_type == 'multipolygon':
+        geo_type = geo["type"].lower()
+        if geo_type == "multipolygon":
             parts = []
             holes = []
-            for polygon in geo['coordinates']:
+            for polygon in geo["coordinates"]:
                 verts = [[Point(pt) for pt in part] for part in polygon]
                 parts += verts[0:1]
                 holes += verts[1:]
@@ -1492,21 +1535,23 @@ class Polygon(Geometry):
                 holes = None
             return cls(parts, holes)
         else:
-            verts = [[Point(pt) for pt in part] for part in geo['coordinates']]
+            verts = [[Point(pt) for pt in part] for part in geo["coordinates"]]
             return cls(verts[0:1], verts[1:])
 
     @property
     def __geo_interface__(self):
         if len(self.parts) > 1:
-            geo = {'type': 'MultiPolygon', 'coordinates': [[
-                part] for part in self.parts]}
+            geo = {
+                "type": "MultiPolygon",
+                "coordinates": [[part] for part in self.parts],
+            }
             if self._holes[0]:
-                geo['coordinates'][0] += self._holes
+                geo["coordinates"][0] += self._holes
             return geo
         if self._holes[0]:
-            return {'type': 'Polygon', 'coordinates': self._vertices + self._holes}
+            return {"type": "Polygon", "coordinates": self._vertices + self._holes}
         else:
-            return {'type': 'Polygon', 'coordinates': self._vertices}
+            return {"type": "Polygon", "coordinates": self._vertices}
 
     def _reset_props(self):
         self._perimeter = None
@@ -1557,7 +1602,9 @@ class Polygon(Geometry):
         >>> len(p1.vertices)
         4
         """
-        return sum([part for part in self._vertices], []) + sum([part for part in self._holes], [])
+        return sum([part for part in self._vertices], []) + sum(
+            [part for part in self._holes], []
+        )
 
     @property
     def holes(self):
@@ -1614,6 +1661,7 @@ class Polygon(Geometry):
         >>> p.perimeter
         4.0
         """
+
         def dist(v1, v2):
             return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
@@ -1621,8 +1669,9 @@ class Polygon(Geometry):
             return sum([dist(part[i], part[i + 1]) for i in range(-1, len(part) - 1)])
 
         if self._perimeter is None:
-            self._perimeter = (sum([part_perimeter(part) for part in self._vertices]) +
-                               sum([part_perimeter(hole) for hole in self._holes]))
+            self._perimeter = sum(
+                [part_perimeter(part) for part in self._vertices]
+            ) + sum([part_perimeter(hole) for hole in self._holes])
         return self._perimeter
 
     @property
@@ -1633,12 +1682,13 @@ class Polygon(Geometry):
         See also bounding_box
         """
         if self._bbox is None:
-            self._bbox = [ self.bounding_box.left,
-                    self.bounding_box.lower,
-                    self.bounding_box.right,
-                    self.bounding_box.upper]
+            self._bbox = [
+                self.bounding_box.left,
+                self.bounding_box.lower,
+                self.bounding_box.right,
+                self.bounding_box.upper,
+            ]
         return self._bbox
-
 
     @property
     def bounding_box(self):
@@ -1665,61 +1715,69 @@ class Polygon(Geometry):
         if self._bounding_box is None:
             vertices = self.vertices
             self._bounding_box = Rectangle(
-                min([v[0] for v in vertices]), min([v[1] for v in vertices]),
-                max([v[0] for v in vertices]), max([v[1] for v in vertices]))
+                min([v[0] for v in vertices]),
+                min([v[1] for v in vertices]),
+                max([v[0] for v in vertices]),
+                max([v[1] for v in vertices]),
+            )
         return self._bounding_box
 
     @property
-    def area(self):
-        """
-        Returns the area of the polygon.
-
-        area -> number
-
-        Attributes
-        ----------
+    def area(self) -> float:
+        """Returns the area of the polygon.
 
         Examples
         --------
         >>> p = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         >>> p.area
         1.0
-        >>> p = Polygon([Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],[Point((2,1)),Point((2,2)),Point((1,2)),Point((1,1))])
+        
+        >>> p = Polygon(
+        ...     [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
+        ...     [Point((2, 1)), Point((2, 2)), Point((1, 2)), Point((1, 1))]
+        ... )
         >>> p.area
         99.0
+        
         """
-        def part_area(part_verts):
-            area = 0
-            for i in range(-1, len(part_verts) - 1):
-                area += (part_verts[i][0] + part_verts[i + 1][0]) * \
-                    (part_verts[i][1] - part_verts[i + 1][1])
-            area = area * 0.5
-            if area < 0:
-                area = -area
-            return area
 
-        return (sum([part_area(part) for part in self._vertices]) -
-                sum([part_area(hole) for hole in self._holes]))
+        def part_area(pv: list) -> float:
+            __area = 0
+            for i in range(-1, len(pv) - 1):
+                __area += (pv[i][0] + pv[i + 1][0]) * (pv[i][1] - pv[i + 1][1])
+            __area = __area * 0.5
+            if __area < 0:
+                __area = -area
+            return __area
+
+        sum_area = lambda part_type: sum([part_area(part) for part in part_type])
+        _area = sum_area(self._vertices) - sum_area(self._holes)
+
+        return _area
 
     @property
-    def centroid(self):
-        """
-        Returns the centroid of the polygon
-
-        centroid -> Point
+    def centroid(self) -> tuple:
+        """Returns the centroid of the polygon.
 
         Notes
         -----
-        The centroid returned by this method is the geometric centroid and respects multipart polygons with holes.
+        
+        The centroid returned by this method is the geometric
+        centroid and respects multipart polygons with holes.
         Also known as the 'center of gravity' or 'center of mass'.
-
 
         Examples
         --------
-        >>> p = Polygon([Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))], [Point((1, 1)), Point((1, 2)), Point((2, 2)), Point((2, 1))])
+        
+        >>> p = Polygon(
+        ...     [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
+        ...     [Point((1, 1)), Point((1, 2)), Point((2, 2)), Point((2, 1))]
+        ... )
         >>> p.centroid
         (5.0353535353535355, 5.0353535353535355)
+        
         """
+
         CP = [ring.centroid for ring in self._part_rings]
         AP = [ring.area for ring in self._part_rings]
         CH = [ring.centroid for ring in self._hole_rings]
@@ -1728,13 +1786,16 @@ class Polygon(Geometry):
         A = AP + AH
         cx = sum([pt[0] * area for pt, area in zip(CP + CH, A)]) / sum(A)
         cy = sum([pt[1] * area for pt, area in zip(CP + CH, A)]) / sum(A)
+
         return cx, cy
-	
+
     def build_quad_tree_structure(self):
+        """Build the quad tree structure for this polygon. Once
+        the structure is built, speed for testing if a point is
+        inside the ring will be increased significantly.
+        
         """
-        Build the quad tree structure for this polygon. Once the structure is built, speed for testing if a point is inside the ring will be inscreased significantly.
-        :return:
-        """
+
         for ring in self._part_rings:
             ring.build_quad_tree_structure()
         for ring in self._hole_rings:
@@ -1742,116 +1803,138 @@ class Polygon(Geometry):
         self.is_quad_tree_structure_built = True
 
     def contains_point(self, point):
-        """
-        Test if polygon contains point
-
+        """Test if a polygon contains a point.
+        
+        Parameters
+        ----------
+        point : libpysal.cg.Point
+            A point to test for containment.
+        
+        Returns
+        -------
+        contains : bool
+            ``True`` if the polygon contains ``point`` otherwise ``False``.
+        
         Examples
         --------
-        >>> p = Polygon([Point((0,0)), Point((4,0)), Point((4,5)), Point((2,3)), Point((0,5))])
+        
+        >>> p = Polygon(
+        ...     [Point((0,0)), Point((4,0)), Point((4,5)), Point((2,3)), Point((0,5))]
+        ... )
         >>> p.contains_point((3,3))
         1
+        
         >>> p.contains_point((0,6))
         0
+        
         >>> p.contains_point((2,2.9))
         1
+        
         >>> p.contains_point((4,5))
         0
+        
         >>> p.contains_point((4,0))
         0
-        >>>
 
-        Handles holes
+        Handles holes.
 
-        >>> p = Polygon([Point((0, 0)), Point((0, 10)), Point((10, 10)), Point((10, 0))], [Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))])
-        >>> p.contains_point((3.0,3.0))
+        >>> p = Polygon(
+        ...     [Point((0, 0)), Point((0, 10)), Point((10, 10)), Point((10, 0))],
+        ...     [Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))]
+        ... )
+        >>> p.contains_point((3.0, 3.0))
         False
-        >>> p.contains_point((1.0,1.0))
+        
+        >>> p.contains_point((1.0, 1.0))
         True
-        >>>
-
 
         Notes
         -----
-        Points falling exactly on polygon edges may yield unpredictable
-        results
+        
+        Points falling exactly on polygon edges may yield unpredictable results.
+        
         """
+
+        searching = True
 
         for ring in self._hole_rings:
             if ring.contains_point(point):
-                return False
+                contains = False
+                searching = False
+                break
 
-        for ring in self._part_rings:
-            if ring.contains_point(point):
-                return True
+        if searching:
+            for ring in self._part_rings:
+                if ring.contains_point(point):
+                    contains = True
+                    searching = False
+                    break
+            if searching:
+                contains = False
 
-        return False
-
+        return contains
 
 
 class Rectangle(Geometry):
-    """
-    Geometric representation of rectangle objects.
+    """Geometric representation of rectangle objects.
 
     Attributes
     ----------
-
-    left    : float
-              Minimum x-value of the rectangle
-    lower   : float
-              Minimum y-value of the rectangle
-    right   : float
-              Maximum x-value of the rectangle
-    upper   : float
-              Maximum y-value of the rectangle
+    left : float
+        Minimum x-value of the rectangle.
+    lower : float
+        Minimum y-value of the rectangle.
+    right : float
+        Maximum x-value of the rectangle.
+    upper : float
+        Maximum y-value of the rectangle.
+    
+    Examples
+    --------
+    
+    >>> r = Rectangle(-4, 3, 10, 17)
+    >>> r.left #minx
+    -4.0
+    
+    >>> r.lower #miny
+    3.0
+    
+    >>> r.right #maxx
+    10.0
+    
+    >>> r.upper #maxy
+    17.0
+    
     """
 
     def __init__(self, left, lower, right, upper):
-        """
-        Returns a Rectangle object.
 
-        __init__(number, number, number, number) -> Rectangle
-
-        Parameters
-        ----------
-        left  : the minimum x-value of the rectangle
-        lower : the minimum y-value of the rectangle
-        right : the maximum x-value of the rectangle
-        upper : the maximum y-value of the rectangle
-
-        Attributes
-        ----------
-
-        Examples
-        --------
-        >>> r = Rectangle(-4, 3, 10, 17)
-        >>> r.left #minx
-        -4.0
-        >>> r.lower #miny
-        3.0
-        >>> r.right #maxx
-        10.0
-        >>> r.upper #maxy
-        17.0
-        """
         if right < left or upper < lower:
-            raise ArithmeticError('Rectangle must have positive area.')
+            raise ArithmeticError("Rectangle must have positive area.")
         self.left = float(left)
         self.lower = float(lower)
         self.right = float(right)
         self.upper = float(upper)
 
     def __bool__(self):
-        """
-        ___nonzero__ is used "to implement truth value testing and the built-in operation bool()" -- http://docs.python.org/reference/datamodel.html
+        """Rectangles will evaluate to False if they have zero area.
+        ``___nonzero__`` is used "to implement truth value
+        testing and the built-in operation ``bool()``"
+        ``-- http://docs.python.org/reference/datamodel.html
 
-        Rectangles will evaluate to Flase if they have Zero Area.
-        >>> r = Rectangle(0,0,0,0)
+        Examples
+        --------
+        
+        >>> r = Rectangle(0, 0, 0, 0)
         >>> bool(r)
         False
-        >>> r = Rectangle(0,0,1,1)
+        
+        >>> r = Rectangle(0, 0, 1, 1)
         >>> bool(r)
         True
+        
         """
+
         return bool(self.area)
 
     def __eq__(self, other):
@@ -1862,65 +1945,79 @@ class Rectangle(Geometry):
     def __add__(self, other):
         x, y, X, Y = self[:]
         x1, y2, X1, Y1 = other[:]
-        return Rectangle(min(self.left, other.left), min(self.lower, other.lower), max(self.right, other.right), max(self.upper, other.upper))
+
+        return Rectangle(
+            min(self.left, other.left),
+            min(self.lower, other.lower),
+            max(self.right, other.right),
+            max(self.upper, other.upper),
+        )
 
     def __getitem__(self, key):
         """
+        
+        Examples
+        --------
+        
         >>> r = Rectangle(-4, 3, 10, 17)
         >>> r[:]
         [-4.0, 3.0, 10.0, 17.0]
+        
         """
+
         l = [self.left, self.lower, self.right, self.upper]
+
         return l.__getitem__(key)
 
     def set_centroid(self, new_center):
-        """
-        Moves the rectangle center to a new specified point.
-
-        set_centroid(Point) -> Point
+        """Moves the rectangle center to a new specified point.
 
         Parameters
         ----------
-        new_center : the new location of the centroid of the polygon
-
-        Attributes
-        ----------
+        new_center : libpysal.cg.Point
+            The new location of the centroid of the polygon.
 
         Examples
         --------
+        
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.set_centroid(Point((4, 4)))
         >>> r.left
         2.0
+        
         >>> r.right
         6.0
+        
         >>> r.lower
         2.0
+        
         >>> r.upper
         6.0
+        
         """
-        shift = (new_center[0] - (self.left + self.right) / 2,
-                 new_center[1] - (self.lower + self.upper) / 2)
+
+        shift = (
+            new_center[0] - (self.left + self.right) / 2,
+            new_center[1] - (self.lower + self.upper) / 2,
+        )
+
         self.left = self.left + shift[0]
         self.right = self.right + shift[0]
         self.lower = self.lower + shift[1]
         self.upper = self.upper + shift[1]
 
     def set_scale(self, scale):
-        """
-        Rescales the rectangle around its center.
-
-        set_scale(number) -> number
+        """Rescales the rectangle around its center.
 
         Parameters
         ----------
-        scale : the ratio of the new scale to the old scale (e.g. 1.0 is current size)
-
-        Attributes
-        ----------
+        scale : int, float
+            The ratio of the new scale to the old
+            scale (e.g. 1.0 is current size).
 
         Examples
         --------
+        
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.set_scale(2)
         >>> r.left
@@ -1931,66 +2028,70 @@ class Rectangle(Geometry):
         -2.0
         >>> r.upper
         6.0
+        
         """
+
         center = ((self.left + self.right) / 2, (self.lower + self.upper) / 2)
+
         self.left = center[0] + scale * (self.left - center[0])
         self.right = center[0] + scale * (self.right - center[0])
         self.lower = center[1] + scale * (self.lower - center[1])
         self.upper = center[1] + scale * (self.upper - center[1])
 
     @property
-    def area(self):
-        """
-        Returns the area of the Rectangle.
-
-        area -> number
-
-        Attributes
-        ----------
+    def area(self) -> Union[int, float]:
+        """Returns the area of the Rectangle.
 
         Examples
         --------
+        
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.area
         16.0
+        
         """
+
         return (self.right - self.left) * (self.upper - self.lower)
 
     @property
-    def width(self):
-        """
-        Returns the width of the Rectangle.
-
-        width -> number
-
-        Attributes
-        ----------
+    def width(self) -> Union[int, float]:
+        """Returns the width of the Rectangle.
 
         Examples
         --------
+        
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.width
         4.0
+        
         """
+
         return self.right - self.left
 
     @property
-    def height(self):
-        """
-        Returns the height of the Rectangle.
-
-        height -> number
+    def height(self) -> Union[int, float]:
+        """Returns the height of the Rectangle.
 
         Examples
         --------
+        
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.height
         4.0
+        
         """
+
         return self.upper - self.lower
 
 
-_geoJSON_type_to_Pysal_type = {'point': Point, 'linestring': Chain, 'multilinestring': Chain,
-                               'polygon': Polygon, 'multipolygon': Polygon}
-from . import standalone  # moving this to top breaks unit tests !
+_geoJSON_type_to_Pysal_type = {
+    "point": Point,
+    "linestring": Chain,
+    "multilinestring": Chain,
+    "polygon": Polygon,
+    "multipolygon": Polygon,
+}
+
+# moving this to top breaks unit tests !
+from . import standalone
 from .polygonQuadTreeStructure import QuadTreeStructureSingleRing
