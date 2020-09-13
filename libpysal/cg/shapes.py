@@ -1386,17 +1386,28 @@ class Ring(Geometry):
         return self._centroid
 
     def build_quad_tree_structure(self):
+        """Build the quad tree structure for this polygon. Once
+        the structure is built, speed for testing if a point is
+        inside the ring will be increased significantly.
+        
         """
-        Build the quad tree structure for this ring. Once the structure is built, speed for testing if a point is inside the ring will be inscreased significantly.
-        :return:
-        """
+
         self._quad_tree_structure = QuadTreeStructureSingleRing(self)
 
     def contains_point(self, point):
-        """
-        Point containment using winding number
-
-        Implementation based on: http://www.engr.colostate.edu/~dga/dga/papers/point_in_polygon.pdf
+        """Point containment using winding number. The implementation is based on
+        `this <http://www.engr.colostate.edu/~dga/dga/papers/point_in_polygon.pdf>`_.
+        
+        Parameters
+        ----------
+        point : libpysal.cg.Point
+            The point to test for containment.
+        
+        Returns
+        -------
+        <NAME> : bool
+            ``True`` if ``point`` is contained within the polygon, otherwise ``False``.
+        
         """
 
         if self._quad_tree_structure is None:
@@ -1447,52 +1458,48 @@ class Ring(Geometry):
 
 
 class Polygon(Geometry):
-    """
-    Geometric representation of polygon objects.
+    """Geometric representation of polygon objects.
+    Returns a polygon created from the objects specified.
+
+    Parameters
+    ----------
+    vertices : list
+        A list of vertices or a list of lists of vertices.
+    holes : list
+        A list of sub-polygons to be considered as holes.
+        Default is ``None``.
 
     Attributes
     ----------
-    vertices        : list
-                      List of Points with the vertices of the Polygon in
-                      clockwise order
-    len             : int
-                      Number of vertices including holes
-    perimeter       : float
-                      Geometric length of the perimeter of the Polygon
-    bounding_box    : Rectangle
-                      Bounding box of the polygon
-    bbox            : List
-                      [left, lower, right, upper]
-    area            : float
-                      Area enclosed by the polygon
-    centroid        : tuple
-                      The 'center of gravity', i.e. the mean point of the polygon.
+    vertices : list
+        A list of points with the vertices of the polygon in clockwise order.
+    len : int
+        The number of vertices including holes.
+    perimeter : float
+        The geometric length of the perimeter of the polygon.
+    bounding_box : libpysal.cg.Rectangle
+        The bounding box of the polygon.
+    bbox : list
+        A list representation of the bounding box in the 
+        form ``[left, lower, right, upper]``.
+    area : float
+        The area enclosed by the polygon.
+    centroid : tuple
+        The 'center of gravity', i.e. the mean point of the polygon.
+    
+    Examples
+    --------
+    
+    >>> p1 = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+    
     """
 
     def __init__(self, vertices, holes=None):
-        """
-        Returns a polygon created from the objects specified.
 
-        __init__(Point list or list of Point lists, holes list ) -> Polygon
-
-        Parameters
-        ----------
-        vertices : list -- a list of vertices or a list of lists of vertices.
-        holes    : list -- a list of sub-polygons to be considered as holes.
-        is_quad_tree_structure_built
-                 : bool -- record if the quad tree structure has been built for this polygon. This quad tree structure could help speed up the contains_point test
-				 
-        Attributes
-        ----------
-
-        Examples
-        --------
-        >>> p1 = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
-        """
         self._part_rings = []
         self._hole_rings = []
 
-        def clockwise(part):
+        def clockwise(part: list) -> list:
             if standalone.is_clockwise(part):
                 return part[:]
             else:
@@ -1517,12 +1524,14 @@ class Polygon(Geometry):
         self._reset_props()
 
     @classmethod
-    def __from_geo_interface__(cls, geo):
-        """
-        While pysal does not differentiate polygons and multipolygons GEOS,Shapely and geoJSON do.
-        In GEOS, etc, polygons may only have a single exterior ring, all other parts are holes.
+    def __from_geo_interface__(cls, geo: dict):
+        """While PySAL does not differentiate polygons and multipolygons
+        GEOS, Shapely, and geoJSON do. In GEOS, etc, polygons may only
+        have a single exterior ring, all other parts are holes.
         MultiPolygons are simply a list of polygons.
+        
         """
+
         geo_type = geo["type"].lower()
         if geo_type == "multipolygon":
             parts = []
@@ -1539,7 +1548,9 @@ class Polygon(Geometry):
             return cls(verts[0:1], verts[1:])
 
     @property
-    def __geo_interface__(self):
+    def __geo_interface__(self) -> dict:
+        """Return ``__geo_interface__`` information lookup."""
+
         if len(self.parts) > 1:
             geo = {
                 "type": "MultiPolygon",
@@ -1554,6 +1565,7 @@ class Polygon(Geometry):
             return {"type": "Polygon", "coordinates": self._vertices}
 
     def _reset_props(self):
+        """Resets the geometric properties of the polygon."""
         self._perimeter = None
         self._bounding_box = None
         self._bbox = None
@@ -1561,126 +1573,126 @@ class Polygon(Geometry):
         self._centroid = None
         self._len = None
 
-    def __len__(self):
+    def __len__(self) -> int:
         return self.len
 
     @property
-    def len(self):
-        """
-        Returns the number of vertices in the polygon.
-
-        len -> int
-
-        Attributes
-        ----------
+    def len(self) -> int:
+        """Returns the number of vertices in the polygon.
 
         Examples
         --------
+        
         >>> p1 = Polygon([Point((0, 0)), Point((0, 1)), Point((1, 1)), Point((1, 0))])
         >>> p1.len
         4
+        
         >>> len(p1)
         4
+        
         """
+
         if self._len is None:
             self._len = len(self.vertices)
         return self._len
 
     @property
-    def vertices(self):
-        """
-        Returns the vertices of the polygon in clockwise order.
-
-        vertices -> Point list
-
-        Attributes
-        ----------
+    def vertices(self) -> list:
+        """Returns the vertices of the polygon in clockwise order.
 
         Examples
         --------
+        
         >>> p1 = Polygon([Point((0, 0)), Point((0, 1)), Point((1, 1)), Point((1, 0))])
         >>> len(p1.vertices)
         4
+        
         """
+
         return sum([part for part in self._vertices], []) + sum(
             [part for part in self._holes], []
         )
 
     @property
-    def holes(self):
-        """
-        Returns the holes of the polygon in clockwise order.
-
-        holes -> Point list
-
-        Attributes
-        ----------
+    def holes(self) -> list:
+        """Returns the holes of the polygon in clockwise order.
 
         Examples
         --------
-        >>> p = Polygon([Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))], [Point((1, 2)), Point((2, 2)), Point((2, 1)), Point((1, 1))])
+        
+        >>> p = Polygon(
+        ...     [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
+        ...     [Point((1, 2)), Point((2, 2)), Point((2, 1)), Point((1, 1))]
+        ... )
         >>> len(p.holes)
         1
+        
         """
+
         return [[v for v in part] for part in self._holes]
 
     @property
-    def parts(self):
-        """
-        Returns the parts of the polygon in clockwise order.
-
-        parts -> Point list
-
-        Attributes
-        ----------
-
-        Attributes
-        ----------
+    def parts(self) -> list:
+        """Returns the parts of the polygon in clockwise order.
 
         Examples
         --------
-        >>> p = Polygon([[Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))], [Point((2,1)),Point((2,2)),Point((1,2)),Point((1,1))]])
+        
+        >>> p = Polygon(
+        ...     [
+        ...         [Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))],
+        ...         [Point((2, 1)), Point((2, 2)), Point((1, 2)), Point((1, 1))]
+        ...     ]
+        ... )
         >>> len(p.parts)
         2
+        
         """
+
         return [[v for v in part] for part in self._vertices]
 
     @property
-    def perimeter(self):
-        """
-        Returns the perimeter of the polygon.
-
-        perimeter() -> number
-
-        Attributes
-        ----------
+    def perimeter(self) -> Union[int, float]:
+        """Returns the perimeter of the polygon.
 
         Examples
         --------
+        
         >>> p = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         >>> p.perimeter
         4.0
+        
         """
 
-        def dist(v1, v2):
+        def dist(v1: Union[int, float], v2: Union[int, float]) -> float:
             return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
-        def part_perimeter(part):
+        def part_perimeter(part) -> Union[int, float]:
             return sum([dist(part[i], part[i + 1]) for i in range(-1, len(part) - 1)])
 
+        sum_perim = lambda part_type: sum([part_perimeter(part) for part in part_type])
+
         if self._perimeter is None:
-            self._perimeter = sum(
-                [part_perimeter(part) for part in self._vertices]
-            ) + sum([part_perimeter(hole) for hole in self._holes])
+            self._perimeter = sum_perim(self._vertices) + sum_perim(self._holes)
+
         return self._perimeter
 
     @property
     def bbox(self):
+        """Returns the bounding box of the polygon as a list.
+        
+        Returns
+        -------
+        self._bbox : list
+            The bounding box of the polygon as a list.
+        
+        See Also
+        --------
+        
+        libpysal.cg.bounding_box
+        
         """
-        Returns the bounding box of the polygon as a list
 
-        See also bounding_box
-        """
         if self._bbox is None:
             self._bbox = [
                 self.bounding_box.left,
@@ -1692,26 +1704,31 @@ class Polygon(Geometry):
 
     @property
     def bounding_box(self):
-        """
-        Returns the bounding box of the polygon.
+        """Returns the bounding box of the polygon.
 
-        bounding_box -> Rectangle
-
-        Attributes
-        ----------
+        Returns
+        -------
+        self._bounding_box : libpysal.cg.Rectangle
+            The bounding box of the polygon.
 
         Examples
         --------
+        
         >>> p = Polygon([Point((0, 0)), Point((2, 0)), Point((2, 1)), Point((0, 1))])
         >>> p.bounding_box.left
         0.0
+        
         >>> p.bounding_box.lower
         0.0
+        
         >>> p.bounding_box.right
         2.0
+        
         >>> p.bounding_box.upper
         1.0
+        
         """
+
         if self._bounding_box is None:
             vertices = self.vertices
             self._bounding_box = Rectangle(
@@ -1728,6 +1745,7 @@ class Polygon(Geometry):
 
         Examples
         --------
+        
         >>> p = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         >>> p.area
         1.0
