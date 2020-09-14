@@ -1229,42 +1229,45 @@ class Chain(Geometry):
 
 
 class Ring(Geometry):
-    """
-    Geometric representation of a Linear Ring
-
-    Linear Rings must be closed, the first and last point must be the same. Open rings will be closed.
-
-    This class exists primarily as a geometric primitive to form complex polygons with multiple rings and holes.
-
-    The ordering of the vertices is ignored and will not be altered.
+    """Geometric representation of a linear ring. Linear rings must be
+    closed, the first and last point must be the same. Open rings will
+    be closed. This class exists primarily as a geometric primitive to
+    form complex polygons with multiple rings and holes. The ordering
+    of the vertices is ignored and will not be altered.
 
     Parameters
     ----------
-    vertices : list -- a list of vertices
+    vertices : list
+        A list of vertices.
 
     Attributes
-    __________
-    vertices        : list
-                      List of Points with the vertices of the ring
-    len             : int
-                      Number of vertices
-    perimeter       : float
-                      Geometric length of the perimeter of the ring
-    bounding_box    : Rectangle
-                      Bounding box of the ring
-    area            : float
-                      area enclosed by the ring
-    centroid        : tuple
-                      The centroid of the ring defined by the 'center of gravity' or 'center or mass'
-    _quad_tree_structure
-                    : object
-                      The quad tree structure for the ring. This structure could help test if a point is inside the ring
+    ----------
+    vertices : list
+        A list of points with the vertices of the ring.
+    len : int
+        The number of vertices.
+    perimeter : float
+        The geometric length of the perimeter of the ring.
+    bounding_box : libpysal.cg.Rectangle
+        The bounding box of the ring.
+    area : float
+        The area enclosed by the ring.
+    centroid : {tuple, libpysal.cg.Point}
+        The centroid of the ring defined by the 'center of gravity'
+        or 'center or mass'.
+    _quad_tree_structure : libpysal.cg.QuadTreeStructureSingleRing
+        The quad tree structure for the ring. This structure helps
+        test if a point is inside the ring.
+    
     """
 
     def __init__(self, vertices):
         if vertices[0] != vertices[-1]:
             vertices = vertices[:] + vertices[0:1]
-            # raise ValueError, "Supplied vertices do not form a closed ring, the first and last vertices are not the same"
+            # msg = "Supplied vertices do not form a closed ring, "
+            # msg += "the first and last vertices are not the same."
+            # raise ValueError(msg)
+
         self.vertices = tuple(vertices)
         self._perimeter = None
         self._bounding_box = None
@@ -1272,70 +1275,99 @@ class Ring(Geometry):
         self._centroid = None
         self._quad_tree_structure = None
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.vertices)
 
     @property
-    def len(self):
+    def len(self) -> int:
         return len(self)
 
     @staticmethod
-    def dist(v1, v2):
+    def dist(v1, v2) -> Union[int, float]:
+
         return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
     @property
-    def perimeter(self):
+    def perimeter(self) -> Union[int, float]:
+
         if self._perimeter is None:
             dist = self.dist
             v = self.vertices
             self._perimeter = sum(
                 [dist(v[i], v[i + 1]) for i in range(-1, len(self) - 1)]
             )
+
         return self._perimeter
 
     @property
     def bounding_box(self):
-        """
-        Returns the bounding box of the ring
+        """Returns the bounding box of the ring.
 
-        bounding_box -> Rectangle
-
+        Returns
+        -------
+        self._bounding_box : libpysal.cg.Rectangle
+            The bounding box of the ring.
+        
         Examples
         --------
-        >>> r = Ring([Point((0, 0)), Point((2, 0)), Point((2, 1)), Point((0, 1)), Point((0,0))])
+        
+        >>> r = Ring(
+        ...     [
+        ...         Point((0, 0)),
+        ...         Point((2, 0)),
+        ...         Point((2, 1)),
+        ...         Point((0, 1)),
+        ...         Point((0, 0))
+        ...     ]
+        ... )
+        
         >>> r.bounding_box.left
         0.0
+        
         >>> r.bounding_box.lower
         0.0
+        
         >>> r.bounding_box.right
         2.0
+        
         >>> r.bounding_box.upper
         1.0
+        
         """
+
         if self._bounding_box is None:
             vertices = self.vertices
             x = [v[0] for v in vertices]
             y = [v[1] for v in vertices]
             self._bounding_box = Rectangle(min(x), min(y), max(x), max(y))
+
         return self._bounding_box
 
     @property
-    def area(self):
-        """
-        Returns the area of the ring.
-
-        area -> number
+    def area(self) -> Union[int, float]:
+        """Returns the area of the ring.
 
         Examples
         --------
-        >>> r = Ring([Point((0, 0)), Point((2, 0)), Point((2, 1)), Point((0, 1)), Point((0,0))])
+        
+        >>> r = Ring(
+        ...     [
+        ...         Point((0, 0)),
+        ...         Point((2, 0)),
+        ...         Point((2, 1)),
+        ...         Point((0, 1)),
+        ...         Point((0, 0))
+        ...     ]
+        ... )
         >>> r.area
         2.0
+        
         """
+
         return abs(self.signed_area)
 
     @property
-    def signed_area(self):
+    def signed_area(self) -> Union[int, float]:
         if self._area is None:
             vertices = self.vertices
             x = [v[0] for v in vertices]
@@ -1347,27 +1379,41 @@ class Ring(Geometry):
                 A += (x[i] + x[i + 1]) * (y[i] - y[i + 1])
             A = A * 0.5
             self._area = -A
+
         return self._area
 
     @property
     def centroid(self):
-        """
-        Returns the centroid of the ring.
+        """Returns the centroid of the ring.
 
-        centroid -> Point
+        Returns
+        -------
+        self._centroid : libpysal.cg.Point
+            The ring's centroid.
 
         Notes
         -----
+        
         The centroid returned by this method is the geometric centroid.
         Also known as the 'center of gravity' or 'center of mass'.
 
-
         Examples
         --------
-        >>> r = Ring([Point((0, 0)), Point((2, 0)), Point((2, 1)), Point((0, 1)), Point((0,0))])
+        
+        >>> r = Ring(
+        ...     [
+        ...         Point((0, 0)),
+        ...         Point((2, 0)),
+        ...         Point((2, 1)),
+        ...         Point((0, 1)),
+        ...         Point((0, 0))
+        ...     ]
+        ... )
         >>> str(r.centroid)
         '(1.0, 0.5)'
+        
         """
+
         if self._centroid is None:
             vertices = self.vertices
             x = [v[0] for v in vertices]
@@ -1383,6 +1429,7 @@ class Ring(Geometry):
             cx = 1.0 / (6 * A) * cx
             cy = 1.0 / (6 * A) * cy
             self._centroid = Point((cx, cy))
+
         return self._centroid
 
     def build_quad_tree_structure(self):
@@ -1405,56 +1452,60 @@ class Ring(Geometry):
         
         Returns
         -------
-        <NAME> : bool
+        point_contained : bool
             ``True`` if ``point`` is contained within the polygon, otherwise ``False``.
         
         """
 
+        point_contained = False
+
         if self._quad_tree_structure is None:
             x, y = point
 
-            # bbox check
-            if x < self.bounding_box.left:
-                return False
-            if x > self.bounding_box.right:
-                return False
-            if y < self.bounding_box.lower:
-                return False
-            if y > self.bounding_box.upper:
-                return False
+            # bbox checks
+            bbleft = x < self.bounding_box.left
+            bbright = x > self.bounding_box.right
+            bblower = y < self.bounding_box.lower
+            bbupper = y > self.bounding_box.upper
 
-            rn = len(self.vertices)
-            xs = [self.vertices[i][0] - point[0] for i in range(rn)]
-            ys = [self.vertices[i][1] - point[1] for i in range(rn)]
-            w = 0
-            for i in range(len(self.vertices) - 1):
-                yi = ys[i]
-                yj = ys[i + 1]
-                xi = xs[i]
-                xj = xs[i + 1]
-                if yi * yj < 0:
-                    r = xi + yi * (xj - xi) / (yi - yj)
-                    if r > 0:
-                        if yi < 0:
-                            w += 1
-                        else:
-                            w -= 1
-                elif yi == 0 and xi > 0:
-                    if yj > 0:
-                        w += 0.5
-                    else:
-                        w -= 0.5
-                elif yj == 0 and xj > 0:
-                    if yi < 0:
-                        w += 0.5
-                    else:
-                        w -= 0.5
-            if w == 0:
-                return False
+            if bbleft or bbright or bblower or bbupper:
+                pass
             else:
-                return True
+                rn = len(self.vertices)
+                xs = [self.vertices[i][0] - point[0] for i in range(rn)]
+                ys = [self.vertices[i][1] - point[1] for i in range(rn)]
+                w = 0
+
+                for i in range(len(self.vertices) - 1):
+                    yi = ys[i]
+                    yj = ys[i + 1]
+                    xi = xs[i]
+                    xj = xs[i + 1]
+                    if yi * yj < 0:
+                        r = xi + yi * (xj - xi) / (yi - yj)
+                        if r > 0:
+                            if yi < 0:
+                                w += 1
+                            else:
+                                w -= 1
+                    elif yi == 0 and xi > 0:
+                        if yj > 0:
+                            w += 0.5
+                        else:
+                            w -= 0.5
+                    elif yj == 0 and xj > 0:
+                        if yi < 0:
+                            w += 0.5
+                        else:
+                            w -= 0.5
+                if w == 0:
+                    pass
+                else:
+                    point_contained = True
         else:
-            return self._quad_tree_structure.contains_point(point)
+            point_contained = self._quad_tree_structure.contains_point(point)
+
+        return point_contained
 
 
 class Polygon(Geometry):
