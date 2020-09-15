@@ -1021,36 +1021,29 @@ class Ray:
 
 
 class Chain(Geometry):
-    """
-    Geometric representation of a chain, also known as a polyline.
+    """Geometric representation of a chain, also known as a polyline.
+    
+    Parameters
+    ----------
+    vertices : list
+        A point list or list of point lists.
 
     Attributes
     ----------
-
-    vertices    : list
-                  List of Points of the vertices of the chain in order.
-    len         : float
-                  The geometric length of the chain.
-
+    vertices : list
+        The list of points of the vertices of the chain in order.
+    len : float
+        The geometric length of the chain.
+    
+    Examples
+    --------
+    
+    >>> c = Chain([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((2, 1))])
+    
     """
 
-    def __init__(self, vertices):
-        """
-        Returns a chain created from the points specified.
+    def __init__(self, vertices: list):
 
-        __init__(Point list or list of Point lists) -> Chain
-
-        Parameters
-        ----------
-        vertices : list -- Point list or list of Point lists.
-
-        Attributes
-        ----------
-
-        Examples
-        --------
-        >>> c = Chain([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((2, 1))])
-        """
         if isinstance(vertices[0], list):
             self._vertices = [part for part in vertices]
         else:
@@ -1058,102 +1051,97 @@ class Chain(Geometry):
         self._reset_props()
 
     @classmethod
-    def __from_geo_interface__(cls, geo):
+    def __from_geo_interface__(cls, geo: dict):
         if geo["type"].lower() == "linestring":
             verts = [Point(pt) for pt in geo["coordinates"]]
         elif geo["type"].lower() == "multilinestring":
             verts = [list(map(Point, part)) for part in geo["coordinates"]]
         else:
-            raise TypeError("%r is not a Chain" % geo)
+            raise TypeError("%r is not a Chain." % geo)
         return cls(verts)
 
     @property
-    def __geo_interface__(self):
+    def __geo_interface__(self) -> dict:
         if len(self.parts) == 1:
             return {"type": "LineString", "coordinates": self.vertices}
         else:
             return {"type": "MultiLineString", "coordinates": self.parts}
 
     def _reset_props(self):
+        """**HELPER METHOD. DO NOT CALL.** Resets attributes which are
+        functions of other attributes. The ``getter``s for these attributes
+        (implemented as ``properties``) then recompute their values if they
+        have been reset since the last call to the ``getter``.
+
         """
-        HELPER METHOD. DO NOT CALL.
 
-        Resets attributes which are functions of other attributes. The getters for these attributes (implemented as
-        properties) then recompute their values if they have been reset since the last call to the getter.
-
-        _reset_props() -> None
-
-        Attributes
-        ----------
-
-        Examples
-        --------
-        >>> ls = Chain([Point((1, 2)), Point((5, 6))])
-        >>> ls._reset_props()
-        """
         self._len = None
         self._arclen = None
         self._bounding_box = None
 
     @property
-    def vertices(self):
-        """
-        Returns the vertices of the chain in clockwise order.
-
-        vertices -> Point list
-
-        Attributes
-        ----------
+    def vertices(self) -> list:
+        """Returns the vertices of the chain in clockwise order.
 
         Examples
         --------
+        
         >>> c = Chain([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((2, 1))])
         >>> verts = c.vertices
         >>> len(verts)
         4
+        
         """
+
         return sum([part for part in self._vertices], [])
 
     @property
-    def parts(self):
-        """
-        Returns the parts of the chain.
-
-        parts -> Point list
-
-        Attributes
-        ----------
+    def parts(self) -> list:
+        """Returns the parts (lists of ``libpysal.cg.Point`` objects) of the chain.
 
         Examples
         --------
-        >>> c = Chain([[Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))],[Point((2,1)),Point((2,2)),Point((1,2)),Point((1,1))]])
+       
+        >>> c = Chain(
+        ...     [
+        ...         [Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))],
+        ...         [Point((2, 1)), Point((2, 2)), Point((1, 2)), Point((1, 1))]
+        ...     ]
+        ... )
         >>> len(c.parts)
         2
+        
         """
+
         return [[v for v in part] for part in self._vertices]
 
     @property
     def bounding_box(self):
-        """
-        Returns the bounding box of the chain.
+        """Returns the bounding box of the chain.
 
-        bounding_box -> Rectangle
-
-        Attributes
-        ----------
-
+        Returns
+        -------
+        self._bounding_box : libpysal.cg.Rectangle
+            The bounding box of the chain.
+        
         Examples
         --------
+        
         >>> c = Chain([Point((0, 0)), Point((2, 0)), Point((2, 1)), Point((0, 1))])
         >>> c.bounding_box.left
         0.0
+        
         >>> c.bounding_box.lower
         0.0
+        
         >>> c.bounding_box.right
         2.0
+        
         >>> c.bounding_box.upper
         1.0
+        
         """
+
         if self._bounding_box is None:
             vertices = self.vertices
             self._bounding_box = Rectangle(
@@ -1162,66 +1150,61 @@ class Chain(Geometry):
                 max([v[0] for v in vertices]),
                 max([v[1] for v in vertices]),
             )
+
         return self._bounding_box
 
     @property
-    def len(self):
-        """
-        Returns the geometric length of the chain.
-
-        len -> number
-
-        Attributes
-        ----------
+    def len(self) -> int:
+        """Returns the geometric length of the chain.
 
         Examples
         --------
+        
         >>> c = Chain([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((2, 1))])
         >>> c.len
         3.0
-        >>> c = Chain([[Point((0, 0)), Point((1, 0)), Point((1, 1))],[Point((10,10)),Point((11,10)),Point((11,11))]])
+        
+        >>> c = Chain(
+        ...     [
+        ...         [Point((0, 0)), Point((1, 0)), Point((1, 1))],
+        ...         [Point((10, 10)), Point((11, 10)), Point((11, 11))]
+        ...     ]
+        ... )
         >>> c.len
         4.0
+        
         """
 
-        def dist(v1, v2):
+        def dist(v1: tuple, v2: tuple) -> Union[int, float]:
             return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
-        def part_perimeter(part):
-            return sum([dist(part[i], part[i + 1]) for i in range(len(part) - 1)])
+        def part_perimeter(p: list) -> Union[int, float]:
+            return sum([dist(p[i], p[i + 1]) for i in range(len(p) - 1)])
 
         if self._len is None:
             self._len = sum([part_perimeter(part) for part in self._vertices])
+
         return self._len
 
     @property
-    def arclen(self):
-        """
-        Returns the geometric length of the chain computed using arcdistance (meters).
-
-        len -> number
-
-        Attributes
-        ----------
-
-        Examples
-        --------
+    def arclen(self) -> Union[int, float]:
+        """Returns the geometric length of the chain
+        computed using 'arcdistance' (meters).
+        
         """
 
-        def part_perimeter(part):
-            return sum(
-                [arcdist(part[i], part[i + 1]) * 1000.0 for i in range(len(part) - 1)]
-            )
+        def part_perimeter(p: list) -> Union[int, float]:
+            return sum([arcdist(p[i], p[i + 1]) * 1000.0 for i in range(len(p) - 1)])
 
         if self._arclen is None:
             self._arclen = sum([part_perimeter(part) for part in self._vertices])
+
         return self._arclen
 
     @property
-    def segments(self):
-        """
-        Returns the segments that compose the Chain
-        """
+    def segments(self) -> list:
+        """Returns the segments that compose the chain."""
+
         return [
             [LineSegment(a, b) for (a, b) in zip(part[:-1], part[1:])]
             for part in self._vertices
