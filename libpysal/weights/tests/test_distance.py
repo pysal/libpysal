@@ -3,6 +3,7 @@ from ...cg.kdtree import KDTree, RADIUS_EARTH_KM
 from ..util import get_points_array
 from ... import cg
 from ... import weights
+from .. import raster
 from .. import distance as d, contiguity as c
 from ...io import geotable as pdio
 from ...io.fileio import FileIO as psopen

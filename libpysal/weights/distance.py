@@ -78,7 +78,7 @@ class KNN(W):
 
     Now with 1 rather than 0 offset:
 
-    >>> wnn2 = libpysal.weights.KNN(kd, 2, ids=range(1,7))
+    >>> wnn2 = libpysal.weights.KNN(kd, 2, ids=range(1, 7))
     >>> wnn2[1]
     {2: 1.0, 4: 1.0}
     >>> wnn2[2]
@@ -168,12 +168,15 @@ class KNN(W):
         >>> wc = KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"))
         >>> "%.4f"%wc.pct_nonzero
         '4.0816'
+        
         >>> set([2,1]) == set(wc.neighbors[0])
         True
-        >>> wc3 = KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"),k=3)
-        >>> set(wc3.neighbors[0]) == set([2,1,3])
+        
+        >>> wc3 = KNN.from_shapefile(libpysal.examples.get_path("columbus.shp"), k=3)
+        >>> set(wc3.neighbors[0]) == set([2, 1, 3])
         True
-        >>> set(wc3.neighbors[2]) == set([4,3,0])
+        
+        >>> set(wc3.neighbors[2]) == set([4, 3, 0])
         True
 
         From a point shapefile:
@@ -181,7 +184,8 @@ class KNN(W):
         >>> w = KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"))
         >>> w.pct_nonzero
         1.1904761904761905
-        >>> w1 = KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"),k=1)
+        
+        >>> w1 = KNN.from_shapefile(libpysal.examples.get_path("juvenile.shp"), k=1)
         >>> "%.3f"%w1.pct_nonzero
         '0.595'
 
@@ -228,19 +232,23 @@ class KNN(W):
         >>> wnn2 = KNN.from_array(points, 2)
         >>> [1,3] == wnn2.neighbors[0]
         True
-        >>> wnn2 = KNN.from_array(points,2)
+        
+        >>> wnn2 = KNN.from_array(points, 2)
         >>> wnn2[0]
         {1: 1.0, 3: 1.0}
+        
         >>> wnn2[1]
         {0: 1.0, 3: 1.0}
 
         Now with 1 rather than 0 offset:
 
-        >>> wnn2 = KNN.from_array(points, 2, ids=range(1,7))
+        >>> wnn2 = KNN.from_array(points, 2, ids=range(1, 7))
         >>> wnn2[1]
         {2: 1.0, 4: 1.0}
+        
         >>> wnn2[2]
         {1: 1.0, 4: 1.0}
+        
         >>> 0 in wnn2.neighbors
         False
 
@@ -335,6 +343,7 @@ class KNN(W):
         """
 
         if new_data is not None:
+
             new_data = np.asarray(new_data).reshape(-1, 2)
             data = np.vstack((self.data, new_data)).reshape(-1, 2)
             if new_ids is not None:
@@ -456,8 +465,10 @@ class Kernel(W):
     >>> kw = Kernel(points)
     >>> kw.weights[0]
     [1.0, 0.500000049999995, 0.4409830615267465]
+    
     >>> kw.neighbors[0]
     [0, 1, 3]
+    
     >>> kw.bandwidth
     array([[20.000002],
            [20.000002],
@@ -465,11 +476,14 @@ class Kernel(W):
            [20.000002],
            [20.000002],
            [20.000002]])
+    
     >>> kw15 = Kernel(points,bandwidth=15.0)
     >>> kw15[0]
     {0: 1.0, 1: 0.33333333333333337, 3: 0.2546440075000701}
+    
     >>> kw15.neighbors[0]
     [0, 1, 3]
+    
     >>> kw15.bandwidth
     array([[15.],
            [15.],
@@ -484,8 +498,10 @@ class Kernel(W):
     >>> kwa = Kernel(points,bandwidth=bw)
     >>> kwa.weights[0]
     [1.0, 0.6, 0.552786404500042, 0.10557280900008403]
+    
     >>> kwa.neighbors[0]
     [0, 1, 3, 4]
+    
     >>> kwa.bandwidth
     array([[25. ],
            [15. ],
@@ -499,8 +515,10 @@ class Kernel(W):
     >>> kwea = Kernel(points,fixed=False)
     >>> kwea.weights[0]
     [1.0, 0.10557289844279438, 9.99999900663795e-08]
+    
     >>> kwea.neighbors[0]
     [0, 1, 3]
+    
     >>> kwea.bandwidth
     array([[11.18034101],
            [11.18034101],
@@ -514,6 +532,7 @@ class Kernel(W):
     >>> kweag = Kernel(points,fixed=False,function='gaussian')
     >>> kweag.weights[0]
     [0.3989422804014327, 0.2674190291577696, 0.2419707487162134]
+    
     >>> kweag.bandwidth
     array([[11.18034101],
            [11.18034101],
@@ -527,6 +546,7 @@ class Kernel(W):
     >>> kq = Kernel(points,function='gaussian')
     >>> kq.weights
     {0: [0.3989422804014327, 0.35206533556593145, 0.3412334260702758], 1: [0.35206533556593145, 0.3989422804014327, 0.2419707487162134, 0.3412334260702758, 0.31069657591175387], 2: [0.2419707487162134, 0.3989422804014327, 0.31069657591175387], 3: [0.3412334260702758, 0.3412334260702758, 0.3989422804014327, 0.3011374490937829, 0.26575287272131043], 4: [0.31069657591175387, 0.31069657591175387, 0.3011374490937829, 0.3989422804014327, 0.35206533556593145], 5: [0.26575287272131043, 0.35206533556593145, 0.3989422804014327]}
+    
     >>> kqd = Kernel(points, function='gaussian', diagonal=True)
     >>> kqd.weights
     {0: [1.0, 0.35206533556593145, 0.3412334260702758], 1: [0.35206533556593145, 1.0, 0.2419707487162134, 0.3412334260702758, 0.31069657591175387], 2: [0.2419707487162134, 1.0, 0.31069657591175387], 3: [0.3412334260702758, 0.3412334260702758, 1.0, 0.3011374490937829, 0.26575287272131043], 4: [0.31069657591175387, 0.31069657591175387, 0.3011374490937829, 1.0, 0.35206533556593145], 5: [0.26575287272131043, 0.35206533556593145, 1.0]}
@@ -846,7 +866,9 @@ class DistanceBand(W):
     
     >>> import libpysal
     >>> points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
-    >>> wcheck = libpysal.weights.W({0: [1, 3], 1: [0, 3], 2: [], 3: [0, 1], 4: [5], 5: [4]})
+    >>> wcheck = libpysal.weights.W(
+    ...     {0: [1, 3], 1: [0, 3], 2: [], 3: [0, 1], 4: [5], 5: [4]}
+    ... )
     UserWarning: The weights matrix is not fully connected: 
     There are 3 disconnected components.
     There is 1 island with id: 2.
@@ -860,7 +882,9 @@ class DistanceBand(W):
     True
     
     >>> w = libpysal.weights.DistanceBand(points, threshold=14.2)
-    >>> wcheck = libpysal.weights.W({0: [1, 3], 1: [0, 3, 4], 2: [4], 3: [1, 0], 4: [5, 2, 1], 5: [4]})
+    >>> wcheck = libpysal.weights.W(
+    ...     {0: [1, 3], 1: [0, 3, 4], 2: [4], 3: [1, 0], 4: [5, 2, 1], 5: [4]}
+    ... )
     >>> libpysal.weights.util.neighbor_equality(w, wcheck)
     True
 
@@ -910,6 +934,7 @@ class DistanceBand(W):
     ):
         """Casting to floats is a work around for a bug in ``scipy.spatial``.
         See details in `pysal/pysal#126 <https://github.com/pysal/pysal/issues/126>`_.
+
         """
 
         if ids is not None:
@@ -1156,4 +1181,5 @@ def _test():
 
 
 if __name__ == "__main__":
+
     _test()

@@ -1172,18 +1172,44 @@ class W(object):
         --------
 
         >>> from libpysal.weights import lat2W
-        >>> w = lat2W(3,3)
+        >>> w = lat2W(3, 3)
         >>> w.asymmetry()
         []
-        >>> w.transform='r'
+        
+        >>> w.transform = 'r'
         >>> w.asymmetry()
-        [(0, 1), (0, 3), (1, 0), (1, 2), (1, 4), (2, 1), (2, 5), (3, 0), (3, 4), (3, 6), (4, 1), (4, 3), (4, 5), (4, 7), (5, 2), (5, 4), (5, 8), (6, 3), (6, 7), (7, 4), (7, 6), (7, 8), (8, 5), (8, 7)]
+        [(0, 1),
+         (0, 3),
+         (1, 0),
+         (1, 2),
+         (1, 4),
+         (2, 1),
+         (2, 5),
+         (3, 0),
+         (3, 4),
+         (3, 6),
+         (4, 1),
+         (4, 3),
+         (4, 5),
+         (4, 7),
+         (5, 2),
+         (5, 4),
+         (5, 8),
+         (6, 3),
+         (6, 7),
+         (7, 4),
+         (7, 6),
+         (7, 8),
+         (8, 5),
+         (8, 7)]
+        
         >>> result = w.asymmetry(intrinsic=False)
         >>> result
         []
-        >>> neighbors = {0:[1,2,3], 1:[1,2,3], 2:[0,1], 3:[0,1]}
-        >>> weights = {0:[1,1,1], 1:[1,1,1], 2:[1,1], 3:[1,1]}
-        >>> w = W(neighbors,weights)
+        
+        >>> neighbors = {0: [1, 2, 3], 1:[1, 2, 3], 2:[0, 1], 3: [0, 1]}
+        >>> weights = {0: [1, 1, 1], 1: [1, 1, 1], 2: [1, 1], 3: [1, 1]}
+        >>> w = W(neighbors, weights)
         >>> w.asymmetry()
         [(0, 1), (1, 0)]
         
@@ -1261,8 +1287,10 @@ class W(object):
         --------
         
         >>> from libpysal.weights import W, full
-        >>> neighbors = {'first':['second'],'second':['first','third'],'third':['second']}
-        >>> weights = {'first':[1],'second':[1,1],'third':[1]}
+        >>> neighbors = {
+        ...     'first': ['second'], 'second': ['first', 'third'], 'third': ['second']
+        ... }
+        >>> weights = {'first': [1], 'second': [1, 1], 'third': [1]}
         >>> w = W(neighbors, weights)
         >>> wf, ids = full(w)
         >>> wf
@@ -1301,14 +1329,18 @@ class W(object):
         --------
        
         >>> from libpysal.weights import W, WSP
-        >>> neighbors = {'first':['second'],'second':['first','third'],'third':['second']}
-        >>> weights = {'first':[1],'second':[1,1],'third':[1]}
+        >>> neighbors = {
+        ...     'first': ['second'], 'second': ['first', 'third'], 'third': ['second']
+        ... }
+        >>> weights = {'first': [1], 'second': [1, 1], 'third': [1]}
         >>> w = W(neighbors,weights)
         >>> wsp = w.to_WSP()
         >>> isinstance(wsp, WSP)
         True
+        
         >>> wsp.n
         3
+        
         >>> wsp.s0
         4
 
@@ -1500,18 +1532,20 @@ class WSP(object):
     >>> rows = [0, 1, 1, 2, 2, 3]
     >>> cols = [1, 0, 2, 1, 3, 3]
     >>> weights =  [1, 0.75, 0.25, 0.9, 0.1, 1]
-    >>> sparse = scipy.sparse.csr_matrix((weights, (rows, cols)), shape=(4,4))
+    >>> sparse = scipy.sparse.csr_matrix((weights, (rows, cols)), shape=(4, 4))
     >>> w = WSP(sparse)
     >>> w.s0
     4.0
+    
     >>> w.trcWtW_WW
     6.395
+    
     >>> w.n
     4
 
     """
 
-    def __init__(self, sparse, id_order=None):
+    def __init__(self, sparse, id_order=None, index=None):
         if not scipy.sparse.issparse(sparse):
             raise ValueError("A scipy sparse object must be passed in.")
 
@@ -1528,6 +1562,17 @@ class WSP(object):
                 raise ValueError(msg)
 
         self.id_order = id_order
+        # temp addition of index attribute
+        import pandas as pd  # will be removed after refactoring is done
+
+        if index is not None:
+            if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
+                raise TypeError("index must be an instance of pandas.Index dtype")
+            if len(index) != self.n:
+                raise ValueError("Number of values in index must match shape of sparse")
+        else:
+            index = pd.RangeIndex(self.n)
+        self.index = index
         self._cache = {}
 
     @property
@@ -1609,6 +1654,7 @@ class WSP(object):
         >>> wsp = WSP(sp)
         >>> wsp.n
         10
+        
         >>> print(wsp.sparse[0].todense())
         [[0 1 0 0 0 1 0 0 0 0]]
 
@@ -1617,6 +1663,7 @@ class WSP(object):
         >>> w = WSP2W(wsp)
         >>> w.n
         10
+        
         >>> print(w.full()[0][0])
         [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
 

@@ -6,6 +6,7 @@ from ..io.fileio import FileIO
 from ._contW_lists import ContiguityWeightsLists
 from .util import get_ids, get_points_array
 from .weights import WSP, W
+from .raster import da2W, da2WSP
 
 try:
     from shapely.geometry import Point as shapely_point
@@ -91,7 +92,10 @@ class Rook(W):
         >>> wr = Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), "POLYID")
         >>> "%.3f"%wr.pct_nonzero
         '8.330'
-        >>> wr = Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
+        
+        >>> wr = Rook.from_shapefile(
+        ...     libpysal.examples.get_path("columbus.shp"), sparse=True
+        ... )
         >>> pct_sp = wr.sparse.nnz *1. / wr.n**2
         >>> "%.3f"%pct_sp
         '0.083'
@@ -221,6 +225,48 @@ class Rook(W):
 
         return w
 
+    @classmethod
+    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
+        """Construct a weights object from a ``xarray.DataArray``.
+
+        Parameters
+        ----------
+        da : xarray.DataArray
+            Input 2D or 3D DataArray with shape=(z, y, x).
+        z_value : {int, str, float}
+            Select the z_value of 3D DataArray with multiple layers.
+        coords_labels : dict
+            Pass dimension labels for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon).
+            Default is an empty ``dict``.
+            e.g.
+            ``dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}``
+        sparse : bool
+            The type of weight object. Default is ``False``.
+            For sparse set to ``True``.
+        **kwargs : keyword arguments
+            Optional arguments passed when ``sparse=False``.
+
+        Returns
+        -------
+        w : {libpysal.weights.W, libpysal.weights.WSP}
+            An instance of spatial weights class `W` or `WSP`.
+
+        See Also
+        --------
+        
+        libpysal.weights.weights.W
+        libpysal.weights.weights.WSP
+        
+        """
+
+        if sparse:
+            w = da2WSP(da, "rook", z_value, coords_labels)
+        else:
+            w = da2W(da, "rook", z_value, coords_labels, **kwargs)
+
+        return w
+
 
 class Queen(W):
     """Construct a weights object from a collection of PySAL
@@ -289,10 +335,16 @@ class Queen(W):
         >>> wq = Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"))
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        >>> wq = Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"),"POLYID")
+        
+        >>> wq = Queen.from_shapefile(
+        ...     libpysal.examples.get_path("columbus.shp"), "POLYID"
+        ... )
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        >>> wq = Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
+        
+        >>> wq = Queen.from_shapefile(
+        ...     libpysal.examples.get_path("columbus.shp"), sparse=True
+        ... )
         >>> pct_sp = wq.sparse.nnz *1. / wq.n**2
         >>> "%.3f"%pct_sp
         '0.098'
@@ -414,6 +466,47 @@ class Queen(W):
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
 
+        return w
+
+    @classmethod
+    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
+        """Construct a weights object from a ``xarray.DataArray``.
+
+        Parameters
+        ----------
+        da : xarray.DataArray
+            Input 2D or 3D DataArray with shape=(z, y, x).
+        z_value : {int, str, float}
+            Select the z_value of 3D DataArray with multiple layers.
+        coords_labels : dict
+            Pass dimension labels for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon).
+            Default is an empty ``dict``.
+            e.g.
+            ``dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}``
+        sparse : bool
+            The type of weight object. Default is ``False``.
+            For sparse set to ``True``.
+        **kwargs : keyword arguments
+            Optional arguments passed when ``sparse=False``.
+
+        Returns
+        -------
+        w : {libpysal.weights.W, libpysal.weights.WSP}
+            An instance of spatial weights class `W` or `WSP`.
+
+        See Also
+        --------
+        
+        libpysal.weights.weights.W
+        libpysal.weights.weights.WSP
+        
+        """
+
+        if sparse:
+            w = da2WSP(da, "queen", z_value, coords_labels)
+        else:
+            w = da2W(da, "queen", z_value, coords_labels, **kwargs)
         return w
 
 
@@ -562,7 +655,8 @@ def _build(polygons, criterion="rook", ids=None):
     wttype = WT_TYPE[criterion.lower()]
     geo = polygons
     if issubclass(type(geo), FileIO):
-        geo.seek(0)  # Make sure we read from the beginning of the file.
+        # Make sure we read from the beginning of the file.
+        geo.seek(0)
 
     neighbor_data = ContiguityWeightsLists(polygons, wttype=wttype).w
 
