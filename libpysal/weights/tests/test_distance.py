@@ -4,6 +4,7 @@ from ...cg.kdtree import KDTree, RADIUS_EARTH_KM
 from ..util import get_points_array
 from ... import cg
 from ... import weights
+from .. import raster
 from .. import distance as d, contiguity as c
 from ...io import geotable as pdio
 from ...io.fileio import FileIO as psopen
@@ -99,6 +100,7 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         w = d.KNN.from_shapefile(self.polygon_path, k=4)    
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+        
 
     ##########################
     # Function/User tests    #
