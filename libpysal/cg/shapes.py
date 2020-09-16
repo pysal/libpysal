@@ -799,223 +799,206 @@ class LineSegment(Geometry):
         >>> l.b
         0.0
         """
+
         if self._line == False:
             dx = self._p1[0] - self._p2[0]
             dy = self._p1[1] - self._p2[1]
+
             if dx == 0 and dy == 0:
                 self._line = None
             elif dx == 0:
                 self._line = VerticalLine(self._p1[0])
             else:
                 m = dy / float(dx)
-                b = self._p1[1] - m * self._p1[0]  # y - mx
+                # y - mx
+                b = self._p1[1] - m * self._p1[0]
                 self._line = Line(m, b)
+
         return self._line
 
 
 class VerticalLine(Geometry):
-    """
-    Geometric representation of verticle line objects.
-
-    Attributes
+    """Geometric representation of verticle line objects.
+    
+    Parameters
     ----------
-    x       : float
-              x-intercept
+    x : {int, float}
+        The :math:`x`-intercept of the line. ``x`` is also an attribute.
+    
+    Examples
+    --------
+    
+    >>> ls = VerticalLine(0)
+    >>> ls.m
+    inf
+    
+    >>> ls.b
+    nan
+    
     """
 
     def __init__(self, x):
-        """
-        Returns a VerticalLine object.
 
-        __init__(number) -> VerticalLine
-
-        Parameters
-        ----------
-        x : the x-intercept of the line
-
-        Attributes
-        ----------
-
-        Examples
-        --------
-        >>> ls = VerticalLine(0)
-        >>> ls.m
-        inf
-        >>> ls.b
-        nan
-        """
         self._x = float(x)
         self.m = float("inf")
         self.b = float("nan")
 
-    def x(self, y):
-        """
-        Returns the x-value of the line at a particular y-value.
-
-        x(number) -> number
+    def x(self, y) -> float:
+        """Returns the :math:`x`-value of the line at a particular :math:`y`-value.
 
         Parameters
         ----------
-        y : the y-value to compute x at
-
-        Attributes
-        ----------
+        y : {int, float}
+            The :math:`y`-value at which to compute :math:`x`.
 
         Examples
         --------
+        
         >>> l = VerticalLine(0)
         >>> l.x(0.25)
         0.0
+        
         """
+
         return self._x
 
-    def y(self, x):
-        """
-        Returns the y-value of the line at a particular x-value.
-
-        y(number) -> number
+    def y(self, x) -> float:
+        """Returns the :math:`y`-value of the line at a particular :math:`x`-value.
 
         Parameters
         ----------
-        x : the x-value to compute y at
-
-        Attributes
-        ----------
+        x : {int, float}
+            The :math:`x`-value at which to compute :math:`y`.
 
         Examples
         --------
+        
         >>> l = VerticalLine(1)
         >>> l.y(1)
         nan
+        
         """
+
         return float("nan")
 
 
 class Line(Geometry):
-    """
-    Geometric representation of line objects.
+    """Geometric representation of line objects.
 
-    Attributes
+    Parameters
     ----------
-    m       : float
-              slope
-    b       : float
-              y-intercept
-
+    m : {int, float}
+        The slope of the line. ``m`` is also an attribute.
+    b : {int, float}
+        The :math:`y`-intercept of the line. ``b`` is also an attribute.
+    
+    Raises
+    ------
+    ArithmeticError
+        Raised when infinity is passed in as the slope.
+    
+    Examples
+    --------
+    
+    >>> ls = Line(1, 0)
+    >>> ls.m
+    1.0
+    
+    >>> ls.b
+    0.0
+    
     """
 
     def __init__(self, m, b):
-        """
-        Returns a Line object.
 
-        __init__(number, number) -> Line
-
-        Test tag: <tc>#is#Line.__init__</tc>
-        Test tag: <tc>#tests#Line.__init__</tc>
-
-        Parameters
-        ----------
-        m : the slope of the line
-        b : the y-intercept of the line
-
-        Attributes
-        ----------
-
-        Examples
-        --------
-        >>> ls = Line(1, 0)
-        >>> ls.m
-        1.0
-        >>> ls.b
-        0.0
-        """
-        if m == float("inf") or m == float("inf"):
+        if m == float("inf"):
             raise ArithmeticError("Slope cannot be infinite.")
+
         self.m = float(m)
         self.b = float(b)
 
-    def x(self, y):
-        """
-        Returns the x-value of the line at a particular y-value.
-
-        x(number) -> number
+    def x(self, y: Union[int, float]) -> float:
+        """Returns the :math:`x`-value of the line at a particular :math:`y`-value.
 
         Parameters
         ----------
-        y : the y-value to compute x at
-
-        Attributes
-        ----------
-
+        y : {int, float}
+            The :math:`y`-value at which to compute :math:`x`.
+        
+        Raises
+        ------
+        ArithmeticError
+            Raised when ``0.`` is passed in as the slope.
+        
         Examples
         --------
+        
         >>> l = Line(0.5, 0)
         >>> l.x(0.25)
         0.5
+        
         """
+
         if self.m == 0:
-            raise ArithmeticError("Cannot solve for X when slope is zero.")
+            raise ArithmeticError("Cannot solve for 'x' when slope is zero.")
+
         return (y - self.b) / self.m
 
-    def y(self, x):
-        """
-        Returns the y-value of the line at a particular x-value.
-
-        y(number) -> number
+    def y(self, x: Union[int, float]) -> float:
+        """Returns the :math:`y`-value of the line at a particular :math:`x`-value.
 
         Parameters
         ----------
-        x : the x-value to compute y at
-
-        Attributes
-        ----------
+        x : {int, float}
+            The :math:`x`-value at which to compute :math:`y`.
 
         Examples
         --------
+        
         >>> l = Line(1, 0)
         >>> l.y(1)
         1.0
+        
         """
+
         if self.m == 0:
             return self.b
+
         return self.m * x + self.b
 
 
 class Ray:
-    """
-    Geometric representation of ray objects.
+    """Geometric representation of ray objects.
+
+    Parameters
+    ----------
+    origin : libpysal.cg.Point
+        The point where the ray originates.
+    second_p :
+        The second point specifying the ray (not ``origin``.)
 
     Attributes
     ----------
-
-    o       : Point
-              Origin (point where ray originates)
-    p       : Point
-              Second point on the ray (not point where ray originates)
+    o : libpysal.cg.Point
+        The origin (point where ray originates). See ``origin``.
+    p : libpysal.cg.Point
+        The second point on the ray (not the point where the
+        ray originates). See ``second_p``.
+    
+    Examples
+    --------
+    
+    >>> l = Ray(Point((0, 0)), Point((1, 0)))
+    >>> str(l.o)
+    '(0.0, 0.0)'
+    
+    >>> str(l.p)
+    '(1.0, 0.0)'
+    
     """
 
     def __init__(self, origin, second_p):
-        """
-        Returns a ray with the values specified.
 
-        __init__(Point, Point) -> Ray
-
-        Parameters
-        ----------
-        origin   : the point where the ray originates
-        second_p : the second point specifying the ray (not the origin)
-
-        Attributes
-        ----------
-
-        Examples
-        --------
-        >>> l = Ray(Point((0, 0)), Point((1, 0)))
-        >>> str(l.o)
-        '(0.0, 0.0)'
-        >>> str(l.p)
-        '(1.0, 0.0)'
-        """
         self.o = origin
         self.p = second_p
 
