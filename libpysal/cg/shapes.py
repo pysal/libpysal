@@ -339,330 +339,333 @@ class Point(Geometry):
         return len(self.__loc)
 
     def __repr__(self):
-        """
-        Returns the string representation of the Point
+        """Returns the string representation of the ``Point``.
 
         __repr__() -> string
 
-        Parameters
-        ----------
-        None
-
-        Attributes
-        ----------
 
         Examples
         --------
-        >>> Point((0,1))
+        
+        >>> Point((0, 1))
         (0.0, 1.0)
+        
         """
+
         return str(self)
 
     def __str__(self):
-        """
-        Returns a string representation of a Point object.
+        """Returns a string representation of a ``Point`` object.
 
         __str__() -> string
 
-        Test tag: <tc>#is#Point.__str__</tc>
-        Test tag: <tc>#tests#Point.__str__</tc>
 
-        Attributes
-        ----------
 
         Examples
         --------
+        
         >>> p = Point((1, 3))
         >>> str(p)
         '(1.0, 3.0)'
+        
         """
+
         return str(self.__loc)
-        return "POINT ({} {})".format(*self.__loc)
+        # return "POINT ({} {})".format(*self.__loc)
 
 
 class LineSegment(Geometry):
-    """
-    Geometric representation of line segment objects.
+    """Geometric representation of line segment objects.
 
     Parameters
     ----------
-
-    start_pt     : Point
-                   Point where segment begins
-    end_pt       : Point
-                   Point where segment ends
+    start_pt : libpysal.cg.Point
+        The point where the segment begins.
+    end_pt : libpysal.cg.Point
+        The point where the segment ends.
 
     Attributes
     ----------
+    p1 : libpysal.cg.Point
+        The starting point of the line segment.
+    p2 : Point
+        The ending point of the line segment.
+    bounding_box : libpysal.cg.Rectangle
+        The bounding box of the segment.
+    len : float
+        The length of the segment.
+    line : libpysal.cg.Line
+        The line on which the segment lies.
 
-    p1              : Point
-                      Starting point
-    p2              : Point
-                      Ending point
-    bounding_box    : tuple
-                      The bounding box of the segment (number 4-tuple)
-    len             : float
-                      The length of the segment
-    line            : Line
-                      The line on which the segment lies
+    Examples
+    --------
+    
+    >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
 
     """
 
     def __init__(self, start_pt, end_pt):
-        """
-        Creates a LineSegment object.
 
-        __init__(Point, Point) -> LineSegment
-
-        Test tag: <tc>#is#LineSegment.__init__</tc>
-        Test tag: <tc>#tests#LineSegment.__init__</tc>
-
-
-        Attributes
-        ----------
-        None
-
-        Examples
-        --------
-        >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
-        """
         self._p1 = start_pt
         self._p2 = end_pt
         self._reset_props()
 
     def __str__(self):
         return "LineSegment(" + str(self._p1) + ", " + str(self._p2) + ")"
-        return "LINESTRING ({} {}, {} {})".format(
-            self._p1[0], self._p1[1], self._p2[0], self._p2[1]
-        )
+        # return "LINESTRING ({} {}, {} {})".format(
+        #    self._p1[0], self._p1[1], self._p2[0], self._p2[1]
+        # )
 
-    def __eq__(self, other):
-        """
-        Returns true if self and other are the same line segment
+    def __eq__(self, other) -> bool:
+        """Returns ``True`` if ``self`` and ``other`` are the same line segment.
 
         Examples
         --------
+        
         >>> l1 = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> l2 = LineSegment(Point((5, 6)), Point((1, 2)))
         >>> l1 == l2
         True
+        
         >>> l2 == l1
         True
+        
         """
+
+        eq = False
+
         if not isinstance(other, self.__class__):
-            return False
-        if other.p1 == self._p1 and other.p2 == self._p2:
-            return True
-        elif other.p2 == self._p1 and other.p1 == self._p2:
-            return True
-        return False
+            pass
+        else:
+            if other.p1 == self._p1 and other.p2 == self._p2:
+                eq = True
+            elif other.p2 == self._p1 and other.p1 == self._p2:
+                eq = True
 
-    def intersect(self, other):
-        """
-        Test whether segment intersects with other segment
+        return eq
 
-        Handles endpoints of segments being on other segment
-
+    def intersect(self, other) -> bool:
+        """Test whether segment intersects with other segment (``True``) or
+        not (``False``). Handles endpoints of segments being on other segment.
+        
+        Parameters
+        ----------
+        other : libpysal.cg.LineSegment
+            Another line segment to check against.
+        
         Examples
         --------
 
-        >>> ls = LineSegment(Point((5,0)), Point((10,0)))
-        >>> ls1 = LineSegment(Point((5,0)), Point((10,1)))
+        >>> ls = LineSegment(Point((5, 0)), Point((10, 0)))
+        >>> ls1 = LineSegment(Point((5, 0)), Point((10, 1)))
         >>> ls.intersect(ls1)
         True
-        >>> ls2 = LineSegment(Point((5,1)), Point((10,1)))
+        
+        >>> ls2 = LineSegment(Point((5, 1)), Point((10, 1)))
         >>> ls.intersect(ls2)
         False
-        >>> ls2 = LineSegment(Point((7,-1)), Point((7,2)))
+        
+        >>> ls2 = LineSegment(Point((7, -1)), Point((7, 2)))
         >>> ls.intersect(ls2)
         True
-        >>>
+        
         """
+
         ccw1 = self.sw_ccw(other.p2)
         ccw2 = self.sw_ccw(other.p1)
         ccw3 = other.sw_ccw(self.p1)
         ccw4 = other.sw_ccw(self.p2)
 
-        return ccw1 * ccw2 <= 0 and ccw3 * ccw4 <= 0
+        intersects = ccw1 * ccw2 <= 0 and ccw3 * ccw4 <= 0
+
+        return intersects
 
     def _reset_props(self):
-        """
-        HELPER METHOD. DO NOT CALL.
-
-        Resets attributes which are functions of other attributes. The getters for these attributes (implemented as
-        properties) then recompute their values if they have been reset since the last call to the getter.
-
-        _reset_props() -> None
-
-        Attributes
-        ----------
+        """**HELPER METHOD. DO NOT CALL.**
+        Resets attributes which are functions of other attributes.
+        The getters for these attributes (implemented as properties)
+        then recompute their values if they have been reset since
+        the last call to the getter.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> ls._reset_props()
+        
         """
+
         self._bounding_box = None
         self._len = None
         self._line = False
 
     def _get_p1(self):
-        """
-        HELPER METHOD. DO NOT CALL.
+        """**HELPER METHOD. DO NOT CALL.**
+        Returns the ``p1`` attribute of the line segment.
 
-        Returns the p1 attribute of the line segment.
-
-        _get_p1() -> Point
-
-        Attributes
-        ----------
+        Returns
+        -------
+        self._p1 : libpysal.cg.Point
+            The ``_p1`` attribute.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> r = ls._get_p1()
         >>> r == Point((1, 2))
         True
+        
         """
+
         return self._p1
 
     def _set_p1(self, p1):
-        """
-        HELPER METHOD. DO NOT CALL.
-
-        Sets the p1 attribute of the line segment.
-
-        _set_p1(Point) -> Point
-
-        Attributes
+        """**HELPER METHOD. DO NOT CALL.**
+        Sets the ``p1`` attribute of the line segment.
+        
+        Parameters
         ----------
+        p1 : libpysal.cg.Point
+            A point.
+        
+        Returns
+        -------
+        self._p1 : libpysal.cg.Point
+            The reset ``p1`` attribute.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> r = ls._set_p1(Point((3, -1)))
         >>> r == Point((3.0, -1.0))
         True
+        
         """
+
         self._p1 = p1
         self._reset_props()
+
         return self._p1
 
     p1 = property(_get_p1, _set_p1)
 
     def _get_p2(self):
-        """
-        HELPER METHOD. DO NOT CALL.
+        """**HELPER METHOD. DO NOT CALL.**
+        Returns the ``p2`` attribute of the line segment.
 
-        Returns the p2 attribute of the line segment.
-
-        _get_p2() -> Point
-
-        Attributes
-        ----------
+        Returns
+        -------
+        self._p2 : libpysal.cg.Point
+            The ``_p2`` attribute.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> r = ls._get_p2()
         >>> r == Point((5, 6))
         True
+        
         """
+
         return self._p2
 
     def _set_p2(self, p2):
-        """
-        HELPER METHOD. DO NOT CALL.
+        """**HELPER METHOD. DO NOT CALL.**
+        Sets the ``p2`` attribute of the line segment.
 
-        Sets the p2 attribute of the line segment.
-
-        _set_p2(Point) -> Point
-
-        Attributes
+        Parameters
         ----------
+        p2 : libpysal.cg.Point
+            A point.
+        
+        Returns
+        -------
+        self._p2 : libpysal.cg.Point
+            The reset ``p2`` attribute.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> r = ls._set_p2(Point((3, -1)))
         >>> r == Point((3.0, -1.0))
         True
+        
         """
+
         self._p2 = p2
         self._reset_props()
+
         return self._p2
 
     p2 = property(_get_p2, _set_p2)
 
-    def is_ccw(self, pt):
-        """
-        Returns whether a point is counterclockwise of the segment. Exclusive.
-
-        is_ccw(Point) -> bool
-
-        Test tag: <tc>#is#LineSegment.is_ccw</tc>
-        Test tag: <tc>#tests#LineSegment.is_ccw</tc>
+    def is_ccw(self, pt) -> bool:
+        """Returns whether a point is counterclockwise of the
+        segment (``True``) or not (``False``). Exclusive.
 
         Parameters
         ----------
-        pt : point lying ccw or cw of a segment
-
-        Attributes
-        ----------
+        pt : libpysal.cg.Point
+            A point lying ccw or cw of a segment.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((0, 0)), Point((5, 0)))
         >>> ls.is_ccw(Point((2, 2)))
         True
+        
         >>> ls.is_ccw(Point((2, -2)))
         False
+        
         """
+
         v1 = (self._p2[0] - self._p1[0], self._p2[1] - self._p1[1])
         v2 = (pt[0] - self._p1[0], pt[1] - self._p1[1])
 
         return v1[0] * v2[1] - v1[1] * v2[0] > 0
 
-    def is_cw(self, pt):
-        """
-        Returns whether a point is clockwise of the segment. Exclusive.
-
-        is_cw(Point) -> bool
-
-        Test tag: <tc>#is#LineSegment.is_cw</tc>
-        Test tag: <tc>#tests#LineSegment.is_cw</tc>
+    def is_cw(self, pt) -> bool:
+        """Returns whether a point is clockwise of the
+        segment (``True``) or not (``False``). Exclusive.
 
         Parameters
         ----------
-        pt : point lying ccw or cw of a segment
-
-        Attributes
-        ----------
+        pt : libpysal.cg.Point
+            A point lying ccw or cw of a segment.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((0, 0)), Point((5, 0)))
         >>> ls.is_cw(Point((2, 2)))
         False
+        
         >>> ls.is_cw(Point((2, -2)))
         True
+        
         """
+
         v1 = (self._p2[0] - self._p1[0], self._p2[1] - self._p1[1])
         v2 = (pt[0] - self._p1[0], pt[1] - self._p1[1])
+
         return v1[0] * v2[1] - v1[1] * v2[0] < 0
 
     def sw_ccw(self, pt):
-        """
-        Sedgewick test for pt being ccw of segment
+        """Sedgewick test for ``pt`` being ccw of segment.
 
         Returns
         -------
-
-        1 if turn from self.p1 to self.p2 to pt is ccw
-        -1 if turn from self.p1 to self.p2 to pt is cw
-        -1 if the points are collinear and self.p1 is in the middle
-        1 if the points are collinear and self.p2 is in the middle
-        0 if the points are collinear and pt is in the middle
+        is_ccw : bool
+            ``1`` if turn from ``self.p1`` to ``self.p2`` to ``pt`` is ccw.
+            ``-1`` if turn from ``self.p1`` to ``self.p2`` to ``pt`` is cw.
+            ``-1`` if the points are collinear and ``self.p1`` is in the middle.
+            ``1`` if the points are collinear and ``self.p2`` is in the middle.
+            ``0`` if the points are collinear and ``pt`` is in the middle.
 
         """
 
@@ -676,71 +679,78 @@ class LineSegment(Geometry):
         dy2 = p2[1] - p0[1]
 
         if dy1 * dx2 < dy2 * dx1:
-            return 1
-        if dy1 * dx2 > dy2 * dx1:
-            return -1
-        if dx1 * dx2 < 0 or dy1 * dy2 < 0:
-            return -1
-        if dx1 * dx1 + dy1 * dy1 >= dx2 * dx2 + dy2 * dy2:
-            return 0
+            is_ccw = 1
+        elif dy1 * dx2 > dy2 * dx1:
+            is_ccw = -1
+        elif dx1 * dx2 < 0 or dy1 * dy2 < 0:
+            is_ccw = -1
+        elif dx1 * dx1 + dy1 * dy1 >= dx2 * dx2 + dy2 * dy2:
+            is_ccw = 0
         else:
-            return 1
+            is_ccw = 1
+
+        return is_ccw
 
     def get_swap(self):
-        """
-        Returns a LineSegment object which has its endpoints swapped.
+        """Returns a ``LineSegment`` object which has its endpoints swapped.
 
-        get_swap() -> LineSegment
-
-        Test tag: <tc>#is#LineSegment.get_swap</tc>
-        Test tag: <tc>#tests#LineSegment.get_swap</tc>
-
-        Attributes
-        ----------
+        Returns
+        -------
+        line_seg : libpysal.cg.LineSegment
+            The ``LineSegment`` object which has its endpoints swapped.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> swap = ls.get_swap()
         >>> swap.p1[0]
         5.0
+        
         >>> swap.p1[1]
         6.0
+        
         >>> swap.p2[0]
         1.0
+        
         >>> swap.p2[1]
         2.0
+        
         """
-        return LineSegment(self._p2, self._p1)
+
+        line_seg = LineSegment(self._p2, self._p1)
+
+        return line_seg
 
     @property
     def bounding_box(self):
-        """
-        Returns the minimum bounding box of a LineSegment object.
-
-        Test tag: <tc>#is#LineSegment.bounding_box</tc>
-        Test tag: <tc>#tests#LineSegment.bounding_box</tc>
-
-        bounding_box -> Rectangle
-
-        Attributes
-        ----------
-
+        """Returns the minimum bounding box of a ``LineSegment`` object.
+        
+        Returns
+        -------
+        self._bounding_box : libpysal.cg.Rectangle
+            The bounding box of the line segment.
+        
         Examples
         --------
+        
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> ls.bounding_box.left
         1.0
+        
         >>> ls.bounding_box.lower
         2.0
+        
         >>> ls.bounding_box.right
         5.0
+        
         >>> ls.bounding_box.upper
         6.0
+        
         """
-        if (
-            self._bounding_box is None
-        ):  # If LineSegment attributes p1, p2 changed, recompute
+
+        # If LineSegment attributes p1, p2 changed, recompute
+        if self._bounding_box is None:
             self._bounding_box = Rectangle(
                 min([self._p1[0], self._p2[0]]),
                 min([self._p1[1], self._p2[1]]),
@@ -755,49 +765,44 @@ class LineSegment(Geometry):
         )
 
     @property
-    def len(self):
-        """
-        Returns the length of a LineSegment object.
-
-        Test tag: <tc>#is#LineSegment.len</tc>
-        Test tag: <tc>#tests#LineSegment.len</tc>
-
-        len() -> number
-
-        Attributes
-        ----------
+    def len(self) -> float:
+        """Returns the length of a ``LineSegment`` object.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((2, 2)), Point((5, 2)))
         >>> ls.len
         3.0
+        
         """
-        if self._len is None:  # If LineSegment attributes p1, p2 changed, recompute
+
+        # If LineSegment attributes p1, p2 changed, recompute
+        if self._len is None:
             self._len = math.hypot(self._p1[0] - self._p2[0], self._p1[1] - self._p2[1])
+
         return self._len
 
     @property
     def line(self):
-        """
-        Returns a Line object of the line which the segment lies on.
+        """Returns a ``Line`` object of the line on which the segment lies.
 
-        Test tag: <tc>#is#LineSegment.line</tc>
-        Test tag: <tc>#tests#LineSegment.line</tc>
-
-        line() -> Line
-
-        Attributes
-        ----------
+        Returns
+        -------
+        self._line : libpysal.cg.Line
+            The ``Line`` object of the line on which the segment lies.
 
         Examples
         --------
+        
         >>> ls = LineSegment(Point((2, 2)), Point((3, 3)))
         >>> l = ls.line
         >>> l.m
         1.0
+        
         >>> l.b
         0.0
+        
         """
 
         if self._line == False:
