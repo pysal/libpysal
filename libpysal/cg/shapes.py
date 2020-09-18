@@ -28,44 +28,52 @@ def asShape(obj):
     
     Parameters
     ----------
-    obj : ....
-        ........
-    
-    
-    Returns
-    -------
-    
+    obj : {libpysal.cg.{Point, LineSegment, Line, Ray, Chain, Polygon}
+        A geometric representation of an object.
     
     Raises
     ------
     TypeError
-    
+        Raised when ``obj`` is not a supported shape.
     NotImplementedError
+        Raised when ``geo_type`` is not a supported type.
     
+    Returns
+    -------
+    obj : {libpysal.cg.{Point, LineSegment, Line, Ray, Chain, Polygon}
+        A new geometric representation of the object.
     
     """
 
     if isinstance(obj, (Point, LineSegment, Line, Ray, Chain, Polygon)):
-        return obj
-    if hasattr(obj, "__geo_interface__"):
-        geo = obj.__geo_interface__
+        pass
     else:
-        geo = obj
-    if hasattr(geo, "type"):
-        raise TypeError("%r does not appear to be a shape object" % (obj))
-    geo_type = geo["type"].lower()
-    # if geo_type.startswith('multi'):
-    #    raise NotImplementedError, "%s are not supported at this time."%geo_type
-    if geo_type in _geoJSON_type_to_Pysal_type:
-        return _geoJSON_type_to_Pysal_type[geo_type].__from_geo_interface__(geo)
-    else:
-        raise NotImplementedError("%s is not supported at this time." % geo_type)
+        if hasattr(obj, "__geo_interface__"):
+            geo = obj.__geo_interface__
+        else:
+            geo = obj
+
+        if hasattr(geo, "type"):
+            raise TypeError("%r does not appear to be a shape object." % (obj))
+
+        geo_type = geo["type"].lower()
+
+        # if geo_type.startswith('multi'):
+        #    raise NotImplementedError, "%s are not supported at this time."%geo_type
+
+        if geo_type in _geoJSON_type_to_Pysal_type:
+
+            obj = _geoJSON_type_to_Pysal_type[geo_type].__from_geo_interface__(geo)
+        else:
+            raise NotImplementedError("%s is not supported at this time." % geo_type)
+
+    return obj
 
 
 class Geometry(object):
-    """
-    A base class to help implement is_geometry and make geometric types
-    extendable.
+    """A base class to help implement ``is_geometry``
+    and make geometric types extendable.
+    
     """
 
     def __init__(self):
@@ -73,34 +81,22 @@ class Geometry(object):
 
 
 class Point(Geometry):
-    """
-    Geometric class for point objects.
+    """Geometric class for point objects.
 
-    Attributes
+    Parameters
     ----------
-    None
+    loc : tuple
+        The point's location (number :math:`x`-tuple, :math:`x` > 1).
+    
+    Examples
+    --------
+    
+    >>> p = Point((1, 3))
+    
     """
 
     def __init__(self, loc):
-        """
-        Returns an instance of a Point object.
 
-        __init__((number, number)) -> Point
-
-        Test tag: <tc>#is#Point.__init__</tc>
-        Test tag: <tc>#tests#Point.__init__</tc>
-
-        Parameters
-        ----------
-        loc : tuple location (number x-tuple, x > 1)
-
-        Attributes
-        ----------
-
-        Examples
-        --------
-        >>> p = Point((1, 3))
-        """
         self.__loc = tuple(map(float, loc))
 
     @classmethod
@@ -111,238 +107,214 @@ class Point(Geometry):
     def __geo_interface__(self):
         return {"type": "Point", "coordinates": self.__loc}
 
-    def __lt__(self, other):
-        """
-        Tests if the Point is < another object.
-
-        __ne__(x) -> bool
+    def __lt__(self, other) -> bool:
+        """Tests if the point is less than another object.
 
         Parameters
         ----------
-        other : an object to test equality against
-
-        Attributes
-        ----------
+        other : libpysal.cg.Point
+            An object to test equality against.
 
         Examples
         --------
-        >>> Point((0,1)) < Point((0,1))
+        
+        >>> Point((0, 1)) < Point((0, 1))
         False
-        >>> Point((0,1)) < Point((1,1))
+        
+        >>> Point((0, 1)) < Point((1, 1))
         True
+        
         """
+
         return (self.__loc) < (other.__loc)
 
-    def __le__(self, other):
-        """
-        Tests if the Point is <= another object.
-
-        __ne__(x) -> bool
+    def __le__(self, other) -> bool:
+        """Tests if the point is less than or equal to another object.
 
         Parameters
         ----------
-        other : an object to test equality against
-
-        Attributes
-        ----------
+        other : libpysal.cg.Point
+            An object to test equality against.
 
         Examples
         --------
-        >>> Point((0,1)) <= Point((0,1))
+        
+        >>> Point((0, 1)) <= Point((0, 1))
         True
-        >>> Point((0,1)) <= Point((1,1))
+        
+        >>> Point((0, 1)) <= Point((1, 1))
         True
+        
         """
+
         return (self.__loc) <= (other.__loc)
 
-    def __eq__(self, other):
-        """
-        Tests if the Point is equal to another object.
-
-        __eq__(x) -> bool
+    def __eq__(self, other) -> bool:
+        """Tests if the point is equal to another object.
 
         Parameters
         ----------
-        other : an object to test equality against
-
-        Attributes
-        ----------
-
+        other : libpysal.cg.Point
+            An object to test equality against.
+        
         Examples
         --------
-        >>> Point((0,1)) == Point((0,1))
+        
+        >>> Point((0, 1)) == Point((0, 1))
         True
-        >>> Point((0,1)) == Point((1,1))
+        
+        >>> Point((0, 1)) == Point((1, 1))
         False
+        
         """
+
         try:
             return (self.__loc) == (other.__loc)
         except AttributeError:
             return False
 
-    def __ne__(self, other):
-        """
-        Tests if the Point is not equal to another object.
-
-        __ne__(x) -> bool
+    def __ne__(self, other) -> bool:
+        """Tests if the point is not equal to another object.
 
         Parameters
         ----------
-        other : an object to test equality against
-
-        Attributes
-        ----------
+        other : libpysal.cg.Point
+            An object to test equality against.
 
         Examples
         --------
-        >>> Point((0,1)) != Point((0,1))
+        
+        >>> Point((0, 1)) != Point((0, 1))
         False
-        >>> Point((0,1)) != Point((1,1))
+        
+        >>> Point((0, 1)) != Point((1, 1))
         True
+        
         """
+
         try:
             return (self.__loc) != (other.__loc)
         except AttributeError:
             return True
 
-    def __gt__(self, other):
-        """
-        Tests if the Point is > another object.
-
-        __ne__(x) -> bool
+    def __gt__(self, other) -> bool:
+        """Tests if the point is greater than another object.
 
         Parameters
         ----------
-        other : an object to test equality against
-
-        Attributes
-        ----------
+        other : libpysal.cg.Point
+            An object to test equality against.
 
         Examples
         --------
-        >>> Point((0,1)) > Point((0,1))
+        
+        >>> Point((0, 1)) > Point((0, 1))
         False
-        >>> Point((0,1)) > Point((1,1))
+        
+        >>> Point((0, 1)) > Point((1, 1))
         False
+        
         """
+
         return (self.__loc) > (other.__loc)
 
-    def __ge__(self, other):
-        """
-        Tests if the Point is >= another object.
-
-        __ne__(x) -> bool
+    def __ge__(self, other) -> bool:
+        """Tests if the point is greater than or equal to another object.
 
         Parameters
         ----------
-        other : an object to test equality against
-
-        Attributes
-        ----------
+        other : libpysal.cg.Point
+            An object to test equality against.
 
         Examples
         --------
-        >>> Point((0,1)) >= Point((0,1))
+        
+        >>> Point((0, 1)) >= Point((0, 1))
         True
-        >>> Point((0,1)) >= Point((1,1))
+        
+        >>> Point((0, 1)) >= Point((1, 1))
         False
+        
         """
+
         return (self.__loc) >= (other.__loc)
 
-    def __hash__(self):
-        """
-        Returns the hash of the Point's location.
-
-        x.__hash__() -> hash(x)
-
-        Parameters
-        ----------
-        None
-
-        Attributes
-        ----------
+    def __hash__(self) -> int:
+        """Returns the hash of the point's location.
 
         Examples
         --------
-        >>> hash(Point((0,1))) == hash(Point((0,1)))
+        
+        >>> hash(Point((0, 1))) == hash(Point((0, 1)))
         True
-        >>> hash(Point((0,1))) == hash(Point((1,1)))
+        
+        >>> hash(Point((0, 1))) == hash(Point((1, 1)))
         False
+        
         """
+
         return hash(self.__loc)
 
-    def __getitem__(self, *args):
-        """
-        Return the coordinate for the given dimension.
-
-        x.__getitem__(i) -> x[i]
-
+    def __getitem__(self, *args) -> Union[int, float]:
+        """Return the coordinate for the given dimension.
+        
         Parameters
         ----------
-        i : index of the desired dimension.
-
-        Attributes
-        ----------
+        *args : tuple
+            A singleton tuple of :math:`(i)` with :math:`i`
+            as the index of the desired dimension.
 
         Examples
         --------
-        >>> p = Point((5.5,4.3))
+        
+        >>> p = Point((5.5, 4.3))
         >>> p[0] == 5.5
         True
         >>> p[1] == 4.3
         True
+        
         """
+
         return self.__loc.__getitem__(*args)
 
-    def __getslice__(self, *args):
-        """
-        Return the coordinate for the given dimensions.
-
-        x.__getitem__(i,j) -> x[i:j]
+    def __getslice__(self, *args) -> slice:
+        """Return the coordinates for the given dimensions.
 
         Parameters
         ----------
-        i : index to start slice
-        j : index to end slice (excluded).
-
-        Attributes
-        ----------
+        *args : tuple
+            A tuple of :math:`(i,j)` with :math:`i` as the index to the start
+            slice and :math:`j` as the index to end the slice (excluded).
 
         Examples
         --------
-        >>> p = Point((3,6,2))
-        >>> p[:2] == (3,6)
+        
+        >>> p = Point((3, 6, 2))
+        >>> p[:2] == (3, 6)
         True
+        
         >>> p[1:2] == (6,)
         True
+        
         """
+
         return self.__loc.__getslice__(*args)
 
-    def __len__(self):
-        """
-        Returns the number of dimension in the point.
-
-        __len__() -> int
-
-        Parameters
-        ----------
-        None
-
-        Attributes
-        ----------
+    def __len__(self) -> int:
+        """ Returns the dimensions of the point.
 
         Examples
         --------
-        >>> len(Point((1,2)))
+        
+        >>> len(Point((1, 2)))
         2
+        
         """
+
         return len(self.__loc)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Returns the string representation of the ``Point``.
-
-        __repr__() -> string
-
 
         Examples
         --------
@@ -354,12 +326,8 @@ class Point(Geometry):
 
         return str(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Returns a string representation of a ``Point`` object.
-
-        __str__() -> string
-
-
 
         Examples
         --------
