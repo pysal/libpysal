@@ -214,8 +214,7 @@ class RTree(object):
         return self.cursor.walk(pred)
 
     def intersection(self, boundingbox):
-        """
-        replicate c rtree method
+        """Replicate c rtree method
         
         Parameters
         ----------
