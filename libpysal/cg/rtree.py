@@ -34,7 +34,7 @@ class Rect(object):
     def __getstate__(self) -> tuple:
         return (self.x, self.y, self.xx, self.yy, self.swapped_x, self.swapped_y)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple):
         self.x, self.y, self.xx, self.yy, self.swapped_x, self.swapped_y = state
 
     def __init__(self, minx: float, miny: float, maxx: float, maxy: float):
@@ -51,12 +51,32 @@ class Rect(object):
             self.y, self.yy = maxy, miny
 
     def coords(self) -> tuple:
+        """Return the coordinates of the rectangle."""
+
         return self.x, self.y, self.xx, self.yy
 
-    def overlap(self, orect) -> float:
-        return self.intersect(orect).area()
+    def overlap(self, orect):
+        """Return the overlapping area of two rectangles.
+        
+        Parameters
+        ----------
+        orect : libpysal.cg.Rect
+            Another rectangle.
+        
+        Returns
+        -------
+        overlapping_area : float
+            The area of the overlap between ``orect`` and ``self``.
+        
+        """
+
+        overlapping_area = self.intersect(orect).area()
+
+        return overlapping_area
 
     def write_raw_coords(self, toarray, idx: int):
+        """Write the raw coordinates of the rectangle."""
+
         toarray[idx] = self.x
         toarray[idx + 1] = self.y
         toarray[idx + 2] = self.xx
@@ -77,69 +97,137 @@ class Rect(object):
         return w * h
 
     def extent(self) -> tuple:
-        """
-        """
+        """Return the extent of the rectangle."""
 
         x = self.x
         y = self.y
         return (x, y, self.xx - x, self.yy - y)
 
-    def grow(self, amt: float):
-        """
-        """
-
-        a = amt * 0.5
-        return Rect(self.x - a, self.y - a, self.xx + a, self.yy + a)
-
-    def intersect(self, o):
-        """
-        """
-
-        if self is NullRect:
-            return NullRect
-        if o is NullRect:
-            return NullRect
-
-        nx, ny = max(self.x, o.x), max(self.y, o.y)
-        nx2, ny2 = min(self.xx, o.xx), min(self.yy, o.yy)
-        w, h = nx2 - nx, ny2 - ny
-
-        if w <= 0 or h <= 0:
-            return NullRect
-
-        return Rect(nx, ny, nx2, ny2)
-
-    def does_contain(self, o) -> bool:
-        """
-        """
-        return self.does_containpoint((o.x, o.y)) and self.does_containpoint(
-            (o.xx, o.yy)
-        )
-
-    def does_intersect(self, o) -> bool:
-        """
-        """
-
-        return self.intersect(o).area() > 0
-
-    def does_containpoint(self, p) -> bool:
-        """
-        """
-        x, y = p
-        return x >= self.x and x <= self.xx and y >= self.y and y <= self.yy
-
-    def union(self, o):
-        """
+    def grow(self, amt):
+        """Grow the bounds of a rectangle.
         
         Parameters
         ----------
-        o : ....
-            .............
+        amt : float
+            The amount to grow the rectangle.
+        
+        Returns
+        -------
+        rect : libpysal.cg.Rect
+            A new rectangle grown by ``amt``.
+        
+        """
+
+        a = amt * 0.5
+        rect = Rect(self.x - a, self.y - a, self.xx + a, self.yy + a)
+        return rect
+
+    def intersect(self, o):
+        """Find the intersection of two rectangles.
+        
+        Parameters
+        ----------
+        o : libpysal.cg.Rect
+            Another rectangle.
+            
+        Returns
+        -------
+        intersection : {libpysal.cg.NullRect, libpysal.cg.Rect}
+            The intersecting part of ``o`` and ``self``.
+
+        """
+
+        intersection = None
+
+        if self is NullRect:
+            intersection = NullRect
+        elif o is NullRect:
+            intersection = NullRect
+
+        if not intersection:
+
+            nx, ny = max(self.x, o.x), max(self.y, o.y)
+            nx2, ny2 = min(self.xx, o.xx), min(self.yy, o.yy)
+            w, h = nx2 - nx, ny2 - ny
+
+            if w <= 0 or h <= 0:
+                intersection = NullRect
+            else:
+                intersection = Rect(nx, ny, nx2, ny2)
+
+        return intersection
+
+    def does_contain(self, o):
+        """Check whether the rectangle contains the other rectangle.
+        
+        Parameters
+        ----------
+        o : libpysal.cg.Rect
+            Another rectangle.
+        
+        Returns
+        -------
+        dc : bool
+            ``True`` if ``self`` contains ``o`` otherwise ``False``.
+        
+        """
+
+        dc = self.does_containpoint((o.x, o.y)) and self.does_containpoint((o.xx, o.yy))
+
+        return dc
+
+    def does_intersect(self, o):
+        """Check whether the rectangles interect.
+        
+        Parameters
+        ----------
+        o : libpysal.cg.Rect
+            Another rectangle.
+        
+        Returns
+        -------
+        dcp : bool
+            ``True`` if ``self`` intersects ``o`` otherwise ``False``.
+        
+        """
+
+        di = self.intersect(o).area() > 0
+
+        return di
+
+    def does_containpoint(self, p):
+        """Check whether the rectangle contains a point or not.
+        
+        Parameters
+        ----------
+        p : libpysal.cg.Point
+            A point.
+        
+        Returns
+        -------
+        dcp : bool
+            ``True`` if ``self`` contains ``p`` otherwise ``False``.
+        
+        """
+
+        x, y = p
+        dcp = x >= self.x and x <= self.xx and y >= self.y and y <= self.yy
+
+        return dcp
+
+    def union(self, o):
+        """Union two rectangles.
+        
+        Parameters
+        ----------
+        o : libpysal.cg.Rect
+            Another rectangle.
         
         Returns
         -------
         res : libpysal.cg.Rect
-        
+            The union of ``o`` and ``self``.
+
         """
 
         if o is NullRect:
@@ -166,28 +254,40 @@ class Rect(object):
         return res
 
     def union_point(self, o):
-        """
+        """Union the rectangle and a point
+        
+        Parameters
+        ----------
+        o : libpysal.cg.Point
+            A point.
+        
+        Returns
+        -------
+        res : libpysal.cg.Rect
+            The union of ``o`` and ``self``.
+
         """
 
         x, y = o
+        res = self.union(Rect(x, y, x, y))
 
-        return self.union(Rect(x, y, x, y))
+        return res
 
     def diagonal_sq(self) -> float:
-        """
-        """
+        """Calculate the squared diagonal of the rectangle."""
 
         if self is NullRect:
-            return 0
+            diag_sq = 0.0
 
-        w = self.xx - self.x
-        h = self.yy - self.y
+        else:
+            w = self.xx - self.x
+            h = self.yy - self.y
+            diag_sq = w * w + h * h
 
-        return w * w + h * h
+        return diag_sq
 
     def diagonal(self) -> float:
-        """
-        """
+        """Calculate the diagonal of the rectangle."""
 
         return math.sqrt(self.diagonal_sq())
 
