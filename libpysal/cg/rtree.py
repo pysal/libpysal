@@ -69,20 +69,32 @@ class Rect(object):
             toarray[idx + 3] = self.y
 
     def area(self) -> float:
+        """Calculate the area of the rectangle."""
+
         w = self.xx - self.x
         h = self.yy - self.y
+
         return w * h
 
     def extent(self) -> tuple:
+        """
+        """
+
         x = self.x
         y = self.y
         return (x, y, self.xx - x, self.yy - y)
 
     def grow(self, amt: float):
+        """
+        """
+
         a = amt * 0.5
         return Rect(self.x - a, self.y - a, self.xx + a, self.yy + a)
 
     def intersect(self, o):
+        """
+        """
+
         if self is NullRect:
             return NullRect
         if o is NullRect:
@@ -97,54 +109,86 @@ class Rect(object):
 
         return Rect(nx, ny, nx2, ny2)
 
-    def does_contain(self, o):
+    def does_contain(self, o) -> bool:
+        """
+        """
         return self.does_containpoint((o.x, o.y)) and self.does_containpoint(
             (o.xx, o.yy)
         )
 
     def does_intersect(self, o) -> bool:
+        """
+        """
+
         return self.intersect(o).area() > 0
 
     def does_containpoint(self, p) -> bool:
+        """
+        """
         x, y = p
         return x >= self.x and x <= self.xx and y >= self.y and y <= self.yy
 
     def union(self, o):
+        """
+        
+        Parameters
+        ----------
+        o : ....
+            .............
+        
+        Returns
+        -------
+        res : libpysal.cg.Rect
+        
+        """
+
         if o is NullRect:
-            return Rect(self.x, self.y, self.xx, self.yy)
-        if self is NullRect:
-            return Rect(o.x, o.y, o.xx, o.yy)
+            res = Rect(self.x, self.y, self.xx, self.yy)
+        elif self is NullRect:
+            res = Rect(o.x, o.y, o.xx, o.yy)
+        else:
+            x = self.x
+            y = self.y
+            xx = self.xx
+            yy = self.yy
+            ox = o.x
+            oy = o.y
+            oxx = o.xx
+            oyy = o.yy
 
-        x = self.x
-        y = self.y
-        xx = self.xx
-        yy = self.yy
-        ox = o.x
-        oy = o.y
-        oxx = o.xx
-        oyy = o.yy
+            nx = x if x < ox else ox
+            ny = y if y < oy else oy
+            nx2 = xx if xx > oxx else oxx
+            ny2 = yy if yy > oyy else oyy
 
-        nx = x if x < ox else ox
-        ny = y if y < oy else oy
-        nx2 = xx if xx > oxx else oxx
-        ny2 = yy if yy > oyy else oyy
-
-        res = Rect(nx, ny, nx2, ny2)
+            res = Rect(nx, ny, nx2, ny2)
 
         return res
 
     def union_point(self, o):
+        """
+        """
+
         x, y = o
+
         return self.union(Rect(x, y, x, y))
 
     def diagonal_sq(self) -> float:
+        """
+        """
+
         if self is NullRect:
             return 0
+
         w = self.xx - self.x
         h = self.yy - self.y
+
         return w * w + h * h
 
-    def diagonal(self):
+    def diagonal(self) -> float:
+        """
+        """
+
         return math.sqrt(self.diagonal_sq())
 
 
@@ -154,9 +198,24 @@ NullRect.swapped_y = False
 
 
 def union_all(kids):
+    """
+    
+    Parameters
+    ----------
+    kids : ...
+        ........
+    
+    Returns
+    -------
+    cur : libpysal.cg.NullRect
+        .....
+    
+    """
+
     cur = NullRect
     for k in kids:
         cur = cur.union(k.rect)
+
     assert False == cur.swapped_x
     return cur
 
@@ -166,6 +225,36 @@ def Rtree():
 
 
 class RTree(object):
+    """
+    
+    Parameters
+    ----------
+    
+    
+    Attributes
+    ----------
+    count : ...
+        ..........
+    stats : ...
+        ..........
+    leaf_count : ...
+        ..........
+    rect_pool : ...
+        ..........
+    node_pool : ...
+        ..........
+    leaf_pool : ...
+        ..........
+    cursor : ...
+        ..........
+    
+    Examples
+    --------
+    
+    
+    
+    """
+
     def __init__(self):
         self.count = 0
         self.stats = {
@@ -178,16 +267,15 @@ class RTree(object):
             "avg_kmeans_iter_f": 0.0,
         }
 
-        # This round: not using objects directly -- they
-        #   take up too much memory, and efficiency goes down the toilet
-        #   (obviously) if things start to page.
-        #  Less obviously: using object graph directly leads to really long GC
-        #   pause times, too.
-        # Instead, it uses pools of arrays:
+        # This round: not using objects directly -- they take up too much memory,
+        #       and efficiency goes down the toilet (obviously) if things start
+        #       to page. Less obviously: using object graph directly leads to
+        # really long GC pause times, too. Instead, it uses pools of arrays:
         self.count = 0
         self.leaf_count = 0
         self.rect_pool = array.array("d")
         self.node_pool = array.array("L")
+
         # leaf objects.
         self.leaf_pool = []
 
@@ -259,6 +347,31 @@ class RTree(object):
 
 
 class _NodeCursor(object):
+    """
+    
+    Parameters
+    ----------
+    
+    
+    Attributes
+    ----------
+    root : ...
+        ..........
+    npool : ...
+        ..........
+    rpool : ...
+        ..........
+    index : ...
+        ..........
+    rect : ...
+        ..........
+    next_sibling : ...
+        ..........
+    first_child : ...
+        ..........
+    
+    """
+
     @classmethod
     def create(cls, rooto, rect):
         idx = rooto.count
@@ -276,17 +389,25 @@ class _NodeCursor(object):
 
     @classmethod
     def create_with_children(cls, children, rooto):
+        """
+        """
         rect = union_all([c for c in children])
         nr = Rect(rect.x, rect.y, rect.xx, rect.yy)
+
         assert not rect.swapped_x
         nc = _NodeCursor.create(rooto, rect)
         nc._set_children(children)
+
         assert not nc.is_leaf()
         return nc
 
     @classmethod
     def create_leaf(cls, rooto, leaf_obj, leaf_rect):
+        """
+        """
+
         rect = Rect(leaf_rect.x, leaf_rect.y, leaf_rect.xx, leaf_rect.yy)
+
         # Mark as leaf by setting the xswap flag.
         rect.swapped_x = True
         res = _NodeCursor.create(rooto, rect)
@@ -297,6 +418,7 @@ class _NodeCursor(object):
         rooto.leaf_pool.append(leaf_obj)
         res._save_back()
         res._become(idx)
+
         assert res.is_leaf()
         return res
 
@@ -351,7 +473,7 @@ class _NodeCursor(object):
                         yield cr
 
     def query_rect(self, r):
-        """ Return things that intersect with 'r'. """
+        """Return things that intersect with 'r'."""
 
         def p(o, x):
             return r.does_intersect(o.rect)
@@ -360,7 +482,7 @@ class _NodeCursor(object):
             yield rr
 
     def query_point(self, point):
-        """ Query by a point """
+        """Query by a point."""
 
         def p(o, x):
             return o.rect.does_containpoint(point)
@@ -397,19 +519,24 @@ class _NodeCursor(object):
     def has_children(self):
         return not self.is_leaf() and 0 != self.first_child
 
-    def holds_leaves(self):
+    def holds_leaves(self) -> bool:
         if 0 == self.first_child:
             return True
         else:
             return self.has_children() and self.get_first_child().is_leaf()
 
     def get_first_child(self):
+        """
+        """
+
         fc = self.first_child
         c = _NodeCursor(self.root, 0, NullRect, 0, 0)
         c._become(self.first_child)
         return c
 
     def leaf_obj(self):
+        """
+        """
         if self.is_leaf():
             return self.root.leaf_pool[self.first_child]
         else:
@@ -431,7 +558,7 @@ class _NodeCursor(object):
         self.npool[nodei] = self.next_sibling
         self.npool[nodei + 1] = self.first_child
 
-    def nchildren(self):
+    def nchildren(self) -> int:
         i = self.index
         c = 0
         for x in self.children():
@@ -439,6 +566,9 @@ class _NodeCursor(object):
         return c
 
     def insert(self, leafo, leafrect):
+        """
+        """
+
         index = self.index
 
         # tail recursion, made into loop:
@@ -455,9 +585,15 @@ class _NodeCursor(object):
             else:
                 # Not holding leaves, move down a level in the tree:
 
+                # ----------------------
                 # Micro-optimization:
-                #  inlining union() calls -- logic is:
-                # ignored,child = min([ ((c.rect.union(leafrect)).area() - c.rect.area(),c.index) for c in self.children() ])
+                #   inlining union() calls -- logic is:
+                #       ignored,child = min(
+                #           [
+                #               ((c.rect.union(leafrect)).area() - c.rect.area(),c.index)
+                #               for c in self.children()
+                #           ]
+                #       )
                 child = None
                 minarea = -1.0
                 for c in self.children():
@@ -472,12 +608,17 @@ class _NodeCursor(object):
                         minarea = a
                         child = c.index
                 # End micro-optimization
+                # ----------------------
 
                 self.rect = self.rect.union(leafrect)
                 self._save_back()
-                self._become(child)  # recurse.
+                # recurse.
+                self._become(child)
 
     def _balance(self):
+        """
+        """
+
         if self.nchildren() <= MAXCHILDREN:
             return
 
@@ -512,6 +653,9 @@ class _NodeCursor(object):
         )
 
     def _set_children(self, cs):
+        """
+        """
+
         self.first_child = 0
 
         if 0 == len(cs):
@@ -530,12 +674,18 @@ class _NodeCursor(object):
         self._save_back()
 
     def _insert_child(self, c):
+        """
+        """
+
         c.next_sibling = self.first_child
         self.first_child = c.index
         c._save_back()
         self._save_back()
 
     def children(self):
+        """
+        """
+
         if 0 == self.first_child:
             return
 
@@ -561,6 +711,24 @@ class _NodeCursor(object):
 
 
 def avg_diagonals(node, onodes, memo_tab):
+    """
+    
+    Parameters
+    ----------
+    node : ...
+        ..............
+    onodes : ...
+        ..............
+    memo_tab : ...
+        ..............
+    
+    Returns
+    -------
+    diag_avg : float
+        ..............
+    
+    """
+
     nidx = node.index
     sv = 0.0
     diag = 0.0
@@ -579,35 +747,95 @@ def avg_diagonals(node, onodes, memo_tab):
 
         sv += diag
 
-    return sv / len(onodes)
+    diag_avg = sv / len(onodes)
+
+    return diag_avg
 
 
 def silhouette_w(node, cluster, next_closest_cluster, memo) -> float:
+    """
+    
+    Parameters
+    ----------
+    node : ...
+        ..............
+    cluster : ...
+        ..............
+    next_closest_cluster : ...
+        ..............
+    memo : ...
+        ..............
+    
+    Returns
+    -------
+    silw : float
+        ..............
+    
+    """
+
     ndist = avg_diagonals(node, cluster, memo)
     sdist = avg_diagonals(node, next_closest_cluster, memo)
-    return (sdist - ndist) / max(sdist, ndist)
+
+    silw = (sdist - ndist) / max(sdist, ndist)
+
+    return silw
 
 
 def silhouette_coeff(clustering, memo_tab) -> float:
+    """
+    
+    Parameters
+    ----------
+    clustering : ...
+        ..............
+    memo_tab : ...
+        ..............
+    
+    Returns
+    -------
+    silcoeff : float
+        .......
+        
+    """
+
     # special case for a clustering of 1.0
     if len(clustering) == 1:
-        return 1.0
+        silcoeff = 1.0
 
-    coeffs = []
-    for cluster in clustering:
-        others = [c for c in clustering if c is not cluster]
-        others_cntr = [center_of_gravity(c) for c in others]
-        ws = [
-            silhouette_w(node, cluster, others[closest(others_cntr, node)], memo_tab)
-            for node in cluster
-        ]
-        cluster_coeff = sum(ws) / len(ws)
-        coeffs.append(cluster_coeff)
+    else:
+        coeffs = []
+        for cluster in clustering:
+            others = [c for c in clustering if c is not cluster]
+            others_cntr = [center_of_gravity(c) for c in others]
+            ws = [
+                silhouette_w(
+                    node, cluster, others[closest(others_cntr, node)], memo_tab
+                )
+                for node in cluster
+            ]
+            cluster_coeff = sum(ws) / len(ws)
+            coeffs.append(cluster_coeff)
 
-    return sum(coeffs) / len(coeffs)
+        silcoeff = sum(coeffs) / len(coeffs)
+
+    return silcoeff
 
 
-def center_of_gravity(nodes):
+def center_of_gravity(nodes) -> float:
+    """
+    
+    Parameters
+    ----------
+    nodes : ...
+        ..............
+    
+    Returns
+    -------
+    cog : float
+        ..............
+    
+    """
+
     totarea = 0.0
     xs, ys = 0, 0
     for n in nodes:
@@ -617,10 +845,29 @@ def center_of_gravity(nodes):
             xs = xs + (a * (x + (0.5 * w)))
             ys = ys + (a * (y + (0.5 * h)))
             totarea = totarea + a
-    return (xs / totarea), (ys / totarea)
+
+    cog = (xs / totarea), (ys / totarea)
+
+    return cog
 
 
 def closest(centroids, node) -> int:
+    """
+    
+    Parameters
+    ----------
+    centroids : ...
+        ..............
+    node : ...
+        ..............
+    
+    Returns
+    -------
+    ridx : int
+        .................
+
+    """
+
     x, y = center_of_gravity([node])
     dist = -1
     ridx = -1
@@ -635,15 +882,35 @@ def closest(centroids, node) -> int:
 
 
 def k_means_cluster(root, k, nodes) -> list:
+
+    """
+    
+    Parameters
+    ----------
+    root : ...
+        ..............
+    k : int
+        ..............
+    nodes : ...
+        ..............
+    
+    Returns
+    -------
+    clusters : list
+        .............
+    
+    """
+
     t = time.process_time()
     if len(nodes) <= k:
-        return [[n] for n in nodes]
+        clusters = [[n] for n in nodes]
+        return clusters
 
     ns = list(nodes)
     root.stats["count_kmeans_iter_f"] += 1
 
     # Initialize: take n random nodes.
-    # random.shuffle(ns)
+    #   random.shuffle(ns)
     cluster_starts = ns[:k]
     cluster_centers = [center_of_gravity([n]) for n in ns[:k]]
 
