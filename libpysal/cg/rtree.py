@@ -298,17 +298,17 @@ NullRect.swapped_y = False
 
 
 def union_all(kids):
-    """
+    """Create union of all child rectangles.
     
     Parameters
     ----------
-    kids : ...
+    kids : list
         ........
     
     Returns
     -------
-    cur : libpysal.cg.NullRect
-        .....
+    cur : {libpysal.cg.Rect, libpysal.cg.NullRect}
+        The unioned result of all child rectangles.
     
     """
 
@@ -317,6 +317,7 @@ def union_all(kids):
         cur = cur.union(k.rect)
 
     assert False == cur.swapped_x
+
     return cur
 
 
@@ -964,7 +965,7 @@ def closest(centroids, node) -> int:
     Returns
     -------
     ridx : int
-        .................
+        The index of the nearest node.
 
     """
 
