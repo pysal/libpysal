@@ -983,22 +983,21 @@ def closest(centroids, node) -> int:
 
 
 def k_means_cluster(root, k, nodes) -> list:
-
-    """
+    """Find ``k`` clusters.
     
     Parameters
     ----------
-    root : ...
-        ..............
+    root : libpysal.cg.RTree
+        An ``RTree`` instance.
     k : int
-        ..............
-    nodes : ...
-        ..............
+        The number clusters to find.
+    nodes : list
+        A list of ``RTree`` and ``_NodeCursor`` objects.
     
     Returns
     -------
     clusters : list
-        .............
+        Updated versions of ``nodes`` defining new clusters.
     
     """
 
