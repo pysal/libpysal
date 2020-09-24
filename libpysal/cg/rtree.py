@@ -953,19 +953,19 @@ def center_of_gravity(nodes) -> float:
 
 
 def closest(centroids, node) -> int:
-    """
+    """Find the closest controid to the node's center of gravity.
     
     Parameters
     ----------
-    centroids : ...
-        ..............
-    node : ...
-        ..............
+    centroids : list
+        A list of (x, y) coordinates for the center of other clusters.
+    node : libpysal.cg_NodeCursor
+        A ``_NodeCursor`` instance.
     
     Returns
     -------
     ridx : int
-        The index of the nearest node.
+        The index of the nearest centroid of other cluster.
 
     """
 
