@@ -729,12 +729,10 @@ class _NodeCursor(object):
 
         s_children = [c.lift() for c in self.children()]
 
-        memo = {}
-
         clusterings = [
             k_means_cluster(self.root, k, s_children) for k in range(2, MAX_KMEANS)
         ]
-        score, bestcluster = max([(silhouette_coeff(c, memo), c) for c in clusterings])
+        score, bestcluster = max([(silhouette_coeff(c), c) for c in clusterings])
 
         nodes = [
             _NodeCursor.create_with_children(c, self.root)
@@ -811,7 +809,7 @@ class _NodeCursor(object):
         self.rect = r
 
 
-def avg_diagonals(node, onodes, memo_tab):
+def avg_diagonals(node, onodes):
     """
     
     Parameters
@@ -819,8 +817,6 @@ def avg_diagonals(node, onodes, memo_tab):
     node : ...
         ..............
     onodes : ...
-        ..............
-    memo_tab : ...
         ..............
     
     Returns
@@ -833,6 +829,7 @@ def avg_diagonals(node, onodes, memo_tab):
     nidx = node.index
     sv = 0.0
     diag = 0.0
+    memo_tab = {}
 
     for onode in onodes:
         k1 = (nidx, onode.index)
@@ -853,7 +850,7 @@ def avg_diagonals(node, onodes, memo_tab):
     return diag_avg
 
 
-def silhouette_w(node, cluster, next_closest_cluster, memo) -> float:
+def silhouette_w(node, cluster, next_closest_cluster):
     """
     
     Parameters
@@ -864,8 +861,6 @@ def silhouette_w(node, cluster, next_closest_cluster, memo) -> float:
         ..............
     next_closest_cluster : ...
         ..............
-    memo : ...
-        ..............
     
     Returns
     -------
@@ -874,15 +869,15 @@ def silhouette_w(node, cluster, next_closest_cluster, memo) -> float:
     
     """
 
-    ndist = avg_diagonals(node, cluster, memo)
-    sdist = avg_diagonals(node, next_closest_cluster, memo)
+    ndist = avg_diagonals(node, cluster)
+    sdist = avg_diagonals(node, next_closest_cluster)
 
     silw = (sdist - ndist) / max(sdist, ndist)
 
     return silw
 
 
-def silhouette_coeff(clustering, memo_tab) -> float:
+def silhouette_coeff(clustering):
     """Calculate how well defined the clusters are. A score of ``1`` indicates
     the clusters are well defined, a score of ``0`` indicates the clusters are
     undefined, and a score of ``-1`` indicates the clusters are defined
@@ -892,8 +887,6 @@ def silhouette_coeff(clustering, memo_tab) -> float:
     ----------
     clustering : list
         A list of ``_NodeCursor`` objects.
-    memo_tab : dict
-        ..............
     
     Returns
     -------
@@ -912,9 +905,7 @@ def silhouette_coeff(clustering, memo_tab) -> float:
             others = [c for c in clustering if c is not cluster]
             others_cntr = [center_of_gravity(c) for c in others]
             ws = [
-                silhouette_w(
-                    node, cluster, others[closest(others_cntr, node)], memo_tab
-                )
+                silhouette_w(node, cluster, others[closest(others_cntr, node)])
                 for node in cluster
             ]
             cluster_coeff = sum(ws) / len(ws)
@@ -925,7 +916,7 @@ def silhouette_coeff(clustering, memo_tab) -> float:
     return silcoeff
 
 
-def center_of_gravity(nodes) -> float:
+def center_of_gravity(nodes):
     """Find the center of gravity of multiple nodes.
     
     Parameters
@@ -955,7 +946,7 @@ def center_of_gravity(nodes) -> float:
     return cog
 
 
-def closest(centroids, node) -> int:
+def closest(centroids, node):
     """Find the closest controid to the node's center of gravity.
     
     Parameters
@@ -985,7 +976,7 @@ def closest(centroids, node) -> int:
     return ridx
 
 
-def k_means_cluster(root, k, nodes) -> list:
+def k_means_cluster(root, k, nodes):
     """Find ``k`` clusters.
     
     Parameters
