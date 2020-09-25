@@ -883,19 +883,22 @@ def silhouette_w(node, cluster, next_closest_cluster, memo) -> float:
 
 
 def silhouette_coeff(clustering, memo_tab) -> float:
-    """
+    """Calculate how well defined the clusters are. A score of ``1`` indicates
+    the clusters are well defined, a score of ``0`` indicates the clusters are
+    undefined, and a score of ``-1`` indicates the clusters are defined
+    incorrectly.
     
     Parameters
     ----------
-    clustering : ...
-        ..............
-    memo_tab : ...
+    clustering : list
+        A list of ``_NodeCursor`` objects.
+    memo_tab : dict
         ..............
     
     Returns
     -------
     silcoeff : float
-        .......
+        Score for how well defined the clusters are.
         
     """
 
@@ -923,17 +926,17 @@ def silhouette_coeff(clustering, memo_tab) -> float:
 
 
 def center_of_gravity(nodes) -> float:
-    """
+    """Find the center of gravity of multiple nodes.
     
     Parameters
     ----------
-    nodes : ...
-        ..............
+    nodes : list
+        A list of ``RTree`` and ``_NodeCursor`` objects.
     
     Returns
     -------
     cog : float
-        ..............
+        The center of gravity of multiple nodes.
     
     """
 
