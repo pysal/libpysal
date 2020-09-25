@@ -810,19 +810,19 @@ class _NodeCursor(object):
 
 
 def avg_diagonals(node, onodes):
-    """
+    """Calculate the mean diagonals.
     
     Parameters
     ----------
-    node : ...
-        ..............
-    onodes : ...
-        ..............
+    node : libpysal.cg._NodeCursor
+        The target node in question.
+    onodes : ist
+        A list of ``libpysal.cg._NodeCursor`` objects.
     
     Returns
     -------
     diag_avg : float
-        ..............
+        The mean diagonal distance of ``node`` and ``onodes``.
     
     """
 
@@ -851,21 +851,22 @@ def avg_diagonals(node, onodes):
 
 
 def silhouette_w(node, cluster, next_closest_cluster):
-    """
+    """Calculate a silhouette score between a certain node and 2 clusters:
     
     Parameters
     ----------
-    node : ...
-        ..............
-    cluster : ...
-        ..............
-    next_closest_cluster : ...
-        ..............
+    node : libpysal.cg._NodeCursor
+        The target node in question.
+    cluster : list
+        A list of ``libpysal.cg._NodeCursor`` objects.
+    next_closest_cluster : list
+        Another list of ``libpysal.cg._NodeCursor`` objects.
     
     Returns
     -------
     silw : float
-        ..............
+        The silhouette score between ``{node, cluster}``
+        and ``{node, next_closest_cluster}``.
     
     """
 
@@ -886,7 +887,7 @@ def silhouette_coeff(clustering):
     Parameters
     ----------
     clustering : list
-        A list of ``_NodeCursor`` objects.
+        A list of ``libpysal.cg._NodeCursor`` objects.
     
     Returns
     -------
@@ -922,7 +923,7 @@ def center_of_gravity(nodes):
     Parameters
     ----------
     nodes : list
-        A list of ``RTree`` and ``_NodeCursor`` objects.
+        A list of ``libpysal.cg.RTree`` and ``libpysal.cg._NodeCursor`` objects.
     
     Returns
     -------
@@ -954,7 +955,7 @@ def closest(centroids, node):
     centroids : list
         A list of (x, y) coordinates for the center of other clusters.
     node : libpysal.cg_NodeCursor
-        A ``_NodeCursor`` instance.
+        A ``libpysal.cg._NodeCursor`` instance.
     
     Returns
     -------
@@ -982,11 +983,11 @@ def k_means_cluster(root, k, nodes):
     Parameters
     ----------
     root : libpysal.cg.RTree
-        An ``RTree`` instance.
+        An ``libpysal.cg.RTree`` instance.
     k : int
         The number clusters to find.
     nodes : list
-        A list of ``RTree`` and ``_NodeCursor`` objects.
+        A list of ``libpysal.cg.RTree`` and ``libpysal.cg._NodeCursor`` objects.
     
     Returns
     -------
