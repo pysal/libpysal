@@ -303,7 +303,7 @@ def union_all(kids):
     Parameters
     ----------
     kids : list
-        ........
+        A list of ``libpysal.cg._NodeCursor`` objects.
     
     Returns
     -------
