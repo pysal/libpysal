@@ -17,10 +17,10 @@ MAXCHILDREN = 10
 MAX_KMEANS = 5
 BUFFER = 0.0000001
 
-import math
+import array
+import numpy
 import random
 import time
-import array
 
 
 class Rect(object):
@@ -289,7 +289,7 @@ class Rect(object):
     def diagonal(self) -> float:
         """Calculate the diagonal of the rectangle."""
 
-        return math.sqrt(self.diagonal_sq())
+        return numpy.sqrt(self.diagonal_sq())
 
 
 NullRect = Rect(0.0, 0.0, 0.0, 0.0)
@@ -334,19 +334,19 @@ class RTree(object):
     
     Attributes
     ----------
-    count : ...
+    count : int
         ..........
-    stats : ...
+    stats : dict
         ..........
-    leaf_count : ...
+    leaf_count : int
         ..........
-    rect_pool : ...
+    rect_pool : array.array
         ..........
-    node_pool : ...
+    node_pool : array.array
         ..........
-    leaf_pool : ...
+    leaf_pool : list
         ..........
-    cursor : ...
+    cursor : libpysal.cg._NodeCursor
         ..........
     
     Examples
@@ -357,6 +357,7 @@ class RTree(object):
     """
 
     def __init__(self):
+
         self.count = 0
         self.stats = {
             "overflow_f": 0,
@@ -382,12 +383,18 @@ class RTree(object):
 
         self.cursor = _NodeCursor.create(self, NullRect)
 
-    def _ensure_pool(self, idx):
+    def _ensure_pool(self, idx: int):
         if len(self.rect_pool) < (4 * idx):
             self.rect_pool.extend([0, 0, 0, 0] * idx)
             self.node_pool.extend([0, 0] * idx)
 
     def insert(self, o, orect):
+        """
+        
+        Parameters
+        ----------
+        
+        """
         self.cursor.insert(o, orect)
         assert self.cursor.index == 0
 
@@ -751,7 +758,7 @@ class _NodeCursor(object):
             self.root.stats["longest_overflow"], dur
         )
 
-    def _set_children(self, cs):
+    def _set_children(self, cs: list):
         """
         """
 
