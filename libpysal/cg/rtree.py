@@ -369,10 +369,10 @@ class RTree(object):
             "avg_kmeans_iter_f": 0.0,
         }
 
-        # This round: not using objects directly -- they take up too much memory,
-        #       and efficiency goes down the toilet (obviously) if things start
-        #       to page. Less obviously: using object graph directly leads to
-        # really long GC pause times, too. Instead, it uses pools of arrays:
+        # This round: not using objects directly -- they take up too much memory, and
+        #   efficiency goes down the toilet (obviously) if things start to page. Less
+        #   obviously: using object graph directly leads to really long GC pause times,
+        #   too. Instead, it uses pools of arrays:
         self.count = 0
         self.leaf_count = 0
         self.rect_pool = array.array("d")
@@ -384,33 +384,46 @@ class RTree(object):
         self.cursor = _NodeCursor.create(self, NullRect)
 
     def _ensure_pool(self, idx: int):
-        if len(self.rect_pool) < (4 * idx):
-            self.rect_pool.extend([0, 0, 0, 0] * idx)
-            self.node_pool.extend([0, 0] * idx)
+        bb_len, pool_slot = 4, [0]
+        node_len = int(bb_len / 2)
+        if len(self.rect_pool) < (bb_len * idx):
+            self.rect_pool.extend(pool_slot * bb_len)
+            self.node_pool.extend(pool_slot * node_len)
 
     def insert(self, o, orect):
         """
         
         Parameters
         ----------
+        o : ...
+            ........
+        orect : ...
+            ........
         
         """
+
         self.cursor.insert(o, orect)
         assert self.cursor.index == 0
 
     def query_rect(self, r):
+        """
+        """
         for x in self.cursor.query_rect(r):
             yield x
 
     def query_point(self, p):
+        """
+        """
         for x in self.cursor.query_point(p):
             yield x
 
     def walk(self, pred):
+        """
+        """
         return self.cursor.walk(pred)
 
     def intersection(self, boundingbox):
-        """Replicate c rtree method
+        """Replicate c rtree method................
         
         Parameters
         ----------
@@ -420,8 +433,8 @@ class RTree(object):
         Returns
         -------
         ids : list
-            A list of object ids whose bounding
-            boxes intersect with query bounding box.
+            A list of object IDs whose bounding
+            boxes intersect with the query bounding box.
 
         """
 
@@ -439,7 +452,7 @@ class RTree(object):
         return ids
 
     def add(self, id, boundingbox):
-        """Replicate c rtree method.
+        """Replicate c rtree method...................
 
         Parameters
         ----------
@@ -459,7 +472,16 @@ class _NodeCursor(object):
     
     Parameters
     ----------
-    
+    rooto : ...
+        ..........
+    index : ...
+        ..........
+    rect : ...
+        ..........
+    first_child : ...
+        ..........
+    next_sibling : ...
+        ..........
     
     Attributes
     ----------
@@ -482,12 +504,28 @@ class _NodeCursor(object):
 
     @classmethod
     def create(cls, rooto, rect):
+        """
+        
+        Parameters
+        ----------
+        rooto : ...
+            ..........
+        index : ...
+            ..........
+        rect : ...
+            ..........
+        
+        Returns
+        -------
+        retv : ...
+            ..........
+        
+        """
+
         idx = rooto.count
         rooto.count += 1
 
         rooto._ensure_pool(idx + 1)
-        # rooto.node_pool.extend([0,0])
-        # rooto.rect_pool.extend([0,0,0,0])
 
         retv = _NodeCursor(rooto, idx, rect, 0, 0)
 
@@ -498,6 +536,19 @@ class _NodeCursor(object):
     @classmethod
     def create_with_children(cls, children, rooto):
         """
+        
+        Parameters
+        ----------
+        children : ...
+            ..........
+        rooto : ...
+            ..........
+        
+        Returns
+        -------
+        nc : ...
+            ..........
+        
         """
         rect = union_all([c for c in children])
         nr = Rect(rect.x, rect.y, rect.xx, rect.yy)
@@ -512,6 +563,21 @@ class _NodeCursor(object):
     @classmethod
     def create_leaf(cls, rooto, leaf_obj, leaf_rect):
         """
+        
+        Parameters
+        ----------
+        rooto : ...
+            ..........
+        leaf_obj : ...
+            ..........
+        leaf_rect : ...
+            ..........
+        
+        Returns
+        -------
+        res : ...
+            ..........
+        
         """
 
         rect = Rect(leaf_rect.x, leaf_rect.y, leaf_rect.xx, leaf_rect.yy)
@@ -540,7 +606,7 @@ class _NodeCursor(object):
         "first_child",
     )
 
-    def __getstate__(self):
+    def __getstate__(self) -> tuple:
         return (
             self.root,
             self.npool,
@@ -551,7 +617,7 @@ class _NodeCursor(object):
             self.first_child,
         )
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple):
         (
             self.root,
             self.npool,
@@ -581,29 +647,47 @@ class _NodeCursor(object):
                         yield cr
 
     def query_rect(self, r):
-        """Return things that intersect with 'r'."""
+        """Return things that intersect with 'r'.
+        
+        
+        """
 
         def p(o, x):
+            """
+            """
+
             return r.does_intersect(o.rect)
 
         for rr in self.walk(p):
             yield rr
 
     def query_point(self, point):
-        """Query by a point."""
+        """Query by a point.
+        
+        
+        """
 
         def p(o, x):
+            """
+            """
+
             return o.rect.does_containpoint(point)
 
         for rr in self.walk(p):
             yield rr
 
     def lift(self):
+        """
+        """
+
         return _NodeCursor(
             self.root, self.index, self.rect, self.first_child, self.next_sibling
         )
 
     def _become(self, index):
+        """
+        """
+
         recti = index * 4
         nodei = index * 2
         rp = self.rpool
@@ -622,12 +706,19 @@ class _NodeCursor(object):
         self.index = index
 
     def is_leaf(self):
+        """
+        """
+
         return self.rect.swapped_x
 
     def has_children(self):
+        """
+        """
         return not self.is_leaf() and 0 != self.first_child
 
     def holds_leaves(self) -> bool:
+        """
+        """
         if 0 == self.first_child:
             return True
         else:
@@ -651,6 +742,8 @@ class _NodeCursor(object):
             return None
 
     def _save_back(self):
+        """
+        """
         rp = self.rpool
         recti = self.index * 4
         nodei = self.index * 2
@@ -667,6 +760,8 @@ class _NodeCursor(object):
         self.npool[nodei + 1] = self.first_child
 
     def nchildren(self) -> int:
+        """
+        """
         i = self.index
         c = 0
         for x in self.children():
