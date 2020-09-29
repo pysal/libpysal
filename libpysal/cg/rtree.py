@@ -13,14 +13,15 @@ __author__ = "Sergio J. Rey"
 
 __all__ = ["RTree", "Rect", "Rtree"]
 
-MAXCHILDREN = 10
-MAX_KMEANS = 5
-BUFFER = 0.0000001
 
 import array
 import numpy
 import random
 import time
+
+MAXCHILDREN = 10
+MAX_KMEANS = 5
+BUFFER = numpy.finfo(float).eps
 
 
 class Rect(object):
@@ -38,6 +39,7 @@ class Rect(object):
         self.x, self.y, self.xx, self.yy, self.swapped_x, self.swapped_y = state
 
     def __init__(self, minx: float, miny: float, maxx: float, maxy: float):
+
         self.swapped_x = maxx < minx
         self.swapped_y = maxy < miny
         self.x = minx
@@ -97,29 +99,36 @@ class Rect(object):
         return w * h
 
     def extent(self) -> tuple:
-        """Return the extent of the rectangle."""
+        """Return the extent of the rectangle in the form: (minx, minx, width, height)."""
 
         x = self.x
         y = self.y
+
         return (x, y, self.xx - x, self.yy - y)
 
-    def grow(self, amt):
+    def grow(self, amt=None, sf=0.5):
         """Grow the bounds of a rectangle.
         
         Parameters
         ----------
         amt : float
-            The amount to grow the rectangle.
-        
+            The amount to grow the rectangle. Default is ``None``, which
+            triggers the value of ``BUFFER``.
+        sf : float
+            The scale factor for ``amt``. Default is ``0.5``.
+            
         Returns
         -------
         rect : libpysal.cg.Rect
-            A new rectangle grown by ``amt``.
+            A new rectangle grown by ``amt`` and scaled by ``sf``.
         
         """
 
-        a = amt * 0.5
+        if not amt:
+            amt = BUFFER
+        a = amt * sf
         rect = Rect(self.x - a, self.y - a, self.xx + a, self.yy + a)
+
         return rect
 
     def intersect(self, o):
@@ -326,33 +335,100 @@ def Rtree():
 
 
 class RTree(object):
-    """
-    
-    Parameters
-    ----------
-    
+    """An RTree for efficiently querying space based on intersecting rectangles.
     
     Attributes
     ----------
     count : int
-        ..........
+        The number of nodes in the tree.
     stats : dict
-        ..........
+        Tree generation statistics.
     leaf_count : int
-        ..........
+        The number of leaves (objects) in the tree.
     rect_pool : array.array
-        ..........
+        The pool of rectangles in the tree in the form
+        :math:`[ax1, ay1, ax2, ay2, bx1, by1, bx2, by2, ..., nx1, ny1, nx2, ny2]`
+        where the first set of 4 coordinates is the bounding box of the root node
+        and each successive set of 4 coordinates is the bounding box of a leaf node.
     node_pool : array.array
-        ..........
+        The pool of node IDs in the tree.
     leaf_pool : list
-        ..........
+        The pool of leaf objects in the tree.
     cursor : libpysal.cg._NodeCursor
-        ..........
+        The non-root node and all its children.
     
     Examples
     --------
     
+    Instantiate an ``RTree``.
     
+    >>> from libpysal.cg import RTree, Chain
+    >>> segments = [
+    ...     [(0.0, 1.5), (1.5, 1.5)],
+    ...     [(1.5, 1.5), (3.0, 1.5)],
+    ...     [(1.5, 1.5), (1.5, 0.0)],
+    ...     [(1.5, 1.5), (1.5, 3.0)]
+    ... ]
+    >>> segments = [Chain([p1, p2]) for p1, p2 in segments]
+    >>> rt = RTree()
+    >>> for segment in segments:
+    ...     rt.insert(segment, Rect(*segment.bounding_box).grow(sf=10.))
+    
+    Examine the tree generation statistics. The statistics here
+    are all 0 due to the simple structure of the tree in this example.
+    
+    >>> rt.stats
+    {'overflow_f': 0,
+     'avg_overflow_t_f': 0.0,
+     'longest_overflow': 0.0,
+     'longest_kmeans': 0.0,
+     'sum_kmeans_iter_f': 0,
+     'count_kmeans_iter_f': 0,
+     'avg_kmeans_iter_f': 0.0}
+    
+    Examine the number of nodes and leaves.
+    There five nodes and four leaves (the root plus its four children).
+    
+    >>> rt.count, rt.leaf_count
+    (5, 4)
+    
+    The pool of nodes are the node IDs in the tree.
+    
+    >>> rt.node_pool
+    array('L', [0, 4, 0, 0, 1, 1, 2, 2, 3, 3])
+    
+    The pool of leaves are the geometric objects that were inserted into the tree.
+    
+    >>> rt.leaf_pool[0].vertices
+    [(0.0, 1.5), (1.5, 1.5)]
+    
+    The pool of rectangles are the bounds of partitioned space in the tree.
+    Examine the first one.
+    
+    >>> rt.rect_pool[:4]
+    array('d', [-2.220446049250313e-15, -2.220446049250313e-15, 3.000000000000002, 3.000000000000002])
+    
+    Add the bounding box of a leaf to the tree manually.
+    
+    >>> rt.add(Chain(((2,2), (4,4))), (2,2,4,4))
+    >>> rt.count, rt.leaf_count
+    (6, 5)
+    
+    Query the tree for an intersection. One object is contained in this query.
+    
+    >>> rt.intersection([.4, 2.1, .9, 2.6])[0].vertices
+    [(0.5, 2), (1, 2.5)]
+    
+    Query the tree with a much larger box. All objects are contained in this query.
+    
+    >>> len(rt.intersection([-1, -1, 4, 4])) == rt.leaf_count
+    True
+    
+    Query the tree with box outside the tree objects.
+    No objects are contained in this query.
+    
+    >>> rt.intersection([5, 5, 6, 6])
+    []
     
     """
 
@@ -384,6 +460,8 @@ class RTree(object):
         self.cursor = _NodeCursor.create(self, NullRect)
 
     def _ensure_pool(self, idx: int):
+        """Ensure sufficient slots in rectangle and node pools."""
+
         bb_len, pool_slot = 4, [0]
         node_len = int(bb_len / 2)
         if len(self.rect_pool) < (bb_len * idx):
@@ -391,14 +469,14 @@ class RTree(object):
             self.node_pool.extend(pool_slot * node_len)
 
     def insert(self, o, orect):
-        """
+        """Insert an object and its bounding box into the tree.
         
         Parameters
         ----------
-        o : ...
-            ........
-        orect : ...
-            ........
+        o : libpysal.cg.{Point, Chain, Rectangle, Polygon}
+            The object to insert into the tree.
+        orect : ibpysal.cg.Rect
+            The object's bounding box.
         
         """
 
@@ -406,24 +484,48 @@ class RTree(object):
         assert self.cursor.index == 0
 
     def query_rect(self, r):
+        """Query a rectangle.
+        
+        Parameters
+        ----------
+        r : {tuple, libpysal.cg.Point}
+            The bounding box of the rectangle in question;
+            a :math:`(minx,miny,maxx,maxy)` set of coordinates.
+        
+        Yields
+        ------
+        x : generator
+            ``libpysal.cg._NodeCursor`` objects.
         """
-        """
+
         for x in self.cursor.query_rect(r):
             yield x
 
     def query_point(self, p):
+        """Query a point.
+        
+        Parameters
+        ----------
+        p : {tuple, libpysal.cg.Point}
+            The point in question; an :math:`(x,y)` coordinate.
+        
+        Yields
+        ------
+        x : generator
+            ``libpysal.cg._NodeCursor`` objects.
         """
-        """
+
         for x in self.cursor.query_point(p):
             yield x
 
     def walk(self, pred):
-        """
-        """
+        """Walk the tree structure from ``pred``."""
+
         return self.cursor.walk(pred)
 
     def intersection(self, boundingbox):
-        """Replicate c rtree method................
+        """Query for an intersection between leaves in the ``RTree``
+        and the bounding box of an object.
         
         Parameters
         ----------
@@ -432,27 +534,21 @@ class RTree(object):
         
         Returns
         -------
-        ids : list
-            A list of object IDs whose bounding
+        objs : list
+            A list of objects whose bounding
             boxes intersect with the query bounding box.
 
         """
 
         # grow the bounding box slightly to handle coincident edges
-        bb = boundingbox[:]
-        bb[0] = bb[0] - BUFFER
-        bb[1] = bb[1] - BUFFER
-        bb[2] = bb[2] + BUFFER
-        bb[3] = bb[3] + BUFFER
+        qr = Rect(*boundingbox).grow(sf=10.0)
 
-        qr = Rect(bb[0], bb[1], bb[2], bb[3])
+        objs = [r.leaf_obj() for r in self.query_rect(qr) if r.is_leaf()]
 
-        ids = [r.leaf_obj() for r in self.query_rect(qr) if r.is_leaf()]
-
-        return ids
+        return objs
 
     def add(self, id, boundingbox):
-        """Replicate c rtree method...................
+        """Add the bounding box of a leaf to the ``RTree`` manually with a specified ID.
 
         Parameters
         ----------
@@ -463,8 +559,7 @@ class RTree(object):
         
         """
 
-        bb = boundingbox
-        self.cursor.insert(id, Rect(bb[0], bb[1], bb[2], bb[3]))
+        self.cursor.insert(id, Rect(*boundingbox))
 
 
 class _NodeCursor(object):
@@ -639,6 +734,7 @@ class _NodeCursor(object):
         self.first_child = first_child
 
     def walk(self, predicate):
+
         if predicate(self, self.leaf_obj()):
             yield self
             if not self.is_leaf():
@@ -760,8 +856,8 @@ class _NodeCursor(object):
         self.npool[nodei + 1] = self.first_child
 
     def nchildren(self) -> int:
-        """
-        """
+        """The number of children nodes."""
+
         i = self.index
         c = 0
         for x in self.children():
@@ -769,7 +865,17 @@ class _NodeCursor(object):
         return c
 
     def insert(self, leafo, leafrect):
-        """
+        """Insert a leaf into the tree.
+        
+        Parameters
+        ----------
+        leafo : 
+            
+        leafrect : 
+        
+        
+        
+        
         """
 
         index = self.index
@@ -791,7 +897,7 @@ class _NodeCursor(object):
                 # ----------------------
                 # Micro-optimization:
                 #   inlining union() calls -- logic is:
-                #       ignored,child = min(
+                #       ignored, child = min(
                 #           [
                 #               ((c.rect.union(leafrect)).area() - c.rect.area(),c.index)
                 #               for c in self.children()
