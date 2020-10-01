@@ -519,7 +519,7 @@ class RTree(object):
             yield x
 
     def walk(self, pred):
-        """Walk the tree structure from ``pred``."""
+        """Walk the tree structure with ``pred`` (a function)."""
 
         return self.cursor.walk(pred)
 
@@ -563,57 +563,50 @@ class RTree(object):
 
 
 class _NodeCursor(object):
-    """
+    """An internal class for keeping track of, and reorganizing,
+    the structure and composition of the ``RTree``.
     
     Parameters
     ----------
-    rooto : ...
-        ..........
-    index : ...
-        ..........
-    rect : ...
-        ..........
-    first_child : ...
-        ..........
-    next_sibling : ...
-        ..........
+    rooto : libpysal.cg.{Point, Chain, Rectangle, Polygon}
+        The object from which the node will be generated.
+    index : int
+        The ID of the node.
+    rect : libpysal.cg.Rect
+        The bounding rectangle of the leaf object.
+    first_child : int
+        The ID of the first child of the node.
+    next_sibling : int
+        The ID of the sibling of the node.
     
     Attributes
     ----------
-    root : ...
-        ..........
-    npool : ...
-        ..........
-    rpool : ...
-        ..........
-    index : ...
-        ..........
-    rect : ...
-        ..........
-    next_sibling : ...
-        ..........
-    first_child : ...
-        ..........
+    root : libpysal.cg.RTree
+        The root node of the tree.
+    npool : array.array
+        See ``RTree.node_pool``.
+    rpool : array.array
+        See ``RTree.rect_pool``.
     
     """
 
     @classmethod
     def create(cls, rooto, rect):
-        """
+        """Create a node in the tree structure.
         
         Parameters
         ----------
-        rooto : ...
-            ..........
-        index : ...
-            ..........
-        rect : ...
-            ..........
+        rooto : libpysal.cg.{Point, Chain, Rectangle, Polygon}
+            The object from which the node will be generated.
+        index : int
+            The ID of the node.
+        rect : libpysal.cg.Rect
+            The bounding rectangle of the leaf object.
         
         Returns
         -------
-        retv : ...
-            ..........
+        retv : libpysal.cg._NodeCursor
+            The generated node.
         
         """
 
@@ -630,19 +623,19 @@ class _NodeCursor(object):
 
     @classmethod
     def create_with_children(cls, children, rooto):
-        """
+        """Create a non-leaf node in the tree structure.
         
         Parameters
         ----------
-        children : ...
-            ..........
-        rooto : ...
-            ..........
+        children : list
+            The child nodes of the node to be generated
+        rooto : libpysal.cg.{Point, Chain, Rectangle, Polygon}
+            The object from which the node will be generated.
         
         Returns
         -------
-        nc : ...
-            ..........
+        nc : libpysal.cg._NodeCursor
+            The generated node with children.
         
         """
         rect = union_all([c for c in children])
@@ -657,21 +650,21 @@ class _NodeCursor(object):
 
     @classmethod
     def create_leaf(cls, rooto, leaf_obj, leaf_rect):
-        """
+        """Create a leaf node in the tree structure.
         
         Parameters
         ----------
-        rooto : ...
-            ..........
-        leaf_obj : ...
-            ..........
-        leaf_rect : ...
-            ..........
+        rooto : libpysal.cg.{Point, Chain, Rectangle, Polygon}
+            The object from which the node will be generated.
+        leaf_obj : libpysal.cg.{Point, Chain, Rectangle, Polygon}
+            The leaf object.
+        leaf_rect : libpysal.cg.Rect
+            The bounding rectangle of the leaf object.
         
         Returns
         -------
-        res : ...
-            ..........
+        res : libpysal.cg._NodeCursor
+            The generated leaf node.
         
         """
 
@@ -724,16 +717,17 @@ class _NodeCursor(object):
         ) = state
 
     def __init__(self, rooto, index, rect, first_child, next_sibling):
+
         self.root = rooto
         self.rpool = rooto.rect_pool
         self.npool = rooto.node_pool
-
         self.index = index
         self.rect = rect
         self.next_sibling = next_sibling
         self.first_child = first_child
 
     def walk(self, predicate):
+        """Walk the tree structure with ``predicate`` (a function)."""
 
         if predicate(self, self.leaf_obj()):
             yield self
@@ -743,46 +737,44 @@ class _NodeCursor(object):
                         yield cr
 
     def query_rect(self, r):
-        """Return things that intersect with 'r'.
-        
-        
-        """
+        """Yield objects that intersect with the rectangle (``r``)."""
 
         def p(o, x):
-            """
-            """
-
             return r.does_intersect(o.rect)
 
         for rr in self.walk(p):
             yield rr
 
     def query_point(self, point):
-        """Query by a point.
-        
-        
-        """
+        """Yield objects that intersect with the point (``point``)."""
 
         def p(o, x):
-            """
-            """
-
             return o.rect.does_containpoint(point)
 
         for rr in self.walk(p):
             yield rr
 
     def lift(self):
-        """
+        """Promote a node to (potentially) rearrange the
+        tree structure for optimal clustering.
+        
+        Called from ``_NodeCursor._balance()``.
+        
+        Returns
+        -------
+        lifted : libpysal.cg._NodeCursor
+            The lifted node.
+        
         """
 
-        return _NodeCursor(
+        lifted = _NodeCursor(
             self.root, self.index, self.rect, self.first_child, self.next_sibling
         )
 
-    def _become(self, index):
-        """
-        """
+        return lifted
+
+    def _become(self, index: int):
+        """Have ``self`` become node ``index``."""
 
         recti = index * 4
         nodei = index * 2
@@ -801,45 +793,51 @@ class _NodeCursor(object):
         self.first_child = self.npool[nodei + 1]
         self.index = index
 
-    def is_leaf(self):
-        """
-        """
+    def is_leaf(self) -> bool:
+        """Return ``True`` if the node is a leaf, otherwise ``False``."""
 
         return self.rect.swapped_x
 
-    def has_children(self):
-        """
-        """
+    def has_children(self) -> bool:
+        """Return ``True`` if the node has children, otherwise ``False``."""
+
         return not self.is_leaf() and 0 != self.first_child
 
     def holds_leaves(self) -> bool:
-        """
-        """
+        """Return ``True`` if the node holds leaves, otherwise ``False``."""
+
         if 0 == self.first_child:
             return True
         else:
             return self.has_children() and self.get_first_child().is_leaf()
 
     def get_first_child(self):
-        """
+        """Get the first child of a node.
+        
+        Returns
+        -------
+        c : libpysal.cg._NodeCursor
+            The first child of the specified node.
+        
         """
 
         fc = self.first_child
         c = _NodeCursor(self.root, 0, NullRect, 0, 0)
         c._become(self.first_child)
+
         return c
 
     def leaf_obj(self):
-        """
-        """
+        """Return the leaf object if the node is a leaf, other return ``None``."""
+
         if self.is_leaf():
             return self.root.leaf_pool[self.first_child]
         else:
             return None
 
     def _save_back(self):
-        """
-        """
+        """Save a node back into the tree structure."""
+
         rp = self.rpool
         recti = self.index * 4
         nodei = self.index * 2
@@ -862,19 +860,12 @@ class _NodeCursor(object):
         c = 0
         for x in self.children():
             c += 1
+
         return c
 
     def insert(self, leafo, leafrect):
-        """Insert a leaf into the tree.
-        
-        Parameters
-        ----------
-        leafo : 
-            
-        leafrect : 
-        
-        
-        
+        """Insert a leaf object into the tree. See
+        ``RTree.insert(o, orect)`` for parameter description.
         
         """
 
@@ -925,7 +916,12 @@ class _NodeCursor(object):
                 self._become(child)
 
     def _balance(self):
-        """
+        """Balance the leaf layout where possible through ``k_means_cluster()``
+        and ``silhouette_coeff()`` for (heuristically) optimal clusterings of
+        nodes in the tree structure after the child count of a node has grown
+        past the maximum allowed number (see ``MAXCHILDREN``).
+        
+        Called from ``_NodeCursor.insert()``.
         """
 
         if self.nchildren() <= MAXCHILDREN:
@@ -942,6 +938,7 @@ class _NodeCursor(object):
         ]
         score, bestcluster = max([(silhouette_coeff(c), c) for c in clusterings])
 
+        # generate the (heuristically) optimally-balanced cluster of nodes
         nodes = [
             _NodeCursor.create_with_children(c, self.root)
             for c in bestcluster
@@ -960,7 +957,11 @@ class _NodeCursor(object):
         )
 
     def _set_children(self, cs: list):
-        """
+        """Set up the (new/altered) leaf tree structure.
+        
+        Called from ``_NodeCursor.create_with_children()``
+        and ``_NodeCursor._balance()``.
+        
         """
 
         self.first_child = 0
@@ -981,7 +982,14 @@ class _NodeCursor(object):
         self._save_back()
 
     def _insert_child(self, c):
-        """
+        """Internal function for child node insertion. 
+        Called from ``_NodeCursor.insert()``.
+        
+        Parameters
+        ----------
+        c : libpysal.cg._NodeCursor
+            A child ``libpysal.cg._NodeCursor`` object.
+        
         """
 
         c.next_sibling = self.first_child
@@ -990,8 +998,7 @@ class _NodeCursor(object):
         self._save_back()
 
     def children(self):
-        """
-        """
+        """Yield the children of a node."""
 
         if 0 == self.first_child:
             return
