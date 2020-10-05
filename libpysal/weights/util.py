@@ -70,14 +70,14 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
 
     Notes
     -----
-    
+
     Observations are row ordered with the first :math:`k` observations being
     in row 0, the next :math:`k` in row 1, and so on. Construction is based
     on shifting every other column of a regular lattice down 1/2 of a cell.
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W, hexLat2W
     >>> w = lat2W()
     >>> w.neighbors[1]
@@ -89,7 +89,7 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
     [0, 6, 2, 5, 7]
     >>> wh.neighbors[21]
     [16, 20, 22]
-    
+
     """
 
     if nrows == 1 or ncols == 1:
@@ -168,7 +168,7 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int", **kwargs):
 
     Notes
     -----
-    
+
     Observations are row ordered with the first :math:`k` observations being
     in row 0, the next :math:`k` in row 1, and so on.
 
@@ -183,7 +183,7 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int", **kwargs):
     True
     >>> w9[3] == {0: 1.0, 4: 1.0, 6: 1.0}
     True
-    
+
     """
 
     n = nrows * ncols
@@ -272,7 +272,7 @@ def block_weights(regimes, ids=None, sparse=False, **kwargs):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import block_weights
     >>> import numpy as np
     >>> regimes = np.ones(25)
@@ -281,20 +281,20 @@ def block_weights(regimes, ids=None, sparse=False, **kwargs):
     >>> regimes
     array([1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 2., 2., 2., 2.,
            2., 2., 2., 1., 3., 3., 3., 3.])
-    
+
     >>> w = block_weights(regimes)
     >>> w.weights[0]
     [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-    
+
     >>> w.neighbors[0]
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
-    
+
     >>> regimes = ['n','n','s','s','e','e','w','w','e']
     >>> n = len(regimes)
     >>> w = block_weights(regimes)
     >>> w.neighbors == {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
     True
-    
+
     """
 
     rids = np.unique(regimes)
@@ -332,10 +332,10 @@ def comb(items, n=None):
     ------
     vc : generator
         The combinations of size :math:`n` taken from items.
-    
+
     Examples
     --------
-    
+
     >>> x = range(4)
     >>> for c in comb(x, 2):
     ...     print(c)
@@ -384,19 +384,19 @@ def order(w, kmax=3):
 
     Notes
     -----
-    
+
     Implements the algorithm in :cite:`Anselin1996b`.
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import order, Rook
     >>> import libpysal
     >>> w = Rook.from_shapefile(libpysal.examples.get_path('10740.shp'))
-    The weights matrix is not fully connected: 
+    The weights matrix is not fully connected:
     There are 2 disconnected components.
     There is 1 island with id: 163.
-    
+
     >>> w3 = order(w, kmax = 3)
     >>> w3[1][0:5]
     [1, -1, 1, 2, 1]
@@ -451,31 +451,31 @@ def higher_order(w, k=2, **kwargs):
 
     Notes
     -----
-    
+
     Proper higher order neighbors are returned such that :math:`i` and :math:`j`
     are :math:`k`-order neighbors if and only if ('iff') the shortest path from
     :math:`i`-:math:`j` is of length :math:`k`.
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W, higher_order
     >>> w10 = lat2W(10, 10)
     >>> w10_2 = higher_order(w10, 2)
     >>> w10_2[0] ==  {2: 1.0, 11: 1.0, 20: 1.0}
     True
-    
+
     >>> w5 = lat2W()
     >>> w5[0] ==  {1: 1.0, 5: 1.0}
     True
-    
+
     >>> w5[1] == {0: 1.0, 2: 1.0, 6: 1.0}
     True
-    
+
     >>> w5_2 = higher_order(w5,2)
     >>> w5_2[0] == {10: 1.0, 2: 1.0, 6: 1.0}
     True
-    
+
     """
 
     w = higher_order_sp(w, k, **kwargs)
@@ -483,7 +483,9 @@ def higher_order(w, k=2, **kwargs):
     return w
 
 
-def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
+def higher_order_sp(
+    w, k=2, shortest_path=True, diagonal=False, lower_order=False, **kwargs
+):
     """Contiguity weights for either a `WSP` or `W` for order :math:`k`.
 
     Parameters
@@ -501,6 +503,9 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
         Set to ``True`` to keep :math:`k`-order :math:`(i,j)` joins when :math:`i==j`.
         Set to ``False`` to remove :math:`k`-order :math:`(i,j)` joins when :math:`i==j`.
         Default is ``False``.
+    lower_order : boolean
+        Include lower order contiguities (``True``) or return only
+        weights of order :math:`k` (``False``). Default is ``False``.
     **kwargs : dict
         Optional keyword arguments for ``libpysal.weights.W``.
 
@@ -517,11 +522,6 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
         The input ``scipy.sparse.csr_instance`` weights are not binary.
     TypeError
         The input weights are in the correct format and/or are not binary.
-    
-    Notes
-    -----
-    
-    Lower order contiguities are removed.
 
     Examples
     --------
@@ -530,24 +530,38 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     >>> w25 = lat2W(5,5)
     >>> w25.n
     25
-    
+
     >>> w25[0] == {1: 1.0, 5: 1.0}
     True
-    
+
     >>> w25_2 = higher_order_sp(w25, 2)
     >>> w25_2[0] == {10: 1.0, 2: 1.0, 6: 1.0}
     True
-    
+
     >>> w25_2 = higher_order_sp(w25, 2, diagonal=True)
     >>> w25_2[0] ==  {0: 1.0, 10: 1.0, 2: 1.0, 6: 1.0}
     True
-    
+
     >>> w25_3 = higher_order_sp(w25, 3)
     >>> w25_3[0] == {15: 1.0, 3: 1.0, 11: 1.0, 7: 1.0}
     True
-    
+
     >>> w25_3 = higher_order_sp(w25, 3, shortest_path=False)
     >>> w25_3[0] == {1: 1.0, 3: 1.0, 5: 1.0, 7: 1.0, 11: 1.0, 15: 1.0}
+    True
+
+    >>> w25_3 = higher_order_sp(w25, 3, lower_order=True)
+    >>> w25_3[0] == {
+    ...     5: 1.0,
+    ...     7: 1.0,
+    ...     11: 1.0,
+    ...     2: 1.0,
+    ...     15: 1.0,
+    ...     6: 1.0,
+    ...     10: 1.0,
+    ...     1: 1.0,
+    ...     3: 1.0
+    ... }
     True
 
     """
@@ -571,7 +585,12 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
             "a 'scipy.sparse.csr_matrix'."
         )
 
-    wk = w ** k
+    if lower_order:
+        wk = sum(map(lambda x: w ** x, range(2, k + 1)))
+        shortest_path = False
+    else:
+        wk = w ** k
+
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck))
 
@@ -642,7 +661,7 @@ def w_local_cluster(w):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W, w_local_cluster
     >>> w = lat2W(3,3, rook=False)
     >>> w_local_cluster(w)
@@ -685,16 +704,16 @@ def shimbel(w):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W, shimbel
     >>> w5 = lat2W()
     >>> w5_shimbel = shimbel(w5)
     >>> w5_shimbel[0][24]
     8
-    
+
     >>> w5_shimbel[0][0:4]
     [-1, 1, 2, 3]
-    
+
     """
 
     info = {}
@@ -752,10 +771,10 @@ def full(w):
     array([[0., 1., 0.],
            [1., 0., 1.],
            [0., 1., 0.]])
-    
+
     >>> ids
     ['first', 'second', 'third']
-    
+
     """
 
     fullw, keys = w.full()
@@ -774,12 +793,12 @@ def full2W(m, ids=None, **kwargs):
         User ids assumed to be aligned with ``m``. Default is ``None``.
     **kwargs : dict
         Optional keyword arguments for ``libpysal.weights.W``.
-    
+
     Raises
     ------
     ValueError
         The input array, ``m``, is not square.
-    
+
     Returns
     -------
     w : libpysal.weights.W
@@ -787,7 +806,7 @@ def full2W(m, ids=None, **kwargs):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import full2W
     >>> import numpy as np
 
@@ -864,7 +883,7 @@ def WSP2W(wsp, **kwargs):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W, WSP, WSP2W
 
     Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
@@ -874,7 +893,7 @@ def WSP2W(wsp, **kwargs):
     >>> wsp = WSP(sp)
     >>> wsp.n
     10
-    
+
     >>> wsp.sparse[0].todense()
     matrix([[0, 1, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=int8)
 
@@ -883,7 +902,7 @@ def WSP2W(wsp, **kwargs):
     >>> w = WSP2W(wsp)
     >>> w.n
     10
-    
+
     >>> print(w.full()[0][0])
     [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
 
@@ -948,7 +967,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
         length of the diagonal are not equivalent.
     ValueError
         The input value for the diagonal is not valid.
-    
+
     Returns
     -------
     w_out : libpysal.weights.W
@@ -956,7 +975,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W
     >>> import numpy as np
 
@@ -967,7 +986,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
     >>> w_const = insert_diagonal(w)
     >>> w['id0'] ==  {'id5': 1.0, 'id1': 1.0}
     True
-    
+
     >>> w_const['id0'] == {'id5': 1.0, 'id0': 1.0, 'id1': 1.0}
     True
 
@@ -1021,7 +1040,7 @@ def remap_ids(w, old2new, id_order=[], **kwargs):
     ------
     TypeError
         The object passed in as ``w`` is not a spatial weights object.
-    
+
     Returns
     -------
     w : libpysal.weights.W
@@ -1029,21 +1048,21 @@ def remap_ids(w, old2new, id_order=[], **kwargs):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W
     >>> w = lat2W(3,2)
     >>> w.id_order
     [0, 1, 2, 3, 4, 5]
-    
+
     >>> w.neighbors[0]
     [2, 1]
-    
+
     >>> old_to_new = {0:'a', 1:'b', 2:'c', 3:'d', 4:'e', 5:'f'}
     >>> w_new = remap_ids(w, old_to_new)
-    
+
     >>> w_new.id_order
     ['a', 'b', 'c', 'd', 'e', 'f']
-    
+
     >>> w_new.neighbors['a']
     ['c', 'b']
 
@@ -1092,17 +1111,17 @@ def get_ids(in_shps, idVariable):
     -------
     var : list
         A list of IDs.
-    
+
     Raises
     ------
     IOError
         No ``.dbf`` file is present in the indicated directory.
     KeyError
         The variable name passed in for IDs is not found.
-    
+
     Examples
     --------
-    
+
     >>> from libpysal.weights.util import get_ids
     >>> import libpysal
     >>> polyids = get_ids(libpysal.examples.get_path("columbus.shp"), "POLYID")
@@ -1155,7 +1174,7 @@ def get_ids(in_shps, idVariable):
 
 def get_points_array(iterable):
     """Gets a data array of `x` and `y` coordinates from a given iterable.
-    
+
     Parameters
     ----------
     iterable : iterable
@@ -1165,10 +1184,10 @@ def get_points_array(iterable):
     -------
     data : numpy.ndarray
         A data array of `x` and `y` coordinates with shape :math:`(n, 2)`.
-    
+
     Notes
     -----
-    
+
     If the given shapefile includes polygons, this function
     returns `x` and `y` coordinates of the polygons' centroids.
 
@@ -1199,13 +1218,13 @@ def get_points_array_from_shapefile(shapefile):
 
     Notes
     -----
-    
+
     If the given shape file includes polygons, this function
     returns `x` and `y` coordinates of the polygons' centroids
 
     Examples
     --------
-    
+
     Point shapefile
 
     >>> import libpysal
@@ -1223,7 +1242,7 @@ def get_points_array_from_shapefile(shapefile):
     array([[ 8.82721847, 14.36907602],
            [ 8.33265837, 14.03162401],
            [ 9.01226541, 13.81971908]])
-    
+
     """
 
     f = psopen(shapefile)
@@ -1251,7 +1270,7 @@ def min_threshold_distance(data, p=2):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights.util import min_threshold_distance
     >>> import numpy as np
     >>> x, y = np.indices((5, 5))
@@ -1310,14 +1329,14 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     >>> w9 = lat2SW(3,3)
     >>> w9[0,1] == 1
     True
-    
+
     >>> w9[3,6] == 1
     True
-    
+
     >>> w9r = lat2SW(3,3, row_st=True)
     >>> w9r[3,6] == 1./3
     True
-    
+
     """
 
     n = nrows * ncols
@@ -1397,35 +1416,35 @@ def neighbor_equality(w1, w2):
 
     Notes
     -----
-    
+
     Only set membership is evaluated, no check of the weight values is carried out.
 
 
     Examples
     --------
-    
+
     >>> from libpysal.weights.util import neighbor_equality
     >>> from libpysal.weights import lat2W, W
     >>> w1 = lat2W(3,3)
     >>> w2 = lat2W(3,3)
     >>> neighbor_equality(w1, w2)
     True
-    
+
     >>> w3 = lat2W(5,5)
     >>> neighbor_equality(w1, w3)
     False
-    
+
     >>> n4 = w1.neighbors.copy()
     >>> n4[0] = [1]
     >>> n4[1] = [4, 2]
     >>> w4 = W(n4)
     >>> neighbor_equality(w1, w4)
     False
-    
+
     >>> n5 = w1.neighbors.copy()
     >>> n5[0]
     [3, 1]
-    
+
     >>> n5[0] = [1, 3]
     >>> w5 = W(n5)
     >>> neighbor_equality(w1, w5)
@@ -1479,18 +1498,18 @@ def attach_islands(w, w_knn1, **kwargs):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W, Rook, KNN, attach_islands
     >>> import libpysal
     >>> w = Rook.from_shapefile(libpysal.examples.get_path('10740.shp'))
     >>> w.islands
     [163]
-    
+
     >>> w_knn1 = KNN.from_shapefile(libpysal.examples.get_path('10740.shp'),k=1)
     >>> w_attach = attach_islands(w, w_knn1)
     >>> w_attach.islands
     []
-    
+
     >>> w_attach[w.islands[0]]
     {166: 1.0}
 
@@ -1562,10 +1581,10 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     represent a hole in the containing polygon.
 
     The buffering check assumes the geometry coordinates are projected.
-    
+
     For an example see `nonplanarweights.ipynb <https://pysal.org/libpysal/notebooks/weights.html#Handling-nonplanar-geometries>`_.
-    
-    
+
+
     Examples
     --------
 
@@ -1575,17 +1594,17 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     >>> w = libpysal.weights.Queen.from_dataframe(df)
     >>> w.islands
     [0, 4, 23, 27, 80, 94, 101, 107, 109, 119, 122, 139, 169, 175, 223, 239, 247, 253, 254, 255, 256, 261, 276, 291, 294, 303, 321, 357, 374]
-    
+
     >>> wnp = libpysal.weights.nonplanar_neighbors(w, df)
     >>> wnp.islands
     []
-    
+
     >>> w.neighbors[0]
     []
-    
+
     >>> wnp.neighbors[0]
     [23, 59, 152, 239]
-    
+
     >>> wnp.neighbors[23]
     [0, 45, 59, 107, 152, 185, 246]
 
@@ -1699,14 +1718,14 @@ def fuzzy_contiguity(
     >>> wq = libpysal.weights.Queen.from_dataframe(rs_df)
     >>> len(wq.islands)
     29
-    
+
     >>> wq[0]
     {}
-    
+
     >>> wf = fuzzy_contiguity(rs_df)
     >>> wf.islands
     []
-    
+
     >>> wf[0] == dict({239: 1.0, 59: 1.0, 152: 1.0, 23: 1.0, 107: 1.0})
     True
 
@@ -1721,11 +1740,11 @@ def fuzzy_contiguity(
     >>> wf = fuzzy_contiguity(gdf)
     >>> wf.islands
     [2]
-    
+
     >>> wfb = fuzzy_contiguity(gdf, buffering=True)
     >>> wfb.islands
     []
-    
+
     >>> wfb[2]
     {1: 1.0}
 
