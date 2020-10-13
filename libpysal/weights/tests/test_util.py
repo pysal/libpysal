@@ -29,6 +29,16 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w9.pct_nonzero, 29.62962962962963)
         self.assertEqual(w9[0], {1: 1.0, 3: 1.0})
         self.assertEqual(w9[3], {0: 1.0, 4: 1.0, 6: 1.0})
+    
+    def test_torusW(self):
+        wt = util.torusW(3, 3)
+        self.assertEqual(wt[0], {1: 1.0, 2: 1.0, 3: 1.0, 6: 1.0})
+        self.assertEqual(wt[3], {0: 1.0, 4: 1.0, 5: 1.0, 6: 1.0})
+
+    def test_hexLat2W(self):
+        wh = util.hexLat2W(5, 5)
+        self.assertEqual(wh[1], {0: 1.0, 6: 1.0, 2: 1.0, 5: 1.0, 7: 1.0})
+        self.assertEqual(wh[21], {16: 1.0, 20: 1.0, 22: 1.0})
 
     def test_lat2SW(self):
         w9 = util.lat2SW(3, 3)
