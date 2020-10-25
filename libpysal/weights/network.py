@@ -1,6 +1,5 @@
 import pandas as pd
 import pandas as pd
-import pandas
 import requests
 
 from tqdm.auto import tqdm
@@ -40,7 +39,7 @@ def feeds_from_bbox(bbox):
     return feeds
 
 
-class Network(W):
+class NetworkW(W):
 
     @classmethod
     def from_dataframe(cls, df=None, network=None, geom_col='geometry', ids=None, max_dist=None, **kwargs):
