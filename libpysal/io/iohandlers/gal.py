@@ -8,8 +8,7 @@ __all__ = ["GalIO"]
 
 
 class GalIO(fileio.FileIO):
-    """Opens, reads, and writes file objects in `GAL` format.
-    """
+    """Opens, reads, and writes file objects in `GAL` format."""
 
     FORMATS = ["gal"]
     MODES = ["r", "w"]

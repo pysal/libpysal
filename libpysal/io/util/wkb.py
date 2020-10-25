@@ -45,6 +45,7 @@ enum wkbByteOrder {
 };
 """
 
+
 DEFAULT_ENDIAN = "<" if sys.byteorder == "little" else ">"
 ENDIAN = {"\x00": ">", "\x01": "<"}
 
@@ -114,6 +115,7 @@ def loads(s: str):
         """
         x, y = struct.unpack(endian + "dd", dat.read(16))
         geom = cg.Point((x, y))
+
     elif typ == 2:
         """
         WKBLineString {
@@ -126,6 +128,7 @@ def loads(s: str):
         n = struct.unpack(endian + "I", dat.read(4))[0]
         xy = struct.unpack(endian + "%dd" % (n * 2), dat.read(n * 2 * 8))
         geom = cg.Chain([cg.Point(xy[i : i + 2]) for i in range(0, n * 2, 2)])
+
     elif typ == 3:
         """
         WKBPolygon  {
@@ -153,6 +156,7 @@ def loads(s: str):
         """
         npts = struct.unpack(endian + "I", dat.read(4))[0]
         geom = [loads(dat) for _ in range(npts)]
+
     elif typ == 5:
         """
         WKBMultiLineString  {
@@ -165,6 +169,7 @@ def loads(s: str):
         nparts = struct.unpack(endian + "I", dat.read(4))[0]
         chains = [loads(dat) for _ in range(nparts)]
         geom = cg.Chain(sum([c.parts for c in chains], []))
+
     elif typ == 6:
         """
         wkbMultiPolygon {

@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     """
     apply a function to an adajcency list, getting an adjacency list and result.
@@ -37,33 +38,39 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     try:
         import pandas as pd
     except ImportError:
-        raise ImportError('pandas must be installed to use this function')
-    W,alist = _get_W_and_alist(W, alist, skip_verify=skip_verify)
+        raise ImportError("pandas must be installed to use this function")
+    W, alist = _get_W_and_alist(W, alist, skip_verify=skip_verify)
     if len(X.shape) > 1:
         if X.shape[-1] > 1:
-            return _adjlist_mvapply(X, W=W, alist=alist, func=func,
-                             skip_verify=skip_verify)
+            return _adjlist_mvapply(
+                X, W=W, alist=alist, func=func, skip_verify=skip_verify
+            )
     else:
         vec = np.asarray(X).flatten()
-    ids = np.asarray(W.id_order)[:,None]
-    table = pd.DataFrame(ids, columns=['id'])
-    table = pd.concat((table, pd.DataFrame(vec[:,None], columns=('att',))), 
-                      axis=1)
-    alist_atts = pd.merge(alist, table, how='left', 
-                          left_on='focal', right_on='id')
-    alist_atts = pd.merge(alist_atts, table, how='left', 
-                          left_on='neighbor', right_on='id', 
-                          suffixes=('_focal','_neighbor'))
-    alist_atts.drop(['id_focal', 'id_neighbor'], axis=1, inplace=True)
-    alist_atts[func.__name__] = alist_atts[['att_focal', 'att_neighbor']].apply(lambda x: func(x.att_focal, 
-                                                                                               x.att_neighbor), axis=1)
+    ids = np.asarray(W.id_order)[:, None]
+    table = pd.DataFrame(ids, columns=["id"])
+    table = pd.concat((table, pd.DataFrame(vec[:, None], columns=("att",))), axis=1)
+    alist_atts = pd.merge(alist, table, how="left", left_on="focal", right_on="id")
+    alist_atts = pd.merge(
+        alist_atts,
+        table,
+        how="left",
+        left_on="neighbor",
+        right_on="id",
+        suffixes=("_focal", "_neighbor"),
+    )
+    alist_atts.drop(["id_focal", "id_neighbor"], axis=1, inplace=True)
+    alist_atts[func.__name__] = alist_atts[["att_focal", "att_neighbor"]].apply(
+        lambda x: func(x.att_focal, x.att_neighbor), axis=1
+    )
     return alist_atts
+
 
 def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
     try:
         import pandas as pd
     except ImportError:
-        raise ImportError('pandas must be installed to use this function')
+        raise ImportError("pandas must be installed to use this function")
     assert len(X.shape) == 2, "data is not two-dimensional"
     W, alist = _get_W_and_alist(W=W, alist=alist, skip_verify=skip_verify)
     assert X.shape[0] == W.n, "number of samples in X does not match W"
@@ -71,19 +78,32 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
         names = X.columns.tolist()
     except AttributeError:
         names = list(map(str, list(range(X.shape[1]))))
-    ids = np.asarray(W.id_order)[:,None]
-    table = pd.DataFrame(ids, columns=['id'])
+    ids = np.asarray(W.id_order)[:, None]
+    table = pd.DataFrame(ids, columns=["id"])
     table = pd.concat((table, pd.DataFrame(X, columns=names)), axis=1)
-    alist_atts = pd.merge(alist, table, how='left', 
-                          left_on='focal', right_on='id')
-    alist_atts = pd.merge(alist_atts, table, how='left', 
-                          left_on='neighbor', right_on='id', 
-                          suffixes=('_focal','_neighbor'))
-    alist_atts.drop(['id_focal', 'id_neighbor'], axis=1, inplace=True)
-    alist_atts[func.__name__] = list(map(func, 
-                                    list(zip(alist_atts.filter(like='_focal').values,
-                                        alist_atts.filter(like='_neighbor').values))))
+    alist_atts = pd.merge(alist, table, how="left", left_on="focal", right_on="id")
+    alist_atts = pd.merge(
+        alist_atts,
+        table,
+        how="left",
+        left_on="neighbor",
+        right_on="id",
+        suffixes=("_focal", "_neighbor"),
+    )
+    alist_atts.drop(["id_focal", "id_neighbor"], axis=1, inplace=True)
+    alist_atts[func.__name__] = list(
+        map(
+            func,
+            list(
+                zip(
+                    alist_atts.filter(like="_focal").values,
+                    alist_atts.filter(like="_neighbor").values,
+                )
+            ),
+        )
+    )
     return alist_atts
+
 
 def _get_W_and_alist(W, alist, skip_verify=False):
     """
@@ -98,16 +118,27 @@ def _get_W_and_alist(W, alist, skip_verify=False):
         alist = W.to_adjlist()
     elif (W is None) and (alist is not None):
         from .weights import W
+
         W = W.from_adjlist(alist)
     elif (W is None) and (alist is None):
-        raise ValueError('Either W or Adjacency List must be provided')
+        raise ValueError("Either W or Adjacency List must be provided")
     elif (W is not None) and (alist is not None) and (not skip_verify):
         from .weights import W as W_
-        np.testing.assert_allclose(W.sparse.toarray(), W_.from_adjlist(alist).sparse.toarray())
+
+        np.testing.assert_allclose(
+            W.sparse.toarray(), W_.from_adjlist(alist).sparse.toarray()
+        )
     return W, alist
 
-def adjlist_map(data, funcs=(np.subtract,), W=None, alist=None, 
-                focal_col = 'focal', neighbor_col='neighbor'):
+
+def adjlist_map(
+    data,
+    funcs=(np.subtract,),
+    W=None,
+    alist=None,
+    focal_col="focal",
+    neighbor_col="neighbor",
+):
     """
     Map a set of functions over a W or adjacency list
 
@@ -140,7 +171,7 @@ def adjlist_map(data, funcs=(np.subtract,), W=None, alist=None,
     try:
         import pandas as pd
     except ImportError:
-        raise ImportError('pandas must be installed to use this function')
+        raise ImportError("pandas must be installed to use this function")
     if isinstance(data, pd.DataFrame):
         names = data.columns
         data = data.values
@@ -151,17 +182,22 @@ def adjlist_map(data, funcs=(np.subtract,), W=None, alist=None,
         funcs = (funcs,)
     if len(funcs) == 1:
         funcs = [funcs[0] for _ in range(data.shape[1])]
-    assert data.shape[1] == len(funcs), "shape of data does not match the number of functions provided"
-    W, alist = _get_W_and_alist(W,alist)
+    assert data.shape[1] == len(
+        funcs
+    ), "shape of data does not match the number of functions provided"
+    W, alist = _get_W_and_alist(W, alist)
     fnames = set([f.__name__ for f in funcs])
     for i, (column, function) in enumerate(zip(data.T, funcs)):
         alist = adjlist_apply(X=column, W=W, alist=alist, skip_verify=True)
-        alist.drop(['att_focal', 'att_neighbor'], axis=1, inplace=True)
-        alist = alist.rename(columns={function.__name__ :'_'.join((function.__name__, names[i]))})
+        alist.drop(["att_focal", "att_neighbor"], axis=1, inplace=True)
+        alist = alist.rename(
+            columns={function.__name__: "_".join((function.__name__, names[i]))}
+        )
         fnames.update((function.__name__,))
     return alist
 
-def filter_adjlist(adjlist, focal_col = 'focal', neighbor_col = 'neighbor'):
+
+def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
     """
     This dedupes an adjacency list by examining both (a,b) and (b,a) when (a,b) is enountered.
     The removal is done in order of the iteration order of the input adjacency list. So, if a 

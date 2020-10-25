@@ -72,6 +72,7 @@ class Sphere(unittest.TestCase):
         pup = (42.023768, -87.946389)
         # Hammond, IN
         pdown = (41.644415, -87.524102)
+
         grid1 = sphere.geogrid(pup, pdown, 3, lonx=False)
         np.testing.assert_array_almost_equal(grid, grid1)
 

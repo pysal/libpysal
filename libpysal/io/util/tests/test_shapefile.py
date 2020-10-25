@@ -5,7 +5,6 @@ import io
 # import pysal_examples
 from .... import examples as pysal_examples
 
-
 from ..shapefile import (
     noneMax,
     noneMin,

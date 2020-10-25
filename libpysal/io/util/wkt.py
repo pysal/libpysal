@@ -107,6 +107,7 @@ class WKTParser:
             Raised when a unknown/unsupported format is passed in.
         
         """
+
         matches = self.regExes["typeStr"].match(wkt)
         if matches:
             geoType, geoStr = matches.groups()

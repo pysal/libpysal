@@ -58,14 +58,17 @@ class DBF(tables.DataTable):
             self.f = f = open(self.dataPath, "rb")
             # from dbf file standards
             numrec, lenheader = struct.unpack("<xxxxLH22x", f.read(32))
+
             # each field is 32 bytes
             numfields = (lenheader - 33) // 32
             self.n_records = numrec
             self.n_fields = numfields
             self.field_info = [("DeletionFlag", "C", 1, 0)]
             record_size = 1
+
             # each record is a string
             fmt = "s"
+
             self._col_index = {}
             idx = 0
 
@@ -82,6 +85,7 @@ class DBF(tables.DataTable):
                 idx += 1
                 # alt: str(size) + 's'
                 fmt += "%ds" % size
+
                 record_size += size
                 self.field_info.append((name, typ, size, deci))
 
@@ -286,6 +290,7 @@ class DBF(tables.DataTable):
             raise TypeError("Rows must contains %d fields." % len(self.header))
 
         self.numrec += 1
+
         # deletion flag
         self.f.write(" ".encode())
 
@@ -395,6 +400,7 @@ if __name__ == "__main__":
     file_name = libpysal.examples.get_path("10740.dbf")
     f = libpysal.open(file_name, "r")
     newDB = libpysal.open("copy.dbf", "w")
+
     newDB.header = f.header
     newDB.field_spec = f.field_spec
     print(f.header)
@@ -403,6 +409,7 @@ if __name__ == "__main__":
         newDB.write(row)
     newDB.close()
     copy = libpysal.open("copy.dbf", "r")
+
     f.seek(0)
     print("HEADER: ", copy.header == f.header)
     print("SPEC: ", copy.field_spec == f.field_spec)

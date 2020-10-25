@@ -27,6 +27,7 @@ class WeightConverter(object):
     def __init__(self, inputPath, dataFormat=None):
 
         warn("WeightConverter will be deprecated in PySAL 3.1.", DeprecationWarning)
+
         self.inputPath = inputPath
         self.inputDataFormat = dataFormat
         self._setW()
@@ -83,6 +84,7 @@ class WeightConverter(object):
 
     def w_set(self) -> bool:
         """Checks if a source `W` object is set."""
+
         return hasattr(self, "w")
 
     def write(self, outputPath, dataFormat=None, useIdIndex=True, matrix_form=True):

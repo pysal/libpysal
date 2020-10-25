@@ -138,6 +138,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
         if id_spec[0] != "N":
             raise TypeError("The data type for IDs should be integer.")
+
         self.id_var = id_var
 
         weights = {}

@@ -22,7 +22,7 @@ STRING_TO_TYPE = {
 }
 
 # build the reverse map
-# for key,value in STRING_TO_TYPE.iteritems():
+# for key,value in STRING_TO_TYPE.items():
 #    TYPE_TO_STRING[value] = key
 
 TYPE_TO_STRING = {

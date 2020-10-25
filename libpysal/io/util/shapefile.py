@@ -556,6 +556,7 @@ class shp_file:
 
         # the index does not include the 2 byte record header
         # (which contains, Record ID and Content Length)
+
         rec_id, con_len = _unpackDict(URHEADERSTRUCT, self.fileObj)
 
         return self.shape.unpack(io.BytesIO(self.fileObj.read(byts)))

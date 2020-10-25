@@ -122,7 +122,6 @@ class csvWrapper(tables.DataTable):
 
             for row in data:
                 val = row[j]
-
                 if not val.strip().replace("-", "").replace(".", "").isdigit():
                     isInt = False
                     isFloat = False

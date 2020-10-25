@@ -1235,7 +1235,6 @@ class Ring(Geometry):
             self._perimeter = sum(
                 [dist(v[i], v[i + 1]) for i in range(-1, len(self) - 1)]
             )
-
         return self._perimeter
 
     @property
