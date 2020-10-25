@@ -1,5 +1,6 @@
 import pandas as pd
 import pandas as pd
+import pandas
 import requests
 
 from tqdm.auto import tqdm
@@ -42,7 +43,7 @@ def feeds_from_bbox(bbox):
 class Network(W):
 
     @classmethod
-    def from_dataframe(cls, df=None, network=None, geom_col='geometry', ids='geoid', max_dist=None, **kwargs):
+    def from_dataframe(cls, df=None, network=None, geom_col='geometry', ids=None, max_dist=None, **kwargs):
         """
         Make Network weights from a dataframe.
 
@@ -54,7 +55,8 @@ class Network(W):
         geom_col :   string
                     column name of the geometry stored in df
         network:    pandana.Network
-                    a pandana Network object (optionally created by `multimodal_from_bbox`)
+                    a pandana Network object (optionally created by `multimodal_from_bbox`). If none, the geodataframe's total_bounds
+                    attribute will be used to download an openstreetmap pedestrian network covering the study area.
         ids     :   string or iterable
                     if string, the column name of the indices from the dataframe
                     if iterable, a list of ids to use for the W
@@ -66,7 +68,14 @@ class Network(W):
         --------
         :class:`libpysal.weights.weights.W`
         """
-        assert network, 'You must provide a pandana.Network object to create network-based weights'
+        if not network:
+            try:
+                from pandana.loaders import osm
+            except ImportError:
+                raise ImportError('You must have pandana installed to generate a Network')
+            assert 'epsg:4326' in df.crs.to_string(), "You must pass in an explicit pandana.Network object or provide a geodataframe in geographic (epsg:4326) coordinates"
+            network = osm.pdna_network_from_bbox(bbox=tuple(df.total_bounds))
+
         if not geom_col == 'geometry':
             df = df.set_geometry(geom_col)
         adj = compute_travel_cost_adjlist(df, df, network, index_orig=ids, index_dest=ids)
