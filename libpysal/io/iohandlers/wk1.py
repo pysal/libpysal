@@ -135,13 +135,13 @@ class Wk1IO(fileio.FileIO):
 
     """
 
-    FORMATS = ['wk1']
-    MODES = ['r', 'w']
+    FORMATS = ["wk1"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
-        self._varName = 'Unknown'
+        self._varName = "Unknown"
         fileio.FileIO.__init__(self, *args, **kwargs)
-        self.file = open(self.dataPath, self.mode + 'b')
+        self.file = open(self.dataPath, self.mode + "b")
 
     def _set_varName(self, val):
         if issubclass(type(val), str):
@@ -149,6 +149,7 @@ class Wk1IO(fileio.FileIO):
 
     def _get_varName(self):
         return self._varName
+
     varName = property(fget=_get_varName, fset=_set_varName)
 
     def read(self, n=-1):
@@ -191,20 +192,20 @@ class Wk1IO(fileio.FileIO):
         if self.pos > 0:
             raise StopIteration
 
-        bof = struct.unpack('<6B', self.file.read(6))
+        bof = struct.unpack("<6B", self.file.read(6))
         if bof != (0, 0, 2, 0, 6, 4):
-            raise ValueError('The header of your file is wrong!')
+            raise ValueError("The header of your file is wrong!")
 
         neighbors = {}
         weights = {}
-        dtype, dlen = struct.unpack('<2H', self.file.read(4))
-        while(dtype != 1):
+        dtype, dlen = struct.unpack("<2H", self.file.read(4))
+        while dtype != 1:
             if dtype in [13, 14, 16]:
                 self.file.read(1)
-                row, column = struct.unpack('2H', self.file.read(4))
-                format, length = '<d', 8
+                row, column = struct.unpack("2H", self.file.read(4))
+                format, length = "<d", 8
                 if dtype == 13:
-                    format, length = '<h', 2
+                    format, length = "<h", 2
                 value = float(struct.unpack(format, self.file.read(length))[0])
                 if value > 0:
                     ngh = neighbors.setdefault(row, [])
@@ -217,7 +218,7 @@ class Wk1IO(fileio.FileIO):
                 self.file.read(24)
             else:
                 self.file.read(dlen)
-            dtype, dlen = struct.unpack('<2H', self.file.read(4))
+            dtype, dlen = struct.unpack("<2H", self.file.read(4))
 
         self.pos += 1
         return W(neighbors, weights)
@@ -283,23 +284,47 @@ class Wk1IO(fileio.FileIO):
             f = self.file
             n = obj.n
             if n > 256:
-                raise ValueError('WK1 file format supports only up to 256 observations.')
+                raise ValueError(
+                    "WK1 file format supports only up to 256 observations."
+                )
             pack = struct.pack
-            f.write(pack('<6B', 0, 0, 2, 0, 6, 4))
-            f.write(pack('<6H', 6, 8, 0, 0, n, n))
-            f.write(pack('<2H6B', 150, 6, 0, 0, 0, 0, 0, 0))
-            f.write(pack('<2H1B', 47, 1, 0))
-            f.write(pack('<2H1b', 2, 1, 0))
-            f.write(pack('<2H1b', 3, 1, 0))
-            f.write(pack('<2H1b', 4, 1, 0))
-            f.write(pack('<2H1b', 5, 1, 0))
-            f.write(pack('<2H1b', 49, 1, 1))
-            f.write(pack('<4H2b13H', 7, 32, 0, 0, 113, 0, 10,
-                         n, n, 0, 0, 0, 0, 0, 0, 0, 0, 72, 0))
-            hidcol = tuple(['<2H32b', 100, 32] + [0] * 32)
+            f.write(pack("<6B", 0, 0, 2, 0, 6, 4))
+            f.write(pack("<6H", 6, 8, 0, 0, n, n))
+            f.write(pack("<2H6B", 150, 6, 0, 0, 0, 0, 0, 0))
+            f.write(pack("<2H1B", 47, 1, 0))
+            f.write(pack("<2H1b", 2, 1, 0))
+            f.write(pack("<2H1b", 3, 1, 0))
+            f.write(pack("<2H1b", 4, 1, 0))
+            f.write(pack("<2H1b", 5, 1, 0))
+            f.write(pack("<2H1b", 49, 1, 1))
+            f.write(
+                pack(
+                    "<4H2b13H",
+                    7,
+                    32,
+                    0,
+                    0,
+                    113,
+                    0,
+                    10,
+                    n,
+                    n,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    72,
+                    0,
+                )
+            )
+            hidcol = tuple(["<2H32b", 100, 32] + [0] * 32)
             f.write(pack(*hidcol))
-            f.write(pack('<7H', 40, 10, 4, 76, 66, 2, 2))
-            f.write(pack('<2H1c', 41, 1, "'".encode()))
+            f.write(pack("<7H", 40, 10, 4, 76, 66, 2, 2))
+            f.write(pack("<2H1c", 41, 1, "'".encode()))
 
             id2i = obj.id2i
             for i, w_i in enumerate(obj):
@@ -307,14 +332,13 @@ class Wk1IO(fileio.FileIO):
                 for k in w_i[1]:
                     row[id2i[k]] = w_i[1][k]
                 for c, v in enumerate(row):
-                    cell = tuple(['<2H1b2H1d', 14, 13, 113, i, c, v])
+                    cell = tuple(["<2H1b2H1d", 14, 13, 113, i, c, v])
                     f.write(pack(*cell))
-            f.write(pack('<4B', 1, 0, 0, 0))
+            f.write(pack("<4B", 1, 0, 0, 0))
             self.pos += 1
 
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))
 
     def close(self):
         self.file.close()

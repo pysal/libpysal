@@ -242,7 +242,6 @@ def voronoi_frames(points, radius=None, clip="extent"):
         regions = clip_voronoi_frames_to_extent(regions, vertices, clip=clip)
 
     reg_vtx = regions, vertices
-
     return reg_vtx
 
 

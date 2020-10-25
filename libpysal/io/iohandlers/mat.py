@@ -35,13 +35,13 @@ class MatIO(fileio.FileIO):
 
     """
 
-    FORMATS = ['mat']
-    MODES = ['r', 'w']
+    FORMATS = ["mat"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
-        self._varName = 'Unknown'
+        self._varName = "Unknown"
         fileio.FileIO.__init__(self, *args, **kwargs)
-        self.file = open(self.dataPath, self.mode + 'b')
+        self.file = open(self.dataPath, self.mode + "b")
 
     def _set_varName(self, val):
         if issubclass(type(val), str):
@@ -49,6 +49,7 @@ class MatIO(fileio.FileIO):
 
     def _get_varName(self):
         return self._varName
+
     varName = property(fget=_get_varName, fset=_set_varName)
 
     def read(self, n=-1):
@@ -161,11 +162,10 @@ class MatIO(fileio.FileIO):
                 w = full(obj)[0]
             except ValueError:
                 w = obj.sparse
-            sio.savemat(self.file, {'WEIGHT': w})
+            sio.savemat(self.file, {"WEIGHT": w})
             self.pos += 1
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))
 
     def close(self):
         self.file.close()

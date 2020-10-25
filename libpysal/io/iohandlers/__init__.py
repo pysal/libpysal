@@ -1,6 +1,6 @@
 import warnings
-warnings.filterwarnings(
-    action='ignore', message=".*__builtin__.file size changed.*")
+
+warnings.filterwarnings(action="ignore", message=".*__builtin__.file size changed.*")
 from . import gwt
 from . import gal
 from . import dat
@@ -22,4 +22,4 @@ from . import wk1
 try:
     from . import db
 except:
-    warnings.warn('SQLAlchemy and Geomet not installed, database I/O disabled')
+    warnings.warn("SQLAlchemy and Geomet not installed, database I/O disabled")

@@ -1,4 +1,4 @@
-from .. import fileio 
+from .. import fileio
 from ...weights import W
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
@@ -58,8 +58,8 @@ class GeoBUGSTextIO(fileio.FileIO):
 
     """
 
-    FORMATS = ['geobugs_text']
-    MODES = ['r', 'w']
+    FORMATS = ["geobugs_text"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
         args = args[:2]
@@ -113,12 +113,12 @@ class GeoBUGSTextIO(fileio.FileIO):
 
         fbody = self.file.read()
         body_structure = {}
-        for i in ['num', 'adj', 'weights', 'sumNumNeigh']:
+        for i in ["num", "adj", "weights", "sumNumNeigh"]:
             i_loc = fbody.find(i)
             if i_loc != -1:
                 body_structure[i] = (i_loc, i)
         body_sequence = sorted(body_structure.values())
-        body_sequence.append((-1, 'eof'))
+        body_sequence.append((-1, "eof"))
 
         for i in range(len(body_sequence) - 1):
             part, next_part = body_sequence[i], body_sequence[i + 1]
@@ -135,19 +135,18 @@ class GeoBUGSTextIO(fileio.FileIO):
                 if part_text[c].isdigit():
                     end = c + 1
                     break
-            part_text = part_text[start: end]
-            part_text = part_text.replace('\n', '')
+            part_text = part_text[start:end]
+            part_text = part_text.replace("\n", "")
             value_type = int
-            if part[1] == 'weights':
+            if part[1] == "weights":
                 value_type = float
-            body_structure[part[1]] = [value_type(v)
-                                       for v in part_text.split(',')]
+            body_structure[part[1]] = [value_type(v) for v in part_text.split(",")]
 
-        cardinalities = body_structure['num']
-        adjacency = body_structure['adj']
+        cardinalities = body_structure["num"]
+        adjacency = body_structure["adj"]
         raw_weights = [1.0] * int(sum(cardinalities))
-        if 'weights' in body_structure and isinstance(body_structure['weights'], list):
-            raw_weights = body_structure['weights']
+        if "weights" in body_structure and isinstance(body_structure["weights"], list):
+            raw_weights = body_structure["weights"]
 
         no_obs = len(cardinalities)
         neighbors = {}
@@ -158,8 +157,8 @@ class GeoBUGSTextIO(fileio.FileIO):
             weights[i + 1] = []
             no_nghs = cardinalities[i]
             if no_nghs > 0:
-                neighbors[i + 1] = adjacency[pos: pos + no_nghs]
-                weights[i + 1] = raw_weights[pos: pos + no_nghs]
+                neighbors[i + 1] = adjacency[pos : pos + no_nghs]
+                weights[i + 1] = raw_weights[pos : pos + no_nghs]
             pos += no_nghs
 
         self.pos += 1
@@ -230,15 +229,14 @@ class GeoBUGSTextIO(fileio.FileIO):
                 neighbors.extend(obj.neighbors[i])
                 weights.extend(obj.weights[i])
 
-            self.file.write('list(')
-            self.file.write('num=c(%s),' % ','.join(map(str, cardinalities)))
-            self.file.write('adj=c(%s),' % ','.join(map(str, neighbors)))
-            self.file.write('sumNumNeigh=%i)' % sum(cardinalities))
+            self.file.write("list(")
+            self.file.write("num=c(%s)," % ",".join(map(str, cardinalities)))
+            self.file.write("adj=c(%s)," % ",".join(map(str, neighbors)))
+            self.file.write("sumNumNeigh=%i)" % sum(cardinalities))
             self.pos += 1
 
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))
 
     def close(self):
         self.file.close()

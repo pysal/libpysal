@@ -2,16 +2,16 @@ from .. import tables
 import csv
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
-__all__ = ['csvWrapper']
+__all__ = ["csvWrapper"]
 
 
 class csvWrapper(tables.DataTable):
-    
+
     __doc__ = tables.DataTable.__doc__
-    FORMATS = ['csv']
-    READ_MODES = ['r','Ur','rU','U']
+    FORMATS = ["csv"]
+    READ_MODES = ["r", "Ur", "rU", "U"]
     MODES = READ_MODES[:]
-    
+
     def __init__(self, *args, **kwargs):
         """
 
@@ -43,15 +43,15 @@ class csvWrapper(tables.DataTable):
             if self._determineHeader(data):
                 self.header = data.pop(0)
             else:
-                self.header = ['field_%d' % i for i in range(len(data[0]))]
+                self.header = ["field_%d" % i for i in range(len(data[0]))]
             self._spec = self._determineSpec(data)
             self.data = data
             self.fileObj.close()
             self.__len = len(data)
 
     def _determineHeader(self, data):
-        #head = [val.strip().replace('-','').replace('.','').isdigit() for val in data[0]]
-        #if True in head: #no numbers in header!
+        # head = [val.strip().replace('-','').replace('.','').isdigit() for val in data[0]]
+        # if True in head: #no numbers in header!
         #    HEADER = False
         #    return HEADER
         headSpec = self._determineSpec([data[0]])
@@ -70,12 +70,12 @@ class csvWrapper(tables.DataTable):
             isFloat = True
             for row in data:
                 val = row[j]
-                if not val.strip().replace('-', '').replace('.', '').isdigit():
+                if not val.strip().replace("-", "").replace(".", "").isdigit():
                     isInt = False
                     isFloat = False
                     break
                 else:
-                    if isInt and '.' in val:
+                    if isInt and "." in val:
                         isInt = False
             if isInt:
                 spec.append(int)

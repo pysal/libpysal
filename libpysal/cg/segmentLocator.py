@@ -5,9 +5,12 @@ from .shapes import Rectangle, Point, LineSegment
 from .standalone import get_segment_point_dist, get_bounding_box
 import random
 import time
+import warnings
 
-__all__ = ["SegmentGrid", "SegmentLocator",
-           "Polyline_Shapefile_SegmentLocator"]
+
+dep_msg = "is deprecated and will be reoved in libpysal 4.4.0."
+
+__all__ = ["SegmentGrid", "SegmentLocator", "Polyline_Shapefile_SegmentLocator"]
 DEBUG = False
 
 
@@ -18,21 +21,20 @@ class BruteSegmentLocator(object):
 
     def nearest(self, pt):
         d = self.data
-        distances = [get_segment_point_dist(
-            d[i], pt)[0] for i in range(self.n)]
+        distances = [get_segment_point_dist(d[i], pt)[0] for i in range(self.n)]
         return numpy.argmin(distances)
 
 
 class SegmentLocator(object):
     def __init__(self, segments, nbins=500):
+        warnings.warn("SegmentLocator " + dep_msg, DeprecationWarning)
         self.data = segments
-        if hasattr(segments, 'bounding_box'):
+        if hasattr(segments, "bounding_box"):
             bbox = segment.bounding_box
         else:
             bbox = get_bounding_box(segments)
         self.bbox = bbox
-        res = max((bbox.right - bbox.left), (bbox.upper -
-                                             bbox.lower)) / float(nbins)
+        res = max((bbox.right - bbox.left), (bbox.upper - bbox.lower)) / float(nbins)
         self.grid = SegmentGrid(bbox, res)
         for i, seg in enumerate(segments):
             self.grid.add(seg, i)
@@ -41,18 +43,20 @@ class SegmentLocator(object):
         d = self.data
         possibles = self.grid.nearest(pt)
         distances = [get_segment_point_dist(d[i], pt)[0] for i in possibles]
-        #print "possibles",possibles
-        #print "distances",distances
-        #print "argmin", numpy.argmin(distances)
+        # print "possibles",possibles
+        # print "distances",distances
+        # print "argmin", numpy.argmin(distances)
         return possibles[numpy.argmin(distances)]
 
 
 class Polyline_Shapefile_SegmentLocator(object):
     def __init__(self, shpfile, nbins=500):
+        warnings.warn(
+            "Polyline_Shapefile_SegmentLocator " + dep_msg, DeprecationWarning
+        )
         self.data = shpfile
         bbox = Rectangle(*shpfile.bbox)
-        res = max((bbox.right - bbox.left), (bbox.upper -
-                                             bbox.lower)) / float(nbins)
+        res = max((bbox.right - bbox.left), (bbox.upper - bbox.lower)) / float(nbins)
         self.grid = SegmentGrid(bbox, res)
         for i, polyline in enumerate(shpfile):
             for p, part in enumerate(polyline.segments):
@@ -62,11 +66,13 @@ class Polyline_Shapefile_SegmentLocator(object):
     def nearest(self, pt):
         d = self.data
         possibles = self.grid.nearest(pt)
-        distances = [get_segment_point_dist(
-            d[i].segments[p][j], pt)[0] for (i, p, j) in possibles]
-        #print "possibles",possibles
-        #print "distances",distances
-        #print "argmin", numpy.argmin(distances)
+        distances = [
+            get_segment_point_dist(d[i].segments[p][j], pt)[0]
+            for (i, p, j) in possibles
+        ]
+        # print "possibles",possibles
+        # print "distances",distances
+        # print "argmin", numpy.argmin(distances)
         return possibles[numpy.argmin(distances)]
 
 
@@ -78,6 +84,7 @@ class SegmentGrid(object):
         It returns only approx. Solutions.
         This Grid should be wrapped by a locator.
     """
+
     def __init__(self, bounds, resolution):
         """
         Returns a grid with specified properties.
@@ -94,8 +101,9 @@ class SegmentGrid(object):
         TODO: complete this doctest
         >>> g = SegmentGrid(Rectangle(0, 0, 10, 10), 1)
         """
+        warnings.warn("SegmentGrid " + dep_msg, DeprecationWarning)
         if resolution == 0:
-            raise Exception('Cannot create grid with resolution 0')
+            raise Exception("Cannot create grid with resolution 0")
         self.res = resolution
         self.hash = {}
         self._kd = None
@@ -104,18 +112,29 @@ class SegmentGrid(object):
         self.x_range = (bounds.left, bounds.right)
         self.y_range = (bounds.lower, bounds.upper)
         try:
-            self.i_range = int(math.ceil((self.x_range[1] -
-                                          self.x_range[0]) / self.res)) + 1
-            self.j_range = int(math.ceil((self.y_range[1] -
-                                          self.y_range[0]) / self.res)) + 1
+            self.i_range = (
+                int(math.ceil((self.x_range[1] - self.x_range[0]) / self.res)) + 1
+            )
+            self.j_range = (
+                int(math.ceil((self.y_range[1] - self.y_range[0]) / self.res)) + 1
+            )
             self.mask = numpy.zeros((self.i_range, self.j_range), bool)
             self.endMask = numpy.zeros((self.i_range, self.j_range), bool)
         except Exception:
-            raise Exception('Invalid arguments for SegmentGrid(): (' + str(self.x_range) + ', ' + str(self.y_range) + ', ' + str(self.res) + ')')
+            raise Exception(
+                "Invalid arguments for SegmentGrid(): ("
+                + str(self.x_range)
+                + ", "
+                + str(self.y_range)
+                + ", "
+                + str(self.res)
+                + ")"
+            )
+
     @property
     def hashKeys(self):
         if self._hashKeys is None:
-            self._hashKeys = numpy.array(list(self.hash.keys()),dtype=float)
+            self._hashKeys = numpy.array(list(self.hash.keys()), dtype=float)
         return self._hashKeys
 
     @property
@@ -134,15 +153,17 @@ class SegmentGrid(object):
         """
         Returns whether a 2-tuple location _loc_ lies inside the grid bounds.
         """
-        return (self.x_range[0] <= loc[0] <= self.x_range[1] and
-                self.y_range[0] <= loc[1] <= self.y_range[1])
+        return (
+            self.x_range[0] <= loc[0] <= self.x_range[1]
+            and self.y_range[0] <= loc[1] <= self.y_range[1]
+        )
 
     def _grid_loc(self, loc):
         i = int((loc[0] - self.x_range[0]) / self.res)  # floored
         j = int((loc[1] - self.y_range[0]) / self.res)  # floored
-        #i = min(self.i_range-1, max(int((loc[0] - self.x_range[0])/self.res), 0))
-        #j = min(self.j_range-1, max(int((loc[1] - self.y_range[0])/self.res), 0))
-        #print "bin:", loc, " -> ", (i,j)
+        # i = min(self.i_range-1, max(int((loc[0] - self.x_range[0])/self.res), 0))
+        # j = min(self.j_range-1, max(int((loc[1] - self.y_range[0])/self.res), 0))
+        # print "bin:", loc, " -> ", (i,j)
         return (i, j)
 
     def _real_loc(self, grid_loc):
@@ -176,7 +197,10 @@ class SegmentGrid(object):
         True
         """
         if not (self.in_grid(segment.p1) and self.in_grid(segment.p2)):
-            raise Exception('Attempt to insert item at location outside grid bounds: ' + str(segment))
+            raise Exception(
+                "Attempt to insert item at location outside grid bounds: "
+                + str(segment)
+            )
         i, j = self.bin_loc(segment.p1, id)
         I, J = self.bin_loc(segment.p2, id)
         self.endMask[i, j] = True
@@ -187,15 +211,15 @@ class SegmentGrid(object):
         lower = bbox.lower
         res = self.res
         line = segment.line
-        tiny = res / 1000.
+        tiny = res / 1000.0
         for i in range(1 + min(i, I), max(i, I)):
-            #print 'i',i
+            # print 'i',i
             x = self.x_range[0] + (i * res)
             y = line.y(x)
             self.bin_loc((x - tiny, y), id)
             self.bin_loc((x + tiny, y), id)
         for j in range(1 + min(j, J), max(j, J)):
-            #print 'j',j
+            # print 'j',j
             y = self.y_range[0] + (j * res)
             x = line.x(y)
             self.bin_loc((x, y - tiny), id)
@@ -227,8 +251,9 @@ class SegmentGrid(object):
 
         if DEBUG:
             print("in_grid:", self.in_grid(pt))
-            i = pylab.matshow(self.mask, origin='lower',
-                              extent=self.x_range + self.y_range, fignum=1)
+            i = pylab.matshow(
+                self.mask, origin="lower", extent=self.x_range + self.y_range, fignum=1
+            )
         # Use KD tree to search out the nearest filled bin.
         # it may be faster to not use kdtree, or at least check grid_loc first
         # The KD tree is build on the keys of self.hash, a dictionary of stored bins.
@@ -242,12 +267,18 @@ class SegmentGrid(object):
         # +2 seems to do the trick.
         radius = int(math.ceil(dist)) + 2
         if radius < 30:
-            a, b = numpy.ogrid[-radius:radius + 1, -radius:radius +
-                               1]   # build square index arrays centered at 0,0
-            index = a ** 2 + b ** 2 <= radius ** 2                        # create a boolean mask to filter indicies outside radius
+            a, b = numpy.ogrid[
+                -radius : radius + 1, -radius : radius + 1
+            ]  # build square index arrays centered at 0,0
+            index = (
+                a ** 2 + b ** 2 <= radius ** 2
+            )  # create a boolean mask to filter indicies outside radius
             a, b = index.nonzero()
-                # grad the (i,j)'s of the elements within radius.
-            rows, cols = row + a - radius, col + b - radius                   # recenter the (i,j)'s over the Q point
+            # grad the (i,j)'s of the elements within radius.
+            rows, cols = (
+                row + a - radius,
+                col + b - radius,
+            )  # recenter the (i,j)'s over the Q point
             #### Filter indicies by bounds of the grid.
             ### filters must be applied one at a time
             ### I havn't figure out a way to group these
@@ -258,23 +289,29 @@ class SegmentGrid(object):
             rows = rows[filter]
             cols = cols[filter]  # i < i_range
             filter = cols >= 0
-            rows = rows[
-                filter]
+            rows = rows[filter]
             cols = cols[filter]  # j >= 0
             filter = cols < self.j_range
-            rows = rows[
-                filter]
+            rows = rows[filter]
             cols = cols[filter]  # j < j_range
             if DEBUG:
                 maskCopy = self.mask.copy().astype(float)
                 maskCopy += self.endMask.astype(float)
                 maskCopy[rows, cols] += 1
                 maskCopy[row, col] += 3
-                i = pylab.matshow(maskCopy, origin='lower', extent=self.x_range + self.y_range, fignum=1)
-                #raw_input('pause')
+                i = pylab.matshow(
+                    maskCopy,
+                    origin="lower",
+                    extent=self.x_range + self.y_range,
+                    fignum=1,
+                )
+                # raw_input('pause')
             ### All that was just setup for this one line...
-            idx = self.mask[rows, cols].nonzero()[0] # Filter out empty bins.
-            rows, cols = rows[idx], cols[idx]        # (i,j)'s of the filled grid cells within radius.
+            idx = self.mask[rows, cols].nonzero()[0]  # Filter out empty bins.
+            rows, cols = (
+                rows[idx],
+                cols[idx],
+            )  # (i,j)'s of the filled grid cells within radius.
 
             for t in zip(rows, cols):
                 possibles.update(self.hash[t])
@@ -282,8 +319,8 @@ class SegmentGrid(object):
             if DEBUG:
                 print("possibles", possibles)
         else:
-        ### The old way...
-        ### previously I was using kd.query_ball_point on, but the performance was terrible.
+            ### The old way...
+            ### previously I was using kd.query_ball_point on, but the performance was terrible.
             I = self.kd2.query_ball_point(grid_loc, radius)
             for i in I:
                 t = tuple(self.kd.data[i])
@@ -348,8 +385,9 @@ def grid_check(bins, segments, qpoints, visualize=False):
     print("Created Grid in %0.4f seconds" % (t1 - t0))
     print("Created KDTree in %0.4f seconds" % (t2 - t1))
     if visualize:
-        i = pylab.matshow(G.grid.mask, origin='lower',
-                          extent=G.grid.x_range + G.grid.y_range)
+        i = pylab.matshow(
+            G.grid.mask, origin="lower", extent=G.grid.x_range + G.grid.y_range
+        )
 
     t2 = time.time()
     q = list(map(G.nearest, qpoints))
@@ -358,7 +396,7 @@ def grid_check(bins, segments, qpoints, visualize=False):
     print("Total Grid Time:", t3 - t0)
     qps = len(qpoints) / (t3 - t2)
     print("q/s:", qps)
-    #print
+    # print
     return qps
 
 
@@ -382,8 +420,10 @@ def binSizeTest():
             results[row, col] = qps
     return results
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import pylab
+
     pylab.ion()
 
     n = 100
@@ -396,8 +436,8 @@ if __name__ == '__main__':
     t2 = time.time()
     print("segments:", t1 - t0)
     print("points:", t2 - t1)
-    #test_brute(segs,qpts)
-    #test_grid(50, segs, qpts)
+    # test_brute(segs,qpts)
+    # test_grid(50, segs, qpts)
 
     SG = SegmentLocator(segs)
     grid = SG.grid

@@ -1,4 +1,4 @@
-__all__ = ['DataTable']
+__all__ = ["DataTable"]
 from . import fileio
 from ..common import requires
 from warnings import warn
@@ -10,6 +10,7 @@ __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 class DataTable(fileio.FileIO):
     """ DataTable provides additional functionality to FileIO for data table file tables
         FileIO Handlers that provide data tables should subclass this instead of FileIO """
+
     class _By_Col:
         def __init__(self, parent):
             self.p = parent
@@ -30,7 +31,7 @@ class DataTable(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
 
     def __repr__(self):
-        return 'DataTable: % s' % self.dataPath
+        return "DataTable: % s" % self.dataPath
 
     def __len__(self):
         """ __len__ should be implemented by DataTable Subclasses """
@@ -44,11 +45,11 @@ class DataTable(fileio.FileIO):
         """ returns the column vector
         """
         if not self.header:
-            raise AttributeError('Please set the header')
+            raise AttributeError("Please set the header")
         if key in self.header:
             return self[:, self.header.index(key)]
         else:
-            raise AttributeError('Field: % s does not exist in header' % key)
+            raise AttributeError("Field: % s does not exist in header" % key)
 
     def by_col_array(self, *args):
         """
@@ -170,11 +171,16 @@ class DataTable(fileio.FileIO):
             rows = key
             cols = None
         elif len(key) > 2:
-            raise TypeError("DataTables support two dimmensional slicing,  % d slices provided" % len(key))
+            raise TypeError(
+                "DataTables support two dimmensional slicing,  % d slices provided"
+                % len(key)
+            )
         elif len(key) == 2:
             rows, cols = key
         else:
-            raise TypeError("Key: % r,  is confusing me.  I don't know what to do" % key)
+            raise TypeError(
+                "Key: % r,  is confusing me.  I don't know what to do" % key
+            )
         if isinstance(rows, slice):
             row_start, row_stop, row_step = rows.indices(len(self))
             self.seek(row_start)
@@ -187,34 +193,41 @@ class DataTable(fileio.FileIO):
                 col_start, col_stop, col_step = cols.indices(len(data[0]))
                 data = [r[col_start:col_stop:col_step] for r in data]
             else:
-                #col_start, col_stop, col_step = cols, cols+1, 1
+                # col_start, col_stop, col_step = cols, cols+1, 1
                 data = [r[cols] for r in data]
         self.seek(prevPos)
         return data
-    
-    @requires('pandas')
+
+    @requires("pandas")
     def to_df(self, n=-1, read_shp=None, **df_kws):
         import pandas as pd
+
         self.seek(0)
         header = self.header
         records = self.read(n)
         df = pd.DataFrame(records, columns=header, **df_kws)
         if read_shp is not False:
-            if read_shp is True or self.dataPath.endswith('.dbf'):
-                read_shp = self.dataPath[:-3] + 'shp'
+            if read_shp is True or self.dataPath.endswith(".dbf"):
+                read_shp = self.dataPath[:-3] + "shp"
             try:
                 from .geotable.shp import shp2series
-                df['geometry'] = shp2series(self.dataPath[:-3] + 'shp')
+
+                df["geometry"] = shp2series(self.dataPath[:-3] + "shp")
             except IOError as e:
-                warn('Encountered the following error in attempting to read'
-                     ' the shapefile {}. Proceeding with read, but the error'
-                     ' will be reproduced below:\n'
-                     ' {}'.format(self.dataPath[:-3]+'shp', e))
+                warn(
+                    "Encountered the following error in attempting to read"
+                    " the shapefile {}. Proceeding with read, but the error"
+                    " will be reproduced below:\n"
+                    " {}".format(self.dataPath[:-3] + "shp", e)
+                )
         return df
+
 
 def _test():
     import doctest
+
     doctest.testmod(verbose=True)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     _test()

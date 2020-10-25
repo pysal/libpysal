@@ -16,6 +16,7 @@ import pandas
 from bs4 import BeautifulSoup
 from ..io import open as ps_open
 
+
 from typing import Union
 
 PYSALDATA = "pysal_data"
@@ -61,6 +62,7 @@ def get_list_of_files(dir_name):
         If the file or directory is not found.
     
     """
+
     # names in the given directory
     all_files = list()
     try:
@@ -78,6 +80,7 @@ def get_list_of_files(dir_name):
         pass
 
     return all_files
+
 
 
 def type_of_script() -> str:
@@ -158,6 +161,7 @@ class Example:
             return True
         return False
 
+
     def explain(self) -> None:
         """Provide a description of the example."""
 
@@ -195,6 +199,7 @@ class Example:
             return get_list_of_files(path)
         return None
 
+
     def json_dict(self) -> dict:
         """Container for example meta data."""
         meta = {}
@@ -222,6 +227,7 @@ class Examples:
         """Add examples to the set of datasets available."""
         self.datasets.update(examples)
 
+
     def explain(self, example_name) -> str:
         if example_name in self.datasets:
             return self.datasets[example_name].explain()
@@ -243,6 +249,7 @@ class Examples:
         )
         datasets.style.set_properties(subset=["text"], **{"width": "300px"})
         print(datasets.to_string())
+
 
     def load(self, example_name: str) -> Example:
         """Load example dataset, download if not locally available."""
@@ -270,6 +277,7 @@ class Examples:
                 example.download()
             except:
                 print("Example not downloaded: {}".format(name))
+
 
     def get_installed_names(self) -> list:
         """Return names of all currently installed datasets."""
