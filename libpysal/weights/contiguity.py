@@ -7,6 +7,7 @@ from ..io.fileio import FileIO
 from ._contW_lists import ContiguityWeightsLists
 from .util import get_ids, get_points_array
 from .weights import WSP, W
+from .raster import da2W, da2WSP
 
 try:
     from shapely.geometry import Point as shapely_point
@@ -179,6 +180,43 @@ class Rook(W):
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
 
+    @classmethod
+    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
+        """
+        Construct a weights object from a xarray.DataArray.
+
+        Parameters
+        ----------
+        da : xarray.DataArray
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        z_value : int/string/float
+            Select the z_value of 3D DataArray with multiple layers.
+        coords_labels : dictionary
+            Pass dimension labels for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+            Default is {} empty dictionary.
+        sparse : boolean
+            type of weight object. Default is False. For sparse, sparse = True
+        **kwargs : keyword arguments
+            optional arguments passed when sparse = False
+
+        Returns
+        -------
+        w : libpysal.weights.W/libpysal.weights.WSP
+            instance of spatial weights class W or WSP
+
+        See Also
+        --------
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.weights.WSP`   
+        """
+        if sparse:
+            w = da2WSP(da, 'rook', z_value, coords_labels)
+        else:
+            w = da2W(da, 'rook', z_value, coords_labels, **kwargs)
+        return w
+
 
 class Queen(W):
     """
@@ -341,6 +379,43 @@ class Queen(W):
         w = cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
+        return w
+
+    @classmethod
+    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
+        """
+        Construct a weights object from a xarray.DataArray.
+
+        Parameters
+        ----------
+        da : xarray.DataArray
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        z_value : int/string/float
+            Select the z_value of 3D DataArray with multiple layers.
+        coords_labels : dictionary
+            Pass dimension labels for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+            Default is {} empty dictionary.
+        sparse : boolean
+            type of weight object. Default is False. For sparse, sparse = True
+        **kwargs : keyword arguments
+            optional arguments passed when sparse = False
+
+        Returns
+        -------
+        w : libpysal.weights.W/libpysal.weights.WSP
+            instance of spatial weights class W or WSP
+
+        See Also
+        --------
+        :class:`libpysal.weights.weights.W`
+        :class:`libpysal.weights.weights.WSP`   
+        """
+        if sparse:
+            w = da2WSP(da, 'queen', z_value, coords_labels)
+        else:
+            w = da2W(da, 'queen', z_value, coords_labels, **kwargs)
         return w
 
 

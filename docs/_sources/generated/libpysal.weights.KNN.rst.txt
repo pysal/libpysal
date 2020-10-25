@@ -32,6 +32,7 @@ libpysal.weights.KNN
       ~KNN.symmetrize
       ~KNN.to_WSP
       ~KNN.to_adjlist
+      ~KNN.to_file
       ~KNN.to_networkx
    
    

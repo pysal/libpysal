@@ -445,9 +445,9 @@ def higher_order(w, k=2, **kwargs):
     return higher_order_sp(w, k, **kwargs)
 
 
-def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
+def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, lower_order=False, **kwargs):
     """
-    Contiguity weights for either a sparse W or W  for order k.
+    Contiguity weights for either a sparse W or W for order k.
 
     Parameters
     ----------
@@ -464,6 +464,9 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     diagonal      : boolean
                     True:  keep k-order (i,j) joins when i==j
                     False: remove k-order (i,j) joins when i==j
+    lower_order   : boolean
+                    True: include lower order contiguities
+                    False: return only weights of order k
     **kwargs      : keyword arguments
                     optional arguments for :class:`pysal.weights.W`
 
@@ -472,9 +475,6 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     wk : W
 	     WSP, type matches type of w argument
 
-    Notes
-    -----
-    Lower order contiguities are removed.
 
     Examples
     --------
@@ -497,6 +497,9 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     >>> w25_3 = higher_order_sp(w25, 3, shortest_path=False)
     >>> w25_3[0] == {1: 1.0, 3: 1.0, 5: 1.0, 7: 1.0, 11: 1.0, 15: 1.0}
     True
+    >>> w25_3 = higher_order_sp(w25, 3, lower_order=True)
+    >>> w25_3[0] == {5: 1.0, 7: 1.0, 11: 1.0, 2: 1.0, 15: 1.0, 6: 1.0, 10: 1.0, 1: 1.0, 3: 1.0}
+    True
 
     """
     id_order = None
@@ -517,7 +520,12 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
             "a scipy.sparse.csr_matrix"
         )
 
-    wk = w ** k
+    if lower_order:
+        wk = sum(map(lambda x: w ** x, range(2, k + 1)))
+        shortest_path = False
+    else:
+        wk = w ** k
+
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck))
 

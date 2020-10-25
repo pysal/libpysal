@@ -11,6 +11,7 @@ from .util import (
     get_points_array,
     WSP2W,
 )
+from .raster import _da_checker
 import copy
 from warnings import warn as Warn
 from scipy.spatial import distance_matrix
@@ -106,7 +107,8 @@ class KNN(W):
             self.kdtree = data
             self.data = self.kdtree.data
         else:
-            self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
+            self.kdtree = KDTree(data, radius=radius,
+                                 distance_metric=distance_metric)
             self.data = self.kdtree.data
         self.k = k
         self.p = p
@@ -303,6 +305,7 @@ class KNN(W):
         A copy of the object using the new parameterization, or None if the
         object is reweighted in place.
         """
+        
         if new_data is not None:
             new_data = np.asarray(new_data).reshape(-1, 2)
             data = np.vstack((self.data, new_data)).reshape(-1, 2)
@@ -651,7 +654,8 @@ class Kernel(W):
             if not isinstance(di, np.ndarray):
                 di = np.asarray([di] * len(nids))
                 ni = np.asarray([ni] * len(nids))
-            zi = np.array([dict(list(zip(ni, di)))[nid] for nid in nids]) / bw[i]
+            zi = np.array([dict(list(zip(ni, di)))[nid]
+                           for nid in nids]) / bw[i]
             z.append(zi)
         zs = z
         # functions follow Anselin and Rey (2010) table 5.4
@@ -904,7 +908,8 @@ class DistanceBand(W):
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
             weight_vals = list(tempW.weights.values())
-            weights = dict(list(zip(weight_keys, list(map(list, weight_vals)))))
+            weights = dict(
+                list(zip(weight_keys, list(map(list, weight_vals)))))
             return neighbors, weights
         else:
             weighted = self.dmat.power(self.alpha)
@@ -916,7 +921,8 @@ class DistanceBand(W):
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
             weight_vals = list(tempW.weights.values())
-            weights = dict(list(zip(weight_keys, list(map(list, weight_vals)))))
+            weights = dict(
+                list(zip(weight_keys, list(map(list, weight_vals)))))
             return neighbors, weights
 
     def _spdistance_matrix(self, x, y, threshold=None):

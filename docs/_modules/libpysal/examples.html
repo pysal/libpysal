@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.examples &#8212; libpysal v4.2.2 Manual</title>
+    <title>libpysal.examples &#8212; libpysal v4.3.0 Manual</title>
     <link rel="stylesheet" href="../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css" />
@@ -15,10 +15,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-    <script src="../../_static/js/jquery-1.11.0.min.js"></script>
-    <script src="../../_static/js/jquery-fix.js"></script>
-    <script src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script src="../../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -26,6 +22,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
 
   </head><body>
 
@@ -40,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.2.2</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,18 +68,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/weights.html">Weights from GeoDataFrames</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/weights.html#Weights-from-shapefiles-(without-geopandas)">Weights from shapefiles (without geopandas)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/weights.html#Lattice-Weights">Lattice Weights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/weights.html#Handling-nonplanar-geometries">Handling nonplanar geometries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/voronoi.html">Voronoi Polygons for 2-D Point Sets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/voronoi.html#Voronoi-Weights">Voronoi Weights</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/examples.html">Datasets for use with libpysal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/examples.html#Backwards-compatibility-is-maintained">Backwards compatibility is maintained</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/examples.html#available-is-updated"><code class="docutils literal notranslate"><span class="pre">available</span></code> is updated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/examples.html#Remote-datasets">Remote datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/examples.html#Other-Remotes">Other Remotes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../notebooks/examples.html#Grabbing-all-the-remotes">Grabbing all the remotes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#example-datasets">Example Datasets</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a><ul>
@@ -128,48 +118,46 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <h1>Source code for libpysal.examples</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The :mod:`libpysal.examples` module includes a number of small built-in example datasets as well as functions to fetch larger datasets.</span>
+<span></span><span class="sd">&quot;&quot;&quot; The :mod:`libpysal.examples` module includes a number of small built-in</span>
+<span class="sd">    example datasets as well as functions to fetch larger datasets.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">example_manager</span>
 <span class="kn">from</span> <span class="nn">.remotes</span> <span class="kn">import</span> <span class="n">datasets</span> <span class="k">as</span> <span class="n">remote_datasets</span>
 <span class="kn">from</span> <span class="nn">.remotes</span> <span class="kn">import</span> <span class="n">download</span> <span class="k">as</span> <span class="n">fetch_all</span>
 <span class="kn">from</span> <span class="nn">.builtin</span> <span class="kn">import</span> <span class="n">datasets</span> <span class="k">as</span> <span class="n">builtin_datasets</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;get_path&#39;</span><span class="p">,</span> <span class="s1">&#39;available&#39;</span><span class="p">,</span> <span class="s1">&#39;explain&#39;</span><span class="p">,</span> <span class="s1">&#39;fetch_all&#39;</span><span class="p">]</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get_path&quot;</span><span class="p">,</span> <span class="s2">&quot;available&quot;</span><span class="p">,</span> <span class="s2">&quot;explain&quot;</span><span class="p">,</span> <span class="s2">&quot;fetch_all&quot;</span><span class="p">]</span>
 
 <span class="n">example_manager</span><span class="o">.</span><span class="n">add_examples</span><span class="p">(</span><span class="n">remote_datasets</span><span class="p">)</span>
 <span class="n">example_manager</span><span class="o">.</span><span class="n">add_examples</span><span class="p">(</span><span class="n">builtin_datasets</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="available"><a class="viewcode-back" href="../../generated/libpysal.examples.available.html#libpysal.examples.available">[docs]</a><span class="k">def</span> <span class="nf">available</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    List available datasets</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="available"><a class="viewcode-back" href="../../generated/libpysal.examples.available.html#libpysal.examples.available">[docs]</a><span class="k">def</span> <span class="nf">available</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;List available datasets.&quot;&quot;&quot;</span>
+
     <span class="k">return</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">available</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="explain"><a class="viewcode-back" href="../../generated/libpysal.examples.explain.html#libpysal.examples.explain">[docs]</a><span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Explain a dataset by name</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="explain"><a class="viewcode-back" href="../../generated/libpysal.examples.explain.html#libpysal.examples.explain">[docs]</a><span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Explain a dataset by name.&quot;&quot;&quot;</span>
+
     <span class="k">return</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">load_example</span><span class="p">(</span><span class="n">example_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Load example dataset instance</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">load_example</span><span class="p">(</span><span class="n">example_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">base</span><span class="o">.</span><span class="n">Example</span><span class="p">,</span> <span class="n">builtin</span><span class="o">.</span><span class="n">LocalExample</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Load example dataset instance.&quot;&quot;&quot;</span>
+
     <span class="k">return</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">example_name</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_path"><a class="viewcode-back" href="../../generated/libpysal.examples.get_path.html#libpysal.examples.get_path">[docs]</a><span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="n">file_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    get the path for a file by searching installed datasets</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_path"><a class="viewcode-back" href="../../generated/libpysal.examples.get_path.html#libpysal.examples.get_path">[docs]</a><span class="k">def</span> <span class="nf">get_path</span><span class="p">(</span><span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Get the path for a file by searching installed datasets.&quot;&quot;&quot;</span>
 
     <span class="n">installed</span> <span class="o">=</span> <span class="n">example_manager</span><span class="o">.</span><span class="n">get_installed_names</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">installed</span><span class="p">:</span>

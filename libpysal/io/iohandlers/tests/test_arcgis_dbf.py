@@ -47,7 +47,7 @@ class test_ArcGISDbfIO(unittest.TestCase):
                     "Missing Value Found, setting value to pysal.MISSINGVALUE"
                     in str(warn[0].message)
                 )
-        f = tempfile.NamedTemporaryFile(suffix=".dbf", dir=pysal_examples.get_path(""))
+        f = tempfile.NamedTemporaryFile(suffix=".dbf")
         fname = f.name
         f.close()
         o = psopen(fname, "w", "arcgis_dbf")

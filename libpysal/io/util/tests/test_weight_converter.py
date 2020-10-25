@@ -81,9 +81,7 @@ class test_WeightConverter(unittest.TestCase):
             for ext, dataformat in self.fileformats:
                 if f.lower().endswith(ext):
                     continue
-                temp_f = tempfile.NamedTemporaryFile(
-                    suffix=".%s" % ext, dir=self.base_dir
-                )
+                temp_f = tempfile.NamedTemporaryFile(suffix=".%s" % ext)
                 temp_fname = temp_f.name
                 temp_f.close()
 
@@ -138,9 +136,7 @@ class test_WeightConverter(unittest.TestCase):
             for ext, dataformat in self.fileformats:
                 if f.lower().endswith(ext):
                     continue
-                temp_f = tempfile.NamedTemporaryFile(
-                    suffix=".%s" % ext, dir=self.base_dir
-                )
+                temp_f = tempfile.NamedTemporaryFile(suffix=".%s" % ext)
                 outFile = temp_f.name
                 temp_f.close()
                 outDataFormat, useIdIndex, matrix_form = dataformat, False, False

@@ -47,7 +47,7 @@ class test_ArcGISTextIO(unittest.TestCase):
                     "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids."
                     in str(warn[0].message)
                 )
-        f = tempfile.NamedTemporaryFile(suffix=".txt", dir=pysal_examples.get_path(""))
+        f = tempfile.NamedTemporaryFile(suffix=".txt")
         fname = f.name
         f.close()
         o = psopen(fname, "w", "arcgis_text")
