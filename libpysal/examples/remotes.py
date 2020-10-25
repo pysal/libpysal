@@ -17,7 +17,7 @@ def poll_remotes():
         
     """
 
-    # Geoda Center Datasets
+    # Geoda Center Data Sets
 
     url = "https://geodacenter.github.io/data-and-lab//"
     try:
@@ -101,7 +101,9 @@ datasets = poll_remotes()
 
 
 def download(datasets=datasets):
-    """Download all known remotes."""
+    """
+    Download all known remotes
+    """
 
     names = list(datasets.keys())
     names.sort()

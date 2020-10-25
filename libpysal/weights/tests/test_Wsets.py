@@ -7,6 +7,8 @@ import numpy as np
 
 
 class Testset_operations(unittest.TestCase):
+    """Unit test for set_operations module."""
+
     def test_w_union(self):
         w1 = lat2W(4, 4)
         w2 = lat2W(6, 4)

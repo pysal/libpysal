@@ -1,6 +1,7 @@
 import os
 from ..fileio import FileIO as psopen
 from warnings import warn
+
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["weight_convert"]
 
@@ -25,7 +26,7 @@ class WeightConverter(object):
     """
 
     def __init__(self, inputPath, dataFormat=None):
-        warn('WeightConverter will be deprecated in PySAL 3.1', DeprecationWarning)
+        warn("WeightConverter will be deprecated in PySAL 3.1", DeprecationWarning)
         self.inputPath = inputPath
         self.inputDataFormat = dataFormat
         self._setW()
@@ -55,23 +56,25 @@ class WeightConverter(object):
         """
         try:
             if self.inputDataFormat:
-                f = psopen(self.inputPath, 'r', self.inputDataFormat)
+                f = psopen(self.inputPath, "r", self.inputDataFormat)
             else:
-                f = psopen(self.inputPath, 'r')
+                f = psopen(self.inputPath, "r")
         except:
-            raise IOError('A problem occurred while reading the input file.')
+            raise IOError("A problem occurred while reading the input file.")
         else:
             try:
                 self.w = f.read()
             except:
-                raise RuntimeError('A problem occurred while creating a weights object.')
+                raise RuntimeError(
+                    "A problem occurred while creating a weights object."
+                )
             finally:
                 f.close()
 
     def w_set(self):
         """Checks if a source w object is set
         """
-        return hasattr(self, 'w')
+        return hasattr(self, "w")
 
     def write(self, outputPath, dataFormat=None, useIdIndex=True, matrix_form=True):
         """
@@ -143,35 +146,44 @@ class WeightConverter(object):
 
         """
         ext = os.path.splitext(outputPath)[1]
-        ext = ext.replace('.', '')
-        #if ext.lower() == 'gwt':
+        ext = ext.replace(".", "")
+        # if ext.lower() == 'gwt':
         #    raise TypeError, 'Currently, PySAL does not support writing a weights object into a gwt file.'
 
         if not self.w_set():
-            raise RuntimeError('There is no weights object to write out.')
+            raise RuntimeError("There is no weights object to write out.")
 
         try:
             if dataFormat:
-                o = psopen(outputPath, 'w', dataFormat)
+                o = psopen(outputPath, "w", dataFormat)
             else:
-                o = psopen(outputPath, 'w')
+                o = psopen(outputPath, "w")
         except:
-            raise IOError('A problem occurred while creating the output file.')
+            raise IOError("A problem occurred while creating the output file.")
         else:
             try:
-                if dataFormat in ['arcgis_text', 'arcgis_dbf'] or ext == 'swm':
+                if dataFormat in ["arcgis_text", "arcgis_dbf"] or ext == "swm":
                     o.write(self.w, useIdIndex=useIdIndex)
-                elif dataFormat == 'stata_text':
+                elif dataFormat == "stata_text":
                     o.write(self.w, matrix_form=matrix_form)
                 else:
                     o.write(self.w)
             except:
-                raise RuntimeError('A problem occurred while writing out the weights object')
+                raise RuntimeError(
+                    "A problem occurred while writing out the weights object"
+                )
             finally:
                 o.close()
 
 
-def weight_convert(inPath, outPath, inDataFormat=None, outDataFormat=None, useIdIndex=True, matrix_form=True):
+def weight_convert(
+    inPath,
+    outPath,
+    inDataFormat=None,
+    outDataFormat=None,
+    useIdIndex=True,
+    matrix_form=True,
+):
     """
     A utility function for directly converting a given weight
     file into the format specified in outPath
@@ -246,5 +258,9 @@ def weight_convert(inPath, outPath, inDataFormat=None, outDataFormat=None, useId
     """
 
     converter = WeightConverter(inPath, dataFormat=inDataFormat)
-    converter.write(outPath, dataFormat=outDataFormat,
-                    useIdIndex=useIdIndex, matrix_form=matrix_form)
+    converter.write(
+        outPath,
+        dataFormat=outDataFormat,
+        useIdIndex=useIdIndex,
+        matrix_form=matrix_form,
+    )

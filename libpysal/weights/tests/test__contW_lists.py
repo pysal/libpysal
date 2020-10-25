@@ -110,6 +110,7 @@ class TestContiguityWeights(unittest.TestCase):
         Building 2 W's the hard way. 
         We need to do this so we can test both rtree and binning.
         """
+
         dbname = os.path.splitext(shapefile)[0] + ".dbf"
         db = ps_open(dbname)
         shpObj = ps_open(shapefile)

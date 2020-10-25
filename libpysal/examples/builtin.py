@@ -38,10 +38,11 @@ dirs = [
 
 
 class LocalExample:
-    """Builtin pysal example dataset."""
+    """
+    Builtin pysal example dataset
+    """
 
     def __init__(self, name: str, dirname: str):
-
         self.name = name
         self.dirname = dirname
         self.installed = True

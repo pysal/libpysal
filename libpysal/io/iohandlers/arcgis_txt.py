@@ -60,8 +60,8 @@ class ArcGISTextIO(gwt.GwtIO):
 
     """
 
-    FORMATS = ['arcgis_text']
-    MODES = ['r', 'w']
+    FORMATS = ["arcgis_text"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
         args = args[:2]
@@ -104,25 +104,35 @@ class ArcGISTextIO(gwt.GwtIO):
         id_order = None
         id_type = int
         try:
-            dbf = os.path.join(self.dataPath + '.dbf')
+            dbf = os.path.join(self.dataPath + ".dbf")
             if os.path.exists(dbf):
-                db = fileio.FileIO(dbf, 'r')
+                db = fileio.FileIO(dbf, "r")
                 if id_var in db.header:
                     id_order = db.by_col(id_var)
                     id_type = type(id_order[0])
                 else:
-                    warn("ID_VAR:'%s' was in in the DBF header, proceeding with unordered string ids." % (id_var), RuntimeWarning)
+                    warn(
+                        "ID_VAR:'%s' was in in the DBF header, proceeding with unordered string ids."
+                        % (id_var),
+                        RuntimeWarning,
+                    )
             else:
-                warn("DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids.", RuntimeWarning)
+                warn(
+                    "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids.",
+                    RuntimeWarning,
+                )
         except:
-            warn("Exception occurred will reading DBF, proceeding with unordered string ids.", RuntimeWarning)
+            warn(
+                "Exception occurred will reading DBF, proceeding with unordered string ids.",
+                RuntimeWarning,
+            )
 
         if (id_type is not int) or (id_order and type(id_order)[0] is not int):
             raise TypeError("The data type for ids should be integer.")
 
         if id_order:
             self.n = len(id_order)
-            self.shp = os.path.split(self.dataPath)[1].split('.')[0]
+            self.shp = os.path.split(self.dataPath)[1].split(".")[0]
         self.id_var = id_var
 
         weights, neighbors = self._readlines(id_type)
@@ -200,10 +210,8 @@ class ArcGISTextIO(gwt.GwtIO):
                 id2i = obj.id2i
                 obj = remap_ids(obj, id2i)
 
-            header = '%s\n' % self.varName
+            header = "%s\n" % self.varName
             self.file.write(header)
             self._writelines(obj)
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
-
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))

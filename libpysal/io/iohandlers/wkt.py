@@ -2,7 +2,7 @@ from .. import fileio
 from ..util import WKTParser
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
-__all__ = ['WKTReader']
+__all__ = ["WKTReader"]
 #####################################################################
 ## ToDo: Add Well-Known-Binary support...
 ##       * WKB spec:
@@ -43,8 +43,9 @@ class WKTReader(fileio.FileIO):
     Type dir(polys[1]) at the python interpreter to get a list of supported methods
 
     """
-    MODES = ['r']
-    FORMATS = ['wkt']
+
+    MODES = ["r"]
+    FORMATS = ["wkt"]
 
     def __init__(self, *args, **kwargs):
         fileio.FileIO.__init__(self, *args, **kwargs)
@@ -84,8 +85,9 @@ class WKTReader(fileio.FileIO):
             while pos not in self.__idx:
                 s = self._read()
                 if not s:
-                    raise IndexError("%d not in range(0,%d)" % (
-                        pos, max(self.__idx.keys())))
+                    raise IndexError(
+                        "%d not in range(0,%d)" % (pos, max(self.__idx.keys()))
+                    )
             self.pos = pos
             self.__pos = pos
             self.dataObj.seek(self.__idx[pos])

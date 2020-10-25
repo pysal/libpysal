@@ -10,7 +10,7 @@ Readers and Writers will mimic python file objects.
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
-__all__ = ['FileIO']
+__all__ = ["FileIO"]
 import os.path
 from warnings import warn
 from ..common import MISSINGVALUE
@@ -22,12 +22,13 @@ class FileIO_MetaCls(type):
     All subclasses of FileIO also inherit this meta class, which registers their abilities with the FileIO registry.
     Subclasses must contain FORMATS and MODES (both are type(list))
     """
+
     def __new__(mcs, name, bases, dict):
         cls = type.__new__(mcs, name, bases, dict)
-        if name != 'FileIO' and name != 'DataTable':
+        if name != "FileIO" and name != "DataTable":
             if "FORMATS" in dict and "MODES" in dict:
-                #print "Registering %s with FileIO.\n\tFormats: %r\n\tModes: %r"%(name,dict['FORMATS'],dict['MODES'])
-                FileIO._register(cls, dict['FORMATS'], dict['MODES'])
+                # print "Registering %s with FileIO.\n\tFormats: %r\n\tModes: %r"%(name,dict['FORMATS'],dict['MODES'])
+                FileIO._register(cls, dict["FORMATS"], dict["MODES"])
             else:
                 raise TypeError("FileIO subclasses must have FORMATS and MODES defined")
         return cls
@@ -54,17 +55,19 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     ....for now we'll just return an instance of W on mode='r'
     .... on mode='w', .write will expect an instance of W
     """
+
     __registry = {}  # {'shp':{'r':[OGRshpReader,pysalShpReader]}}
 
-    def __new__(cls, dataPath='', mode='r', dataFormat=None):
+    def __new__(cls, dataPath="", mode="r", dataFormat=None):
         """
         Intercepts the instantiation of FileIO and dispatches to the correct handler
         If no suitable handler is found a python file object is returned.
         """
         if cls is FileIO:
             try:
-                newCls = object.__new__(cls.__registry[cls.getType(dataPath,
-                                                                   mode, dataFormat)][mode][0])
+                newCls = object.__new__(
+                    cls.__registry[cls.getType(dataPath, mode, dataFormat)][mode][0]
+                )
             except KeyError:
                 return open(dataPath, mode)
             return newCls
@@ -78,19 +81,19 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
             ext = dataFormat
         else:
             ext = os.path.splitext(dataPath)[1]
-            ext = ext.replace('.', '')
+            ext = ext.replace(".", "")
             ext = ext.lower()
-        if ext == 'txt':
-            f = open(dataPath, 'r')
+        if ext == "txt":
+            f = open(dataPath, "r")
             l1 = f.readline()
             l2 = f.readline()
-            if ext == 'txt':
+            if ext == "txt":
                 try:
-                    n, k = l1.split(',')
+                    n, k = l1.split(",")
                     n, k = int(n), int(k)
-                    fields = l2.split(',')
+                    fields = l2.split(",")
                     assert len(fields) == k
-                    return 'geoda_txt'
+                    return "geoda_txt"
                 except:
                     return ext
         return ext
@@ -108,7 +111,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                 if not mode in cls.__registry[format]:
                     cls.__registry[format][mode] = []
                 cls.__registry[format][mode].append(parser)
-        #cls.check()
+        # cls.check()
 
     @classmethod
     def check(cls):
@@ -146,14 +149,15 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                 return self.p.get(self.p.ids[key])
             else:
                 return self.p.get(key)
+
         __call__ = __getitem__
 
-    def __init__(self, dataPath='', mode='r', dataFormat=None):
+    def __init__(self, dataPath="", mode="r", dataFormat=None):
         self.dataPath = dataPath
-        self.dataObj = ''
+        self.dataObj = ""
         self.mode = mode
-        #pos Should ALWAYS be in the range 0,...,n
-        #for custom IDs set the ids property.
+        # pos Should ALWAYS be in the range 0,...,n
+        # for custom IDs set the ids property.
         self.pos = 0
         self.__ids = None  # {'id':n}
         self.__rIds = None
@@ -197,6 +201,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         elif not ids:
             self.__ids = None
             self.__rIds = None
+
     ids = property(fget=__getIds, fset=__setIds)
 
     @property
@@ -217,15 +222,15 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         """cast key as typ"""
         if key in self.header:
             if not self._spec:
-                self._spec = [lambda x:x for k in self.header]
+                self._spec = [lambda x: x for k in self.header]
             if typ is None:
                 self._spec[self.header.index(key)] = lambda x: x
             else:
                 try:
-                    assert hasattr(typ, '__call__')
+                    assert hasattr(typ, "__call__")
                     self._spec[self.header.index(key)] = typ
                 except AssertionError:
-                    raise TypeError('Cast Objects must be callable')
+                    raise TypeError("Cast Objects must be callable")
         else:
             raise KeyError("%s" % key)
 
@@ -241,7 +246,11 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                             raise ValueError
                         r.append(f(v))
                     except ValueError:
-                        warn("Value '%r' could not be cast to %s, value set to MISSINGVALUE" % (v, str(f)), RuntimeWarning)
+                        warn(
+                            "Value '%r' could not be cast to %s, value set to MISSINGVALUE"
+                            % (v, str(f)),
+                            RuntimeWarning,
+                        )
                         r.append(MISSINGVALUE)
                 return r
 
@@ -291,7 +300,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         """
         self._complain_ifclosed(self.closed)
         if n < 0:
-            #return list(self)
+            # return list(self)
             result = []
             while 1:
                 try:

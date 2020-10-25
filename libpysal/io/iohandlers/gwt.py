@@ -20,6 +20,7 @@ class unique_filter(object):
     >>> list(filter(unique_filter(),l))
     ['a', 'b', 'c', 'v', 'd']
     """
+
     def __init__(self):
         self.exclude = set()
 
@@ -33,12 +34,12 @@ class unique_filter(object):
 
 class GwtIO(FileIO.FileIO):
 
-    FORMATS = ['kwt','gwt']
-    MODES = ['r', 'w']
+    FORMATS = ["kwt", "gwt"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
-        self._varName = 'Unknown'
-        self._shpName = 'Unknown'
+        self._varName = "Unknown"
+        self._shpName = "Unknown"
         FileIO.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
@@ -48,6 +49,7 @@ class GwtIO(FileIO.FileIO):
 
     def _get_varName(self):
         return self._varName
+
     varName = property(fget=_get_varName, fset=_set_varName)
 
     def _set_shpName(self, val):
@@ -56,6 +58,7 @@ class GwtIO(FileIO.FileIO):
 
     def _get_shpName(self):
         return self._shpName
+
     shpName = property(fget=_get_shpName, fset=_set_shpName)
 
     def read(self, n=-1):
@@ -80,7 +83,11 @@ class GwtIO(FileIO.FileIO):
         ids = list(filter(unique_filter(), [x[0] for x in data]))
         ids = list(map(id_type, ids))
         WN = {}
-        for id in ids:  # note: fromkeys is no good here, all keys end up sharing the say dict value
+        for (
+            id
+        ) in (
+            ids
+        ):  # note: fromkeys is no good here, all keys end up sharing the say dict value
             WN[id] = {}
         for i, j, v in data:
             i = id_type(i)
@@ -136,18 +143,28 @@ class GwtIO(FileIO.FileIO):
         id_type = str
         try:
             base = os.path.split(self.dataPath)[0]
-            dbf = os.path.join(base, self.shpName.replace('.shp', '') + '.dbf')
+            dbf = os.path.join(base, self.shpName.replace(".shp", "") + ".dbf")
             if os.path.exists(dbf):
-                db = FileIO.FileIO(dbf, 'r')
+                db = FileIO.FileIO(dbf, "r")
                 if id_var in db.header:
                     id_order = db.by_col(id_var)
                     id_type = type(id_order[0])
                 else:
-                    warn("ID_VAR:'%s' was not in the DBF header, proceeding with unordered string ids." % (id_var), RuntimeWarning)
+                    warn(
+                        "ID_VAR:'%s' was not in the DBF header, proceeding with unordered string ids."
+                        % (id_var),
+                        RuntimeWarning,
+                    )
             else:
-                warn("DBF relating to GWT was not found, proceeding with unordered string ids.", RuntimeWarning)
+                warn(
+                    "DBF relating to GWT was not found, proceeding with unordered string ids.",
+                    RuntimeWarning,
+                )
         except:
-            warn("Exception occurred will reading DBF, proceeding with unordered string ids.", RuntimeWarning)
+            warn(
+                "Exception occurred will reading DBF, proceeding with unordered string ids.",
+                RuntimeWarning,
+            )
         self.flag = flag
         self.n = n
         self.shp = shp
@@ -159,11 +176,11 @@ class GwtIO(FileIO.FileIO):
 
         self.pos += 1
         w = W(neighbors, weights, id_order)
-        #w.transform = 'b'
-        #set meta data
+        # w.transform = 'b'
+        # set meta data
         w._shpName = self.shpName
         w._varName = self.varName
-        #warn("Weights have been converted to binary. To retrieve original values use w.transform='o'", RuntimeWarning)
+        # warn("Weights have been converted to binary. To retrieve original values use w.transform='o'", RuntimeWarning)
         return w
 
     def _writelines(self, obj):
@@ -180,8 +197,7 @@ class GwtIO(FileIO.FileIO):
             for neighbor, weight in neighbors:
                 neighbor = "_".join(str(neighbor).split())
 
-                self.file.write('%s %s %6G\n' % (str_id,
-                                                 neighbor, weight))
+                self.file.write("%s %s %6G\n" % (str_id, neighbor, weight))
                 self.pos += 1
 
     def write(self, obj):
@@ -241,20 +257,19 @@ class GwtIO(FileIO.FileIO):
         """
         self._complain_ifclosed(self.closed)
         if issubclass(type(obj), W):
-            #transform = obj.transform
-            #obj.transform = 'o'
-            if hasattr(obj, '_shpName'):
+            # transform = obj.transform
+            # obj.transform = 'o'
+            if hasattr(obj, "_shpName"):
                 self.shpName = obj._shpName
-            if hasattr(obj, '_varName'):
+            if hasattr(obj, "_varName"):
                 self.varName = obj._varName
-            header = '%s %i %s %s\n' % ('0', obj.n, self.shpName, self.varName)
+            header = "%s %i %s %s\n" % ("0", obj.n, self.shpName, self.varName)
             self.file.write(header)
             self._writelines(obj)
-            #obj.transform = transform
+            # obj.transform = transform
 
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))
 
     def close(self):
         self.file.close()
@@ -278,9 +293,8 @@ class GwtIO(FileIO.FileIO):
             new_neighbors[new_i] = new_neighbors_i
             new_weights[new_i] = weights[i]
         info = {}
-        info['new_ids'] = new_ids
-        info['old_ids'] = old_ids
-        info['new_neighbors'] = new_neighbors
-        info['new_weights'] = new_weights
+        info["new_ids"] = new_ids
+        info["old_ids"] = old_ids
+        info["new_neighbors"] = new_neighbors
+        info["new_weights"] = new_weights
         return info
-

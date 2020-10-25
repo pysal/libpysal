@@ -16,6 +16,7 @@ import pandas
 from bs4 import BeautifulSoup
 from ..io import open as ps_open
 
+
 from typing import Union
 
 PYSALDATA = "pysal_data"

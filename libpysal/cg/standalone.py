@@ -18,7 +18,27 @@ import numpy as np
 EPSILON_SCALER = 3
 
 
-__all__ = ['bbcommon', 'get_bounding_box', 'get_angle_between', 'is_collinear', 'get_segments_intersect', 'get_segment_point_intersect', 'get_polygon_point_intersect', 'get_rectangle_point_intersect', 'get_ray_segment_intersect', 'get_rectangle_rectangle_intersection', 'get_polygon_point_dist', 'get_points_dist', 'get_segment_point_dist', 'get_point_at_angle_and_dist', 'convex_hull', 'is_clockwise', 'point_touches_rectangle', 'get_shared_segments', 'distance_matrix']
+__all__ = [
+    "bbcommon",
+    "get_bounding_box",
+    "get_angle_between",
+    "is_collinear",
+    "get_segments_intersect",
+    "get_segment_point_intersect",
+    "get_polygon_point_intersect",
+    "get_rectangle_point_intersect",
+    "get_ray_segment_intersect",
+    "get_rectangle_rectangle_intersection",
+    "get_polygon_point_dist",
+    "get_points_dist",
+    "get_segment_point_dist",
+    "get_point_at_angle_and_dist",
+    "convex_hull",
+    "is_clockwise",
+    "point_touches_rectangle",
+    "get_shared_segments",
+    "distance_matrix",
+]
 
 
 def bbcommon(bb, bbother):
@@ -69,38 +89,43 @@ def get_bounding_box(items):
     """
 
     def left(o):
-        if hasattr(o, 'bounding_box'):  # Polygon, Ellipse
+        if hasattr(o, "bounding_box"):  # Polygon, Ellipse
             return o.bounding_box.left
-        elif hasattr(o, 'left'):  # Rectangle
+        elif hasattr(o, "left"):  # Rectangle
             return o.left
         else:  # Point
             return o[0]
 
     def right(o):
-        if hasattr(o, 'bounding_box'):  # Polygon, Ellipse
+        if hasattr(o, "bounding_box"):  # Polygon, Ellipse
             return o.bounding_box.right
-        elif hasattr(o, 'right'):  # Rectangle
+        elif hasattr(o, "right"):  # Rectangle
             return o.right
         else:  # Point
             return o[0]
 
     def lower(o):
-        if hasattr(o, 'bounding_box'):  # Polygon, Ellipse
+        if hasattr(o, "bounding_box"):  # Polygon, Ellipse
             return o.bounding_box.lower
-        elif hasattr(o, 'lower'):  # Rectangle
+        elif hasattr(o, "lower"):  # Rectangle
             return o.lower
         else:  # Point
             return o[1]
 
     def upper(o):
-        if hasattr(o, 'bounding_box'):  # Polygon, Ellipse
+        if hasattr(o, "bounding_box"):  # Polygon, Ellipse
             return o.bounding_box.upper
-        elif hasattr(o, 'upper'):  # Rectangle
+        elif hasattr(o, "upper"):  # Rectangle
             return o.upper
         else:  # Point
             return o[1]
 
-    return Rectangle(min(list(map(left, items))), min(list(map(lower, items))), max(list(map(right, items))), max(list(map(upper, items))))
+    return Rectangle(
+        min(list(map(left, items))),
+        min(list(map(lower, items))),
+        max(list(map(right, items))),
+        max(list(map(upper, items))),
+    )
 
 
 def get_angle_between(ray1, ray2):
@@ -120,14 +145,18 @@ def get_angle_between(ray1, ray2):
     """
 
     if ray1.o != ray2.o:
-        raise ValueError('Rays must have the same origin.')
+        raise ValueError("Rays must have the same origin.")
     vec1 = (ray1.p[0] - ray1.o[0], ray1.p[1] - ray1.o[1])
     vec2 = (ray2.p[0] - ray2.o[0], ray2.p[1] - ray2.o[1])
     rot_theta = -math.atan2(vec1[1], vec1[0])
-    rot_matrix = [[math.cos(rot_theta), -math.sin(rot_theta)], [
-        math.sin(rot_theta), math.cos(rot_theta)]]
-    rot_vec2 = (rot_matrix[0][0] * vec2[0] + rot_matrix[0][1] * vec2[1],
-                rot_matrix[1][0] * vec2[0] + rot_matrix[1][1] * vec2[1])
+    rot_matrix = [
+        [math.cos(rot_theta), -math.sin(rot_theta)],
+        [math.sin(rot_theta), math.cos(rot_theta)],
+    ]
+    rot_vec2 = (
+        rot_matrix[0][0] * vec2[0] + rot_matrix[0][1] * vec2[1],
+        rot_matrix[1][0] * vec2[0] + rot_matrix[1][1] * vec2[1],
+    )
     return math.atan2(rot_vec2[1], rot_vec2[0])
 
 
@@ -155,7 +184,10 @@ def is_collinear(p1, p2, p3):
     """
     eps = np.finfo(type(p1[0])).eps
 
-    return (abs((p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0])) < EPSILON_SCALER * eps)
+    return (
+        abs((p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0]))
+        < EPSILON_SCALER * eps
+    )
 
 
 def get_segments_intersect(seg1, seg2):
@@ -290,14 +322,23 @@ def get_polygon_point_intersect(poly, pt):
     >>> pt2 = Point((2, 2))
     >>> get_polygon_point_intersect(poly, pt2)
     """
+
     def pt_lies_on_part_boundary(pt, vertices):
-        return [i for i in range(-1, len(vertices) - 1) if get_segment_point_dist(LineSegment(
-                vertices[i], vertices[i + 1]), pt)[0] == 0] != []
+        return [
+            i
+            for i in range(-1, len(vertices) - 1)
+            if get_segment_point_dist(LineSegment(vertices[i], vertices[i + 1]), pt)[0]
+            == 0
+        ] != []
 
     ret = None
-    if get_rectangle_point_intersect(poly.bounding_box, pt) is None:  # Weed out points that aren't even close
+    if (
+        get_rectangle_point_intersect(poly.bounding_box, pt) is None
+    ):  # Weed out points that aren't even close
         return None
-    elif [verts for verts in poly._vertices if pt_lies_on_part_boundary(pt, verts)] != []:
+    elif [
+        verts for verts in poly._vertices if pt_lies_on_part_boundary(pt, verts)
+    ] != []:
         ret = pt
     elif [verts for verts in poly._vertices if _point_in_vertices(pt, verts)] != []:
         ret = pt
@@ -308,7 +349,7 @@ def get_polygon_point_intersect(poly, pt):
         if [verts for verts in poly.holes if _point_in_vertices(pt, verts)] != []:
             # pt lines inside a hole.
             ret = None
-        #raise NotImplementedError, 'Cannot compute containment for polygon with holes'
+        # raise NotImplementedError, 'Cannot compute containment for polygon with holes'
     return ret
 
 
@@ -368,12 +409,23 @@ def get_ray_segment_intersect(ray, seg):
     >>> seg2 = LineSegment(Point((10, 10)), Point((10, 11)))
     >>> get_ray_segment_intersect(ray, seg2)
     """
-    d = max(math.hypot(seg.p1[0] - ray.o[0], seg.p1[1] - ray.o[1]),
-            math.hypot(seg.p2[0] - ray.o[0], seg.p2[1] - ray.o[1])) + 1  # Upper bound on origin to segment dist (+1)
+    d = (
+        max(
+            math.hypot(seg.p1[0] - ray.o[0], seg.p1[1] - ray.o[1]),
+            math.hypot(seg.p2[0] - ray.o[0], seg.p2[1] - ray.o[1]),
+        )
+        + 1
+    )  # Upper bound on origin to segment dist (+1)
     ratio = d / math.hypot(ray.o[0] - ray.p[0], ray.o[1] - ray.p[1])
     ray_seg = LineSegment(
-        ray.o, Point((ray.o[0] + ratio * (ray.p[0] - ray.o[0]),
-                      ray.o[1] + ratio * (ray.p[1] - ray.o[1]))))
+        ray.o,
+        Point(
+            (
+                ray.o[0] + ratio * (ray.p[0] - ray.o[0]),
+                ray.o[1] + ratio * (ray.p[1] - ray.o[1]),
+            )
+        ),
+    )
     return get_segments_intersect(seg, ray_seg)
 
 
@@ -414,7 +466,7 @@ def get_rectangle_rectangle_intersection(r0, r1, checkOverlap=True):
     """
     if checkOverlap:
         if not bbcommon(r0, r1):
-            #raise ValueError, "Rectangles do not intersect"
+            # raise ValueError, "Rectangles do not intersect"
             return None
     left = max(r0.left, r1.left)
     lower = max(r0.lower, r1.lower)
@@ -459,8 +511,16 @@ def get_polygon_point_dist(poly, pt):
         return 0.0
     part_prox = []
     for vertices in poly._vertices:
-        part_prox.append(min([get_segment_point_dist(LineSegment(vertices[i], vertices[i + 1]), pt)[0]
-                              for i in range(-1, len(vertices) - 1)]))
+        part_prox.append(
+            min(
+                [
+                    get_segment_point_dist(
+                        LineSegment(vertices[i], vertices[i + 1]), pt
+                    )[0]
+                    for i in range(-1, len(vertices) - 1)
+                ]
+            )
+        )
     return min(part_prox)
 
 
@@ -541,16 +601,17 @@ def get_segment_point_dist(seg, pt):
     dest_proj_dist = get_points_dist((inter_x, inter_y), (points_4, points_5))
 
     if src_proj_dist > segment_length or dest_proj_dist > segment_length:
-        src_pt_dist = get_points_dist(
-            (points_2, points_3), (points_0, points_1))
-        dest_pt_dist = get_points_dist(
-            (points_4, points_5), (points_0, points_1))
+        src_pt_dist = get_points_dist((points_2, points_3), (points_0, points_1))
+        dest_pt_dist = get_points_dist((points_4, points_5), (points_0, points_1))
         if src_pt_dist < dest_pt_dist:
             return (src_pt_dist, 0)
         else:
             return (dest_pt_dist, 1)
     else:
-        return (get_points_dist((inter_x, inter_y), (points_0, points_1)), src_proj_dist / segment_length)
+        return (
+            get_points_dist((inter_x, inter_y), (points_0, points_1)),
+            src_proj_dist / segment_length,
+        )
 
 
 def get_point_at_angle_and_dist(ray, angle, dist):
@@ -582,7 +643,9 @@ def get_point_at_angle_and_dist(ray, angle, dist):
     v = (ray.p[0] - ray.o[0], ray.p[1] - ray.o[1])
     cur_angle = math.atan2(v[1], v[0])
     dest_angle = cur_angle + angle
-    return Point((ray.o[0] + dist * math.cos(dest_angle), ray.o[1] + dist * math.sin(dest_angle)))
+    return Point(
+        (ray.o[0] + dist * math.cos(dest_angle), ray.o[1] + dist * math.sin(dest_angle))
+    )
 
 
 def convex_hull(points):
@@ -729,8 +792,10 @@ def _point_in_vertices(pt, vertices):
 
     vert_y_set = set([v[1] for v in vertices])
     while pt[1] in vert_y_set:
-        pt = (pt[0], pt[1] + -1e-14 + random.random(
-        ) * 2e-14)  # Perturb the location very slightly
+        pt = (
+            pt[0],
+            pt[1] + -1e-14 + random.random() * 2e-14,
+        )  # Perturb the location very slightly
     inters = 0
     for i in range(-1, len(vertices) - 1):
         v1 = vertices[i]
@@ -798,7 +863,7 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
     True
 
     """
-    #get_rectangle_rectangle_intersection inlined for speed.
+    # get_rectangle_rectangle_intersection inlined for speed.
     r0 = poly1.bounding_box
     r1 = poly2.bounding_box
     wLeft = max(r0.left, r1.left)

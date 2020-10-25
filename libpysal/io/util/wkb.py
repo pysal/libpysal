@@ -33,8 +33,8 @@ from ... import cg
 import sys
 import struct
 
-__author__ = 'Charles R Schmidt <schmidtc@gmail.com>'
-__all__ = ['loads']
+__author__ = "Charles R Schmidt <schmidtc@gmail.com>"
+__all__ = ["loads"]
 
 """
 enum wkbByteOrder {
@@ -42,8 +42,9 @@ enum wkbByteOrder {
     wkbNDR = 1               Little Endian
 };
 """
-DEFAULT_ENDIAN = '<' if sys.byteorder == 'little' else '>'
-ENDIAN = {'\x00': '>', '\x01': '<'}
+DEFAULT_ENDIAN = "<" if sys.byteorder == "little" else ">"
+ENDIAN = {"\x00": ">", "\x01": "<"}
+
 
 def load_ring_little(dat):
     """
@@ -52,15 +53,16 @@ def load_ring_little(dat):
         Point   points[numPoints];
     }
     """
-    npts = struct.unpack('<I', dat.read(4))[0]
-    xy = struct.unpack('<%dd'%(npts*2), dat.read(npts*2*8))
-    return [cg.Point(xy[i:i+2]) for i in range(0,npts*2,2)]
-    
+    npts = struct.unpack("<I", dat.read(4))[0]
+    xy = struct.unpack("<%dd" % (npts * 2), dat.read(npts * 2 * 8))
+    return [cg.Point(xy[i : i + 2]) for i in range(0, npts * 2, 2)]
+
+
 def load_ring_big(dat):
-    npts = struct.unpack('>I', dat.read(4))[0]
-    xy = struct.unpack('>%dd'%(npts*2), dat.read(npts*2*8))
-    return [cg.Point(xy[i:i+2]) for i in range(0,npts*2,2)]
-    
+    npts = struct.unpack(">I", dat.read(4))[0]
+    xy = struct.unpack(">%dd" % (npts * 2), dat.read(npts * 2 * 8))
+    return [cg.Point(xy[i : i + 2]) for i in range(0, npts * 2, 2)]
+
 
 def loads(s):
     """
@@ -77,12 +79,12 @@ def loads(s):
     };
     """
     # To allow recursive calls, read only the bytes we need.
-    if hasattr(s, 'read'):
+    if hasattr(s, "read"):
         dat = s
     else:
         dat = StringIO(s)
     endian = ENDIAN[dat.read(1)]
-    typ = struct.unpack('I', dat.read(4))[0]
+    typ = struct.unpack("I", dat.read(4))[0]
     if typ == 1:
         """
         WKBPoint {
@@ -95,8 +97,8 @@ def loads(s):
             double y;
         };
         """
-        x,y = struct.unpack(endian+'dd', dat.read(16))
-        return cg.Point((x,y))
+        x, y = struct.unpack(endian + "dd", dat.read(16))
+        return cg.Point((x, y))
     elif typ == 2:
         """
         WKBLineString {
@@ -106,9 +108,9 @@ def loads(s):
             Point               points[numPoints];
         }
         """
-        n = struct.unpack(endian+'I', dat.read(4))[0]
-        xy = struct.unpack(endian+'%dd'%(n*2), dat.read(n*2*8))
-        return cg.Chain([cg.Point(xy[i:i+2]) for i in range(0,n*2,2)])
+        n = struct.unpack(endian + "I", dat.read(4))[0]
+        xy = struct.unpack(endian + "%dd" % (n * 2), dat.read(n * 2 * 8))
+        return cg.Chain([cg.Point(xy[i : i + 2]) for i in range(0, n * 2, 2)])
     elif typ == 3:
         """
         WKBPolygon  {
@@ -121,8 +123,8 @@ def loads(s):
         WKBPolygon has exactly 1 outer ring and n holes.
             multipart Polygons are NOT support by WKBPolygon.
         """
-        nrings = struct.unpack(endian+'I', dat.read(4))[0]
-        load_ring = load_ring_little if endian == '<' else load_ring_big
+        nrings = struct.unpack(endian + "I", dat.read(4))[0]
+        load_ring = load_ring_little if endian == "<" else load_ring_big
         rings = [load_ring(dat) for _ in range(nrings)]
         return cg.Polygon(rings[0], rings[1:])
     elif typ == 4:
@@ -134,7 +136,7 @@ def loads(s):
             WKBPoint            WKBPoints[num_wkbPoints];
         }
         """
-        npts = struct.unpack(endian+'I', dat.read(4))[0]
+        npts = struct.unpack(endian + "I", dat.read(4))[0]
         return [loads(dat) for _ in range(npts)]
     elif typ == 5:
         """
@@ -145,9 +147,9 @@ def loads(s):
             WKBLineString   WKBLineStrings[num_wkbLineStrings];
         }
         """
-        nparts = struct.unpack(endian+'I', dat.read(4))[0]
+        nparts = struct.unpack(endian + "I", dat.read(4))[0]
         chains = [loads(dat) for _ in range(nparts)]
-        return cg.Chain(sum([c.parts for c in chains],[]))
+        return cg.Chain(sum([c.parts for c in chains], []))
     elif typ == 6:
         """
         wkbMultiPolygon {               
@@ -158,7 +160,7 @@ def loads(s):
         }
 
         """
-        npolys = struct.unpack(endian+'I', dat.read(4))[0]
+        npolys = struct.unpack(endian + "I", dat.read(4))[0]
         polys = [loads(dat) for _ in range(npolys)]
         parts = sum([p.parts for p in polys], [])
         holes = sum([p.holes for p in polys if p.holes[0]], [])
@@ -175,28 +177,29 @@ def loads(s):
             WKBGeometry     wkbGeometries[num_wkbGeometries]
         }
         """
-        ngeoms = struct.unpack(endian+'I', dat.read(4))[0]
+        ngeoms = struct.unpack(endian + "I", dat.read(4))[0]
         return [loads(dat) for _ in range(ngeoms)]
-        
-    raise TypeError('Type (%d) is unknown or unsupported.'%typ)
+
+    raise TypeError("Type (%d) is unknown or unsupported." % typ)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     # TODO: Refactor below into Unit Tests
-    wktExamples = ['POINT(6 10)',
-                   'LINESTRING(3 4,10 50,20 25)',
-                   'POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))',
-                   'MULTIPOINT(3.5 5.6,4.8 10.5)',
-                   'MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4))',
-                    # This MULTIPOLYGON is not valid, the 2nd shell instects the 1st.
-                   #'MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))',
-                   'MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((5 3,6 2,6 4,5 3)))',
-                   'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))',
-                   #'POINT ZM (1 1 5 60)',  <-- ZM is not supported by WKB ?
-                   #'POINT M (1 1 80)',     <-- M is not supported by WKB ?
-                   #'POINT EMPTY',          <-- NOT SUPPORT
-                   'MULTIPOLYGON EMPTY']
+    wktExamples = [
+        "POINT(6 10)",
+        "LINESTRING(3 4,10 50,20 25)",
+        "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))",
+        "MULTIPOINT(3.5 5.6,4.8 10.5)",
+        "MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4))",
+        # This MULTIPOLYGON is not valid, the 2nd shell instects the 1st.
+        #'MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))',
+        "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((5 3,6 2,6 4,5 3)))",
+        "GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))",
+        #'POINT ZM (1 1 5 60)',  <-- ZM is not supported by WKB ?
+        #'POINT M (1 1 80)',     <-- M is not supported by WKB ?
+        #'POINT EMPTY',          <-- NOT SUPPORT
+        "MULTIPOLYGON EMPTY",
+    ]
     # shapely only used for testing.
     try:
         import shapely.wkt, shapely.geometry
@@ -206,18 +209,19 @@ if __name__ == '__main__':
         raise
     for example in wktExamples:
         print(example)
-        shape0= shapely.wkt.loads(example)
+        shape0 = shapely.wkt.loads(example)
         shape1 = loads(shape0.to_wkb())
-        if example.startswith('MULTIPOINT'):
+        if example.startswith("MULTIPOINT"):
             shape2 = shapely.geometry.asMultiPoint(shape1)
-        elif example.startswith('GEOMETRYCOLLECTION'):
-            shape2 = shapely.geometry.collection.GeometryCollection(list(map(shapely.geometry.asShape,shape1)))
-        elif example == 'MULTIPOLYGON EMPTY':
-            #Skip Test
+        elif example.startswith("GEOMETRYCOLLECTION"):
+            shape2 = shapely.geometry.collection.GeometryCollection(
+                list(map(shapely.geometry.asShape, shape1))
+            )
+        elif example == "MULTIPOLYGON EMPTY":
+            # Skip Test
             shape2 = None
         else:
             shape2 = shapely.geometry.asShape(shape1)
-
 
         print(shape1)
         if shape2:

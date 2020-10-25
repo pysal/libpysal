@@ -3,8 +3,8 @@ from ...weights.weights import W, WSP
 from scipy import sparse
 import numpy as np
 
-__author__ = 'Charles R Schmidt <schmidtc@gmail.com>'
-__all__ = ['GalIO']
+__author__ = "Charles R Schmidt <schmidtc@gmail.com>"
+__all__ = ["GalIO"]
 
 
 class GalIO(fileio.FileIO):
@@ -13,8 +13,9 @@ class GalIO(fileio.FileIO):
 
 
     """
-    FORMATS = ['gal']
-    MODES = ['r', 'w']
+
+    FORMATS = ["gal"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
         self._typ = str
@@ -45,6 +46,7 @@ class GalIO(fileio.FileIO):
             self._typ = typ
         else:
             raise TypeError("Expecting a callable")
+
     data_type = property(fset=_set_data_type, fget=_get_data_type)
 
     def _read(self):
@@ -94,7 +96,7 @@ class GalIO(fileio.FileIO):
             ids = []
             idsappend = ids.append
             row = []
-            extend = row.extend    # avoid dot in loops
+            extend = row.extend  # avoid dot in loops
             col = []
             append = col.append
             counter = 0
@@ -201,18 +203,15 @@ class GalIO(fileio.FileIO):
         self._complain_ifclosed(self.closed)
         if issubclass(type(obj), W):
             IDS = obj.id_order
-            self.file.write('%d\n' % (obj.n))
+            self.file.write("%d\n" % (obj.n))
             for id in IDS:
                 neighbors = obj.neighbors[id]
-                self.file.write('%s %d\n' % (str(id), len(neighbors)))
-                self.file.write(' '.join(map(str, neighbors)) + '\n')
+                self.file.write("%s %d\n" % (str(id), len(neighbors)))
+                self.file.write(" ".join(map(str, neighbors)) + "\n")
             self.pos += 1
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" %
-                            (type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))
 
     def close(self):
         self.file.close()
         fileio.FileIO.close(self)
-
-

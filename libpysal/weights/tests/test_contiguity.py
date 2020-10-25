@@ -170,6 +170,7 @@ class Test_Rook(ut.TestCase, Contiguity_Mixin):
         self.known_namedw = {k + 1: v for k, v in list(self.known_w.items())}
         self.known_wi_da = 12
         self.known_w_da = {22: 1, 13: 1, 2: 1, 11: 1}
+        self.known_namedw = {k + 1: v for k, v in list(self.known_w.items())}
 
 
 class Test_Voronoi(ut.TestCase):

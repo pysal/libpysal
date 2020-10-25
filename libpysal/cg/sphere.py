@@ -18,14 +18,24 @@ from scipy.spatial.distance import euclidean
 from math import pi, cos, sin
 
 __all__ = [
-    'RADIUS_EARTH_KM', 'RADIUS_EARTH_MILES', 'arcdist', 'arcdist2linear',
-    'brute_knn', 'fast_knn', 'fast_threshold', 'linear2arcdist', 'toLngLat',
-    'toXYZ', 'lonlat', 'harcdist', 'geointerpolate', 'geogrid'
+    "RADIUS_EARTH_KM",
+    "RADIUS_EARTH_MILES",
+    "arcdist",
+    "arcdist2linear",
+    "brute_knn",
+    "fast_knn",
+    "fast_threshold",
+    "linear2arcdist",
+    "toLngLat",
+    "toXYZ",
+    "lonlat",
+    "harcdist",
+    "geointerpolate",
+    "geogrid",
 ]
 
 RADIUS_EARTH_KM = 6371.0
-RADIUS_EARTH_MILES = (RADIUS_EARTH_KM *
-                      scipy.constants.kilo) / scipy.constants.mile
+RADIUS_EARTH_MILES = (RADIUS_EARTH_KM * scipy.constants.kilo) / scipy.constants.mile
 
 
 def arcdist(pt0, pt1, radius=RADIUS_EARTH_KM):
@@ -73,7 +83,7 @@ def arcdist2linear(arc_dist, radius=RADIUS_EARTH_KM):
     2.0
     """
     c = 2 * math.pi * radius
-    d = (2 - (2 * math.cos(math.radians((arc_dist * 360.0) / c))))**(0.5)
+    d = (2 - (2 * math.cos(math.radians((arc_dist * 360.0) / c)))) ** (0.5)
     return d
 
 
@@ -89,15 +99,15 @@ def linear2arcdist(linear_dist, radius=RADIUS_EARTH_KM):
     >>> d == linear2arcdist(2.0, radius = RADIUS_EARTH_MILES)
     True
     """
-    if linear_dist == float('inf'):
-        return float('inf')
+    if linear_dist == float("inf"):
+        return float("inf")
     elif linear_dist > 2.0:
         raise ValueError(
             "linear_dist, must not exceed the diameter of the unit sphere, 2.0"
         )
     c = 2 * math.pi * radius
-    a2 = linear_dist**2
-    theta = math.degrees(math.acos((2 - a2) / (2.)))
+    a2 = linear_dist ** 2
+    theta = math.degrees(math.acos((2 - a2) / (2.0)))
     d = (theta * c) / 360.0
     return d
 
@@ -143,7 +153,7 @@ def toLngLat(xyz):
     return phi, theta
 
 
-def brute_knn(pts, k, mode='arc'):
+def brute_knn(pts, k, mode="arc"):
     """
     valid modes are ['arc','xrz']
     """
@@ -151,17 +161,17 @@ def brute_knn(pts, k, mode='arc'):
     full = numpy.zeros((n, n))
     for i in range(n):
         for j in range(i + 1, n):
-            if mode == 'arc':
+            if mode == "arc":
                 lng0, lat0 = pts[i]
                 lng1, lat1 = pts[j]
                 dist = arcdist(pts[i], pts[j], radius=RADIUS_EARTH_KM)
-            elif mode == 'xyz':
+            elif mode == "xyz":
                 dist = euclidean(pts[i], pts[j])
             full[i, j] = dist
             full[j, i] = dist
     w = {}
     for i in range(n):
-        w[i] = full[i].argsort()[1:k + 1].tolist()
+        w[i] = full[i].argsort()[1 : k + 1].tolist()
     return w
 
 
@@ -197,8 +207,7 @@ def fast_knn(pts, k, return_dist=False):
         wd = {}
         for i in range(len(pts)):
             wd[i] = [
-                linear2arcdist(x, radius=RADIUS_EARTH_MILES)
-                for x in d[i].tolist()
+                linear2arcdist(x, radius=RADIUS_EARTH_MILES) for x in d[i].tolist()
             ]
         return wn, wd
     return wn
@@ -327,9 +336,8 @@ def radangle(p0, p1):
     x0, y0 = d2r(p0[0]), d2r(p0[1])
     x1, y1 = d2r(p1[0]), d2r(p1[1])
     d = 2.0 * math.asin(
-        math.sqrt(
-            haversine(y1 - y0) +
-            math.cos(y0) * math.cos(y1) * haversine(x1 - x0)))
+        math.sqrt(haversine(y1 - y0) + math.cos(y0) * math.cos(y1) * haversine(x1 - x0))
+    )
     return d
 
 

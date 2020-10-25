@@ -1,15 +1,16 @@
 from .. import tables
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
-__all__ = ['GeoDaTxtReader']
+__all__ = ["GeoDaTxtReader"]
 
 
 class GeoDaTxtReader(tables.DataTable):
     """GeoDa Text File Export Format
     """
+
     __doc__ = tables.DataTable.__doc__
-    FORMATS = ['geoda_txt']
-    MODES = ['r']
+    FORMATS = ["geoda_txt"]
+    MODES = ["r"]
 
     def __init__(self, *args, **kwargs):
         """
@@ -36,18 +37,18 @@ class GeoDaTxtReader(tables.DataTable):
         self._open()
 
     def _open(self):
-        if self.mode == 'r':
-            self.fileObj = open(self.dataPath, 'r')
-            n, k = self.fileObj.readline().strip().split(',')
+        if self.mode == "r":
+            self.fileObj = open(self.dataPath, "r")
+            n, k = self.fileObj.readline().strip().split(",")
             n, k = int(n), int(k)
-            header = self.fileObj.readline().strip().split(',')
-            self.header = [f.replace('"', '') for f in header]
+            header = self.fileObj.readline().strip().split(",")
+            self.header = [f.replace('"', "") for f in header]
             try:
                 assert len(self.header) == k
             except AssertionError:
                 raise TypeError("This is not a valid geoda_txt file.")
             dat = self.fileObj.readlines()
-            self.dat = [line.strip().split(',') for line in dat]
+            self.dat = [line.strip().split(",") for line in dat]
             self._spec = self._determineSpec(self.dat)
             self.__len = len(dat)
 
@@ -75,12 +76,12 @@ class GeoDaTxtReader(tables.DataTable):
             isFloat = True
             for row in data:
                 val = row[j]
-                if not val.strip().replace('-', '').replace('.', '').isdigit():
+                if not val.strip().replace("-", "").replace(".", "").isdigit():
                     isInt = False
                     isFloat = False
                     break
                 else:
-                    if isInt and '.' in val:
+                    if isInt and "." in val:
                         isInt = False
             if isInt:
                 spec.append(int)

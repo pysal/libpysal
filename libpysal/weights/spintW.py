@@ -310,7 +310,6 @@ def mat2L(edge_matrix):
             "second axis with non-zero matrix entires denoting an edge"
             "between and origin and destination."
         )
-
     edge_list = []
     rows, cols = edge_matrix.shape
 

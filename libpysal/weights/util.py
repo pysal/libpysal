@@ -574,6 +574,7 @@ def higher_order_sp(
             w = w.sparse
         else:
             raise ValueError("Weights are not binary (0,1).")
+
     elif scipy.sparse.isspmatrix_csr(w):
         if not np.unique(w.data) == np.array([1.0]):
             raise ValueError(

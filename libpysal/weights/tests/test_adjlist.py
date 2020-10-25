@@ -49,9 +49,9 @@ class Test_Adjlist(ut.TestCase):
         tuples = set([tuple(t) for t in alist[["focal", "neighbor"]].values])
         full_alist = grid.to_adjlist()
         all_possible = set([tuple(t) for t in full_alist[["focal", "neighbor"]].values])
-        assert tuples.issubset(all_possible), (
-            "the de-duplicated adjlist has links " "not in the duplicated adjlist."
-        )
+        assert tuples.issubset(
+            all_possible
+        ), "the de-duplicated adjlist has links not in the duplicated adjlist."
         complements = all_possible.difference(tuples)
         reversed_complements = set([t[::-1] for t in complements])
         assert reversed_complements == tuples, (

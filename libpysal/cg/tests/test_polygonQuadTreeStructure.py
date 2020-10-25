@@ -11,6 +11,7 @@ class TestQuadTreeStructureSingleRing(unittest.TestCase):
         determine if a point is inside of a polygon.
         
         """
+
         ring_texas = Ring(
             [
                 (-105.99835968, 31.3938179016),

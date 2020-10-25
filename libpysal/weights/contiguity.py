@@ -113,7 +113,6 @@ class Rook(W):
         libpysal.weights.Rook
         
         """
-
         sparse = kwargs.pop("sparse", False)
 
         if idVariable is not None:
@@ -690,8 +689,8 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     constructors for `Rook` or `Queen`.
     
     """
-
     # Warn('This function is deprecated. Please use the Rook or Queen classes', UserWarning)
+
     if criterion.lower() == "rook":
         return Rook(polygons, ids=ids)
     elif criterion.lower() == "queen":

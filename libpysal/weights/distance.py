@@ -14,6 +14,8 @@ from .util import (
     get_points_array,
     WSP2W,
 )
+
+from .raster import _da_checker
 import copy
 from warnings import warn as Warn
 from scipy.spatial import distance_matrix
@@ -24,6 +26,7 @@ import numpy as np
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric="euclidean"):
     """This is deprecated. Use the ``libpysal.weights.KNN`` class instead."""
     # Warn("This function is deprecated. Please use libpysal.weights.KNN", UserWarning)
+
     return KNN(data, k=k, p=p, ids=ids, radius=radius, distance_metric=distance_metric)
 
 
@@ -343,7 +346,6 @@ class KNN(W):
         """
 
         if new_data is not None:
-
             new_data = np.asarray(new_data).reshape(-1, 2)
             data = np.vstack((self.data, new_data)).reshape(-1, 2)
             if new_ids is not None:

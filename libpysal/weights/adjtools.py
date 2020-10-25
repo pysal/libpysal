@@ -257,7 +257,7 @@ def adjlist_map(
 
 
 def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
-    """This deduplicates an adjacency list by examining both `(a,b)` and `(b,a)`
+    """This de-duplicates an adjacency list by examining both `(a,b)` and `(b,a)`
     when `(a,b)` is encountered. The removal is done in order of the iteration
     order of the input adjacency list. So, if a special order of removal is
     desired, you need to sort the list before this function.

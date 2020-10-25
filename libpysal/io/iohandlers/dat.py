@@ -25,8 +25,8 @@ class DatIO(gwt.GwtIO):
 
     """
 
-    FORMATS = ['dat']
-    MODES = ['r', 'w']
+    FORMATS = ["dat"]
+    MODES = ["r", "w"]
 
     def _read(self):
         """Reads .dat file
@@ -125,5 +125,4 @@ class DatIO(gwt.GwtIO):
         if issubclass(type(obj), W):
             self._writelines(obj)
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))

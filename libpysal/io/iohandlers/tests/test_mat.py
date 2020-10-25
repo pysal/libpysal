@@ -9,8 +9,8 @@ import warnings
 
 class test_MatIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('spat-sym-us.mat')
-        self.obj = MatIO(test_file, 'r')
+        self.test_file = test_file = pysal_examples.get_path("spat-sym-us.mat")
+        self.obj = MatIO(test_file, "r")
 
     def test_close(self):
         f = self.obj
@@ -31,19 +31,20 @@ class test_MatIO(unittest.TestCase):
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix='.mat')
+        f = tempfile.NamedTemporaryFile(suffix=".mat")
         fname = f.name
         f.close()
-        o = psopen(fname, 'w')
+        o = psopen(fname, "w")
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter("always")
             o.write(w)
             if len(warn) > 0:
                 assert issubclass(warn[0].category, FutureWarning)
         o.close()
-        wnew = psopen(fname, 'r').read()
+        wnew = psopen(fname, "r").read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
         os.remove(fname)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

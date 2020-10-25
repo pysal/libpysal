@@ -9,8 +9,8 @@ from .... import examples as pysal_examples
 
 class test_GalIO(unittest.TestCase):
     def setUp(self):
-        self.test_file = test_file = pysal_examples.get_path('sids2.gal')
-        self.obj = GalIO(test_file, 'r')
+        self.test_file = test_file = pysal_examples.get_path("sids2.gal")
+        self.obj = GalIO(test_file, "r")
 
     def test___init__(self):
         self.assertEqual(self.obj._typ, str)
@@ -36,15 +36,15 @@ class test_GalIO(unittest.TestCase):
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix='.gal')
+        f = tempfile.NamedTemporaryFile(suffix=".gal")
         fname = f.name
         f.close()
-        o = psopen(fname, 'w')
+        o = psopen(fname, "w")
         o.write(w)
         o.close()
-        wnew = psopen(fname, 'r').read()
+        wnew = psopen(fname, "r").read()
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

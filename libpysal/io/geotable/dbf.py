@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from ..fileio import FileIO as ps_open
 
+
 def check_dups(li):
     """checks duplicates in list of ID values
        ID values must be read in as a list
@@ -21,9 +22,9 @@ def check_dups(li):
        a list with the duplicate IDs
     """
     return list(set([x for x in li if li.count(x) > 1]))
-    
-    
-def dbfdups(dbfpath,idvar):
+
+
+def dbfdups(dbfpath, idvar):
     """checks duplicates in a dBase file
        ID variable must be specified correctly
 
@@ -38,13 +39,13 @@ def dbfdups(dbfpath,idvar):
        -------
        a list with the duplicate IDs
     """
-    db = ps_open(dbfpath,'r')
+    db = ps_open(dbfpath, "r")
     li = db.by_col(idvar)
-    return list(set([x for x in li if li.count(x) > 1]))   
-    
+    return list(set([x for x in li if li.count(x) > 1]))
+
 
 def df2dbf(df, dbf_path, my_specs=None):
-    '''
+    """
     Convert a pandas.DataFrame into a dbf.
 
     __author__  = "Dani Arribas-Bel <darribas@asu.edu>, Luc Anselin <luc.anselin@asu.edu>"
@@ -66,7 +67,7 @@ def df2dbf(df, dbf_path, my_specs=None):
                   
     Note: use of dtypes.name may not be fully robust, but preferred apprach of using
     isinstance seems too clumsy
-    '''
+    """
     if my_specs:
         specs = my_specs
     else:
@@ -84,21 +85,22 @@ def df2dbf(df, dbf_path, my_specs=None):
         types = [type(df[i].iloc[0]) for i in df.columns]
         """
         # new approach using dtypes.name to avoid numpy name issue in type
-        type2spec = {'int': ('N', 20, 0),
-                     'int8': ('N', 20, 0),
-                     'int16': ('N', 20, 0),
-                     'int32': ('N', 20, 0),
-                     'int64': ('N', 20, 0),
-                     'float': ('N', 36, 15),
-                     'float32': ('N', 36, 15),
-                     'float64': ('N', 36, 15),
-                     'str': ('C', 14, 0),
-                     'object': ('C', 14, 0),
-                     'category': ('C', 14, 0)
-                     }
+        type2spec = {
+            "int": ("N", 20, 0),
+            "int8": ("N", 20, 0),
+            "int16": ("N", 20, 0),
+            "int32": ("N", 20, 0),
+            "int64": ("N", 20, 0),
+            "float": ("N", 36, 15),
+            "float32": ("N", 36, 15),
+            "float64": ("N", 36, 15),
+            "str": ("C", 14, 0),
+            "object": ("C", 14, 0),
+            "category": ("C", 14, 0),
+        }
         types = [df[i].dtypes.name for i in df.columns]
         specs = [type2spec[t] for t in types]
-    db = ps_open(dbf_path, 'w')
+    db = ps_open(dbf_path, "w")
     db.header = list(df.columns)
     db.field_spec = specs
     for i, row in list(df.T.items()):
@@ -106,8 +108,9 @@ def df2dbf(df, dbf_path, my_specs=None):
     db.close()
     return dbf_path
 
+
 def dbf2df(dbf_path, index=None, cols=False, incl_index=False):
-    '''
+    """
     Read a dbf file as a pandas.DataFrame, optionally selecting the index
     variable and which columns are to be loaded.
 
@@ -131,7 +134,7 @@ def dbf2df(dbf_path, index=None, cols=False, incl_index=False):
     -------
     df          : DataFrame
                   pandas.DataFrame object created
-    '''
+    """
     db = ps_open(dbf_path)
     if cols:
         if incl_index:
@@ -146,11 +149,11 @@ def dbf2df(dbf_path, index=None, cols=False, incl_index=False):
         return pd.DataFrame(data, index=index, columns=vars_to_read)
     else:
         db.close()
-        return pd.DataFrame(data,columns=vars_to_read)
+        return pd.DataFrame(data, columns=vars_to_read)
 
-    
-def dbfjoin(dbf1_path,dbf2_path,out_path,joinkey1,joinkey2):
-    '''
+
+def dbfjoin(dbf1_path, dbf2_path, out_path, joinkey1, joinkey2):
+    """
     Wrapper function to merge two dbf files into a new dbf file. 
 
     __author__  = "Luc Anselin <luc.anselin@asu.edu> "
@@ -180,15 +183,15 @@ def dbfjoin(dbf1_path,dbf2_path,out_path,joinkey1,joinkey2):
     -------
     dbfpath     : path to output file
     
-    '''
-    df1 = dbf2df(dbf1_path,index=joinkey1)
-    df2 = dbf2df(dbf2_path,index=joinkey2)
-    dfbig = pd.merge(df1,df2,left_on=joinkey1,right_on=joinkey2,sort=False)
-    dp = df2dbf(dfbig,out_path)
+    """
+    df1 = dbf2df(dbf1_path, index=joinkey1)
+    df2 = dbf2df(dbf2_path, index=joinkey2)
+    dfbig = pd.merge(df1, df2, left_on=joinkey1, right_on=joinkey2, sort=False)
+    dp = df2dbf(dfbig, out_path)
     return dp
 
 
-def dta2dbf(dta_path,dbf_path):
+def dta2dbf(dta_path, dbf_path):
     """
     Wrapper function to convert a stata dta file into a dbf file. 
 
@@ -211,7 +214,7 @@ def dta2dbf(dta_path,dbf_path):
     -------
     dbf_path    : path to output file
     """
-    
+
     db = pd.read_stata(dta_path)
-    dp = df2dbf(db,dbf_path)
-    return dp    
+    dp = df2dbf(db, dbf_path)
+    return dp

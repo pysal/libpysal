@@ -6,6 +6,7 @@ __author__ = (
     "David C. Folch <David.Folch@nau.edu>,"
     "Levi John Wolf <levi.john.wolf@gmail.com>"
 )
+
 __all__ = ["lag_spatial", "lag_categorical"]
 
 import numpy as np

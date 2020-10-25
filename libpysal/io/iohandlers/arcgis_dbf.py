@@ -50,11 +50,11 @@ class ArcGISDbfIO(fileio.FileIO):
 
     """
 
-    FORMATS = ['arcgis_dbf']
-    MODES = ['r', 'w']
+    FORMATS = ["arcgis_dbf"]
+    MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
-        self._varName = 'Unknown'
+        self._varName = "Unknown"
         args = args[:2]
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = fileio.FileIO(self.dataPath, self.mode)
@@ -65,6 +65,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
     def _get_varName(self):
         return self._varName
+
     varName = property(fget=_get_varName, fset=_set_varName)
 
     def read(self, n=-1):
@@ -115,13 +116,15 @@ class ArcGISDbfIO(fileio.FileIO):
         elif startPos == 4:
             startPos = 1
         else:
-            raise ValueError("Wrong structure, a weights dbf file requires at least three data columns")
+            raise ValueError(
+                "Wrong structure, a weights dbf file requires at least three data columns"
+            )
 
         self.varName = id_var
         id_type = int
         id_spec = self.file.field_spec[startPos]
-        if id_spec[0] != 'N':
-            raise TypeError('The data type for ids should be integer.')
+        if id_spec[0] != "N":
+            raise TypeError("The data type for ids should be integer.")
         self.id_var = id_var
 
         weights = {}
@@ -198,7 +201,7 @@ class ArcGISDbfIO(fileio.FileIO):
         """
         self._complain_ifclosed(self.closed)
         if issubclass(type(obj), W):
-            self.file.header = [self.varName, 'NID', 'WEIGHT']
+            self.file.header = [self.varName, "NID", "WEIGHT"]
 
             id_type = type(obj.id_order[0])
             if id_type is not int and not useIdIndex:
@@ -207,8 +210,8 @@ class ArcGISDbfIO(fileio.FileIO):
                 id2i = obj.id2i
                 obj = remap_ids(obj, id2i)
 
-            id_spec = ('N', len(str(max(obj.id_order))), 0)
-            self.file.field_spec = [id_spec, id_spec, ('N', 13, 6)]
+            id_spec = ("N", len(str(max(obj.id_order))), 0)
+            self.file.field_spec = [id_spec, id_spec, ("N", 13, 6)]
 
             for id in obj.id_order:
                 neighbors = list(zip(obj.neighbors[id], obj.weights[id]))
@@ -217,8 +220,7 @@ class ArcGISDbfIO(fileio.FileIO):
                     self.pos = self.file.pos
 
         else:
-            raise TypeError("Expected a pysal weights object, got: %s" % (
-                type(obj)))
+            raise TypeError("Expected a pysal weights object, got: %s" % (type(obj)))
 
     def flush(self):
         self._complain_ifclosed(self.closed)

@@ -46,7 +46,7 @@ class Distance_Mixin(object):
                 if not k.startswith("_")
             }
         )
-        self.test_msg = "You need to implement this test before this module will pass"
+        self.test_msg = "You need to implement this test before this module will pass."
 
     def test_init(self):
         # test vanilla, named
@@ -170,6 +170,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     ##########################
     def test_integers(self):
         """See issue #126."""
+
         grid_integers = [tuple(map(int, poly.vertices[0])) for poly in self.grid_f]
         self.grid_f.seek(0)
         grid_dbw = d.DistanceBand(grid_integers, 1)
@@ -338,6 +339,7 @@ knn = ut.TestLoader().loadTestsFromTestCase(Test_KNN)
 kern = ut.TestLoader().loadTestsFromTestCase(Test_Kernel)
 db = ut.TestLoader().loadTestsFromTestCase(Test_DistanceBand)
 suite = ut.TestSuite([knn, kern, db])
+
 
 if __name__ == "__main__":
     runner = ut.TextTestRunner()
