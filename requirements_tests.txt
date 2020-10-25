@@ -2,3 +2,7 @@ codecov
 matplotlib
 pytest
 pytest-cov
+pandana
+osmnet
+urbanaccess
+tqdm

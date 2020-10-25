@@ -14,3 +14,7 @@ dependencies:
   - geopandas
   - xarray
   - zstd
+  - tqdm
+  - pandana
+  - osmnet
+  - urbanaccess

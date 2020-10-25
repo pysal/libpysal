@@ -15,3 +15,7 @@ dependencies:
   - numba
   - xarray
   - zstd
+  - tqdm
+  - pandana
+  - osmnet
+  - urbanaccess
