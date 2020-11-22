@@ -92,7 +92,7 @@ class TestIsCollinear(unittest.TestCase):
         """
         Given: p1 = (0.1, 0.2), p2 = (0.2, 0.3), p3 = (0.3, 0.4)
 
-        Line(p1,p2):  y = mx + b
+        Line(p1, p2):  y = mx + b
             m = (0.3-0.2) / (0.2-0.1) = .1/.1 = 1
             y - mx = b
             b = 0.3 - 1*0.2 = 0.1
@@ -100,7 +100,7 @@ class TestIsCollinear(unittest.TestCase):
 
             y = 1*x + 0.1
 
-        Line(p2,p3): y = mx + b
+        Line(p2, p3): y = mx + b
             m = (0.4-0.3) / (0.3-0.2) = .1/.1 = 1
             y - mx = b
             b = 0.4 - 1*0.3 = 0.1
@@ -108,20 +108,29 @@ class TestIsCollinear(unittest.TestCase):
 
             y = 1*x + 0.1
 
-        Line(p1,p2) == Line(p2,p3)
-        Therefore p1,p2,p3 are collinear.
+        Line(p1, p2) == Line(p2 ,p3)
+        
+        Therefore ``p1, p2, p3`` are collinear.
 
         Due to floating point rounding areas the standard test,
+        
             ((p2[0]-p1[0])*(p3[1]-p1[1]) - (p2[1]-p1[1])*(p3[0]-p1[0])) == 0
-        will fail.  To get around this we use an epsilon.  numpy.finfo function
-        return an smallest epsilon for the given data types such that,
+        
+        will fail. To get around this we use an epsilon. The ``numpy.finfo``
+        function return an smallest epsilon for the given data types such that,
+        
             (numpy.finfo(float).eps + 1.0) != 1.0
 
         Therefore if
-            abs((p2[0]-p1[0])*(p3[1]-p1[1]) - (p2[1]-p1[1])*(
-                p3[0]-p1[0])) < numpy.finfo(p1[0]).eps
+        
+            abs(
+                (p2[0]-p1[0]) * (p3[1]-p1[1]) - (p2[1]-p1[1]) * (p3[0]-p1[0])
+            ) < numpy.finfo(p1[0]).eps
+        
         The points are collinear.
+        
         """
+
         self.assertEqual(
             True, is_collinear(Point((0.1, 0.2)), Point((0.2, 0.3)), Point((0.3, 0.4)))
         )

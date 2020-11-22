@@ -16,7 +16,7 @@ PANDAS_EXTINCT = pandas is None
 SHAPELY_EXTINCT = shp is None
 
 
-@ut.skipIf(PANDAS_EXTINCT or SHAPELY_EXTINCT, "missing pandas or shapely")
+@ut.skipIf(PANDAS_EXTINCT or SHAPELY_EXTINCT, "Missing pandas or shapely.")
 class Test_Tabular(ut.TestCase):
     def setUp(self):
         import pandas as pd

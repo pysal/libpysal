@@ -1,15 +1,9 @@
 import unittest
-
 import sys
+import io
 
 # import pysal_examples
 from .... import examples as pysal_examples
-
-PY3 = int(sys.version[0]) > 2
-if PY3:
-    import io
-else:
-    from cStringIO import StringIO
 
 from ..shapefile import (
     noneMax,
@@ -34,13 +28,9 @@ import os
 
 
 def bufferIO(buf):
+    """Temp stringIO function to force compat.
     """
-    Temp stringIO function to force compat
-    """
-    if PY3:
-        return io.BytesIO(buf)
-    else:
-        return StringIO(buf)
+    return io.BytesIO(buf)
 
 
 class TestNoneMax(unittest.TestCase):
@@ -426,7 +416,7 @@ class TestMultiPatch(unittest.TestCase):
 
 class _TestPoints(unittest.TestCase):
     def test1(self):
-        """ Test creating and reading Point Shape Files """
+        """Test creating and reading Point Shape Files."""
         shp = shp_file("test_point", "w", "POINT")
         points = [
             {"Shape Type": 1, "X": 0, "Y": 0},
@@ -448,7 +438,7 @@ class _TestPoints(unittest.TestCase):
 
 class _TestPolyLines(unittest.TestCase):
     def test1(self):
-        """ Test creating and reading PolyLine Shape Files """
+        """Test creating and reading PolyLine Shape Files."""
         lines = [[(0, 0), (4, 4)], [(1, 0), (5, 4)], [(2, 0), (6, 4)]]
         shapes = []
         for line in lines:
@@ -478,7 +468,7 @@ class _TestPolyLines(unittest.TestCase):
 
 class _TestPolygons(unittest.TestCase):
     def test1(self):
-        """ Test creating and reading PolyLine Shape Files """
+        """Test creating and reading PolyLine Shape Files."""
         lines = [
             [(0, 0), (4, 4), (5, 4), (1, 0), (0, 0)],
             [(1, 0), (5, 4), (6, 4), (2, 0), (1, 0)],

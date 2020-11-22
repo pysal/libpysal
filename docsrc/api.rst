@@ -65,6 +65,7 @@ Weights Util Classes and Functions
    libpysal.weights.WSP2W
    libpysal.weights.get_ids
    libpysal.weights.get_points_array_from_shapefile
+   libpysal.weights.fill_diagonal
 
 Weights user Classes and Functions
 ++++++++++++++++++++++++++++++++++
@@ -83,6 +84,7 @@ Weights user Classes and Functions
    libpysal.weights.min_threshold_dist_from_shapefile
    libpysal.weights.build_lattice_shapefile
    libpysal.weights.spw_from_gal
+   libpysal.weights.neighbor_equality
 
 
 Set Theoretic Weights

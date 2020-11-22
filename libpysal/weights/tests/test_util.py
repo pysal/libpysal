@@ -140,7 +140,17 @@ class Testutil(unittest.TestCase):
         w10_30 = {30: 1.0, 21: 1.0, 12: 1.0, 3: 1.0}
         self.assertEqual(w10_30, w10_3[0])
         w10_3 = util.higher_order_sp(w10, 3, lower_order=True)
-        w10_30 = {20: 1.0, 30: 1.0, 21: 1.0, 10: 1.0, 1: 1.0, 11: 1.0, 2: 1.0, 12: 1.0, 3: 1.0}
+        w10_30 = {
+            20: 1.0,
+            30: 1.0,
+            21: 1.0,
+            10: 1.0,
+            1: 1.0,
+            11: 1.0,
+            2: 1.0,
+            12: 1.0,
+            3: 1.0,
+        }
         self.assertEqual(w10_30, w10_3[0])
 
     def test_higher_order_classes(self):

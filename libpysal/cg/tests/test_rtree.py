@@ -4,8 +4,6 @@ import unittest
 
 
 class Pyrtree_Tester(unittest.TestCase):
-    """setup class for unit tests."""
-
     def setUp(self):
         k = 10
         w = 20

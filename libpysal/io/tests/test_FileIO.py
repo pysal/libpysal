@@ -3,10 +3,8 @@ from ...examples import get_path
 
 
 def test_by_col_exists():
-    """ 
-    Test if the Metaclass is initializing and providing
-        readers to its children.
-    """
+    """Test if the Metaclass is initializing and providing readers to its children."""
+
     fh1 = FileIO.open(get_path("columbus.dbf"))
     fh2 = FileIO.open(get_path("usjoin.csv"))
 

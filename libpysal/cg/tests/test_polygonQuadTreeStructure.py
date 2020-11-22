@@ -6,9 +6,11 @@ import unittest
 
 class TestQuadTreeStructureSingleRing(unittest.TestCase):
     def test_QuadTreeStructureSingleRing(self):
+        """Tests if the class could successfully
+        determine if a point is inside of a polygon.
+        
         """
-        Tests if the class could successfully determine if a point is inside of a polygon
-        """
+
         ring_texas = Ring(
             [
                 (-105.99835968, 31.3938179016),
@@ -804,7 +806,9 @@ class TestQuadTreeStructureSingleRing(unittest.TestCase):
                 (-105.99835968, 31.3938179016),
             ]
         )
+
         qtssr_texas = QuadTreeStructureSingleRing(ring_texas)
+
         points = [
             [-96.83201838665211, 30.43633054583931, True],
             [-94.97179271816618, 30.46609834459278, True],
@@ -1807,5 +1811,6 @@ class TestQuadTreeStructureSingleRing(unittest.TestCase):
             [-101.63505098125265, 33.69021849156649, True],
             [-94.71406829659445, 31.90061330594235, True],
         ]
+
         for p in points:
             assert p[2] == qtssr_texas.contains_point((p[0], p[1]))

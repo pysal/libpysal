@@ -31,6 +31,7 @@ __all__ = [
     "full",
     "WSP2W",
     "insert_diagonal",
+    "fill_diagonal",
     "get_ids",
     "get_points_array_from_shapefile",
     "min_threshold_distance",
@@ -38,6 +39,7 @@ __all__ = [
     "w_local_cluster",
     "higher_order_sp",
     "hexLat2W",
+    "neighbor_equality",
     "attach_islands",
     "nonplanar_neighbors",
     "fuzzy_contiguity",
@@ -445,15 +447,17 @@ def higher_order(w, k=2, **kwargs):
     return higher_order_sp(w, k, **kwargs)
 
 
-def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, lower_order=False, **kwargs):
+def higher_order_sp(
+    w, k=2, shortest_path=True, diagonal=False, lower_order=False, **kwargs
+):
     """
     Contiguity weights for either a sparse W or W for order k.
 
     Parameters
     ----------
     w             : W
-		            sparse_matrix, spatial weights object or
-		            scipy.sparse.csr.csr_instance
+                            sparse_matrix, spatial weights object or
+                            scipy.sparse.csr.csr_instance
     k             : int
                     Order of contiguity
     shortest_path : boolean
@@ -473,7 +477,7 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, lower_order=Fals
     Returns
     -------
     wk : W
-	     WSP, type matches type of w argument
+             WSP, type matches type of w argument
 
 
     Examples

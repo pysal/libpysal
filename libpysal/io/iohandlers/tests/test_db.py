@@ -20,16 +20,16 @@ except ImportError:
 
 
 def to_wkb_point(c):
-    """
-    Super quick hack that does not actually belong in here
-    """
+    """Super quick hack that does not actually belong in here."""
+
     point = {"type": "Point", "coordinates": [c[0], c[1]]}
+
     return geomet.wkb.dumps(point)
 
 
 @ut.skipIf(
     missing_sql or missing_geomet,
-    "missing dependencies: Geomet ({}) & SQLAlchemy ({})".format(
+    "Missing dependencies: Geomet ({}) & SQLAlchemy ({}).".format(
         missing_geomet, missing_sql
     ),
 )
@@ -37,9 +37,8 @@ class Test_sqlite_reader(ut.TestCase):
     def setUp(self):
         df = pdio.read_files(pysal_examples.get_path("new_haven_merged.dbf"))
         df["GEOMETRY"] = df["geometry"].apply(to_wkb_point)
-        del df[
-            "geometry"
-        ]  # This is a hack to not have to worry about a custom point type in the DB
+        # This is a hack to not have to worry about a custom point type in the DB
+        del df["geometry"]
         engine = sqlalchemy.create_engine("sqlite:///test.db")
         conn = engine.connect()
         df.to_sql(

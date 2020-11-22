@@ -9,7 +9,7 @@ import unittest as ut
 PANDAS_EXTINCT = pandas is None
 
 
-@ut.skipIf(PANDAS_EXTINCT, "missing pandas")
+@ut.skipIf(PANDAS_EXTINCT, "Missing pandas.")
 class Test_Accessors(ut.TestCase):
     def setUp(self):
         self.polygons = rf(get_path("Polygon.shp"))

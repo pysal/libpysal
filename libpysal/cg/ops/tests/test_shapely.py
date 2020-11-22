@@ -10,7 +10,7 @@ import numpy as np
 from warnings import warn
 
 
-@ut.skip("skipping shapely during reorg")
+@ut.skip("Skipping shapely during reorg.")
 class Test_Shapely(ut.TestCase):
     def setUp(self):
         self.polygons = rf(get_path("Polygon.shp"))
@@ -38,7 +38,7 @@ class Test_Shapely(ut.TestCase):
                 else:
                     self.assertEqual(tabular, shapely)
         except NotImplementedError as e:
-            warn("The shapely/pysal bridge is not implemented: {}".format(e))
+            warn("The shapely/PySAL bridge is not implemented: {}.".format(e))
             return True
 
     def test_to_wkb(self):
@@ -122,17 +122,22 @@ class Test_Shapely(ut.TestCase):
 
     def test_is_empty(self):
         """
-        PySAL doesn't really support empty shapes. Like, the following errors
-        out:
-
+        PySAL doesn't really support empty shapes. Like, the following errors out:
+        
+        ```
         ps.cg.Polygon([[]])
-
+        ```
+        
         and you can make it work by:
+        
+        ```
         ps.cg.Polygon([[()]])
+        ```
 
         but that won't convert over to shapely.
 
         So, we're only testing the negative here.
+        
         """
         for df in self.dframes:
             self.compare("is_empty", df)

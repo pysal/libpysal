@@ -7,10 +7,11 @@ import unittest
 
 class test_MultiPloygon(unittest.TestCase):
     def test___init__1(self):
+        """Tests conversion of polygons with multiple shells to
+        geoJSON multipolygons and back.
+        
         """
-        Tests conversion of polygons with multiple shells to
-        geoJSON multipolygons. and back.
-        """
+
         ncovr = pysal_examples.load_example("NCOVR")
         shp = psopen(pysal_examples.get_path("NAT.shp"), "r")
         multipolygons = [p for p in shp if len(p.parts) > 1]

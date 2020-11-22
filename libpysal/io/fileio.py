@@ -1,68 +1,89 @@
 """
 FileIO: Module for reading and writing various file types in a Pythonic way.
 This module should not be used directly, instead...
+
+```
 import pysal.core.FileIO as FileIO
+```
+
 Readers and Writers will mimic python file objects.
-.seek(n) seeks to the n'th object
-.read(n) reads n objects, default == all
-.next() reads the next object
+    .seek(n) seeks to the n'th object
+    .read(n) reads n objects, default == all
+    .next() reads the next object
+
 """
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
 __all__ = ["FileIO"]
+
 import os.path
 from warnings import warn
 from ..common import MISSINGVALUE
 
+from typing import Union
+
 
 class FileIO_MetaCls(type):
-    """
-    This Meta Class is instantiated when the class is first defined.
-    All subclasses of FileIO also inherit this meta class, which registers their abilities with the FileIO registry.
-    Subclasses must contain FORMATS and MODES (both are type(list))
+    """This meta class is instantiated when the class is first defined. All
+    subclasses of `FileIO` also inherit this meta class, which registers
+    their abilities with the FileIO registry. Subclasses must contain
+    ``FORMATS`` and ``MODES`` (both are ``type(list)``).
+    
+    Raises
+    ------
+    TypeError
+        FileIO subclasses must have ``FORMATS`` and ``MODES`` defined.
+    
     """
 
     def __new__(mcs, name, bases, dict):
+
         cls = type.__new__(mcs, name, bases, dict)
+
         if name != "FileIO" and name != "DataTable":
             if "FORMATS" in dict and "MODES" in dict:
-                # print "Registering %s with FileIO.\n\tFormats: %r\n\tModes: %r"%(name,dict['FORMATS'],dict['MODES'])
+                # msg = "Registering %s with FileIO.\n\tFormats: %r\n\tModes: %r"
+                # msg = msg % (name, dict["FORMATS"], dict["MODES"])
                 FileIO._register(cls, dict["FORMATS"], dict["MODES"])
             else:
-                raise TypeError("FileIO subclasses must have FORMATS and MODES defined")
+                raise TypeError(
+                    "FileIO subclasses must have 'FORMATS' and 'MODES' defined."
+                )
+
         return cls
 
 
 class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
-    """
-    Metaclass for supporting spatial data file read and write
-
-
+    """Metaclass for supporting spatial data file read and write.
 
     How this works:
-    FileIO.open(\\*args) == FileIO(\\*args)
-    When creating a new instance of FileIO the .__new__ method intercepts
-    .__new__ parses the filename to determine the fileType
-    next, .__registry and checked for that type.
-    Each type supports one or more modes ['r','w','a',etc]
-    If we support the type and mode, an instance of the appropriate handler
-    is created and returned.
-    All handlers must inherit from this class, and by doing so are automatically
-    added to the .__registry and are forced to conform to the prescribed API.
-    The metaclass takes cares of the registration by parsing the class definition.
-    It doesn't make much sense to treat weights in the same way as shapefiles and dbfs,
-    ....for now we'll just return an instance of W on mode='r'
-    .... on mode='w', .write will expect an instance of W
+    
+    ``FileIO.open(\\*args) == FileIO(\\*args)``
+    
+    When creating a new instance of `FileIO` the ``.__new__`` method intercepts.
+    ``.__new__`` parses the filename to determine the ``fileType``. Next,
+    ``.__registry`` and checked for that type. Each type supports one or more modes
+    (``['r', 'w', 'a', etc.]``). If we support the type and mode, an instance of the
+    appropriate handler is created and returned. All handlers must inherit from this
+    class, and by doing so are automatically added to the ``.__registry`` and are
+    forced to conform to the prescribed API. The metaclass takes care of the
+    registration by parsing the class definition. It doesn't make much sense to
+    treat weights in the same way as shapefiles and dbfs, so...
+    
+    * ... for now we'll just return an instance of `W` on ``mode='r'``.
+    * ... on ``mode='w'``, ``.write`` will expect an instance of `W`.
+    
     """
 
     __registry = {}  # {'shp':{'r':[OGRshpReader,pysalShpReader]}}
 
     def __new__(cls, dataPath="", mode="r", dataFormat=None):
+        """Intercepts the instantiation of ``FileIO`` and dispatches
+        to the correct handler. If no suitable handler is found a
+        python file object is returned.
         """
-        Intercepts the instantiation of FileIO and dispatches to the correct handler
-        If no suitable handler is found a python file object is returned.
-        """
+
         if cls is FileIO:
             try:
                 newCls = object.__new__(
@@ -75,8 +96,9 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
             return object.__new__(cls)
 
     @staticmethod
-    def getType(dataPath, mode, dataFormat=None):
-        """Parse the dataPath and return the data type"""
+    def getType(dataPath: str, mode: str, dataFormat=None) -> str:
+        """Parse the ``dataPath`` and return the data type."""
+
         if dataFormat:
             ext = dataFormat
         else:
@@ -96,14 +118,17 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                     return "geoda_txt"
                 except:
                     return ext
+
         return ext
 
     @classmethod
     def _register(cls, parser, formats, modes):
-        """ This method is called automatically via the MetaClass of FileIO subclasses
-        This should be private, but that hides it from the MetaClass
+        """This method is called automatically via the Metaclass of `FileIO` subclasses
+        This should be private, but that hides it from the Metaclass.
         """
+
         assert cls is FileIO
+
         for format in formats:
             if not format in cls.__registry:
                 cls.__registry[format] = {}
@@ -115,27 +140,30 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
 
     @classmethod
     def check(cls):
-        """ Prints the contents of the registry """
+        """Prints the contents of the registry."""
+
         print("PySAL File I/O understands the following file extensions:")
+
         for key, val in list(cls.__registry.items()):
             print("Ext: '.%s', Modes: %r" % (key, list(val.keys())))
 
     @classmethod
     def open(cls, *args, **kwargs):
-        """ Alias for FileIO() """
+        """Alias for ``FileIO()``."""
+
         return cls(*args, **kwargs)
 
     class _By_Row:
         def __init__(self, parent):
             self.p = parent
 
-        def __repr__(self):
+        def __repr__(self) -> str:
             if not self.p.ids:
                 return "keys: range(0,n)"
             else:
                 return "keys: " + list(self.p.ids.keys()).__repr__()
 
-        def __getitem__(self, key):
+        def __getitem__(self, key) -> Union[list, str]:
             if type(key) == list:
                 r = []
                 if self.p.ids:
@@ -175,17 +203,23 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     def __getIds(self):
         return self.__ids
 
-    def __setIds(self, ids):
-        """ Property Method for .ids
-        Takes a list of ids and maps then to a 0 based index
-        Need to provide a method to set ID's based on a fieldName
-        preferably without reading the whole file.
+    def __setIds(self, ids: Union[list, dict, None]):
+        """Property method for ``.ids``. Takes a list of ids and maps then
+        to a 0-based index. Need to provide a method to set ID's based on
+        a ``fieldName`` preferably without reading the whole file.
+        
+        Raises
+        ------
+        AssertionError
+            Raised when IDs are not unique.
+        
         """
+
         if isinstance(ids, list):
             try:
                 assert len(ids) == len(set(ids))
             except AssertionError:
-                raise KeyError("IDs must be unique")
+                raise KeyError("IDs must be unique.")
             # keys: ID values: i
             self.__ids = {}
             # keys: i values: ID
@@ -205,7 +239,7 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     ids = property(fget=__getIds, fset=__setIds)
 
     @property
-    def rIds(self):
+    def rIds(self) -> Union[dict, None]:
         return self.__rIds
 
     def __iter__(self):
@@ -214,12 +248,28 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
 
     @staticmethod
     def _complain_ifclosed(closed):
-        """ from StringIO """
+        """From `StringIO`.
+        
+        Raises
+        ------
+        ValueError
+            Raised when a file is already closed.
+        
+        """
         if closed:
-            raise ValueError("I/O operation on closed file")
+            raise ValueError("I/O operation on closed file.")
 
     def cast(self, key, typ):
-        """cast key as typ"""
+        """Cast ``key`` as ``typ``.
+        
+        Raises
+        ------
+        TypeError
+            Raised when a cast object in not callable.
+        KeyError
+            Raised when a key is not present.
+        
+        """
         if key in self.header:
             if not self._spec:
                 self._spec = [lambda x: x for k in self.header]
@@ -230,11 +280,19 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                     assert hasattr(typ, "__call__")
                     self._spec[self.header.index(key)] = typ
                 except AssertionError:
-                    raise TypeError("Cast Objects must be callable")
+                    raise TypeError("Cast objects must be callable.")
         else:
             raise KeyError("%s" % key)
 
-    def _cast(self, row):
+    def _cast(self, row) -> list:
+        """
+        
+        Raises
+        ------
+        ValueError
+            Raised when a value could not be cast a particular type.
+        
+        """
         if self._spec and row:
             try:
                 return [f(v) for f, v in zip(self._spec, row)]
@@ -246,59 +304,81 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                             raise ValueError
                         r.append(f(v))
                     except ValueError:
-                        warn(
-                            "Value '%r' could not be cast to %s, value set to MISSINGVALUE"
-                            % (v, str(f)),
-                            RuntimeWarning,
-                        )
+                        msg = "Value '%r' could not be cast to %s, "
+                        msg += "value set to MISSINGVALUE."
+                        msg = msg % (v, str(f))
+                        warn(msg, RuntimeWarning)
                         r.append(MISSINGVALUE)
                 return r
 
         else:
             return row
 
-    def __next__(self):
-        """A FileIO object is its own iterator, see StringIO"""
+    def __next__(self) -> list:
+        """A `FileIO` object is its own iterator, see `StringIO`.
+        
+        Raises
+        ------
+        StopIteration
+            Raised at the EOF.
+            
+        """
+
         self._complain_ifclosed(self.closed)
         r = self.__read()
         if r is None:
             raise StopIteration
+
         return r
 
     def close(self):
-        """ subclasses should clean themselves up and then call this method """
+        """Subclasses should clean themselves up and then call this method."""
+
         if not self.closed:
             self.closed = True
             del self.dataObj, self.pos
 
-    def get(self, n):
-        """ Seeks the file to n and returns n
-        If .ids is set n should be an id,
-        else, n should be an offset
+    def get(self, n: int) -> list:
+        """Seeks the file to ``n`` and returns ``n``. If ``.ids`` is set
+        ``n`` should be an id, else, ``n`` should be an offset.
         """
+
         prevPos = self.tell()
         self.seek(n)
         obj = self.__read()
         self.seek(prevPos)
+
         return obj
 
-    def seek(self, n):
-        """ Seek the FileObj to the beginning of the n'th record,
-            if ids are set, seeks to the beginning of the record at id, n"""
+    def seek(self, n: int):
+        """Seek the `FileObj` to the beginning of the ``n``'th record.
+        If IDs are set, seeks to the beginning of the record at ID, ``n``.
+        """
+
         self._complain_ifclosed(self.closed)
         self.pos = n
 
-    def tell(self):
-        """ Return id (or offset) of next object """
+    def tell(self) -> int:
+        """Return ID (or offset) of next object."""
+
         self._complain_ifclosed(self.closed)
+
         return self.pos
 
-    def read(self, n=-1):
-        """ Read at most n objects, less if read hits EOF
-        if size is negative or omitted read all objects until EOF
-        returns None if EOF is reached before any objects.
+    def read(self, n=-1) -> Union[list, None]:
+        """Read at most ``n`` objects, less if read hits EOF.
+        If size is negative or omitted read all objects until EOF.
+        Returns ``None`` if EOF is reached before any objects.
+        
+        Raises
+        ------
+        StopIteration
+            Raised at the EOF.
+        
         """
+
         self._complain_ifclosed(self.closed)
+
         if n < 0:
             # return list(self)
             result = []
@@ -319,39 +399,71 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
                     break
             return result
 
-    def __read(self):
-        """ Gets one row from the file handler, and if necessary casts it's objects """
+    def __read(self) -> list:
+        """Gets one row from the file handler, and if necessary casts it's objects.
+        
+        Raises
+        ------
+        StopIteration
+            Raised at the EOF.
+        
+        """
+
         row = self._read()
         if row is None:
             raise StopIteration
         row = self._cast(row)
+
         return row
 
     def _read(self):
-        """ Must be implemented by subclasses that support 'r'
-        subclasses should increment .pos
-        and redefine this doc string
+        """Must be implemented by subclasses that support 'r' subclasses.
+        Should increment ``.pos`` and redefine this doc string.
+        
+        Raises
+        ------
+        NotImplementedError
+        
         """
+
         self._complain_ifclosed(self.closed)
         raise NotImplementedError
 
     def truncate(self, size=None):
-        """ Should be implemented by subclasses
-        and redefine this doc string
+        """Should be implemented by subclasses and redefine this doc string.
+        
+        Raises
+        ------
+        NotImplementedError
+        
         """
+
         self._complain_ifclosed(self.closed)
         raise NotImplementedError
 
     def write(self, obj):
-        """ Must be implemented by subclasses that support 'w'
-        subclasses should increment .pos
-        subclasses should also check if obj is an instance of type(list)
-        and redefine this doc string
+        """Must be implemented by subclasses that support 'w' subclasses
+        Should increment ``.pos``. Subclasses should also check if ``obj``
+        is an instance of type(list) and redefine this doc string.
+        
+        Raises
+        ------
+        NotImplementedError
+        
         """
+
         self._complain_ifclosed(self.closed)
         "Write obj to dataObj"
         raise NotImplementedError
 
     def flush(self):
+        """
+        
+        Raises
+        ------
+        NotImplementedError
+        
+        """
+
         self._complain_ifclosed(self.closed)
         raise NotImplementedError
