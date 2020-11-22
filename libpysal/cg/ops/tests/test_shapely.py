@@ -38,7 +38,7 @@ class Test_Shapely(ut.TestCase):
                 else:
                     self.assertEqual(tabular, shapely)
         except NotImplementedError as e:
-            warn("The shapely/pysal bridge is not implemented: {}".format(e))
+            warn("The shapely/PySAL bridge is not implemented: {}.".format(e))
             return True
 
     def test_to_wkb(self):
@@ -133,7 +133,7 @@ class Test_Shapely(ut.TestCase):
         ```
         ps.cg.Polygon([[()]])
         ```
-        
+
         but that won't convert over to shapely.
         So, we're only testing the negative here.
         

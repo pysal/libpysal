@@ -95,7 +95,7 @@ class TestIsCollinear(unittest.TestCase):
         ```
         p1 = (0.1, 0.2), p2 = (0.2, 0.3), p3 = (0.3, 0.4)
 
-        Line(p1,p2):  y = mx + b
+        Line(p1, p2):  y = mx + b
             m = (0.3-0.2) / (0.2-0.1) = .1/.1 = 1
             y - mx = b
             b = 0.3 - 1*0.2 = 0.1
@@ -103,7 +103,7 @@ class TestIsCollinear(unittest.TestCase):
 
             y = 1*x + 0.1
 
-        Line(p2,p3): y = mx + b
+        Line(p2, p3): y = mx + b
             m = (0.4-0.3) / (0.3-0.2) = .1/.1 = 1
             y - mx = b
             b = 0.4 - 1*0.3 = 0.1
@@ -133,10 +133,11 @@ class TestIsCollinear(unittest.TestCase):
         ```
         abs((p2[0]-p1[0])*(p3[1]-p1[1]) - (p2[1]-p1[1])*(p3[0]-p1[0])) < numpy.finfo(p1[0]).eps
         ```
-        
+
         The points are collinear.
         
         """
+
         self.assertEqual(
             True, is_collinear(Point((0.1, 0.2)), Point((0.2, 0.3)), Point((0.3, 0.4)))
         )

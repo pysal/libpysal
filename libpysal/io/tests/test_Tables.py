@@ -19,7 +19,7 @@ class Test_Table(ut.TestCase):
         self.csv_df = self.csvhandler.to_df()
         self.csvhandler.seek(0)
 
-    @ut.skipIf(PANDAS_EXTINCT, "missing pandas")
+    @ut.skipIf(PANDAS_EXTINCT, "Missing pandas.")
     def test_to_df(self):
         for column in self.csv_df.columns:
             if column.lower() == "name":

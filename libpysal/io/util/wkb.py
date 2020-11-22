@@ -1,33 +1,35 @@
-"""
-Load WKB into pysal shapes.
+""" Load WKB into PySAL shapes.
 
-Where pysal shapes support multiple parts, 
-"MULTI"type shapes will be converted to a single multi-part shape:
+Where PySAL shapes support multiple parts, "MULTI"type shapes
+will be converted to a single multi-part shape:
+    
     MULTIPOLYGON -> Polygon
     MULTILINESTRING -> Chain
 
 Otherwise a list of shapes will be returned:
+    
     MULTIPOINT -> [pt0, ..., ptN]
 
-Some concepts aren't well supported by pysal shapes.
-For example:
+Some concepts aren't well supported by PySAL shapes. For example:
+    
     wkt = 'MULTIPOLYGON EMPTY' -> '\x01   \x06\x00\x00\x00   \x00\x00\x00\x00'
                                   |  <  | WKBMultiPolygon |    0 parts      |
-    pysal.cg.Polygon does not support 0 part polygons.
-    None is returned in this case.
+    
+``pysal.cg.Polygon`` does not support 0 part polygons. ``None`` is returned in this case.
+
 
 REFERENCE MATERIAL:
 SOURCE: http://webhelp.esri.com/arcgisserver/9.3/dotNet/index.htm#geodatabases/the_ogc_103951442.htm
 
- Basic Type definitions
- byte : 1 byte
- uint32 : 32 bit unsigned integer  (4 bytes)
- double : double precision number (8 bytes)
+    Basic Type definitions
+    byte : 1 byte
+    uint32 : 32 bit unsigned integer  (4 bytes)
+    double : double precision number (8 bytes)
 
- Building Blocks : Point, LinearRing
-
+    Building Blocks : Point, LinearRing
 
 """
+
 from io import StringIO
 from ... import cg
 import sys
@@ -42,11 +44,13 @@ enum wkbByteOrder {
     wkbNDR = 1               Little Endian
 };
 """
+
+
 DEFAULT_ENDIAN = "<" if sys.byteorder == "little" else ">"
 ENDIAN = {"\x00": ">", "\x01": "<"}
 
 
-def load_ring_little(dat):
+def load_ring_little(dat) -> list:
     """
     LinearRing   {
         uint32  numPoints;
@@ -58,26 +62,38 @@ def load_ring_little(dat):
     return [cg.Point(xy[i : i + 2]) for i in range(0, npts * 2, 2)]
 
 
-def load_ring_big(dat):
+def load_ring_big(dat) -> list:
     npts = struct.unpack(">I", dat.read(4))[0]
     xy = struct.unpack(">%dd" % (npts * 2), dat.read(npts * 2 * 8))
     return [cg.Point(xy[i : i + 2]) for i in range(0, npts * 2, 2)]
 
 
-def loads(s):
+def loads(s: str):
     """
     WKBGeometry  {
         union {
             WKBPoint                        point;
-            WKBLineString               linestring;
-            WKBPolygon                  polygon;
-            WKBGeometryCollection   collection;
-            WKBMultiPoint               mpoint;
-            WKBMultiLineString      mlinestring;
-            WKBMultiPolygon         mpolygon;
+            WKBLineString                   linestring;
+            WKBPolygon                      polygon;
+            WKBGeometryCollection           collection;
+            WKBMultiPoint                   mpoint;
+            WKBMultiLineString              mlinestring;
+            WKBMultiPolygon                 mpolygon;
         }
     };
+    
+    Returns
+    -------
+    geom : {None, libpysal.cg.{Point, Chain, Polygon}}
+        The geometric object or ``None``.
+    
+    Raises
+    ------
+    TypeError
+        Raised when an unsupported shape type is passed in.
+    
     """
+
     # To allow recursive calls, read only the bytes we need.
     if hasattr(s, "read"):
         dat = s
@@ -89,7 +105,7 @@ def loads(s):
         """
         WKBPoint {
             byte                byteOrder;
-            uint32          wkbType;                 1
+            uint32              wkbType;                        1
             Point               point;
         }
         Point {
@@ -98,65 +114,69 @@ def loads(s):
         };
         """
         x, y = struct.unpack(endian + "dd", dat.read(16))
-        return cg.Point((x, y))
+        geom = cg.Point((x, y))
+
     elif typ == 2:
         """
         WKBLineString {
             byte                byteOrder;
-            uint32          wkbType;                     2
-            uint32          numPoints;
+            uint32              wkbType;                        2
+            uint32              numPoints;
             Point               points[numPoints];
         }
         """
         n = struct.unpack(endian + "I", dat.read(4))[0]
         xy = struct.unpack(endian + "%dd" % (n * 2), dat.read(n * 2 * 8))
-        return cg.Chain([cg.Point(xy[i : i + 2]) for i in range(0, n * 2, 2)])
+        geom = cg.Chain([cg.Point(xy[i : i + 2]) for i in range(0, n * 2, 2)])
+
     elif typ == 3:
         """
         WKBPolygon  {
             byte                byteOrder;
-            uint32          wkbType;                     3
-            uint32          numRings;
-            LinearRing      rings[numRings];
+            uint32              wkbType;                        3
+            uint32              numRings;
+            LinearRing          rings[numRings];
         }
 
-        WKBPolygon has exactly 1 outer ring and n holes.
-            multipart Polygons are NOT support by WKBPolygon.
+        WKBPolygon has exactly 1 outer ring and `n` holes.
+        Multipart Polygons are NOT support by WKBPolygon.
         """
         nrings = struct.unpack(endian + "I", dat.read(4))[0]
         load_ring = load_ring_little if endian == "<" else load_ring_big
         rings = [load_ring(dat) for _ in range(nrings)]
-        return cg.Polygon(rings[0], rings[1:])
+        geom = cg.Polygon(rings[0], rings[1:])
     elif typ == 4:
         """
         WKBMultiPoint   {
             byte                byteOrder;
-            uint32          wkbType;                     4
-            uint32          num_wkbPoints;
+            uint32              wkbType;                        4
+            uint32              num_wkbPoints;
             WKBPoint            WKBPoints[num_wkbPoints];
         }
         """
         npts = struct.unpack(endian + "I", dat.read(4))[0]
-        return [loads(dat) for _ in range(npts)]
+        geom = [loads(dat) for _ in range(npts)]
+
     elif typ == 5:
         """
         WKBMultiLineString  {
             byte                byteOrder;
-            uint32          wkbType;                     5
-            uint32          num_wkbLineStrings;
-            WKBLineString   WKBLineStrings[num_wkbLineStrings];
+            uint32              wkbType;                        5
+            uint32              num_wkbLineStrings;
+            WKBLineString       WKBLineStrings[num_wkbLineStrings];
         }
         """
         nparts = struct.unpack(endian + "I", dat.read(4))[0]
         chains = [loads(dat) for _ in range(nparts)]
-        return cg.Chain(sum([c.parts for c in chains], []))
+        geom = cg.Chain(sum([c.parts for c in chains], []))
+
     elif typ == 6:
         """
-        wkbMultiPolygon {               
-            byte                byteOrder;                              
-            uint32          wkbType;                     6
-            uint32          num_wkbPolygons;
-            WKBPolygon      wkbPolygons[num_wkbPolygons];
+        wkbMultiPolygon {
+            byte                byteOrder;
+            uint32              wkbType;                        6
+            uint32              num_wkbPolygons;
+            WKBPolygon          wkbPolygons[num_wkbPolygons];
         }
 
         """
@@ -164,26 +184,32 @@ def loads(s):
         polys = [loads(dat) for _ in range(npolys)]
         parts = sum([p.parts for p in polys], [])
         holes = sum([p.holes for p in polys if p.holes[0]], [])
-        # MULTIPOLYGON EMPTY, isn't well supported by pysal shape types.
+
+        # MULTIPOLYGON EMPTY, isn't well supported by PySAL shape types.
         if not parts:
-            return None
-        return cg.Polygon(parts, holes)
+            geom = None
+        else:
+            geom = cg.Polygon(parts, holes)
     elif typ == 7:
         """
         WKBGeometryCollection {
             byte                byte_order;
-            uint32          wkbType;                     7
-            uint32          num_wkbGeometries;
-            WKBGeometry     wkbGeometries[num_wkbGeometries]
+            uint32              wkbType;                        7
+            uint32              num_wkbGeometries;
+            WKBGeometry         wkbGeometries[num_wkbGeometries]
         }
         """
         ngeoms = struct.unpack(endian + "I", dat.read(4))[0]
-        return [loads(dat) for _ in range(ngeoms)]
+        geom = [loads(dat) for _ in range(ngeoms)]
 
-    raise TypeError("Type (%d) is unknown or unsupported." % typ)
+    try:
+        return geom
+    except NameError:
+        raise TypeError("Type (%d) is unknown or unsupported." % typ)
 
 
 if __name__ == "__main__":
+
     # TODO: Refactor below into Unit Tests
     wktExamples = [
         "POINT(6 10)",
@@ -200,6 +226,7 @@ if __name__ == "__main__":
         #'POINT EMPTY',          <-- NOT SUPPORT
         "MULTIPOLYGON EMPTY",
     ]
+
     # shapely only used for testing.
     try:
         import shapely.wkt, shapely.geometry

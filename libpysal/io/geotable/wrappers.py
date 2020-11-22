@@ -7,19 +7,56 @@ import pandas as pd
 
 @requires("geopandas")
 def geopandas(filename, **kw):
+    """Wrapper for ``geopandas.read_file()``.
+    
+    Parameters
+    ----------
+    filename : str
+        Path to the file.
+    **kw : dict
+        Optional keyword arguments for ``geopandas.read_file()``.
+        
+    Returns
+    -------
+    gdf : geopandas.GeoDataFrame
+        The shapefile read in as a ``geopandas.GeoDataFrame``.
+    
+    """
+
     import geopandas
 
-    return geopandas.read_file(filename, **kw)
+    gdf = geopandas.read_file(filename, **kw)
+
+    return gdf
 
 
 @requires("fiona")
 def fiona(filename, geom_type="shapely", **kw):
+    """Open a file with ``fiona`` and convert to a ``pandas.DataFrame``.
+    
+    Parameters
+    ----------
+    filename : str
+        Path to the file.
+    geom_type : str
+        Package/method to use from creating geometries. Default is ``'shapely'``.
+    **kw : dict
+        Optional keyword arguments for ``fiona.open()``.
+    
+    Returns
+    -------
+    df : pandas.DataFrame
+        The file read in as a ``pandas.DataFrame``.
+
+    """
+
     if geom_type == "shapely":
         converter = sgeom.shape
     elif geom_type is None:
         converter = lambda x: x
     else:
         converter = asShape
+
     import fiona
 
     props = {}
@@ -32,7 +69,10 @@ def fiona(filename, geom_type="shapely", **kw):
                 pass
             props.update({idx: feat.get("properties", dict())})
             props[idx].update({"geometry": converter(feat["geometry"])})
-    return pd.DataFrame().from_dict(props).T
+
+    df = pd.DataFrame().from_dict(props).T
+
+    return df
 
 
 _readers = {"read_shapefile": read_files, "read_fiona": fiona}

@@ -6,8 +6,6 @@ import unittest
 
 
 class PolygonLocator_Tester(unittest.TestCase):
-    """Setup class for unit tests."""
-
     def setUp(self):
         p1 = Polygon([Point((0, 1)), Point((4, 5)), Point((5, 1))])
         p2 = Polygon([Point((3, 9)), Point((6, 7)), Point((1, 1))])

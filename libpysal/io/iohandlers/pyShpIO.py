@@ -20,51 +20,53 @@ STRING_TO_TYPE = {
     "ARC": cg.Chain,
     "POLYGONZ": cg.Polygon,
 }
+
+# build the reverse map
+# for key,value in STRING_TO_TYPE.items():
+#    TYPE_TO_STRING[value] = key
+
 TYPE_TO_STRING = {
     cg.Polygon: "POLYGON",
     cg.Point: "POINT",
     cg.Chain: "ARC",
-}  # build the reverse map
-# for key,value in STRING_TO_TYPE.iteritems():
-#    TYPE_TO_STRING[value] = key
+}
 
 
 class PurePyShpWrapper(fileio.FileIO):
-    """
-    FileIO handler for ESRI ShapeFiles.
+    """FileIO handler for ESRI ShapeFiles.
 
     Notes
     -----
-    This class wraps _pyShpIO's shp_file class with the PySAL FileIO API.
+    
+    This class wraps ``_pyShpIO``'s ``shp_file`` class with the PySAL `FileIO` API.
     shp_file can be used without PySAL.
-
-    Attributes
-    ----------
-
-    Formats     : list
-                  A list of support file extensions
-    Modes       : list
-                  A list of support file modes
 
     Examples
     --------
 
     >>> import tempfile
-    >>> f = tempfile.NamedTemporaryFile(suffix='.shp'); fname = f.name; f.close()
+    >>> f = tempfile.NamedTemporaryFile(suffix='.shp')
+    >>> fname = f.name
+    >>> f.close()
+    
     >>> import libpysal
     >>> i = libpysal.io.open(libpysal.examples.get_path('10740.shp'),'r')
     >>> o = libpysal.io.open(fname,'w')
+    
     >>> for shp in i:
     ...     o.write(shp)
     >>> o.close()
+    
     >>> one = libpysal.io.open(libpysal.examples.get_path('10740.shp'),'rb').read()
     >>> two = libpysal.io.open(fname,'rb').read()
     >>> one[0].centroid == two[0].centroid
     True
+    
     >>> one = libpysal.io.open(libpysal.examples.get_path('10740.shx'),'rb').read()
     >>> two = libpysal.io.open(fname[:-1]+'x','rb').read()
     >>> one[0].centroid == two[0].centroid
     True
+    
     >>> import os
     >>> os.remove(fname); os.remove(fname.replace('.shp','.shx'))
 
@@ -81,28 +83,46 @@ class PurePyShpWrapper(fileio.FileIO):
         elif self.mode == "w" or self.mode == "wb":
             self.__create()
 
-    def __len__(self):
+    def __len__(self) -> int:
         if self.dataObj != None:
             return len(self.dataObj)
         else:
             return 0
 
     def __open(self):
+        """
+
+        Raises
+        ------
+        TypeError
+            Raised when an invalid shape is passed in.
+
+        """
+
         self.dataObj = shp_file(self.dataPath)
         self.header = self.dataObj.header
         self.bbox = self.dataObj.bbox
+
         try:
             self.type = STRING_TO_TYPE[self.dataObj.type()]
         except KeyError:
-            raise TypeError(
-                "%s does not support shapes of type: %s"
-                % (self.__class__.__name__, self.dataObj.type())
-            )
+            msg = "%s does not support shapes of type: %s."
+            msg = msg % (self.__class__.__name__, self.dataObj.type())
+            raise TypeError(msg)
 
     def __create(self):
         self.write = self.__firstWrite
 
     def __firstWrite(self, shape):
+        """
+
+        Parameters
+        ----------
+        shape : libpysal.cg.{Point, Chain, Polygon}
+            Geometric shape.
+
+        """
+
         self.type = TYPE_TO_STRING[type(shape)]
         if self.type == "POINT":
             if len(shape) == 3:
@@ -114,10 +134,26 @@ class PurePyShpWrapper(fileio.FileIO):
         self.write(shape)
 
     def __writer(self, shape):
+        """
+
+        Parameters
+        ----------
+        shape : libpysal.cg.{Point, Chain, Polygon}
+            Geometric shape.
+
+        Raises
+        ------
+        TypeError
+            Raised when an invalid shape is passed in.
+
+        """
+
         if TYPE_TO_STRING[type(shape)] != self.type:
-            raise TypeError("This file only supports %s type shapes" % self.type)
+            raise TypeError("This file only supports %s type shapes." % self.type)
+
         rec = {}
         rec["Shape Type"] = shp_file.SHAPE_TYPES[self.type]
+
         if self.type == "POINT":
             rec["X"] = shape[0]
             rec["Y"] = shape[1]
@@ -151,11 +187,21 @@ class PurePyShpWrapper(fileio.FileIO):
         self.pos += 1
 
     def _read(self):
+        """
+
+        Returns
+        -------
+        shape : libpysal.cg.{Point, Chain, Polygon}
+            Geometric shape.
+
+        """
         try:
             rec = self.dataObj.get_shape(self.pos)
         except IndexError:
             return None
+
         self.pos += 1
+
         if self.dataObj.type() == "POINT":
             shp = self.type((rec["X"], rec["Y"]))
         elif self.dataObj.type() == "POINTZ":
@@ -183,26 +229,27 @@ class PurePyShpWrapper(fileio.FileIO):
             elif rec["NumParts"] == 1:
                 vertices = rec["Vertices"]
                 if self.dataObj.type() == "POLYGON" and not cg.is_clockwise(vertices):
+
                     ### SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)
-                    warn(
-                        "SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)"
-                        % (self.pos),
-                        RuntimeWarning,
-                    )
-                    print(
-                        "SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)"
-                        % (self.pos)
-                    )
+                    msg = "SHAPEFILE WARNING: Polygon %d "
+                    msg += "topology has been fixed. (ccw -> cw)."
+                    msg = msg % self.pos
+                    warn(msg, RuntimeWarning)
+                    print(msg)
 
                 shp = self.type(vertices)
             else:
-                warn("Polygon %d has zero parts" % self.pos, RuntimeWarning)
+                warn("Polygon %d has zero parts." % self.pos, RuntimeWarning)
                 shp = self.type([[]])
                 # raise ValueError, "Polygon %d has zero parts"%self.pos
+
         if self.ids:
-            shp.id = self.rIds[self.pos - 1]  # shp IDs start at 1.
+            # shp IDs start at 1.
+            shp.id = self.rIds[self.pos - 1]
         else:
-            shp.id = self.pos  # shp IDs start at 1.
+            # shp IDs start at 1.
+            shp.id = self.pos
+
         return shp
 
     def close(self):
