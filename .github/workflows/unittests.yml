@@ -20,7 +20,7 @@
          exclude:
            - environment-file: ci/36.yaml
              os: windows-latest
-                 exclude:
+         exclude:
            - environment-file: ci/39.yaml
              os: windows-latest
      steps:
