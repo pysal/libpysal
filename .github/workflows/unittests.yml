@@ -16,9 +16,9 @@
      strategy:
        matrix:
          os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
-         environment-file: [ci/36.yaml, ci/37.yaml, ci/38.yaml, ci/36-PLUS.yaml, ci/37-PLUS.yaml, ci/38-PLUS.yaml]
+         environment-file: [ci/36.yaml, ci/37.yaml, ci/38.yaml]
          exclude:
-           - environment-file: ci/36-PLUS.yaml
+           - environment-file: ci/36.yaml
              os: windows-latest
      steps:
        - uses: actions/checkout@v2
