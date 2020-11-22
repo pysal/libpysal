@@ -20,6 +20,9 @@
          exclude:
            - environment-file: ci/36.yaml
              os: windows-latest
+                 exclude:
+           - environment-file: ci/39.yaml
+             os: windows-latest
      steps:
        - uses: actions/checkout@v2
        - uses: conda-incubator/setup-miniconda@v2
