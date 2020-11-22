@@ -10,7 +10,3 @@ dependencies:
   - pytest-cov
   - codecov
   - matplotlib
-  # optional
-  - geopandas
-  - xarray
-  - zstd
