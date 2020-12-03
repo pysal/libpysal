@@ -42,13 +42,14 @@ class Rook(W):
     def __init__(self, polygons, **kw):
         criterion = 'rook'
         ids = kw.pop('ids', None)
+        perimeter_weighted = kw.pop('perimeter_weighted', False)
         polygons, backup = itertools.tee(polygons)
         first_shape = next(iter(backup))
         if isinstance(first_shape, point_type):
             polygons, vertices = voronoi_frames(get_points_array(polygons))
             polygons = list(polygons.geometry)
-        neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
-        W.__init__(self, neighbors, ids=ids, **kw)
+        neighbors, weights, ids = _build(polygons, criterion=criterion, ids=ids, perimeter_weighted=perimeter_weighted)
+        W.__init__(self, neighbors, weights=weights, ids=ids, **kw)
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
@@ -209,8 +210,8 @@ class Queen(W):
         if isinstance(first_shape, point_type):
             polygons, vertices = voronoi_frames(get_points_array(polygons))
             polygons = list(polygons.geometry)
-        neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
-        W.__init__(self, neighbors, ids=ids, **kw)
+        neighbors, weights, ids = _build(polygons, criterion=criterion, ids=ids)
+        W.__init__(self, neighbors, weights=weights, ids=ids, **kw)
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
@@ -427,7 +428,7 @@ def _from_dataframe(df, **kwargs):
 Voronoi.from_dataframe = _from_dataframe
 
 
-def _build(polygons, criterion="rook", ids=None):
+def _build(polygons, criterion="rook", ids=None, perimeter_weighted=False):
     """
     This is a developer-facing function to construct a spatial weights object. 
 
@@ -461,9 +462,10 @@ def _build(polygons, criterion="rook", ids=None):
         geo.seek(0)  # Make sure we read from the beginning of the file.
 
     neighbor_data = ContiguityWeightsLists(polygons, wttype=wttype).w
-
+    if perimeter_weighted:
+        return *_length_weighted(neighbor_data, polygons, standardize=True), ids
     neighbors = {}
-    #weights={}
+    weights = {}
     if ids:
         for key in neighbor_data:
             ida = ids[key]
@@ -478,10 +480,10 @@ def _build(polygons, criterion="rook", ids=None):
     return dict(
         list(
             zip(list(neighbors.keys()),
-                list(map(list, list(neighbors.values())))))), ids
+                list(map(list, list(neighbors.values())))))), None, ids
 
 
-def buildContiguity(polygons, criterion="rook", ids=None):
+def buildContiguity(polygons, criterion="rook", ids=None, perimeter_weighted=False):
     """
     This is a deprecated function.
 
@@ -491,9 +493,37 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     #Warn('This function is deprecated. Please use the Rook or Queen classes',
     #        UserWarning)
     if criterion.lower() == 'rook':
-        return Rook(polygons, ids=ids)
+        return Rook(polygons, ids=ids, perimeter_weighted=perimeter_weighted)
     elif criterion.lower() == 'queen':
         return Queen(polygons, ids=ids)
     else:
         raise Exception(
             'Weights criterion "{}" was not found.'.format(criterion))
+
+def _perimeter_weighted(w, geometries, standardize=True):
+    try:
+        import shapely, pygeos
+    except (ModuleNotFoundError, ImportError):
+        raise ImportError('shapely and pygeos are required to compute length-weighted rook weights')
+    if isinstance(geometries[0], pygeos.Geometry):
+        pass
+    elif isinstance(geometries[0], shapely.geometry.BaseGeometry):
+        geometries = pygeos.from_shapely(geometries)
+    else:
+        # if we can remove or reduce this double-casting, that'd be great. 
+        # this only occurs when you use some non-shapely geometry-input, such
+        # as pygeoif or pysal geometries...
+        geometries = pygeos.from_shapely([shapely.geometry.asShape(geom) for geom in geometries])
+    perimeters = pygeos.length(pygeos.boundary(geometries))
+    weights = w.weights
+    for focal, neighbors in w.neighbors:
+        focal_geom = geometries[focal]
+        for ix,neighbor in enumerate(neighbors):
+            ix_focal_in_neighbor = weights[neighbor].index(focal)
+            ilength = pygeos.length(pygeos.intersection(focal_geom, geometries[neighbor]))
+            weights[focal][j] = ilength / (perimeters[focal] if standardize else 1)
+            weights[neighbor][ix_focal_in_neighbor] = ilength / (perimeters[neighbor] if standardize else 1)
+
+    return w.neighbors, weights
+        
+
