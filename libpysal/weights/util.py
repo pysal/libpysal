@@ -1584,7 +1584,7 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
 
         # extract index values of neighbors
         for i, ix in enumerate(gdf.index):
-            ids = gdf.iloc[res[inp == i]].index.tolist()
+            ids = gdf.index[res[inp == i]].tolist()
             neighbors[ix] = ids
     else:
         if predicate != 'intersects':
