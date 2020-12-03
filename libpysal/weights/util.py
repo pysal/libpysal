@@ -20,17 +20,37 @@ try:
 
     GPD_08 = str(gpd.__version__) >= LooseVersion("0.8.0")
 except ImportError:
-    warn('geopandas not available. Some functionality will be disabled.')
+    warn("geopandas not available. Some functionality will be disabled.")
 
-__all__ = ['lat2W', 'block_weights', 'comb', 'order', 'higher_order',
-           'shimbel', 'remap_ids', 'full2W', 'full', 'WSP2W',
-           'insert_diagonal', 'get_ids', 'get_points_array_from_shapefile',
-           'min_threshold_distance', 'lat2SW', 'w_local_cluster',
-           'higher_order_sp', 'hexLat2W', 'attach_islands',
-           'nonplanar_neighbors', 'fuzzy_contiguity']
+__all__ = [
+    "lat2W",
+    "block_weights",
+    "comb",
+    "order",
+    "higher_order",
+    "shimbel",
+    "remap_ids",
+    "full2W",
+    "full",
+    "WSP2W",
+    "insert_diagonal",
+    "fill_diagonal",
+    "get_ids",
+    "get_points_array_from_shapefile",
+    "min_threshold_distance",
+    "lat2SW",
+    "w_local_cluster",
+    "higher_order_sp",
+    "hexLat2W",
+    "neighbor_equality",
+    "attach_islands",
+    "nonplanar_neighbors",
+    "fuzzy_contiguity",
+]
 
 
 KDTREE_TYPES = [scipy.spatial.KDTree, scipy.spatial.cKDTree]
+
 
 def hexLat2W(nrows=5, ncols=5, **kwargs):
     """
@@ -113,11 +133,10 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
                     w[i] = w.get(i, []) + jne
                     w[i] = w.get(i, []) + jnw
 
-
     return W(w, **kwargs)
 
 
-def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
+def lat2W(nrows=5, ncols=5, rook=True, id_type="int", **kwargs):
     """
     Create a W object for a regular lattice.
 
@@ -164,7 +183,7 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
     n = nrows * ncols
     r1 = nrows - 1
     c1 = ncols - 1
-    rid = [i // ncols for i in range(n)] #must be floor!
+    rid = [i // ncols for i in range(n)]  # must be floor!
     cid = [i % ncols for i in range(n)]
     w = {}
     r = below = 0
@@ -194,13 +213,13 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type='int', **kwargs):
     neighbors = {}
     weights = {}
     for key in w:
-        weights[key] = [1.] * len(w[key])
+        weights[key] = [1.0] * len(w[key])
     ids = list(range(n))
-    if id_type == 'string':
-        ids = ['id' + str(i) for i in ids]
-    elif id_type == 'float':
-        ids = [i * 1. for i in ids]
-    if id_type == 'string' or id_type == 'float':
+    if id_type == "string":
+        ids = ["id" + str(i) for i in ids]
+    elif id_type == "float":
+        ids = [i * 1.0 for i in ids]
+    if id_type == "string" or id_type == "float":
         id_dict = dict(list(zip(list(range(n)), ids)))
         alt_w = {}
         alt_weights = {}
@@ -314,11 +333,11 @@ def comb(items, n=None):
     if n is None:
         n = len(items)
     for i in list(range(len(items))):
-        v = items[i:i + 1]
+        v = items[i : i + 1]
         if n == 1:
             yield v
         else:
-            rest = items[i + 1:]
+            rest = items[i + 1 :]
             for c in comb(rest, n - 1):
                 yield v + c
 
@@ -431,15 +450,17 @@ def higher_order(w, k=2, **kwargs):
     return higher_order_sp(w, k, **kwargs)
 
 
-def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
+def higher_order_sp(
+    w, k=2, shortest_path=True, diagonal=False, lower_order=False, **kwargs
+):
     """
-    Contiguity weights for either a sparse W or W  for order k.
+    Contiguity weights for either a sparse W or W for order k.
 
     Parameters
     ----------
     w             : W
-		            sparse_matrix, spatial weights object or
-		            scipy.sparse.csr.csr_instance
+                            sparse_matrix, spatial weights object or
+                            scipy.sparse.csr.csr_instance
     k             : int
                     Order of contiguity
     shortest_path : boolean
@@ -450,17 +471,17 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     diagonal      : boolean
                     True:  keep k-order (i,j) joins when i==j
                     False: remove k-order (i,j) joins when i==j
+    lower_order   : boolean
+                    True: include lower order contiguities
+                    False: return only weights of order k
     **kwargs      : keyword arguments
                     optional arguments for :class:`pysal.weights.W`
 
     Returns
     -------
     wk : W
-	     WSP, type matches type of w argument
+             WSP, type matches type of w argument
 
-    Notes
-    -----
-    Lower order contiguities are removed.
 
     Examples
     --------
@@ -483,6 +504,9 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
     >>> w25_3 = higher_order_sp(w25, 3, shortest_path=False)
     >>> w25_3[0] == {1: 1.0, 3: 1.0, 5: 1.0, 7: 1.0, 11: 1.0, 15: 1.0}
     True
+    >>> w25_3 = higher_order_sp(w25, 3, lower_order=True)
+    >>> w25_3[0] == {5: 1.0, 7: 1.0, 11: 1.0, 2: 1.0, 15: 1.0, 6: 1.0, 10: 1.0, 1: 1.0, 3: 1.0}
+    True
 
     """
     id_order = None
@@ -491,30 +515,39 @@ def higher_order_sp(w, k=2, shortest_path=True, diagonal=False, **kwargs):
             id_order = w.id_order
             w = w.sparse
         else:
-            raise ValueError('Weights are not binary (0,1)')
+            raise ValueError("Weights are not binary (0,1)")
     elif scipy.sparse.isspmatrix_csr(w):
         if not np.unique(w.data) == np.array([1.0]):
-            raise ValueError('Sparse weights matrix is not binary (0,1) weights matrix.')
+            raise ValueError(
+                "Sparse weights matrix is not binary (0,1) weights matrix."
+            )
     else:
-        raise TypeError("Weights provided are neither a binary W object nor "
-                        "a scipy.sparse.csr_matrix")
+        raise TypeError(
+            "Weights provided are neither a binary W object nor "
+            "a scipy.sparse.csr_matrix"
+        )
 
-    wk = w**k
+    if lower_order:
+        wk = sum(map(lambda x: w ** x, range(2, k + 1)))
+        shortest_path = False
+    else:
+        wk = w ** k
+
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck))
 
     if shortest_path:
         for j in range(1, k):
-            wj = w**j
+            wj = w ** j
             rj, cj = wj.nonzero()
             sj = set(zip(rj, cj))
             sk.difference_update(sj)
 
     if not diagonal:
-        sk = set([(i,j) for i,j in sk if i!=j])
+        sk = set([(i, j) for i, j in sk if i != j])
 
     if id_order:
-        d = dict([(i,[]) for i in id_order])
+        d = dict([(i, []) for i in id_order])
         for pair in sk:
             k, v = pair
             k = id_order[k]
@@ -581,7 +614,7 @@ def w_local_cluster(w):
     """
 
     c = np.zeros((w.n, 1), float)
-    w.transformation = 'b'
+    w.transformation = "b"
     for i, id in enumerate(w.id_order):
         ki = max(w.cardinalities[id], 1)  # deal with islands
         Ni = w.neighbors[id]
@@ -674,8 +707,9 @@ def full(w):
     """
     return w.full()
 
+
 def full2W(m, ids=None, **kwargs):
-    '''
+    """
     Create a PySAL W object from a full array.
 
     Parameters
@@ -727,12 +761,12 @@ def full2W(m, ids=None, **kwargs):
            [ True,  True,  True,  True],
            [ True,  True,  True,  True],
            [ True,  True,  True,  True]])
-    '''
+    """
     if m.shape[0] != m.shape[1]:
-        raise ValueError('Your array is not square')
+        raise ValueError("Your array is not square")
     neighbors, weights = {}, {}
     for i in range(m.shape[0]):
-    # for i, row in enumerate(m):
+        # for i, row in enumerate(m):
         row = m[i]
         if ids:
             i = ids[i]
@@ -807,12 +841,14 @@ def WSP2W(wsp, **kwargs):
     ids = copy.copy(wsp.id_order)
     w = W(neighbors, weights, ids, **kwargs)
     w._sparse = copy.deepcopy(wsp.sparse)
-    w._cache['sparse'] = w._sparse
+    w._cache["sparse"] = w._sparse
     return w
 
+
 def insert_diagonal(w, val=1.0, wsp=False):
-    warn('This function is deprecated. Use fill_diagonal instead.')
+    warn("This function is deprecated. Use fill_diagonal instead.")
     return fill_diagonal(w, val=val, wsp=wsp)
+
 
 def fill_diagonal(w, val=1.0, wsp=False):
     """
@@ -988,7 +1024,7 @@ def get_ids(in_shps, idVariable):
 
     try:
         if type(in_shps) == str:
-            dbname = os.path.splitext(in_shps)[0] + '.dbf'
+            dbname = os.path.splitext(in_shps)[0] + ".dbf"
             db = psopen(dbname)
             cols = db.header
             var = db.by_col[idVariable]
@@ -999,12 +1035,16 @@ def get_ids(in_shps, idVariable):
         return var
 
     except IOError:
-        msg = 'The shapefile "%s" appears to be missing its DBF file. '\
-              + ' The DBF file "%s" could not be found.' % (in_shps, dbname)
+        msg = (
+            'The shapefile "%s" appears to be missing its DBF file. '
+            + ' The DBF file "%s" could not be found.' % (in_shps, dbname)
+        )
         raise IOError(msg)
     except (AttributeError, KeyError):
-        msg = 'The variable "%s" not found in the DBF/GDF. The the following '\
-              + 'variables are present: %s.' % (idVariable, ','.join(cols))
+        msg = (
+            'The variable "%s" not found in the DBF/GDF. The the following '
+            + "variables are present: %s." % (idVariable, ",".join(cols))
+        )
         raise KeyError(msg)
 
 
@@ -1200,12 +1240,12 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8)
     m = m + m.T
     if row_st:
-        m = sparse.spdiags(1. / m.sum(1).T, 0, *m.shape) * m
+        m = sparse.spdiags(1.0 / m.sum(1).T, 0, *m.shape) * m
     return m
 
 
 def write_gal(file, k=10):
-    f = open(file, 'w')
+    f = open(file, "w")
     n = k * k
     f.write("0 %d" % n)
     for i in range(n):
@@ -1216,6 +1256,7 @@ def write_gal(file, k=10):
         f.write("\n%d %d\n" % (i, len(neighs)))
         f.write(" ".join(map(str, neighs)))
     f.close()
+
 
 def neighbor_equality(w1, w2):
     """
@@ -1277,12 +1318,14 @@ def neighbor_equality(w1, w2):
             return False
     return True
 
+
 def isKDTree(obj):
     """
     This is a utility function to determine whether or not an object is a
     KDTree, since KDTree and cKDTree have no common parent type
     """
     return any([issubclass(type(obj), KDTYPE) for KDTYPE in KDTREE_TYPES])
+
 
 def attach_islands(w, w_knn1, **kwargs):
     """
@@ -1334,6 +1377,7 @@ def attach_islands(w, w_knn1, **kwargs):
             neighbors[nb] = neighbors[nb] + [island]
             weights[nb] = weights[nb] + [1.0]
         return W(neighbors, weights, id_order=w.id_order, **kwargs)
+
 
 def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     """
@@ -1417,7 +1461,9 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     """
 
     gdf = geodataframe
-    assert gdf.sindex, 'GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed'
+    assert (
+        gdf.sindex
+    ), "GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed"
     islands = w.islands
     joins = copy.deepcopy(w.neighbors)
     candidates = gdf.geometry
@@ -1426,7 +1472,11 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     # first check for intersecting polygons
     for island in islands:
         focal = gdf.iloc[island].geometry
-        neighbors = [j for j, candidate in enumerate(candidates) if focal.intersects(candidate) and j!= island]
+        neighbors = [
+            j
+            for j, candidate in enumerate(candidates)
+            if focal.intersects(candidate) and j != island
+        ]
         if len(neighbors) > 0:
             for neighbor in neighbors:
                 if neighbor not in joins[island]:
@@ -1438,11 +1488,15 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
 
     # if any islands remain, dilate them and check for intersection
     if islands:
-        x0,y0,x1,y1 = gdf.total_bounds
-        distance = tolerance * min(x1-x0, y1-y0)
+        x0, y0, x1, y1 = gdf.total_bounds
+        distance = tolerance * min(x1 - x0, y1 - y0)
         for island in islands:
             dilated = gdf.iloc[island].geometry.buffer(distance)
-            neighbors = [j for j, candidate in enumerate(candidates) if dilated.intersects(candidate) and j!= island]
+            neighbors = [
+                j
+                for j, candidate in enumerate(candidates)
+                if dilated.intersects(candidate) and j != island
+            ]
             if len(neighbors) > 0:
                 for neighbor in neighbors:
                     if neighbor not in joins[island]:
@@ -1569,7 +1623,7 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
             buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
         # create new geometry column
         new_geometry = gdf.geometry.buffer(buffer)
-        gdf['_buffer'] = new_geometry
+        gdf["_buffer"] = new_geometry
         old_geometry_name = gdf.geometry.name
         gdf.set_geometry('_buffer', inplace=True)
 
@@ -1600,19 +1654,20 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
     if buffering:
         gdf.set_geometry(old_geometry_name, inplace=True)
         if drop:
-            gdf.drop(columns=['_buffer'], inplace=True)
+            gdf.drop(columns=["_buffer"], inplace=True)
 
     return W(neighbors, **kwargs)
-
 
 
 if __name__ == "__main__":
 
     from libpysal.weights import lat2W
+
     assert (lat2W(5, 5).sparse.todense() == lat2SW(5, 5).todense()).all()
     assert (lat2W(5, 3).sparse.todense() == lat2SW(5, 3).todense()).all()
-    assert (lat2W(5, 3, rook=False).sparse.todense() == lat2SW(5, 3,
-                                                               'queen').todense()).all()
-    assert (lat2W(50, 50, rook=False).sparse.todense() == lat2SW(50,
-
-                                                                 50, 'queen').todense()).all()
+    assert (
+        lat2W(5, 3, rook=False).sparse.todense() == lat2SW(5, 3, "queen").todense()
+    ).all()
+    assert (
+        lat2W(50, 50, rook=False).sparse.todense() == lat2SW(50, 50, "queen").todense()
+    ).all()

@@ -6,5 +6,5 @@ _all = dict()
 _all.update(_s.__dict__)
 _all.update(_a.__dict__)
 
-globals().update({_k:_v for _k,_v in list(_all.items()) if not _k.startswith('_')})
+globals().update({_k: _v for _k, _v in list(_all.items()) if not _k.startswith("_")})
 _preferred = _a

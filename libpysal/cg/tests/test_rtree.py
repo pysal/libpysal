@@ -1,11 +1,9 @@
-
 """pyrtree Unittest."""
 from ..rtree import RTree, Rect
 import unittest
 
 
 class Pyrtree_Tester(unittest.TestCase):
-    """setup class for unit tests."""
     def setUp(self):
         k = 10
         w = 20
@@ -36,8 +34,7 @@ class Pyrtree_Tester(unittest.TestCase):
         self.assertEqual(res, [0, 1, 10, 11])
 
         # vertices are shared by all coincident rectangles
-        res = [r.leaf_obj(
-        ) for r in t.query_point((20.0, 20.0)) if r.is_leaf()]
+        res = [r.leaf_obj() for r in t.query_point((20.0, 20.0)) if r.is_leaf()]
         self.assertEqual(len(res), 4)
 
         res = [r.leaf_obj() for r in t.query_point((21, 20)) if r.is_leaf()]
@@ -63,6 +60,6 @@ for i in test_classes:
     a = unittest.TestLoader().loadTestsFromTestCase(i)
     suite.addTest(a)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner()
     runner.run(suite)
