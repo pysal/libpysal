@@ -320,7 +320,7 @@ class Queen(W):
         See Also
         ---------
         :class:`libpysal.weights.weights.W`
-        :class:`libpysal.weights.contiguiyt.Queen`
+        :class:`libpysal.weights.contiguity.Queen`
         """
         new_iterable = iter(iterable)
         w = cls(new_iterable, **kwargs)
