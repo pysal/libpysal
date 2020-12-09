@@ -21,7 +21,7 @@ import numpy as np
 
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric="euclidean"):
     """
-    This is deprecated. Use the pysal.weights.KNN class instead. 
+    This is deprecated. Use the pysal.weights.KNN class instead.
     """
     # Warn('This function is deprecated. Please use pysal.weights.KNN', UserWarning)
     return KNN(data, k=k, p=p, ids=ids, radius=radius, distance_metric=distance_metric)
@@ -107,8 +107,7 @@ class KNN(W):
             self.kdtree = data
             self.data = self.kdtree.data
         else:
-            self.kdtree = KDTree(data, radius=radius,
-                                 distance_metric=distance_metric)
+            self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
             self.data = self.kdtree.data
         self.k = k
         self.p = p
@@ -203,8 +202,8 @@ class KNN(W):
         Parameters
         ----------
         array       : np.ndarray
-                      (n, k) array representing n observations on 
-                      k characteristics used to measure distances 
+                      (n, k) array representing n observations on
+                      k characteristics used to measure distances
                       between the n objects
         **kwargs    : keyword arguments, see Rook
 
@@ -249,7 +248,7 @@ class KNN(W):
         return cls(array, *args, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, geom_col="geometry", ids=None, *args, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, ids=None, *args, **kwargs):
         """
         Make KNN weights from a dataframe.
 
@@ -258,8 +257,9 @@ class KNN(W):
         df      :   pandas.dataframe
                     a dataframe with a geometry column that can be used to
                     construct a W object
-        geom_col :   string
-                    column name of the geometry stored in df
+        geom_col :  string
+                    the name of the column in `df` that contains the
+                    geometries. Defaults to active geometry column.
         ids     :   string or iterable
                     if string, the column name of the indices from the dataframe
                     if iterable, a list of ids to use for the W
@@ -269,6 +269,8 @@ class KNN(W):
         --------
         :class:`libpysal.weights.weights.W`
         """
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
         if ids is None:
             ids = df.index.tolist()
@@ -289,7 +291,7 @@ class KNN(W):
                       a list aligned with new_data that provides the ids for
                       each new observation
         inplace     : bool
-                      a flag denoting whether to modify the KNN object 
+                      a flag denoting whether to modify the KNN object
                       in place or to return a new KNN object
         k           : int
                       number of nearest neighbors
@@ -305,7 +307,7 @@ class KNN(W):
         A copy of the object using the new parameterization, or None if the
         object is reweighted in place.
         """
-        
+
         if new_data is not None:
             new_data = np.asarray(new_data).reshape(-1, 2)
             data = np.vstack((self.data, new_data)).reshape(-1, 2)
@@ -578,7 +580,7 @@ class Kernel(W):
         return cls(array, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, geom_col="geometry", ids=None, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, ids=None, **kwargs):
         """
         Make Kernel weights from a dataframe.
 
@@ -587,8 +589,9 @@ class Kernel(W):
         df      :   pandas.dataframe
                     a dataframe with a geometry column that can be used to
                     construct a W object
-        geom_col :   string
-                    column name of the geometry stored in df
+        geom_col :  string
+                    the name of the column in `df` that contains the
+                    geometries. Defaults to active geometry column.
         ids     :   string or iterable
                     if string, the column name of the indices from the dataframe
                     if iterable, a list of ids to use for the W
@@ -598,6 +601,8 @@ class Kernel(W):
         --------
         :class:`libpysal.weights.weights.W`
         """
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
         if ids is None:
             ids = df.index.tolist()
@@ -654,8 +659,7 @@ class Kernel(W):
             if not isinstance(di, np.ndarray):
                 di = np.asarray([di] * len(nids))
                 ni = np.asarray([ni] * len(nids))
-            zi = np.array([dict(list(zip(ni, di)))[nid]
-                           for nid in nids]) / bw[i]
+            zi = np.array([dict(list(zip(ni, di)))[nid] for nid in nids]) / bw[i]
             z.append(zi)
         zs = z
         # functions follow Anselin and Rey (2010) table 5.4
@@ -857,7 +861,7 @@ class DistanceBand(W):
         return cls(array, threshold, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, threshold, geom_col="geometry", ids=None, **kwargs):
+    def from_dataframe(cls, df, threshold, geom_col=None, ids=None, **kwargs):
         """
         Make DistanceBand weights from a dataframe.
 
@@ -866,14 +870,17 @@ class DistanceBand(W):
         df      :   pandas.dataframe
                     a dataframe with a geometry column that can be used to
                     construct a W object
-        geom_col :   string
-                    column name of the geometry stored in df
+        geom_col :  string
+                    the name of the column in `df` that contains the
+                    geometries. Defaults to active geometry column.
         ids     :   string or iterable
                     if string, the column name of the indices from the dataframe
                     if iterable, a list of ids to use for the W
                     if None, df.index is used.
 
         """
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
         if ids is None:
             ids = df.index.tolist()
@@ -882,9 +889,7 @@ class DistanceBand(W):
         return cls(pts, threshold, ids=ids, **kwargs)
 
     def _band(self):
-        """Find all pairs within threshold.
-
-        """
+        """Find all pairs within threshold."""
         if self.build_sp:
             self.dmat = self.kdtree.sparse_distance_matrix(
                 self.kdtree, max_distance=self.threshold, p=self.p
@@ -908,8 +913,7 @@ class DistanceBand(W):
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
             weight_vals = list(tempW.weights.values())
-            weights = dict(
-                list(zip(weight_keys, list(map(list, weight_vals)))))
+            weights = dict(list(zip(weight_keys, list(map(list, weight_vals)))))
             return neighbors, weights
         else:
             weighted = self.dmat.power(self.alpha)
@@ -921,8 +925,7 @@ class DistanceBand(W):
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
             weight_vals = list(tempW.weights.values())
-            weights = dict(
-                list(zip(weight_keys, list(map(list, weight_vals)))))
+            weights = dict(list(zip(weight_keys, list(map(list, weight_vals)))))
             return neighbors, weights
 
     def _spdistance_matrix(self, x, y, threshold=None):
