@@ -101,6 +101,18 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
 
+        # named geometry
+        df.rename(columns={"geometry": "the_geom"}, inplace=True)
+        w = d.KNN.from_dataframe(df, k=4, geom_col="the_geom")
+        self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
+        self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+
+        # named active geometry
+        df = df.set_geometry("the_geom")
+        w = d.KNN.from_dataframe(df, k=4)
+        self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
+        self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+
     def test_from_array(self):
         w = d.KNN.from_array(self.poly_centroids, k=4)
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
@@ -110,7 +122,6 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         w = d.KNN.from_shapefile(self.polygon_path, k=4)
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
-        
 
     ##########################
     # Function/User tests    #
@@ -165,10 +176,24 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         import pandas as pd
+        import geopandas as gpd
 
         geom_series = pdio.shp.shp2series(self.grid_path)
         random_data = np.random.random(size=len(geom_series))
         df = pd.DataFrame({"obs": random_data, "geometry": geom_series})
+        w = d.DistanceBand.from_dataframe(df, 1)
+        for k, v in w:
+            self.assertEqual(v, self.grid_rook_w[k])
+
+        # named geometry
+        df = gpd.GeoDataFrame(df)
+        df.rename(columns={"geometry": "the_geom"}, inplace=True)
+        w = d.DistanceBand.from_dataframe(df, 1, geom_col="the_geom")
+        for k, v in w:
+            self.assertEqual(v, self.grid_rook_w[k])
+
+        # named active geometry
+        df = df.set_geometry("the_geom")
         w = d.DistanceBand.from_dataframe(df, 1)
         for k, v in w:
             self.assertEqual(v, self.grid_rook_w[k])
@@ -300,6 +325,18 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
     @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         df = pdio.read_files(self.polygon_path)
+        w = d.Kernel.from_dataframe(df)
+        for k, v in list(w[self.known_wi5 - 1].items()):
+            np.testing.assert_allclose(v, self.known_w5[k + 1], rtol=RTOL)
+
+        # named geometry
+        df.rename(columns={"geometry": "the_geom"}, inplace=True)
+        w = d.Kernel.from_dataframe(df, geom_col="the_geom")
+        for k, v in list(w[self.known_wi5 - 1].items()):
+            np.testing.assert_allclose(v, self.known_w5[k + 1], rtol=RTOL)
+
+        # named active geometry
+        df = df.set_geometry("the_geom")
         w = d.Kernel.from_dataframe(df)
         for k, v in list(w[self.known_wi5 - 1].items()):
             np.testing.assert_allclose(v, self.known_w5[k + 1], rtol=RTOL)
