@@ -344,9 +344,15 @@ class Testutil(unittest.TestCase):
         rs_df = gpd.read_file(rs)
         wf = fuzzy_contiguity(rs_df)
         self.assertEqual(wf.islands, [])
-        self.assertEqual(set(wf.neighbors[0]), set([239, 59, 152, 23, 107]))
-        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=0.1)
-        self.assertEqual(set(buff.neighbors[0]), set([119, 239, 59, 152, 23, 107]))
+        self.assertEqual(set(wf.neighbors[0]), set([239, 59, 152, 23]))
+        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=.2)
+        self.assertEqual(set(buff.neighbors[0]), set([175, 119, 239, 59, 152, 246, 23, 107]))
+        rs_index = rs_df.set_index('NM_MUNICIP')
+        index_w = fuzzy_contiguity(rs_index)
+        self.assertEqual(set(index_w.neighbors['TAVARES']), set(['SÃO JOSÉ DO NORTE', 'MOSTARDAS']))
+        wf_pred = fuzzy_contiguity(rs_df, predicate='touches')
+        self.assertEqual(set(wf_pred.neighbors[0]), set([]))
+        self.assertEqual(set(wf_pred.neighbors[1]), set([142, 82, 197, 285, 386, 350]))
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testutil)
