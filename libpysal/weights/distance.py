@@ -272,7 +272,7 @@ class KNN(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col="geometry", ids=None, *args, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, ids=None, *args, **kwargs):
         """Make `KNN` weights from a dataframe.
 
         Parameters
@@ -281,8 +281,8 @@ class KNN(W):
             A dataframe with a geometry column that can be used
             to construct a `W` object.
         geom_col : string
-            The column name of the geometry stored in ``df``.
-            Default is ``'geometry'``.
+            The name of the column in ``df`` that contains the
+            geometries. Defaults to the active geometry column.
         ids : {str, iterable}
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
@@ -304,6 +304,8 @@ class KNN(W):
         
         """
 
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
 
         if ids is None:
@@ -672,7 +674,7 @@ class Kernel(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col="geometry", ids=None, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, ids=None, **kwargs):
         """Construct kernel-based weights from a dataframe.
 
         Parameters
@@ -681,8 +683,8 @@ class Kernel(W):
             A dataframe with a geometry column that can be used
             to construct a PySAL `W` object.
         geom_col : str
-            The column name of the geometry stored in ``df``.
-            Default is ``'geometry'``.
+            The name of the column in ``df`` that contains the
+            geometries. Defaults to the active geometry column.
         ids : {str, iterable}
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
@@ -702,6 +704,8 @@ class Kernel(W):
         
         """
 
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
 
         if ids is None:
@@ -1039,7 +1043,7 @@ class DistanceBand(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, threshold, geom_col="geometry", ids=None, **kwargs):
+    def from_dataframe(cls, df, threshold, geom_col=None, ids=None, **kwargs):
         """Construct a distance band weights object from a dataframe.
 
         Parameters
@@ -1050,8 +1054,8 @@ class DistanceBand(W):
         threshold : float
             The distance band.
         geom_col : str
-            The column name of the geometry stored in ``df``.
-            Default is ``'geometry'``.
+            The name of the column in ``df`` that contains the
+            geometries. Defaults to the active geometry column.
         ids : {str, iterable}
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
@@ -1066,6 +1070,8 @@ class DistanceBand(W):
         
         """
 
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
 
         if ids is None:

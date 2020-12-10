@@ -167,7 +167,7 @@ class Rook(W):
 
     @classmethod
     def from_dataframe(
-        cls, df, geom_col="geometry", idVariable=None, ids=None, id_order=None, **kwargs
+        cls, df, geom_col=None, idVariable=None, ids=None, id_order=None, **kwargs
     ):
         """Construct a weights object from a ``pandas.DataFrame`` with a geometry
         column. This will cast the polygons to PySAL polygons, then build the `W`
@@ -179,7 +179,7 @@ class Rook(W):
             A ``pandas.DataFrame`` containing geometries to use for spatial weights.
         geom_col : str
             The name of the column in ``df`` that contains the
-            geometries. Default is ``'geometry'``.
+            geometries. Defaults to the active geometry column.
         idVariable : str
             The name of the column to use as IDs. If nothing is provided, the
             dataframe index is used. Default is ``None``.
@@ -206,6 +206,8 @@ class Rook(W):
         
         """
 
+        if geom_col is None:
+            geom_col = df.geometry.name
         if id_order is not None:
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
@@ -415,7 +417,7 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col="geometry", **kwargs):
+    def from_dataframe(cls, df, geom_col=None, **kwargs):
         """Construct a weights object from a ``pandas.DataFrame`` with a geometry
         column. This will cast the polygons to PySAL polygons, then build the `W`
         using ids from the dataframe.
@@ -426,7 +428,7 @@ class Queen(W):
             A ``pandas.DataFrame`` containing geometries to use for spatial weights.
         geom_col : str
             The name of the column in ``df`` that contains the
-            geometries. Default is ``'geometry'``.
+            geometries. Defaults to the active geometry column.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Queen``.
         
@@ -447,6 +449,8 @@ class Queen(W):
         ids = kwargs.pop("ids", None)
         id_order = kwargs.pop("id_order", None)
 
+        if geom_col is None:
+            geom_col = df.geometry.name
         if id_order is not None:
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
