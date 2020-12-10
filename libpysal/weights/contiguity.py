@@ -133,7 +133,7 @@ class Rook(W):
 
     @classmethod
     def from_dataframe(
-        cls, df, geom_col="geometry", idVariable=None, ids=None, id_order=None, **kwargs
+        cls, df, geom_col=None, idVariable=None, ids=None, id_order=None, **kwargs
     ):
         """
         Construct a weights object from a pandas dataframe with a geometry
@@ -147,7 +147,7 @@ class Rook(W):
                       for spatial weights
         geom_col    : string
                       the name of the column in `df` that contains the
-                      geometries. Defaults to `geometry`
+                      geometries. Defaults to active geometry column.
         idVariable  : string
                       the name of the column to use as IDs. If nothing is
                       provided, the dataframe index is used
@@ -165,6 +165,8 @@ class Rook(W):
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Rook`
         """
+        if geom_col is None:
+            geom_col = df.geometry.name
         if id_order is not None:
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
@@ -212,9 +214,9 @@ class Rook(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'rook', z_value, coords_labels)
+            w = da2WSP(da, "rook", z_value, coords_labels)
         else:
-            w = da2W(da, 'rook', z_value, coords_labels, **kwargs)
+            w = da2W(da, "rook", z_value, coords_labels, **kwargs)
         return w
 
 
@@ -329,7 +331,7 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col="geometry", **kwargs):
+    def from_dataframe(cls, df, geom_col=None, **kwargs):
         """
         Construct a weights object from a pandas dataframe with a geometry
         column. This will cast the polygons to PySAL polygons, then build the W
@@ -342,7 +344,7 @@ class Queen(W):
                       for spatial weights
         geom_col    : string
                       the name of the column in `df` that contains the
-                      geometries. Defaults to `geometry`
+                      geometries. Defaults to active geometry column
         idVariable  : string
                       the name of the column to use as IDs. If nothing is
                       provided, the dataframe index is used
@@ -363,6 +365,8 @@ class Queen(W):
         idVariable = kwargs.pop("idVariable", None)
         ids = kwargs.pop("ids", None)
         id_order = kwargs.pop("id_order", None)
+        if geom_col is None:
+            geom_col = df.geometry.name
         if id_order is not None:
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
@@ -413,9 +417,9 @@ class Queen(W):
         :class:`libpysal.weights.weights.WSP`   
         """
         if sparse:
-            w = da2WSP(da, 'queen', z_value, coords_labels)
+            w = da2WSP(da, "queen", z_value, coords_labels)
         else:
-            w = da2W(da, 'queen', z_value, coords_labels, **kwargs)
+            w = da2W(da, "queen", z_value, coords_labels, **kwargs)
         return w
 
 
