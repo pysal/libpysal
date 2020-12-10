@@ -1689,7 +1689,13 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
 
 @requires("geopandas")
 def fuzzy_contiguity(
-    gdf, tolerance=0.005, buffering=False, drop=True, buffer=None, **kwargs
+    gdf,
+    tolerance=0.005,
+    buffering=False,
+    drop=True,
+    buffer=None,
+    predicate="intersects",
+    **kwargs
 ):
     """Fuzzy contiguity spatial weights.
 
