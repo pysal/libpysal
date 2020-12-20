@@ -9,15 +9,15 @@ from .base import PYSALDATA, Example, get_list_of_files, get_data_home
 
 def poll_remotes():
     """Fetch remote data and generate example datasets.
-    
+
     Returns
     -------
     datasets : dict
         Example datasets keyed by the dataset name.
-        
+
     """
 
-    # Geoda Center Datasets
+    # Geoda Center Data Sets
 
     url = "https://geodacenter.github.io/data-and-lab//"
     try:
@@ -37,11 +37,10 @@ def poll_remotes():
         k = data[3].text
         targets = row.find_all("a")
         download_url = url + targets[1].attrs["href"]
-        explain_url = targets[0].attrs["href"]
+        explain_url = url + targets[0].attrs["href"]
         datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
     # Other Remotes
-
 
     # rio
     name = "Rio Grande do Sul"
@@ -100,7 +99,9 @@ datasets = poll_remotes()
 
 
 def download(datasets=datasets):
-    """Download all known remotes."""
+    """
+    Download all known remotes
+    """
 
     names = list(datasets.keys())
     names.sort()

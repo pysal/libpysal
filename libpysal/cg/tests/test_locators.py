@@ -1,4 +1,3 @@
-
 """locators Unittest."""
 from ..shapes import *
 from ..locators import *
@@ -6,7 +5,6 @@ import unittest
 
 
 class PolygonLocator_Tester(unittest.TestCase):
-    """setup class for unit tests."""
     def setUp(self):
         p1 = Polygon([Point((0, 1)), Point((4, 5)), Point((5, 1))])
         p2 = Polygon([Point((3, 9)), Point((6, 7)), Point((1, 1))])
@@ -55,12 +53,13 @@ class PolygonLocator_Tester(unittest.TestCase):
         res = self.pl2.overlapping(qr)
         self.assertEqual(len(res), 4)
 
+
 suite = unittest.TestSuite()
 test_classes = [PolygonLocator_Tester]
 for i in test_classes:
     a = unittest.TestLoader().loadTestsFromTestCase(i)
     suite.addTest(a)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     runner = unittest.TextTestRunner()
     runner.run(suite)

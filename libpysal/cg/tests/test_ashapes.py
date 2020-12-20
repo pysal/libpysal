@@ -15,7 +15,7 @@ except ImportError:
 this_directory = os.path.dirname(__file__)
 
 
-@skipIf(GEOPANDAS_EXTINCT, "Geopandas is missing, so test will not run")
+@skipIf(GEOPANDAS_EXTINCT, "Geopandas is missing, so test will not run.")
 class Test_Alpha_Shapes(TestCase):
     def setUp(self):
         eberly = geopandas.read_file(get_path("eberly_net.shp"))

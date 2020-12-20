@@ -9,11 +9,11 @@ import os
 class test_StataTextIO(unittest.TestCase):
     def setUp(self):
         self.test_file_sparse = test_file_sparse = pysal_examples.get_path(
-            'stata_sparse.txt')
-        self.test_file_full = test_file_full = pysal_examples.get_path(
-            'stata_full.txt')
-        self.obj_sparse = StataTextIO(test_file_sparse, 'r')
-        self.obj_full = StataTextIO(test_file_full, 'r')
+            "stata_sparse.txt"
+        )
+        self.test_file_full = test_file_full = pysal_examples.get_path("stata_full.txt")
+        self.obj_sparse = StataTextIO(test_file_sparse, "r")
+        self.obj_full = StataTextIO(test_file_full, "r")
 
     def test_close(self):
         for obj in [self.obj_sparse, self.obj_full]:
@@ -30,8 +30,7 @@ class test_StataTextIO(unittest.TestCase):
         w_full = self.obj_full.read()
         self.assertEqual(56, w_full.n)
         self.assertEqual(4.0, w_full.mean_neighbors)
-        self.assertEqual(
-            [0.125, 0.125, 0.125, 0.125, 0.125], list(w_full[1].values()))
+        self.assertEqual([0.125, 0.125, 0.125, 0.125, 0.125], list(w_full[1].values()))
 
     def test_seek(self):
         self.test_read()
@@ -44,18 +43,19 @@ class test_StataTextIO(unittest.TestCase):
     def test_write(self):
         for obj in [self.obj_sparse, self.obj_full]:
             w = obj.read()
-            f = tempfile.NamedTemporaryFile(suffix='.txt')
+            f = tempfile.NamedTemporaryFile(suffix=".txt")
             fname = f.name
             f.close()
-            o = psopen(fname, 'w', 'stata_text')
+            o = psopen(fname, "w", "stata_text")
             if obj == self.obj_sparse:
                 o.write(w)
             else:
                 o.write(w, matrix_form=True)
             o.close()
-            wnew = psopen(fname, 'r', 'stata_text').read()
+            wnew = psopen(fname, "r", "stata_text").read()
             self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
             os.remove(fname)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

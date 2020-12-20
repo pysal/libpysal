@@ -2,9 +2,10 @@
 Spatial lag operations.
 """
 __author__ = "Sergio J. Rey <srey@asu.edu>, David C. Folch <david.folch@asu.edu>, Levi John Wolf <ljw2@asu.edu"
-__all__ = ['lag_spatial', 'lag_categorical']
+__all__ = ["lag_spatial", "lag_categorical"]
 
 import numpy as np
+
 
 def lag_spatial(w, y):
     """
@@ -87,7 +88,7 @@ def lag_spatial(w, y):
     return w.sparse * y
 
 
-def lag_categorical(w, y, ties='tryself'):
+def lag_categorical(w, y, ties="tryself"):
     """
     Spatial lag operator for categorical variables.
 
@@ -159,27 +160,28 @@ def lag_categorical(w, y, ties='tryself'):
     orig_shape = y.shape
     if len(orig_shape) > 1:
         if orig_shape[1] > 1:
-            return np.vstack([lag_categorical(w,col) for col in y.T]).T
+            return np.vstack([lag_categorical(w, col) for col in y.T]).T
     y = y.flatten()
     output = np.zeros_like(y)
     labels = np.unique(y)
     normalized_labels = np.zeros(y.shape, dtype=np.int)
-    for i,label in enumerate(labels):
-       normalized_labels[y == label] = i
-    for focal_name,neighbors in w:
+    for i, label in enumerate(labels):
+        normalized_labels[y == label] = i
+    for focal_name, neighbors in w:
         focal_idx = w.id2i[focal_name]
         neighborhood_tally = np.zeros(labels.shape)
         for neighb_name, weight in list(neighbors.items()):
             neighb_idx = w.id2i[neighb_name]
             neighb_label = normalized_labels[neighb_idx]
             neighborhood_tally[neighb_label] += weight
-        out_label_idx = _resolve_ties(focal_idx, normalized_labels,
-                               neighborhood_tally, neighbors, ties, w)
+        out_label_idx = _resolve_ties(
+            focal_idx, normalized_labels, neighborhood_tally, neighbors, ties, w
+        )
         output[focal_idx] = labels[out_label_idx]
     return output.reshape(orig_shape)
 
 
-def _resolve_ties(idx,normalized_labels,tally,neighbors,method,w):
+def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
     """
     Helper function to resolve ties if lag is multimodal
 
@@ -220,18 +222,20 @@ def _resolve_ties(idx,normalized_labels,tally,neighbors,method,w):
     -------
     integer denoting which label to use to label the observation.
     """
-    ties, = np.where(tally == tally.max()) #returns a tuple for flat arrays
-    if len(tally[tally==tally.max()]) <= 1: #no tie, pick the highest
+    (ties,) = np.where(tally == tally.max())  # returns a tuple for flat arrays
+    if len(tally[tally == tally.max()]) <= 1:  # no tie, pick the highest
         return np.argmax(tally).astype(int)
-    elif method.lower() == 'random': #choose randomly from tally
+    elif method.lower() == "random":  # choose randomly from tally
         return np.random.choice(np.squeeze(ties)).astype(int)
-    elif method.lower() == 'lowest': # pick lowest tied value
+    elif method.lower() == "lowest":  # pick lowest tied value
         return ties[0].astype(int)
-    elif method.lower() == 'highest': #pick highest tied value
+    elif method.lower() == "highest":  # pick highest tied value
         return ties[-1].astype(int)
-    elif method.lower() == 'tryself': # add self-label as observation, try again, random if fail
+    elif (
+        method.lower() == "tryself"
+    ):  # add self-label as observation, try again, random if fail
         mean_neighbor_value = np.mean(list(neighbors.values()))
         tally[normalized_labels[idx]] += mean_neighbor_value
-        return _resolve_ties(idx,normalized_labels,tally,neighbors,'random', w)
+        return _resolve_ties(idx, normalized_labels, tally, neighbors, "random", w)
     else:
-        raise KeyError('Tie-breaking method for categorical lag not recognized')
+        raise KeyError("Tie-breaking method for categorical lag not recognized")

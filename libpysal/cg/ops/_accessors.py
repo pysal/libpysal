@@ -23,6 +23,7 @@ def get_attr(df, geom_col="geometry", inplace=False, attr=None):
     return outval
 
 
+
 _doc_template = """
 Tabular accessor to grab a geometric object's {n} attribute.
 
