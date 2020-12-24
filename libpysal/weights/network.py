@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 
 from tqdm.auto import tqdm
-
+from pandas.testing import assert_frame_equal
 from .weights import W
 
 
@@ -39,9 +39,8 @@ def feeds_from_bbox(bbox):
 
 
 class NetworkW(W):
-
     @classmethod
-    def from_dataframe(cls, df=None, network=None, geom_col='geometry', ids=None, max_dist=None, **kwargs):
+    def from_dataframe(cls, df=None, network=None, ids=None, max_dist=None, **kwargs):
         """
         Make Network weights from a dataframe.
 
@@ -50,8 +49,6 @@ class NetworkW(W):
         df      :   pandas.DataFrame
                     a dataframe with a geometry column that can be used to
                     construct a W object
-        geom_col :   string
-                    column name of the geometry stored in df
         network:    pandana.Network
                     a pandana Network object (optionally created by `multimodal_from_bbox`). If none, the geodataframe's total_bounds
                     attribute will be used to download an openstreetmap pedestrian network covering the study area.
@@ -70,20 +67,25 @@ class NetworkW(W):
             try:
                 from pandana.loaders import osm
             except ImportError:
-                raise ImportError('You must have pandana installed to generate a Network')
-            assert 'epsg:4326' in df.crs.to_string(), "You must pass in an explicit pandana.Network object or provide a geodataframe in geographic (epsg:4326) coordinates"
+                raise ImportError(
+                    "You must have pandana installed to generate a Network"
+                )
+            assert (
+                "epsg:4326" in df.crs.to_string()
+            ), "You must pass in an explicit pandana.Network object or provide a geodataframe in geographic (epsg:4326) coordinates"
             network = osm.pdna_network_from_bbox(bbox=tuple(df.total_bounds))
 
-        if not geom_col == 'geometry':
-            df = df.set_geometry(geom_col)
-        adj = compute_travel_cost_adjlist(df, df, network, index_orig=ids, index_dest=ids)
-        if max_dist:
-            adj = adj[adj['cost'] <= max_dist]
-        return W.from_adjlist(adj, focal_col='origin', neighbor_col='destination', weight_col='cost')
+        adj = compute_travel_cost_adjlist(
+            df, df, network, index_orig=ids, max_dist=max_dist, index_dest=ids
+        )
+
+        return W.from_adjlist(
+            adj, focal_col="origin", neighbor_col="destination", weight_col="cost"
+        )
 
 
 def compute_travel_cost_adjlist(
-    origins, destinations, network, index_orig=None, index_dest=None
+    origins, destinations, network, index_orig=None, index_dest=None, max_dist=None
 ):
     """Generate travel cost adjacency list.
 
@@ -110,18 +112,23 @@ def compute_travel_cost_adjlist(
     origins["osm_ids"] = network.get_node_ids(
         origins.centroid.x, origins.centroid.y
     ).astype(int)
-    destinations["osm_ids"] = network.get_node_ids(
-        destinations.centroid.x, destinations.centroid.y
-    ).astype(int)
+
+    try:  #  only do the node lookup once if os and ds are same
+        assert_frame_equal(origins.drop(columns=['osm_ids']), destinations)
+        destinations["osm_ids"] = origins["osm_ids"].copy()
+    except Exception:
+        destinations["osm_ids"] = network.get_node_ids(
+            destinations.centroid.x, destinations.centroid.y
+        ).astype(int)
 
     ods = []
 
     if not index_orig:
-        origins['idx'] = origins.index.values
-        index_orig = 'idx'
+        origins["idx"] = origins.index.values
+        index_orig = "idx"
     if not index_dest:
-        destinations['idx'] = destinations.index.values
-        index_dest = 'idx'
+        destinations["idx"] = destinations.index.values
+        index_dest = "idx"
 
     # I dont think there's a way to do this in parallel, so we can at least show a progress bar
     with tqdm(total=len(origins["osm_ids"])) as pbar:
@@ -132,17 +139,15 @@ def compute_travel_cost_adjlist(
                 [d for d in destinations["osm_ids"]],
             )
             df["destination"] = destinations[index_dest].values
-            df["origin"] = origins[origins.osm_ids == origin][index_orig].values[
-                0
-            ]
+            df["origin"] = origins[origins.osm_ids == origin][index_orig].values[0]
+            if max_dist:
+                df = df[df["cost"] <= max_dist]
 
             ods.append(df)
             pbar.update(1)
 
-    combined = pd.concat(ods)
-
+    combined = pd.concat(ods).reset_index()
     return combined
-
 
 
 def multimodal_from_bbox(
@@ -153,7 +158,7 @@ def multimodal_from_bbox(
     excluded_feeds=None,
     transit_net_kwargs=None,
     headways=False,
-    additional_feeds=None
+    additional_feeds=None,
 ):
     """Generate a combined walk/transit pandana Network from a bounding box of latitudes and longitudes
 
@@ -189,17 +194,18 @@ def multimodal_from_bbox(
         import pandana as pdna
         import urbanaccess as ua
     except ImportError:
-        raise ImportError("You must have osmnet, pandana, and urbanaccess installed to use this function")
+        raise ImportError(
+            "You must have osmnet, pandana, and urbanaccess installed to use this function"
+        )
 
     assert bbox is not None, "You must provide a bounding box to collect network data"
     if not gtfs_dir:
-        gtfs_dir="./data/"
+        gtfs_dir = "./data/"
 
     if not transit_net_kwargs:
         transit_net_kwargs = dict(
             day="monday", timerange=["07:00:00", "10:00:00"], calendar_dates_lookup=None
         )
-
 
     # Get gtfs data
     feeds = feeds_from_bbox(bbox)
@@ -226,7 +232,6 @@ def multimodal_from_bbox(
     if save_gtfs:
         ua_to_h5(loaded_feeds, f"{gtfs_dir}/{save_gtfs}")
 
-
     # Get OSM data
     nodes, edges = osmnet.network_from_bbox(bbox=bbox)
     osm_network = pdna.Network(
@@ -235,10 +240,9 @@ def multimodal_from_bbox(
     if save_osm:
         osm_network.save_hdf5(save_osm)
 
-
     # Create the transit network
     ua.create_transit_net(gtfsfeeds_dfs=loaded_feeds, **transit_net_kwargs)
-    osm_network.nodes_df['id'] = osm_network.nodes_df.index
+    osm_network.nodes_df["id"] = osm_network.nodes_df.index
 
     ua.create_osm_net(
         osm_edges=osm_network.edges_df,
