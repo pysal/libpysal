@@ -69,26 +69,30 @@ class TestGetAngleBetween(unittest.TestCase):
 
 class TestIsCollinear(unittest.TestCase):
     def test_is_collinear(self):
-        self.assertEqual(True, is_collinear(Point((0, 0)), Point((
-            1, 1)), Point((5, 5))))
+        self.assertEqual(
+            True, is_collinear(Point((0, 0)), Point((1, 1)), Point((5, 5)))
+        )
 
     def test_is_collinear_expectFalse(self):
-        self.assertEqual(False, is_collinear(Point((0, 0)), Point((
-            1, 1)), Point((5, 0))))
+        self.assertEqual(
+            False, is_collinear(Point((0, 0)), Point((1, 1)), Point((5, 0)))
+        )
 
     def test_is_collinear_AlongX(self):
-        self.assertEqual(True, is_collinear(Point((0, 0)), Point((
-            1, 0)), Point((5, 0))))
+        self.assertEqual(
+            True, is_collinear(Point((0, 0)), Point((1, 0)), Point((5, 0)))
+        )
 
     def test_is_collinear_AlongY(self):
-        self.assertEqual(True, is_collinear(
-            Point((0, 0)), Point((0, 1)), Point((0, -1))))
+        self.assertEqual(
+            True, is_collinear(Point((0, 0)), Point((0, 1)), Point((0, -1)))
+        )
 
     def test_is_collinear_smallFloat(self):
         """
         Given: p1 = (0.1, 0.2), p2 = (0.2, 0.3), p3 = (0.3, 0.4)
 
-        Line(p1,p2):  y = mx + b
+        Line(p1, p2):  y = mx + b
             m = (0.3-0.2) / (0.2-0.1) = .1/.1 = 1
             y - mx = b
             b = 0.3 - 1*0.2 = 0.1
@@ -96,7 +100,7 @@ class TestIsCollinear(unittest.TestCase):
 
             y = 1*x + 0.1
 
-        Line(p2,p3): y = mx + b
+        Line(p2, p3): y = mx + b
             m = (0.4-0.3) / (0.3-0.2) = .1/.1 = 1
             y - mx = b
             b = 0.4 - 1*0.3 = 0.1
@@ -104,34 +108,46 @@ class TestIsCollinear(unittest.TestCase):
 
             y = 1*x + 0.1
 
-        Line(p1,p2) == Line(p2,p3)
-        Therefore p1,p2,p3 are collinear.
+        Line(p1, p2) == Line(p2 ,p3)
+        
+        Therefore ``p1, p2, p3`` are collinear.
 
         Due to floating point rounding areas the standard test,
+        
             ((p2[0]-p1[0])*(p3[1]-p1[1]) - (p2[1]-p1[1])*(p3[0]-p1[0])) == 0
-        will fail.  To get around this we use an epsilon.  numpy.finfo function
-        return an smallest epsilon for the given data types such that,
+        
+        will fail. To get around this we use an epsilon. The ``numpy.finfo``
+        function return an smallest epsilon for the given data types such that,
+        
             (numpy.finfo(float).eps + 1.0) != 1.0
 
         Therefore if
-            abs((p2[0]-p1[0])*(p3[1]-p1[1]) - (p2[1]-p1[1])*(
-                p3[0]-p1[0])) < numpy.finfo(p1[0]).eps
+        
+            abs(
+                (p2[0]-p1[0]) * (p3[1]-p1[1]) - (p2[1]-p1[1]) * (p3[0]-p1[0])
+            ) < numpy.finfo(p1[0]).eps
+        
         The points are collinear.
+        
         """
-        self.assertEqual(True, is_collinear(
-            Point((0.1, 0.2)), Point((0.2, 0.3)), Point((0.3, 0.4))))
+
+        self.assertEqual(
+            True, is_collinear(Point((0.1, 0.2)), Point((0.2, 0.3)), Point((0.3, 0.4)))
+        )
 
     def test_is_collinear_random(self):
         for i in range(10):
             a, b, c = np.random.random(3) * 10 ** (i)
-            self.assertEqual(True, is_collinear(
-                Point((a, a)), Point((b, b)), Point((c, c))))
+            self.assertEqual(
+                True, is_collinear(Point((a, a)), Point((b, b)), Point((c, c)))
+            )
 
     def test_is_collinear_random2(self):
         for i in range(1000):
             a, b, c = np.random.random(3)
-            self.assertEqual(True, is_collinear(
-                Point((a, a)), Point((b, b)), Point((c, c))))
+            self.assertEqual(
+                True, is_collinear(Point((a, a)), Point((b, b)), Point((c, c)))
+            )
 
 
 class TestGetSegmentsIntersect(unittest.TestCase):
@@ -146,9 +162,9 @@ class TestGetSegmentsIntersect(unittest.TestCase):
         self.assertEqual((0.0, 10.0), get_segments_intersect(seg1, seg2)[:])
 
     def test_get_segments_intersect_floats(self):
-        seg1 = LineSegment(Point((0, 0)), Point((0, .10)))
-        seg2 = LineSegment(Point((-.5, .05)), Point((.5, .05)))
-        self.assertEqual((0.0, .05), get_segments_intersect(seg1, seg2)[:])
+        seg1 = LineSegment(Point((0, 0)), Point((0, 0.10)))
+        seg2 = LineSegment(Point((-0.5, 0.05)), Point((0.5, 0.05)))
+        self.assertEqual((0.0, 0.05), get_segments_intersect(seg1, seg2)[:])
 
     def test_get_segments_intersect_angles(self):
         seg1 = LineSegment(Point((0, 0)), Point((1, 1)))
@@ -194,7 +210,7 @@ class TestGetSegmentPointIntersect(unittest.TestCase):
 
     def test_get_segment_point_intersect_angle(self):
         seg = LineSegment(Point((0, 0)), Point((1, 1)))
-        pt = Point((.1, .1))
+        pt = Point((0.1, 0.1))
         self.assertEqual(pt, get_segment_point_intersect(seg, pt))
 
     def test_get_segment_point_intersect_no_intersect(self):
@@ -208,44 +224,41 @@ class TestGetSegmentPointIntersect(unittest.TestCase):
         self.assertEqual(None, get_segment_point_intersect(seg, pt))
 
     def test_get_segment_point_intersect_floats(self):
-        seg = LineSegment(Point((0.3, 0.3)), Point((.9, .9)))
-        pt = Point((.5, .5))
+        seg = LineSegment(Point((0.3, 0.3)), Point((0.9, 0.9)))
+        pt = Point((0.5, 0.5))
         self.assertEqual(pt, get_segment_point_intersect(seg, pt))
 
     def test_get_segment_point_intersect_floats(self):
-        seg = LineSegment(Point((0.0, 0.0)), Point((
-            2.7071067811865475, 2.7071067811865475)))
+        seg = LineSegment(
+            Point((0.0, 0.0)), Point((2.7071067811865475, 2.7071067811865475))
+        )
         pt = Point((1.0, 1.0))
         self.assertEqual(pt, get_segment_point_intersect(seg, pt))
 
     def test_get_segment_point_intersect_floats_no_intersect(self):
-        seg = LineSegment(Point((0.3, 0.3)), Point((.9, .9)))
-        pt = Point((.1, .1))
+        seg = LineSegment(Point((0.3, 0.3)), Point((0.9, 0.9)))
+        pt = Point((0.1, 0.1))
         self.assertEqual(None, get_segment_point_intersect(seg, pt))
 
 
 class TestGetPolygonPointIntersect(unittest.TestCase):
     def test_get_polygon_point_intersect(self):
-        poly = Polygon([Point(
-            (0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+        poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         pt = Point((0.5, 0.5))
         self.assertEqual(pt, get_polygon_point_intersect(poly, pt))
 
     def test_get_polygon_point_intersect_on_edge(self):
-        poly = Polygon([Point(
-            (0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+        poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         pt = Point((1.0, 0.5))
         self.assertEqual(pt, get_polygon_point_intersect(poly, pt))
 
     def test_get_polygon_point_intersect_on_vertex(self):
-        poly = Polygon([Point(
-            (0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+        poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         pt = Point((1.0, 1.0))
         self.assertEqual(pt, get_polygon_point_intersect(poly, pt))
 
     def test_get_polygon_point_intersect_outside(self):
-        poly = Polygon([Point(
-            (0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+        poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         pt = Point((2.0, 2.0))
         self.assertEqual(None, get_polygon_point_intersect(poly, pt))
 
@@ -276,7 +289,7 @@ class TestGetRaySegmentIntersect(unittest.TestCase):
     def test_get_ray_segment_intersect(self):
         ray = Ray(Point((0, 0)), Point((0, 1)))
         seg = LineSegment(Point((-1, 10)), Point((1, 10)))
-        self.assertEqual((0.0, 10.), get_ray_segment_intersect(ray, seg)[:])
+        self.assertEqual((0.0, 10.0), get_ray_segment_intersect(ray, seg)[:])
 
     def test_get_ray_segment_intersect_orgin(self):
         ray = Ray(Point((0, 0)), Point((0, 1)))
@@ -304,15 +317,13 @@ class TestGetRectangleRectangleIntersection(unittest.TestCase):
         r0 = Rectangle(0, 4, 6, 9)
         r1 = Rectangle(4, 0, 9, 7)
         expected = [4.0, 4.0, 6.0, 7.0]
-        self.assertEqual(
-            expected, get_rectangle_rectangle_intersection(r0, r1)[:])
+        self.assertEqual(expected, get_rectangle_rectangle_intersection(r0, r1)[:])
 
     def test_get_rectangle_rectangle_intersection_topbottom(self):
         r0 = Rectangle(0, 0, 4, 4)
         r1 = Rectangle(2, 1, 6, 3)
         expected = [2.0, 1.0, 4.0, 3.0]
-        self.assertEqual(
-            expected, get_rectangle_rectangle_intersection(r0, r1)[:])
+        self.assertEqual(expected, get_rectangle_rectangle_intersection(r0, r1)[:])
 
     def test_get_rectangle_rectangle_intersection_nested(self):
         r0 = Rectangle(0, 0, 4, 4)
@@ -322,20 +333,23 @@ class TestGetRectangleRectangleIntersection(unittest.TestCase):
     def test_get_rectangle_rectangle_intersection_shared_corner(self):
         r0 = Rectangle(0, 0, 4, 4)
         r1 = Rectangle(4, 4, 8, 8)
-        self.assertEqual(Point(
-            (4, 4)), get_rectangle_rectangle_intersection(r0, r1))
+        self.assertEqual(Point((4, 4)), get_rectangle_rectangle_intersection(r0, r1))
 
     def test_get_rectangle_rectangle_intersection_shared_edge(self):
         r0 = Rectangle(0, 0, 4, 4)
         r1 = Rectangle(0, 4, 4, 8)
-        self.assertEqual(LineSegment(Point((0, 4)), Point(
-            (4, 4))), get_rectangle_rectangle_intersection(r0, r1))
+        self.assertEqual(
+            LineSegment(Point((0, 4)), Point((4, 4))),
+            get_rectangle_rectangle_intersection(r0, r1),
+        )
 
     def test_get_rectangle_rectangle_intersection_shifted_edge(self):
         r0 = Rectangle(0, 0, 4, 4)
         r1 = Rectangle(2, 4, 6, 8)
-        self.assertEqual(LineSegment(Point((2, 4)), Point(
-            (4, 4))), get_rectangle_rectangle_intersection(r0, r1))
+        self.assertEqual(
+            LineSegment(Point((2, 4)), Point((4, 4))),
+            get_rectangle_rectangle_intersection(r0, r1),
+        )
 
     def test_get_rectangle_rectangle_intersection_no_intersect(self):
         r0 = Rectangle(0, 0, 4, 4)
@@ -345,29 +359,25 @@ class TestGetRectangleRectangleIntersection(unittest.TestCase):
 
 class TestGetPolygonPointDist(unittest.TestCase):
     def test_get_polygon_point_dist(self):
-        poly = Polygon([Point(
-            (0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+        poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         pt = Point((2, 0.5))
         expected = 1.0
         self.assertEqual(expected, get_polygon_point_dist(poly, pt))
 
     def test_get_polygon_point_dist_inside(self):
-        poly = Polygon([Point(
-            (0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+        poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         pt = Point((0.5, 0.5))
         expected = 0.0
         self.assertEqual(expected, get_polygon_point_dist(poly, pt))
 
     def test_get_polygon_point_dist_on_vertex(self):
-        poly = Polygon([Point(
-            (0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+        poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         pt = Point((1.0, 1.0))
         expected = 0.0
         self.assertEqual(expected, get_polygon_point_dist(poly, pt))
 
     def test_get_polygon_point_dist_on_edge(self):
-        poly = Polygon([Point(
-            (0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
+        poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         pt = Point((0.5, 1.0))
         expected = 0.0
         self.assertEqual(expected, get_polygon_point_dist(poly, pt))
@@ -453,8 +463,10 @@ class TestGetPointAtAngleAndDist(unittest.TestCase):
 class TestConvexHull(unittest.TestCase):
     def test_convex_hull(self):
         points = [Point((0, 0)), Point((4, 4)), Point((4, 0)), Point((3, 1))]
-        self.assertEqual([Point((0.0, 0.0)), Point(
-            (4.0, 0.0)), Point((4.0, 4.0))], convex_hull(points))
+        self.assertEqual(
+            [Point((0.0, 0.0)), Point((4.0, 0.0)), Point((4.0, 4.0))],
+            convex_hull(points),
+        )
 
 
 class TestIsClockwise(unittest.TestCase):
@@ -467,51 +479,66 @@ class TestIsClockwise(unittest.TestCase):
         self.assertEqual(False, is_clockwise(vertices))
 
     def test_is_clockwise_big(self):
-        vertices = [(
-            -106.57798, 35.174143999999998), (-106.583412, 35.174141999999996),
-                    (-106.58417999999999, 35.174143000000001), (-106.58377999999999, 35.175542999999998),
-                    (-106.58287999999999, 35.180543), (
-                        -106.58263099999999, 35.181455),
-                    (-106.58257999999999, 35.181643000000001), (-106.58198299999999, 35.184615000000001),
-                    (-106.58148, 35.187242999999995), (
-                        -106.58127999999999, 35.188243),
-                    (-106.58138, 35.188243), (-106.58108, 35.189442999999997),
-                    (-106.58104, 35.189644000000001), (
-                        -106.58028, 35.193442999999995),
-                    (-106.580029, 35.194541000000001), (-106.57974399999999,
-                                                        35.195785999999998),
-                    (-106.579475, 35.196961999999999), (-106.57922699999999,
-                                                        35.198042999999998),
-                    (-106.578397, 35.201665999999996), (-106.57827999999999,
-                                                        35.201642999999997),
-                    (-106.57737999999999, 35.201642999999997), (-106.57697999999999, 35.201543000000001),
-                    (-106.56436599999999, 35.200311999999997), (
-                        -106.56058, 35.199942999999998),
-                    (-106.56048, 35.197342999999996), (
-                        -106.56048, 35.195842999999996),
-                    (-106.56048, 35.194342999999996), (
-                        -106.56048, 35.193142999999999),
-                    (-106.56048, 35.191873999999999), (
-                        -106.56048, 35.191742999999995),
-                    (-106.56048, 35.190242999999995), (-106.56037999999999,
-                                                       35.188642999999999),
-                    (-106.56037999999999, 35.187242999999995), (-106.56037999999999, 35.186842999999996),
-                    (-106.56037999999999, 35.186552999999996), (-106.56037999999999, 35.185842999999998),
-                    (-106.56037999999999, 35.184443000000002), (-106.56037999999999, 35.182943000000002),
-                    (-106.56037999999999, 35.181342999999998), (-106.56037999999999, 35.180433000000001),
-                    (-106.56037999999999, 35.179943000000002), (-106.56037999999999, 35.178542999999998),
-                    (-106.56037999999999, 35.177790999999999), (-106.56037999999999, 35.177143999999998),
-                    (-106.56037999999999, 35.175643999999998), (-106.56037999999999, 35.174444000000001),
-                    (-106.56037999999999, 35.174043999999995), (
-                        -106.560526, 35.174043999999995),
-                    (-106.56478, 35.174043999999995), (-106.56627999999999,
-                                                       35.174143999999998),
-                    (-106.566541, 35.174144999999996), (
-                        -106.569023, 35.174157000000001),
-                    (-106.56917199999999, 35.174157999999998), (
-                        -106.56938, 35.174143999999998),
-                    (-106.57061499999999, 35.174143999999998), (-106.57097999999999, 35.174143999999998),
-                    (-106.57679999999999, 35.174143999999998), (-106.57798, 35.174143999999998)]
+        vertices = [
+            (-106.57798, 35.174143999999998),
+            (-106.583412, 35.174141999999996),
+            (-106.58417999999999, 35.174143000000001),
+            (-106.58377999999999, 35.175542999999998),
+            (-106.58287999999999, 35.180543),
+            (-106.58263099999999, 35.181455),
+            (-106.58257999999999, 35.181643000000001),
+            (-106.58198299999999, 35.184615000000001),
+            (-106.58148, 35.187242999999995),
+            (-106.58127999999999, 35.188243),
+            (-106.58138, 35.188243),
+            (-106.58108, 35.189442999999997),
+            (-106.58104, 35.189644000000001),
+            (-106.58028, 35.193442999999995),
+            (-106.580029, 35.194541000000001),
+            (-106.57974399999999, 35.195785999999998),
+            (-106.579475, 35.196961999999999),
+            (-106.57922699999999, 35.198042999999998),
+            (-106.578397, 35.201665999999996),
+            (-106.57827999999999, 35.201642999999997),
+            (-106.57737999999999, 35.201642999999997),
+            (-106.57697999999999, 35.201543000000001),
+            (-106.56436599999999, 35.200311999999997),
+            (-106.56058, 35.199942999999998),
+            (-106.56048, 35.197342999999996),
+            (-106.56048, 35.195842999999996),
+            (-106.56048, 35.194342999999996),
+            (-106.56048, 35.193142999999999),
+            (-106.56048, 35.191873999999999),
+            (-106.56048, 35.191742999999995),
+            (-106.56048, 35.190242999999995),
+            (-106.56037999999999, 35.188642999999999),
+            (-106.56037999999999, 35.187242999999995),
+            (-106.56037999999999, 35.186842999999996),
+            (-106.56037999999999, 35.186552999999996),
+            (-106.56037999999999, 35.185842999999998),
+            (-106.56037999999999, 35.184443000000002),
+            (-106.56037999999999, 35.182943000000002),
+            (-106.56037999999999, 35.181342999999998),
+            (-106.56037999999999, 35.180433000000001),
+            (-106.56037999999999, 35.179943000000002),
+            (-106.56037999999999, 35.178542999999998),
+            (-106.56037999999999, 35.177790999999999),
+            (-106.56037999999999, 35.177143999999998),
+            (-106.56037999999999, 35.175643999999998),
+            (-106.56037999999999, 35.174444000000001),
+            (-106.56037999999999, 35.174043999999995),
+            (-106.560526, 35.174043999999995),
+            (-106.56478, 35.174043999999995),
+            (-106.56627999999999, 35.174143999999998),
+            (-106.566541, 35.174144999999996),
+            (-106.569023, 35.174157000000001),
+            (-106.56917199999999, 35.174157999999998),
+            (-106.56938, 35.174143999999998),
+            (-106.57061499999999, 35.174143999999998),
+            (-106.57097999999999, 35.174143999999998),
+            (-106.57679999999999, 35.174143999999998),
+            (-106.57798, 35.174143999999998),
+        ]
         self.assertEqual(True, is_clockwise(vertices))
 
 
@@ -539,51 +566,45 @@ class TestPointTouchesRectangle(unittest.TestCase):
 
 class TestGetSharedSegments(unittest.TestCase):
     def test_get_shared_segments(self):
-        poly1 = Polygon([Point(
-            (0, 0)), Point((0, 1)), Point((1, 1)), Point((1, 0))])
-        poly2 = Polygon([Point(
-            (1, 0)), Point((1, 1)), Point((2, 1)), Point((2, 0))])
-        poly3 = Polygon([Point(
-            (0, 1)), Point((0, 2)), Point((1, 2)), Point((1, 1))])
-        poly4 = Polygon([Point(
-            (1, 1)), Point((1, 2)), Point((2, 2)), Point((2, 1))])
-        self.assertEqual(
-            True, get_shared_segments(poly1, poly2, bool_ret=True))
-        self.assertEqual(
-            True, get_shared_segments(poly1, poly3, bool_ret=True))
-        self.assertEqual(
-            True, get_shared_segments(poly3, poly4, bool_ret=True))
-        self.assertEqual(
-            True, get_shared_segments(poly4, poly2, bool_ret=True))
+        poly1 = Polygon([Point((0, 0)), Point((0, 1)), Point((1, 1)), Point((1, 0))])
+        poly2 = Polygon([Point((1, 0)), Point((1, 1)), Point((2, 1)), Point((2, 0))])
+        poly3 = Polygon([Point((0, 1)), Point((0, 2)), Point((1, 2)), Point((1, 1))])
+        poly4 = Polygon([Point((1, 1)), Point((1, 2)), Point((2, 2)), Point((2, 1))])
+        self.assertEqual(True, get_shared_segments(poly1, poly2, bool_ret=True))
+        self.assertEqual(True, get_shared_segments(poly1, poly3, bool_ret=True))
+        self.assertEqual(True, get_shared_segments(poly3, poly4, bool_ret=True))
+        self.assertEqual(True, get_shared_segments(poly4, poly2, bool_ret=True))
 
-        self.assertEqual(
-            False, get_shared_segments(poly1, poly4, bool_ret=True))
-        self.assertEqual(
-            False, get_shared_segments(poly3, poly2, bool_ret=True))
+        self.assertEqual(False, get_shared_segments(poly1, poly4, bool_ret=True))
+        self.assertEqual(False, get_shared_segments(poly3, poly2, bool_ret=True))
 
     def test_get_shared_segments_non_bool(self):
-        poly1 = Polygon([Point(
-            (0, 0)), Point((0, 1)), Point((1, 1)), Point((1, 0))])
-        poly2 = Polygon([Point(
-            (1, 0)), Point((1, 1)), Point((2, 1)), Point((2, 0))])
-        poly3 = Polygon([Point(
-            (0, 1)), Point((0, 2)), Point((1, 2)), Point((1, 1))])
-        poly4 = Polygon([Point(
-            (1, 1)), Point((1, 2)), Point((2, 2)), Point((2, 1))])
-        self.assertEqual(LineSegment(Point((1, 0)), Point((1, 1))),
-                         get_shared_segments(poly1, poly2)[0])
-        self.assertEqual(LineSegment(Point((0, 1)), Point((1, 1))),
-                         get_shared_segments(poly1, poly3)[0])
-        self.assertEqual(LineSegment(Point((1, 2)), Point((1, 1))),
-                         get_shared_segments(poly3, poly4)[0])
-        self.assertEqual(LineSegment(Point((2, 1)), Point((1, 1))),
-                         get_shared_segments(poly4, poly2)[0])
-        #expected =  [LineSegment(Point((1, 1)), Point((1, 0)))]
-        #assert expected == get_shared_segments(poly1, poly3)
-        #expected =  [LineSegment(Point((1, 1)), Point((1, 0)))]
-        #assert expected == get_shared_segments(poly3, poly4)
-        #expected =  [LineSegment(Point((1, 1)), Point((1, 0)))]
-        #assert expected == get_shared_segments(poly4, poly2)
+        poly1 = Polygon([Point((0, 0)), Point((0, 1)), Point((1, 1)), Point((1, 0))])
+        poly2 = Polygon([Point((1, 0)), Point((1, 1)), Point((2, 1)), Point((2, 0))])
+        poly3 = Polygon([Point((0, 1)), Point((0, 2)), Point((1, 2)), Point((1, 1))])
+        poly4 = Polygon([Point((1, 1)), Point((1, 2)), Point((2, 2)), Point((2, 1))])
+        self.assertEqual(
+            LineSegment(Point((1, 0)), Point((1, 1))),
+            get_shared_segments(poly1, poly2)[0],
+        )
+        self.assertEqual(
+            LineSegment(Point((0, 1)), Point((1, 1))),
+            get_shared_segments(poly1, poly3)[0],
+        )
+        self.assertEqual(
+            LineSegment(Point((1, 2)), Point((1, 1))),
+            get_shared_segments(poly3, poly4)[0],
+        )
+        self.assertEqual(
+            LineSegment(Point((2, 1)), Point((1, 1))),
+            get_shared_segments(poly4, poly2)[0],
+        )
+        # expected =  [LineSegment(Point((1, 1)), Point((1, 0)))]
+        # assert expected == get_shared_segments(poly1, poly3)
+        # expected =  [LineSegment(Point((1, 1)), Point((1, 0)))]
+        # assert expected == get_shared_segments(poly3, poly4)
+        # expected =  [LineSegment(Point((1, 1)), Point((1, 0)))]
+        # assert expected == get_shared_segments(poly4, poly2)
 
 
 class TestDistanceMatrix(unittest.TestCase):
@@ -597,5 +618,6 @@ class TestDistanceMatrix(unittest.TestCase):
                 d = ((x - X) ** 2 + (y - Y) ** 2) ** (0.5)
                 self.assertEqual(dist[i, j], d)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

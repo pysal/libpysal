@@ -16,6 +16,7 @@ import pandas
 from bs4 import BeautifulSoup
 from ..io import open as ps_open
 
+
 from typing import Union
 
 PYSALDATA = "pysal_data"
@@ -27,12 +28,12 @@ def get_data_home():
     Alternatively, it can be set by the 'PYSALDATA' environment variable or programmatically
     by giving an explicit folder path. The ``'~'`` symbol is expanded to the user home
     folder If the folder does not already exist, it is automatically created.
-    
+
     Returns
     -------
     data_home : str
         The system path where the data is/will be stored.
-     
+
     """
 
     data_home = environ.get("PYSALDATA", join("~", PYSALDATA))
@@ -44,23 +45,24 @@ def get_data_home():
 
 def get_list_of_files(dir_name):
     """Create a list of files and sub-directories in ``dir_name``.
-    
+
     Parameters
     ----------
     dir_name : str
         The path to the directory or examples.
-    
+
     Returns
     -------
     all_files : list
         All file and directory paths.
-    
+
     Raises
     ------
     FileNotFoundError
         If the file or directory is not found.
-    
+
     """
+
     # names in the given directory
     all_files = list()
     try:
@@ -110,7 +112,7 @@ class Example:
         The URL to download the dataset.
     explain_url : str
         The URL to the dataset's READEME file.
-    
+
     Attributes
     ----------
     root : str
@@ -119,7 +121,7 @@ class Example:
         ``True`` if the example is installed, otherwise ``False``.
     zipfile : zipfile.ZipFile
         The archived dataset.
-    
+
     """
 
     def __init__(self, name, description, n, k, download_url, explain_url):
@@ -242,7 +244,7 @@ class Examples:
             data=rows, columns=["Name", "Description", "Installed"]
         )
         datasets.style.set_properties(subset=["text"], **{"width": "300px"})
-        print(datasets.to_string())
+        print(datasets.to_string(max_colwidth=60))
 
     def load(self, example_name: str) -> Example:
         """Load example dataset, download if not locally available."""

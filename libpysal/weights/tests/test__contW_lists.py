@@ -14,11 +14,10 @@ except ImportError:
 from ... import examples as pysal_examples
 
 
-
 class TestContiguityWeights(unittest.TestCase):
     def setUp(self):
         """ Setup the binning contiguity weights"""
-        shpObj = ps_open(pysal_examples.get_path('virginia.shp'), 'r')
+        shpObj = ps_open(pysal_examples.get_path("virginia.shp"), "r")
         self.binningW = ContiguityWeightsLists(shpObj, QUEEN)
         shpObj.close()
 
@@ -32,17 +31,17 @@ class TestContiguityWeights(unittest.TestCase):
         self.assertEqual(ROOK, 2)
 
     def test_ContiguityWeightsLists(self):
-        self.assertTrue(hasattr(self.binningW, 'w'))
+        self.assertTrue(hasattr(self.binningW, "w"))
         self.assertTrue(issubclass(dict, type(self.binningW.w)))
         self.assertEqual(len(self.binningW.w), 136)
 
     def test_nested_polygons(self):
         # load queen gal file created using Open Geoda.
-        geodaW = ps_open(
-            pysal_examples.get_path('virginia.gal'), 'r').read()
+        geodaW = ps_open(pysal_examples.get_path("virginia.gal"), "r").read()
         # build matching W with pysal
         pysalWb = self.build_W(
-            pysal_examples.get_path('virginia.shp'), QUEEN, 'POLY_ID')
+            pysal_examples.get_path("virginia.shp"), QUEEN, "POLY_ID"
+        )
         # compare output.
         for key in geodaW.neighbors:
             geoda_neighbors = list(map(int, geodaW.neighbors[key]))
@@ -53,11 +52,10 @@ class TestContiguityWeights(unittest.TestCase):
 
     def test_true_rook(self):
         # load queen gal file created using Open Geoda.
-        geodaW = ps_open(pysal_examples.get_path('rook31.gal'), 'r').read()
+        geodaW = ps_open(pysal_examples.get_path("rook31.gal"), "r").read()
         # build matching W with pysal
-        #pysalW = pysal.rook_from_shapefile(pysal_examples.get_path('rook31.shp'),','POLY_ID')
-        pysalWb = self.build_W(
-            pysal_examples.get_path('rook31.shp'), ROOK, 'POLY_ID')
+        # pysalW = pysal.rook_from_shapefile(pysal_examples.get_path('rook31.shp'),','POLY_ID')
+        pysalWb = self.build_W(pysal_examples.get_path("rook31.shp"), ROOK, "POLY_ID")
         # compare output.
         for key in geodaW.neighbors:
             geoda_neighbors = list(map(int, geodaW.neighbors[key]))
@@ -69,12 +67,11 @@ class TestContiguityWeights(unittest.TestCase):
     def test_true_rook2(self):
         # load queen gal file created using Open Geoda.
 
-        stl = pysal_examples.load_example('stl')
-        gal_file = test_file = stl.get_path('stl_hom_rook.gal')
-        geodaW = ps_open(gal_file, 'r').read()
+        stl = pysal_examples.load_example("stl")
+        gal_file = test_file = stl.get_path("stl_hom_rook.gal")
+        geodaW = ps_open(gal_file, "r").read()
         # build matching W with pysal
-        pysalWb = self.build_W(stl.get_path(
-            'stl_hom.shp'), ROOK, 'POLY_ID_OG')
+        pysalWb = self.build_W(stl.get_path("stl_hom.shp"), ROOK, "POLY_ID_OG")
         # compare output.
         for key in geodaW.neighbors:
             geoda_neighbors = list(map(int, geodaW.neighbors[key]))
@@ -85,11 +82,9 @@ class TestContiguityWeights(unittest.TestCase):
 
     def test_true_rook3(self):
         # load queen gal file created using Open Geoda.
-        geodaW = ps_open(
-            pysal_examples.get_path('virginia_rook.gal'), 'r').read()
+        geodaW = ps_open(pysal_examples.get_path("virginia_rook.gal"), "r").read()
         # build matching W with pysal
-        pysalWb = self.build_W(
-            pysal_examples.get_path('virginia.shp'), ROOK, 'POLY_ID')
+        pysalWb = self.build_W(pysal_examples.get_path("virginia.shp"), ROOK, "POLY_ID")
         # compare output.
         for key in geodaW.neighbors:
             geoda_neighbors = list(map(int, geodaW.neighbors[key]))
@@ -98,21 +93,23 @@ class TestContiguityWeights(unittest.TestCase):
             pysalb_neighbors.sort()
             self.assertEqual(geoda_neighbors, pysalb_neighbors)
 
-    @unittest.skipIf(gpd is None, 'geopandas is missing in the testing environment')
+    @unittest.skipIf(gpd is None, "geopandas is missing in the testing environment")
     def test_shapely(self):
-        pysalneighbs = ContiguityWeightsLists(ps_open(
-            pysal_examples.get_path('virginia.shp')), ROOK)
-        gdf = gpd.read_file(pysal_examples.get_path('virginia.shp')) 
+        pysalneighbs = ContiguityWeightsLists(
+            ps_open(pysal_examples.get_path("virginia.shp")), ROOK
+        )
+        gdf = gpd.read_file(pysal_examples.get_path("virginia.shp"))
         shplyneighbs = ContiguityWeightsLists(gdf.geometry.tolist(), ROOK)
         self.assertEqual(pysalneighbs.w, shplyneighbs.w)
-        pysalneighbs = ContiguityWeightsLists(ps_open(
-            pysal_examples.get_path('virginia.shp')), QUEEN)
+        pysalneighbs = ContiguityWeightsLists(
+            ps_open(pysal_examples.get_path("virginia.shp")), QUEEN
+        )
         shplyneighbs = ContiguityWeightsLists(gdf.geometry.tolist(), QUEEN)
         self.assertEqual(pysalneighbs.w, shplyneighbs.w)
 
     def build_W(self, shapefile, type, idVariable=None):
         """ Building 2 W's the hard way.  We need to do this so we can test both rtree and binning """
-        dbname = os.path.splitext(shapefile)[0] + '.dbf'
+        dbname = os.path.splitext(shapefile)[0] + ".dbf"
         db = ps_open(dbname)
         shpObj = ps_open(shapefile)
         neighbor_data = ContiguityWeightsLists(shpObj, type).w
@@ -134,9 +131,10 @@ class TestContiguityWeights(unittest.TestCase):
             binningW = W(neighbors)
         return binningW
 
-#suite = unittest.TestLoader().loadTestsFromTestCase(_TestContiguityWeights)
 
-if __name__ == '__main__':
-    #runner = unittest.TextTestRunner()
-    #runner.run(suite)
+# suite = unittest.TestLoader().loadTestsFromTestCase(_TestContiguityWeights)
+
+if __name__ == "__main__":
+    # runner = unittest.TextTestRunner()
+    # runner.run(suite)
     unittest.main()

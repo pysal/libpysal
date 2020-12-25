@@ -10,7 +10,12 @@ from ..io.fileio import FileIO as ps_open
 from .. import cg
 import numpy as np
 
-__all__ = ['min_threshold_dist_from_shapefile', 'build_lattice_shapefile', 'spw_from_gal']
+__all__ = [
+    "min_threshold_dist_from_shapefile",
+    "build_lattice_shapefile",
+    "spw_from_gal",
+]
+
 
 def spw_from_gal(galfile):
     """
@@ -40,7 +45,8 @@ def spw_from_gal(galfile):
 
     """
 
-    return ps_open(galfile, 'r').read(sparse=True)
+    return ps_open(galfile, "r").read(sparse=True)
+
 
 def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     """
@@ -111,13 +117,13 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
     None
 
     """
-    if not outFileName.endswith('.shp'):
+    if not outFileName.endswith(".shp"):
         raise ValueError("outFileName must end with .shp")
-    o = ps_open(outFileName, 'w')
+    o = ps_open(outFileName, "w")
     dbf_name = outFileName.split(".")[0] + ".dbf"
-    d = ps_open(dbf_name, 'w')
-    d.header = [ 'ID' ]
-    d.field_spec = [ ('N', 8, 0) ]
+    d = ps_open(dbf_name, "w")
+    d.header = ["ID"]
+    d.field_spec = [("N", 8, 0)]
     c = 0
     for i in range(ncols):
         for j in range(nrows):
@@ -131,14 +137,17 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
     d.close()
     o.close()
 
+
 def _test():
     import doctest
+
     # the following line could be used to define an alternative to the '<BLANKLINE>' flag
-    #doctest.BLANKLINE_MARKER = 'something better than <BLANKLINE>'
-    start_suppress = np.get_printoptions()['suppress']
+    # doctest.BLANKLINE_MARKER = 'something better than <BLANKLINE>'
+    start_suppress = np.get_printoptions()["suppress"]
     np.set_printoptions(suppress=True)
     doctest.testmod()
     np.set_printoptions(suppress=start_suppress)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     _test()

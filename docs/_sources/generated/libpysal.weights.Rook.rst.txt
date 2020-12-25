@@ -31,6 +31,7 @@ libpysal.weights.Rook
       ~Rook.symmetrize
       ~Rook.to_WSP
       ~Rook.to_adjlist
+      ~Rook.to_file
       ~Rook.to_networkx
    
    

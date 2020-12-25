@@ -31,6 +31,7 @@ libpysal.weights.Queen
       ~Queen.symmetrize
       ~Queen.to_WSP
       ~Queen.to_adjlist
+      ~Queen.to_file
       ~Queen.to_networkx
    
    
