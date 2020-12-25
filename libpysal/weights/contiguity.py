@@ -192,12 +192,15 @@ class Rook(W):
         z_value=None,
         coords_labels={},
         k=1,
-        include_nas=False,
+        include_nodata=False,
+        n_jobs=1,
         sparse=True,
         **kwargs,
     ):
         """
-        Construct a weights object from a xarray.DataArray.
+        Construct a weights object from a xarray.DataArray with an additional
+        attribute index containing coordinates values of the raster
+        in the form of Pandas.Index/MultiIndex.
 
         Parameters
         ----------
@@ -215,12 +218,13 @@ class Rook(W):
         k : int
             Order of contiguity, this will select all neighbors upto kth order.
             Default is 1.
-        include_nas : boolean
+        include_nodata : boolean
             If True, missing values will be assumed as non-missing when
             selecting higher_order neighbors, Default is False
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
             all available cores are used.
+            Default is 1.
         **kwargs : keyword arguments
             optional arguments passed when sparse = False
 
@@ -235,9 +239,9 @@ class Rook(W):
         :class:`libpysal.weights.weights.WSP`
         """
         if sparse:
-            w = da2WSP(da, "rook", z_value, coords_labels, k, include_nas)
+            w = da2WSP(da, "rook", z_value, coords_labels, k, include_nodata)
         else:
-            w = da2W(da, "rook", z_value, coords_labels, k, include_nas, **kwargs)
+            w = da2W(da, "rook", z_value, coords_labels, k, include_nodata, **kwargs)
         return w
 
 
@@ -413,12 +417,15 @@ class Queen(W):
         z_value=None,
         coords_labels={},
         k=1,
-        include_nas=False,
+        include_nodata=False,
+        n_jobs=1,
         sparse=True,
         **kwargs,
     ):
         """
-        Construct a weights object from a xarray.DataArray.
+        Construct a weights object from a xarray.DataArray with an additional
+        attribute index containing coordinates values of the raster
+        in the form of Pandas.Index/MultiIndex.
 
         Parameters
         ----------
@@ -436,12 +443,13 @@ class Queen(W):
         k : int
             Order of contiguity, this will select all neighbors upto kth order.
             Default is 1.
-        include_nas : boolean
+        include_nodata : boolean
             If True, missing values will be assumed as non-missing when
             selecting higher_order neighbors, Default is False
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
             all available cores are used.
+            Default is 1.
         **kwargs : keyword arguments
             optional arguments passed when sparse = False
 
@@ -456,9 +464,9 @@ class Queen(W):
         :class:`libpysal.weights.weights.WSP`
         """
         if sparse:
-            w = da2WSP(da, "queen", z_value, coords_labels, k, include_nas)
+            w = da2WSP(da, "queen", z_value, coords_labels, k, include_nodata)
         else:
-            w = da2W(da, "queen", z_value, coords_labels, k, include_nas, **kwargs)
+            w = da2W(da, "queen", z_value, coords_labels, k, include_nodata, **kwargs)
         return w
 
 

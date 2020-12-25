@@ -17,12 +17,14 @@ def da2W(
     z_value=None,
     coords_labels={},
     k=1,
-    include_nas=False,
+    include_nodata=False,
     n_jobs=1,
     **kwargs,
 ):
     """
-    Create a W object from xarray.DataArray
+    Create a W object from xarray.DataArray with an additional
+    attribute index containing coordinates values of the raster
+    in the form of Pandas.Index/MultiIndex.
 
     Parameters
     ----------
@@ -40,12 +42,13 @@ def da2W(
     k : int
         Order of contiguity, this will select all neighbors upto kth order.
         Default is 1.
-    include_nas : boolean
+    include_nodata : boolean
         If True, missing values will be assumed as non-missing when
         selecting higher_order neighbors, Default is False
     n_jobs : int
         Number of cores to be used in the sparse weight construction. If -1,
         all available cores are used.
+        Default is 1.
     **kwargs : keyword arguments
         Optional arguments for :class:`libpysal.weights.W`
 
@@ -86,7 +89,7 @@ def da2W(
     --------
     :class:`libpysal.weights.weights.W`
     """
-    wsp = da2WSP(da, criterion, z_value, coords_labels, k, include_nas, n_jobs)
+    wsp = da2WSP(da, criterion, z_value, coords_labels, k, include_nodata, n_jobs)
     w = wsp.to_W(**kwargs)
 
     # temp addition of index attribute
@@ -100,11 +103,13 @@ def da2WSP(
     z_value=None,
     coords_labels={},
     k=1,
-    include_nas=False,
+    include_nodata=False,
     n_jobs=1,
 ):
     """
-    Create a WSP object from xarray.DataArray
+    Create a WSP object from xarray.DataArray with an additional
+    attribute index containing coordinates values of the raster
+    in the form of Pandas.Index/MultiIndex.
 
     Parameters
     ----------
@@ -122,12 +127,13 @@ def da2WSP(
     k : int
         Order of contiguity, this will select all neighbors upto kth order.
         Default is 1.
-    include_nas : boolean
+    include_nodata : boolean
         If True, missing values will be assumed as non-missing when
         selecting higher_order neighbors, Default is False
     n_jobs : int
         Number of cores to be used in the sparse weight construction. If -1,
         all available cores are used.
+        Default is 1.
 
     Returns
     -------
@@ -194,10 +200,10 @@ def da2WSP(
     except (ModuleNotFoundError, ImportError):
         warn(
             "numba cannot be imported, parallel processing "
-            "and include_nas functionality will be disabled. "
-            "falling back to inefficient method"
+            "and include_nodata functionality will be disabled. "
+            "falling back to slower method"
         )
-        include_nas = False
+        include_nodata = False
         # Fallback method to build sparse matrix
         sw = lat2SW(*shape, criterion)
         if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
@@ -205,7 +211,7 @@ def da2WSP(
             sw = sw[:, mask]
 
     else:
-        k_nas = k if include_nas else 1
+        k_nas = k if include_nodata else 1
 
         if n_jobs != 1:
             try:
@@ -234,25 +240,20 @@ def da2WSP(
             shape=(n, n),
             dtype=np.int8,
         )
-        del sw_tup
+
     # Higher_order functionality, this uses idea from
     # libpysal#313 for adding higher order neighbors.
     # Since diagonal elements are also added in the result,
     # this method set the diagonal elements to zero and
     # then eliminate zeros from the data. This changes the
     # sparcity of the csr_matrix !!
-    if k > 1 and not include_nas:
+    if k > 1 and not include_nodata:
         sw = sum(map(lambda x: sw ** x, range(1, k + 1)))
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
-
-    # Since a raster can contain missing data, and some
-    # of the functionality in pysal uses id_order property.
-    # Therefore, ids array is shipped to the WSP builder
-    # as this contains ids of only non-missing values which
-    # differ from range(len(ids)).
-    wsp = WSP(sw, index=ser.index, id_order=ids.tolist())
+    index = ser.index
+    wsp = WSP(sw, index=index, id_order=index.tolist())
     return wsp
 
 
@@ -294,7 +295,7 @@ def w2da(data, w, attrs={}, coords=None):
         da = _index2da(data, w.index, attrs, coords)
     else:
         raise AttributeError(
-            "Cannot convert deprecated W with no index attribute")
+            "This method requires to include a `index` attribute that is built as a `pandas.MultiIndex` object.")
     return da
 
 
@@ -336,8 +337,7 @@ def wsp2da(data, wsp, attrs={}, coords=None):
         da = _index2da(data, wsp.index, attrs, coords)
     else:
         raise AttributeError(
-            "Cannot convert deprecated wsp object with no index attribute"
-        )
+            "This method requires to include a `index` attribute that is built as a `pandas.MultiIndex` object.")
     return da
 
 
@@ -450,7 +450,7 @@ def _da_checker(da, z_value, coords_labels):
         z_id = 1
         if z_value is None:
             if da.sizes[def_labels["z_label"]] != 1:
-                warn(f"Multiple layers detected. Using first layer as default.")
+                warn("Multiple layers detected. Using first layer as default.")
         else:
             z_id += tuple(da[def_labels["z_label"]]).index(z_value)
     else:
@@ -575,9 +575,9 @@ def _SWbuilder(
         1D ones array containing columns value of each id
         in the sparse weight object
     """
-    rows, cols, ni = _compute_chunk(
+    rows, cols = _compute_chunk(
         nrows, ncols, ids, id_map, criterion, k, dtype)
-    data = np.ones(ni, dtype=np.int8)
+    data = np.ones_like(rows, dtype=np.int8)
     return (data, (rows, cols))
 
 
@@ -703,7 +703,7 @@ def _compute_chunk(
                             ni += 1
                             rows[ni], cols[ni] = id_neighbor, og_id
                             ni += 1
-    return rows[:ni], cols[:ni], ni
+    return rows[:ni], cols[:ni]
 
 
 @jit(nopython=True, fastmath=True)
@@ -784,7 +784,8 @@ def _parSWbuilder(
                                     ids, id_map, criterion, k, dtype)
             for ids in chunk
         )
-    data = np.ones(np.sum([i[2] for i in worker_out]), dtype=np.int8)
-    rows = np.concatenate([i[0] for i in worker_out])
-    cols = np.concatenate([i[1] for i in worker_out])
+    rows, cols = zip(*worker_out)
+    rows = np.concatenate(rows)
+    cols = np.concatenate(cols)
+    data = np.ones_like(rows, dtype = np.int8)
     return (data, (rows, cols))

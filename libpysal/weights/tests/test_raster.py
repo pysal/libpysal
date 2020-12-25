@@ -16,8 +16,8 @@ class Testraster(unittest.TestCase):
 
     def test_da2W(self):
         w1 = raster.da2W(self.da1, "queen", k=2, n_jobs=-1)
-        self.assertEqual(w1[13], {11: 1, 14: 1, 8: 1})
-        self.assertEqual(w1[14], {8: 1, 13: 1, 11: 1})
+        self.assertEqual(w1[(1, -30.0, -180.0)], {(1, -90.0, 60.0): 1, (1, -90.0, -60.0): 1})
+        self.assertEqual(w1[(1, -30.0, 180.0)], {(1, -90.0, -60.0): 1, (1, -90.0, 60.0): 1})
         self.assertEqual(w1.n, 5)
         self.assertEqual(w1.index.names, self.da1.to_series().index.names)
         self.assertEqual(w1.index.tolist()[0], (1, 90.0, 180.0))
@@ -25,8 +25,8 @@ class Testraster(unittest.TestCase):
         self.assertEqual(w1.index.tolist()[2], (1, -30.0, 180.0))
         self.assertEqual(w1.index.tolist()[3], (1, -90.0, -60.0))
         w2 = raster.da2W(self.da2, "rook")
-        self.assertEqual(w2[6], {10: 1, 7: 1, 2: 1, 5: 1})
-        self.assertEqual(sorted(w2.neighbors[2]), [1, 3, 6])
+        self.assertEqual(sorted(w2.neighbors[(1, -90.0, 180.0)]), [(1, -90.0, 60.0), (1, -30.0, 180.0)])
+        self.assertEqual(sorted(w2.neighbors[(1, -90.0, 60.0)]), [(1, -90.0, -60.0), (1, -90.0, 180.0), (1, -30.0, 60.0)])
         self.assertEqual(w2.n, 16)
         self.assertEqual(w2.index.names, self.da2.to_series().index.names)
         self.assertEqual(w2.index.tolist(), self.da2.to_series().index.tolist())
@@ -36,8 +36,7 @@ class Testraster(unittest.TestCase):
             "x_label": "longitude",
         }
         w3 = raster.da2W(self.da3, z_value=1, coords_labels=coords_labels)
-        self.assertEqual(w3[6], {11: 1, 9: 1, 10: 1, 7: 1, 1: 1, 3: 1, 2: 1, 5: 1})
-        self.assertEqual(sorted(w3.neighbors[2]), [1, 3, 5, 6, 7])
+        self.assertEqual(sorted(w3.neighbors[(1, -90.0, 180.0)]), [(1, -90.0, 60.0), (1, -30.0, 60.0), (1, -30.0, 180.0)])
         self.assertEqual(w3.n, 16)
         self.assertEqual(w3.index.names, self.da3.to_series().index.names)
         self.assertEqual(w3.index.tolist(), self.da3.to_series().index.tolist())
@@ -56,7 +55,7 @@ class Testraster(unittest.TestCase):
         self.assertEqual(w1.index.tolist()[1], (1, -30.0, -180.0))
         self.assertEqual(w1.index.tolist()[2], (1, -30.0, 180.0))
         self.assertEqual(w1.index.tolist()[3], (1, -90.0, -60.0))
-        w2 = raster.da2W(self.da2, "queen", k=2, include_nas=True, n_jobs=-1)
+        w2 = raster.da2W(self.da2, "queen", k=2, include_nodata=True, n_jobs=-1)
         w3 = raster.da2W(self.da2, "queen", k=2, n_jobs=-1)
         self.assertEqual(w2.sparse.nnz, w3.sparse.nnz)
         self.assertEqual(w2.sparse.todense().tolist(), w3.sparse.todense().tolist())
