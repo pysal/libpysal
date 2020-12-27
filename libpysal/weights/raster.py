@@ -3,8 +3,23 @@ from .weights import WSP, W
 import numpy as np
 from warnings import warn
 import os
+import sys
 from scipy import sparse
-from ..common import jit
+
+if os.path.basename(sys.argv[0]) in ('pytest', 'py.test'):
+
+    def jit(*dec_args, **dec_kwargs):
+        """
+        decorator mimicking numba.jit
+        """
+
+        def intercepted_function(f, *f_args, **f_kwargs):
+            return f
+
+        return intercepted_function
+
+else:
+    from ..common import jit
 
 __author__ = "Mragank Shekhar <yesthisismrshekhar@gmail.com>"
 
@@ -89,7 +104,8 @@ def da2W(
     --------
     :class:`libpysal.weights.weights.W`
     """
-    wsp = da2WSP(da, criterion, z_value, coords_labels, k, include_nodata, n_jobs)
+    wsp = da2WSP(da, criterion, z_value, coords_labels,
+                 k, include_nodata, n_jobs)
     w = wsp.to_W(**kwargs)
 
     # temp addition of index attribute
@@ -787,5 +803,5 @@ def _parSWbuilder(
     rows, cols = zip(*worker_out)
     rows = np.concatenate(rows)
     cols = np.concatenate(cols)
-    data = np.ones_like(rows, dtype = np.int8)
+    data = np.ones_like(rows, dtype=np.int8)
     return (data, (rows, cols))

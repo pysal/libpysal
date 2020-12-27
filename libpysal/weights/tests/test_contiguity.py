@@ -20,18 +20,18 @@ except ImportError:
 
 
 class Contiguity_Mixin(object):
-    polygon_path = pysal_examples.get_path('columbus.shp')
-    point_path = pysal_examples.get_path('baltim.shp')
+    polygon_path = pysal_examples.get_path("columbus.shp")
+    point_path = pysal_examples.get_path("baltim.shp")
     da = raster.testDataArray((1, 4, 4), missing_vals=False)
-    f = ps_open(polygon_path) # our file handler
-    polygons = f.read() # our iterable
-    f.seek(0) #go back to head of file
-    cls = object # class constructor
-    known_wi = None #index of known w entry to compare
-    known_w = dict() #actual w entry
+    f = ps_open(polygon_path)  # our file handler
+    polygons = f.read()  # our iterable
+    f.seek(0)  # go back to head of file
+    cls = object  # class constructor
+    known_wi = None  # index of known w entry to compare
+    known_w = dict()  # actual w entry
     known_name = known_wi
     known_namedw = known_w
-    idVariable = None # id variable from file or column
+    idVariable = None  # id variable from file or column
     known_wspi_da = None
     known_wsp_da = dict()
     known_wi_da = None
