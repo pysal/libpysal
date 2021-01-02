@@ -72,7 +72,7 @@ def simport(modname):
     ----------
     modname : str
         Module name needed to import.
-    
+
     Returns
     -------
     _simport : tuple
@@ -81,7 +81,7 @@ def simport(modname):
 
     Notes
     -----
-    
+
     Wrapping this function around an iterative context or a with
     context would allow the module to be used without necessarily
     attaching it permanently in the global namespace:
@@ -102,7 +102,7 @@ def simport(modname):
             #do alternative behavior here
 
     The first idiom makes it work kind of a like a with statement.
-    
+
     """
 
     try:
@@ -123,14 +123,14 @@ def requires(*args, **kwargs):
         Modules names as strings to import.
     verbose : bool
         Set as ``True`` to print a warning message on import failure.
-    
+
     Returns
     -------
     inner : func
         The original function if all arg in args are importable.
     passer : func
         A function that passes if ``inner`` fails.
-    
+
     """
 
     v = kwargs.pop("verbose", True)

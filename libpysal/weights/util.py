@@ -16,8 +16,12 @@ from scipy import sparse
 from scipy.spatial import KDTree
 import scipy.spatial
 
+from distutils.version import LooseVersion
+
 try:
     import geopandas as gpd
+
+    GPD_08 = str(gpd.__version__) >= LooseVersion("0.8.0")
 except ImportError:
     warn("Geopandas not available. Some functionality will be disabled.")
 
@@ -512,7 +516,7 @@ def higher_order_sp(
     Returns
     -------
     wk : {libpysal.weights.W, libpysal.weights.WSP}
-        WSP, type matches type of w argument
+        The `WSP` type matches the type of the ``w`` argument.
 
     Raises
     ------
@@ -1678,7 +1682,13 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
 
 @requires("geopandas")
 def fuzzy_contiguity(
-    gdf, tolerance=0.005, buffering=False, drop=True, buffer=None, **kwargs
+    gdf,
+    tolerance=0.005,
+    buffering=False,
+    drop=True,
+    buffer=None,
+    predicate="intersects",
+    **kwargs,
 ):
     """Fuzzy contiguity spatial weights.
 
@@ -1700,6 +1710,12 @@ def fuzzy_contiguity(
     buffer : float
         Specify an exact buffering distance. When set ``tolerance`` is ignored.
         Default is ``None``.
+    predicate : str
+        The predicate to use for determination of neighbors. Valid
+        values are: ``'intersects'``, ``'within'``, ``'contains'``,
+        ``'overlaps'``, ``'crosses'``, and ``'touches'``. Default is
+        ``'intersects'``. If ``None`` is passed, neighbours are
+        determined based on the intersection of bounding boxes.
     **kwargs : dict
         Optional keyword arguments for ``libpysal.weights.W``.
 
@@ -1749,6 +1765,13 @@ def fuzzy_contiguity(
     >>> wfb[2]
     {1: 1.0}
 
+    Example with a custom index
+
+    >>> rs_df_ix = rs_df.set_index("NM_MUNICIP")
+    >>> wf_ix = fuzzy_contiguity(rs_df)
+    >>> wf_ix.neighbors["TAVARES"]
+    ['SÃO JOSÉ DO NORTE', 'MOSTARDAS']
+
     Notes
     -----
 
@@ -1786,21 +1809,29 @@ def fuzzy_contiguity(
         old_geometry_name = gdf.geometry.name
         gdf.set_geometry("_buffer", inplace=True)
 
-    assert (
-        gdf.sindex
-    ), "GeoDataFrame must have a spatial index. Please make sure you have `libspatialindex` installed"
-
-    tree = gdf.sindex
     neighbors = {}
-    n, k = gdf.shape
+    if GPD_08:
+        # query tree based on set predicate
+        inp, res = gdf.sindex.query_bulk(gdf.geometry, predicate=predicate)
+        # remove self hits
+        itself = inp == res
+        inp = inp[~itself]
+        res = res[~itself]
 
-    for i in range(n):
-        geom = gdf.geometry.iloc[i]
-        hits = list(tree.intersection(geom.bounds))
-        possible = gdf.iloc[hits]
-        ids = possible.intersects(geom).index.tolist()
-        ids.remove(i)
-        neighbors[i] = ids
+        # extract index values of neighbors
+        for i, ix in enumerate(gdf.index):
+            ids = gdf.index[res[inp == i]].tolist()
+            neighbors[ix] = ids
+    else:
+        if predicate != "intersects":
+            raise ValueError(f"Predicate `{predicate}` requires geopandas >= 0.8.0.")
+        tree = gdf.sindex
+        for i, (ix, geom) in enumerate(gdf.geometry.iteritems()):
+            hits = list(tree.intersection(geom.bounds))
+            hits.remove(i)
+            possible = gdf.iloc[hits]
+            ids = possible[possible.intersects(geom)].index.tolist()
+            neighbors[ix] = ids
 
     if buffering:
         gdf.set_geometry(old_geometry_name, inplace=True)

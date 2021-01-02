@@ -33,12 +33,12 @@ def spw_from_gal(galfile):
 
     Examples
     --------
-   
+
     >>> import libpysal
     >>> spw = libpysal.weights.spw_from_gal(libpysal.examples.get_path("sids2.gal"))
-    
+
     The number of all stored values in ``spw``:
-    
+
     >>> spw.sparse.nnz
     462
 
@@ -71,7 +71,7 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
 
     Examples
     --------
-   
+
     >>> import libpysal
     >>> md = libpysal.weights.min_threshold_dist_from_shapefile(libpysal.examples.get_path("columbus.shp"))
     >>> md
@@ -81,7 +81,7 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
 
     Notes
     -----
-    
+
     This function supports polygon or point shapefiles. For polygon
     shapefiles, distance is based on polygon centroids. Distances are
     defined using coordinates from the shapefile which are assumed to
@@ -112,12 +112,12 @@ def build_lattice_shapefile(nrows, ncols, out_file_name):
         The number of columns.
     out_file_name : str
         The shapefile name including the ``.shp`` file extension.
-    
+
     Raises
     ------
     ValueError
         An unrecognized file extension was given.
-    
+
     """
 
     if not out_file_name.endswith(".shp"):

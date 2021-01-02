@@ -7,9 +7,22 @@ from .dbf import dbf2df, df2dbf
 
 
 def read_files(filepath, **kwargs):
+    """Reads a ``.dbf``/``.shp`` pair, squashing geometries into a 'geometry' column.
+
+    Parameters
+    ----------
+    filepath : str
+        The file path.
+    **kwargs : dict
+        Optional keyword arguments for ``dbf2df()``.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        The results dataframe returned from ``dbf2df()``.
+
     """
-    Reads a dbf/shapefile pair, squashing geometries into a "geometry" column.
-    """
+
     # keyword arguments wrapper will strip all around dbf2df's required arguments
     geomcol = kwargs.pop("geomcol", "geometry")
     weights = kwargs.pop("weights", "")
@@ -32,37 +45,63 @@ def read_files(filepath, **kwargs):
                 W = ps_open(W_path).read()
                 insert_metadata(df, W, name="W", inplace=True)
             except IOError:
-                print("Weights construction failed! Passing on weights")
+                print("Weights construction failed! Passing on weights.")
 
     return df
 
 
 def write_files(df, filepath, **kwargs):
+    """Writes dataframes with potential geometric components out to files.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        The dataframe to write out.
+    filepath : str
+        The file path.
+    **kwargs : dict
+        Optional keyword arguments for ``df2dbf()``.
+
+    Returns
+    -------
+    dbf_path : str
+        Path to the output ``.dbf``
+    paths : tuple
+        The file paths for ``dbf_out``, ``shp_out``, ``W_path``.
+
     """
-    writes dataframes with potential geometric components out to files. 
-    """
+
     geomcol = kwargs.pop("geomcol", "geometry")
     weights = kwargs.pop("weights", "gal")
 
     dbf_path, shp_path = _pairpath(filepath)
 
     if geomcol not in df.columns:
-        return df2dbf(df, dbf_path, **kwargs)
+        dbf_path = df2dbf(df, dbf_path, **kwargs)
+        return dbf_path
     else:
         shp_out = series2shp(df[geomcol], shp_path)
         not_geom = [x for x in df.columns if x != geomcol]
         dbf_out = df2dbf(df[not_geom], dbf_path, **kwargs)
+
         if hasattr(df, "W"):
             W_path = os.path.splitext(filepath)[0] + "." + weights
             ps_open(W_path, "w").write(df.W)
         else:
             W_path = "no weights written"
-        return dbf_out, shp_out, W_path
+
+        paths = dbf_out, shp_out, W_path
+
+        return paths
 
 
-def _pairpath(filepath):
+def _pairpath(filepath: str) -> tuple:
+    """Return ``.dbf``/``.shp`` paths for any ``.shp``,
+    ``.dbf``, or basepath passed to function.
+
     """
-    return dbf/shp paths for any shp, dbf, or basepath passed to function. 
-    """
+
     base = os.path.splitext(filepath)[0]
-    return base + ".dbf", base + ".shp"
+    paths = base + ".dbf", base + ".shp"
+
+    return paths

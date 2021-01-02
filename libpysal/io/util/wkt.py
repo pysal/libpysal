@@ -6,55 +6,61 @@ __all__ = ["WKTParser"]
 
 
 class WKTParser:
-    """ Class to represent OGC WKT, supports reading and writing
-        Modified from...
-        # URL: http://dev.openlayers.org/releases/OpenLayers-2.7/lib/OpenLayers/Format/WKT.js
-        #Reg Ex Strings copied from OpenLayers.Format.WKT
+    """Class to represent `OGC WKT`, supports reading and writing.
+    Modified from...
+    # URL: http://dev.openlayers.org/releases/OpenLayers-2.7/lib/OpenLayers/Format/WKT.js
+    # Reg Ex Strings copied from OpenLayers.Format.WKT
 
-    Example
-    -------
+    Examples
+    --------
+
     >>> import libpysal
 
-    Create some Well-Known Text objects
+    Create some Well-Known Text objects.
 
-    >>> p = 'POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))'
+    >>> p = 'POLYGON((1 1, 5 1, 5 5, 1 5, 1 1), (2 2, 3 2, 3 3, 2 3, 2 2))'
     >>> pt = 'POINT(6 10)'
-    >>> l = 'LINESTRING(3 4,10 50,20 25)'
+    >>> l = 'LINESTRING(3 4, 10 50, 20 25)'
 
-    Instantiate the parser
+    Instantiate the parser.
 
     >>> parser = libpysal.io.wkt.WKTParser()
 
-    Inspect our WKT polygon
+    Inspect our WKT polygon.
 
     >>> parser(p).parts
-    [[(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0, 1.0), (1.0, 1.0)], [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0), (2.0, 2.0)]]
+    [[(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0, 1.0), (1.0, 1.0)],
+     [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0), (2.0, 2.0)]]
+
     >>> parser(p).centroid
     (2.9705882352941178, 2.9705882352941178)
+
     >>> parser(p).area
     17.0
 
-    Inspect pt, our WKT point object
+    Inspect ``pt``, our WKT point object.
 
     >>> parser(pt)
     (6.0, 10.0)
 
-    Inspect our WKT linestring
+    Inspect our WKT linestring.
 
     >>> parser(l).len
     73.45538453219989
+
     >>> parser(l).parts
     [[(3.0, 4.0), (10.0, 50.0), (20.0, 25.0)]]
 
-    Read in WKT from a file
+    Read in WKT from a file.
 
     >>> f = libpysal.io.open(libpysal.examples.get_path('stl_hom.wkt'))
     >>> f.mode
     'r'
+
     >>> f.header
     []
 
-    See local doctest output for the items not tested...
+    See local doctest output for the items not tested.
 
     """
 
@@ -73,15 +79,18 @@ class WKTParser:
         p["polygon"] = self.Polygon
 
     def Point(self, geoStr):
+        """Returns a ``libpysal.cg.Point`` object."""
         coords = self.regExes["spaces"].split(geoStr.strip())
         return cg.Point((coords[0], coords[1]))
 
     def LineString(self, geoStr):
+        """Returns a ``libpysal.cg.Chain`` object."""
         points = geoStr.strip().split(",")
         points = list(map(self.Point, points))
         return cg.Chain(points)
 
     def Polygon(self, geoStr):
+        """Returns a ``libpysal.cg.Polygon`` object."""
         rings = self.regExes["parenComma"].split(geoStr.strip())
         for i, ring in enumerate(rings):
             ring = self.regExes["trimParens"].match(ring).groups()[0]
@@ -90,6 +99,15 @@ class WKTParser:
         return cg.Polygon(rings)
 
     def fromWKT(self, wkt):
+        """Returns geometric representation from WKT or ``None``.
+
+        Raises
+        ------
+        NotImplementedError
+            Raised when a unknown/unsupported format is passed in.
+
+        """
+
         matches = self.regExes["typeStr"].match(wkt)
         if matches:
             geoType, geoStr = matches.groups()
@@ -97,7 +115,7 @@ class WKTParser:
             try:
                 return self.parsers[geoType](geoStr)
             except KeyError:
-                raise NotImplementedError("Unsupported WKT Type: %s" % geoType)
+                raise NotImplementedError("Unsupported WKT Type: %s." % geoType)
         else:
             return None
 
@@ -105,6 +123,7 @@ class WKTParser:
 
 
 if __name__ == "__main__":
+
     p = "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))"
     pt = "POINT(6 10)"
     l = "LINESTRING(3 4,10 50,20 25)"

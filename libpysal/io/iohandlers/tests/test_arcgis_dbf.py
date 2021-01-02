@@ -24,7 +24,7 @@ class test_ArcGISDbfIO(unittest.TestCase):
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
                 assert (
-                    "Missing Value Found, setting value to pysal.MISSINGVALUE"
+                    "Missing Value Found, setting value to libpysal.MISSINGVALUE."
                     in str(warn[0].message)
                 )
         self.assertEqual(88, w.n)
@@ -44,7 +44,7 @@ class test_ArcGISDbfIO(unittest.TestCase):
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
                 assert (
-                    "Missing Value Found, setting value to pysal.MISSINGVALUE"
+                    "Missing Value Found, setting value to libpysal.MISSINGVALUE."
                     in str(warn[0].message)
                 )
         f = tempfile.NamedTemporaryFile(suffix=".dbf")

@@ -42,6 +42,8 @@ __all__ = [
 
 
 def _atomic_op(df, geom_col="geometry", inplace=False, _func=None, **kwargs):
+    """Atomic operation internal function."""
+
     outval = df[geom_col].apply(lambda x: _func(x, **kwargs))
     outcol = "shape_{}".format(_func.__name__)
     if not inplace:
@@ -56,27 +58,32 @@ Tabular version of pysal.contrib.shapely_ext.{n}
 
 Arguments
 ---------
-df      :   pandas.DataFrame
-            a pandas dataframe with a geometry column
-geom_col:   string
-            the name of the column in df containing the geometry
-inplace :   bool
-            a boolean denoting whether to operate on the dataframe inplace or to
-            return a series contaning the results of the computation. If
-            operating inplace, the derived column will be under 'shape_{n}'
-**kwargs:   keyword arguments
-            arguments to be passed to the elementwise functions
+df : pandas.DataFrame
+    A pandas dataframe with a geometry column.
+geom_col : str
+    The name of the column in ``df`` containing the geometry.
+inplace : bool
+    A boolean denoting whether to operate on the dataframe inplace or to
+    return a series contaning the results of the computation. If
+    operating inplace, the derived column will be under 'shape_{n}'.
+**kwargs : dict
+    Keyword arguments to be passed to the elementwise functions.
 
 Returns
 -------
 If inplace, None, and operation is conducted on dataframe in memory. Otherwise,
 returns a series.
 
-Note that some atomic operations require an 'other' argument.
+Notes
+-----
+
+Some atomic operations require an 'other' argument.
 
 See Also
 --------
+
 pysal.contrib.shapely_ext.{n}
+
 """
 
 # ensure that the construction of atomics is done only if we can use shapely
@@ -98,29 +105,30 @@ globals().update(_shapely_atomics)
 
 @_requires("shapely")
 def cascaded_union(df, geom_col="geometry", **groupby_kws):
-    """
-    Returns the cascaded union of a possibly-grouped dataframe
+    """Returns the cascaded union of a possibly-grouped dataframe.
 
-    Arguments
-    ---------
-    df              :   pandas.DataFrame
-                        a dataframe containing geometry objects which are being united
-    geom_col        :   string
-                        a string denoting which column of the dataframe contains the
-                        geometries
-    **groupby_kws   :   keyword arguments
-                        keyword arguments to pass transparently to the groupby
-                        function for the DataFrame
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        A dataframe containing geometry objects which are being unioned.
+    geom_col : string
+        The name of the column in ``df`` containing the geometry.
+    **groupby_kws : dict
+        Keyword arguments to pass transparently to the groupby function in ``df``.
 
     Returns
     -------
-    PySAL shape or dataframe of shapes resulting from the union operation.
+    out : {libpysal.cg.{Point, Chain, Polygon}, pandas.DataFrame}
+        A PySAL shape or a dataframe of shapes resulting from the union operation.
 
     See Also
     --------
+
     pysal.shapely_ext.cascaded_union
     pandas.DataFrame.groupby
+
     """
+
     by = groupby_kws.pop("by", None)
     level = groupby_kws.pop("level", None)
     if by is not None or level is not None:
@@ -133,29 +141,30 @@ def cascaded_union(df, geom_col="geometry", **groupby_kws):
 
 @_requires("shapely")
 def unary_union(df, geom_col="geometry", **groupby_kws):
-    """
-    Returns the cascaded union of a possibly-grouped dataframe
+    """Returns the unary union of a possibly-grouped dataframe.
 
-    Arguments
-    ---------
-    df              :   pandas.DataFrame
-                        a dataframe containing geometry objects which are being united
-    geom_col        :   string
-                        a string denoting which column of the dataframe contains the
-                        geometries
-    **groupby_kws   :   keyword arguments
-                        keyword arguments to pass transparently to the groupby
-                        function for the DataFrame
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        A dataframe containing geometry objects which are being unioned.
+    geom_col : string
+        The name of the column in ``df`` containing the geometry.
+    **groupby_kws : dict
+        Keyword arguments to pass transparently to the groupby function in ``df``.
 
     Returns
     -------
-    PySAL shape or dataframe of shapes resulting from the union operation.
+    out : {libpysal.cg.{Point, Chain, Polygon}, pandas.DataFrame}
+        A PySAL shape or a dataframe of shapes resulting from the union operation.
 
     See Also
     --------
-    pysal.shapely_ext.cascaded_union
+
+    pysal.shapely_ext.unary_union
     pandas.DataFrame.groupby
+
     """
+
     by = groupby_kws.pop("by", None)
     level = groupby_kws.pop("level", None)
     if by is not None or level is not None:
@@ -181,29 +190,30 @@ def _cascaded_intersection(shapes):
 
 @_requires("shapely")
 def cascaded_intersection(df, geom_col="geometry", **groupby_kws):
-    """
-    Returns the cascaded union of a possibly-grouped dataframe
+    """Returns the cascaded intersection of a possibly-grouped dataframe
 
-    Arguments
-    ---------
-    df              :   pandas.DataFrame
-                        a dataframe containing geometry objects which are being united
-    geom_col        :   string
-                        a string denoting which column of the dataframe contains the
-                        geometries
-    **groupby_kws   :   keyword arguments
-                        keyword arguments to pass transparently to the groupby
-                        function for the DataFrame
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        A dataframe containing geometry objects which are being intersectioned.
+    geom_col : string
+        The name of the column in ``df`` containing the geometry.
+    **groupby_kws : dict
+        Keyword arguments to pass transparently to the groupby function in ``df``.
 
     Returns
     -------
-    PySAL shape or dataframe of shapes resulting from the union operation.
+    out : {libpysal.cg.{Point, Chain, Polygon}, pandas.DataFrame}
+        A PySAL shape or a dataframe of shapes resulting from the intersection operation.
 
     See Also
     --------
-    pysal.shapely_ext.cascaded_union
+
+    pysal.shapely_ext.cascaded_intersection
     pandas.DataFrame.groupby
+
     """
+
     by = groupby_kws.pop("by", None)
     level = groupby_kws.pop("level", None)
     if by is not None or level is not None:

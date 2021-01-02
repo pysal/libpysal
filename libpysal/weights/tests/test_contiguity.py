@@ -101,6 +101,11 @@ class Contiguity_Mixin(object):
         w = self.cls.from_dataframe(df, geom_col="the_geom")
         self.assertEqual(w[self.known_wi], self.known_w)
 
+        # named active geometry
+        df = df.set_geometry("the_geom")
+        w = self.cls.from_dataframe(df)
+        self.assertEqual(w[self.known_wi], self.known_w)
+
         # named geometry + named obs
         w = self.cls.from_dataframe(df, geom_col="the_geom", idVariable=self.idVariable)
         self.assertEqual(w[self.known_name], self.known_namedw)

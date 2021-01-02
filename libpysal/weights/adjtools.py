@@ -23,14 +23,14 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
         and provide a single scalar in return. Default is ``np.subtract``.
         Example scalars include:
             ``lambda x,y: x < y, np.subtract``
-        Example multivariates: 
+        Example multivariates:
             ``lambda (x,y): np.all(x < y)``
             ``lambda (x,y): np.sum((x-y)**2)``
             ``sklearn.metrics.euclidean_distance``
     skip_verify: bool
         Whether or not to skip verifying that the `W` is the same as an adjacency
         list. Do this if you are certain the adjacency list and `W` agree and
-        would like to avoid re-instantiating a `W` from the adjacency list. 
+        would like to avoid re-instantiating a `W` from the adjacency list.
         Default is ``False``.
 
     Returns
@@ -38,12 +38,12 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     alist_atts : list
         An adjacency list (or modifies ``alist`` inplace)
         with the function applied to each row.
-    
+
     Raises
     ------
     ImportError
         Pandas must be installed to use this function.
-    
+
     """
 
     try:
@@ -85,7 +85,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
     """This function is used when ``X`` is multi-dimensional. See
     ``libpysal.weights.adjtools.adjlist_apply()`` for
     Parameters, Returns, and Raises information.
-    
+
     """
 
     try:
@@ -134,18 +134,18 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
 
 
 def _get_W_and_alist(W, alist, skip_verify=False):
-    """ Either (1) compute a `W` from an ``alist``; (2) compute an adjacency list
+    """Either (1) compute a `W` from an ``alist``; (2) compute an adjacency list
     from a `W`; (3) raise a ``ValueError`` if neither are provided; or (4) raise an
     ``AssertionError`` if both `W` and ``adjlist`` are provided and don't match.
     If this completes successfully, the `W` and ``adjlist`` will both be returned and
     are checked for equality. See ``libpysal.weights.adjtools.adjlist_apply()``
     for parameters and returns information.
-    
+
     Raises
     ------
     ValueError
         Either W or Adjacency List must be provided.
-    
+
     """
 
     if (alist is None) and (W is not None):
@@ -182,7 +182,7 @@ def adjlist_map(
     Parameters
     ----------
     data : {numpy.ndarray, pandas.Dataframe}
-        `N x P` array of `N` observations and `P` covariates. 
+        `N x P` array of `N` observations and `P` covariates.
     funcs : iterable or callable
         A function to apply to each of the `P` columns in ``data``, or a
         list of functions to apply to each column of `P`. This function
@@ -209,12 +209,12 @@ def adjlist_map(
     alist : list
         An adjacency list (or modifies one if provided) with each function
         applied to the column of the data.
-    
+
     Raises
     ------
     ImportError
         Pandas must be installed to use this function.
-    
+
     """
 
     try:
@@ -276,7 +276,7 @@ def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
     -------
     adjlist : pandas.DataFrame
         An adjacency table with reversible entries removed.
-    
+
     """
 
     edges = adjlist.loc[:, [focal_col, neighbor_col]]

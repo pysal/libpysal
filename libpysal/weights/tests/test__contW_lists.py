@@ -107,7 +107,7 @@ class TestContiguityWeights(unittest.TestCase):
 
     def build_W(self, shapefile, type, idVariable=None):
         """
-        Building 2 W's the hard way. 
+        Building 2 W's the hard way.
         We need to do this so we can test both rtree and binning.
         """
 

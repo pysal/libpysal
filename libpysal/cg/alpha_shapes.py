@@ -257,7 +257,7 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
 
 @jit
 def nb_mask_faces(mask, faces):
-    """ Run over each row in `faces`, if the face in the following row is the
+    """Run over each row in `faces`, if the face in the following row is the
     same, then mark both as False on `mask`
 
     Parameters

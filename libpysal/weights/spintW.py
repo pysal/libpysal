@@ -39,14 +39,14 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
         A sparse spatial contiguity `W` object for assocations between flows
         between :math:`o` origins and :math:`d` destinations,
         :math:`(o \cdot d)\\times(o \cdot d)`.
-    
+
     Raises
     ------
     AttributeError
         The ``Wo`` argument is not binary.
     AttributeError
         The ``Wd`` argument is not binary.
-    
+
     Examples
     --------
 
@@ -123,15 +123,15 @@ def netW(link_list, share="A", transform="r", **kwargs):
         A nodal contiguity `W` object for network edges or
         flows representing the binary adjacency of the network
         edges given a definition of nodal relationships.
-    
+
     Raises
     ------
     AttributeError
         The ``share`` parameter must be ``'O'``, ``'D'``, ``'OD'``, or ``'C'``.
-    
+
     Examples
     --------
-    
+
     >>> import libpysal
     >>> links = [('a','b'), ('a','c'), ('a','d'), ('c','d'), ('c', 'b'), ('c','a')]
     >>> O = libpysal.weights.netW(links, share='O')
@@ -248,7 +248,7 @@ def vecW(
 
     Examples
     --------
-    
+
     >>> import libpysal
     >>> x1 = [5,6,3]
     >>> y1 = [1,8,5]
@@ -289,12 +289,12 @@ def mat2L(edge_matrix):
         A matrix where rows denote network edge origins, columns denote
         network edge destinations, and non-zero entries denote the
         existence of an edge between a given origin and destination.
-    
+
     Raises
     ------
     AttributeError
         The input matrix is not two dimensional.
-    
+
     Returns
     -------
     edge_list : list

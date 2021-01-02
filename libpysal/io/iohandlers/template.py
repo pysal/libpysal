@@ -1,6 +1,6 @@
 """ Example Reader and Writer
 
-    These are working readers/writers that parse '.foo' and '.bar' files
+These are working readers/writers that parse '.foo' and '.bar' files.
 
 """
 
@@ -12,53 +12,70 @@ __all__ = ["TemplateWriter", "TemplateReaderWriter"]
 
 # Always subclass FileIO
 class TemplateWriter(FileIO.FileIO):
+
     # REQUIRED, List the formats this class supports.
     FORMATS = ["foo"]
+
     # REQUIRED, List the modes supported by this class.
     # One class can support both reading and writing.
     # For simplicity this class will only support one.
     # You could support custom modes, but these could be hard to document.
     MODES = ["w"]
 
-    # use .__init__ to open any need file handlers
+    # Use ``.__init__`` to open any need file handlers
     def __init__(self, *args, **kwargs):
         # initialize the parent class...
         FileIO.__init__(self, *args, **kwargs)
+
         # this gives you:
         # self.dataPath == the connection string or path to file
         # self.mode == the mode the file should be opened in
 
         self.fileObj = open(self.dataPath, self.mode)
 
-    # writers must subclass .write
+    # Writers must subclass ``.write()``
     def write(self, obj):
-        """ .write method of the 'foobar' template, receives an obj """
+        """``.write`` method of the 'foobar' template
+
+        Parameters
+        ----------
+        obj : str
+            Some string.
+
+        Raises
+        ------
+        TypeError
+            Raised when a ``str`` is expected, but got another type.
+
+        """
 
         # GOOD TO HAVE, this will prevent invalid operations on closed files.
         self._complain_ifclosed(self.closed)
 
-        # it's up to the writer to understand the object, you should check that object is of the type you expect and raise a TypeError is its now.
-        # we will support writing string objects in this example, all string are derived from basestring...
+        # It's up to the writer to understand the object, you should check
+        # that object is of the type you expect and raise a TypeError is its now.
+        # we will support writing string objects in this example,
+        # all string are derived from basestring...
         if issubclass(type(obj), str):
 
-            # Non-essential ...
+            # Non-essential...
             def foobar(c):
                 if c in "foobar":
                     return True
                 else:
                     return False
 
-            result = list(
-                filter(foobar, obj)
-            )  # e.g.   'foobara' == filter(foobar,'my little foobar example')
+            # e.g. 'foobara' == filter(foobar,'my little foobar example')
+            result = list(filter(foobar, obj))
 
             # do the actual writing...
             self.fileObj.write(result + "\n")
+
             # REQUIRED, increment the internal pos pointer.
             self.pos += 1
 
         else:
-            raise TypeError("Expected a string, got: %s" % (type(obj)))
+            raise TypeError("Expected a string, got: %s." % (type(obj)))
 
     # default is to raise "NotImplementedError"
     def flush(self):
@@ -89,22 +106,50 @@ class TemplateReaderWriter(FileIO.FileIO):
             else:
                 return False
 
-        return list(
-            filter(foobar, st)
-        )  # e.g.   'foobara' == filter(foobar,'my little foobar example')
+        # e.g. 'foobara' == filter(foobar,'my little foobar example')
+        return list(filter(foobar, st))
 
     def _read(self):
-        """ the _read method should return only ONE object and raise StopIteration at the EOF."""
+        """The ``_read`` method should return only ONE object.
+
+        Returns
+        -------
+        obj_plus_break : str
+            only ONE object.
+
+        Raises
+        ------
+        StopIteration
+            Raised at the EOF.
+
+        """
+
         line = self.fileObj.readline()
         obj = self._filter(line)
-        self.pos += 1  # REQUIRED
+
+        # REQUIRED
+        self.pos += 1
         if line:
-            return obj + "\n"
+            obj_plus_break = obj + "\n"
+            return obj_plus_break
         else:
-            raise StopIteration  # REQUIRED
+            # REQUIRED
+            raise StopIteration
 
     def write(self, obj):
-        """ .write method of the 'foobar' template, receives an obj """
+        """The ``.write`` method of the 'foobar' template, receives an ``obj``.
+
+        Paramters
+        ---------
+        obj : str
+            Some string.
+
+        Raises
+        ------
+        TypeError
+            Raised when a ``str`` is expected, but got another type.
+
+        """
         self._complain_ifclosed(self.closed)
         if issubclass(type(obj), str):
             result = self._filter(obj)
@@ -123,16 +168,20 @@ class TemplateReaderWriter(FileIO.FileIO):
 
 
 if __name__ == "__main__":
-    "note, by running OR importing this module it's automatically added to the pysal fileIO registry."
+    "NOTE, by running OR importing this module "
+    "it's automatically added to the pysal fileIO registry."
+
     pysal.open.check()
 
     lines = [
         "This is an example of template FileIO classes",
         "Each call to write expects a string object",
-        'that string is filtered and only letters "f,o,b,a,r" are kept',
-        "these kept letters are written to the file and a new line char is appends to each line",
-        "likewise the reader filters each line from a file",
+        "that string is filtered and only letters 'f','o','b','a','r' are kept",
+        "these kept letters are written to the file",
+        "and a new line char is appends to each line",
+        "likewise the reader filters each line from a file.",
     ]
+
     f = pysal.open("test.foo", "w")
     for line in lines:
         f.write(line)

@@ -39,9 +39,9 @@ class Rook(W):
 
     See Also
     --------
-    
+
     libpysal.weights.W
-    
+
     """
 
     def __init__(self, polygons, **kwargs):
@@ -86,13 +86,13 @@ class Rook(W):
 
         Examples
         --------
-        
+
         >>> from libpysal.weights import Rook
         >>> import libpysal
         >>> wr = Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), "POLYID")
         >>> "%.3f"%wr.pct_nonzero
         '8.330'
-        
+
         >>> wr = Rook.from_shapefile(
         ...     libpysal.examples.get_path("columbus.shp"), sparse=True
         ... )
@@ -108,10 +108,10 @@ class Rook(W):
 
         See Also
         --------
-        
+
         libpysal.weights.W
         libpysal.weights.Rook
-        
+
         """
         sparse = kwargs.pop("sparse", False)
 
@@ -142,19 +142,19 @@ class Rook(W):
             Generate a `WSP` object. Default is ``False``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Rook``.
-        
+
         Returns
         -------
         w : libpysal.weights.Rook
             A rook-style instance of spatial weights.
-        
+
         See Also
         --------
-        
+
         libpysal.weights.W
         libpysal.weights.WSP
         libpysal.weights.Rook
-        
+
         """
 
         new_iterable = iter(iterable)
@@ -167,7 +167,7 @@ class Rook(W):
 
     @classmethod
     def from_dataframe(
-        cls, df, geom_col="geometry", idVariable=None, ids=None, id_order=None, **kwargs
+        cls, df, geom_col=None, idVariable=None, ids=None, id_order=None, **kwargs
     ):
         """Construct a weights object from a ``pandas.DataFrame`` with a geometry
         column. This will cast the polygons to PySAL polygons, then build the `W`
@@ -177,9 +177,9 @@ class Rook(W):
         ----------
         df : pandas.DataFrame
             A ``pandas.DataFrame`` containing geometries to use for spatial weights.
-        geom_col : str
+        geom_col : {None, str}
             The name of the column in ``df`` that contains the
-            geometries. Default is ``'geometry'``.
+            geometries. Defaults to the active geometry column.
         idVariable : str
             The name of the column to use as IDs. If nothing is provided, the
             dataframe index is used. Default is ``None``.
@@ -197,19 +197,22 @@ class Rook(W):
         -------
         w : w : libpysal.weights.Rook
             A rook-style instance of spatial weights.
-        
+
         See Also
         --------
-        
+
         libpysal.weights.W
         libpysal.weights.Rook
-        
+
         """
+
+        if geom_col is None:
+            geom_col = df.geometry.name
 
         if id_order is not None:
             if id_order is True and ((idVariable is not None) or (ids is not None)):
-                # if idVariable is None, we want ids. Otherwise, we want the
-                # idVariable column
+                # if ``idVariable`` is ``None``, we want ids.
+                # Otherwise, we want the ``idVariable`` column.
                 id_order = list(df.get(idVariable, ids))
             else:
                 id_order = df.get(id_order, ids)
@@ -253,10 +256,10 @@ class Rook(W):
 
         See Also
         --------
-        
+
         libpysal.weights.weights.W
         libpysal.weights.weights.WSP
-        
+
         """
 
         if sparse:
@@ -281,9 +284,9 @@ class Queen(W):
 
     See Also
     --------
-    
+
     libpysal.weights.W
-    
+
     """
 
     def __init__(self, polygons, **kwargs):
@@ -328,19 +331,19 @@ class Queen(W):
 
         Examples
         --------
-        
+
         >>> from libpysal.weights import Queen
         >>> import libpysal
         >>> wq = Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"))
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        
+
         >>> wq = Queen.from_shapefile(
         ...     libpysal.examples.get_path("columbus.shp"), "POLYID"
         ... )
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        
+
         >>> wq = Queen.from_shapefile(
         ...     libpysal.examples.get_path("columbus.shp"), sparse=True
         ... )
@@ -356,10 +359,10 @@ class Queen(W):
 
         See Also
         --------
-        
+
         libpysal.weights.W
         libpysal.weights.Queen
-        
+
         """
 
         sparse = kwargs.pop("sparse", False)
@@ -391,19 +394,19 @@ class Queen(W):
             Generate a `WSP` object. Default is ``False``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Queen``.
-        
+
         Returns
         -------
         w : libpysal.weights.Queen
             A queen-style instance of spatial weights.
-        
+
         See Also
         --------
-        
+
         libpysal.weights.W
         libpysal.weights.WSP
         libpysal.weights.Queen
-        
+
         """
 
         new_iterable = iter(iterable)
@@ -415,7 +418,7 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col="geometry", **kwargs):
+    def from_dataframe(cls, df, geom_col=None, **kwargs):
         """Construct a weights object from a ``pandas.DataFrame`` with a geometry
         column. This will cast the polygons to PySAL polygons, then build the `W`
         using ids from the dataframe.
@@ -424,28 +427,31 @@ class Queen(W):
         ----------
         df : pandas.DataFrame
             A ``pandas.DataFrame`` containing geometries to use for spatial weights.
-        geom_col : str
+        geom_col : {None, str}
             The name of the column in ``df`` that contains the
-            geometries. Default is ``'geometry'``.
+            geometries. Defaults to the active geometry column.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Queen``.
-        
+
         Returns
         -------
         w : libpysal.weights.Queen
             A queen-style instance of spatial weights.
-        
+
         See Also
         --------
-        
+
         libpysal.weights.W
         libpysal.weights.Queen
-        
+
         """
 
         idVariable = kwargs.pop("idVariable", None)
         ids = kwargs.pop("ids", None)
         id_order = kwargs.pop("id_order", None)
+
+        if geom_col is None:
+            geom_col = df.geometry.name
 
         if id_order is not None:
             if id_order is True and ((idVariable is not None) or (ids is not None)):
@@ -496,10 +502,10 @@ class Queen(W):
 
         See Also
         --------
-        
+
         libpysal.weights.weights.W
         libpysal.weights.weights.WSP
-        
+
         """
 
         if sparse:
@@ -529,15 +535,15 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
     -------
     w : libpysal.weights.Voronoi
         A voronoi-style instance of spatial weights.
-    
+
     Raises
     ------
     ValueError
         An unsupported value of ``criterion`` was passed in.
-    
+
     Examples
     --------
-    
+
     >>> import numpy as np
     >>> from libpysal.weights import Voronoi
     >>> np.random.seed(12345)
@@ -545,7 +551,7 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
     >>> w = Voronoi(points)
     >>> w.neighbors
     {0: [2, 3, 4], 1: [2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}
-    
+
     """
 
     from ..cg.voronoi import voronoi_frames
@@ -581,18 +587,18 @@ def _from_dataframe(df, **kwargs):
     -------
     w : libpysal.weights.Vornoi
         A voronoi-style instance of spatial weights.
-    
+
     Notes
     -----
-    
+
     If ``criterion='rook'``, this is identical to the Delaunay graph for the points.
-    
+
     Raises
     ------
     NotImplementedError
         If the input dataframe is of any other geometry type than ``Point``,
         a ``ValueError`` is caught and raised as a ``NotImplementedError``.
-    
+
     """
 
     try:
@@ -632,19 +638,19 @@ def _build(polygons, criterion="rook", ids=None):
         The contents are ``(neighbors, ids)``, where ``neighbors`` is
         a dictionary describing contiguity relations and ``ids`` is the
         list of ids used to index that dictionary.
-    
+
     Raises
     ------
     ValueError
         The argument to the ``ids`` parameter contains duplicate entries.
-    
+
     Notes
     -----
-    
+
     This is different from the prior behavior of ``buildContiguity``, which returned an
     actual weights object. Since this just dispatches for the classes above, this returns
     the raw ingredients for a spatial weights object, not the object itself.
-    
+
     """
     if ids and len(ids) != len(set(ids)):
         raise ValueError(
@@ -687,7 +693,7 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     """This is a deprecated function. It builds a contiguity `W` from the
     polygons provided. As such, it is now identical to calling the class
     constructors for `Rook` or `Queen`.
-    
+
     """
     # Warn('This function is deprecated. Please use the Rook or Queen classes', UserWarning)
 

@@ -30,7 +30,8 @@ class test_GwtIO(unittest.TestCase):
         self.obj.seek(0)
         self.test_read()
 
-    # Commented out by CRS, GWT 'w' mode removed until we can find a good solution for retaining distances.
+    # Commented out by CRS, GWT 'w' mode removed until we
+    # can find a good solution for retaining distances.
     # see issue #153.
     # Added back by CRS,
     def test_write(self):

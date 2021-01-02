@@ -44,7 +44,7 @@ def w_union(w1, w2, **kwargs):
 
     Notes
     -----
-    
+
     ID comparisons are performed using ``==``, therefore the integer ID 2 is
     equivalent to the float ID 2.0. Returns a matrix with all the unique IDs
     from ``w1`` and ``w2``.
@@ -198,10 +198,10 @@ def w_difference(w1, w2, w_shape="w1", constrained=True, **kwargs):
         An empty weights matrix was returned.
     ValueError
         An invalid string value was passed to ``w_shape``.
-    
+
     Notes
     -----
-    
+
     ID comparisons are performed using ``==``, therefore the integer ID 2 is
     equivalent to the float ID 2.0.
 
@@ -298,10 +298,10 @@ def w_symmetric_difference(w1, w2, w_shape="all", constrained=True, **kwargs):
     ------
     ValueError
         An invalid string value was passed to ``w_shape``.
-    
+
     Notes
     -----
-    
+
     ID comparisons are performed using ``==``, therefore the integer ID 2 is
     equivalent to the float ID 2.0.
 
@@ -448,15 +448,15 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     wc : {libpysal.weights.W, scipy.sparse.csr_matrix}
         A clipped `W` object that is sparse if ``outSP`` is set to ``True``.
         It inherits ``id_order`` from ``w1``.
-    
+
     Notes
     -----
-    
+
     The ``w2`` parameter is assumed to be of the same shape as ``w1``.
-    
+
     Examples
     --------
-    
+
     >>> from libpysal.weights import lat2W
 
     First create a `W` object from a lattice using queen contiguity and

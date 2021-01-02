@@ -5,7 +5,7 @@ from warnings import warn
 
 __author__ = "Mragank Shekhar <yesthisismrshekhar@gmail.com>"
 
-__all__ = ['da2W', 'da2WSP', 'w2da', 'wsp2da', 'testDataArray']
+__all__ = ["da2W", "da2WSP", "w2da", "wsp2da", "testDataArray"]
 
 
 def da2W(da, criterion="queen", z_value=None, coords_labels={}, **kwargs):
@@ -122,15 +122,14 @@ def da2WSP(da, criterion="queen", z_value=None, coords_labels={}):
     z_id, coords_labels = _da_checker(da, z_value, coords_labels)
     shape = da.shape
     if z_id:
-        da = da[z_id-1:z_id]
+        da = da[z_id - 1 : z_id]
         shape = tuple(
-            [da.sizes[coords_labels["y_label"]],
-             da.sizes[coords_labels["x_label"]]]
+            [da.sizes[coords_labels["y_label"]], da.sizes[coords_labels["x_label"]]]
         )
     sw = lat2SW(*shape, criterion)
     ser = da.to_series()
     id_order = None
-    if 'nodatavals' in da.attrs:
+    if "nodatavals" in da.attrs:
         if da.nodatavals:
             mask = (ser != da.nodatavals[0]).to_numpy()
             # temp
@@ -177,7 +176,7 @@ def w2da(data, w, attrs={}, coords=None):
     """
     if not isinstance(w, W):
         raise TypeError("w must be an instance of weights.W")
-    if hasattr(w, 'index'):
+    if hasattr(w, "index"):
         da = _index2da(data, w.index, attrs, coords)
     else:
         raise AttributeError("Cannot convert deprecated W with no index attribute")
@@ -218,10 +217,12 @@ def wsp2da(data, wsp, attrs={}, coords=None):
     """
     if not isinstance(wsp, WSP):
         raise TypeError("wsp must be an instance of weights.WSP")
-    if hasattr(wsp, 'index'):
+    if hasattr(wsp, "index"):
         da = _index2da(data, wsp.index, attrs, coords)
     else:
-        raise AttributeError("Cannot convert deprecated wsp object with no index attribute")
+        raise AttributeError(
+            "Cannot convert deprecated wsp object with no index attribute"
+        )
     return da
 
 
@@ -252,30 +253,28 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError(
-            "xarray must be installed to use this functionality")
+        raise ModuleNotFoundError("xarray must be installed to use this functionality")
     if not rand:
         np.random.seed(12345)
     coords = {}
     n = len(shape)
     if n != 2:
         layer = "time" if time else "band"
-        dims = (layer, 'y', 'x')
+        dims = (layer, "y", "x")
         if time:
             layers = np.arange(
-                np.datetime64('2020-07-30'),
-                shape[0], dtype='datetime64[D]'
+                np.datetime64("2020-07-30"), shape[0], dtype="datetime64[D]"
             )
         else:
-            layers = np.arange(1, shape[0]+1)
+            layers = np.arange(1, shape[0] + 1)
         coords[dims[-3]] = layers
     coords[dims[-2]] = np.linspace(90, -90, shape[-2])
     coords[dims[-1]] = np.linspace(-180, 180, shape[-1])
     data = np.random.randint(0, 255, shape)
-    attrs = {'nodatavals': (-32768.0,)}
+    attrs = {"nodatavals": (-32768.0,)}
     if missing_vals:
         miss_ids = np.where(np.random.randint(2, size=shape) == 1)
-        data[miss_ids] = attrs['nodatavals'][0]
+        data[miss_ids] = attrs["nodatavals"][0]
     da = DataArray(data, coords, dims, attrs=attrs)
     return da
 
@@ -306,31 +305,36 @@ def _da_checker(da, z_value, coords_labels):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError(
-            "xarray must be installed to use this functionality")
+        raise ModuleNotFoundError("xarray must be installed to use this functionality")
     if not isinstance(da, DataArray):
         raise TypeError("da must be an instance of xarray.DataArray")
     if da.ndim not in [2, 3]:
         raise ValueError("da must be 2D or 3D")
-    if not (np.issubdtype(da.values.dtype, np.integer) or
-            np.issubdtype(da.values.dtype, np.floating)):
-        raise ValueError(
-            "da must be an array of integers or float")
+    if not (
+        np.issubdtype(da.values.dtype, np.integer)
+        or np.issubdtype(da.values.dtype, np.floating)
+    ):
+        raise ValueError("da must be an array of integers or float")
     # default dimensions
     def_labels = {
-        "x_label": coords_labels["x_label"] if 'x_label' in coords_labels else (
-            "x" if hasattr(da, "x") else "lon"),
-        "y_label": coords_labels["y_label"] if 'y_label' in coords_labels else (
-            "y" if hasattr(da, "y") else "lat")
+        "x_label": coords_labels["x_label"]
+        if "x_label" in coords_labels
+        else ("x" if hasattr(da, "x") else "lon"),
+        "y_label": coords_labels["y_label"]
+        if "y_label" in coords_labels
+        else ("y" if hasattr(da, "y") else "lat"),
     }
     if da.ndim == 3:
-        def_labels["z_label"] = coords_labels["z_label"] if 'z_label' in coords_labels else (
-            "band" if hasattr(da, "band") else "time")
+        def_labels["z_label"] = (
+            coords_labels["z_label"]
+            if "z_label" in coords_labels
+            else ("band" if hasattr(da, "band") else "time")
+        )
     if da.ndim == 3:
         z_id = 1
         if z_value is None:
             if da.sizes[def_labels["z_label"]] != 1:
-                warn('Multiple layers detected. Using first layer as default.')
+                warn("Multiple layers detected. Using first layer as default.")
         else:
             z_id += tuple(da[def_labels["z_label"]]).index(z_value)
     else:
@@ -361,8 +365,7 @@ def _index2da(data, index, attrs, coords):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError(
-            "xarray must be installed to use this functionality")
+        raise ModuleNotFoundError("xarray must be installed to use this functionality")
     data = np.array(data).flatten()
     idx = index
     dims = idx.names
@@ -371,7 +374,7 @@ def _index2da(data, index, attrs, coords):
     if coords is None:
         missing = np.prod(shape) > idx.shape[0]
         if missing:
-            if 'nodatavals' in attrs:
+            if "nodatavals" in attrs:
                 fill_value = attrs["nodatavals"][0]
             else:
                 min_data = np.min(data)
@@ -385,7 +388,7 @@ def _index2da(data, index, attrs, coords):
         for dim, lev in zip(dims, idx.levels):
             coords[dim] = lev.to_numpy()
     else:
-        fill = attrs["nodatavals"][0] if 'nodatavals' in attrs else 0
+        fill = attrs["nodatavals"][0] if "nodatavals" in attrs else 0
         data_complete = np.full(shape, fill, data.dtype)
         data_complete[indexer] = data
         data_complete = data_complete[:, ::-1]

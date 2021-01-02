@@ -24,7 +24,7 @@ class test_ArcGISTextIO(unittest.TestCase):
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
                 assert (
-                    "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids."
+                    "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string IDs."
                     in str(warn[0].message)
                 )
         self.assertEqual(3, w.n)
@@ -44,7 +44,7 @@ class test_ArcGISTextIO(unittest.TestCase):
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
                 assert (
-                    "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids."
+                    "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string IDs."
                     in str(warn[0].message)
                 )
         f = tempfile.NamedTemporaryFile(suffix=".txt")
@@ -59,7 +59,7 @@ class test_ArcGISTextIO(unittest.TestCase):
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
                 assert (
-                    "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string ids."
+                    "DBF relating to ArcGIS TEXT was not found, proceeding with unordered string IDs."
                     in str(warn[0].message)
                 )
         self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)

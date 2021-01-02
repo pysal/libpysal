@@ -44,7 +44,7 @@ class W(object):
        parameter to ``True``.
     ids : list
         Values to use for keys of the neighbors and weights ``dict`` objects.
-    
+
     Attributes
     ----------
     asymmetries
@@ -79,7 +79,7 @@ class W(object):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import W
     >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4], 4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7], 7: [4, 6, 8], 8: [5, 7]}
     >>> weights = {0: [1, 1], 1: [1, 1, 1], 2: [1, 1], 3: [1, 1, 1], 4: [1, 1, 1, 1], 5: [1, 1, 1], 6: [1, 1], 7: [1, 1, 1], 8: [1, 1]}
@@ -115,7 +115,7 @@ class W(object):
     2533.667
 
     Cardinality histogram:
-    
+
     >>> w.histogram
     [(2, 4), (3, 392), (4, 9604)]
 
@@ -192,10 +192,10 @@ class W(object):
             The location to save the file. Default is ``''``.
         format : str
             The format of the weights file to write. Default is ``None``.
-        
+
         See Also
         --------
-        
+
         libpysal.io.FileIO
 
         """
@@ -219,7 +219,7 @@ class W(object):
         -------
         w : libpysal.weights.W
             A PySAL `W` spatial weights object.
-        
+
         """
 
         f = popen(dataPath=path, mode="r", dataFormat=format)
@@ -231,12 +231,12 @@ class W(object):
     @classmethod
     def from_shapefile(cls, *args, **kwargs):
         """Construct a weights object from a shapefile.
-        
+
         Raises
         ------
         NotImplementedError
             Use type-specific constructors, like Rook, Queen, DistanceBand, or Kernel.
-        
+
         """
 
         # we could also just 'do the right thing,' but I think it'd make sense to
@@ -276,12 +276,12 @@ class W(object):
             Name of the column with the weight information. If not provided and
             the dataframe has no column named "weight" then all weights
             are assumed to be 1.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` spatial weights object.
-        
+
         """
 
         if weight_col is None:
@@ -330,17 +330,17 @@ class W(object):
             Name of the column in which to store 'destination' node ids.
         weight_col : str
             Name of the column in which to store weight information.
-        
+
         Raises
         ------
         ImportError
             Pandas must be installed to use this function.
-        
+
         Returns
         -------
         adjlist : pandas.DataFrame
             An adjacency list representation within a dataframe.
-        
+
         """
 
         try:
@@ -371,12 +371,12 @@ class W(object):
         -------
         netx : networkx.Graph
             A ``networkx`` graph representation of the `W` object.
-        
+
         Raises
         ------
         ImportError
             NetworkX must be installed to use this function.
-        
+
         """
 
         try:
@@ -401,17 +401,17 @@ class W(object):
         weight_col : str
             If the graph is labeled, this should be the name of the field
             to use as the weight for the `W`. Default is ``'weight'``.
-        
+
         Returns
         -------
         w : libpysal.weights.WSP
             A `WSP` object containing the same graph as the ``networkx`` graph.
-        
+
         Raises
         ------
         ImportError
             NetworkX must be installed to use this function.
-            
+
         """
 
         try:
@@ -521,8 +521,7 @@ class W(object):
 
     @property
     def s1(self):
-        """``s1`` is defined as :math:`s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2`.
-        """
+        """``s1`` is defined as :math:`s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2`."""
 
         if "s1" not in self._cache:
             t = self.sparse.transpose()
@@ -539,7 +538,7 @@ class W(object):
 
         See Also
         --------
-        
+
         libpysal.weights.W.s2
 
         """
@@ -553,8 +552,7 @@ class W(object):
 
     @property
     def s2(self):
-        """``s2`` is defined as :math:`s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2`.
-        """
+        """``s2`` is defined as :math:`s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2`."""
 
         if "s2" not in self._cache:
             self._s2 = self.s2array.sum()
@@ -568,7 +566,7 @@ class W(object):
 
         See Also
         --------
-        
+
         libpysal.weights.W.diagW2
 
         """
@@ -585,7 +583,7 @@ class W(object):
 
         See Also
         --------
-        
+
         libpysal.weights.W.trcW2
 
         """
@@ -602,7 +600,7 @@ class W(object):
 
         See Also
         --------
-        
+
         libpysal.weights.W.trcWtW
 
         """
@@ -619,7 +617,7 @@ class W(object):
 
         See Also
         --------
-        
+
         libpysal.weights.W.diagWtW
 
         """
@@ -766,12 +764,12 @@ class W(object):
 
         Examples
         --------
-        
+
         >>> from libpysal.weights import lat2W
         >>> w = lat2W()
         >>> w[0] == dict({1: 1.0, 5: 1.0})
         True
-        
+
         """
 
         return dict(list(zip(self.neighbors[key], self.weights[key])))
@@ -781,7 +779,7 @@ class W(object):
 
         Examples
         --------
-        
+
         >>> from libpysal.weights import lat2W
         >>> w = lat2W(3, 3)
         >>> for i, wi in enumerate(w):
@@ -795,7 +793,7 @@ class W(object):
         6 6
         7 7
         8 8
-        
+
         """
 
         for i in self._id_order:
@@ -812,14 +810,14 @@ class W(object):
             first element of ``new_ids`` will replace the first element
             of ``w.id_order``, the second element of ``new_ids`` replaces
             the second element of ``w.id_order`` and so on.
-        
+
         Raises
         ------
         ValueError
             The length of ``old_ids`` does not match that of ``new_ids``.
         ValueError
             The list ``new_ids`` contains duplicates.
-        
+
         Examples
         --------
 
@@ -835,7 +833,7 @@ class W(object):
         ['id0', 'id1', 'id2', 'id3', 'id4', 'id5', 'id6', 'id7', 'id8']
         >>> w.neighbors['id0']
         ['id3', 'id1']
-        
+
         """
 
         old_ids = self._id_order
@@ -880,12 +878,12 @@ class W(object):
         ----------
         ordered_ids : sequence
             Identifiers for observations in specified order.
-        
+
         Raises
         ------
         ValueError
             The ``ordered_ids`` argument does not align with ``W.ids``.
-        
+
         Notes
         -----
 
@@ -909,7 +907,7 @@ class W(object):
         6 6
         7 7
         8 8
-        
+
         >>> w.id_order
         [0, 1, 2, 3, 4, 5, 6, 7, 8]
         >>> w.id_order = range(8,-1,-1)
@@ -951,12 +949,12 @@ class W(object):
 
         Examples
         --------
-        
+
         >>> from libpysal.weights import lat2W
         >>> w = lat2W()
         >>> w.id_order_set
         True
-        
+
         """
 
         return self._id_order_set
@@ -973,7 +971,7 @@ class W(object):
 
         Examples
         --------
-        
+
         >>> from libpysal.weights import W
         >>> neighbors = {'c': ['b'], 'b': ['c', 'a'], 'a': ['b']}
         >>> weights = {'c': [1.0], 'b': [1.0, 1.0], 'a': [1.0]}
@@ -984,7 +982,7 @@ class W(object):
         >>> w.id_order = ['b','a','c']
         >>> w.neighbor_offsets['b']
         [2, 1]
-        
+
         """
 
         if "neighbors_0" not in self._cache:
@@ -1004,12 +1002,12 @@ class W(object):
         Returns
         -------
         transformation : str, None
-            Valid transformation value. See the ``transform`` 
+            Valid transformation value. See the ``transform``
             parameters in ``set_transform()`` for a detailed description.
-            
+
         Examples
         --------
-        
+
         >>> from libpysal.weights import lat2W
         >>> w = lat2W()
         >>> w.weights[0]
@@ -1025,7 +1023,7 @@ class W(object):
 
         See also
         --------
-        
+
         set_transform
 
         """
@@ -1040,23 +1038,23 @@ class W(object):
         transform : str
             This parameter is not case sensitive. The following are
             valid transformations.
-            
+
             * **B** -- Binary
             * **R** -- Row-standardization (global sum :math:`=n`)
             * **D** -- Double-standardization (global sum :math:`=1`)
             * **V** -- Variance stabilizing
             * **O** -- Restore original transformation (from instantiation)
-        
+
         Notes
         -----
 
         Transformations are applied only to the value of the weights at instantiation.
         Chaining of transformations cannot be done on a `W` instance.
 
-        
+
         Examples
         --------
-        
+
         >>> from libpysal.weights import lat2W
         >>> w = lat2W()
         >>> w.weights[0]
@@ -1069,7 +1067,7 @@ class W(object):
         >>> w.transform='b'
         >>> w.weights[0]
         [1.0, 1.0]
-        
+
         """
 
         value = value.upper()
@@ -1175,7 +1173,7 @@ class W(object):
         >>> w = lat2W(3, 3)
         >>> w.asymmetry()
         []
-        
+
         >>> w.transform = 'r'
         >>> w.asymmetry()
         [(0, 1),
@@ -1202,17 +1200,17 @@ class W(object):
          (7, 8),
          (8, 5),
          (8, 7)]
-        
+
         >>> result = w.asymmetry(intrinsic=False)
         >>> result
         []
-        
+
         >>> neighbors = {0: [1, 2, 3], 1:[1, 2, 3], 2:[0, 1], 3: [0, 1]}
         >>> weights = {0: [1, 1, 1], 1: [1, 1, 1], 2: [1, 1], 3: [1, 1]}
         >>> w = W(neighbors, weights)
         >>> w.asymmetry()
         [(0, 1), (1, 0)]
-        
+
         """
 
         if intrinsic:
@@ -1238,18 +1236,18 @@ class W(object):
         of each focal observation consider the focal observation itself as
         a neighbor. This returns a generic `W` object, since the object is no
         longer guaranteed to have ``k`` neighbors for each observation.
-        
+
         Parameters
         ----------
         inplace : bool
             Update the `W` object in place (``True``). Default is ``False``.
-        
+
         Returns
         -------
         out_W : libpysal.weights.W
             A symmetrized `W` object. Default is ``False``.
             If ``inplace`` is set to ``True`` the `W` object is simply updated.
-        
+
         """
 
         if not inplace:
@@ -1285,7 +1283,7 @@ class W(object):
 
         Examples
         --------
-        
+
         >>> from libpysal.weights import W, full
         >>> neighbors = {
         ...     'first': ['second'], 'second': ['first', 'third'], 'third': ['second']
@@ -1299,7 +1297,7 @@ class W(object):
                [0., 1., 0.]])
         >>> ids
         ['first', 'second', 'third']
-        
+
         """
 
         wfull = np.zeros([self.n, self.n], dtype=float)
@@ -1327,7 +1325,7 @@ class W(object):
 
         Examples
         --------
-       
+
         >>> from libpysal.weights import W, WSP
         >>> neighbors = {
         ...     'first': ['second'], 'second': ['first', 'third'], 'third': ['second']
@@ -1337,16 +1335,16 @@ class W(object):
         >>> wsp = w.to_WSP()
         >>> isinstance(wsp, WSP)
         True
-        
+
         >>> wsp.n
         3
-        
+
         >>> wsp.s0
         4
 
         See also
         --------
-        
+
         libpysal.weights.WSP
 
         """
@@ -1369,7 +1367,7 @@ class W(object):
             Write out the entire path for a shapefile (``True``) or
             only the base of the shapefile without extension (``False``).
             Default is ``True``.
-        
+
         """
 
         if full:
@@ -1389,9 +1387,9 @@ class W(object):
         ----------
         gdf : geopandas.GeoDataFrame
             The original shapes whose topological relations are modelled in `W`.
-        indexed_on : str 
+        indexed_on : str
             Column of ``geopandas.GeoDataFrame`` that the weights object uses
-            as an index. Default is ``None``, so the index of the 
+            as an index. Default is ``None``, so the index of the
             ``geopandas.GeoDataFrame`` is used.
         ax : matplotlib.axes.Axes
             Axis on which to plot the weights. Default is ``None``, so
@@ -1414,17 +1412,17 @@ class W(object):
             Figure on which the plot is made.
         ax : matplotlib.axes.Axes
             Axis on which the plot is made.
-        
+
         Raises
         ------
         ImportError
             Matplotlib must be installed to use this function.
-        
+
         Notes
         -----
-        If you'd like to overlay the actual shapes from the 
+        If you'd like to overlay the actual shapes from the
         ``geopandas.GeoDataFrame``, call ``gdf.plot(ax=ax)`` after this.
-        To plot underneath, adjust the z-order of the plot as follows: 
+        To plot underneath, adjust the z-order of the plot as follows:
         ``gdf.plot(ax=ax,zorder=0)``.
 
         Examples
@@ -1438,7 +1436,7 @@ class W(object):
         >>> tmp = weights.plot(
         ...     gdf, color='firebrickred', node_kws=dict(marker='*', color='k')
         ... )
-        
+
         """
 
         try:
@@ -1512,7 +1510,7 @@ class WSP(object):
         :math:`s0=\sum_i \sum_j w_{i,j}`.
     trcWtW_WW : float
         Trace of :math:`W^{'}W + WW`.
-    
+
     Raises
     ------
     ValueError
@@ -1521,7 +1519,7 @@ class WSP(object):
         The weights object must be square.
     ValueError
         The number of values in ``id_order`` must match shape of ``sparse``.
-    
+
     Examples
     --------
 
@@ -1536,10 +1534,10 @@ class WSP(object):
     >>> w = WSP(sparse)
     >>> w.s0
     4.0
-    
+
     >>> w.trcWtW_WW
     6.395
-    
+
     >>> w.n
     4
 
@@ -1619,7 +1617,7 @@ class WSP(object):
         -------
         w : libpysal.weights.WSP
             A `WSP` instance.
-        
+
         """
 
         w = cls(W.sparse, id_order=W.id_order)
@@ -1643,7 +1641,7 @@ class WSP(object):
 
         Examples
         --------
-        
+
         >>> from libpysal.weights import lat2SW, WSP, WSP2W
 
         Build a 10x10 ``scipy.sparse`` matrix for a rectangular 2x5
@@ -1654,7 +1652,7 @@ class WSP(object):
         >>> wsp = WSP(sp)
         >>> wsp.n
         10
-        
+
         >>> print(wsp.sparse[0].todense())
         [[0 1 0 0 0 1 0 0 0 0]]
 
@@ -1663,7 +1661,7 @@ class WSP(object):
         >>> w = WSP2W(wsp)
         >>> w.n
         10
-        
+
         >>> print(w.full()[0][0])
         [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
 

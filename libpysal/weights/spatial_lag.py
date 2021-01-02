@@ -107,14 +107,14 @@ def lag_categorical(w, y, ties="tryself"):
         ``'tryself'``, and the category of the focal observation is included
         with its neighbors to try and break a tie. If this does not resolve
         the tie, a winner is chosen randomly. To just use random choice to
-        break ties, pass ``'random'`` instead. 
+        break ties, pass ``'random'`` instead.
         The following are supported options
-        
+
         * ``'tryself'`` -- Use the focal observation's label to tiebreak. If this doesn't successfully break the tie, which only occurs if it induces a new tie, decide randomly.;
         * ``'random'`` -- Resolve the tie randomly amongst winners.;
         * ``'lowest'`` -- Pick the lowest-value label amongst winners.;
         * ``'highest'`` -- Pick the highest-value label amongst winners.
-    
+
     Returns
     -------
     output : numpy.ndarray
@@ -123,7 +123,7 @@ def lag_categorical(w, y, ties="tryself"):
 
     Notes
     -----
-    
+
     This works on any array where the number of unique elements
     along the column axis is less than the number of elements in
     the array, for any ``dtype``. That means the routine should
@@ -225,12 +225,12 @@ def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
     -------
     label : int
         An integer denoting which label to use to label the observation.
-    
+
     Raises
     ------
     KeyError
         The tie-breaking method for categorical lag is not recognized.
-    
+
     """
 
     m = method.lower()
