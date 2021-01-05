@@ -228,7 +228,13 @@ class Rook(W):
         Returns
         -------
         w : libpysal.weights.W/libpysal.weights.WSP
-            instance of spatial weights class W or WSP
+            instance of spatial weights class W or WSP with an index attribute 
+
+        Notes
+        -----
+        1. Lower order contiguities are also selected.
+        2. Returned object contains `index` attribute that includes a 
+        `Pandas.MultiIndex` object from the DataArray.
 
         See Also
         --------
@@ -453,7 +459,13 @@ class Queen(W):
         Returns
         -------
         w : libpysal.weights.W/libpysal.weights.WSP
-            instance of spatial weights class W or WSP
+            instance of spatial weights class W or WSP with an index attribute 
+
+        Notes
+        -----
+        1. Lower order contiguities are also selected.
+        2. Returned object contains `index` attribute that includes a 
+        `Pandas.MultiIndex` object from the DataArray.
 
         See Also
         --------

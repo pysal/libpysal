@@ -70,11 +70,13 @@ def da2W(
     Returns
     -------
     w : libpysal.weights.W
-       instance of spatial weights class W
+       instance of spatial weights class W with an index attribute 
 
     Notes
     -----
-    Lower order contiguities are also selected.
+    1. Lower order contiguities are also selected.
+    2. Returned object contains `index` attribute that includes a 
+    `Pandas.MultiIndex` object from the DataArray.
 
     Examples
     --------
@@ -154,11 +156,13 @@ def da2WSP(
     Returns
     -------
     wsp : libpysal.weights.WSP
-       instance of spatial weights class WSP
+       instance of spatial weights class WSP with an index attribute
 
     Notes
     -----
-    Lower order contiguities are also selected.
+    1. Lower order contiguities are also selected.
+    2. Returned object contains `index` attribute that includes a 
+    `Pandas.MultiIndex` object from the DataArray.
 
     Examples
     --------
