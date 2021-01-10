@@ -12,7 +12,6 @@ if os.path.basename(sys.argv[0]) in ('pytest', 'py.test'):
         """
         decorator mimicking numba.jit
         """
-
         def intercepted_function(f, *f_args, **f_kwargs):
             return f
 
@@ -38,7 +37,7 @@ def da2W(
 ):
     """
     Create a W object from xarray.DataArray with an additional
-    attribute index containing coordinates values of the raster
+    attribute index containing coordinate values of the raster
     in the form of Pandas.Index/MultiIndex.
 
     Parameters
@@ -62,20 +61,19 @@ def da2W(
         selecting higher_order neighbors, Default is False
     n_jobs : int
         Number of cores to be used in the sparse weight construction. If -1,
-        all available cores are used.
-        Default is 1.
+        all available cores are used. Default is 1.
     **kwargs : keyword arguments
         Optional arguments for :class:`libpysal.weights.W`
 
     Returns
     -------
     w : libpysal.weights.W
-       instance of spatial weights class W with an index attribute 
+       instance of spatial weights class W with an index attribute
 
     Notes
     -----
     1. Lower order contiguities are also selected.
-    2. Returned object contains `index` attribute that includes a 
+    2. Returned object contains `index` attribute that includes a
     `Pandas.MultiIndex` object from the DataArray.
 
     Examples
@@ -106,8 +104,8 @@ def da2W(
     --------
     :class:`libpysal.weights.weights.W`
     """
-    wsp = da2WSP(da, criterion, z_value, coords_labels,
-                 k, include_nodata, n_jobs)
+    wsp = da2WSP(da, criterion, z_value, coords_labels, k, include_nodata,
+                 n_jobs)
     w = wsp.to_W(**kwargs)
 
     # temp addition of index attribute
@@ -126,7 +124,7 @@ def da2WSP(
 ):
     """
     Create a WSP object from xarray.DataArray with an additional
-    attribute index containing coordinates values of the raster
+    attribute index containing coordinate values of the raster
     in the form of Pandas.Index/MultiIndex.
 
     Parameters
@@ -150,8 +148,7 @@ def da2WSP(
         selecting higher_order neighbors, Default is False
     n_jobs : int
         Number of cores to be used in the sparse weight construction. If -1,
-        all available cores are used.
-        Default is 1.
+        all available cores are used. Default is 1.
 
     Returns
     -------
@@ -161,7 +158,7 @@ def da2WSP(
     Notes
     -----
     1. Lower order contiguities are also selected.
-    2. Returned object contains `index` attribute that includes a 
+    2. Returned object contains `index` attribute that includes a
     `Pandas.MultiIndex` object from the DataArray.
 
     Examples
@@ -203,7 +200,7 @@ def da2WSP(
         da = da[slice_dict]
 
     ser = da.to_series()
-    dtype = np.int32 if (shape[0] * shape[1]) < 46340 ** 2 else np.int64
+    dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
     if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
         mask = (ser != da.attrs["nodatavals"][0]).to_numpy()
         ids = np.where(mask)[0]
@@ -218,11 +215,9 @@ def da2WSP(
     try:
         import numba
     except (ModuleNotFoundError, ImportError):
-        warn(
-            "numba cannot be imported, parallel processing "
-            "and include_nodata functionality will be disabled. "
-            "falling back to slower method"
-        )
+        warn("numba cannot be imported, parallel processing "
+             "and include_nodata functionality will be disabled. "
+             "falling back to slower method")
         include_nodata = False
         # Fallback method to build sparse matrix
         sw = lat2SW(*shape, criterion)
@@ -246,14 +241,14 @@ def da2WSP(
                 n_jobs = 1
 
         if n_jobs == 1:
-            sw_tup = _SWbuilder(
-                *shape, ids, id_map, criterion, k_nas, dtype)  # -> (data, (row, col))
+            sw_tup = _SWbuilder(*shape, ids, id_map, criterion, k_nas,
+                                dtype)  # -> (data, (row, col))
         else:
             if n_jobs == -1:
                 n_jobs = os.cpu_count()
             # Parallel implementation
-            sw_tup = _parSWbuilder(
-                *shape, ids, id_map, criterion, k_nas, dtype, n_jobs)  # -> (data, (row, col))
+            sw_tup = _parSWbuilder(*shape, ids, id_map, criterion, k_nas,
+                                   dtype, n_jobs)  # -> (data, (row, col))
 
         sw = sparse.csr_matrix(
             sw_tup,
@@ -268,7 +263,7 @@ def da2WSP(
     # then eliminate zeros from the data. This changes the
     # sparcity of the csr_matrix !!
     if k > 1 and not include_nodata:
-        sw = sum(map(lambda x: sw ** x, range(1, k + 1)))
+        sw = sum(map(lambda x: sw**x, range(1, k + 1)))
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
@@ -315,7 +310,8 @@ def w2da(data, w, attrs={}, coords=None):
         da = _index2da(data, w.index, attrs, coords)
     else:
         raise AttributeError(
-            "This method requires to include a `index` attribute that is built as a `pandas.MultiIndex` object.")
+            "This method requires `w` object to include `index` attribute that is built as a `pandas.MultiIndex` object."
+        )
     return da
 
 
@@ -357,7 +353,8 @@ def wsp2da(data, wsp, attrs={}, coords=None):
         da = _index2da(data, wsp.index, attrs, coords)
     else:
         raise AttributeError(
-            "This method requires to include a `index` attribute that is built as a `pandas.MultiIndex` object.")
+            "This method requires `wsp` object to include `index` attribute that is built as a `pandas.MultiIndex` object."
+        )
     return da
 
 
@@ -398,17 +395,20 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
         layer = "time" if time else "band"
         dims = (layer, "y", "x")
         if time:
-            layers = np.arange(
-                np.datetime64("2020-07-30"), shape[0], dtype="datetime64[D]"
-            )
+            layers = np.arange(np.datetime64("2020-07-30"),
+                               shape[0],
+                               dtype="datetime64[D]")
         else:
             layers = np.arange(1, shape[0] + 1)
         coords[dims[-3]] = layers
+    else:
+        dims = ("y", "x")
     coords[dims[-2]] = np.linspace(90, -90, shape[-2])
     coords[dims[-1]] = np.linspace(-180, 180, shape[-1])
     data = np.random.randint(0, 255, shape)
-    attrs = {"nodatavals": (-32768.0,)}
+    attrs = {}
     if missing_vals:
+        attrs["nodatavals"] = (-32768.0, )
         miss_ids = np.where(np.random.randint(2, size=shape) == 1)
         data[miss_ids] = attrs["nodatavals"][0]
     da = DataArray(data, coords, dims, attrs=attrs)
@@ -454,18 +454,18 @@ def _da_checker(da, z_value, coords_labels):
 
     # default dimensions
     def_labels = {
-        "x_label": coords_labels["x_label"] if "x_label" in coords_labels
-        else ("x" if hasattr(da, "x") else "lon"),
-        "y_label": coords_labels["y_label"] if "y_label" in coords_labels
-        else ("y" if hasattr(da, "y") else "lat"),
+        "x_label":
+        coords_labels["x_label"] if "x_label" in coords_labels else
+        ("x" if hasattr(da, "x") else "lon"),
+        "y_label":
+        coords_labels["y_label"] if "y_label" in coords_labels else
+        ("y" if hasattr(da, "y") else "lat"),
     }
 
     if da.ndim == 3:
-        def_labels["z_label"] = (
-            coords_labels["z_label"]
-            if "z_label" in coords_labels
-            else ("band" if hasattr(da, "band") else "time")
-        )
+        def_labels["z_label"] = (coords_labels["z_label"]
+                                 if "z_label" in coords_labels else
+                                 ("band" if hasattr(da, "band") else "time"))
 
         z_id = 1
         if z_value is None:
@@ -562,7 +562,13 @@ def _idmap(ids, mask, dtype):
 
 @jit(nopython=True, fastmath=True)
 def _SWbuilder(
-    nrows, ncols, ids, id_map, criterion, k, dtype,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
 ):
     """
     Computes data and orders rows, cols, data for a single chunk
@@ -595,15 +601,20 @@ def _SWbuilder(
         1D ones array containing columns value of each id
         in the sparse weight object
     """
-    rows, cols = _compute_chunk(
-        nrows, ncols, ids, id_map, criterion, k, dtype)
+    rows, cols = _compute_chunk(nrows, ncols, ids, id_map, criterion, k, dtype)
     data = np.ones_like(rows, dtype=np.int8)
     return (data, (rows, cols))
 
 
 @jit(nopython=True, fastmath=True, nogil=True)
 def _compute_chunk(
-    nrows, ncols, ids, id_map, criterion, k, dtype,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
 ):
     """
     Computes rows cols for a single chunk
@@ -645,11 +656,8 @@ def _compute_chunk(
     cols = np.empty_like(rows)
     ni = 0  # -> Pointer to store rows and cols in array
     for order in range(1, k + 1):
-        condition = (
-            (order - 1)
-            if criterion == "queen"
-            else ((k - order) if ((k - order) < order) else (order - 1))
-        )
+        condition = ((order - 1) if criterion == "queen" else
+                     ((k - order) if ((k - order) < order) else (order - 1)))
         for i in range(n):
             id_i = ids[i]
             og_id = id_map[id_i]
@@ -665,16 +673,14 @@ def _compute_chunk(
                 # north-east to south-east neighbors
                 for j in range(condition):
                     if (id_i // ncols) < (nrows - j - 1):
-                        id_neighbor = id_map[(
-                            id_i + order) + (ncols * (j + 1))]
+                        id_neighbor = id_map[(id_i + order) + (ncols * (j + 1))]
                         if id_neighbor:
                             rows[ni], cols[ni] = og_id, id_neighbor
                             ni += 1
                             rows[ni], cols[ni] = id_neighbor, og_id
                             ni += 1
                     if (id_i // ncols) >= j + 1:
-                        id_neighbor = id_map[(
-                            id_i + order) - (ncols * (j + 1))]
+                        id_neighbor = id_map[(id_i + order) - (ncols * (j + 1))]
                         if id_neighbor:
                             rows[ni], cols[ni] = og_id, id_neighbor
                             ni += 1
@@ -728,7 +734,9 @@ def _compute_chunk(
 
 @jit(nopython=True, fastmath=True)
 def _chunk_generator(
-    n_jobs, starts, ids,
+    n_jobs,
+    starts,
+    ids,
 ):
     """
     Construct chunks to iterate over within numba in parallel
@@ -751,12 +759,19 @@ def _chunk_generator(
     chunk_size = starts[1] - starts[0]
     for i in range(n_jobs):
         start = starts[i]
-        ids_chunk = ids[start: (start + chunk_size)]
-        yield (ids_chunk,)
+        ids_chunk = ids[start:(start + chunk_size)]
+        yield (ids_chunk, )
 
 
 def _parSWbuilder(
-    nrows, ncols, ids, id_map, criterion, k, dtype, n_jobs,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
+    n_jobs,
 ):
     """
     Computes data and orders rows, cols, data in parallel using numba
@@ -799,11 +814,8 @@ def _parSWbuilder(
     starts = np.arange(n_jobs + 1) * chunk_size
     chunk = _chunk_generator(n_jobs, starts, ids)
     with parallel_backend("threading"):
-        worker_out = Parallel(n_jobs=n_jobs)(
-            delayed(_compute_chunk)(nrows, ncols, *
-                                    ids, id_map, criterion, k, dtype)
-            for ids in chunk
-        )
+        worker_out = Parallel(n_jobs=n_jobs)(delayed(_compute_chunk)(
+            nrows, ncols, *ids, id_map, criterion, k, dtype) for ids in chunk)
     rows, cols = zip(*worker_out)
     rows = np.concatenate(rows)
     cols = np.concatenate(cols)

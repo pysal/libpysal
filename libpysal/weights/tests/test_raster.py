@@ -13,6 +13,8 @@ class Testraster(unittest.TestCase):
         self.da3 = self.da2.rename(
             {"band": "layer", "x": "longitude", "y": "latitude"})
         self.data1 = pd.Series(np.ones(5))
+        self.da4 = raster.testDataArray((1, 1), missing_vals=False)
+        self.da4.data = np.array([["test"]])
 
     def test_da2W(self):
         w1 = raster.da2W(self.da1, "queen", k=2, n_jobs=-1)
@@ -49,14 +51,14 @@ class Testraster(unittest.TestCase):
                          self.da3.to_series().index.tolist())
 
     def test_da2WSP(self):
-        w1 = raster.da2WSP(self.da1, "queen", n_jobs=-1)
+        w1 = raster.da2WSP(self.da1, "rook", n_jobs=-1)
         rows, cols = w1.sparse.shape
         n = rows * cols
         pct_nonzero = w1.sparse.nnz / float(n)
-        self.assertEqual(pct_nonzero, 0.24)
+        self.assertEqual(pct_nonzero, 0.08)
         data = w1.sparse.todense().tolist()
-        self.assertEqual(data[3], [0, 1, 0, 0, 1])
-        self.assertEqual(data[4], [0, 0, 1, 1, 0])
+        self.assertEqual(data[3], [0, 0, 0, 0, 1])
+        self.assertEqual(data[4], [0, 0, 0, 1, 0])
         self.assertEqual(w1.index.names, self.da1.to_series().index.names)
         self.assertEqual(w1.index.tolist()[0], (1, 90.0, 180.0))
         self.assertEqual(w1.index.tolist()[1], (1, -30.0, -180.0))
@@ -88,6 +90,9 @@ class Testraster(unittest.TestCase):
         self.assertEqual(da1["x"].values.tolist(),
                          self.da1["x"].values.tolist())
         self.assertEqual(da1.shape, (1, 4, 4))
+
+    def test_da_checker(self):
+        self.assertRaises(ValueError, raster.da2W, self.da4)
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testraster)

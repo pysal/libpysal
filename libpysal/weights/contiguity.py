@@ -196,7 +196,7 @@ class Rook(W):
     ):
         """
         Construct a weights object from a xarray.DataArray with an additional
-        attribute index containing coordinates values of the raster
+        attribute index containing coordinate values of the raster
         in the form of Pandas.Index/MultiIndex.
 
         Parameters
@@ -220,8 +220,7 @@ class Rook(W):
             selecting higher_order neighbors, Default is False
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
-            all available cores are used.
-            Default is 1.
+            all available cores are used. Default is 1.
         **kwargs : keyword arguments
             optional arguments passed when sparse = False
 
@@ -427,7 +426,7 @@ class Queen(W):
     ):
         """
         Construct a weights object from a xarray.DataArray with an additional
-        attribute index containing coordinates values of the raster
+        attribute index containing coordinate values of the raster
         in the form of Pandas.Index/MultiIndex.
 
         Parameters
@@ -451,8 +450,7 @@ class Queen(W):
             selecting higher_order neighbors, Default is False
         n_jobs : int
             Number of cores to be used in the sparse weight construction. If -1,
-            all available cores are used.
-            Default is 1.
+            all available cores are used. Default is 1.
         **kwargs : keyword arguments
             optional arguments passed when sparse = False
 
