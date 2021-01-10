@@ -64,9 +64,8 @@ class Testraster(unittest.TestCase):
         self.assertEqual(w1.index.tolist()[1], (1, -30.0, -180.0))
         self.assertEqual(w1.index.tolist()[2], (1, -30.0, 180.0))
         self.assertEqual(w1.index.tolist()[3], (1, -90.0, -60.0))
-        w2 = raster.da2W(self.da2, "queen", k=2,
-                         include_nodata=True, n_jobs=-1)
-        w3 = raster.da2W(self.da2, "queen", k=2, n_jobs=-1)
+        w2 = raster.da2WSP(self.da2, "queen", k=2, include_nodata=True)
+        w3 = raster.da2WSP(self.da2, "queen", k=2, n_jobs=-1)
         self.assertEqual(w2.sparse.nnz, w3.sparse.nnz)
         self.assertEqual(w2.sparse.todense().tolist(),
                          w3.sparse.todense().tolist())
@@ -83,7 +82,7 @@ class Testraster(unittest.TestCase):
         self.assertEqual(da_compare, True)
 
     def test_wsp2da(self):
-        wsp1 = raster.da2WSP(self.da1, "queen", n_jobs=-1)
+        wsp1 = raster.da2WSP(self.da1, "queen")
         da1 = raster.wsp2da(self.data1, wsp1)
         self.assertEqual(da1["y"].values.tolist(),
                          self.da1["y"].values.tolist())
