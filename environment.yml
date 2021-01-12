@@ -31,3 +31,5 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
+  - descartes
+  - mapclassify
