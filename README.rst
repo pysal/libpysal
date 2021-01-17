@@ -69,9 +69,8 @@ the `Contributors List <https://github.com/pysal/libpysal/graphs/contributors>`_
 Bug reports
 ***********
 
-To search for or report bugs, please see libpysal's issues_.
+To search for or report bugs, please see `libpysal's issues <https://github.com/pysal/libpysal/issues>`_.
 
-.. _issues : http://github.com/pysal/libpysal/issues
 
 *******************
 License information
