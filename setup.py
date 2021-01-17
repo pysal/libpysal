@@ -67,6 +67,7 @@ def setup_package():
         version=__version__,
         description="Core components of PySAL A library of spatial analysis functions.",
         long_description=long_description,
+        long_description_content_type="text/x-rst",
         maintainer="PySAL Developers",
         maintainer_email="pysal-dev@googlegroups.com",
         url="http://pysal.org/libpysal",
