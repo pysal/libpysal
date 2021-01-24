@@ -28,7 +28,6 @@ dependencies:
   - statsmodels>=0.6.1
   - xarray
   - codecov
-  - matplotlib
   - pytest
   - pytest-cov
   - descartes
