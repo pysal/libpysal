@@ -107,9 +107,11 @@ def da2W(
     :class:`libpysal.weights.weights.W`
     """
     warn(
-        "It is best to use the WSP object when building weights"
-        " from a raster, as the da2WSP method is much faster"
-        " and far more memory efficient than the da2W method."
+        "You are trying to build a full W object from "
+        "xarray.DataArray (raster) object. This computation "
+        "can be very slow and not scale well. It is recommended, "
+        "if possible, to instead build WSP object, which is more "
+        "efficient and faster. You can do this by using da2WSP method."
     )
     wsp = da2WSP(da, criterion, z_value, coords_labels, k, include_nodata, n_jobs)
     w = wsp.to_W(**kwargs)
@@ -273,6 +275,7 @@ def da2WSP(
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
+
     index = ser.index
     wsp = WSP(sw, index=index)
     return wsp
