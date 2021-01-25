@@ -1318,9 +1318,6 @@ class WSP(object):
     sparse : scipy.sparse.{matrix-type}
         NxN object from ``scipy.sparse``
 
-    id_order : list
-        An ordered list of ids, assumed to match the ordering in ``sparse``.
-
     Attributes
     ----------
 
@@ -1360,12 +1357,15 @@ class WSP(object):
             raise ValueError("Weights object must be square")
         self.sparse = sparse.tocsr()
         self.n = sparse.shape[0]
+        self._cache = {}
         if id_order:
             if len(id_order) != self.n:
                 raise ValueError(
                     "Number of values in id_order must match shape of sparse"
                 )
-        self.id_order = id_order
+            else:
+                self._id_order = id_order
+                self._cache["id_order"] = self._id_order
         # temp addition of index attribute
         import pandas as pd  # will be removed after refactoring is done
         if index is not None:
@@ -1378,7 +1378,19 @@ class WSP(object):
         else:
             index = pd.RangeIndex(self.n)
         self.index = index
-        self._cache = {}
+
+    @property
+    def id_order(self):
+        """An ordered list of ids, assumed to match the ordering in ``sparse``.
+        """
+        # Temporary solution until the refactoring is finished
+        if "id_order" not in self._cache:
+            if hasattr(self, "index"):
+                self._id_order = self.index.tolist()
+            else:
+                self._id_order = list(range(self.n))
+            self._cache["id_order"] = self._id_order
+        return self._id_order
 
     @property
     def s0(self):

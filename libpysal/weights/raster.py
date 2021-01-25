@@ -268,7 +268,7 @@ def da2WSP(
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
     index = ser.index
-    wsp = WSP(sw, index=index, id_order=index.tolist())
+    wsp = WSP(sw, index=index)
     return wsp
 
 
