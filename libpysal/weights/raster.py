@@ -6,16 +6,18 @@ import os
 import sys
 from scipy import sparse
 
-if os.path.basename(sys.argv[0]) in ('pytest', 'py.test'):
+if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 
     def jit(*dec_args, **dec_kwargs):
         """
         decorator mimicking numba.jit
         """
+
         def intercepted_function(f, *f_args, **f_kwargs):
             return f
 
         return intercepted_function
+
 
 else:
     from ..common import jit
@@ -104,8 +106,14 @@ def da2W(
     --------
     :class:`libpysal.weights.weights.W`
     """
-    wsp = da2WSP(da, criterion, z_value, coords_labels, k, include_nodata,
-                 n_jobs)
+    warn(
+        "You are trying to build a full W object from "
+        "xarray.DataArray (raster) object. This computation "
+        "can be very slow and not scale well. It is recommended, "
+        "if possible, to instead build WSP object, which is more "
+        "efficient and faster. You can do this by using da2WSP method."
+    )
+    wsp = da2WSP(da, criterion, z_value, coords_labels, k, include_nodata, n_jobs)
     w = wsp.to_W(**kwargs)
 
     # temp addition of index attribute
@@ -200,7 +208,7 @@ def da2WSP(
         da = da[slice_dict]
 
     ser = da.to_series()
-    dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
+    dtype = np.int32 if (shape[0] * shape[1]) < 46340 ** 2 else np.int64
     if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
         mask = (ser != da.attrs["nodatavals"][0]).to_numpy()
         ids = np.where(mask)[0]
@@ -215,9 +223,11 @@ def da2WSP(
     try:
         import numba
     except (ModuleNotFoundError, ImportError):
-        warn("numba cannot be imported, parallel processing "
-             "and include_nodata functionality will be disabled. "
-             "falling back to slower method")
+        warn(
+            "numba cannot be imported, parallel processing "
+            "and include_nodata functionality will be disabled. "
+            "falling back to slower method"
+        )
         include_nodata = False
         # Fallback method to build sparse matrix
         sw = lat2SW(*shape, criterion)
@@ -241,20 +251,18 @@ def da2WSP(
                 n_jobs = 1
 
         if n_jobs == 1:
-            sw_tup = _SWbuilder(*shape, ids, id_map, criterion, k_nas,
-                                dtype)  # -> (data, (row, col))
+            sw_tup = _SWbuilder(
+                *shape, ids, id_map, criterion, k_nas, dtype
+            )  # -> (data, (row, col))
         else:
             if n_jobs == -1:
                 n_jobs = os.cpu_count()
             # Parallel implementation
-            sw_tup = _parSWbuilder(*shape, ids, id_map, criterion, k_nas,
-                                   dtype, n_jobs)  # -> (data, (row, col))
+            sw_tup = _parSWbuilder(
+                *shape, ids, id_map, criterion, k_nas, dtype, n_jobs
+            )  # -> (data, (row, col))
 
-        sw = sparse.csr_matrix(
-            sw_tup,
-            shape=(n, n),
-            dtype=np.int8,
-        )
+        sw = sparse.csr_matrix(sw_tup, shape=(n, n), dtype=np.int8,)
 
     # Higher_order functionality, this uses idea from
     # libpysal#313 for adding higher order neighbors.
@@ -263,12 +271,13 @@ def da2WSP(
     # then eliminate zeros from the data. This changes the
     # sparcity of the csr_matrix !!
     if k > 1 and not include_nodata:
-        sw = sum(map(lambda x: sw**x, range(1, k + 1)))
+        sw = sum(map(lambda x: sw ** x, range(1, k + 1)))
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
+
     index = ser.index
-    wsp = WSP(sw, index=index, id_order=index.tolist())
+    wsp = WSP(sw, index=index)
     return wsp
 
 
@@ -385,8 +394,7 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError(
-            "xarray must be installed to use this functionality")
+        raise ModuleNotFoundError("xarray must be installed to use this functionality")
     if not rand:
         np.random.seed(12345)
     coords = {}
@@ -395,9 +403,9 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
         layer = "time" if time else "band"
         dims = (layer, "y", "x")
         if time:
-            layers = np.arange(np.datetime64("2020-07-30"),
-                               shape[0],
-                               dtype="datetime64[D]")
+            layers = np.arange(
+                np.datetime64("2020-07-30"), shape[0], dtype="datetime64[D]"
+            )
         else:
             layers = np.arange(1, shape[0] + 1)
         coords[dims[-3]] = layers
@@ -408,7 +416,7 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     data = np.random.randint(0, 255, shape)
     attrs = {}
     if missing_vals:
-        attrs["nodatavals"] = (-32768.0, )
+        attrs["nodatavals"] = (-32768.0,)
         miss_ids = np.where(np.random.randint(2, size=shape) == 1)
         data[miss_ids] = attrs["nodatavals"][0]
     da = DataArray(data, coords, dims, attrs=attrs)
@@ -441,31 +449,34 @@ def _da_checker(da, z_value, coords_labels):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError(
-            "xarray must be installed to use this functionality")
+        raise ModuleNotFoundError("xarray must be installed to use this functionality")
 
     if not isinstance(da, DataArray):
         raise TypeError("da must be an instance of xarray.DataArray")
     if da.ndim not in [2, 3]:
         raise ValueError("da must be 2D or 3D")
-    if not (np.issubdtype(da.values.dtype, np.integer)
-            or np.issubdtype(da.values.dtype, np.floating)):
+    if not (
+        np.issubdtype(da.values.dtype, np.integer)
+        or np.issubdtype(da.values.dtype, np.floating)
+    ):
         raise ValueError("da must be an array of integers or float")
 
     # default dimensions
     def_labels = {
-        "x_label":
-        coords_labels["x_label"] if "x_label" in coords_labels else
-        ("x" if hasattr(da, "x") else "lon"),
-        "y_label":
-        coords_labels["y_label"] if "y_label" in coords_labels else
-        ("y" if hasattr(da, "y") else "lat"),
+        "x_label": coords_labels["x_label"]
+        if "x_label" in coords_labels
+        else ("x" if hasattr(da, "x") else "lon"),
+        "y_label": coords_labels["y_label"]
+        if "y_label" in coords_labels
+        else ("y" if hasattr(da, "y") else "lat"),
     }
 
     if da.ndim == 3:
-        def_labels["z_label"] = (coords_labels["z_label"]
-                                 if "z_label" in coords_labels else
-                                 ("band" if hasattr(da, "band") else "time"))
+        def_labels["z_label"] = (
+            coords_labels["z_label"]
+            if "z_label" in coords_labels
+            else ("band" if hasattr(da, "band") else "time")
+        )
 
         z_id = 1
         if z_value is None:
@@ -501,8 +512,7 @@ def _index2da(data, index, attrs, coords):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError(
-            "xarray must be installed to use this functionality")
+        raise ModuleNotFoundError("xarray must be installed to use this functionality")
 
     data = np.array(data).flatten()
     idx = index
@@ -562,13 +572,7 @@ def _idmap(ids, mask, dtype):
 
 @jit(nopython=True, fastmath=True)
 def _SWbuilder(
-    nrows,
-    ncols,
-    ids,
-    id_map,
-    criterion,
-    k,
-    dtype,
+    nrows, ncols, ids, id_map, criterion, k, dtype,
 ):
     """
     Computes data and orders rows, cols, data for a single chunk
@@ -608,13 +612,7 @@ def _SWbuilder(
 
 @jit(nopython=True, fastmath=True, nogil=True)
 def _compute_chunk(
-    nrows,
-    ncols,
-    ids,
-    id_map,
-    criterion,
-    k,
-    dtype,
+    nrows, ncols, ids, id_map, criterion, k, dtype,
 ):
     """
     Computes rows cols for a single chunk
@@ -656,8 +654,11 @@ def _compute_chunk(
     cols = np.empty_like(rows)
     ni = 0  # -> Pointer to store rows and cols in array
     for order in range(1, k + 1):
-        condition = ((order - 1) if criterion == "queen" else
-                     ((k - order) if ((k - order) < order) else (order - 1)))
+        condition = (
+            (order - 1)
+            if criterion == "queen"
+            else ((k - order) if ((k - order) < order) else (order - 1))
+        )
         for i in range(n):
             id_i = ids[i]
             og_id = id_map[id_i]
@@ -734,9 +735,7 @@ def _compute_chunk(
 
 @jit(nopython=True, fastmath=True)
 def _chunk_generator(
-    n_jobs,
-    starts,
-    ids,
+    n_jobs, starts, ids,
 ):
     """
     Construct chunks to iterate over within numba in parallel
@@ -759,19 +758,12 @@ def _chunk_generator(
     chunk_size = starts[1] - starts[0]
     for i in range(n_jobs):
         start = starts[i]
-        ids_chunk = ids[start:(start + chunk_size)]
-        yield (ids_chunk, )
+        ids_chunk = ids[start : (start + chunk_size)]
+        yield (ids_chunk,)
 
 
 def _parSWbuilder(
-    nrows,
-    ncols,
-    ids,
-    id_map,
-    criterion,
-    k,
-    dtype,
-    n_jobs,
+    nrows, ncols, ids, id_map, criterion, k, dtype, n_jobs,
 ):
     """
     Computes data and orders rows, cols, data in parallel using numba
@@ -814,8 +806,10 @@ def _parSWbuilder(
     starts = np.arange(n_jobs + 1) * chunk_size
     chunk = _chunk_generator(n_jobs, starts, ids)
     with parallel_backend("threading"):
-        worker_out = Parallel(n_jobs=n_jobs)(delayed(_compute_chunk)(
-            nrows, ncols, *ids, id_map, criterion, k, dtype) for ids in chunk)
+        worker_out = Parallel(n_jobs=n_jobs)(
+            delayed(_compute_chunk)(nrows, ncols, *ids, id_map, criterion, k, dtype)
+            for ids in chunk
+        )
     rows, cols = zip(*worker_out)
     rows = np.concatenate(rows)
     cols = np.concatenate(cols)
