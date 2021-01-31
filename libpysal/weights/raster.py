@@ -80,27 +80,37 @@ def da2W(
 
     Examples
     --------
-    >>> from libpysal.raster import da2W, testDataArray
+
+    >>> from libpysal.weights.raster import da2W, testDataArray
     >>> da = testDataArray().rename(
             {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
     >>> da.dims
     ('layer', 'latitude', 'longitude')
+    >>> da.shape
+    (3, 4, 4)
+    >>> da.coords
+    Coordinates:
+        * layer      (layer) int64 1 2 3
+        * latitude   (latitude) float64 90.0 30.0 -30.0 -90.0
+        * longitude  (longitude) float64 -180.0 -60.0 60.0 180.0
+    >>> da.attrs
+    {'nodatavals': (-32768.0,)}
     >>> coords_labels = {
         "z_label": "layer",
         "y_label": "latitude",
         "x_label": "longitude"
     }
-    >>> w = da2W(da, layer=2, coords_labels=coords_labels)
-    >>> da.shape
-    (3, 4, 4)
+    >>> w = da2W(da, z_value=2, coords_labels=coords_labels)
     >>> "%.3f"%w.pct_nonzero
-    '28.571'
-    >>> w[3] == {5: 1, 4: 1, 2: 1}
-    True
-    >>> w[6] == {5: 1}
+    '30.000'
+    >>> w[(2, 90.0, 180.0)] == {(2, 90.0, 60.0): 1, (2, 30.0, 180.0): 1}
     True
     >>> len(w.index)
-    7
+    10
+    >>> w.index[:2]
+    MultiIndex([(2, 90.0,  60.0),
+                (2, 90.0, 180.0)],
+               names=['layer', 'latitude', 'longitude'])
 
     See Also
     --------
@@ -171,13 +181,20 @@ def da2WSP(
 
     Examples
     --------
-    >>> from libpysal.raster import da2WSP, testDataArray
+    >>> from libpysal.weights.raster import da2WSP, testDataArray
     >>> da = testDataArray().rename(
             {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
     >>> da.dims
     ('layer', 'latitude', 'longitude')
     >>> da.shape
     (3, 4, 4)
+    >>> da.coords
+    Coordinates:
+        * layer      (layer) int64 1 2 3
+        * latitude   (latitude) float64 90.0 30.0 -30.0 -90.0
+        * longitude  (longitude) float64 -180.0 -60.0 60.0 180.0
+    >>> da.attrs
+    {'nodatavals': (-32768.0,)}
     >>> coords_labels = {
         "z_label": "layer",
         "y_label": "latitude",
@@ -185,14 +202,16 @@ def da2WSP(
     }
     >>> wsp = da2WSP(da, z_value=2, coords_labels=coords_labels)
     >>> wsp.n
-    7
+    10
     >>> pct_sp = wsp.sparse.nnz *1. / wsp.n**2
     >>> "%.3f"%pct_sp
-    '0.286'
+    '0.300'
     >>> print(wsp.sparse[4].todense())
-    [[0 0 0 1 0 1 0]]
-    >>> len(w.index)
-    7
+    [[0 0 1 0 0 1 1 1 0 0]]
+    >>> wsp.index[:2]
+    MultiIndex([(2, 90.0,  60.0),
+                (2, 90.0, 180.0)],
+               names=['layer', 'latitude', 'longitude'])
 
     See Also
     --------
@@ -308,7 +327,7 @@ def w2da(data, w, attrs={}, coords=None):
     >>> da = testDataArray()
     >>> da.shape
     (3, 4, 4)
-    >>> w = da2W(da, layer=2)
+    >>> w = da2W(da, z_value=2)
     >>> data = np.random.randint(0, 255, len(w.index))
     >>> da1 = w2da(data, w)
 
@@ -351,7 +370,7 @@ def wsp2da(data, wsp, attrs={}, coords=None):
     >>> da = testDataArray()
     >>> da.shape
     (3, 4, 4)
-    >>> wsp = da2WSP(da, layer=2)
+    >>> wsp = da2WSP(da, z_value=2)
     >>> data = np.random.randint(0, 255, len(wsp.index))
     >>> da1 = w2da(data, wsp)
 
