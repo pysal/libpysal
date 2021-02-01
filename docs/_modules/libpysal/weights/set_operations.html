@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.set_operations &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.weights.set_operations &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -40,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -132,8 +133,14 @@
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">isspmatrix_csr</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ones</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;w_union&#39;</span><span class="p">,</span> <span class="s1">&#39;w_intersection&#39;</span><span class="p">,</span> <span class="s1">&#39;w_difference&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;w_symmetric_difference&#39;</span><span class="p">,</span> <span class="s1">&#39;w_subset&#39;</span><span class="p">,</span> <span class="s1">&#39;w_clip&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;w_union&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;w_intersection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;w_difference&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;w_symmetric_difference&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;w_subset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;w_clip&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 
 <div class="viewcode-block" id="w_union"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_union.html#libpysal.weights.w_union">[docs]</a><span class="k">def</span> <span class="nf">w_union</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -194,7 +201,7 @@
     <span class="k">return</span> <span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="w_intersection"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_intersection.html#libpysal.weights.w_intersection">[docs]</a><span class="k">def</span> <span class="nf">w_intersection</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">w_shape</span><span class="o">=</span><span class="s1">&#39;w1&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="w_intersection"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_intersection.html#libpysal.weights.w_intersection">[docs]</a><span class="k">def</span> <span class="nf">w_intersection</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">w_shape</span><span class="o">=</span><span class="s2">&quot;w1&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a binary weights object, w, that includes only</span>
 <span class="sd">    those neighbor pairs that exist in both w1 and w2.</span>
@@ -247,13 +254,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;w1&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;w1&quot;</span><span class="p">:</span>
         <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
         <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
-        <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span>
-        <span class="p">))</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+        <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;invalid string passed to w_shape&quot;</span><span class="p">)</span>
 
@@ -268,7 +274,7 @@
     <span class="k">return</span> <span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="w_difference"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_difference.html#libpysal.weights.w_difference">[docs]</a><span class="k">def</span> <span class="nf">w_difference</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">w_shape</span><span class="o">=</span><span class="s1">&#39;w1&#39;</span><span class="p">,</span> <span class="n">constrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="w_difference"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_difference.html#libpysal.weights.w_difference">[docs]</a><span class="k">def</span> <span class="nf">w_difference</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">w_shape</span><span class="o">=</span><span class="s2">&quot;w1&quot;</span><span class="p">,</span> <span class="n">constrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a binary weights object, w, that includes only neighbor pairs</span>
 <span class="sd">    in w1 that are not in w2. The w_shape and constrained parameters</span>
@@ -330,13 +336,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;w1&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;w1&quot;</span><span class="p">:</span>
         <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
         <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
-        <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+        <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">neigh_keys</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;returned an empty weights matrix&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -346,28 +351,25 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">neigh_keys</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="p">:</span>
-                <span class="n">add_neigh</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                                <span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="n">add_neigh</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
                 <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">add_neigh</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">if</span> <span class="n">constrained</span> <span class="ow">or</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
-        <span class="n">constrained_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="n">constrained</span> <span class="ow">or</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+        <span class="n">constrained_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="n">island_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">constrained_keys</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">island_keys</span><span class="p">:</span>
             <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">constrained_keys</span><span class="p">:</span>
-            <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="nb">set</span><span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">constrained_keys</span><span class="p">))</span>
+            <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">constrained_keys</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="w_symmetric_difference"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_symmetric_difference.html#libpysal.weights.w_symmetric_difference">[docs]</a><span class="k">def</span> <span class="nf">w_symmetric_difference</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">w_shape</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">constrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="w_symmetric_difference"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_symmetric_difference.html#libpysal.weights.w_symmetric_difference">[docs]</a><span class="k">def</span> <span class="nf">w_symmetric_difference</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">w_shape</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">constrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a binary weights object, w, that includes only neighbor pairs</span>
 <span class="sd">    that are not shared by w1 and w2. The w_shape and constrained parameters</span>
@@ -427,11 +429,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
         <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
-        <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">(</span>
-        <span class="p">))</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">elif</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+        <span class="n">neigh_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;invalid string passed to w_shape&quot;</span><span class="p">)</span>
 
@@ -440,7 +443,8 @@
         <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="p">:</span>
                 <span class="n">add_neigh</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span>
-                    <span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                    <span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="p">)</span>
                 <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">add_neigh</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
@@ -449,15 +453,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">if</span> <span class="n">constrained</span> <span class="ow">or</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
-        <span class="n">constrained_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="n">constrained</span> <span class="ow">or</span> <span class="n">w_shape</span> <span class="o">==</span> <span class="s2">&quot;min&quot;</span><span class="p">:</span>
+        <span class="n">constrained_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w1</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">w2</span><span class="o">.</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="n">island_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">constrained_keys</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">island_keys</span><span class="p">:</span>
             <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">constrained_keys</span><span class="p">:</span>
-            <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="nb">set</span><span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">constrained_keys</span><span class="p">))</span>
+            <span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">constrained_keys</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -519,7 +521,7 @@
 
 
 <div class="viewcode-block" id="w_clip"><a class="viewcode-back" href="../../../generated/libpysal.weights.w_clip.html#libpysal.weights.w_clip">[docs]</a><span class="k">def</span> <span class="nf">w_clip</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">outSP</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Clip a continuous W object (w1) with a different W object (w2) so only cells where</span>
 <span class="sd">    w2 has a non-zero value remain with non-zero values in w1.</span>
 
@@ -625,9 +627,10 @@
 <span class="sd">           [ True,  True,  True,  True,  True,  True],</span>
 <span class="sd">           [ True,  True,  True,  True,  True,  True]])</span>
 
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">WSP2W</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">w1</span><span class="o">.</span><span class="n">id_order</span><span class="p">:</span>
         <span class="n">w1</span><span class="o">.</span><span class="n">id_order</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">id_order</span> <span class="o">=</span> <span class="n">w1</span><span class="o">.</span><span class="n">id_order</span>
@@ -658,7 +661,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

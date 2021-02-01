@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.geogrid &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.geogrid &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,34 +128,55 @@
       
   <div class="section" id="libpysal-cg-geogrid">
 <h1>libpysal.cg.geogrid<a class="headerlink" href="#libpysal-cg-geogrid" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.geogrid">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">geogrid</code><span class="sig-paren">(</span><em class="sig-param">pup</em>, <em class="sig-param">pdown</em>, <em class="sig-param">k</em>, <em class="sig-param">lonx=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#geogrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.geogrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a k+1 by k+1 set of grid points for a bounding box in lat-lon
-uses geointerpolate</p>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">geogrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pup</span></em>, <em class="sig-param"><span class="n">pdown</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">lonx</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#geogrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.geogrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a <span class="math notranslate nohighlight">\(k+1\)</span> by <span class="math notranslate nohighlight">\(k+1\)</span> set of grid
+points for a bounding box in lat-lon. Uses <code class="docutils literal notranslate"><span class="pre">geointerpolate</span></code>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>pup</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">with</span></code> lat-lon or lon-lat <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">upper</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">left</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">corner</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">box</span></code></span></dt><dd></dd>
-<dt><strong>pdown</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">with</span></code> lat-lon or lon-lat <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">lower</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">right</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">corner</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">box</span></code></span></dt><dd></dd>
-<dt><strong>k</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">number</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">cells</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">points</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">will</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">be</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">one</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">more</span></code>)</span></dt><dd></dd>
-<dt><strong>lonx</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">assess</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">order</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> coordinates,</span></dt><dd><p>for lon,lat (default) = True, for lat,lon = False</p>
+<dt><strong>pup</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a></span></dt><dd><p>The lat-lon or lon-lat for the upper left corner of the bounding box.</p>
+</dd>
+<dt><strong>pdown</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a></span></dt><dd><p>The lat-lon or lon-lat for The lower right corner of The bounding box.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of grid cells (grid points will be one more).</p>
+</dd>
+<dt><strong>lonx</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>The method to assess the order of the coordinates.
+<code class="docutils literal notranslate"><span class="pre">True</span></code> for (lon,lat); <code class="docutils literal notranslate"><span class="pre">False</span></code> for (lat,lon).
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>grid</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuples</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">with</span></code> lat-lon or lon-lat <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">points</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">row</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">by</span></code> row,</span></dt><dd><p>starting with the top row and moving to the bottom; coordinate tuples
-are returned in same order as input</p>
+<dt><strong>grid</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of tuples with (lat-lon) or (lon-lat) for grid points,
+row by row, starting with the top row and moving to the bottom;
+coordinate tuples are returned in same order as input.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pup</span> <span class="o">=</span> <span class="p">(</span><span class="mf">42.023768</span><span class="p">,</span><span class="o">-</span><span class="mf">87.946389</span><span class="p">)</span>    <span class="c1"># Arlington Heights IL</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pdown</span> <span class="o">=</span> <span class="p">(</span><span class="mf">41.644415</span><span class="p">,</span><span class="o">-</span><span class="mf">87.524102</span><span class="p">)</span>  <span class="c1"># Hammond, IN</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">geogrid</span><span class="p">(</span><span class="n">pup</span><span class="p">,</span><span class="n">pdown</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">lonx</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="go">[(42.023768, -87.946389), (42.02393997819538, -87.80562679358316), (42.02393997819538, -87.66486420641684), (42.023768, -87.524102), (41.897317, -87.94638900000001), (41.8974888973743, -87.80562679296166), (41.8974888973743, -87.66486420703835), (41.897317, -87.524102), (41.770866000000005, -87.94638900000001), (41.77103781320412, -87.80562679234043), (41.77103781320412, -87.66486420765956), (41.770866000000005, -87.524102), (41.644415, -87.946389), (41.64458672568646, -87.80562679171955), (41.64458672568646, -87.66486420828045), (41.644415, -87.524102)]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pup</span> <span class="o">=</span> <span class="p">(</span><span class="mf">42.023768</span><span class="p">,</span> <span class="o">-</span><span class="mf">87.946389</span><span class="p">)</span>       <span class="c1"># Arlington Heights, IL</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pdown</span> <span class="o">=</span> <span class="p">(</span><span class="mf">41.644415</span><span class="p">,</span> <span class="o">-</span><span class="mf">87.524102</span><span class="p">)</span>     <span class="c1"># Hammond, IN</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geogrid</span><span class="p">(</span><span class="n">pup</span><span class="p">,</span><span class="n">pdown</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">lonx</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">[(42.023768, -87.946389),</span>
+<span class="go"> (42.02393997819538, -87.80562679358316),</span>
+<span class="go"> (42.02393997819538, -87.66486420641684),</span>
+<span class="go"> (42.023768, -87.524102),</span>
+<span class="go"> (41.897317, -87.94638900000001),</span>
+<span class="go"> (41.8974888973743, -87.80562679296166),</span>
+<span class="go"> (41.8974888973743, -87.66486420703835),</span>
+<span class="go"> (41.897317, -87.524102),</span>
+<span class="go"> (41.770866000000005, -87.94638900000001),</span>
+<span class="go"> (41.77103781320412, -87.80562679234043),</span>
+<span class="go"> (41.77103781320412, -87.66486420765956),</span>
+<span class="go"> (41.770866000000005, -87.524102),</span>
+<span class="go"> (41.644415, -87.946389),</span>
+<span class="go"> (41.64458672568646, -87.80562679171955),</span>
+<span class="go"> (41.64458672568646, -87.66486420828045),</span>
+<span class="go"> (41.644415, -87.524102)]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -181,7 +203,7 @@ are returned in same order as input</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

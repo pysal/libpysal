@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.convex_hull &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.convex_hull &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,15 +128,21 @@
       
   <div class="section" id="libpysal-cg-convex-hull">
 <h1>libpysal.cg.convex_hull<a class="headerlink" href="#libpysal-cg-convex-hull" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.convex_hull">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">convex_hull</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#convex_hull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.convex_hull" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">convex_hull</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#convex_hull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.convex_hull" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the convex hull of a set of points.</p>
-<p>convex_hull(Point list) -&gt; Polygon</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>points</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">points</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">convex</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">hull</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code></span></dt><dd></dd>
+<dt><strong>points</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of points for computing the convex hull.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>stack</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of points representing the convex hull.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -169,7 +176,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

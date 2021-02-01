@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.spintW &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.weights.spintW &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -40,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -134,7 +135,8 @@
 <span class="kn">from</span> <span class="nn">.distance</span> <span class="kn">import</span> <span class="n">DistanceBand</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 
-<div class="viewcode-block" id="ODW"><a class="viewcode-back" href="../../../generated/libpysal.weights.ODW.html#libpysal.weights.ODW">[docs]</a><span class="k">def</span> <span class="nf">ODW</span><span class="p">(</span><span class="n">Wo</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">silence_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ODW"><a class="viewcode-back" href="../../../generated/libpysal.weights.ODW.html#libpysal.weights.ODW">[docs]</a><span class="k">def</span> <span class="nf">ODW</span><span class="p">(</span><span class="n">Wo</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">silence_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Constructs an o*d by o*d origin-destination style spatial weight for o*d</span>
 <span class="sd">    flows using standard spatial weights on o origins and d destinations. Input</span>
@@ -173,29 +175,34 @@
 <span class="sd">           0.  , 0.  , 0.  , 0.  , 0.  ])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">Wo</span><span class="o">.</span><span class="n">transform</span> <span class="o">!=</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">Wo</span><span class="o">.</span><span class="n">transform</span> <span class="o">!=</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">Wo</span><span class="o">.</span><span class="n">tranform</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+            <span class="n">Wo</span><span class="o">.</span><span class="n">tranform</span> <span class="o">=</span> <span class="s2">&quot;b&quot;</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Wo is not binary and cannot be transformed to &#39;</span>
-                    <span class="s1">&#39;binary. Wo must be binary or suitably transformed to binary.&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">Wd</span><span class="o">.</span><span class="n">transform</span> <span class="o">!=</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;Wo is not binary and cannot be transformed to &quot;</span>
+                <span class="s2">&quot;binary. Wo must be binary or suitably transformed to binary.&quot;</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="n">Wd</span><span class="o">.</span><span class="n">transform</span> <span class="o">!=</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">Wd</span><span class="o">.</span><span class="n">tranform</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+            <span class="n">Wd</span><span class="o">.</span><span class="n">tranform</span> <span class="o">=</span> <span class="s2">&quot;b&quot;</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Wd is not binary and cannot be transformed to &#39;</span>
-                   <span class="s1">&#39;binary. Wd must be binary or suitably transformed to binary.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;Wd is not binary and cannot be transformed to &quot;</span>
+                <span class="s2">&quot;binary. Wd must be binary or suitably transformed to binary.&quot;</span>
+            <span class="p">)</span>
     <span class="n">Wo</span> <span class="o">=</span> <span class="n">Wo</span><span class="o">.</span><span class="n">sparse</span>
     <span class="n">Wo</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
     <span class="n">Wd</span> <span class="o">=</span> <span class="n">Wd</span><span class="o">.</span><span class="n">sparse</span>
     <span class="n">Wd</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
-    <span class="n">Ww</span> <span class="o">=</span> <span class="n">kron</span><span class="p">(</span><span class="n">Wo</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+    <span class="n">Ww</span> <span class="o">=</span> <span class="n">kron</span><span class="p">(</span><span class="n">Wo</span><span class="p">,</span> <span class="n">Wd</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>
     <span class="n">Ww</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
     <span class="n">Ww</span> <span class="o">=</span> <span class="n">WSP</span><span class="p">(</span><span class="n">Ww</span><span class="p">)</span><span class="o">.</span><span class="n">to_W</span><span class="p">(</span><span class="n">silence_warnings</span><span class="o">=</span><span class="n">silence_warnings</span><span class="p">)</span>
     <span class="n">Ww</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">transform</span>
     <span class="k">return</span> <span class="n">Ww</span></div>
 
-<div class="viewcode-block" id="netW"><a class="viewcode-back" href="../../../generated/libpysal.weights.netW.html#libpysal.weights.netW">[docs]</a><span class="k">def</span> <span class="nf">netW</span><span class="p">(</span><span class="n">link_list</span><span class="p">,</span> <span class="n">share</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">transform</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="netW"><a class="viewcode-back" href="../../../generated/libpysal.weights.netW.html#libpysal.weights.netW">[docs]</a><span class="k">def</span> <span class="nf">netW</span><span class="p">(</span><span class="n">link_list</span><span class="p">,</span> <span class="n">share</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a network-contiguity based weight object based on different nodal</span>
 <span class="sd">    relationships encoded in a network.</span>
@@ -244,31 +251,48 @@
         <span class="k">for</span> <span class="n">neigh</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;OD&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;OD&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                     <span class="n">neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neigh</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                     <span class="n">neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neigh</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;D&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                     <span class="n">neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neigh</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                     <span class="n">neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neigh</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> \
-                	<span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">elif</span> <span class="n">share</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="ow">or</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">neigh</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">):</span>
                     <span class="n">neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neigh</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Parameter &#39;share&#39; must be &#39;O&#39;, &#39;D&#39;,&quot;</span>
-                       <span class="s2">&quot; &#39;OD&#39;, or &#39;C&#39;&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Parameter &#39;share&#39; must be &#39;O&#39;, &#39;D&#39;,&quot;</span> <span class="s2">&quot; &#39;OD&#39;, or &#39;C&#39;&quot;</span>
+                <span class="p">)</span>
     <span class="n">netW</span> <span class="o">=</span> <span class="n">W</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">netW</span><span class="o">.</span><span class="n">tranform</span> <span class="o">=</span> <span class="n">transform</span>
     <span class="k">return</span> <span class="n">netW</span></div>
 
-<div class="viewcode-block" id="vecW"><a class="viewcode-back" href="../../../generated/libpysal.weights.vecW.html#libpysal.weights.vecW">[docs]</a><span class="k">def</span> <span class="nf">vecW</span><span class="p">(</span><span class="n">origin_x</span><span class="p">,</span> <span class="n">origin_y</span><span class="p">,</span> <span class="n">dest_x</span><span class="p">,</span> <span class="n">dest_y</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_sp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="vecW"><a class="viewcode-back" href="../../../generated/libpysal.weights.vecW.html#libpysal.weights.vecW">[docs]</a><span class="k">def</span> <span class="nf">vecW</span><span class="p">(</span>
+    <span class="n">origin_x</span><span class="p">,</span>
+    <span class="n">origin_y</span><span class="p">,</span>
+    <span class="n">dest_x</span><span class="p">,</span>
+    <span class="n">dest_y</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">,</span>
+    <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">build_sp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distance-based spatial weight for vectors that is computed using a</span>
 <span class="sd">    4-dimensional distance between the origin x,y-coordinates and the</span>
@@ -331,9 +355,18 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">origin_x</span><span class="p">,</span> <span class="n">origin_y</span><span class="p">,</span> <span class="n">dest_x</span><span class="p">,</span> <span class="n">dest_y</span><span class="p">))</span>
-    <span class="n">W</span> <span class="o">=</span> <span class="n">DistanceBand</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="n">binary</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
-            <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">build_sp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="n">DistanceBand</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+        <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span>
+        <span class="n">binary</span><span class="o">=</span><span class="n">binary</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span>
+        <span class="n">build_sp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">W</span></div>
+
 
 <div class="viewcode-block" id="mat2L"><a class="viewcode-back" href="../../../generated/libpysal.weights.mat2L.html#libpysal.weights.mat2L">[docs]</a><span class="k">def</span> <span class="nf">mat2L</span><span class="p">(</span><span class="n">edge_matrix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -354,17 +387,19 @@
 <span class="sd">                    origin id and d is a destination id</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span><span class="mi">2</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Matrix of network edges should be two dimensions&quot;</span>
-    	        <span class="s2">&quot;with edge origins on one axis and edge destinations on the&quot;</span>
-    	        <span class="s2">&quot;second axis with non-zero matrix entires denoting an edge&quot;</span>
-    	        <span class="s2">&quot;between and origin and destination&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+            <span class="s2">&quot;Matrix of network edges should be two dimensions&quot;</span>
+            <span class="s2">&quot;with edge origins on one axis and edge destinations on the&quot;</span>
+            <span class="s2">&quot;second axis with non-zero matrix entires denoting an edge&quot;</span>
+            <span class="s2">&quot;between and origin and destination&quot;</span>
+        <span class="p">)</span>
     <span class="n">edge_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">edge_matrix</span><span class="o">.</span><span class="n">shape</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">edge_matrix</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">edge_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">))</span>
+                <span class="n">edge_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">edge_list</span></div>
 </pre></div>
 
@@ -383,7 +418,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

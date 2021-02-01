@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.linear2arcdist &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.linear2arcdist &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,15 +128,42 @@
       
   <div class="section" id="libpysal-cg-linear2arcdist">
 <h1>libpysal.cg.linear2arcdist<a class="headerlink" href="#libpysal-cg-linear2arcdist" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.linear2arcdist">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">linear2arcdist</code><span class="sig-paren">(</span><em class="sig-param">linear_dist</em>, <em class="sig-param">radius=6371.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#linear2arcdist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.linear2arcdist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a linear distance in the unit sphere (R3) to an arc distance based on supplied radius</p>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">linear2arcdist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">linear_dist</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">6371.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#linear2arcdist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.linear2arcdist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a linear distance in the unit sphere
+(R3) to an arc distance based on supplied radius.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>linear_dist</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The linear distance to convert.</p>
+</dd>
+<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The radius of a sphere. Default is Earth’s radius in
+kilometers, <code class="docutils literal notranslate"><span class="pre">RADIUS_EARTH_KM</span></code> (<code class="docutils literal notranslate"><span class="pre">6371.0</span></code>). Earth’s
+radius in miles, <code class="docutils literal notranslate"><span class="pre">RADIUS_EARTH_MILES</span></code> (<code class="docutils literal notranslate"><span class="pre">3958.76</span></code>)
+is also an option.
+Source: <a class="reference external" href="http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html">http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html</a></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>arc_dist</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The arc distance conversion of <code class="docutils literal notranslate"><span class="pre">linear_dist</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3.8/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueError</span></code></a></dt><dd><p>Raised when <code class="docutils literal notranslate"><span class="pre">linear_dist</span></code> exceeds the diameter of the unit sphere.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pt0</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pt1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">180</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">arcdist</span><span class="p">(</span><span class="n">pt0</span><span class="p">,</span><span class="n">pt1</span><span class="p">,</span><span class="n">RADIUS_EARTH_MILES</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">==</span> <span class="n">linear2arcdist</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">radius</span> <span class="o">=</span> <span class="n">RADIUS_EARTH_MILES</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pt0</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pt1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">arcdist</span><span class="p">(</span><span class="n">pt0</span><span class="p">,</span> <span class="n">pt1</span><span class="p">,</span> <span class="n">RADIUS_EARTH_MILES</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">==</span> <span class="n">linear2arcdist</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">RADIUS_EARTH_MILES</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -163,7 +191,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

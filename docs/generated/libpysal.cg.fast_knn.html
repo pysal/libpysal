@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.fast_knn &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.fast_knn &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,25 +128,33 @@
       
   <div class="section" id="libpysal-cg-fast-knn">
 <h1>libpysal.cg.fast_knn<a class="headerlink" href="#libpysal-cg-fast-knn" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.fast_knn">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">fast_knn</code><span class="sig-paren">(</span><em class="sig-param">pts</em>, <em class="sig-param">k</em>, <em class="sig-param">return_dist=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#fast_knn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.fast_knn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes k nearest neighbors on a sphere.</p>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">fast_knn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pts</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">return_dist</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">6371.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#fast_knn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.fast_knn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes <span class="math notranslate nohighlight">\(k\)</span> nearest neighbors on a sphere.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>pts</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> x,y <code class="xref py py-obj docutils literal notranslate"><span class="pre">pairs</span></code></span></dt><dd></dd>
-<dt><strong>k</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Number of points to query</p>
+<dt><strong>pts</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of <span class="math notranslate nohighlight">\(x,y\)</span> pairs.</p>
 </dd>
-<dt><strong>return_dist</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>Return distances in the ‘wd’ container object</p>
+<dt><strong>k</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>The number of points to query.</p>
+</dd>
+<dt><strong>return_dist</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>Return distances in the <code class="docutils literal notranslate"><span class="pre">wd</span></code> container object (<code class="docutils literal notranslate"><span class="pre">True</span></code>).
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The radius of a sphere. Default is Earth’s radius in
+kilometers, <code class="docutils literal notranslate"><span class="pre">RADIUS_EARTH_KM</span></code> (<code class="docutils literal notranslate"><span class="pre">6371.0</span></code>). Earth’s
+radius in miles, <code class="docutils literal notranslate"><span class="pre">RADIUS_EARTH_MILES</span></code> (<code class="docutils literal notranslate"><span class="pre">3958.76</span></code>)
+is also an option.
+Source: <a class="reference external" href="http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html">http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html</a></p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>wn</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>list of neighbors</p>
+<dt><strong>wn</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>A neighbor ID lookup.</p>
 </dd>
-<dt><strong>wd</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>list of neighbor distances (optional)</p>
+<dt><strong>wd</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>A neighbor distance lookup (optional).</p>
 </dd>
 </dl>
 </dd>
@@ -174,7 +183,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

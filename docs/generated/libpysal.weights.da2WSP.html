@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.weights.da2WSP &#8212; libpysal v4.4.0 Manual</title>
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal.weights.w2da" href="libpysal.weights.w2da.html" />
+    <link rel="prev" title="libpysal.weights.da2W" href="libpysal.weights.da2W.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#example-datasets">Example Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">libpysal.weights.da2WSP</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="libpysal-weights-da2wsp">
+<h1>libpysal.weights.da2WSP<a class="headerlink" href="#libpysal-weights-da2wsp" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="libpysal.weights.da2WSP">
+<code class="sig-prename descclassname">libpysal.weights.</code><code class="sig-name descname">da2WSP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">da</span></em>, <em class="sig-param"><span class="n">criterion</span><span class="o">=</span><span class="default_value">'queen'</span></em>, <em class="sig-param"><span class="n">z_value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">coords_labels</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">include_nodata</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/raster.html#da2WSP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.da2WSP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a WSP object from xarray.DataArray with an additional
+attribute index containing coordinate values of the raster
+in the form of Pandas.Index/MultiIndex.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>da</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></span></dt><dd><p>Input 2D or 3D DataArray with shape=(z, y, x)</p>
+</dd>
+<dt><strong>criterion</strong><span class="classifier">{“rook”, “queen”}</span></dt><dd><p>Type of contiguity. Default is queen.</p>
+</dd>
+<dt><strong>z_value</strong><span class="classifier">int/string/float</span></dt><dd><p>Select the z_value of 3D DataArray with multiple layers.</p>
+</dd>
+<dt><strong>coords_labels</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dictionary</span></code></span></dt><dd><p>Pass dimension labels for coordinates and layers if they do not
+belong to default dimensions, which are (band/time, y/lat, x/lon)
+e.g. coords_labels = {“y_label”: “latitude”, “x_label”: “longitude”, “z_label”: “year”}
+Default is {} empty dictionary.</p>
+</dd>
+<dt><strong>k</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Order of contiguity, this will select all neighbors upto kth order.
+Default is 1.</p>
+</dd>
+<dt><strong>include_nodata</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>If True, missing values will be assumed as non-missing when
+selecting higher_order neighbors, Default is False</p>
+</dd>
+<dt><strong>n_jobs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>Number of cores to be used in the sparse weight construction. If -1,
+all available cores are used. Default is 1.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>wsp</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.WSP.html#libpysal.weights.WSP" title="libpysal.weights.WSP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.WSP</span></code></a></span></dt><dd><p>instance of spatial weights class WSP with an index attribute</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">libpysal.weights.weights.WSP</span></code></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<ol class="arabic simple">
+<li><p>Lower order contiguities are also selected.</p></li>
+</ol>
+<p>2. Returned object contains <cite>index</cite> attribute that includes a
+<cite>Pandas.MultiIndex</cite> object from the DataArray.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">libpysal.weights.raster</span> <span class="kn">import</span> <span class="n">da2WSP</span><span class="p">,</span> <span class="n">testDataArray</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">da</span> <span class="o">=</span> <span class="n">testDataArray</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+<span class="go">        {&#39;band&#39;: &#39;layer&#39;, &#39;x&#39;: &#39;longitude&#39;, &#39;y&#39;: &#39;latitude&#39;})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">dims</span>
+<span class="go">(&#39;layer&#39;, &#39;latitude&#39;, &#39;longitude&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(3, 4, 4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">coords</span>
+<span class="go">Coordinates:</span>
+<span class="go">    * layer      (layer) int64 1 2 3</span>
+<span class="go">    * latitude   (latitude) float64 90.0 30.0 -30.0 -90.0</span>
+<span class="go">    * longitude  (longitude) float64 -180.0 -60.0 60.0 180.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">attrs</span>
+<span class="go">{&#39;nodatavals&#39;: (-32768.0,)}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords_labels</span> <span class="o">=</span> <span class="p">{</span>
+<span class="go">    &quot;z_label&quot;: &quot;layer&quot;,</span>
+<span class="go">    &quot;y_label&quot;: &quot;latitude&quot;,</span>
+<span class="go">    &quot;x_label&quot;: &quot;longitude&quot;</span>
+<span class="go">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wsp</span> <span class="o">=</span> <span class="n">da2WSP</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">z_value</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">coords_labels</span><span class="o">=</span><span class="n">coords_labels</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wsp</span><span class="o">.</span><span class="n">n</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pct_sp</span> <span class="o">=</span> <span class="n">wsp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">nnz</span> <span class="o">*</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">wsp</span><span class="o">.</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;</span><span class="si">%.3f</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">pct_sp</span>
+<span class="go">&#39;0.300&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">wsp</span><span class="o">.</span><span class="n">sparse</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span>
+<span class="go">[[0 0 1 0 0 1 1 1 0 0]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wsp</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+<span class="go">MultiIndex([(2, 90.0,  60.0),</span>
+<span class="go">            (2, 90.0, 180.0)],</span>
+<span class="go">           names=[&#39;layer&#39;, &#39;latitude&#39;, &#39;longitude&#39;])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/libpysal.weights.da2WSP.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

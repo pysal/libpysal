@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.Rectangle &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.Rectangle &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,51 +128,46 @@
       
   <div class="section" id="libpysal-cg-rectangle">
 <h1>libpysal.cg.Rectangle<a class="headerlink" href="#libpysal-cg-rectangle" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="libpysal.cg.Rectangle">
-<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Rectangle</code><span class="sig-paren">(</span><em class="sig-param">left</em>, <em class="sig-param">lower</em>, <em class="sig-param">right</em>, <em class="sig-param">upper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Rectangle" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Rectangle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">left</span></em>, <em class="sig-param"><span class="n">lower</span></em>, <em class="sig-param"><span class="n">right</span></em>, <em class="sig-param"><span class="n">upper</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Rectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Rectangle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Geometric representation of rectangle objects.</p>
-<dl class="field-list">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl>
-<dt><strong>left</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Minimum x-value of the rectangle</p>
-</dd>
-<dt><strong>lower</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Minimum y-value of the rectangle</p>
-</dd>
-<dt><strong>right</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Maximum x-value of the rectangle</p>
-</dd>
-<dt><strong>upper</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Maximum y-value of the rectangle</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="method">
-<dt id="libpysal.cg.Rectangle.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">left</em>, <em class="sig-param">lower</em>, <em class="sig-param">right</em>, <em class="sig-param">upper</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Rectangle.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Rectangle.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a Rectangle object.</p>
-<p>__init__(number, number, number, number) -&gt; Rectangle</p>
-<dl class="field-list">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl>
-<dt><strong>left</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">minimum</span></code> x-value <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">rectangle</span></code></span></dt><dd></dd>
-<dt><strong>lower</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">minimum</span></code> y-value <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">rectangle</span></code></span></dt><dd></dd>
-<dt><strong>right</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">maximum</span></code> x-value <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">rectangle</span></code></span></dt><dd></dd>
-<dt><strong>upper</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">maximum</span></code> y-value <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">rectangle</span></code></span></dt><dd></dd>
-</dl>
-</dd>
-</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">left</span> <span class="c1">#minx</span>
 <span class="go">-4.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">lower</span> <span class="c1">#miny</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">lower</span> <span class="c1">#miny</span>
 <span class="go">3.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">right</span> <span class="c1">#maxx</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">right</span> <span class="c1">#maxx</span>
 <span class="go">10.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">upper</span> <span class="c1">#maxy</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">upper</span> <span class="c1">#maxy</span>
 <span class="go">17.0</span>
 </pre></div>
 </div>
+<dl class="field-list">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl>
+<dt><strong>left</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Minimum x-value of the rectangle.</p>
+</dd>
+<dt><strong>lower</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Minimum y-value of the rectangle.</p>
+</dd>
+<dt><strong>right</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Maximum x-value of the rectangle.</p>
+</dd>
+<dt><strong>upper</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Maximum y-value of the rectangle.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="libpysal.cg.Rectangle.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">left</span></em>, <em class="sig-param"><span class="n">lower</span></em>, <em class="sig-param"><span class="n">right</span></em>, <em class="sig-param"><span class="n">upper</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Rectangle.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Rectangle.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -181,13 +177,13 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Rectangle.__init__" title="libpysal.cg.Rectangle.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, left, lower, right, upper)</p></td>
-<td><p>Returns a Rectangle object.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Rectangle.__init__" title="libpysal.cg.Rectangle.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(left, lower, right, upper)</p></td>
+<td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Rectangle.set_centroid" title="libpysal.cg.Rectangle.set_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_centroid</span></code></a>(self, new_center)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Rectangle.set_centroid" title="libpysal.cg.Rectangle.set_centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_centroid</span></code></a>(new_center)</p></td>
 <td><p>Moves the rectangle center to a new specified point.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Rectangle.set_scale" title="libpysal.cg.Rectangle.set_scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_scale</span></code></a>(self, scale)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Rectangle.set_scale" title="libpysal.cg.Rectangle.set_scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_scale</span></code></a>(scale)</p></td>
 <td><p>Rescales the rectangle around its center.</p></td>
 </tr>
 </tbody>
@@ -210,11 +206,10 @@
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Rectangle.area">
 <em class="property">property </em><code class="sig-name descname">area</code><a class="headerlink" href="#libpysal.cg.Rectangle.area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the area of the Rectangle.</p>
-<p>area -&gt; number</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">area</span>
@@ -223,11 +218,10 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Rectangle.height">
 <em class="property">property </em><code class="sig-name descname">height</code><a class="headerlink" href="#libpysal.cg.Rectangle.height" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the height of the Rectangle.</p>
-<p>height -&gt; number</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">height</span>
@@ -236,15 +230,15 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Rectangle.set_centroid">
-<code class="sig-name descname">set_centroid</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">new_center</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Rectangle.set_centroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Rectangle.set_centroid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_centroid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_center</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Rectangle.set_centroid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Rectangle.set_centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Moves the rectangle center to a new specified point.</p>
-<p>set_centroid(Point) -&gt; Point</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>new_center</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">new</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">location</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">centroid</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code></span></dt><dd></dd>
+<dt><strong>new_center</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>The new location of the centroid of the polygon.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -253,25 +247,32 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">set_centroid</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">left</span>
 <span class="go">2.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">right</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">right</span>
 <span class="go">6.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">lower</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">lower</span>
 <span class="go">2.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">upper</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">upper</span>
 <span class="go">6.0</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Rectangle.set_scale">
-<code class="sig-name descname">set_scale</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">scale</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Rectangle.set_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Rectangle.set_scale" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_scale</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">scale</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Rectangle.set_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Rectangle.set_scale" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rescales the rectangle around its center.</p>
-<p>set_scale(number) -&gt; number</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>scale</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">ratio</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">new</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">old</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code> (e.g. 1.0 <code class="xref py py-obj docutils literal notranslate"><span class="pre">is</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">current</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code>)</span></dt><dd></dd>
+<dt><strong>scale</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The ratio of the new scale to the old
+scale (e.g. 1.0 is current size).</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -290,11 +291,10 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Rectangle.width">
 <em class="property">property </em><code class="sig-name descname">width</code><a class="headerlink" href="#libpysal.cg.Rectangle.width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the width of the Rectangle.</p>
-<p>width -&gt; number</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">width</span>
@@ -327,7 +327,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

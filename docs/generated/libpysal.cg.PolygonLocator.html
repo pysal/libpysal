@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.PolygonLocator &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.PolygonLocator &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,13 +128,13 @@
       
   <div class="section" id="libpysal-cg-polygonlocator">
 <h1>libpysal.cg.PolygonLocator<a class="headerlink" href="#libpysal-cg-polygonlocator" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="libpysal.cg.PolygonLocator">
-<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">PolygonLocator</code><span class="sig-paren">(</span><em class="sig-param">polygons</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">PolygonLocator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">polygons</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator" title="Permalink to this definition">¶</a></dt>
 <dd><p>An abstract representation of a polygon indexing data structure.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.PolygonLocator.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">polygons</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">polygons</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a polygon locator object.</p>
 <p>__init__(Polygon list) -&gt; PolygonLocator</p>
 <dl class="field-list">
@@ -160,32 +161,32 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.__init__" title="libpysal.cg.PolygonLocator.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, polygons)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.__init__" title="libpysal.cg.PolygonLocator.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(polygons)</p></td>
 <td><p>Returns a polygon locator object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.contains_point" title="libpysal.cg.PolygonLocator.contains_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_point</span></code></a>(self, point)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.contains_point" title="libpysal.cg.PolygonLocator.contains_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_point</span></code></a>(point)</p></td>
 <td><p>Returns polygons that contain point</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.inside" title="libpysal.cg.PolygonLocator.inside"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inside</span></code></a>(self, query_rectangle)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.inside" title="libpysal.cg.PolygonLocator.inside"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inside</span></code></a>(query_rectangle)</p></td>
 <td><p>Returns polygons that are inside query_rectangle</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.nearest" title="libpysal.cg.PolygonLocator.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a>(self, query_point[, rule])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.nearest" title="libpysal.cg.PolygonLocator.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a>(query_point[, rule])</p></td>
 <td><p>Returns the nearest polygon indexed to a query point based on various rules.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.overlapping" title="libpysal.cg.PolygonLocator.overlapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlapping</span></code></a>(self, query_rectangle)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.overlapping" title="libpysal.cg.PolygonLocator.overlapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlapping</span></code></a>(query_rectangle)</p></td>
 <td><p>Returns list of polygons that overlap query_rectangle</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.proximity" title="libpysal.cg.PolygonLocator.proximity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code></a>(self, origin, r[, rule])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.proximity" title="libpysal.cg.PolygonLocator.proximity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code></a>(origin, r[, rule])</p></td>
 <td><p>Returns the indexed polygons located within some distance of an origin point based on various rules.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.region" title="libpysal.cg.PolygonLocator.region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code></a>(self, region_rect)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.region" title="libpysal.cg.PolygonLocator.region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code></a>(region_rect)</p></td>
 <td><p>Returns the indexed polygons located inside a rectangular query region.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.PolygonLocator.contains_point">
-<code class="sig-name descname">contains_point</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">point</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.contains_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.contains_point" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">contains_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">point</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.contains_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.contains_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns polygons that contain point</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -223,9 +224,9 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.PolygonLocator.inside">
-<code class="sig-name descname">inside</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">query_rectangle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.inside"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.inside" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inside</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_rectangle</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.inside"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.inside" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns polygons that are inside query_rectangle</p>
 <p class="rubric">Notes</p>
 <p>inside means the intersection of the query rectangle and a
@@ -255,9 +256,9 @@ polygon is not empty and is equal to the area of the polygon</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.PolygonLocator.nearest">
-<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">query_point</em>, <em class="sig-param">rule='vertex'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.nearest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_point</span></em>, <em class="sig-param"><span class="n">rule</span><span class="o">=</span><span class="default_value">'vertex'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.nearest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the nearest polygon indexed to a query point based on
 various rules.</p>
 <p>nearest(Polygon) -&gt; Polygon</p>
@@ -284,9 +285,9 @@ edge   – measures the distance between edges and query_point</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.PolygonLocator.overlapping">
-<code class="sig-name descname">overlapping</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">query_rectangle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.overlapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.overlapping" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">overlapping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_rectangle</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.overlapping"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.overlapping" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns list of polygons that overlap query_rectangle</p>
 <p class="rubric">Notes</p>
 <p>overlapping means the intersection of the query rectangle and a
@@ -323,9 +324,9 @@ polygon is not empty and is no larger than the area of the polygon</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.PolygonLocator.proximity">
-<code class="sig-name descname">proximity</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">origin</em>, <em class="sig-param">r</em>, <em class="sig-param">rule='vertex'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.proximity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.proximity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">proximity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">rule</span><span class="o">=</span><span class="default_value">'vertex'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.proximity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.proximity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the indexed polygons located within some distance of an
 origin point based on various rules.</p>
 <p>proximity(Polygon, number) -&gt; Polygon list</p>
@@ -355,9 +356,9 @@ edge   – measures the distance between edges and query_point</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.PolygonLocator.region">
-<code class="sig-name descname">region</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">region_rect</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.region" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">region</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">region_rect</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the indexed polygons located inside a rectangular query region.</p>
 <p>region(Rectangle) -&gt; Polygon list</p>
 <dl class="field-list">
@@ -402,7 +403,7 @@ edge   – measures the distance between edges and query_point</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.Polygon &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.Polygon &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,10 +128,26 @@
       
   <div class="section" id="libpysal-cg-polygon">
 <h1>libpysal.cg.Polygon<a class="headerlink" href="#libpysal-cg-polygon" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="libpysal.cg.Polygon">
-<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Polygon</code><span class="sig-paren">(</span><em class="sig-param">vertices</em>, <em class="sig-param">holes=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Polygon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Geometric representation of polygon objects.</p>
+<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Polygon</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertices</span></em>, <em class="sig-param"><span class="n">holes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Geometric representation of polygon objects.
+Returns a polygon created from the objects specified.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>vertices</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of vertices or a list of lists of vertices.</p>
+</dd>
+<dt><strong>holes</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of sub-polygons to be considered as holes.
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+</pre></div>
+</div>
 <dl class="field-list">
 <dt class="field-odd">Attributes</dt>
 <dd class="field-odd"><dl>
@@ -140,36 +157,21 @@
 </dd>
 <dt><a class="reference internal" href="#libpysal.cg.Polygon.perimeter" title="libpysal.cg.Polygon.perimeter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">perimeter</span></code></a><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Returns the perimeter of the polygon.</p>
 </dd>
-<dt><a class="reference internal" href="#libpysal.cg.Polygon.bounding_box" title="libpysal.cg.Polygon.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a><span class="classifier"><a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rectangle</span></code></a></span></dt><dd><p>Returns the bounding box of the polygon.</p>
+<dt><a class="reference internal" href="#libpysal.cg.Polygon.bounding_box" title="libpysal.cg.Polygon.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a><span class="classifier"><a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a></span></dt><dd><p>Returns the bounding box of the polygon.</p>
 </dd>
-<dt><a class="reference internal" href="#libpysal.cg.Polygon.bbox" title="libpysal.cg.Polygon.bbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bbox</span></code></a><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code></span></dt><dd><p>Returns the bounding box of the polygon as a list</p>
+<dt><a class="reference internal" href="#libpysal.cg.Polygon.bbox" title="libpysal.cg.Polygon.bbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bbox</span></code></a><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>Returns the bounding box of the polygon as a list.</p>
 </dd>
 <dt><a class="reference internal" href="#libpysal.cg.Polygon.area" title="libpysal.cg.Polygon.area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">area</span></code></a><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Returns the area of the polygon.</p>
 </dd>
-<dt><a class="reference internal" href="#libpysal.cg.Polygon.centroid" title="libpysal.cg.Polygon.centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centroid</span></code></a><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a></span></dt><dd><p>Returns the centroid of the polygon</p>
+<dt><a class="reference internal" href="#libpysal.cg.Polygon.centroid" title="libpysal.cg.Polygon.centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centroid</span></code></a><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a></span></dt><dd><p>Returns the centroid of the polygon.</p>
 </dd>
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">vertices</em>, <em class="sig-param">holes=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Polygon.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Polygon.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a polygon created from the objects specified.</p>
-<p>__init__(Point list or list of Point lists, holes list ) -&gt; Polygon</p>
-<dl class="field-list">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl>
-<dt><strong>vertices</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> – <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <a class="reference internal" href="#libpysal.cg.Polygon.vertices" title="libpysal.cg.Polygon.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a> or <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">lists</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> vertices.</span></dt><dd></dd>
-<dt><strong>holes</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> – <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> sub-polygons <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">be</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">considered</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">as</span></code> holes.</span></dt><dd></dd>
-<dt><strong>is_quad_tree_structure_built</strong></dt><dd><p>: bool – record if the quad tree structure has been built for this polygon. This quad tree structure could help speed up the contains_point test</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
-</pre></div>
-</div>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vertices</span></em>, <em class="sig-param"><span class="n">holes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Polygon.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Polygon.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -179,14 +181,14 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.__init__" title="libpysal.cg.Polygon.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, vertices[, holes])</p></td>
-<td><p>Returns a polygon created from the objects specified.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.__init__" title="libpysal.cg.Polygon.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(vertices[, holes])</p></td>
+<td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.build_quad_tree_structure" title="libpysal.cg.Polygon.build_quad_tree_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_quad_tree_structure</span></code></a>(self)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.build_quad_tree_structure" title="libpysal.cg.Polygon.build_quad_tree_structure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_quad_tree_structure</span></code></a>()</p></td>
 <td><p>Build the quad tree structure for this polygon.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.contains_point" title="libpysal.cg.Polygon.contains_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_point</span></code></a>(self, point)</p></td>
-<td><p>Test if polygon contains point</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.contains_point" title="libpysal.cg.Polygon.contains_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_point</span></code></a>(point)</p></td>
+<td><p>Test if a polygon contains a point.</p></td>
 </tr>
 </tbody>
 </table>
@@ -201,13 +203,13 @@
 <td><p>Returns the area of the polygon.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.bbox" title="libpysal.cg.Polygon.bbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bbox</span></code></a></p></td>
-<td><p>Returns the bounding box of the polygon as a list</p></td>
+<td><p>Returns the bounding box of the polygon as a list.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.bounding_box" title="libpysal.cg.Polygon.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a></p></td>
 <td><p>Returns the bounding box of the polygon.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.centroid" title="libpysal.cg.Polygon.centroid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centroid</span></code></a></p></td>
-<td><p>Returns the centroid of the polygon</p></td>
+<td><p>Returns the centroid of the polygon.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Polygon.holes" title="libpysal.cg.Polygon.holes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">holes</span></code></a></p></td>
 <td><p>Returns the holes of the polygon in clockwise order.</p></td>
@@ -226,150 +228,216 @@
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.area">
 <em class="property">property </em><code class="sig-name descname">area</code><a class="headerlink" href="#libpysal.cg.Polygon.area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the area of the polygon.</p>
-<p>area -&gt; number</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">area</span>
 <span class="go">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))],[</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))]</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">area</span>
 <span class="go">99.0</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.bbox">
 <em class="property">property </em><code class="sig-name descname">bbox</code><a class="headerlink" href="#libpysal.cg.Polygon.bbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the bounding box of the polygon as a list</p>
-<p>See also bounding_box</p>
+<dd><p>Returns the bounding box of the polygon as a list.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl>
+<dt><strong>self._bbox</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>The bounding box of the polygon as a list.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.bounding_box</span></code></dt><dd></dd>
+</dl>
+</div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.bounding_box">
 <em class="property">property </em><code class="sig-name descname">bounding_box</code><a class="headerlink" href="#libpysal.cg.Polygon.bounding_box" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the bounding box of the polygon.</p>
-<p>bounding_box -&gt; Rectangle</p>
+<dl class="field-list">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl>
+<dt><strong>self._bounding_box</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a></span></dt><dd><p>The bounding box of the polygon.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">left</span>
 <span class="go">0.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">lower</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">lower</span>
 <span class="go">0.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">right</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">right</span>
 <span class="go">2.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">upper</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">upper</span>
 <span class="go">1.0</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.build_quad_tree_structure">
-<code class="sig-name descname">build_quad_tree_structure</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Polygon.build_quad_tree_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Polygon.build_quad_tree_structure" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build the quad tree structure for this polygon. Once the structure is built, speed for testing if a point is inside the ring will be inscreased significantly.
-:return:</p>
+<code class="sig-name descname">build_quad_tree_structure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Polygon.build_quad_tree_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Polygon.build_quad_tree_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the quad tree structure for this polygon. Once
+the structure is built, speed for testing if a point is
+inside the ring will be increased significantly.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.centroid">
 <em class="property">property </em><code class="sig-name descname">centroid</code><a class="headerlink" href="#libpysal.cg.Polygon.centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the centroid of the polygon</p>
-<p>centroid -&gt; Point</p>
+<dd><p>Returns the centroid of the polygon.</p>
 <p class="rubric">Notes</p>
-<p>The centroid returned by this method is the geometric centroid and respects multipart polygons with holes.
+<p>The centroid returned by this method is the geometric
+centroid and respects multipart polygons with holes.
 Also known as the ‘center of gravity’ or ‘center of mass’.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))],</span> <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))]</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">centroid</span>
 <span class="go">(5.0353535353535355, 5.0353535353535355)</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.contains_point">
-<code class="sig-name descname">contains_point</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">point</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Polygon.contains_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Polygon.contains_point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test if polygon contains point</p>
+<code class="sig-name descname">contains_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">point</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Polygon.contains_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Polygon.contains_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if a polygon contains a point.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>point</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>A point to test for containment.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>contains</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the polygon contains <code class="docutils literal notranslate"><span class="pre">point</span></code> otherwise <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
-<p>Points falling exactly on polygon edges may yield unpredictable
-results</p>
+<p>Points falling exactly on polygon edges may yield unpredictable results.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">))]</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 <span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="go">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mf">2.9</span><span class="p">))</span>
-<span class="go">1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-<span class="go">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-<span class="go">0</span>
-<span class="go">&gt;&gt;&gt;</span>
 </pre></div>
 </div>
-<p>Handles holes</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))],</span> <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mf">2.9</span><span class="p">))</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>Handles holes.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">))],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
 <span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
 <span class="go">True</span>
-<span class="go">&gt;&gt;&gt;</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.holes">
 <em class="property">property </em><code class="sig-name descname">holes</code><a class="headerlink" href="#libpysal.cg.Polygon.holes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the holes of the polygon in clockwise order.</p>
-<p>holes -&gt; Point list</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))],</span> <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))]</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">holes</span><span class="p">)</span>
 <span class="go">1</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.len">
 <em class="property">property </em><code class="sig-name descname">len</code><a class="headerlink" href="#libpysal.cg.Polygon.len" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of vertices in the polygon.</p>
-<p>len -&gt; int</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">len</span>
 <span class="go">4</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
 <span class="go">4</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.parts">
 <em class="property">property </em><code class="sig-name descname">parts</code><a class="headerlink" href="#libpysal.cg.Polygon.parts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the parts of the polygon in clockwise order.</p>
-<p>parts -&gt; Point list</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))],</span> <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))]</span>
+<span class="gp">... </span>    <span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parts</span><span class="p">)</span>
 <span class="go">2</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.perimeter">
 <em class="property">property </em><code class="sig-name descname">perimeter</code><a class="headerlink" href="#libpysal.cg.Polygon.perimeter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the perimeter of the polygon.</p>
-<p>perimeter() -&gt; number</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">perimeter</span>
@@ -378,11 +446,10 @@ results</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Polygon.vertices">
 <em class="property">property </em><code class="sig-name descname">vertices</code><a class="headerlink" href="#libpysal.cg.Polygon.vertices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the vertices of the polygon in clockwise order.</p>
-<p>vertices -&gt; Point list</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
@@ -415,7 +482,7 @@ results</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

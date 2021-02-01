@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.WSP &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.weights.WSP &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,16 +128,14 @@
       
   <div class="section" id="libpysal-weights-wsp">
 <h1>libpysal.weights.WSP<a class="headerlink" href="#libpysal-weights-wsp" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="libpysal.weights.WSP">
-<em class="property">class </em><code class="sig-prename descclassname">libpysal.weights.</code><code class="sig-name descname">WSP</code><span class="sig-paren">(</span><em class="sig-param">sparse</em>, <em class="sig-param">id_order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">libpysal.weights.</code><code class="sig-name descname">WSP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sparse</span></em>, <em class="sig-param"><span class="n">id_order</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Thin <code class="docutils literal notranslate"><span class="pre">W</span></code> class for <code class="docutils literal notranslate"><span class="pre">spreg</span></code>.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl>
+<dd class="field-odd"><dl class="simple">
 <dt><strong>sparse</strong><span class="classifier">scipy.sparse.{matrix-type}</span></dt><dd><p>NxN object from <code class="docutils literal notranslate"><span class="pre">scipy.sparse</span></code></p>
-</dd>
-<dt><strong>id_order</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>An ordered list of ids, assumed to match the ordering in <code class="docutils literal notranslate"><span class="pre">sparse</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -170,9 +169,9 @@
 </dl>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.weights.WSP.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">sparse</em>, <em class="sig-param">id_order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sparse</span></em>, <em class="sig-param"><span class="n">id_order</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">index</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -183,13 +182,13 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.__init__" title="libpysal.weights.WSP.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, sparse[, id_order])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.__init__" title="libpysal.weights.WSP.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(sparse[, id_order, index])</p></td>
 <td><p>Initialize self.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.WSP.from_W" title="libpysal.weights.WSP.from_W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_W</span></code></a>(W)</p></td>
 <td><p>Constructs a <code class="docutils literal notranslate"><span class="pre">WSP</span></code> object from the <code class="docutils literal notranslate"><span class="pre">W</span></code>’s sparse matrix.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.to_W" title="libpysal.weights.WSP.to_W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_W</span></code></a>(self[, silence_warnings])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.to_W" title="libpysal.weights.WSP.to_W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_W</span></code></a>([silence_warnings])</p></td>
 <td><p>Convert a pysal WSP object (thin weights matrix) to a pysal W object.</p></td>
 </tr>
 </tbody>
@@ -204,23 +203,26 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.diagWtW_WW" title="libpysal.weights.WSP.diagWtW_WW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagWtW_WW</span></code></a></p></td>
 <td><p>Diagonal of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.WSP.s0" title="libpysal.weights.WSP.s0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s0</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.WSP.id_order" title="libpysal.weights.WSP.id_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id_order</span></code></a></p></td>
+<td><p>An ordered list of ids, assumed to match the ordering in <code class="docutils literal notranslate"><span class="pre">sparse</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.s0" title="libpysal.weights.WSP.s0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s0</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">s0</span></code> is defined as:</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.WSP.trcWtW_WW" title="libpysal.weights.WSP.trcWtW_WW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW_WW</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.WSP.trcWtW_WW" title="libpysal.weights.WSP.trcWtW_WW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW_WW</span></code></a></p></td>
 <td><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.weights.WSP.diagWtW_WW">
 <em class="property">property </em><code class="sig-name descname">diagWtW_WW</code><a class="headerlink" href="#libpysal.weights.WSP.diagWtW_WW" title="Permalink to this definition">¶</a></dt>
 <dd><p>Diagonal of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.weights.WSP.from_W">
-<em class="property">classmethod </em><code class="sig-name descname">from_W</code><span class="sig-paren">(</span><em class="sig-param">W</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.from_W"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.from_W" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">from_W</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">W</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.from_W"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.from_W" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a <code class="docutils literal notranslate"><span class="pre">WSP</span></code> object from the <code class="docutils literal notranslate"><span class="pre">W</span></code>’s sparse matrix.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -237,7 +239,13 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="libpysal.weights.WSP.id_order">
+<em class="property">property </em><code class="sig-name descname">id_order</code><a class="headerlink" href="#libpysal.weights.WSP.id_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>An ordered list of ids, assumed to match the ordering in <code class="docutils literal notranslate"><span class="pre">sparse</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="libpysal.weights.WSP.s0">
 <em class="property">property </em><code class="sig-name descname">s0</code><a class="headerlink" href="#libpysal.weights.WSP.s0" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">s0</span></code> is defined as:</p>
@@ -245,9 +253,9 @@
 \[s0=\sum_i \sum_j w_{i,j}\]</div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.weights.WSP.to_W">
-<code class="sig-name descname">to_W</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">silence_warnings=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.to_W"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.to_W" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_W</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">silence_warnings</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/weights.html#WSP.to_W"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.WSP.to_W" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a pysal WSP object (thin weights matrix) to a pysal W object.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -292,7 +300,7 @@ sparse weights object (<code class="docutils literal notranslate"><span class="p
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.weights.WSP.trcWtW_WW">
 <em class="property">property </em><code class="sig-name descname">trcWtW_WW</code><a class="headerlink" href="#libpysal.weights.WSP.trcWtW_WW" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p>
@@ -322,7 +330,7 @@ sparse weights object (<code class="docutils literal notranslate"><span class="p
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

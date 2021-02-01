@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.Grid &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.Grid &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,13 +128,13 @@
       
   <div class="section" id="libpysal-cg-grid">
 <h1>libpysal.cg.Grid<a class="headerlink" href="#libpysal-cg-grid" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="libpysal.cg.Grid">
-<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param">bounds</em>, <em class="sig-param">resolution</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bounds</span></em>, <em class="sig-param"><span class="n">resolution</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of a binning data structure.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Grid.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bounds</em>, <em class="sig-param">resolution</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bounds</span></em>, <em class="sig-param"><span class="n">resolution</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a grid with specified properties.</p>
 <p>__init__(Rectangle, number) -&gt; Grid</p>
 <dl class="field-list">
@@ -156,32 +157,32 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.__init__" title="libpysal.cg.Grid.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, bounds, resolution)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.__init__" title="libpysal.cg.Grid.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(bounds, resolution)</p></td>
 <td><p>Returns a grid with specified properties.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.add" title="libpysal.cg.Grid.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(self, item, pt)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.add" title="libpysal.cg.Grid.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(item, pt)</p></td>
 <td><p>Adds an item to the grid at a specified location.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.bounds" title="libpysal.cg.Grid.bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounds</span></code></a>(self, bounds)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.bounds" title="libpysal.cg.Grid.bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounds</span></code></a>(bounds)</p></td>
 <td><p>Returns a list of items found in the grid within the bounds specified.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.in_grid" title="libpysal.cg.Grid.in_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_grid</span></code></a>(self, loc)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.in_grid" title="libpysal.cg.Grid.in_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_grid</span></code></a>(loc)</p></td>
 <td><p>Returns whether a 2-tuple location _loc_ lies inside the grid bounds.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.nearest" title="libpysal.cg.Grid.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a>(self, pt)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.nearest" title="libpysal.cg.Grid.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a>(pt)</p></td>
 <td><p>Returns the nearest item to a point.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.proximity" title="libpysal.cg.Grid.proximity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code></a>(self, pt, r)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Grid.proximity" title="libpysal.cg.Grid.proximity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code></a>(pt, r)</p></td>
 <td><p>Returns a list of items found in the grid within a specified distance of a point.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.remove" title="libpysal.cg.Grid.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(self, item, pt)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Grid.remove" title="libpysal.cg.Grid.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(item, pt)</p></td>
 <td><p>Removes an item from the grid at a specified location.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Grid.add">
-<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">item</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.add" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">pt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an item to the grid at a specified location.</p>
 <p>add(x, Point) -&gt; x</p>
 <dl class="field-list">
@@ -200,9 +201,9 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Grid.bounds">
-<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">bounds</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.bounds" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">bounds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bounds</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of items found in the grid within the bounds specified.</p>
 <p>bounds(Rectangle) -&gt; x list</p>
 <dl class="field-list">
@@ -229,16 +230,16 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Grid.in_grid">
-<code class="sig-name descname">in_grid</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">loc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.in_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.in_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">in_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">loc</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.in_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.in_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns whether a 2-tuple location _loc_ lies inside the grid bounds.</p>
 <p>Test tag: &lt;tc&gt;#is#Grid.in_grid&lt;/tc&gt;</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Grid.nearest">
-<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.nearest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nearest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.nearest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the nearest item to a point.</p>
 <p>nearest(Point) -&gt; x</p>
 <dl class="field-list">
@@ -262,9 +263,9 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Grid.proximity">
-<code class="sig-name descname">proximity</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">pt</em>, <em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.proximity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.proximity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">proximity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pt</span></em>, <em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.proximity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.proximity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of items found in the grid within a specified distance of a point.</p>
 <p>proximity(Point, number) -&gt; x list</p>
 <dl class="field-list">
@@ -291,9 +292,9 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Grid.remove">
-<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">item</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.remove" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">remove</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item</span></em>, <em class="sig-param"><span class="n">pt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#Grid.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Grid.remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes an item from the grid at a specified location.</p>
 <p>remove(x, Point) -&gt; x</p>
 <dl class="field-list">
@@ -338,7 +339,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

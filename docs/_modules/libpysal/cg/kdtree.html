@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.kdtree &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.kdtree &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -40,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -137,49 +138,53 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DISTANCE_METRICS&quot;</span><span class="p">,</span> <span class="s2">&quot;FLOAT_EPS&quot;</span><span class="p">,</span> <span class="s2">&quot;KDTree&quot;</span><span class="p">]</span>
 
-<span class="n">DISTANCE_METRICS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Euclidean&#39;</span><span class="p">,</span> <span class="s1">&#39;Arc&#39;</span><span class="p">]</span>
+<span class="n">DISTANCE_METRICS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Euclidean&quot;</span><span class="p">,</span> <span class="s2">&quot;Arc&quot;</span><span class="p">]</span>
 <span class="n">FLOAT_EPS</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
 
-<div class="viewcode-block" id="KDTree"><a class="viewcode-back" href="../../../generated/libpysal.cg.KDTree.html#libpysal.cg.KDTree">[docs]</a><span class="k">def</span> <span class="nf">KDTree</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">leafsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">distance_metric</span><span class="o">=</span><span class="s1">&#39;Euclidean&#39;</span><span class="p">,</span>
-           <span class="n">radius</span><span class="o">=</span><span class="n">RADIUS_EARTH_KM</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    kd-tree built on top of kd-tree functionality in scipy. If using scipy 0.12</span>
-<span class="sd">    or greater uses the scipy.spatial.cKDTree, otherwise uses</span>
-<span class="sd">    scipy.spatial.KDTree. Offers both Arc distance and Euclidean distance.</span>
-<span class="sd">    Note that Arc distance is only appropriate when points in latitude and</span>
+<div class="viewcode-block" id="KDTree"><a class="viewcode-back" href="../../../generated/libpysal.cg.KDTree.html#libpysal.cg.KDTree">[docs]</a><span class="k">def</span> <span class="nf">KDTree</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">leafsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">distance_metric</span><span class="o">=</span><span class="s2">&quot;Euclidean&quot;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">RADIUS_EARTH_KM</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;kd-tree built on top of kd-tree functionality in scipy. If using scipy</span>
+<span class="sd">    0.12 or greater uses the scipy.spatial.cKDTree, otherwise uses</span>
+<span class="sd">    scipy.spatial.KDTree. Offers both Arc distance and Euclidean distance. Note</span>
+<span class="sd">    that Arc distance is only appropriate when points in latitude and</span>
 <span class="sd">    longitude, and the radius set to meaningful value (see docs below).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    data            : array</span>
-<span class="sd">                      The data points to be indexed. This array is not copied,</span>
-<span class="sd">                      and so modifying this data will result in bogus results.</span>
-<span class="sd">                      Typically nx2.</span>
-<span class="sd">    leafsize        : int</span>
-<span class="sd">                      The number of points at which the algorithm switches over</span>
-<span class="sd">                      to brute-force. Has to be positive. Optional, default is 10.</span>
+<span class="sd">    data : array</span>
+<span class="sd">        The data points to be indexed. This array is not copied, and so</span>
+<span class="sd">        modifying this data will result in bogus results. Typically nx2.</span>
+
+<span class="sd">    leafsize : int</span>
+<span class="sd">        The number of points at which the algorithm switches over to brute-force. Has to be positive. Optional, default is 10.</span>
+
 <span class="sd">    distance_metric : string</span>
-<span class="sd">                      Options: &quot;Euclidean&quot; (default) and &quot;Arc&quot;.</span>
-<span class="sd">    radius          : float</span>
-<span class="sd">                      Radius of the sphere on which to compute distances.</span>
-<span class="sd">                      Assumes data in latitude and longitude. Ignored if</span>
-<span class="sd">                      distance_metric=&quot;Euclidean&quot;. Typical values:</span>
-<span class="sd">                      pysal.cg.RADIUS_EARTH_KM  (default)</span>
-<span class="sd">                      pysal.cg.RADIUS_EARTH_MILES</span>
+<span class="sd">        Options: &quot;Euclidean&quot; (default) and &quot;Arc&quot;.</span>
+
+<span class="sd">    radius : float</span>
+<span class="sd">        Radius of the sphere on which to compute distances. Assumes data in</span>
+<span class="sd">        latitude and longitude. Ignored if distance_metric=&quot;Euclidean&quot;. Typical</span>
+<span class="sd">        values: pysal.cg.RADIUS_EARTH_KM (default) pysal.cg.RADIUS_EARTH_MILES</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">distance_metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">12</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">distance_metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">12</span>
+            <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="p">):</span>
             <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">KDTree</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">leafsize</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">cKDTree</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">leafsize</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">distance_metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;arc&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">distance_metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;arc&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Arc_KDTree</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">leafsize</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
 
 
 <span class="c1"># internal hack for the Arc_KDTree class inheritance</span>
-<span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">12</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="k">if</span> <span class="p">(</span>
+    <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">12</span>
+    <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="p">):</span>
     <span class="n">temp_KDTree</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">KDTree</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">temp_KDTree</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">cKDTree</span>
@@ -187,12 +192,11 @@
 
 <span class="k">class</span> <span class="nc">Arc_KDTree</span><span class="p">(</span><span class="n">temp_KDTree</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">leafsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        KDTree using Arc Distance instead of Euclidean Distance.</span>
+        <span class="sd">&quot;&quot;&quot;KDTree using Arc Distance instead of Euclidean Distance.</span>
 
-<span class="sd">        Returned distances are based on radius.</span>
-<span class="sd">        For Example, pass in the radius of earth in miles to get back miles.</span>
-<span class="sd">        Assumes data are Lng/Lat, does not account for geoids.</span>
+<span class="sd">        Returned distances are based on radius. For Example, pass in the radius</span>
+<span class="sd">        of earth in miles to get back miles. Assumes data are Lng/Lat, does not</span>
+<span class="sd">        account for geoids.</span>
 
 <span class="sd">        For more information see docs for scipy.spatial.KDTree</span>
 
@@ -225,8 +229,7 @@
         <span class="k">return</span> <span class="n">x</span>
 
     <span class="k">def</span> <span class="nf">count_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        See scipy.spatial.KDTree.count_neighbors</span>
+        <span class="sd">&quot;&quot;&quot;See scipy.spatial.KDTree.count_neighbors</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -243,19 +246,23 @@
 <span class="sd">        16</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;r, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;r, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span>
+                <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span>
+                <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">temp_KDTree</span><span class="o">.</span><span class="n">count_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">distance_upper_bound</span><span class="o">=</span><span class="n">inf</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        See scipy.spatial.KDTree.query</span>
+        <span class="sd">&quot;&quot;&quot;See scipy.spatial.KDTree.query</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x : array-like, last dimension self.m</span>
 <span class="sd">            query points are lng/lat.</span>
-<span class="sd">        p: ignored, kept to maintain compatibility with scipy.spatial.KDTree</span>
+<span class="sd">        p: ignored</span>
+<span class="sd">            kept to maintain compatibility with scipy.spatial.KDTree</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -274,31 +281,34 @@
 <span class="sd">        True</span>
 <span class="sd">        &gt;&gt;&gt; (i == i2).all()</span>
 <span class="sd">        True</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">eps</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">distance_upper_bound</span> <span class="o">!=</span> <span class="n">inf</span><span class="p">:</span>
             <span class="n">distance_upper_bound</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span>
-                <span class="n">distance_upper_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
-        <span class="n">d</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">temp_KDTree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">k</span><span class="p">,</span>
-                                          <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span> <span class="n">distance_upper_bound</span><span class="o">=</span><span class="n">distance_upper_bound</span><span class="p">)</span>
+                <span class="n">distance_upper_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
+            <span class="p">)</span>
+        <span class="n">d</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">temp_KDTree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">k</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span> <span class="n">distance_upper_bound</span><span class="o">=</span><span class="n">distance_upper_bound</span>
+        <span class="p">)</span>
         <span class="n">dims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span>
         <span class="k">if</span> <span class="n">dims</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sphere</span><span class="o">.</span><span class="n">linear2arcdist</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span> <span class="n">i</span>
         <span class="k">if</span> <span class="n">dims</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1">#TODO: implement linear2arcdist on numpy arrays</span>
+            <span class="c1"># TODO: implement linear2arcdist on numpy arrays</span>
             <span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="n">sphere</span><span class="o">.</span><span class="n">linear2arcdist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">d</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">dims</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="p">[[</span><span class="n">sphere</span><span class="o">.</span><span class="n">linear2arcdist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">d</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">i</span>
 
     <span class="k">def</span> <span class="nf">query_ball_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        See scipy.spatial.KDTree.query_ball_point</span>
+        <span class="sd">&quot;&quot;&quot;See scipy.spatial.KDTree.query_ball_point</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        p: ignored, kept to maintain compatibility with scipy.spatial.KDTree</span>
+<span class="sd">        p : ignored</span>
+<span class="sd">            kept to maintain compatibility with scipy.spatial.KDTree</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -312,23 +322,28 @@
 <span class="sd">        &gt;&gt;&gt; kd.query_ball_point(pts, circumference/2.)</span>
 <span class="sd">        array([list([0, 1, 2, 3]), list([0, 1, 2, 3]), list([0, 1, 2, 3]),</span>
 <span class="sd">               list([0, 1, 2, 3])], dtype=object)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">eps</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
-        <span class="c1">#scipy.sphere.KDTree.query_ball_point appears to ignore the eps argument.</span>
+        <span class="c1"># scipy.sphere.KDTree.query_ball_point appears to ignore the eps argument.</span>
         <span class="c1"># we have some floating point errors moving back and forth between cordinate systems,</span>
         <span class="c1"># so we&#39;ll account for that be adding some to our radius, 3*float&#39;s eps value.</span>
         <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;r, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;r, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span>
+                <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span>
+                <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="o">+</span> <span class="n">FLOAT_EPS</span> <span class="o">*</span> <span class="mi">3</span>
         <span class="k">return</span> <span class="n">temp_KDTree</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_toXYZ</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">r</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">query_ball_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        See scipy.spatial.KDTree.query_ball_tree</span>
+        <span class="sd">&quot;&quot;&quot;See scipy.spatial.KDTree.query_ball_tree</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        p: ignored, kept to maintain compatibility with scipy.spatial.KDTree</span>
+<span class="sd">        p : ignored</span>
+<span class="sd">            kept to maintain compatibility with scipy.spatial.KDTree</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -338,25 +353,30 @@
 <span class="sd">        True</span>
 <span class="sd">        &gt;&gt;&gt; kd.query_ball_tree(kd, kd.circumference/2.) == [[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3]]</span>
 <span class="sd">        True</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">eps</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
-        <span class="c1">#scipy.sphere.KDTree.query_ball_point appears to ignore the eps argument.</span>
+        <span class="c1"># scipy.sphere.KDTree.query_ball_point appears to ignore the eps argument.</span>
         <span class="c1"># we have some floating point errors moving back and forth between cordinate systems,</span>
         <span class="c1"># so we&#39;ll account for that be adding some to our radius, 3*float&#39;s eps value.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">radius</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both trees must have the same radius.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;r, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;r, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span>
+                <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span>
+                <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="o">+</span> <span class="n">FLOAT_EPS</span> <span class="o">*</span> <span class="mi">3</span>
         <span class="k">return</span> <span class="n">temp_KDTree</span><span class="o">.</span><span class="n">query_ball_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">query_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        See scipy.spatial.KDTree.query_pairs</span>
+        <span class="sd">&quot;&quot;&quot;See scipy.spatial.KDTree.query_pairs</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        p: ignored, kept to maintain compatibility with scipy.spatial.KDTree</span>
+<span class="sd">        p : ignored</span>
+<span class="sd">            kept to maintain compatibility with scipy.spatial.KDTree</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -366,19 +386,24 @@
 <span class="sd">        True</span>
 <span class="sd">        &gt;&gt;&gt; kd.query_pairs(kd.circumference/2.) == set([(0, 1), (1, 2), (1, 3), (2, 3), (0, 3), (0, 2)])</span>
 <span class="sd">        True</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;r, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;r, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span>
+                <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span>
+                <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="o">+</span> <span class="n">FLOAT_EPS</span> <span class="o">*</span> <span class="mi">3</span>
         <span class="k">return</span> <span class="n">temp_KDTree</span><span class="o">.</span><span class="n">query_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">sparse_distance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">max_distance</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        See scipy.spatial.KDTree.sparse_distance_matrix</span>
+        <span class="sd">&quot;&quot;&quot;See scipy.spatial.KDTree.sparse_distance_matrix</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        p: ignored, kept to maintain compatibility with scipy.spatial.KDTree</span>
+<span class="sd">        p : ignored</span>
+<span class="sd">            kept to maintain compatibility with scipy.spatial.KDTree</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -394,22 +419,23 @@
 <span class="sd">                [10007.54339801,     0.        , 20015.08679602, 10007.54339801],</span>
 <span class="sd">                [10007.54339801, 20015.08679602,     0.        , 10007.54339801],</span>
 <span class="sd">                [20015.08679602, 10007.54339801, 10007.54339801,     0.        ]])</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">radius</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both trees must have the same radius.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">max_distance</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;max_distance, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
-        <span class="n">max_distance</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span>
-            <span class="n">max_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="o">+</span> <span class="n">FLOAT_EPS</span> <span class="o">*</span> <span class="mi">3</span>
-        <span class="n">D</span> <span class="o">=</span> <span class="n">temp_KDTree</span><span class="o">.</span><span class="n">sparse_distance_matrix</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">max_distance</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;max_distance, must not exceed 1/2 circumference of the sphere (</span><span class="si">%f</span><span class="s2">).&quot;</span>
+                <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">circumference</span>
+                <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="p">)</span>
+        <span class="n">max_distance</span> <span class="o">=</span> <span class="n">sphere</span><span class="o">.</span><span class="n">arcdist2linear</span><span class="p">(</span><span class="n">max_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span> <span class="o">+</span> <span class="n">FLOAT_EPS</span> <span class="o">*</span> <span class="mi">3</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">temp_KDTree</span><span class="o">.</span><span class="n">sparse_distance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">max_distance</span><span class="p">)</span>
         <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">tocoo</span><span class="p">()</span>
-        <span class="c1">#print D.data</span>
+        <span class="c1"># print D.data</span>
         <span class="n">a2l</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">sphere</span><span class="o">.</span><span class="n">linear2arcdist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
-        <span class="c1">#print map(a2l,D.data)</span>
+        <span class="c1"># print map(a2l,D.data)</span>
         <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">((</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">a2l</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">data</span><span class="p">)),</span> <span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">col</span><span class="p">)))</span><span class="o">.</span><span class="n">todok</span><span class="p">()</span>
-
-
 </pre></div>
 
     </div>
@@ -427,7 +453,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

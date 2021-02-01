@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.voronoi_frames &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.voronoi_frames &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,39 +128,31 @@
       
   <div class="section" id="libpysal-cg-voronoi-frames">
 <h1>libpysal.cg.voronoi_frames<a class="headerlink" href="#libpysal-cg-voronoi-frames" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.voronoi_frames">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">voronoi_frames</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">radius=None</em>, <em class="sig-param">clip='extent'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/voronoi.html#voronoi_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.voronoi_frames" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">voronoi_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">clip</span><span class="o">=</span><span class="default_value">'extent'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/voronoi.html#voronoi_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.voronoi_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Composite helper to return Voronoi regions and
 generator points as individual dataframes.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>points</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array-like" title="(in NumPy v1.18)"><span>array_like</span></a></span></dt><dd><p>The originator points.</p>
+<dt><strong>points</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/glossary.html#term-array-like" title="(in NumPy v1.20)"><span>array_like</span></a></span></dt><dd><p>The originator points.</p>
 </dd>
-<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The distance to “points at infinity” used in building voronoi cells.</p>
+<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The distance to ‘points at infinity’ used in building voronoi cells.
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 </dd>
-<dt><strong>clip</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">shapely.geometry.Polygon</span></code></span></dt><dd><p>An overloaded option about how to clip the voronoi cells.
-The options are:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>‘none’/None: No clip is applied. Voronoi cells may be arbitrarily
-larger that the source map. Note that this may lead to cells that
-are many orders of magnitude larger in extent than
-the original map. Not recommended.</p></li>
-<li><p>‘bbox’/’extent’/’bounding box’: Clip the voronoi cells to the
-bounding box of the input points.</p></li>
-<li><p>‘chull’/’convex hull’: Clip the voronoi cells to the
-convex hull of the input points.</p></li>
-<li><p>‘ashape’/’ahull’: Clip the voronoi cells to the tightest hull that
-contains all points (e.g. the smallest alphashape,
-using <code class="docutils literal notranslate"><span class="pre">libpysal.cg.alpha_shape_auto</span></code>).</p></li>
-<li><p>Polygon: Clip to an arbitrary Polygon.</p></li>
+<dt><strong>clip</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#str" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">shapely.geometry.Polygon</span></code>}</span></dt><dd><p>An overloaded option about how to clip the voronoi cells.
+Default is <code class="docutils literal notranslate"><span class="pre">'extent'</span></code>. Options are as follows.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'none'</span></code>/<code class="docutils literal notranslate"><span class="pre">None</span></code> – No clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'bbox'</span></code>/<code class="docutils literal notranslate"><span class="pre">'extent'</span></code>/<code class="docutils literal notranslate"><span class="pre">'bounding</span> <span class="pre">box'</span></code> – Clip the voronoi cells to the bounding box of the input points.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'chull</span></code>/<code class="docutils literal notranslate"><span class="pre">'convex</span> <span class="pre">hull'</span></code> – Clip the voronoi cells to the convex hull of the input points.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ashape'</span></code>/<code class="docutils literal notranslate"><span class="pre">'ahull'</span></code> – Clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using <code class="docutils literal notranslate"><span class="pre">libpysal.cg.alpha_shape_auto</span></code>).</p></li>
+<li><p>Polygon – Clip to an arbitrary Polygon.</p></li>
 </ul>
-</div></blockquote>
 </dd>
 <dt><strong>tolerance</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The percent of map width to use to buffer the extent of the map,
-if clipping (default: .01, or 1 percent).</p>
+if clipping (default: <code class="docutils literal notranslate"><span class="pre">.01</span></code>, or 1%).</p>
 </dd>
 </dl>
 </dd>
@@ -183,7 +176,9 @@ with shapely geometry types.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">regions_df</span><span class="p">,</span> <span class="n">points_df</span> <span class="o">=</span> <span class="n">voronoi_frames</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">regions_df</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(4, 1)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">regions_df</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">points_df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">regions_df</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">points_df</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -211,7 +206,7 @@ with shapely geometry types.</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>
