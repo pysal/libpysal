@@ -57,7 +57,7 @@ Contributing
 PySAL-libpysal is under active development and contributors are welcome.
 If you have any suggestions, feature requests, or bug reports, 
 please open new `issues <https://github.com/pysal/libpysal/issues>`_ on GitHub. 
-To submit patches, please review `PySAL: Getting Started <http://pysal.org/getting_started#for-developers>`_, 
+To submit patches, please review `PySAL's documentation for developers <https://pysal.org/docs/devs/>`_, 
 the PySAL `development guidelines <https://github.com/pysal/pysal/wiki>`_, 
 the `libpysal contributing guidelines <https://github.com/pysal/libpysal/blob/master/.github/CONTRIBUTING.md>`_
 before  opening a `pull request <https://github.com/pysal/libpysal/pulls>`_. 
