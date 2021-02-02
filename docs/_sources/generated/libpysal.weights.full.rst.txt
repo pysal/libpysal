@@ -1,6 +1,0 @@
-libpysal.weights.full
-=====================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: full

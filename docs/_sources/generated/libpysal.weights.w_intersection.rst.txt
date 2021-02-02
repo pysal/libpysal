@@ -1,6 +1,0 @@
-libpysal.weights.w\_intersection
-================================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: w_intersection

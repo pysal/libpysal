@@ -1,6 +1,0 @@
-libpysal.weights.hexLat2W
-=========================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: hexLat2W

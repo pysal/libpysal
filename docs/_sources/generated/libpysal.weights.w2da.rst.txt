@@ -1,6 +1,0 @@
-libpysal.weights.w2da
-=====================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: w2da
