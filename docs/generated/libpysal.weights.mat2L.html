@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.weights.mat2L &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.weights.mat2L &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,15 +128,15 @@
       
   <div class="section" id="libpysal-weights-mat2l">
 <h1>libpysal.weights.mat2L<a class="headerlink" href="#libpysal-weights-mat2l" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.weights.mat2L">
-<code class="sig-prename descclassname">libpysal.weights.</code><code class="sig-name descname">mat2L</code><span class="sig-paren">(</span><em class="sig-param">edge_matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/spintW.html#mat2L"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.mat2L" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">libpysal.weights.</code><code class="sig-name descname">mat2L</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">edge_matrix</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/spintW.html#mat2L"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.weights.mat2L" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a matrix denoting network connectivity (edges or flows) to a list
 denoting edges</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>edge_matrix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>where rows denote network edge origins, columns denote
+<dt><strong>edge_matrix</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a></span></dt><dd><p>where rows denote network edge origins, columns denote
 network edge destinations, and non-zero entries denote the
 existence of an edge between a given origin and destination</p>
 </dd>
@@ -173,7 +174,7 @@ origin id and d is a destination id</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

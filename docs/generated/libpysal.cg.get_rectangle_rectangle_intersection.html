@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.get_rectangle_rectangle_intersection &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.get_rectangle_rectangle_intersection &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,35 +128,51 @@
       
   <div class="section" id="libpysal-cg-get-rectangle-rectangle-intersection">
 <h1>libpysal.cg.get_rectangle_rectangle_intersection<a class="headerlink" href="#libpysal-cg-get-rectangle-rectangle-intersection" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.get_rectangle_rectangle_intersection">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">get_rectangle_rectangle_intersection</code><span class="sig-paren">(</span><em class="sig-param">r0</em>, <em class="sig-param">r1</em>, <em class="sig-param">checkOverlap=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#get_rectangle_rectangle_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.get_rectangle_rectangle_intersection" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">get_rectangle_rectangle_intersection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r0</span></em>, <em class="sig-param"><span class="n">r1</span></em>, <em class="sig-param"><span class="n">checkOverlap</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#get_rectangle_rectangle_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.get_rectangle_rectangle_intersection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the intersection between two rectangles.</p>
-<dl class="simple">
-<dt>Note: Algorithm assumes the rectangles overlap.</dt><dd><p>checkOverlap=False should be used with extreme caution.</p>
-</dd>
-</dl>
-<p>get_rectangle_rectangle_intersection(r0, r1) -&gt; Rectangle, Segment, Point or None</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>r0</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rectangle</span></code></a></span></dt><dd></dd>
-<dt><strong>r1</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rectangle</span></code></a></span></dt><dd></dd>
+<dt><strong>r0</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a></span></dt><dd><p>A rectangle to check for an intersection.</p>
+</dd>
+<dt><strong>r1</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a></span></dt><dd><p>A rectangle to check for an intersection against <code class="docutils literal notranslate"><span class="pre">r0</span></code>.</p>
+</dd>
+<dt><strong>checkOverlap</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.8)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>Call <code class="docutils literal notranslate"><span class="pre">bbcommon(r0,</span> <span class="pre">r1)</span></code> prior to complex geometry
+checking. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>. Prior to setting as
+<code class="docutils literal notranslate"><span class="pre">False</span></code> see the Notes section.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>intersection</strong><span class="classifier">{<a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a>, <a class="reference internal" href="libpysal.cg.LineSegment.html#libpysal.cg.LineSegment" title="libpysal.cg.LineSegment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.LineSegment</span></code></a>, <a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>}</span></dt><dd><p>The intersecting point, line, or rectangle between 
+<cite>r0`</cite> and <code class="docutils literal notranslate"><span class="pre">r1</span></code> if an intersection exists or <code class="docutils literal notranslate"><span class="pre">None</span></code>
+if <code class="docutils literal notranslate"><span class="pre">r0</span></code> and <code class="docutils literal notranslate"><span class="pre">r1</span></code> do not intersect.</p>
+</dd>
 </dl>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>The algorithm assumes the rectangles overlap. The keyword
+<code class="docutils literal notranslate"><span class="pre">checkOverlap=False</span></code> should be used with extreme caution.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ri</span> <span class="o">=</span> <span class="n">get_rectangle_rectangle_intersection</span><span class="p">(</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ri</span><span class="p">[:]</span>
 <span class="go">[4.0, 4.0, 6.0, 7.0]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ri</span> <span class="o">=</span> <span class="n">get_rectangle_rectangle_intersection</span><span class="p">(</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ri</span><span class="p">[:]</span>
 <span class="go">[2.0, 1.0, 4.0, 3.0]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r0</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r1</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ri</span> <span class="o">=</span> <span class="n">get_rectangle_rectangle_intersection</span><span class="p">(</span><span class="n">r0</span><span class="p">,</span><span class="n">r1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ri</span><span class="p">[:]</span> <span class="o">==</span> <span class="n">r1</span><span class="p">[:]</span>
@@ -186,7 +203,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

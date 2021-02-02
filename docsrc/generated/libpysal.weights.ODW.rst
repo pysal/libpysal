@@ -1,0 +1,6 @@
+libpysal.weights.ODW
+====================
+
+.. currentmodule:: libpysal.weights
+
+.. autofunction:: ODW

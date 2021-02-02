@@ -1,0 +1,6 @@
+libpysal.weights.nonplanar\_neighbors
+=====================================
+
+.. currentmodule:: libpysal.weights
+
+.. autofunction:: nonplanar_neighbors

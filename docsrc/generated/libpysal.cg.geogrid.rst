@@ -1,0 +1,6 @@
+libpysal.cg.geogrid
+===================
+
+.. currentmodule:: libpysal.cg
+
+.. autofunction:: geogrid

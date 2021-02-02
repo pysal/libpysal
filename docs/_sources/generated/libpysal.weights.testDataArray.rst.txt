@@ -1,0 +1,6 @@
+libpysal.weights.testDataArray
+==============================
+
+.. currentmodule:: libpysal.weights
+
+.. autofunction:: testDataArray
