@@ -2,8 +2,9 @@
  name: Build Docs
  on:
    push:
-     branches:
-     - main
+     # Sequence of patterns matched against refs/tags
+     tags:
+       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
  jobs:
    docs:
      name: Build & Push Docs
