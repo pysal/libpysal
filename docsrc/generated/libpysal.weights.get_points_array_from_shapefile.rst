@@ -1,6 +1,0 @@
-libpysal.weights.get\_points\_array\_from\_shapefile
-====================================================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: get_points_array_from_shapefile
