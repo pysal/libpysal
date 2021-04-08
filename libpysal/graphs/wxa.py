@@ -11,6 +11,10 @@ class W_XA:
         ).fillna(0)
         self._cache = dict()
 
+    @classmethod
+    def from_w(cls, w):
+        return cls(w.to_adjlist())
+
     def neighbors(self, ix):
         # assume that the ix is not iterable, like currently done in W
         (neighbors,) = self.xarray.sel(focal=ix).data.nonzero()

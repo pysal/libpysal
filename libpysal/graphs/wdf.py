@@ -9,6 +9,10 @@ class W_DF:
         self.adjlist = adjlist
         self._cache = dict()
 
+    @classmethod
+    def from_w(cls, w):
+        return cls(w.to_adlist())
+
     def neighbors(self, ix):
         # assume that the ix is not iterable, like currently done in W
         return self.adjlist[self.adjlist.focal == ix].neighbor
