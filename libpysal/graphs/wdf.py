@@ -11,13 +11,11 @@ class W_DF:
 
     def neighbors(self, ix):
         # assume that the ix is not iterable, like currently done in W
-        return self.adjlist[self.adjlist.focal==ix].neighbor
-
+        return self.adjlist[self.adjlist.focal == ix].neighbor
 
     def weights(self, ix):
         # assume that the ix is not iterable, like currently done in W
-        return self.adjlist[self.adjlist.focal==ix].weight
-
+        return self.adjlist[self.adjlist.focal == ix].weight
 
     @property
     def sparse(self):
@@ -25,11 +23,14 @@ class W_DF:
             return self._cache["sparse"]
         except KeyError:
             weights = self.adjlist.weight
-            idxs = self.adjlist.focal.unique()
+            idxs = numpy.unique(
+                numpy.hstack((self.adjlist.focal.values, self.adjlist.neighbor.values))
+            )
             rows = numpy.searchsorted(idxs, self.adjlist.focal)
             cols = numpy.searchsorted(idxs, self.adjlist.neighbor)
             self._cache["sparse"] = sparse.csr_matrix((weights, (rows, cols)))
             return self.sparse
+
 
 if __name__ == "__main__":
     import geopandas, libpysal
