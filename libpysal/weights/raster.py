@@ -22,8 +22,6 @@ if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 else:
     from ..common import jit
 
-__author__ = "Mragank Shekhar <yesthisismrshekhar@gmail.com>"
-
 __all__ = ["da2W", "da2WSP", "w2da", "wsp2da", "testDataArray"]
 
 
