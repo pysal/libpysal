@@ -57,11 +57,15 @@ class Test_Tabular(ut.TestCase):
         self.assertEqual(out[0].area, 2.0)
         self.assertEqual(out[1].area, 2.0)
 
-        answer_vertices0 = [(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)]
-        answer_vertices1 = [(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (2, 1)]
+        answer_vertices0 = set([(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)])
+        answer_vertices1 = set([(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (2, 1)])
 
-        np.testing.assert_allclose(out[0].vertices, answer_vertices0)
-        np.testing.assert_allclose(out[1].vertices, answer_vertices1)
+        s0 = set([tuple(map(int,t)) for t in out[0].vertices])
+        s1 = set([tuple(map(int,t)) for t in out[1].vertices])
+
+        self.assertTrue(s0==answer_vertices0)
+        self.assertTrue(s1==answer_vertices1)
+
 
     def test_clip(self):
         pass
