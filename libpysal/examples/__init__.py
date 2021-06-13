@@ -4,7 +4,6 @@
 
 from .base import example_manager
 from .remotes import datasets as remote_datasets
-from .remotes import download as fetch_all
 from .builtin import datasets as builtin_datasets
 
 
@@ -12,8 +11,22 @@ from typing import Union
 
 __all__ = ["get_path", "available", "explain", "fetch_all"]
 
-example_manager.add_examples(remote_datasets)
 example_manager.add_examples(builtin_datasets)
+
+def fetch_all():
+    """Fetch and install all remote datasets
+    """
+    datasets = remote_datasets.datasets
+    names = list(datasets.keys())
+    names.sort()
+    for name in names:
+        print(name)
+        example = datasets[name]
+        try:
+            example.download()
+        except:
+            print("Example not downloaded: {}".format(name))
+    example_manager.add_examples(datasets)
 
 
 def available() -> str:
