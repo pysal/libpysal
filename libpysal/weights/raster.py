@@ -22,8 +22,6 @@ if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 else:
     from ..common import jit
 
-__author__ = "Mragank Shekhar <yesthisismrshekhar@gmail.com>"
-
 __all__ = ["da2W", "da2WSP", "w2da", "wsp2da", "testDataArray"]
 
 
@@ -281,7 +279,11 @@ def da2WSP(
                 *shape, ids, id_map, criterion, k_nas, dtype, n_jobs
             )  # -> (data, (row, col))
 
-        sw = sparse.csr_matrix(sw_tup, shape=(n, n), dtype=np.int8,)
+        sw = sparse.csr_matrix(
+            sw_tup,
+            shape=(n, n),
+            dtype=np.int8,
+        )
 
     # Higher_order functionality, this uses idea from
     # libpysal#313 for adding higher order neighbors.
@@ -559,10 +561,9 @@ def _index2da(data, index, attrs, coords):
         fill = attrs["nodatavals"][0] if "nodatavals" in attrs else 0
         data_complete = np.full(shape, fill, data.dtype)
         data_complete[indexer] = data
-        data_complete = data_complete[:, ::-1]
 
     da = DataArray(data_complete, coords=coords, dims=dims, attrs=attrs)
-    return da.sortby(dims[-2], False)
+    return da
 
 
 @jit(nopython=True, fastmath=True)
@@ -591,7 +592,13 @@ def _idmap(ids, mask, dtype):
 
 @jit(nopython=True, fastmath=True)
 def _SWbuilder(
-    nrows, ncols, ids, id_map, criterion, k, dtype,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
 ):
     """
     Computes data and orders rows, cols, data for a single chunk
@@ -631,7 +638,13 @@ def _SWbuilder(
 
 @jit(nopython=True, fastmath=True, nogil=True)
 def _compute_chunk(
-    nrows, ncols, ids, id_map, criterion, k, dtype,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
 ):
     """
     Computes rows cols for a single chunk
@@ -754,7 +767,9 @@ def _compute_chunk(
 
 @jit(nopython=True, fastmath=True)
 def _chunk_generator(
-    n_jobs, starts, ids,
+    n_jobs,
+    starts,
+    ids,
 ):
     """
     Construct chunks to iterate over within numba in parallel
@@ -782,7 +797,14 @@ def _chunk_generator(
 
 
 def _parSWbuilder(
-    nrows, ncols, ids, id_map, criterion, k, dtype, n_jobs,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
+    n_jobs,
 ):
     """
     Computes data and orders rows, cols, data in parallel using numba
