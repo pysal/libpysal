@@ -31,6 +31,7 @@ def fetch_all():
 
 def available() -> str:
     """List available datasets."""
+    fetch_all()
 
     return example_manager.available()
 
@@ -43,8 +44,13 @@ def explain(name: str) -> str:
 
 def load_example(example_name: str) -> Union[base.Example, builtin.LocalExample]:
     """Load example dataset instance."""
+    example = example_manager.load(example_name)
 
-    return example_manager.load(example_name)
+    if example is None:
+        fetch_all()  # refresh remotes
+        example = example_manager.load(example_name)
+
+    return example
 
 
 def get_path(file_name: str) -> str:
