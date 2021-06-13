@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.Point &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.Point &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,28 +128,15 @@
       
   <div class="section" id="libpysal-cg-point">
 <h1>libpysal.cg.Point<a class="headerlink" href="#libpysal-cg-point" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="libpysal.cg.Point">
-<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Point</code><span class="sig-paren">(</span><em class="sig-param">loc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Point" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">loc</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Geometric class for point objects.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>None</strong></dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<dl class="method">
-<dt id="libpysal.cg.Point.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">loc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Point.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Point.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an instance of a Point object.</p>
-<p>__init__((number, number)) -&gt; Point</p>
-<p>Test tag: &lt;tc&gt;#is#Point.__init__&lt;/tc&gt;
-Test tag: &lt;tc&gt;#tests#Point.__init__&lt;/tc&gt;</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>loc</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">location</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">number</span></code> x-tuple, <code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code> &gt; 1)</span></dt><dd></dd>
+<dt><strong>loc</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">tuple</span></code></a></span></dt><dd><p>The point’s location (number <span class="math notranslate nohighlight">\(x\)</span>-tuple, <span class="math notranslate nohighlight">\(x\)</span> &gt; 1).</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -156,6 +144,10 @@ Test tag: &lt;tc&gt;#tests#Point.__init__&lt;/tc&gt;</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
+<dl class="py method">
+<dt id="libpysal.cg.Point.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">loc</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Point.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Point.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -165,8 +157,8 @@ Test tag: &lt;tc&gt;#tests#Point.__init__&lt;/tc&gt;</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Point.__init__" title="libpysal.cg.Point.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, loc)</p></td>
-<td><p>Returns an instance of a Point object.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Point.__init__" title="libpysal.cg.Point.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(loc)</p></td>
+<td><p>Initialize self.</p></td>
 </tr>
 </tbody>
 </table>
@@ -194,7 +186,7 @@ Test tag: &lt;tc&gt;#tests#Point.__init__&lt;/tc&gt;</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

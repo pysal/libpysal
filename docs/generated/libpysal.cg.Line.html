@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.Line &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.Line &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,32 +128,23 @@
       
   <div class="section" id="libpysal-cg-line">
 <h1>libpysal.cg.Line<a class="headerlink" href="#libpysal-cg-line" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="libpysal.cg.Line">
-<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Line</code><span class="sig-paren">(</span><em class="sig-param">m</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">Line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Geometric representation of line objects.</p>
-<dl class="field-list">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl>
-<dt><strong>m</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>slope</p>
-</dd>
-<dt><strong>b</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>y-intercept</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="method">
-<dt id="libpysal.cg.Line.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">m</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a Line object.</p>
-<p>__init__(number, number) -&gt; Line</p>
-<p>Test tag: &lt;tc&gt;#is#Line.__init__&lt;/tc&gt;
-Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>m</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">slope</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">line</span></code></span></dt><dd></dd>
-<dt><strong>b</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> y-intercept <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">line</span></code></span></dt><dd></dd>
+<dt><strong>m</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>}</span></dt><dd><p>The slope of the line. <code class="docutils literal notranslate"><span class="pre">m</span></code> is also an attribute.</p>
+</dd>
+<dt><strong>b</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>}</span></dt><dd><p>The <span class="math notranslate nohighlight">\(y\)</span>-intercept of the line. <code class="docutils literal notranslate"><span class="pre">b</span></code> is also an attribute.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3.8/library/exceptions.html#ArithmeticError" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArithmeticError</span></code></a></dt><dd><p>Raised when infinity is passed in as the slope.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -160,10 +152,16 @@ Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">Line</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">m</span>
 <span class="go">1.0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">b</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">b</span>
 <span class="go">0.0</span>
 </pre></div>
 </div>
+<dl class="py method">
+<dt id="libpysal.cg.Line.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">b</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
@@ -173,26 +171,32 @@ Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Line.__init__" title="libpysal.cg.Line.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(self, m, b)</p></td>
-<td><p>Returns a Line object.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Line.__init__" title="libpysal.cg.Line.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(m, b)</p></td>
+<td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Line.x" title="libpysal.cg.Line.x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></a>(self, y)</p></td>
-<td><p>Returns the x-value of the line at a particular y-value.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.Line.x" title="libpysal.cg.Line.x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></a>(y)</p></td>
+<td><p>Returns the <span class="math notranslate nohighlight">\(x\)</span>-value of the line at a particular <span class="math notranslate nohighlight">\(y\)</span>-value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Line.y" title="libpysal.cg.Line.y"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></a>(self, x)</p></td>
-<td><p>Returns the y-value of the line at a particular x-value.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.Line.y" title="libpysal.cg.Line.y"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></a>(x)</p></td>
+<td><p>Returns the <span class="math notranslate nohighlight">\(y\)</span>-value of the line at a particular <span class="math notranslate nohighlight">\(x\)</span>-value.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Line.x">
-<code class="sig-name descname">x</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line.x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line.x" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the x-value of the line at a particular y-value.</p>
-<p>x(number) -&gt; number</p>
+<code class="sig-name descname">x</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)">float</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)">float</a><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line.x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <span class="math notranslate nohighlight">\(x\)</span>-value of the line at a particular <span class="math notranslate nohighlight">\(y\)</span>-value.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>y</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> y-value <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code> <a class="reference internal" href="#libpysal.cg.Line.x" title="libpysal.cg.Line.x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">x</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></span></dt><dd></dd>
+<dt><strong>y</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>}</span></dt><dd><p>The <span class="math notranslate nohighlight">\(y\)</span>-value at which to compute <span class="math notranslate nohighlight">\(x\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3.8/library/exceptions.html#ArithmeticError" title="(in Python v3.8)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ArithmeticError</span></code></a></dt><dd><p>Raised when <code class="docutils literal notranslate"><span class="pre">0.</span></code> is passed in as the slope.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -204,15 +208,15 @@ Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="libpysal.cg.Line.y">
-<code class="sig-name descname">y</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line.y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line.y" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the y-value of the line at a particular x-value.</p>
-<p>y(number) -&gt; number</p>
+<code class="sig-name descname">y</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)">int</a><span class="p">, </span><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)">float</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)">float</a><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#Line.y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.Line.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <span class="math notranslate nohighlight">\(y\)</span>-value of the line at a particular <span class="math notranslate nohighlight">\(x\)</span>-value.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>x</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> x-value <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code> <a class="reference internal" href="#libpysal.cg.Line.y" title="libpysal.cg.Line.y"><code class="xref py py-obj docutils literal notranslate"><span class="pre">y</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">at</span></code></span></dt><dd></dd>
+<dt><strong>x</strong><span class="classifier">{<a class="reference external" href="https://docs.python.org/3.8/library/functions.html#int" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a>}</span></dt><dd><p>The <span class="math notranslate nohighlight">\(x\)</span>-value at which to compute <span class="math notranslate nohighlight">\(y\)</span>.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -248,7 +252,7 @@ Test tag: &lt;tc&gt;#tests#Line.__init__&lt;/tc&gt;</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

@@ -228,8 +228,20 @@ class Rook(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
-        """Construct a weights object from a ``xarray.DataArray``.
+    def from_xarray(
+        cls,
+        da,
+        z_value=None,
+        coords_labels={},
+        k=1,
+        include_nodata=False,
+        n_jobs=1,
+        sparse=True,
+        **kwargs,
+    ):
+        """Construct a weights object from a ``xarray.DataArray`` with an additional
+        attribute index containing coordinate values of the raster
+        in the form of ``Pandas.Index``/``MultiIndex``.
 
         Parameters
         ----------
@@ -239,13 +251,20 @@ class Rook(W):
             Select the z_value of 3D DataArray with multiple layers.
         coords_labels : dict
             Pass dimension labels for coordinates and layers if they do not
-            belong to default dimensions, which are (band/time, y/lat, x/lon).
-            Default is an empty ``dict``.
-            e.g.
-            ``dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}``
-        sparse : bool
-            The type of weight object. Default is ``False``.
-            For sparse set to ``True``.
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+            Default is {} empty dictionary.
+        sparse : boolean
+            type of weight object. Default is True. For libpysal.weights.W, sparse = False
+        k : int
+            Order of contiguity, this will select all neighbors upto kth order.
+            Default is 1.
+        include_nodata : boolean
+            If True, missing values will be assumed as non-missing when
+            selecting higher_order neighbors, Default is False
+        n_jobs : int
+            Number of cores to be used in the sparse weight construction. If -1,
+            all available cores are used. Default is 1.
         **kwargs : keyword arguments
             Optional arguments passed when ``sparse=False``.
 
@@ -260,13 +279,18 @@ class Rook(W):
         libpysal.weights.weights.W
         libpysal.weights.weights.WSP
 
+        Notes
+        -----
+        1. Lower order contiguities are also selected.
+        2. Returned object contains `index` attribute that includes a 
+        `Pandas.MultiIndex` object from the DataArray.
+
         """
 
         if sparse:
-            w = da2WSP(da, "rook", z_value, coords_labels)
+            w = da2WSP(da, "rook", z_value, coords_labels, k, include_nodata)
         else:
-            w = da2W(da, "rook", z_value, coords_labels, **kwargs)
-
+            w = da2W(da, "rook", z_value, coords_labels, k, include_nodata, **kwargs)
         return w
 
 
@@ -474,8 +498,21 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_xarray(cls, da, z_value=None, coords_labels={}, sparse=False, **kwargs):
-        """Construct a weights object from a ``xarray.DataArray``.
+    def from_xarray(
+        cls,
+        da,
+        z_value=None,
+        coords_labels={},
+        k=1,
+        include_nodata=False,
+        n_jobs=1,
+        sparse=True,
+        **kwargs,
+    ):
+        """
+        Construct a weights object from a ``xarray.DataArray`` with an additional
+        attribute index containing coordinate values of the raster
+        in the form of ``Pandas.Index``/``MultiIndex``.
 
         Parameters
         ----------
@@ -485,13 +522,20 @@ class Queen(W):
             Select the z_value of 3D DataArray with multiple layers.
         coords_labels : dict
             Pass dimension labels for coordinates and layers if they do not
-            belong to default dimensions, which are (band/time, y/lat, x/lon).
-            Default is an empty ``dict``.
-            e.g.
-            ``dims = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}``
-        sparse : bool
-            The type of weight object. Default is ``False``.
-            For sparse set to ``True``.
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+            Default is {} empty dictionary.
+        sparse : boolean
+            type of weight object. Default is True. For libpysal.weights.W, sparse = False
+        k : int
+            Order of contiguity, this will select all neighbors upto kth order.
+            Default is 1.
+        include_nodata : boolean
+            If True, missing values will be assumed as non-missing when
+            selecting higher_order neighbors, Default is False
+        n_jobs : int
+            Number of cores to be used in the sparse weight construction. If -1,
+            all available cores are used. Default is 1.
         **kwargs : keyword arguments
             Optional arguments passed when ``sparse=False``.
 
@@ -506,12 +550,18 @@ class Queen(W):
         libpysal.weights.weights.W
         libpysal.weights.weights.WSP
 
+        Notes
+        -----
+        1. Lower order contiguities are also selected.
+        2. Returned object contains `index` attribute that includes a 
+        `Pandas.MultiIndex` object from the DataArray.
+
         """
 
         if sparse:
-            w = da2WSP(da, "queen", z_value, coords_labels)
+            w = da2WSP(da, "queen", z_value, coords_labels, k, include_nodata)
         else:
-            w = da2W(da, "queen", z_value, coords_labels, **kwargs)
+            w = da2W(da, "queen", z_value, coords_labels, k, include_nodata, **kwargs)
         return w
 
 

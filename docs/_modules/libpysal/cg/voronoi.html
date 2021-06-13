@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.voronoi &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.voronoi &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../../../_static/doctools.js"></script>
     <script src="../../../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../../../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -40,7 +41,7 @@
         </button>
         <a class="navbar-brand" href="../../../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -142,10 +143,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    points : array-like</span>
+<span class="sd">    points : array_like</span>
 <span class="sd">        An nx2 array of points.</span>
 <span class="sd">    radius : float (optional)</span>
-<span class="sd">        The distance to &#39;points at infinity&#39;.</span>
+<span class="sd">        The distance to &#39;points at infinity&#39;. Default is ``None.``</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -162,6 +163,7 @@
 <span class="sd">    &gt;&gt;&gt; regions, coordinates = voronoi(points)</span>
 <span class="sd">    &gt;&gt;&gt; regions</span>
 <span class="sd">    [[1, 3, 2], [4, 5, 1, 0], [0, 1, 7, 6], [9, 0, 8]]</span>
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; coordinates</span>
 <span class="sd">    array([[  4.21783296,   4.08408578],</span>
 <span class="sd">           [  7.51956025,   3.51807539],</span>
@@ -189,7 +191,7 @@
 <span class="sd">    vor : scipy.spatial.Voronoi</span>
 <span class="sd">        A planar Voronoi diagram.</span>
 <span class="sd">    radius : float (optional)</span>
-<span class="sd">        Distance to &#39;points at infinity&#39;.</span>
+<span class="sd">        Distance to &#39;points at infinity&#39;. Default is ``None.``</span>
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -252,16 +254,16 @@
 
 <span class="k">def</span> <span class="nf">as_dataframes</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Helper function to store finite Voronoi regions and</span>
-<span class="sd">    originator points as geopandas (or pandas) data frames.</span>
+<span class="sd">    originator points as ``geopandas`` (or ``pandas``) dataframes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    regions : list</span>
 <span class="sd">        Each element of the list contains sequence of the indexes of</span>
 <span class="sd">        voronoi vertices composing a vornoi polygon (region).</span>
-<span class="sd">    vertices : array</span>
+<span class="sd">    vertices : array_like</span>
 <span class="sd">        The coordinates of the vornoi vertices.</span>
-<span class="sd">    points : array-like</span>
+<span class="sd">    points : array_like</span>
 <span class="sd">        The originator points.</span>
 
 <span class="sd">    Returns</span>
@@ -270,6 +272,13 @@
 <span class="sd">        Finite Voronoi polygons as geometries.</span>
 <span class="sd">    points_df : geopandas.GeoDataFrame</span>
 <span class="sd">        Originator points as geometries.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        Raised when ``geopandas`` is not available.</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        Raised when ``shapely`` is not available.</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -308,28 +317,24 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    points  : array-like</span>
+<span class="sd">    points : array_like</span>
 <span class="sd">        The originator points.</span>
 <span class="sd">    radius : float</span>
-<span class="sd">        The distance to &quot;points at infinity&quot; used in building voronoi cells.</span>
-<span class="sd">    clip : str, shapely.geometry.Polygon</span>
+<span class="sd">        The distance to &#39;points at infinity&#39; used in building voronoi cells.</span>
+<span class="sd">        Default is ``None``.</span>
+<span class="sd">    clip : {str, shapely.geometry.Polygon}</span>
 <span class="sd">        An overloaded option about how to clip the voronoi cells.</span>
-<span class="sd">        The options are:</span>
-<span class="sd">          - &#39;none&#39;/None: No clip is applied. Voronoi cells may be arbitrarily</span>
-<span class="sd">            larger that the source map. Note that this may lead to cells that</span>
-<span class="sd">            are many orders of magnitude larger in extent than</span>
-<span class="sd">            the original map. Not recommended.</span>
-<span class="sd">          - &#39;bbox&#39;/&#39;extent&#39;/&#39;bounding box&#39;: Clip the voronoi cells to the</span>
-<span class="sd">            bounding box of the input points.</span>
-<span class="sd">          - &#39;chull&#39;/&#39;convex hull&#39;: Clip the voronoi cells to the</span>
-<span class="sd">            convex hull of the input points.</span>
-<span class="sd">          - &#39;ashape&#39;/&#39;ahull&#39;: Clip the voronoi cells to the tightest hull that</span>
-<span class="sd">            contains all points (e.g. the smallest alphashape,</span>
-<span class="sd">            using ``libpysal.cg.alpha_shape_auto``).</span>
-<span class="sd">          - Polygon: Clip to an arbitrary Polygon.</span>
+<span class="sd">        Default is ``&#39;extent&#39;``. Options are as follows.</span>
+<span class="sd">        </span>
+<span class="sd">        * ``&#39;none&#39;``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.</span>
+<span class="sd">        * ``&#39;bbox&#39;``/``&#39;extent&#39;``/``&#39;bounding box&#39;`` -- Clip the voronoi cells to the bounding box of the input points.</span>
+<span class="sd">        * ``&#39;chull``/``&#39;convex hull&#39;`` -- Clip the voronoi cells to the convex hull of the input points.</span>
+<span class="sd">        * ``&#39;ashape&#39;``/``&#39;ahull&#39;`` -- Clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using ``libpysal.cg.alpha_shape_auto``).</span>
+<span class="sd">        * Polygon -- Clip to an arbitrary Polygon.</span>
+<span class="sd">    </span>
 <span class="sd">    tolerance : float</span>
 <span class="sd">        The percent of map width to use to buffer the extent of the map,</span>
-<span class="sd">        if clipping (default: .01, or 1 percent).</span>
+<span class="sd">        if clipping (default: ``.01``, or 1%).</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -354,6 +359,7 @@
 <span class="sd">    &gt;&gt;&gt; regions_df, points_df = voronoi_frames(points)</span>
 <span class="sd">    &gt;&gt;&gt; regions_df.shape</span>
 <span class="sd">    (4, 1)</span>
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; regions_df.shape == points_df.shape</span>
 <span class="sd">    True</span>
 
@@ -365,7 +371,6 @@
         <span class="n">regions</span> <span class="o">=</span> <span class="n">clip_voronoi_frames_to_extent</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="n">clip</span><span class="p">)</span>
 
     <span class="n">reg_vtx</span> <span class="o">=</span> <span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span>
-
     <span class="k">return</span> <span class="n">reg_vtx</span></div>
 
 
@@ -399,16 +404,25 @@
 <span class="sd">    -------</span>
 <span class="sd">    clipped_regions : geopandas.GeoDataFrame</span>
 <span class="sd">        A ``geopandas.GeoDataFrame`` of clipped voronoi regions.</span>
-
+<span class="sd">    </span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        Raised when ``shapely`` is not available.</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        Raised when ``geopandas`` is not available.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Raised when in invalid value for ``clip`` is passed in.</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">shapely.geometry</span> <span class="kn">import</span> <span class="n">Polygon</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;shapely is required to clip voronoi regions&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Shapely is required to clip voronoi regions.&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">geopandas</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;geopandas is required to clip voronoi regions&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Geopandas is required to clip voronoi regions.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">):</span>
         <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">clip</span><span class="p">])</span>
@@ -447,9 +461,9 @@
         <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">alpha_shape_auto</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s1">&#39;clip type &quot;</span><span class="si">{}</span><span class="s1">&quot; not understood. Try one &#39;</span>
-            <span class="s1">&#39; of the supported options: [None, &quot;extent&quot;, &#39;</span>
-            <span class="s1">&#39;&quot;chull&quot;, &quot;ahull&quot;]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clip</span><span class="p">)</span>
+            <span class="s2">&quot;Clip type &#39;</span><span class="si">{}</span><span class="s2">&#39; not understood. Try one &quot;</span>
+            <span class="s2">&quot; of the supported options: [None, &#39;extent&#39;, &quot;</span>
+            <span class="s2">&quot;&#39;chull&#39;, &#39;ahull&#39;].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clip</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="n">clipped_regions</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">overlay</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">clipper</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;intersection&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">clipped_regions</span>
@@ -470,7 +484,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

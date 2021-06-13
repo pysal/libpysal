@@ -97,22 +97,18 @@ def poll_remotes():
     return datasets
 
 
-datasets = poll_remotes()
+# datasets = poll_remotes()
 
 
-def download(datasets=datasets):
-    """
-    Download all known remotes
-    """
+class Remotes:
+    def __init__(self):
+        self._datasets = None
 
-    names = list(datasets.keys())
-    names.sort()
+    @property
+    def datasets(self):
+        if self._datasets is None:
+            self._datasets = poll_remotes()
+        return self._datasets
 
-    for name in names:
-        print(name)
-        example = datasets[name]
 
-        try:
-            example.download()
-        except:
-            print("Example not downloaded: {}".format(name))
+datasets = Remotes()

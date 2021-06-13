@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.get_polygon_point_intersect &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.get_polygon_point_intersect &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,16 +128,23 @@
       
   <div class="section" id="libpysal-cg-get-polygon-point-intersect">
 <h1>libpysal.cg.get_polygon_point_intersect<a class="headerlink" href="#libpysal-cg-get-polygon-point-intersect" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.get_polygon_point_intersect">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">get_polygon_point_intersect</code><span class="sig-paren">(</span><em class="sig-param">poly</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#get_polygon_point_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.get_polygon_point_intersect" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">get_polygon_point_intersect</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">poly</span></em>, <em class="sig-param"><span class="n">pt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#get_polygon_point_intersect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.get_polygon_point_intersect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the intersection of a polygon and point.</p>
-<p>get_polygon_point_intersect(Polygon, Point) -&gt; Point</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>poly</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">check</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code></span></dt><dd></dd>
-<dt><strong>pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">check</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">intersection</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code></span></dt><dd></dd>
+<dt><strong>poly</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Polygon.html#libpysal.cg.Polygon" title="libpysal.cg.Polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Polygon</span></code></a></span></dt><dd><p>A polygon to check for an intersection.</p>
+</dd>
+<dt><strong>pt</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>A point to check <code class="docutils literal notranslate"><span class="pre">poly</span></code> for an intersection.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>ret</strong><span class="classifier">{<a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a>, <a class="reference external" href="https://docs.python.org/3.8/library/constants.html#None" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">None</span></code></a>}</span></dt><dd><p>The intersection of a <code class="docutils literal notranslate"><span class="pre">poly</span></code> and <code class="docutils literal notranslate"><span class="pre">pt</span></code> if one exists, otherwise <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -146,7 +154,9 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">i</span> <span class="o">=</span> <span class="n">get_polygon_point_intersect</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 <span class="go">&#39;(0.5, 0.5)&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pt2</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pt2</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_polygon_point_intersect</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">pt2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -174,7 +184,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

@@ -46,6 +46,17 @@ spint Weights
    libpysal.weights.ODW
    libpysal.weights.vecW
 
+Weights tools to interface with rasters
++++++++++++++++++++++++++++++++++++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.weights.da2W
+   libpysal.weights.da2WSP
+   libpysal.weights.w2da
+   libpysal.weights.wsp2da
+   libpysal.weights.testDataArray
 
 Weights Util Classes and Functions
 ++++++++++++++++++++++++++++++++++
@@ -65,6 +76,7 @@ Weights Util Classes and Functions
    libpysal.weights.WSP2W
    libpysal.weights.get_ids
    libpysal.weights.get_points_array_from_shapefile
+   libpysal.weights.fill_diagonal
 
 Weights user Classes and Functions
 ++++++++++++++++++++++++++++++++++
@@ -83,6 +95,7 @@ Weights user Classes and Functions
    libpysal.weights.min_threshold_dist_from_shapefile
    libpysal.weights.build_lattice_shapefile
    libpysal.weights.spw_from_gal
+   libpysal.weights.neighbor_equality
 
 
 Set Theoretic Weights

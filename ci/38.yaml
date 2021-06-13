@@ -15,4 +15,6 @@ dependencies:
   # optional
   - geopandas>=0.7.0
   - numba
+  - xarray
+  - joblib
   - zstd

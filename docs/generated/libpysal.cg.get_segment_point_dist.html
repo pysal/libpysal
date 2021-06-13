@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.get_segment_point_dist &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.get_segment_point_dist &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,17 +128,28 @@
       
   <div class="section" id="libpysal-cg-get-segment-point-dist">
 <h1>libpysal.cg.get_segment_point_dist<a class="headerlink" href="#libpysal-cg-get-segment-point-dist" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.get_segment_point_dist">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">get_segment_point_dist</code><span class="sig-paren">(</span><em class="sig-param">seg</em>, <em class="sig-param">pt</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#get_segment_point_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.get_segment_point_dist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the distance between a line segment and point and distance along the segment of the closest
-point on the segment to the point as a ratio of the length of the segment.</p>
-<p>get_segment_point_dist(LineSegment, Point) -&gt; (number, number)</p>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">get_segment_point_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seg</span></em>, <em class="sig-param"><span class="n">pt</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/standalone.html#get_segment_point_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.get_segment_point_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns (1) the distance between a line segment and point
+and (2) the distance along the segment to the closest location on the
+segment from the point as a ratio of the length of the segment.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>seg</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">line</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">segment</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">from</span></code></span></dt><dd></dd>
-<dt><strong>pt</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">compute</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">from</span></code></span></dt><dd></dd>
+<dt><strong>seg</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.LineSegment.html#libpysal.cg.LineSegment" title="libpysal.cg.LineSegment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.LineSegment</span></code></a></span></dt><dd><p>A line segment to compute distance from.</p>
+</dd>
+<dt><strong>pt</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>A point to compute distance from.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl>
+<dt><strong>dist</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The distance between <code class="docutils literal notranslate"><span class="pre">seg</span></code> and <code class="docutils literal notranslate"><span class="pre">pt</span></code>.</p>
+</dd>
+<dt><strong>ratio</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The distance along <code class="docutils literal notranslate"><span class="pre">seg</span></code> to the closest location on
+<code class="docutils literal notranslate"><span class="pre">seg</span></code> from <code class="docutils literal notranslate"><span class="pre">pt</span></code> as a ratio of the length of <code class="docutils literal notranslate"><span class="pre">seg</span></code>.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -146,7 +158,9 @@ point on the segment to the point as a ratio of the length of the segment.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pt</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_segment_point_dist</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span>
 <span class="go">(5.0, 0.5)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pt2</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pt2</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">get_segment_point_dist</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="n">pt2</span><span class="p">)</span>
 <span class="go">(0.0, 0.0)</span>
 </pre></div>
@@ -175,7 +189,7 @@ point on the segment to the point as a ratio of the length of the segment.</p>
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

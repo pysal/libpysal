@@ -1,0 +1,6 @@
+libpysal.cg.get\_bounding\_box
+==============================
+
+.. currentmodule:: libpysal.cg
+
+.. autofunction:: get_bounding_box

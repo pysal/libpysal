@@ -1,0 +1,6 @@
+libpysal.cg.RADIUS\_EARTH\_KM
+=============================
+
+.. currentmodule:: libpysal.cg
+
+.. autodata:: RADIUS_EARTH_KM

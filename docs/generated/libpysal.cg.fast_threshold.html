@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>libpysal.cg.fast_threshold &#8212; libpysal v4.3.0 Manual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libpysal.cg.fast_threshold &#8212; libpysal v4.4.0 Manual</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css" />
@@ -13,7 +14,7 @@
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="shortcut icon" href="../_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -42,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           libpysal</a>
-        <span class="navbar-text navbar-version pull-left"><b>4.3.0</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>4.4.0</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -127,23 +128,30 @@
       
   <div class="section" id="libpysal-cg-fast-threshold">
 <h1>libpysal.cg.fast_threshold<a class="headerlink" href="#libpysal-cg-fast-threshold" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="libpysal.cg.fast_threshold">
-<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">fast_threshold</code><span class="sig-paren">(</span><em class="sig-param">pts</em>, <em class="sig-param">dist</em>, <em class="sig-param">radius=6371.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#fast_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.fast_threshold" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find all neighbors on a sphere within a threshold distance</p>
+<code class="sig-prename descclassname">libpysal.cg.</code><code class="sig-name descname">fast_threshold</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pts</span></em>, <em class="sig-param"><span class="n">dist</span></em>, <em class="sig-param"><span class="n">radius</span><span class="o">=</span><span class="default_value">6371.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/sphere.html#fast_threshold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#libpysal.cg.fast_threshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find all neighbors on a sphere within a threshold distance.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>pointslist</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> lat-lon <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuples</span></code> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">Note</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">has</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">be</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">even</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">one</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code>)</span></dt><dd></dd>
-<dt><strong>dist: float</strong></dt><dd><p>threshold distance</p>
+<dt><strong>pointslist</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#list" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>A list of lat-lon tuples. This <strong>must</strong> be a list, even for one point.</p>
 </dd>
-<dt><strong>radius: float</strong></dt><dd><p>sphere’s radius</p>
+<dt><strong>dist: float</strong></dt><dd><p>The threshold distance.</p>
+</dd>
+<dt><strong>radius</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/functions.html#float" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>The radius of a sphere. Default is Earth’s radius in
+kilometers, <code class="docutils literal notranslate"><span class="pre">RADIUS_EARTH_KM</span></code> (<code class="docutils literal notranslate"><span class="pre">6371.0</span></code>). Earth’s
+radius in miles, <code class="docutils literal notranslate"><span class="pre">RADIUS_EARTH_MILES</span></code> (<code class="docutils literal notranslate"><span class="pre">3958.76</span></code>)
+is also an option.
+Source: <a class="reference external" href="http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html">http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html</a></p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>dict:</dt><dd><p>key is id of point, value is a list of ids for other points within dist of key point</p>
+<dd class="field-even"><dl>
+<dt><strong>wd</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.8/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="docutils literal notranslate"><span class="pre">dict</span></code></a></span></dt><dd><p>A neighbor distance lookup where the key is the ID
+of a point and the value is a list of IDs for other
+points within <code class="docutils literal notranslate"><span class="pre">dist</span></code> of the key point,</p>
 </dd>
 </dl>
 </dd>
@@ -172,7 +180,7 @@
     </p>
     <p>
         &copy; Copyright 2018-, pysal developers.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.1.2.<br/>
     </p>
   </div>
 </footer>

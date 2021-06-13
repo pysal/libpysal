@@ -15,7 +15,6 @@ from .util import (
     WSP2W,
 )
 
-from .raster import _da_checker
 import copy
 from warnings import warn as Warn
 from scipy.spatial import distance_matrix
