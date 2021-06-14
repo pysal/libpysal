@@ -231,7 +231,7 @@ class Examples:
             print("not available")
 
     def available(self):
-        """Report available datasets."""
+        """Return df of available datasets."""
         datasets = self.datasets
         names = list(datasets.keys())
         names.sort()
@@ -244,7 +244,7 @@ class Examples:
             data=rows, columns=["Name", "Description", "Installed"]
         )
         datasets.style.set_properties(subset=["text"], **{"width": "300px"})
-        print(datasets.to_string(max_colwidth=60))
+        return datasets
 
     def load(self, example_name: str) -> Example:
         """Load example dataset, download if not locally available."""
