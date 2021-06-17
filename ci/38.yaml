@@ -18,3 +18,7 @@ dependencies:
   - xarray
   - joblib
   - zstd
+  - tqdm
+  - pandana
+  - osmnet
+  - urbanaccess

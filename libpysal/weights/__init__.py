@@ -7,3 +7,4 @@ from .user import *
 from .set_operations import *
 from .spatial_lag import *
 from .raster import *
+from .network import *
