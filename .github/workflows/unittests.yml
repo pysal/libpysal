@@ -33,14 +33,16 @@
       
        - name: run tests - bash
          shell: bash -l {0}
-         run: python -c 'import libpysal; libpysal.examples.fetch_all()'
-         run: pytest -v libpysal --cov=libpysal --cov-report=xml
+         run: |
+           python -c 'import libpysal; libpysal.examples.fetch_all()'
+           pytest -v libpysal --cov=libpysal --cov-report=xml
          if: matrix.os != 'windows-latest'
        
        - name: run tests - powershell
          shell: powershell
-         run: python -c 'import libpysal; libpysal.examples.fetch_all()'
-         run: pytest -v libpysal --cov=libpysal --cov-report=xml
+         run:  |
+           python -c 'import libpysal; libpysal.examples.fetch_all()'
+           pytest -v libpysal --cov=libpysal --cov-report=xml
          if: matrix.os == 'windows-latest'
       
        - name: ${{ matrix.os }}, ${{ matrix.environment-file }}
