@@ -32,10 +32,10 @@
            micromamba-version: 'latest'
       
        - name: run tests - bash
-          shell: bash -l {0}
-          run: python -c 'import libpysal; libpysal.examples.fetch_all()'
-          run: pytest -v libpysal --cov=libpysal --cov-report=xml
-          if: matrix.os != 'windows-latest'
+         shell: bash -l {0}
+         run: python -c 'import libpysal; libpysal.examples.fetch_all()'
+         run: pytest -v libpysal --cov=libpysal --cov-report=xml
+         if: matrix.os != 'windows-latest'
        
        - name: run tests - powershell
          shell: powershell
