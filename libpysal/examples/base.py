@@ -148,7 +148,7 @@ class Example:
             if file_name == base_name:
                 return file_path
         if verbose:
-            print("{} is not a file in this example".format(file_name))
+            print(f'{file_name} is not a file in this example.')
         return None
 
     def downloaded(self) -> bool:
@@ -179,9 +179,7 @@ class Example:
     def download(self, path=get_data_home()):
         """Download the files for the example."""
 
-        if self.downloaded():
-            print("Already downloaded")
-        else:
+        if not self.downloaded():
             request = requests.get(self.download_url)
             archive = zipfile.ZipFile(io.BytesIO(request.content))
             target = join(path, self.root)
@@ -231,7 +229,7 @@ class Examples:
             print("not available")
 
     def available(self):
-        """Report available datasets."""
+        """Return df of available datasets."""
         datasets = self.datasets
         names = list(datasets.keys())
         names.sort()
@@ -244,7 +242,7 @@ class Examples:
             data=rows, columns=["Name", "Description", "Installed"]
         )
         datasets.style.set_properties(subset=["text"], **{"width": "300px"})
-        print(datasets.to_string(max_colwidth=60))
+        return datasets
 
     def load(self, example_name: str) -> Example:
         """Load example dataset, download if not locally available."""
@@ -253,11 +251,10 @@ class Examples:
             if example.installed:
                 return example
             else:
-                "Downloading: {}".format(example_name)
                 example.download()
                 return example
         else:
-            print("Example not available: {}".format(example_name))
+            print(f'Example not available: {example_name}')
             return None
 
     def download_remotes(self):
@@ -271,7 +268,7 @@ class Examples:
             try:
                 example.download()
             except:
-                print("Example not downloaded: {}".format(name))
+                print(f'Example not downloaded: {name}.')
 
     def get_installed_names(self) -> list:
         """Return names of all currently installed datasets."""

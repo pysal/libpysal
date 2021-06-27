@@ -2,6 +2,8 @@
     example datasets as well as functions to fetch larger datasets.
 """
 
+
+import pandas as pd
 from .base import example_manager
 from .remotes import datasets as remote_datasets
 from .builtin import datasets as builtin_datasets
@@ -20,7 +22,6 @@ def fetch_all():
     names = list(datasets.keys())
     names.sort()
     for name in names:
-        print(name)
         example = datasets[name]
         try:
             example.download()
@@ -29,8 +30,8 @@ def fetch_all():
     example_manager.add_examples(datasets)
 
 
-def available() -> str:
-    """List available datasets."""
+def available() -> pd.DataFrame:
+    """Return a dataframe with available datasets."""
     fetch_all()
 
     return example_manager.available()
