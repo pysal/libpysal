@@ -87,15 +87,15 @@ def setup_package():
             "Topic :: Scientific/Engineering :: GIS",
             "License :: OSI Approved :: BSD License",
             "Programming Language :: Python",
-            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
         ],
         package_data={"libpysal": list(example_data_files)},
         install_requires=install_reqs,
         extras_require=extras_reqs,
         cmdclass={"build_py": build_py},
-        python_requires=">3.5",
+        python_requires=">=3.7",
     )
 
 
