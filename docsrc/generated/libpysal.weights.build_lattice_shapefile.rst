@@ -1,6 +1,0 @@
-libpysal.weights.build\_lattice\_shapefile
-==========================================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: build_lattice_shapefile

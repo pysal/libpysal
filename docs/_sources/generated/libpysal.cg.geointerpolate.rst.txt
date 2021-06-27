@@ -1,6 +1,0 @@
-libpysal.cg.geointerpolate
-==========================
-
-.. currentmodule:: libpysal.cg
-
-.. autofunction:: geointerpolate

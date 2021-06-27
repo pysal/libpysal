@@ -1,6 +1,0 @@
-libpysal.weights.higher\_order\_sp
-==================================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: higher_order_sp
