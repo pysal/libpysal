@@ -227,7 +227,7 @@ class Wk1IO(fileio.FileIO):
 
             if dtype in [13, 14, 16]:
                 self.file.read(1)
-                row, column = struct.unpack("2H", self.file.read(4))
+                row, column = struct.unpack("<2H", self.file.read(4))
                 format, length = "<d", 8
 
                 if dtype == 13:
