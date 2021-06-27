@@ -291,8 +291,7 @@ intersphinx_mapping = {
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base='') %}
-{% set fullpath = env.doc2path(env.docname, base='tree/master/') %}
+{% set docname = env.doc2path(env.docname, base=None) %}
 
 .. only:: html
 
@@ -305,7 +304,7 @@ nbsphinx_prolog = r"""
         Interactive online version:
         :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/libpysal/master?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
 
-    __ https://github.com/pysal/libpysal/{{ fullpath }}
+    __ https://github.com/pysal/libpysal/blob/master/{{ docname }}
 
 .. raw:: latex
 
