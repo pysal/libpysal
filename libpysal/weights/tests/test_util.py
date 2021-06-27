@@ -34,6 +34,7 @@ class Testutil(unittest.TestCase):
         w9 = util.lat2SW(3, 3)
         rows, cols = w9.shape
         n = rows * cols
+        self.assertEqual(w9.nnz, 24)
         pct_nonzero = w9.nnz / float(n)
         self.assertEqual(pct_nonzero, 0.29629629629629628)
         data = w9.todense().tolist()
