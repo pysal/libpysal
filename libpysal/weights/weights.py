@@ -1143,7 +1143,9 @@ class W(object):
         ['first', 'second', 'third']
         """
         wfull = self.sparse.toarray()
-        keys = sorted(list(self.neighbors.keys()))
+        keys = list(self.neighbors.keys())
+        if self.id_order:
+            keys = self.id_order
 
         return (wfull, keys)
 
