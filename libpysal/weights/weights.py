@@ -1142,16 +1142,9 @@ class W(object):
         >>> ids
         ['first', 'second', 'third']
         """
-        wfull = np.zeros([self.n, self.n], dtype=float)
-        keys = list(self.neighbors.keys())
-        if self.id_order:
-            keys = self.id_order
-        for i, key in enumerate(keys):
-            n_i = self.neighbors[key]
-            w_i = self.weights[key]
-            for j, wij in zip(n_i, w_i):
-                c = keys.index(j)
-                wfull[i, c] = wij
+        wfull = self.sparse.toarray()
+        keys = sorted(list(self.neighbors.keys()))
+
         return (wfull, keys)
 
     def to_WSP(self):
