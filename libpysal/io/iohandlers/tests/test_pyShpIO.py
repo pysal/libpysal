@@ -1,5 +1,5 @@
 import unittest
-from .... import examples as pysal_examples 
+from .... import examples as pysal_examples
 from ..pyShpIO import PurePyShpWrapper
 import tempfile
 import os
@@ -7,15 +7,14 @@ import os
 
 class test_PurePyShpWrapper(unittest.TestCase):
     def setUp(self):
-        test_file = pysal_examples.get_path('10740.shp')
+        test_file = pysal_examples.get_path("10740.shp")
         self.test_file = test_file
-        self.shpObj = PurePyShpWrapper(
-            test_file, 'r')
-        f = tempfile.NamedTemporaryFile(suffix='.shp')
+        self.shpObj = PurePyShpWrapper(test_file, "r")
+        f = tempfile.NamedTemporaryFile(suffix=".shp")
         shpcopy = f.name
         f.close()
         self.shpcopy = shpcopy
-        self.shxcopy = shpcopy.replace('.shp', '.shx')
+        self.shxcopy = shpcopy.replace(".shp", ".shx")
 
     def test_len(self):
         self.assertEqual(len(self.shpObj), 195)
@@ -61,20 +60,20 @@ class test_PurePyShpWrapper(unittest.TestCase):
         self.assertEqual(self.shpObj.read(1)[0].vertices, shp32.vertices)
 
     def test_write(self):
-        out = PurePyShpWrapper(self.shpcopy, 'w')
+        out = PurePyShpWrapper(self.shpcopy, "w")
         self.shpObj.seek(0)
         for shp in self.shpObj:
             out.write(shp)
         out.close()
 
-        orig = open(self.test_file, 'rb')
-        copy = open(self.shpcopy, 'rb')
+        orig = open(self.test_file, "rb")
+        copy = open(self.shpcopy, "rb")
         self.assertEqual(orig.read(), copy.read())
         orig.close()
         copy.close()
 
-        oshx = open(self.test_file.replace('.shp', '.shx'), 'rb')
-        cshx = open(self.shxcopy, 'rb')
+        oshx = open(self.test_file.replace(".shp", ".shx"), "rb")
+        cshx = open(self.shxcopy, "rb")
         self.assertEqual(oshx.read(), cshx.read())
         oshx.close()
         cshx.close()
@@ -82,5 +81,6 @@ class test_PurePyShpWrapper(unittest.TestCase):
         os.remove(self.shpcopy)
         os.remove(self.shxcopy)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

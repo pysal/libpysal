@@ -67,9 +67,10 @@ def setup_package():
         version=__version__,
         description="Core components of PySAL A library of spatial analysis functions.",
         long_description=long_description,
+        long_description_content_type="text/x-rst",
         maintainer="PySAL Developers",
         maintainer_email="pysal-dev@googlegroups.com",
-        url="http://pysal.org",
+        url="http://pysal.org/libpysal",
         download_url="https://pypi.python.org/pypi/libpysal",
         license="BSD",
         py_modules=["libpysal"],
@@ -86,15 +87,15 @@ def setup_package():
             "Topic :: Scientific/Engineering :: GIS",
             "License :: OSI Approved :: BSD License",
             "Programming Language :: Python",
-            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
-            "Programming Language :: Python :: 3.8"
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
         ],
         package_data={"libpysal": list(example_data_files)},
         install_requires=install_reqs,
         extras_require=extras_reqs,
         cmdclass={"build_py": build_py},
-        python_requires=">3.5",
+        python_requires=">=3.7",
     )
 
 

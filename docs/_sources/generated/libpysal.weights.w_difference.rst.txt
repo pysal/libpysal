@@ -1,6 +1,0 @@
-libpysal.weights.w\_difference
-==============================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: w_difference

@@ -111,6 +111,7 @@ def simport(modname):
     return _simport
 
 
+
 def requires(*args, **kwargs):
     """Decorator to wrap functions with extra dependencies.
 

@@ -1,6 +1,0 @@
-libpysal.cg.asShape
-===================
-
-.. currentmodule:: libpysal.cg
-
-.. autofunction:: asShape

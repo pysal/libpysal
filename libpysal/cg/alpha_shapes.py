@@ -35,23 +35,22 @@ __all__ = ["alpha_shape", "alpha_shape_auto"]
 
 @jit
 def nb_dist(x, y):
-    """
-    numba implementation of distance between points `x` and `y`
-    ...
+    """numba implementation of distance between points `x` and `y`
 
     Parameters
     ----------
 
-    x       : ndarray
-              Coordinates of point `x`
-    y       : ndarray
-              Coordinates of point `y`
+    x : ndarray
+        Coordinates of point `x`
+
+    y : ndarray
+        Coordinates of point `y`
 
     Returns
     -------
 
-    dist    : float
-              Distance between `x` and `y`
+    dist : float
+        Distance between `x` and `y`
 
     Examples
     --------
@@ -72,31 +71,32 @@ def nb_dist(x, y):
 
 @jit(nopython=True)
 def r_circumcircle_triangle_single(a, b, c):
-    """
-    Computation of the circumcircle of a single triangle
-    ...
+    """Computation of the circumcircle of a single triangle
+
+    Parameters
+    ----------
+
+    a : ndarray
+        (2,) Array with coordinates of vertex `a` of the triangle
+    b : ndarray
+        (2,) Array with coordinates of vertex `b` of the triangle
+    c : ndarray
+        (2,) Array with coordinates of vertex `c` of the triangle
+
+    Returns
+    -------
+
+    r : float
+        Circumcircle of the triangle
+
+    Notes
+    -----
 
     Source for equations:
 
     > https://www.mathopenref.com/trianglecircumcircle.html
 
     [Last accessed July 11th. 2018]
-
-    Parameters
-    ----------
-
-    a       : ndarray
-              (2,) Array with coordinates of vertex `a` of the triangle
-    b       : ndarray
-              (2,) Array with coordinates of vertex `b` of the triangle
-    c       : ndarray
-              (2,) Array with coordinates of vertex `c` of the triangle
-
-    Returns
-    -------
-
-    r       : float
-              Circumcircle of the triangle
 
     Examples
     --------
@@ -123,25 +123,23 @@ def r_circumcircle_triangle_single(a, b, c):
 
 @jit(nopython=True)
 def r_circumcircle_triangle(a_s, b_s, c_s):
-    """
-    Computation of circumcircles for a series of triangles
-    ...
+    """Computation of circumcircles for a series of triangles
 
     Parameters
     ----------
 
-    a_s     : ndarray
-              (N, 2) array with coordinates of vertices `a` of the triangles
-    b_s     : ndarray
-              (N, 2) array with coordinates of vertices `b` of the triangles
-    c_s     : ndarray
-              (N, 2) array with coordinates of vertices `c` of the triangles
+    a_s : ndarray
+        (N, 2) array with coordinates of vertices `a` of the triangles
+    b_s : ndarray
+        (N, 2) array with coordinates of vertices `b` of the triangles
+    c_s : ndarray
+        (N, 2) array with coordinates of vertices `c` of the triangles
 
     Returns
     -------
 
-    radii   : ndarray
-              (N,) array with circumcircles for every triangle
+    radii : ndarray
+        (N,) array with circumcircles for every triangle
 
     Examples
     --------
@@ -152,6 +150,7 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
     >>> rs = r_circumcircle_triangle(a_s, b_s, c_s)
     >>> rs
     array([3.53553391, 2.5       , 1.58113883])
+
     """
     len_a = len(a_s)
     r2 = np.zeros((len_a,))
@@ -162,22 +161,20 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
 
 @jit
 def get_faces(triangle):
-    """
-    Extract faces from a single triangle
-    ...
+    """Extract faces from a single triangle
 
     Parameters
     ----------
 
-    triangles       : ndarray
-                      (3,) array with the vertex indices for a triangle
+    triangles : ndarray
+        (3,) array with the vertex indices for a triangle
 
     Returns
     -------
 
-    faces           : ndarray
-                      (3, 2) array with a row for each face containing the
-                      indices of the two points that make up the face
+    faces : ndarray
+        (3, 2) array with a row for each face containing the indices of the two
+        points that make up the face
 
     Examples
     --------
@@ -198,32 +195,30 @@ def get_faces(triangle):
 
 @jit
 def build_faces(faces, triangles_is, num_triangles, num_faces_single):
-    """
-    Build facing triangles
-
-    ...
+    """Build facing triangles
 
     Parameters
     ----------
 
-    faces               : ndarray
-                          (num_triangles * num_faces_single, 2) array of
-                          zeroes in int form
-    triangles_is        : ndarray
-                          (D, 3) array, where D is the number of Delaunay
-                          triangles, with the vertex indices for each
-                          triangle
-    num_triangles       : int
-                          Number of triangles
-    num_faces_single    : int
-                          Number of faces a triangle has (i.e. 3)
+    faces : ndarray
+        (num_triangles * num_faces_single, 2) array of zeroes in int form
+
+    triangles_is : ndarray
+        (D, 3) array, where D is the number of Delaunay triangles, with the
+        vertex indices for each triangle
+
+    num_triangles : int
+        Number of triangles
+
+    num_faces_single : int
+        Number of faces a triangle has (i.e. 3)
 
     Returns
     -------
 
-    faces               : ndarray
-                          Two dimensional array with a row for every facing
-                          segment containing the indices of the coordinate points
+    faces : ndarray
+        Two dimensional array with a row for every facing segment containing
+        the indices of the coordinate points
 
     Examples
     --------
@@ -262,26 +257,25 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
 
 @jit
 def nb_mask_faces(mask, faces):
-    """
-    Run over each row in `faces`, if the face in the following row is the
+    """ Run over each row in `faces`, if the face in the following row is the
     same, then mark both as False on `mask`
-    ...
 
     Parameters
     ----------
 
-    mask    : ndarray
-              One-dimensional boolean array set to True with as many
-              observations as rows in `faces`
-    faces   : ndarray
-              Sorted sequence of faces for all triangles (ie. triangles split
-              by each segment)
+    mask : ndarray
+        One-dimensional boolean array set to True with as many observations as
+        rows in `faces`
+
+    faces : ndarray
+        Sorted sequence of faces for all triangles (ie. triangles split by each
+        segment)
 
     Returns
     -------
 
-    masked  : ndarray
-              Sequence of outward-facing faces
+    masked : ndarray
+         Sequence of outward-facing faces
 
     Examples
     --------
@@ -307,24 +301,22 @@ def nb_mask_faces(mask, faces):
 
 
 def get_single_faces(triangles_is):
-    """
-    Extract outward facing edges from collection of triangles
-    ...
+    """Extract outward facing edges from collection of triangles
 
     Parameters
     ----------
 
-    triangles_is    : ndarray
-                      (D, 3) array, where D is the number of Delaunay triangles,
-                      with the vertex indices for each triangle
+    triangles_is : ndarray
+        (D, 3) array, where D is the number of Delaunay triangles, with the
+        vertex indices for each triangle
 
     Returns
     -------
 
-    single_faces    : ndarray
+    single_faces : ndarray
 
-    Example
-    -------
+    Examples
+    --------
 
     >>> import scipy.spatial as spat
     >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
@@ -363,32 +355,32 @@ def get_single_faces(triangles_is):
 
 @requires("geopandas", "shapely")
 def alpha_geoms(alpha, triangles, radii, xys):
-    """
-    Generate alpha-shape polygon(s) from `alpha` value, vertices of `triangles`,
-    the `radii` for all points, and the points themselves
-    ...
+    """Generate alpha-shape polygon(s) from `alpha` value, vertices of
+    `triangles`, the `radii` for all points, and the points themselves
 
     Parameters
     ----------
 
-    alpha       : float
-                  Alpha value to delineate the alpha-shape
-    triangles   : ndarray
-                  (D, 3) array, where D is the number of Delaunay triangles,
-                  with the vertex indices for each triangle
-    radii       : ndarray
-                  (N,) array with circumcircles for every triangle
-    xys         : ndarray
-                  (N, 2) array with one point per row and coordinates structured
-                  as X and Y
+    alpha : float
+        Alpha value to delineate the alpha-shape
+
+    triangles : ndarray
+         (D, 3) array, where D is the number of Delaunay triangles, with the
+         vertex indices for each triangle
+
+    radii : ndarray
+        (N,) array with circumcircles for every triangle
+
+    xys : ndarray
+        (N, 2) array with one point per row and coordinates structured as X and Y
 
     Returns
     -------
 
-    geoms       : GeoSeries
-                  Polygon(s) resulting from the alpha shape algorithm. The
-                  GeoSeries object remains so even if only a single polygon is
-                  returned. There is no CRS included in the object.
+    geoms : GeoSeries
+        Polygon(s) resulting from the alpha shape algorithm. The GeoSeries
+        object remains so even if only a single polygon is returned. There is
+        no CRS included in the object.
 
     Examples
     --------
@@ -433,27 +425,25 @@ def alpha_geoms(alpha, triangles, radii, xys):
 
 @requires("geopandas", "shapely")
 def alpha_shape(xys, alpha):
-    """
-    Alpha-shape delineation (Edelsbrunner, Kirkpatrick &
-    Seidel, 1983) from a collection of points
-    ...
+    """Alpha-shape delineation (Edelsbrunner, Kirkpatrick & Seidel, 1983) from a collection of points
 
     Parameters
     ----------
 
-    xys     : ndarray
-              (N, 2) array with one point per row and coordinates structured as X
-              and Y
-    alpha   : float
-              Alpha value to delineate the alpha-shape
+    xys : ndarray
+        (N, 2) array with one point per row and coordinates structured as X and
+        Y
+
+    alpha : float
+        Alpha value to delineate the alpha-shape
 
     Returns
     -------
 
-    shapes  : GeoSeries
-              Polygon(s) resulting from the alpha shape algorithm. The
-              GeoSeries object remains so even if only a single polygon is
-              returned. There is no CRS included in the object.
+    shapes : GeoSeries
+         Polygon(s) resulting from the alpha shape algorithm. The GeoSeries
+         object remains so even if only a single polygon is returned. There is
+         no CRS included in the object.
 
     Examples
     --------
@@ -495,23 +485,23 @@ def alpha_shape(xys, alpha):
 
 
 def _valid_hull(geoms, points):
-    """
-    Sanity check within ``alpha_shape_auto()`` to verify the generated
-    alpha shape actually contains the original set of points (xys).
+    """Sanity check within ``alpha_shape_auto()`` to verify the generated alpha
+    shape actually contains the original set of points (xys).
 
     Parameters
     ----------
 
-    geoms   : GeoSeries
-              see alpha_geoms()
-    points  : list
-              xys parameter cast as shapely.geometry.Point objects
+    geoms : GeoSeries
+        See alpha_geoms()
+
+    points : list
+        xys parameter cast as shapely.geometry.Point objects
 
     Returns
     -------
 
-    flag    : bool
-              Valid hull for alpha shape [True] or not [False]
+    flag : bool
+        Valid hull for alpha shape [True] or not [False]
 
     """
     flag = True
@@ -532,9 +522,7 @@ def _valid_hull(geoms, points):
 def alpha_shape_auto(
     xys, step=1, verbose=False, return_radius=False, return_circles=False
 ):
-    """
-    Computation of alpha-shape delineation with automated selection of alpha.
-    ...
+    """Computation of alpha-shape delineation with automated selection of alpha.
 
     This method uses the algorithm proposed by  Edelsbrunner, Kirkpatrick &
     Seidel (1983) to return the tightest polygon that contains all points in
@@ -548,23 +536,21 @@ def alpha_shape_auto(
     Parameters
     ----------
 
-    xys     : ndarray
-              Nx2 array with one point per row and coordinates structured as X
-              and Y
-    step    : int
-              [Optional. Default=1]
-              Number of points in `xys` to jump ahead after checking whether the
-              largest possible alpha that includes the point and all the
-              other ones with smaller radii
-    verbose : Boolean
-              [Optional. Default=False] If True, it prints alpha values being
-              tried at every step.
+    xys : ndarray
+        Nx2 array with one point per row and coordinates structured as X and Y
 
+    step : int
+        [Optional. Default=1] Number of points in `xys` to jump ahead after
+        checking whether the largest possible alpha that includes the point and
+        all the other ones with smaller radii
+
+    verbose : Boolean
+        [Optional. Default=False] If True, it prints alpha values being tried at every step.
 
     Returns
     -------
-    poly    : shapely.Polygon
-              Tightest alpha-shape polygon containing all points in `xys`
+    poly : shapely.Polygon
+         Tightest alpha-shape polygon containing all points in `xys`
 
     Examples
     --------
@@ -660,21 +646,21 @@ def alpha_shape_auto(
 
 
 def construct_bounding_circles(alpha_shape, radius):
-    """
-    Construct the bounding circles for an alpha shape, given the radius 
-    computed from the `alpha_shape_auto` method. 
+    """Construct the bounding circles for an alpha shape, given the radius
+    computed from the `alpha_shape_auto` method.
 
     Arguments
     ---------
     alpha_shape : shapely.Polygon
-                  an alpha-hull with the input radius. 
-    radius      : float
-                  the radius of the input alpha_shape.
+        An alpha-hull with the input radius.
+
+    radius : float
+        The radius of the input alpha_shape.
 
     Returns
     -------
-    numpy.ndarray of shape (n,2) containing the centers of the circles
-    defining the alpha_shape. 
+    center : numpy.ndarray of shape (n,2)
+        The centers of the circles defining the alpha_shape.
 
     """
     coordinates = list(alpha_shape.boundary.coords)

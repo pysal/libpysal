@@ -1,6 +1,0 @@
-libpysal.weights.lag\_spatial
-=============================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: lag_spatial

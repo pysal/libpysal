@@ -2,21 +2,37 @@
     example datasets as well as functions to fetch larger datasets.
 """
 
+
+import pandas as pd
 from .base import example_manager
 from .remotes import datasets as remote_datasets
-from .remotes import download as fetch_all
 from .builtin import datasets as builtin_datasets
+
 
 from typing import Union
 
 __all__ = ["get_path", "available", "explain", "fetch_all"]
 
-example_manager.add_examples(remote_datasets)
 example_manager.add_examples(builtin_datasets)
 
+def fetch_all():
+    """Fetch and install all remote datasets
+    """
+    datasets = remote_datasets.datasets
+    names = list(datasets.keys())
+    names.sort()
+    for name in names:
+        example = datasets[name]
+        try:
+            example.download()
+        except:
+            print("Example not downloaded: {}".format(name))
+    example_manager.add_examples(datasets)
 
-def available() -> str:
-    """List available datasets."""
+
+def available() -> pd.DataFrame:
+    """Return a dataframe with available datasets."""
+    fetch_all()
 
     return example_manager.available()
 
@@ -29,8 +45,13 @@ def explain(name: str) -> str:
 
 def load_example(example_name: str) -> Union[base.Example, builtin.LocalExample]:
     """Load example dataset instance."""
+    example = example_manager.load(example_name)
 
-    return example_manager.load(example_name)
+    if example is None:
+        fetch_all()  # refresh remotes
+        example = example_manager.load(example_name)
+
+    return example
 
 
 def get_path(file_name: str) -> str:
