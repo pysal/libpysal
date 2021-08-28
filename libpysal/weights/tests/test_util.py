@@ -19,8 +19,9 @@ except:
     HAS_GEOPANDAS = False
 
 SCIPY1_7 = False
-if scipy.version.version == '1.7.0':
+if scipy.version.version.startswith("1.7"):
     SCIPY1_7 = True
+
 
 class Testutil(unittest.TestCase):
     def setUp(self):
@@ -33,9 +34,8 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w9.pct_nonzero, 29.62962962962963)
         self.assertEqual(w9[0], {1: 1.0, 3: 1.0})
         self.assertEqual(w9[3], {0: 1.0, 4: 1.0, 6: 1.0})
-    @unittest.skipIf(
-        SCIPY1_7, "Known failure due to dia change (TOFIX)"
-    )
+
+    @unittest.skipIf(SCIPY1_7, "Known failure due to dia change (TOFIX)")
     def test_lat2SW(self):
         w9 = util.lat2SW(3, 3)
         rows, cols = w9.shape
@@ -352,12 +352,16 @@ class Testutil(unittest.TestCase):
         wf = fuzzy_contiguity(rs_df)
         self.assertEqual(wf.islands, [])
         self.assertEqual(set(wf.neighbors[0]), set([239, 59, 152, 23]))
-        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=.2)
-        self.assertEqual(set(buff.neighbors[0]), set([175, 119, 239, 59, 152, 246, 23, 107]))
-        rs_index = rs_df.set_index('NM_MUNICIP')
+        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=0.2)
+        self.assertEqual(
+            set(buff.neighbors[0]), set([175, 119, 239, 59, 152, 246, 23, 107])
+        )
+        rs_index = rs_df.set_index("NM_MUNICIP")
         index_w = fuzzy_contiguity(rs_index)
-        self.assertEqual(set(index_w.neighbors['TAVARES']), set(['SÃO JOSÉ DO NORTE', 'MOSTARDAS']))
-        wf_pred = fuzzy_contiguity(rs_df, predicate='touches')
+        self.assertEqual(
+            set(index_w.neighbors["TAVARES"]), set(["SÃO JOSÉ DO NORTE", "MOSTARDAS"])
+        )
+        wf_pred = fuzzy_contiguity(rs_df, predicate="touches")
         self.assertEqual(set(wf_pred.neighbors[0]), set([]))
         self.assertEqual(set(wf_pred.neighbors[1]), set([142, 82, 197, 285, 386, 350]))
 
