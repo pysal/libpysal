@@ -31,7 +31,6 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w9[0], {1: 1.0, 3: 1.0})
         self.assertEqual(w9[3], {0: 1.0, 4: 1.0, 6: 1.0})
 
-    @unittest.skipIf(SCIPY1_7, "Known failure due to dia change (TOFIX)")
     def test_lat2SW(self):
         w9 = util.lat2SW(3, 3)
         rows, cols = w9.shape
