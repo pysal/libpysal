@@ -18,10 +18,6 @@ try:
 except:
     HAS_GEOPANDAS = False
 
-SCIPY1_7 = False
-if scipy.version.version.startswith("1.7"):
-    SCIPY1_7 = True
-
 
 class Testutil(unittest.TestCase):
     def setUp(self):
