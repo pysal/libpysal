@@ -1241,6 +1241,8 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     m = m + m.T
     if row_st:
         m = sparse.spdiags(1.0 / m.sum(1).T, 0, *m.shape) * m
+    m = m.tocsc()
+    m.eliminate_zeros()
     return m
 
 
@@ -1510,8 +1512,17 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     w.non_planar_joins = fixes
     return w
 
-@requires('geopandas')
-def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=None, predicate='intersects', **kwargs):
+
+@requires("geopandas")
+def fuzzy_contiguity(
+    gdf,
+    tolerance=0.005,
+    buffering=False,
+    drop=True,
+    buffer=None,
+    predicate="intersects",
+    **kwargs,
+):
     """
     Fuzzy contiguity spatial weights
 
@@ -1625,7 +1636,7 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
         new_geometry = gdf.geometry.buffer(buffer)
         gdf["_buffer"] = new_geometry
         old_geometry_name = gdf.geometry.name
-        gdf.set_geometry('_buffer', inplace=True)
+        gdf.set_geometry("_buffer", inplace=True)
 
     neighbors = {}
     if GPD_08:
@@ -1641,8 +1652,8 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
             ids = gdf.index[res[inp == i]].tolist()
             neighbors[ix] = ids
     else:
-        if predicate != 'intersects':
-            raise ValueError(f'Predicate `{predicate}` requires geopandas >= 0.8.0.')
+        if predicate != "intersects":
+            raise ValueError(f"Predicate `{predicate}` requires geopandas >= 0.8.0.")
         tree = gdf.sindex
         for i, (ix, geom) in enumerate(gdf.geometry.iteritems()):
             hits = list(tree.intersection(geom.bounds))
