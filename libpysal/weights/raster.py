@@ -249,6 +249,7 @@ def da2WSP(
         # Fallback method to build sparse matrix
         sw = lat2SW(*shape, criterion)
         if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
+            sw = sw.tocsr()
             sw = sw[mask]
             sw = sw[:, mask]
 
