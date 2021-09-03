@@ -157,8 +157,7 @@ class W(object):
         if (not self.silence_warnings) and (self.n_components > 1):
             message = (
                 "The weights matrix is not fully connected: "
-                "\n There are %d disconnected components."
-                % self.n_components
+                "\n There are %d disconnected components." % self.n_components
             )
             ni = len(self.islands)
             if ni == 1:
@@ -276,6 +275,7 @@ class W(object):
     def to_adjlist(
         self,
         remove_symmetric=False,
+        drop_islands=True,
         focal_col="focal",
         neighbor_col="neighbor",
         weight_col="weight",
@@ -293,6 +293,11 @@ class W(object):
             a ``W`` created from this adjacency list **MAY NOT BE THE SAME**
             as the original ``W``. If you would like to consider (1,2) and
             (2,1) as distinct links, leave this as ``False``.
+        drop_islands : bool
+            Whether or not to preserve islands as entries in the adjacency
+            list. By default, observations with no neighbors do not appear
+            in the adjacency list. If islands are kept, they are coded as
+            self-neighbors with zero weight.
         focal_col : str
             Name of the column in which to store "source" node ids.
         neighbor_col : str
@@ -301,21 +306,28 @@ class W(object):
             Name of the column in which to store weight information.
         """
         try:
-            import pandas as pd
+            import pandas
         except (ImportError, ModuleNotFoundError):
             raise ImportError(
                 "pandas must be installed & importable to use this method"
             )
         links = []
-        for idx, neighb in self:
-            if len(neighb) == 0:
-                links.append((idx, idx, 0))
-                continue
-            for n, w in neighb.items():
-                links.append((idx, n, w))
-        adjlist = pd.DataFrame(links, columns=[focal_col, neighbor_col, weight_col])
-
-        return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
+        focal_ix, neighbor_ix = self.sparse.nonzero()
+        names = np.asarray(self.id_order)
+        focal = names[focal_ix]
+        neighbor = names[neighbor_ix]
+        weights = self.sparse.data
+        adjlist = pandas.DataFrame(
+            {focal_col: focal, neighbor_col: neighbor, weight_col: weights}
+        )
+        if remove_symmetric:
+            adjlist = adjtools.filter_adjlist(adjlist)
+        if not drop_islands:
+            island_adjlist = pandas.DataFrame(
+                {focal_col: self.islands, neighbor_col: self.islands, weight_col: 0}
+            )
+            adjlist = pandas.concat((adjlist, island_adjlist)).reset_index(drop=True)
+        return adjlist.sort_values([focal_col, neighbor_col])
 
     def to_networkx(self):
         """Convert a weights object to a ``networkx`` graph.
