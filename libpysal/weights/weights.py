@@ -1142,16 +1142,11 @@ class W(object):
         >>> ids
         ['first', 'second', 'third']
         """
-        wfull = np.zeros([self.n, self.n], dtype=float)
+        wfull = self.sparse.toarray()
         keys = list(self.neighbors.keys())
         if self.id_order:
             keys = self.id_order
-        for i, key in enumerate(keys):
-            n_i = self.neighbors[key]
-            w_i = self.weights[key]
-            for j, wij in zip(n_i, w_i):
-                c = keys.index(j)
-                wfull[i, c] = wij
+
         return (wfull, keys)
 
     def to_WSP(self):
@@ -1318,9 +1313,6 @@ class WSP(object):
     sparse : scipy.sparse.{matrix-type}
         NxN object from ``scipy.sparse``
 
-    id_order : list
-        An ordered list of ids, assumed to match the ordering in ``sparse``.
-
     Attributes
     ----------
 
@@ -1352,7 +1344,7 @@ class WSP(object):
 
     """
 
-    def __init__(self, sparse, id_order=None):
+    def __init__(self, sparse, id_order=None, index=None):
         if not scipy.sparse.issparse(sparse):
             raise ValueError("must pass a scipy sparse object")
         rows, cols = sparse.shape
@@ -1360,13 +1352,40 @@ class WSP(object):
             raise ValueError("Weights object must be square")
         self.sparse = sparse.tocsr()
         self.n = sparse.shape[0]
+        self._cache = {}
         if id_order:
             if len(id_order) != self.n:
                 raise ValueError(
                     "Number of values in id_order must match shape of sparse"
                 )
-        self.id_order = id_order
-        self._cache = {}
+            else:
+                self._id_order = id_order
+                self._cache["id_order"] = self._id_order
+        # temp addition of index attribute
+        import pandas as pd  # will be removed after refactoring is done
+        if index is not None:
+            if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
+                raise TypeError("index must be an instance of pandas.Index dtype")
+            if len(index) != self.n:
+                raise ValueError(
+                    "Number of values in index must match shape of sparse"
+                )
+        else:
+            index = pd.RangeIndex(self.n)
+        self.index = index
+
+    @property
+    def id_order(self):
+        """An ordered list of ids, assumed to match the ordering in ``sparse``.
+        """
+        # Temporary solution until the refactoring is finished
+        if "id_order" not in self._cache:
+            if hasattr(self, "index"):
+                self._id_order = self.index.tolist()
+            else:
+                self._id_order = list(range(self.n))
+            self._cache["id_order"] = self._id_order
+        return self._id_order
 
     @property
     def s0(self):

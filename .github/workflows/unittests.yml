@@ -10,36 +10,40 @@
 
  jobs:
    unittests:
-     name: conda (${{ matrix.os }}, ${{ matrix.environment-file }})
+     name: ${{ matrix.os }}, ${{ matrix.environment-file }}
      runs-on: ${{ matrix.os }}
-     timeout-minutes: 15
+     #timeout-minutes: 25
      strategy:
        matrix:
          os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
-         environment-file: [ci/36.yaml, ci/37.yaml, ci/38.yaml]
+         environment-file: [ci/37.yaml, ci/38.yaml, ci/39.yaml]
+     
      steps:
-       - uses: actions/checkout@v2
-       - uses: goanpeca/setup-miniconda@v1
+       - name: checkout repo
+         uses: actions/checkout@v2
+       
+       - name: setup micromamba
+         uses: mamba-org/provision-with-micromamba@main
          with:
-            miniconda-version: 'latest'
-            auto-update-conda: true
-            auto-activate-base: false
-            environment-file: ${{ matrix.environment-file }}
-            activate-environment: test
-       - shell: bash -l {0}
-         run: conda info --all
-       - shell: bash -l {0}
-         run: conda list
-       - shell: bash -l {0}
-         run: conda config --show-sources
-       - shell: bash -l {0}
-         run: conda config --show
-       - shell: bash -l {0}
-         run: python -c 'import libpysal; libpysal.examples.fetch_all()'
-       - shell: bash -l {0}
-         run: py.test -v libpysal --cov=libpysal --cov-report=xml
-       - name: codecov (${{ matrix.os }}, ${{ matrix.environment-file }})
-         uses: codecov/codecov-action@v1
+           environment-file: ${{ matrix.environment-file }}
+           micromamba-version: 'latest'
+      
+       - name: run tests - bash
+         shell: bash -l {0}
+         run: |
+           python -c 'import libpysal; libpysal.examples.fetch_all()'
+           pytest -v libpysal --cov=libpysal --cov-report=xml
+         if: matrix.os != 'windows-latest'
+       
+       - name: run tests - powershell
+         shell: powershell
+         run:  |
+           python -c 'import libpysal; libpysal.examples.fetch_all()'
+           pytest -v libpysal --cov=libpysal --cov-report=xml
+         if: matrix.os == 'windows-latest'
+      
+       - name: ${{ matrix.os }}, ${{ matrix.environment-file }}
+         uses: codecov/codecov-action@v2 
          with:
            token: ${{ secrets.CODECOV_TOKEN }}
            file: ./coverage.xml

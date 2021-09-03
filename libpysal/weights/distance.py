@@ -4,8 +4,14 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, Levi John Wolf <levi.john.wolf@gmail
 
 from ..cg.kdtree import KDTree
 from .weights import W, WSP
-from .util import isKDTree, get_ids, get_points_array_from_shapefile,\
-                  get_points_array, WSP2W
+from .util import (
+    isKDTree,
+    get_ids,
+    get_points_array_from_shapefile,
+    get_points_array,
+    WSP2W,
+)
+
 import copy
 from warnings import warn as Warn
 from scipy.spatial import distance_matrix
@@ -13,13 +19,13 @@ import scipy.sparse as sp
 import numpy as np
 
 
-def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric='euclidean'):
+def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric="euclidean"):
     """
-    This is deprecated. Use the pysal.weights.KNN class instead. 
+    This is deprecated. Use the pysal.weights.KNN class instead.
     """
-    #Warn('This function is deprecated. Please use pysal.weights.KNN', UserWarning)
-    return KNN(data, k=k, p=p, ids=ids, radius=radius,
-            distance_metric=distance_metric)
+    # Warn('This function is deprecated. Please use pysal.weights.KNN', UserWarning)
+    return KNN(data, k=k, p=p, ids=ids, radius=radius, distance_metric=distance_metric)
+
 
 class KNN(W):
     """
@@ -84,26 +90,35 @@ class KNN(W):
     --------
     :class:`libpysal.weights.weights.W`
     """
-    def __init__(self, data, k=2, p=2, ids=None, radius=None,
-                 distance_metric='euclidean', **kwargs):
-        if radius is not None: 
-            distance_metric='arc'
+
+    def __init__(
+        self,
+        data,
+        k=2,
+        p=2,
+        ids=None,
+        radius=None,
+        distance_metric="euclidean",
+        **kwargs
+    ):
+        if radius is not None:
+            distance_metric = "arc"
         if isKDTree(data):
             self.kdtree = data
             self.data = self.kdtree.data
         else:
             self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
             self.data = self.kdtree.data
-        self.k = k 
+        self.k = k
         self.p = p
-        this_nnq = self.kdtree.query(self.data, k=k+1, p=p)
+        this_nnq = self.kdtree.query(self.data, k=k + 1, p=p)
 
         to_weight = this_nnq[1]
         if ids is None:
             ids = list(range(to_weight.shape[0]))
 
         neighbors = {}
-        for i,row in enumerate(to_weight):
+        for i, row in enumerate(to_weight):
             row = row.tolist()
             row.remove(i)
             row = [ids[j] for j in row]
@@ -187,8 +202,8 @@ class KNN(W):
         Parameters
         ----------
         array       : np.ndarray
-                      (n, k) array representing n observations on 
-                      k characteristics used to measure distances 
+                      (n, k) array representing n observations on
+                      k characteristics used to measure distances
                       between the n objects
         **kwargs    : keyword arguments, see Rook
 
@@ -233,7 +248,7 @@ class KNN(W):
         return cls(array, *args, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, geom_col='geometry', ids=None, *args, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, ids=None, *args, **kwargs):
         """
         Make KNN weights from a dataframe.
 
@@ -242,8 +257,9 @@ class KNN(W):
         df      :   pandas.dataframe
                     a dataframe with a geometry column that can be used to
                     construct a W object
-        geom_col :   string
-                    column name of the geometry stored in df
+        geom_col :  string
+                    the name of the column in `df` that contains the
+                    geometries. Defaults to active geometry column.
         ids     :   string or iterable
                     if string, the column name of the indices from the dataframe
                     if iterable, a list of ids to use for the W
@@ -253,6 +269,8 @@ class KNN(W):
         --------
         :class:`libpysal.weights.weights.W`
         """
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
         if ids is None:
             ids = df.index.tolist()
@@ -273,7 +291,7 @@ class KNN(W):
                       a list aligned with new_data that provides the ids for
                       each new observation
         inplace     : bool
-                      a flag denoting whether to modify the KNN object 
+                      a flag denoting whether to modify the KNN object
                       in place or to return a new KNN object
         k           : int
                       number of nearest neighbors
@@ -289,9 +307,10 @@ class KNN(W):
         A copy of the object using the new parameterization, or None if the
         object is reweighted in place.
         """
-        if (new_data is not None):
-            new_data = np.asarray(new_data).reshape(-1,2)
-            data = np.vstack((self.data, new_data)).reshape(-1,2)
+
+        if new_data is not None:
+            new_data = np.asarray(new_data).reshape(-1, 2)
+            data = np.vstack((self.data, new_data)).reshape(-1, 2)
             if new_ids is not None:
                 ids = copy.deepcopy(self.id_order)
                 ids.extend(list(new_ids))
@@ -302,7 +321,7 @@ class KNN(W):
             data = self.kdtree
             ids = self.id_order
         elif (new_data is None) and (new_ids is not None):
-            Warn('Remapping ids must be done using w.remap_ids')
+            Warn("Remapping ids must be done using w.remap_ids")
         if k is None:
             k = self.k
         if p is None:
@@ -312,6 +331,7 @@ class KNN(W):
             self.__init__(data, ids=ids, k=k, p=p)
         else:
             return KNN(data, ids=ids, k=k, p=p)
+
 
 class Kernel(W):
     """
@@ -475,20 +495,29 @@ class Kernel(W):
     {0: [1.0, 0.35206533556593145, 0.3412334260702758], 1: [0.35206533556593145, 1.0, 0.2419707487162134, 0.3412334260702758, 0.31069657591175387], 2: [0.2419707487162134, 1.0, 0.31069657591175387], 3: [0.3412334260702758, 0.3412334260702758, 1.0, 0.3011374490937829, 0.26575287272131043], 4: [0.31069657591175387, 0.31069657591175387, 0.3011374490937829, 1.0, 0.35206533556593145], 5: [0.26575287272131043, 0.35206533556593145, 1.0]}
 
     """
-    def __init__(self, data, bandwidth=None, fixed=True, k=2,
-                 function='triangular', eps=1.0000001, ids=None,
-                 diagonal=False, 
-                 distance_metric='euclidean', radius=None, 
-                 **kwargs):
+
+    def __init__(
+        self,
+        data,
+        bandwidth=None,
+        fixed=True,
+        k=2,
+        function="triangular",
+        eps=1.0000001,
+        ids=None,
+        diagonal=False,
+        distance_metric="euclidean",
+        radius=None,
+        **kwargs
+    ):
         if radius is not None:
-            distance_metric='arc'
+            distance_metric = "arc"
         if isKDTree(data):
             self.kdtree = data
             self.data = self.kdtree.data
             data = self.data
         else:
-            self.kdtree = KDTree(data, distance_metric=distance_metric,
-                                 radius=radius)
+            self.kdtree = KDTree(data, distance_metric=distance_metric, radius=radius)
             self.data = self.kdtree.data
         self.k = k + 1
         self.function = function.lower()
@@ -499,7 +528,7 @@ class Kernel(W):
                 bandwidth = np.array(bandwidth)
                 bandwidth.shape = (len(bandwidth), 1)
             except:
-                bandwidth = np.ones((len(data), 1), 'float') * bandwidth
+                bandwidth = np.ones((len(data), 1), "float") * bandwidth
             self.bandwidth = bandwidth
         else:
             self._set_bw()
@@ -512,7 +541,7 @@ class Kernel(W):
         W.__init__(self, neighbors, weights, ids, **kwargs)
 
     @classmethod
-    def from_shapefile(cls, filepath, idVariable=None,  **kwargs):
+    def from_shapefile(cls, filepath, idVariable=None, **kwargs):
         """
         Kernel based weights from shapefile
 
@@ -551,7 +580,7 @@ class Kernel(W):
         return cls(array, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, geom_col='geometry', ids=None, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, ids=None, **kwargs):
         """
         Make Kernel weights from a dataframe.
 
@@ -560,8 +589,9 @@ class Kernel(W):
         df      :   pandas.dataframe
                     a dataframe with a geometry column that can be used to
                     construct a W object
-        geom_col :   string
-                    column name of the geometry stored in df
+        geom_col :  string
+                    the name of the column in `df` that contains the
+                    geometries. Defaults to active geometry column.
         ids     :   string or iterable
                     if string, the column name of the indices from the dataframe
                     if iterable, a list of ids to use for the W
@@ -571,6 +601,8 @@ class Kernel(W):
         --------
         :class:`libpysal.weights.weights.W`
         """
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
         if ids is None:
             ids = df.index.tolist()
@@ -600,7 +632,7 @@ class Kernel(W):
             # use max knn distance as bandwidth
             bandwidth = dmat.max() * self.eps
             n = len(dmat)
-            self.bandwidth = np.ones((n, 1), 'float') * bandwidth
+            self.bandwidth = np.ones((n, 1), "float") * bandwidth
         else:
             # use local max knn distance
             self.bandwidth = dmat.max(axis=1) * self.eps
@@ -611,10 +643,11 @@ class Kernel(W):
 
     def _eval_kernel(self):
         # get points within bandwidth distance of each point
-        if not hasattr(self, 'neigh'):
+        if not hasattr(self, "neigh"):
             kdtq = self.kdtree.query_ball_point
-            neighbors = [kdtq(self.data[i], r=bwi[0]) for i,
-                         bwi in enumerate(self.bandwidth)]
+            neighbors = [
+                kdtq(self.data[i], r=bwi[0]) for i, bwi in enumerate(self.bandwidth)
+            ]
             self.neigh = neighbors
         # get distances for neighbors
         bw = self.bandwidth
@@ -630,20 +663,20 @@ class Kernel(W):
             z.append(zi)
         zs = z
         # functions follow Anselin and Rey (2010) table 5.4
-        if self.function == 'triangular':
+        if self.function == "triangular":
             self.kernel = [1 - zi for zi in zs]
-        elif self.function == 'uniform':
+        elif self.function == "uniform":
             self.kernel = [np.ones(zi.shape) * 0.5 for zi in zs]
-        elif self.function == 'quadratic':
-            self.kernel = [(3. / 4) * (1 - zi ** 2) for zi in zs]
-        elif self.function == 'quartic':
-            self.kernel = [(15. / 16) * (1 - zi ** 2) ** 2 for zi in zs]
-        elif self.function == 'gaussian':
+        elif self.function == "quadratic":
+            self.kernel = [(3.0 / 4) * (1 - zi ** 2) for zi in zs]
+        elif self.function == "quartic":
+            self.kernel = [(15.0 / 16) * (1 - zi ** 2) ** 2 for zi in zs]
+        elif self.function == "gaussian":
             c = np.pi * 2
             c = c ** (-0.5)
-            self.kernel = [c * np.exp(-(zi ** 2) / 2.) for zi in zs]
+            self.kernel = [c * np.exp(-(zi ** 2) / 2.0) for zi in zs]
         else:
-            print(('Unsupported kernel function', self.function))
+            print(("Unsupported kernel function", self.function))
 
 
 class DistanceBand(W):
@@ -742,9 +775,19 @@ class DistanceBand(W):
 
     """
 
-    def __init__(self, data, threshold, p=2, alpha=-1.0, binary=True, ids=None,
-            build_sp=True, silence_warnings=False, 
-            distance_metric='euclidean', radius=None):
+    def __init__(
+        self,
+        data,
+        threshold,
+        p=2,
+        alpha=-1.0,
+        binary=True,
+        ids=None,
+        build_sp=True,
+        silence_warnings=False,
+        distance_metric="euclidean",
+        radius=None,
+    ):
         """Casting to floats is a work around for a bug in scipy.spatial.
         See detail in pysal issue #126.
 
@@ -752,7 +795,7 @@ class DistanceBand(W):
         if ids is not None:
             ids = list(ids)
         if radius is not None:
-            distance_metric='arc'
+            distance_metric = "arc"
         self.p = p
         self.threshold = threshold
         self.binary = binary
@@ -767,20 +810,22 @@ class DistanceBand(W):
             if self.build_sp:
                 try:
                     data = np.asarray(data)
-                    if data.dtype.kind != 'f':
+                    if data.dtype.kind != "f":
                         data = data.astype(float)
-                    self.kdtree = KDTree(data, 
-                                         distance_metric=distance_metric, 
-                                         radius=radius)
+                    self.kdtree = KDTree(
+                        data, distance_metric=distance_metric, radius=radius
+                    )
                     self.data = self.kdtree.data
                 except:
-                    raise ValueError("Could not make array from data")        
+                    raise ValueError("Could not make array from data")
             else:
                 self.data = data
-                self.kdtree = None       
+                self.kdtree = None
         self._band()
         neighbors, weights = self._distance_to_W(ids)
-        W.__init__(self, neighbors, weights, ids, silence_warnings=self.silence_warnings)
+        W.__init__(
+            self, neighbors, weights, ids, silence_warnings=self.silence_warnings
+        )
 
     @classmethod
     def from_shapefile(cls, filepath, threshold, idVariable=None, **kwargs):
@@ -816,7 +861,7 @@ class DistanceBand(W):
         return cls(array, threshold, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, threshold, geom_col='geometry', ids=None, **kwargs):
+    def from_dataframe(cls, df, threshold, geom_col=None, ids=None, **kwargs):
         """
         Make DistanceBand weights from a dataframe.
 
@@ -825,14 +870,17 @@ class DistanceBand(W):
         df      :   pandas.dataframe
                     a dataframe with a geometry column that can be used to
                     construct a W object
-        geom_col :   string
-                    column name of the geometry stored in df
+        geom_col :  string
+                    the name of the column in `df` that contains the
+                    geometries. Defaults to active geometry column.
         ids     :   string or iterable
                     if string, the column name of the indices from the dataframe
                     if iterable, a list of ids to use for the W
                     if None, df.index is used.
 
         """
+        if geom_col is None:
+            geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
         if ids is None:
             ids = df.index.tolist()
@@ -841,25 +889,27 @@ class DistanceBand(W):
         return cls(pts, threshold, ids=ids, **kwargs)
 
     def _band(self):
-        """Find all pairs within threshold.
-
-        """
+        """Find all pairs within threshold."""
         if self.build_sp:
             self.dmat = self.kdtree.sparse_distance_matrix(
-                    self.kdtree, max_distance=self.threshold, p=self.p).tocsr()
+                self.kdtree, max_distance=self.threshold, p=self.p
+            ).tocsr()
         else:
-            if str(self.kdtree).split('.')[-1][0:10] == 'Arc_KDTree':
-                raise TypeError('Unable to calculate dense arc distance matrix;'
-            	        ' parameter "build_sp" must be set to True for arc'
-            	        ' distance type weight')
+            if str(self.kdtree).split(".")[-1][0:10] == "Arc_KDTree":
+                raise TypeError(
+                    "Unable to calculate dense arc distance matrix;"
+                    ' parameter "build_sp" must be set to True for arc'
+                    " distance type weight"
+                )
             self.dmat = self._spdistance_matrix(self.data, self.data, self.threshold)
-
 
     def _distance_to_W(self, ids=None):
         if self.binary:
-            self.dmat[self.dmat>0] = 1
+            self.dmat[self.dmat > 0] = 1
             self.dmat.eliminate_zeros()
-            tempW = WSP2W(WSP(self.dmat, id_order=ids), silence_warnings=self.silence_warnings)
+            tempW = WSP2W(
+                WSP(self.dmat, id_order=ids), silence_warnings=self.silence_warnings
+            )
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
             weight_vals = list(tempW.weights.values())
@@ -867,30 +917,35 @@ class DistanceBand(W):
             return neighbors, weights
         else:
             weighted = self.dmat.power(self.alpha)
-            weighted[weighted==np.inf] = 0
+            weighted[weighted == np.inf] = 0
             weighted.eliminate_zeros()
-            tempW = WSP2W(WSP(weighted, id_order=ids), silence_warnings=self.silence_warnings)
+            tempW = WSP2W(
+                WSP(weighted, id_order=ids), silence_warnings=self.silence_warnings
+            )
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
             weight_vals = list(tempW.weights.values())
             weights = dict(list(zip(weight_keys, list(map(list, weight_vals)))))
             return neighbors, weights
 
-    def _spdistance_matrix(self, x,y, threshold=None):
-        dist = distance_matrix(x,y)
+    def _spdistance_matrix(self, x, y, threshold=None):
+        dist = distance_matrix(x, y)
         if threshold is not None:
             zeros = dist > threshold
             dist[zeros] = 0
         return sp.csr_matrix(dist)
 
+
 def _test():
     import doctest
+
     # the following line could be used to define an alternative to the '<BLANKLINE>' flag
-    #doctest.BLANKLINE_MARKER = 'something better than <BLANKLINE>'
-    start_suppress = np.get_printoptions()['suppress']
+    # doctest.BLANKLINE_MARKER = 'something better than <BLANKLINE>'
+    start_suppress = np.get_printoptions()["suppress"]
     np.set_printoptions(suppress=True)
     doctest.testmod()
     np.set_printoptions(suppress=start_suppress)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     _test()
