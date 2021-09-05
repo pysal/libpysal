@@ -194,8 +194,8 @@ def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
     an attempt to break the tie, but if it fails, a random tiebreaker will be
     selected.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     idx                 : int
                           index (aligned with `normalized_labels`) of the 
                           current observation being resolved.

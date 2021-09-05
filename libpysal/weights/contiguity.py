@@ -533,8 +533,8 @@ def _from_dataframe(df, **kwargs):
     If the input dataframe is of any other geometry type than "Point",
     a value error is raised. 
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     df          :   pandas.DataFrame
                     dataframe containing point geometries for a 
                     voronoi diagram.
@@ -564,7 +564,7 @@ def _build(polygons, criterion="rook", ids=None):
     This is a developer-facing function to construct a spatial weights object. 
 
     Parameters
-    ---------
+    ----------
     polygons    : list
                   list of pysal polygons to use to build contiguity
     criterion   : string

@@ -182,8 +182,8 @@ class W(object):
 
         See libpysal.io.FileIO for more information. 
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         path    :   string
                     location to save the file
         format  :   string
@@ -203,8 +203,8 @@ class W(object):
         """
         Read a weights file into a W object. 
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         path    :   string
                     location to save the file
         format  :   string

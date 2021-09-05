@@ -307,7 +307,7 @@ def w2da(data, w, attrs={}, coords=None):
     Creates xarray.DataArray object from passed data aligned with W object.
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to w
     w : libpysal.weights.W
@@ -350,7 +350,7 @@ def wsp2da(data, wsp, attrs={}, coords=None):
     Creates xarray.DataArray object from passed data aligned with WSP object.
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to wsp
     wsp : libpysal.weights.WSP
@@ -393,7 +393,7 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     Creates 2 or 3 dimensional test xarray.DataArray object
 
     Parameters
-    ---------
+    ----------
     shape : tuple
         Tuple containing shape of the DataArray aligned with
         following dimension = (lat, lon) or (layer, lat, lon)
@@ -515,7 +515,7 @@ def _index2da(data, index, attrs, coords):
     Creates xarray.DataArray object from passed data
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to index
     index : pd.MultiIndex
