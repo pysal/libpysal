@@ -232,8 +232,8 @@ class Rook(W):
         Notes
         -----
         1. Lower order contiguities are also selected.
-        2. Returned object contains `index` attribute that includes a 
-        `Pandas.MultiIndex` object from the DataArray.
+        2. Returned object contains `index` attribute that includes a
+           `Pandas.MultiIndex` object from the DataArray.
 
         See Also
         --------
@@ -462,8 +462,8 @@ class Queen(W):
         Notes
         -----
         1. Lower order contiguities are also selected.
-        2. Returned object contains `index` attribute that includes a 
-        `Pandas.MultiIndex` object from the DataArray.
+        2. Returned object contains `index` attribute that includes a
+           `Pandas.MultiIndex` object from the DataArray.
 
         See Also
         --------

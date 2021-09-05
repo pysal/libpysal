@@ -74,7 +74,7 @@ def da2W(
     -----
     1. Lower order contiguities are also selected.
     2. Returned object contains `index` attribute that includes a
-    `Pandas.MultiIndex` object from the DataArray.
+       `Pandas.MultiIndex` object from the DataArray.
 
     Examples
     --------
@@ -175,7 +175,7 @@ def da2WSP(
     -----
     1. Lower order contiguities are also selected.
     2. Returned object contains `index` attribute that includes a
-    `Pandas.MultiIndex` object from the DataArray.
+       `Pandas.MultiIndex` object from the DataArray.
 
     Examples
     --------
