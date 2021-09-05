@@ -649,8 +649,8 @@ def construct_bounding_circles(alpha_shape, radius):
     """Construct the bounding circles for an alpha shape, given the radius
     computed from the `alpha_shape_auto` method.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     alpha_shape : shapely.Polygon
         An alpha-hull with the input radius.
 

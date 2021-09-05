@@ -45,8 +45,8 @@ class ContiguityWeightsLists:
 
     def __init__(self, collection, wttype=1):
         """
-        Arguments
-        =========
+        Parameters
+        ----------
 
         collection: PySAL PolygonCollection
 
