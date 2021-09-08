@@ -311,6 +311,13 @@ class W(object):
             raise ImportError(
                 "pandas must be installed & importable to use this method"
             )
+        if (drop_islands is None) and not (self.silence_warnings):
+            warnings.warn(
+                "In the next version of libpysal, observations with no neighbors will be included in adjacency lists as loops (row with the same focal and neighbor) with zero weight. In the current version, observations with no neighbors are dropped. If you would like to keep the current behavior, use drop_islands=True in this function",
+                DeprecationWarning,
+            )
+            drop_islands = True
+
         links = []
         focal_ix, neighbor_ix = self.sparse.nonzero()
         names = np.asarray(self.id_order)
@@ -1363,21 +1370,19 @@ class WSP(object):
                 self._cache["id_order"] = self._id_order
         # temp addition of index attribute
         import pandas as pd  # will be removed after refactoring is done
+
         if index is not None:
             if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
                 raise TypeError("index must be an instance of pandas.Index dtype")
             if len(index) != self.n:
-                raise ValueError(
-                    "Number of values in index must match shape of sparse"
-                )
+                raise ValueError("Number of values in index must match shape of sparse")
         else:
             index = pd.RangeIndex(self.n)
         self.index = index
 
     @property
     def id_order(self):
-        """An ordered list of ids, assumed to match the ordering in ``sparse``.
-        """
+        """An ordered list of ids, assumed to match the ordering in ``sparse``."""
         # Temporary solution until the refactoring is finished
         if "id_order" not in self._cache:
             if hasattr(self, "index"):
