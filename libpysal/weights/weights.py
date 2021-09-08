@@ -275,7 +275,7 @@ class W(object):
     def to_adjlist(
         self,
         remove_symmetric=False,
-        drop_islands=True,
+        drop_islands=None,
         focal_col="focal",
         neighbor_col="neighbor",
         weight_col="weight",
