@@ -34,8 +34,14 @@ class Test_Adjlist(ut.TestCase):
         alist = grid.to_adjlist(remove_symmetric=True)
         assert len(alist) == 4
         with self.assertRaises(AssertionError):
-            badgrid = weights.W.from_adjlist(alist)
-            np.testing.assert_allclose(badgrid.sparse.toarray(), grid.sparse.toarray())
+            # build this manually because of bug libpysal#322
+            alist_neighbors = alist.groupby('focal').neighbor.apply(list).to_dict()
+            all_ids = set(alist_neighbors.keys()).union(*map(set, alist_neighbors.values()))
+            for idx in set(all_ids).difference(set(alist_neighbors.keys())):
+                alist_neighbors[idx] = []
+            badgrid = weights.W(alist_neighbors)
+            np.testing.assert_allclose(badgrid.sparse.toarray(),
+                                       grid.sparse.toarray())
         assert set(alist.focal.unique()) == {0, 1, 2}
         assert set(alist.neighbor.unique()) == {1, 2, 3}
         assert alist.weight.unique().item() == 1
@@ -43,10 +49,15 @@ class Test_Adjlist(ut.TestCase):
         alist = grid.to_adjlist(remove_symmetric=True)
         assert len(alist) == 4
         with self.assertRaises(AssertionError):
-            badgrid = weights.W.from_adjlist(alist)
-            np.testing.assert_allclose(badgrid.sparse.toarray(), grid.sparse.toarray())
-        print(alist)
-        tuples = set([tuple(t) for t in alist[["focal", "neighbor"]].values])
+            # build this manually because of bug libpysal#322
+            alist_neighbors = alist.groupby('focal').neighbor.apply(list).to_dict()
+            all_ids = set(alist_neighbors.keys()).union(*map(set, alist_neighbors.values()))
+            for idx in set(all_ids).difference(set(alist_neighbors.keys())):
+                alist_neighbors[idx] = []
+            badgrid = weights.W(alist_neighbors)
+            np.testing.assert_allclose(badgrid.sparse.toarray(),
+                                       grid.sparse.toarray())
+        tuples = set([tuple(t) for t in alist[['focal','neighbor']].values])
         full_alist = grid.to_adjlist()
         all_possible = set([tuple(t) for t in full_alist[["focal", "neighbor"]].values])
         assert tuples.issubset(all_possible), (
