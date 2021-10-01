@@ -1082,8 +1082,9 @@ def get_points_array_from_shapefile(shapefile):
 
     Parameters
     ----------
-    shapefile     : string
-                    name of a shape file including suffix
+    shapefile     : string/geopandas.GeoSeries/geopandas.GeoDataFrame
+                    If a string, it must be a full pathname of 
+                    a shape file - including suffix
 
     Returns
     -------
@@ -1117,8 +1118,12 @@ def get_points_array_from_shapefile(shapefile):
            [ 8.33265837, 14.03162401],
            [ 9.01226541, 13.81971908]])
     """
-
-    f = psopen(shapefile)
+    if isinstance(shapefile, str):
+        f = psopen(shapefile)
+    elif isinstance(shapefile, gpd.GeoDataFrame):
+        f = shapefile['geometry']
+    elif isinstance(shapefile, gpd.GeoSeries):
+        f = shapefile
     data = get_points_array(f)
     return data
 
