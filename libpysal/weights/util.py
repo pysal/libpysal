@@ -1121,7 +1121,7 @@ def get_points_array_from_shapefile(shapefile):
     if isinstance(shapefile, str):
         f = psopen(shapefile)
     elif isinstance(shapefile, gpd.GeoDataFrame):
-        f = shapefile['geometry']
+        f = shapefile.geometry
     elif isinstance(shapefile, gpd.GeoSeries):
         f = shapefile
     data = get_points_array(f)
