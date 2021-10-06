@@ -6,7 +6,7 @@ from warnings import warn
 @_requires("geopandas")
 def to_df(df, geom_col="geometry", **kw):
     """Convert a ``geopandas.GeoDataFrame`` into a normal
-    ``pandas.DataFrame`` with a column containing PySAL shapes. 
+    ``pandas.DataFrame`` with a column containing PySAL shapes.
 
     Parameters
     ----------
@@ -22,12 +22,12 @@ def to_df(df, geom_col="geometry", **kw):
     -------
     df : pandas.DataFrame
         The data converted into a ``pandas.DataFrame`` object.
-    
+
     See Also
     --------
-    
+
     pandas.DataFrame
-    
+
     """
 
     import pandas as pd
@@ -54,23 +54,23 @@ def to_gdf(df, geom_col="geometry", **kw):
         The column name in ``df`` contains the geometry. Default is ``'geometry'``.
     **kw : dict
         Optional keyword arguments for ``geopandas.GeoDataFrame()``.
-    
+
     Returns
     -------
     gdf : geopandas.GeoDataFrame
         The data converted into a ``geopandas.GeoDataFrame`` object.
-    
+
     See Also
     --------
-    
+
     geopandas.GeoDataFrame
-    
+
     """
 
     from geopandas import GeoDataFrame
-    from shapely.geometry import asShape as sShape
+    from shapely.geometry import shape
 
-    df[geom_col] = df[geom_col].apply(sShape)
+    df[geom_col] = df[geom_col].apply(shape)
 
     gdf = GeoDataFrame(df, geometry=geom_col, **kw)
 

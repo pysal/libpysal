@@ -257,7 +257,7 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
 
 @jit
 def nb_mask_faces(mask, faces):
-    """ Run over each row in `faces`, if the face in the following row is the
+    """Run over each row in `faces`, if the face in the following row is the
     same, then mark both as False on `mask`
 
     Parameters
@@ -472,7 +472,7 @@ def alpha_shape(xys, alpha):
     if xys.shape[0] < 4:
         from shapely import ops, geometry as geom
 
-        return ops.cascaded_union([geom.Point(xy) for xy in xys]).convex_hull.buffer(0)
+        return ops.unary_union([geom.Point(xy) for xy in xys]).convex_hull.buffer(0)
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
     a_pts = triangles[:, 0, :]
