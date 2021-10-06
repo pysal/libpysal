@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 import unittest
 from ..weights import W, WSP
 from .. import util
@@ -346,8 +349,10 @@ class TestW(unittest.TestCase):
         assert disco.n_components == 2
 
     def test_roundtrip_write(self):
-        self.w.to_file("./tmp.gal")
-        new = W.from_file("./tmp.gal")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(str(tmpdir), "tmp.gal")
+            self.w.to_file(path)
+            new = W.from_file(path)
         np.testing.assert_array_equal(self.w.sparse.toarray(), new.sparse.toarray())
 
 
