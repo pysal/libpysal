@@ -18,7 +18,7 @@ def _get_verts(shape):
 def _get_boundary_points(shape):
     """
     Recursively handle polygons vs. multipolygons to
-    extract the boundary point set from each. 
+    extract the boundary point set from each.
     """
     if shape.type.lower() == "polygon":
         shape = shape.boundary
@@ -26,9 +26,9 @@ def _get_boundary_points(shape):
     elif shape.type.lower() == "linestring":
         return list(map(tuple, list(zip(*shape.coords.xy))))
     elif shape.type.lower() == "multilinestring":
-        return list(it.chain(*(list(zip(*shape.coords.xy)) for shape in shape)))
+        return list(it.chain(*(list(zip(*shape.coords.xy)) for shape in shape.geoms)))
     elif shape.type.lower() == "multipolygon":
-        return list(it.chain(*(_get_boundary_points(part.boundary) for part in shape)))
+        return list(it.chain(*(_get_boundary_points(part.boundary) for part in shape.geoms)))
     else:
         raise TypeError(
             "Input shape must be a Polygon, Multipolygon, LineString, "

@@ -1,3 +1,4 @@
+from shapely.geometry.base import BaseGeometry
 from ..io.fileio import FileIO as psopen
 from .weights import W, WSP
 from .set_operations import w_subset
@@ -1070,7 +1071,14 @@ def get_points_array(iterable):
     """
     first_choice, backup = tee(iterable)
     try:
-        data = np.vstack([np.array(shape.centroid) for shape in first_choice])
+        data = np.vstack(
+            [
+                np.array(shape.centroid.coords)[0]
+                if isinstance(shape, BaseGeometry)
+                else np.array(shape.centroid)
+                for shape in first_choice
+            ]
+        )
     except AttributeError:
         data = np.vstack([shape for shape in backup])
     return data
