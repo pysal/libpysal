@@ -95,13 +95,12 @@ def filter_edges(edges, coordinates):
 
 
 if __name__ == "__main__":
-    import libpysal
-    import numpy
-    import geopandas, pandas
-    import pygeos, time
+    import numpy, subprocess, geopandas, pandas, pygeos, time, libpysal, os
+    from rpy2.robjects import r
 
     libpysal.examples.load_example("south.shp")
-    df = geopandas.read_file(libpysal.examples.get_path("south.shp"))
+    path = libpysal.examples.get_path("south.shp")
+    df = geopandas.read_file(path)
 
     coords = pygeos.get_coordinates(df.geometry.centroid.values.data)
     start1 = time.time()
@@ -156,6 +155,7 @@ if __name__ == "__main__":
     # for focal, dneighbors in delaunay.neighbors.items():
     #    vold = voronoi_old.neighbors[focal]
     #    assert vold == vneighbors fails due to clipping!
+
     print(
         f"""
         Old Voronoi: {voronoi_old_elapsed:.2f}
@@ -165,3 +165,29 @@ if __name__ == "__main__":
         Ref Gabriel: {gabriel_elapsed:.2f}
         """
     )
+
+    with open("./gabriel.R", "w") as f:
+        f.writelines(
+            [
+                "library(sf)\n"
+                "library(spdep)\n"
+                "library(dplyr)\n"
+                f"path <- {path}"
+                "df <- st_read(path)\n"
+                "network <- df %>% st_centroid() %>% st_coordinates() %>%  gabrielneigh()\n"
+                'network %>% graph2nb(sym=T) %>% write.nb.gal("./gabriel_r.gal")\n'
+            ]
+        )
+        subprocess.call(["/usr/local/bin/Rscript", "--vanilla", "gabriel.R"])
+
+    gabriel_r = W.from_file("./gabriel_r.gal")
+
+    for i, neighbors in gabriel.neighbors.items():
+        iname = str(i + 1)
+        nnames = [str(n + 1) for n in neighbors]
+        r_neighbors = gabriel_r.neighbors[iname]
+        assert set(r_neighbors) == set(nnames)
+
+    os.remove("./gabriel_r.gal")
+    os.remove("./gabriel_py.gal")
+    os.remove("./gabriel.R")
