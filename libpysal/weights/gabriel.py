@@ -43,6 +43,26 @@ class Gabriel(Delaunay):
         W.__init__(self, gabriel_neighbors, **kwargs)
 
 
+class Relative_Neighborhood(Delaunay):
+    def __init__(self, coordinates, return_dkmax=False, **kwargs):
+        """
+        via toussaint, https://doi.org/10.1016/0031-3203(80)90066-7
+        """
+        edges, dt = self._voronoi_edges(coordinates)
+        output, dkmax = _filter_relativehood(
+            edges, dt.points, return_dkmax=return_dkmax
+        )
+        if not return_dkmax:
+            del dkmax
+        row, col, data = zip(*output)
+        sp = sparse.csc_matrix((data, (row, col))) #TODO: faster way than this?
+        tmp = WSP(sp).to_W() 
+        W.__init__(self, tmp.neighbors, tmp.weights, **kwargs)
+
+
+
+#### utilities
+
 @njit
 def _edges_from_simplices(simplices):
     edges = []
@@ -94,6 +114,61 @@ def _filter_gabriel(edges, coordinates):
                     to_drop.append((j, i))
         edge_pointer += cardinality
     return set(to_drop)
+
+
+@njit
+def _filter_relativehood(edges, coordinates, return_dkmax=False):
+
+    # RNG
+    # 1. Compute the delaunay
+    # 2. for each edge of the delaunay (i,j), compute
+    #    dkmax = max(d(k,i), d(k,j)) for k in 1..n, k != i, j
+    # 3. for each edge of the delaunay (i,j), prune
+    #    if any dkmax is greater than d(i,j)
+    edge_pointer = 0
+    n = edges.max()
+    n_edges = len(edges)
+    out = []
+    r = []
+    for edge in edges:
+        i, j = edge
+        pi = coordinates[i]
+        pj = coordinates[j]
+        dkmax = 0
+        dij = ((pi - pj)**2).sum()**.5t 
+        prune = False
+        for k in range(n):
+            pk = coordinates[k]
+            dik = ((pi - pk)**2).sum()**.5
+            djk = ((pj - pk)**2).sum()**.5
+            distances = numpy.array([dik, djk, dkmax])
+            dkmax = distances.max()
+            prune = dkmax < dij
+            if (not return_dkmax) & prune:
+                break
+        if prune:
+            continue
+        out.append((i, j, dij))
+        if return_dkmax:
+            r.append(dkmax)
+
+    return out, r
+
+
+class Mutual_Reachability(W):
+    def __init__(
+        self, coordinates, n_max=None, n_core=5, method="kdtree", metric="euclidean"
+    ):
+        # check to see if metric is supported by method using tree.valid_metrics
+        # so, kdtree can only do minkowski
+        # balltree can handle more
+        # approx can handle a ton, but wait to import pynndescent unless method = approx
+        # raise an error if the requested metric is not supported
+
+        # then, compute the core distances for each point
+        # finally, for all pairs of points, compute the distances for the nearest n_max
+        # points (possibly all points), and censor that by the core distance.
+        raise NotImplementedError()
 
 
 if __name__ == "__main__":
@@ -196,3 +271,4 @@ if __name__ == "__main__":
 
 
 
+    Relative_Neighborhood(coords)
