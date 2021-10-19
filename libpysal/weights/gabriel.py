@@ -1,8 +1,12 @@
 from scipy.spatial import Delaunay as _Delaunay
 from scipy import sparse
 from numba import njit
-from libpysal.weights import W, Rook
+from libpysal.weights import W, WSP
 import joblib, pandas, pygeos, numpy
+
+# delaunay graphs and their subgraphs
+
+#### Classes
 
 
 class Delaunay(W):
@@ -13,7 +17,7 @@ class Delaunay(W):
 
     def _voronoi_edges(self, coordinates):
         dt = _Delaunay(coordinates)
-        edges = edges_from_simplices(dt.simplices)
+        edges = _edges_from_simplices(dt.simplices)
         edges = (
             pandas.DataFrame(numpy.asarray(list(edges)))
             .sort_values([0, 1])
@@ -30,7 +34,7 @@ class Delaunay(W):
 class Gabriel(Delaunay):
     def __init__(self, coordinates, **kwargs):
         edges, dt = self._voronoi_edges(coordinates)
-        droplist = filter_edges(
+        droplist = _filter_gabriel(
             edges,
             dt.points,
         )
@@ -40,7 +44,7 @@ class Gabriel(Delaunay):
 
 
 @njit
-def edges_from_simplices(simplices):
+def _edges_from_simplices(simplices):
     edges = []
     for simplex in simplices:
         edges.append((simplex[0], simplex[1]))
@@ -53,7 +57,7 @@ def edges_from_simplices(simplices):
 
 
 @njit
-def filter_edges(edges, coordinates):
+def _filter_gabriel(edges, coordinates):
     edge_pointer = 0
     n = edges.max()
     n_edges = len(edges)
@@ -107,8 +111,8 @@ if __name__ == "__main__":
     voronoi_old_elapsed = fin1 - start1
 
     compile_start = time.time()
-    edges_from_simplices(numpy.random.randint(0, 4, size=(4, 3)))
-    filter_edges(
+    _edges_from_simplices(numpy.random.randint(0, 4, size=(4, 3)))
+    _filter_gabriel(
         numpy.random.randint(0, 4, size=(4, 2)), numpy.random.normal(size=(4, 2))
     )
     compile_finish = time.time()
@@ -116,14 +120,14 @@ if __name__ == "__main__":
 
     start2 = time.time()
     dt = _Delaunay(coords)
-    edges = edges_from_simplices(dt.simplices)
+    edges = _edges_from_simplices(dt.simplices)
     edges = (
         pandas.DataFrame(numpy.asarray(list(edges)))
         .sort_values([0, 1])
         .drop_duplicates()
         .values
     )
-    droplist = filter_edges(
+    droplist = _filter_gabriel(
         edges,
         dt.points,
     )
@@ -164,21 +168,22 @@ if __name__ == "__main__":
         """
     )
 
-    with open("./gabriel.R", "w") as f:
+    location = os.path.dirname(__file__)
+    with open(f"{location}/gabriel.R", "w") as f:
         f.writelines(
             [
                 "library(sf)\n"
                 "library(spdep)\n"
                 "library(dplyr)\n"
-                f"path <- {path}"
+                f"path <- '{path}'\n"
                 "df <- st_read(path)\n"
                 "network <- df %>% st_centroid() %>% st_coordinates() %>%  gabrielneigh()\n"
-                'network %>% graph2nb(sym=T) %>% write.nb.gal("./gabriel_r.gal")\n'
+                f'network %>% graph2nb(sym=T) %>% write.nb.gal("{location}/gabriel_r.gal")\n'
             ]
         )
-        subprocess.call(["/usr/local/bin/Rscript", "--vanilla", "gabriel.R"])
+    subprocess.call(["/usr/local/bin/Rscript", "--vanilla", f"{location}/gabriel.R"])
 
-    gabriel_r = W.from_file("./gabriel_r.gal")
+    gabriel_r = W.from_file(f"{location}/gabriel_r.gal")
 
     for i, neighbors in gabriel.neighbors.items():
         iname = str(i + 1)
@@ -186,6 +191,8 @@ if __name__ == "__main__":
         r_neighbors = gabriel_r.neighbors[iname]
         assert set(r_neighbors) == set(nnames)
 
-    os.remove("./gabriel_r.gal")
-    os.remove("./gabriel_py.gal")
-    os.remove("./gabriel.R")
+    os.remove(f"{location}/gabriel_r.gal")
+    os.remove(f"{location}/gabriel.R")
+
+
+
