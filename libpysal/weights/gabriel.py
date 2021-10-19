@@ -2,7 +2,7 @@ from scipy.spatial import Delaunay as _Delaunay
 from scipy import sparse
 from numba import njit
 from libpysal.weights import W, Rook
-import joblib, pandas, pygeos
+import joblib, pandas, pygeos, numpy
 
 
 class Delaunay(W):
