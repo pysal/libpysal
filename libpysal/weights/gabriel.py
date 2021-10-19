@@ -8,7 +8,7 @@ import joblib, pandas, pygeos, numpy
 class Delaunay(W):
     def __init__(self, coordinates, **kwargs):
         edges, _ = self._voronoi_edges(coordinates)
-        voronoi_neighbors = pandas.DataFrame(output).groupby(0)[1].apply(list).to_dict()
+        voronoi_neighbors = pandas.DataFrame(edges).groupby(0)[1].apply(list).to_dict()
         W.__init__(self, voronoi_neighbors, **kwargs)
 
     def _voronoi_edges(self, coordinates):
@@ -24,9 +24,7 @@ class Delaunay(W):
 
     @classmethod
     def from_dataframe(cls, df, **kwargs):
-        return cls.__init__(
-            pygeos.get_coordinates(pygeos.centroid(df.geometry.data.values))
-        )
+        return cls(pygeos.get_coordinates(pygeos.centroid(df.geometry.values.data)))
 
 
 class Gabriel(Delaunay):
