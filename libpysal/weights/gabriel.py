@@ -63,7 +63,7 @@ def filter_edges(edges, coordinates):
     while edge_pointer < n_edges:
         edge = edges[edge_pointer]
         cardinality = 0
-
+        # look ahead to find all neighbors of edge[0]
         for joff in range(edge_pointer, n_edges):
             next_edge = edges[joff]
             if next_edge[0] != edge[0]:
@@ -78,16 +78,16 @@ def filter_edges(edges, coordinates):
         # Therefore, we can take each observation i, iterate over neighbors j,k and remove links
         # where dij**2 > djk**2 + dki**2 to filter a delanuay graph to a gabriel one.
         for ix in range(edge_pointer, edge_pointer + cardinality):
-            i, j = edges[ix]
-            dij = ((coordinates[i] - coordinates[j]) ** 2).sum() ** 0.5
+            i, j = edges[ix]  # lookahead ensures that i is always edge[0]
+            dij2 = ((coordinates[i] - coordinates[j]) ** 2).sum()
             for ix2 in range(edge_pointer, edge_pointer + cardinality):
                 _, k = edges[ix2]
                 if j == k:
                     continue
-                dik = ((coordinates[i] - coordinates[k]) ** 2).sum() ** 0.5
-                djk = ((coordinates[j] - coordinates[k]) ** 2).sum() ** 0.5
+                dik2 = ((coordinates[i] - coordinates[k]) ** 2).sum()
+                djk2 = ((coordinates[j] - coordinates[k]) ** 2).sum()
 
-                if dij ** 2 > (dik ** 2 + djk ** 2):
+                if dij2 > (dik2 + djk2):
                     to_drop.append((i, j))
                     to_drop.append((j, i))
         edge_pointer += cardinality
