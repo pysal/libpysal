@@ -39,7 +39,7 @@ def get_data_home():
     data_home = environ.get("PYSALDATA", join("~", PYSALDATA))
     data_home = expanduser(data_home)
     if not exists(data_home):
-        makedirs(data_home)
+        makedirs(data_home, exist_ok=True)
     return data_home
 
 
