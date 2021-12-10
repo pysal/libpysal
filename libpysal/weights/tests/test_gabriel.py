@@ -22,9 +22,9 @@ def test_gabriel():
     d = gabriel.Gabriel.from_dataframe(df)
     c2 = gabriel.Delaunay(coords)
 
-    assert a.neighbors == b.neighbors
+    assert c.neighbors == d.neighbors
 
-    assert a[13] == {12: 1, 18: 1}
+    assert c[13] == {12: 1, 18: 1}
     for focal, neighbors in c.neighbors.items():
         dneighbors = c2[focal]
         assert set(neighbors) <= set(dneighbors)
