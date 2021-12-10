@@ -83,7 +83,20 @@ class KNN(W):
     Notes
     -----
 
-    Ties between neighbors of equal distance are arbitrarily broken.
+    Ties between neighbors of equal distance are arbitrarily broken. 
+
+    Further, if many points occupy the same spatial location (i.e. observations are 
+    coincident), then you may need to increase k for those observations to 
+    acquire neighbors at different spatial locations. For example, if five
+    points are coincident, then their four nearest neighbors will all
+    occupy the same spatial location; only the fifth nearest neighbor will
+    result in those coincident points becoming connected to the graph as a
+    whole. 
+
+    Solutions to this problem include jittering the points (by adding
+    a small random value to each observation's location) or by adding 
+    higher-k neighbors only to the coincident points, using the
+    weights.w_sets.w_union() function. 
 
     See Also
     --------
