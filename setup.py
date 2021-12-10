@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from setuptools import setup, find_packages
+import versioneer
 
 from distutils.command.build_py import build_py
 
@@ -8,11 +9,6 @@ import os
 
 with open("README.rst", "r", encoding="utf8") as file:
     long_description = file.read()
-
-# Get __version__ from libpysal/__init__.py without importing the package
-# __version__ has to be defined in the first line
-with open("libpysal/__init__.py", "r") as f:
-    exec(f.readline())
 
 # BEFORE importing distutils, remove MANIFEST. distutils doesn't properly
 # update it when the contents of directories change.
@@ -64,12 +60,13 @@ def setup_package():
 
     setup(
         name="libpysal",
-        version=__version__,
+        version=versioneer.get_version(),
         description="Core components of PySAL A library of spatial analysis functions.",
         long_description=long_description,
+        long_description_content_type="text/x-rst",
         maintainer="PySAL Developers",
         maintainer_email="pysal-dev@googlegroups.com",
-        url="http://pysal.org",
+        url="http://pysal.org/libpysal",
         download_url="https://pypi.python.org/pypi/libpysal",
         license="BSD",
         py_modules=["libpysal"],
@@ -86,15 +83,15 @@ def setup_package():
             "Topic :: Scientific/Engineering :: GIS",
             "License :: OSI Approved :: BSD License",
             "Programming Language :: Python",
-            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
-            "Programming Language :: Python :: 3.8"
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
         ],
         package_data={"libpysal": list(example_data_files)},
         install_requires=install_reqs,
         extras_require=extras_reqs,
-        cmdclass={"build_py": build_py},
-        python_requires=">3.5",
+        cmdclass=versioneer.get_cmdclass({"build_py": build_py}),
+        python_requires=">=3.7",
     )
 
 

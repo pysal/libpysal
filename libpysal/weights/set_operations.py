@@ -9,8 +9,14 @@ from .weights import W, WSP
 from scipy.sparse import isspmatrix_csr
 from numpy import ones
 
-__all__ = ['w_union', 'w_intersection', 'w_difference',
-           'w_symmetric_difference', 'w_subset', 'w_clip']
+__all__ = [
+    "w_union",
+    "w_intersection",
+    "w_difference",
+    "w_symmetric_difference",
+    "w_subset",
+    "w_clip",
+]
 
 
 def w_union(w1, w2, **kwargs):
@@ -71,7 +77,7 @@ def w_union(w1, w2, **kwargs):
     return W(neighbors, **kwargs)
 
 
-def w_intersection(w1, w2, w_shape='w1', **kwargs):
+def w_intersection(w1, w2, w_shape="w1", **kwargs):
     """
     Returns a binary weights object, w, that includes only
     those neighbor pairs that exist in both w1 and w2.
@@ -124,13 +130,12 @@ def w_intersection(w1, w2, w_shape='w1', **kwargs):
 
     """
 
-    if w_shape == 'w1':
+    if w_shape == "w1":
         neigh_keys = list(w1.neighbors.keys())
-    elif w_shape == 'all':
+    elif w_shape == "all":
         neigh_keys = set(w1.neighbors.keys()).union(set(w2.neighbors.keys()))
-    elif w_shape == 'min':
-        neigh_keys = set(w1.neighbors.keys(
-        )).intersection(set(w2.neighbors.keys()))
+    elif w_shape == "min":
+        neigh_keys = set(w1.neighbors.keys()).intersection(set(w2.neighbors.keys()))
     else:
         raise Exception("invalid string passed to w_shape")
 
@@ -145,7 +150,7 @@ def w_intersection(w1, w2, w_shape='w1', **kwargs):
     return W(neighbors, **kwargs)
 
 
-def w_difference(w1, w2, w_shape='w1', constrained=True, **kwargs):
+def w_difference(w1, w2, w_shape="w1", constrained=True, **kwargs):
     """
     Returns a binary weights object, w, that includes only neighbor pairs
     in w1 that are not in w2. The w_shape and constrained parameters
@@ -207,13 +212,12 @@ def w_difference(w1, w2, w_shape='w1', constrained=True, **kwargs):
 
     """
 
-    if w_shape == 'w1':
+    if w_shape == "w1":
         neigh_keys = list(w1.neighbors.keys())
-    elif w_shape == 'all':
+    elif w_shape == "all":
         neigh_keys = set(w1.neighbors.keys()).union(set(w2.neighbors.keys()))
-    elif w_shape == 'min':
-        neigh_keys = set(
-            w1.neighbors.keys()).difference(set(w2.neighbors.keys()))
+    elif w_shape == "min":
+        neigh_keys = set(w1.neighbors.keys()).difference(set(w2.neighbors.keys()))
         if not neigh_keys:
             raise Exception("returned an empty weights matrix")
     else:
@@ -223,28 +227,25 @@ def w_difference(w1, w2, w_shape='w1', constrained=True, **kwargs):
     for i in neigh_keys:
         if i in w1.neighbors:
             if i in w2.neighbors:
-                add_neigh = set(w1.neighbors[i]
-                                ).difference(set(w2.neighbors[i]))
+                add_neigh = set(w1.neighbors[i]).difference(set(w2.neighbors[i]))
                 neighbors[i] = list(add_neigh)
             else:
                 neighbors[i] = copy.copy(w1.neighbors[i])
         else:
             neighbors[i] = []
 
-    if constrained or w_shape == 'min':
-        constrained_keys = set(
-            w1.neighbors.keys()).difference(set(w2.neighbors.keys()))
+    if constrained or w_shape == "min":
+        constrained_keys = set(w1.neighbors.keys()).difference(set(w2.neighbors.keys()))
         island_keys = set(neighbors.keys()).difference(constrained_keys)
         for i in island_keys:
             neighbors[i] = []
         for i in constrained_keys:
-            neighbors[i] = list(
-                set(neighbors[i]).intersection(constrained_keys))
+            neighbors[i] = list(set(neighbors[i]).intersection(constrained_keys))
 
     return W(neighbors, **kwargs)
 
 
-def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, **kwargs):
+def w_symmetric_difference(w1, w2, w_shape="all", constrained=True, **kwargs):
     """
     Returns a binary weights object, w, that includes only neighbor pairs
     that are not shared by w1 and w2. The w_shape and constrained parameters
@@ -304,11 +305,12 @@ def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, **kwargs):
 
     """
 
-    if w_shape == 'all':
+    if w_shape == "all":
         neigh_keys = set(w1.neighbors.keys()).union(set(w2.neighbors.keys()))
-    elif w_shape == 'min':
-        neigh_keys = set(w1.neighbors.keys(
-        )).symmetric_difference(set(w2.neighbors.keys()))
+    elif w_shape == "min":
+        neigh_keys = set(w1.neighbors.keys()).symmetric_difference(
+            set(w2.neighbors.keys())
+        )
     else:
         raise Exception("invalid string passed to w_shape")
 
@@ -317,7 +319,8 @@ def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, **kwargs):
         if i in w1.neighbors:
             if i in w2.neighbors:
                 add_neigh = set(w1.neighbors[i]).symmetric_difference(
-                    set(w2.neighbors[i]))
+                    set(w2.neighbors[i])
+                )
                 neighbors[i] = list(add_neigh)
             else:
                 neighbors[i] = copy.copy(w1.neighbors[i])
@@ -326,15 +329,13 @@ def w_symmetric_difference(w1, w2, w_shape='all', constrained=True, **kwargs):
         else:
             neighbors[i] = []
 
-    if constrained or w_shape == 'min':
-        constrained_keys = set(
-            w1.neighbors.keys()).difference(set(w2.neighbors.keys()))
+    if constrained or w_shape == "min":
+        constrained_keys = set(w1.neighbors.keys()).difference(set(w2.neighbors.keys()))
         island_keys = set(neighbors.keys()).difference(constrained_keys)
         for i in island_keys:
             neighbors[i] = []
         for i in constrained_keys:
-            neighbors[i] = list(
-                set(neighbors[i]).intersection(constrained_keys))
+            neighbors[i] = list(set(neighbors[i]).intersection(constrained_keys))
 
     return W(neighbors, **kwargs)
 
@@ -396,7 +397,7 @@ def w_subset(w1, ids, **kwargs):
 
 
 def w_clip(w1, w2, outSP=True, **kwargs):
-    '''
+    """
     Clip a continuous W object (w1) with a different W object (w2) so only cells where
     w2 has a non-zero value remain with non-zero values in w1.
 
@@ -502,9 +503,10 @@ def w_clip(w1, w2, outSP=True, **kwargs):
            [ True,  True,  True,  True,  True,  True],
            [ True,  True,  True,  True,  True,  True]])
 
-    '''
+    """
 
     from .util import WSP2W
+
     if not w1.id_order:
         w1.id_order = None
     id_order = w1.id_order

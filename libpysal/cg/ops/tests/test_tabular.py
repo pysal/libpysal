@@ -15,25 +15,30 @@ except ImportError:
 PANDAS_EXTINCT = pandas is None
 SHAPELY_EXTINCT = shp is None
 
-@ut.skipIf(PANDAS_EXTINCT or SHAPELY_EXTINCT, 'missing pandas or shapely')
+
+@ut.skipIf(PANDAS_EXTINCT or SHAPELY_EXTINCT, "Missing pandas or shapely.")
 class Test_Tabular(ut.TestCase):
     def setUp(self):
         import pandas as pd
-        self.columbus = pdio.read_files(get_path('columbus.shp'))
-        grid = [Polygon([(0,0),(0,1),(1,1),(1,0)]),
-                Polygon([(0,1),(0,2),(1,2),(1,1)]),
-                Polygon([(1,2),(2,2),(2,1),(1,1)]),
-                Polygon([(1,1),(2,1),(2,0),(1,0)])]
-        regime = [0,0,1,1]
+
+        self.columbus = pdio.read_files(get_path("columbus.shp"))
+        grid = [
+            Polygon([(0, 0), (0, 1), (1, 1), (1, 0)]),
+            Polygon([(0, 1), (0, 2), (1, 2), (1, 1)]),
+            Polygon([(1, 2), (2, 2), (2, 1), (1, 1)]),
+            Polygon([(1, 1), (2, 1), (2, 0), (1, 0)]),
+        ]
+        regime = [0, 0, 1, 1]
         ids = list(range(4))
         data = np.array((regime, ids)).T
-        self.exdf = pd.DataFrame(data, columns=['regime', 'ids'])
-        self.exdf['geometry'] = grid
+        self.exdf = pd.DataFrame(data, columns=["regime", "ids"])
+        self.exdf["geometry"] = grid
 
-    @_requires('geopandas')
+    @_requires("geopandas")
     def test_round_trip(self):
         import geopandas as gpd
         import pandas as pd
+
         geodf = GIS.tabular.to_gdf(self.columbus)
         self.assertIsInstance(geodf, gpd.GeoDataFrame)
         new_df = GIS.tabular.to_df(geodf)
@@ -46,17 +51,21 @@ class Test_Tabular(ut.TestCase):
 
     def test_spatial_overlay(self):
         pass
-    
+
     def test_dissolve(self):
-        out = GIS.tabular.dissolve(self.exdf, by='regime')
+        out = GIS.tabular.dissolve(self.exdf, by="regime")
         self.assertEqual(out[0].area, 2.0)
         self.assertEqual(out[1].area, 2.0)
 
-        answer_vertices0 = [(0,0), (0,1), (0,2), (1,2), (1,1), (1,0), (0,0)]
-        answer_vertices1 = [(2,1), (2,0), (1,0), (1,1), (1,2), (2,2), (2,1)]
+        answer_vertices0 = set([(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)])
+        answer_vertices1 = set([(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (2, 1)])
 
-        np.testing.assert_allclose(out[0].vertices, answer_vertices0)
-        np.testing.assert_allclose(out[1].vertices, answer_vertices1)
+        s0 = set([tuple(map(int,t)) for t in out[0].vertices])
+        s1 = set([tuple(map(int,t)) for t in out[1].vertices])
+
+        self.assertTrue(s0==answer_vertices0)
+        self.assertTrue(s1==answer_vertices1)
+
 
     def test_clip(self):
         pass
@@ -65,8 +74,8 @@ class Test_Tabular(ut.TestCase):
         pass
 
     def test_union(self):
-       new_geom =  GIS.tabular.union(self.exdf)
-       self.assertEqual(new_geom.area, 4)
+        new_geom = GIS.tabular.union(self.exdf)
+        self.assertEqual(new_geom.area, 4)
 
     def test_intersection(self):
         pass

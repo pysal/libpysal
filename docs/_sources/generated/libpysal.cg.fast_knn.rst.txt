@@ -1,6 +1,0 @@
-libpysal.cg.fast\_knn
-=====================
-
-.. currentmodule:: libpysal.cg
-
-.. autofunction:: fast_knn

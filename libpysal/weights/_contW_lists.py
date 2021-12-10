@@ -1,10 +1,12 @@
 from ..cg.shapes import Polygon, Chain
 import itertools as it
 import collections
+
 QUEEN = 1
 ROOK = 2
 
 __author__ = "Jay Laura jlaura@asu.edu"
+
 
 def _get_verts(shape):
     if isinstance(shape, (Polygon, Chain)):
@@ -12,26 +14,27 @@ def _get_verts(shape):
     else:
         return _get_boundary_points(shape)
 
+
 def _get_boundary_points(shape):
     """
     Recursively handle polygons vs. multipolygons to
-    extract the boundary point set from each. 
+    extract the boundary point set from each.
     """
-    if shape.type.lower() == 'polygon':
+    if shape.type.lower() == "polygon":
         shape = shape.boundary
         return _get_boundary_points(shape)
-    elif shape.type.lower() == 'linestring':
+    elif shape.type.lower() == "linestring":
         return list(map(tuple, list(zip(*shape.coords.xy))))
-    elif shape.type.lower() == 'multilinestring':
-        return list(it.chain(*(list(zip(*shape.coords.xy))
-                                 for shape in shape)))
-    elif shape.type.lower() == 'multipolygon':
-        return list(it.chain(*(_get_boundary_points(part.boundary) 
-                               for part in shape)))
+    elif shape.type.lower() == "multilinestring":
+        return list(it.chain(*(list(zip(*shape.coords.xy)) for shape in shape.geoms)))
+    elif shape.type.lower() == "multipolygon":
+        return list(it.chain(*(_get_boundary_points(part.boundary) for part in shape.geoms)))
     else:
-        raise TypeError('Input shape must be a Polygon, Multipolygon, LineString, '
-                        ' or MultiLinestring and was '
-                        ' instead: {}'.format(shape.type))
+        raise TypeError(
+            "Input shape must be a Polygon, Multipolygon, LineString, "
+            " or MultiLinestring and was "
+            " instead: {}".format(shape.type)
+        )
 
 
 class ContiguityWeightsLists:
@@ -39,10 +42,11 @@ class ContiguityWeightsLists:
     Contiguity for a collection of polygons using high performance
     list, set, and dict containers
     """
+
     def __init__(self, collection, wttype=1):
         """
-        Arguments
-        =========
+        Parameters
+        ----------
 
         collection: PySAL PolygonCollection
 
@@ -67,10 +71,10 @@ class ContiguityWeightsLists:
 
         if self.wttype == QUEEN:
             for n in range(numPoly):
-                    verts = _get_verts(self.collection[n])
-                    offsets += [c] * len(verts)
-                    geoms += (verts)
-                    c += 1
+                verts = _get_verts(self.collection[n])
+                offsets += [c] * len(verts)
+                geoms += verts
+                c += 1
 
             items = collections.defaultdict(set)
             for i, vertex in enumerate(geoms):
@@ -114,5 +118,5 @@ class ContiguityWeightsLists:
                     except:
                         pass
         else:
-            raise Exception('Weight type {} Not Understood!'.format(self.wttype))
+            raise Exception("Weight type {} Not Understood!".format(self.wttype))
         self.w = w

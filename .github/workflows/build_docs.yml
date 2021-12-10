@@ -1,0 +1,60 @@
+
+ name: Build Docs
+ on:
+   push:
+     # Sequence of patterns matched against refs/tags
+     tags:
+       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+   workflow_dispatch:
+     inputs:
+       version:
+         description: Manual Doc Build Reason
+         default: test
+         required: false
+
+ jobs:
+   docs:
+     name: Build & Push Docs
+     runs-on: ${{ matrix.os }}
+     timeout-minutes: 90
+     strategy:
+       matrix:
+         os: ['ubuntu-latest']
+         environment-file: [ci/39.yaml]
+         experimental: [false]
+     defaults:
+       run:
+         shell: bash -l {0}
+     
+     steps:
+       - name: Checkout repo
+         uses: actions/checkout@v2
+       
+       - name: Setup micromamba
+         uses: mamba-org/provision-with-micromamba@main
+         with:
+           environment-file: ${{ matrix.environment-file }}
+           micromamba-version: 'latest'
+       
+       - name: Make Docs
+         run: cd docs; make html
+       
+       - name: Commit Docs
+         run: |
+           git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
+           cp -r docs/_build/html/* gh-pages/
+           cd gh-pages
+           git config --local user.email "action@github.com"
+           git config --local user.name "GitHub Action"
+           git add .
+           git commit -m "Update documentation" -a || true
+           # The above command will fail if no changes were present,
+           # so we ignore the return code.
+       
+       - name: push to gh-pages
+         uses: ad-m/github-push-action@master
+         with:
+            branch: gh-pages
+            directory: gh-pages
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            force: true

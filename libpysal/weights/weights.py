@@ -26,7 +26,7 @@ class W(object):
 
     Parameters
     ----------
-    
+
     neighbors : dict
         Key is region ID, value is a list of neighbor IDS.
         For example, ``{'a':['b'],'b':['a','c'],'c':['b']}``.
@@ -48,7 +48,7 @@ class W(object):
 
     Attributes
     ----------
-    
+
     asymmetries
     cardinalities
     component_labels
@@ -81,7 +81,7 @@ class W(object):
 
     Examples
     --------
-    
+
     >>> from libpysal.weights import W
     >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4], 4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7], 7: [4, 6, 8], 8: [5, 7]}
     >>> weights = {0: [1, 1], 1: [1, 1, 1], 2: [1, 1], 3: [1, 1, 1], 4: [1, 1, 1, 1], 5: [1, 1, 1], 6: [1, 1], 7: [1, 1, 1], 8: [1, 1]}
@@ -117,7 +117,7 @@ class W(object):
     2533.667
 
     Cardinality Histogram:
-    
+
     >>> w.histogram
     [(2, 4), (3, 392), (4, 9604)]
 
@@ -154,14 +154,14 @@ class W(object):
             self._id_order_set = True
         self._reset()
         self._n = len(self.weights)
-        if not self.silence_warnings and self.n_components > 1:
+        if (not self.silence_warnings) and (self.n_components > 1):
             message = (
                 "The weights matrix is not fully connected: "
                 "\n There are %d disconnected components." % self.n_components
             )
             ni = len(self.islands)
             if ni == 1:
-                message = message + "\n There is 1 island with id: " "%s." % (
+                message = message + "\n There is 1 island with id: %s." % (
                     str(self.islands[0])
                 )
             elif ni > 1:
@@ -175,47 +175,46 @@ class W(object):
         """Reset properties."""
         self._cache = {}
 
-    def to_file(self, path='', format=None):
+    def to_file(self, path="", format=None):
         """
-        Write a weights to a file. The format is guessed automatically 
-        from the path, but can be overridden with the format argument. 
+        Write a weights to a file. The format is guessed automatically
+        from the path, but can be overridden with the format argument.
 
-        See libpysal.io.FileIO for more information. 
+        See libpysal.io.FileIO for more information.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         path    :   string
                     location to save the file
         format  :   string
-                    string denoting the format to write the weights to. 
+                    string denoting the format to write the weights to.
 
 
         Returns
         -------
         None
         """
-        f = popen(dataPath=path, mode='w', dataFormat=format)
+        f = popen(dataPath=path, mode="w", dataFormat=format)
         f.write(self)
         f.close()
-        
 
     @classmethod
-    def from_file(cls, path='', format=None):
+    def from_file(cls, path="", format=None):
         """
-        Read a weights file into a W object. 
+        Read a weights file into a W object.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         path    :   string
                     location to save the file
         format  :   string
-                    string denoting the format to write the weights to. 
+                    string denoting the format to write the weights to.
 
         Returns
         -------
         W object
         """
-        f = popen(dataPath=path, mode='r', dataFormat=format)
+        f = popen(dataPath=path, mode="r", dataFormat=format)
         w = f.read()
         f.close()
         return w
@@ -228,8 +227,7 @@ class W(object):
         # a type dispatch table. Generic W should be for stuff we don't know
         # anything about.
         raise NotImplementedError(
-            "Use type-specific constructors, like Rook,"
-            " Queen, DistanceBand, or Kernel"
+            "Use type-specific constructors, like Rook, Queen, DistanceBand, or Kernel"
         )
 
     @classmethod
@@ -245,7 +243,7 @@ class W(object):
 
         Parameters
         ----------
-        
+
         adjlist : pandas.DataFrame
             Adjacency list with a minimum of two columns.
         focal_col : str
@@ -263,18 +261,21 @@ class W(object):
         if try_weightcol is None:
             adjlist = adjlist.copy(deep=True)
             adjlist["weight"] = 1
-        all_ids = set(adjlist[focal_col].tolist())
-        all_ids |= set(adjlist[neighbor_col].tolist())
         grouper = adjlist.groupby(focal_col)
-        neighbors = grouper[neighbor_col].apply(list).to_dict()
-        weights = grouper[weight_col].apply(list).to_dict()
-        neighbors.update({k: [] for k in all_ids.difference(list(neighbors.keys()))})
-        weights.update({k: [] for k in all_ids.difference(list(weights.keys()))})
+        neighbors = dict()
+        weights = dict()
+        for ix, chunk in grouper:
+            neighbors_to_ix = chunk[neighbor_col].values
+            weights_to_ix = chunk[weight_col].values
+            mask = neighbors_to_ix != ix
+            neighbors[ix] = neighbors_to_ix[mask].tolist()
+            weights[ix] = weights_to_ix[mask].tolist()
         return cls(neighbors=neighbors, weights=weights)
 
     def to_adjlist(
         self,
         remove_symmetric=False,
+        drop_islands=None,
         focal_col="focal",
         neighbor_col="neighbor",
         weight_col="weight",
@@ -292,6 +293,11 @@ class W(object):
             a ``W`` created from this adjacency list **MAY NOT BE THE SAME**
             as the original ``W``. If you would like to consider (1,2) and
             (2,1) as distinct links, leave this as ``False``.
+        drop_islands : bool
+            Whether or not to preserve islands as entries in the adjacency
+            list. By default, observations with no neighbors do not appear
+            in the adjacency list. If islands are kept, they are coded as
+            self-neighbors with zero weight.
         focal_col : str
             Name of the column in which to store "source" node ids.
         neighbor_col : str
@@ -300,20 +306,35 @@ class W(object):
             Name of the column in which to store weight information.
         """
         try:
-            import pandas as pd
-        except ImportError:
-            raise ImportError("pandas must be installed to use this method")
-        n_islands = len(self.islands)
-        if n_islands > 0 and (not self.silence_warnings):
-            warnings.warn(
-                "{} islands in this weights matrix. Conversion to an "
-                "adjacency list will drop these observations!"
+            import pandas
+        except (ImportError, ModuleNotFoundError):
+            raise ImportError(
+                "pandas must be installed & importable to use this method"
             )
-        adjlist = pd.DataFrame(
-            ((idx, n, w) for idx, neighb in self for n, w in list(neighb.items())),
-            columns=("focal", "neighbor", "weight"),
+        if (drop_islands is None) and not (self.silence_warnings):
+            warnings.warn(
+                "In the next version of libpysal, observations with no neighbors will be included in adjacency lists as loops (row with the same focal and neighbor) with zero weight. In the current version, observations with no neighbors are dropped. If you would like to keep the current behavior, use drop_islands=True in this function",
+                DeprecationWarning,
+            )
+            drop_islands = True
+
+        links = []
+        focal_ix, neighbor_ix = self.sparse.nonzero()
+        names = np.asarray(self.id_order)
+        focal = names[focal_ix]
+        neighbor = names[neighbor_ix]
+        weights = self.sparse.data
+        adjlist = pandas.DataFrame(
+            {focal_col: focal, neighbor_col: neighbor, weight_col: weights}
         )
-        return adjtools.filter_adjlist(adjlist) if remove_symmetric else adjlist
+        if remove_symmetric:
+            adjlist = adjtools.filter_adjlist(adjlist)
+        if not drop_islands:
+            island_adjlist = pandas.DataFrame(
+                {focal_col: self.islands, neighbor_col: self.islands, weight_col: 0}
+            )
+            adjlist = pandas.concat((adjlist, island_adjlist)).reset_index(drop=True)
+        return adjlist.sort_values([focal_col, neighbor_col])
 
     def to_networkx(self):
         """Convert a weights object to a ``networkx`` graph.
@@ -340,7 +361,7 @@ class W(object):
         weight_col : string
             If the graph is labeled, this should be the name of the field
             to use as the weight for the ``W``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
@@ -366,8 +387,7 @@ class W(object):
 
     @property
     def n_components(self):
-        """Store whether the adjacency matrix is fully connected.
-        """
+        """Store whether the adjacency matrix is fully connected."""
         if "n_components" not in self._cache:
             self._n_components, self._component_labels = connected_components(
                 self.sparse
@@ -378,8 +398,7 @@ class W(object):
 
     @property
     def component_labels(self):
-        """Store the graph component in which each observation falls.
-        """
+        """Store the graph component in which each observation falls."""
         if "component_labels" not in self._cache:
             self._n_components, self._component_labels = connected_components(
                 self.sparse
@@ -389,8 +408,7 @@ class W(object):
         return self._component_labels
 
     def _build_sparse(self):
-        """Construct the sparse attribute.
-        """
+        """Construct the sparse attribute."""
 
         row = []
         col = []
@@ -422,8 +440,7 @@ class W(object):
 
     @property
     def n(self):
-        """Number of units.
-        """
+        """Number of units."""
         if "n" not in self._cache:
             self._n = len(self.neighbors)
             self._cache["n"] = self._n
@@ -547,8 +564,7 @@ class W(object):
 
     @property
     def diagWtW_WW(self):
-        """Diagonal of :math:`W^{'}W + WW`.
-        """
+        """Diagonal of :math:`W^{'}W + WW`."""
         if "diagWtW_WW" not in self._cache:
             wt = self.sparse.transpose()
             w = self.sparse
@@ -558,8 +574,7 @@ class W(object):
 
     @property
     def trcWtW_WW(self):
-        """Trace of :math:`W^{'}W + WW`.
-        """
+        """Trace of :math:`W^{'}W + WW`."""
         if "trcWtW_WW" not in self._cache:
             self._trcWtW_WW = self.diagWtW_WW.sum()
             self._cache["trcWtW_WW"] = self._trcWtW_WW
@@ -567,8 +582,7 @@ class W(object):
 
     @property
     def pct_nonzero(self):
-        """Percentage of nonzero weights.
-        """
+        """Percentage of nonzero weights."""
         if "pct_nonzero" not in self._cache:
             self._pct_nonzero = 100.0 * self.sparse.nnz / (1.0 * self._n ** 2)
             self._cache["pct_nonzero"] = self._pct_nonzero
@@ -576,8 +590,7 @@ class W(object):
 
     @property
     def cardinalities(self):
-        """Number of neighbors for each observation.
-        """
+        """Number of neighbors for each observation."""
         if "cardinalities" not in self._cache:
             c = {}
             for i in self._id_order:
@@ -588,8 +601,7 @@ class W(object):
 
     @property
     def max_neighbors(self):
-        """Largest number of neighbors.
-        """
+        """Largest number of neighbors."""
         if "max_neighbors" not in self._cache:
             self._max_neighbors = max(self.cardinalities.values())
             self._cache["max_neighbors"] = self._max_neighbors
@@ -597,8 +609,7 @@ class W(object):
 
     @property
     def mean_neighbors(self):
-        """Average number of neighbors.
-        """
+        """Average number of neighbors."""
         if "mean_neighbors" not in self._cache:
             self._mean_neighbors = np.mean(list(self.cardinalities.values()))
             self._cache["mean_neighbors"] = self._mean_neighbors
@@ -606,8 +617,7 @@ class W(object):
 
     @property
     def min_neighbors(self):
-        """Minimum number of neighbors.
-        """
+        """Minimum number of neighbors."""
         if "min_neighbors" not in self._cache:
             self._min_neighbors = min(self.cardinalities.values())
             self._cache["min_neighbors"] = self._min_neighbors
@@ -615,8 +625,7 @@ class W(object):
 
     @property
     def nonzero(self):
-        """Number of nonzero weights.
-        """
+        """Number of nonzero weights."""
         if "nonzero" not in self._cache:
             self._nonzero = self.sparse.nnz
             self._cache["nonzero"] = self._nonzero
@@ -624,8 +633,7 @@ class W(object):
 
     @property
     def sd(self):
-        """Standard deviation of number of neighbors.
-        """
+        """Standard deviation of number of neighbors."""
         if "sd" not in self._cache:
             self._sd = np.std(list(self.cardinalities.values()))
             self._cache["sd"] = self._sd
@@ -633,8 +641,7 @@ class W(object):
 
     @property
     def asymmetries(self):
-        """List of id pairs with asymmetric weights.
-        """
+        """List of id pairs with asymmetric weights."""
         if "asymmetries" not in self._cache:
             self._asymmetries = self.asymmetry()
             self._cache["asymmetries"] = self._asymmetries
@@ -642,8 +649,7 @@ class W(object):
 
     @property
     def islands(self):
-        """List of ids without any neighbors.
-        """
+        """List of ids without any neighbors."""
         if "islands" not in self._cache:
             self._islands = [i for i, c in list(self.cardinalities.items()) if c == 0]
             self._cache["islands"] = self._islands
@@ -735,8 +741,8 @@ class W(object):
         old_ids = self._id_order
         if len(old_ids) != len(new_ids):
             raise Exception(
-                "W.remap_ids: length of `old_ids` does not match \
-            that of new_ids"
+                "W.remap_ids: length of `old_ids` does not match             that of"
+                " new_ids"
             )
         if len(set(new_ids)) != len(new_ids):
             raise Exception("W.remap_ids: list `new_ids` contains duplicates")
@@ -763,8 +769,8 @@ class W(object):
             self._reset()
 
     def __set_id_order(self, ordered_ids):
-        """Set the iteration order in w. ``W`` can be iterated over. On 
-        construction the iteration order is set to the lexicographic order of 
+        """Set the iteration order in w. ``W`` can be iterated over. On
+        construction the iteration order is set to the lexicographic order of
         the keys in the ``w.weights`` dictionary. If a specific order
         is required it can be set with this method.
 
@@ -835,7 +841,7 @@ class W(object):
 
     @property
     def id_order_set(self):
-        """ Returns ``True`` if user has set ``id_order``, ``False`` if not.
+        """Returns ``True`` if user has set ``id_order``, ``False`` if not.
 
         Examples
         --------
@@ -877,9 +883,9 @@ class W(object):
             for j, neigh_list in list(self.neighbors.items()):
                 self.__neighbors_0[j] = [id2i[neigh] for neigh in neigh_list]
             self._cache["neighbors_0"] = self.__neighbors_0
-        
+
         neighbor_list = self.__neighbors_0
-        
+
         return neighbor_list
 
     def get_transform(self):
@@ -888,9 +894,9 @@ class W(object):
         Returns
         -------
         transformation : str, None
-            Valid transformation value. See the ``transform`` 
+            Valid transformation value. See the ``transform``
             parameters in ``set_transform()`` for a detailed description.
-            
+
         Examples
         --------
         >>> from libpysal.weights import lat2W
@@ -922,13 +928,13 @@ class W(object):
         transform : str
             This parameter is not case sensitive. The following are
             valid transformations.
-            
+
             * **B** -- Binary
             * **R** -- Row-standardization (global sum :math:`=n`)
             * **D** -- Double-standardization (global sum :math:`=1`)
             * **V** -- Variance stabilizing
             * **O** -- Restore original transformation (from instantiation)
-        
+
         Notes
         -----
 
@@ -936,7 +942,7 @@ class W(object):
         instantiation. Chaining of transformations cannot be done on a ``W``
         instance.
 
-        
+
         Examples
         --------
         >>> from libpysal.weights import lat2W
@@ -1038,17 +1044,17 @@ class W(object):
         ----------
         intrinsic : bool
             Default is ``True``. Intrinsic symmetry is defined as
-            
+
             .. math::
-                
+
                 w_{i,j} == w_{j,i}
-            
+
             If ``intrinsic`` is ``False`` symmetry is defined as
-            
-            .. math:: 
-            
+
+            .. math::
+
                 i \in N_j \ \& \ j \in N_i
-                
+
             where :math:`N_j` is the set of neighbors for :math:`j`.
 
         Returns
@@ -1143,16 +1149,11 @@ class W(object):
         >>> ids
         ['first', 'second', 'third']
         """
-        wfull = np.zeros([self.n, self.n], dtype=float)
+        wfull = self.sparse.toarray()
         keys = list(self.neighbors.keys())
         if self.id_order:
             keys = self.id_order
-        for i, key in enumerate(keys):
-            n_i = self.neighbors[key]
-            w_i = self.weights[key]
-            for j, wij in zip(n_i, w_i):
-                c = keys.index(j)
-                wfull[i, c] = wij
+
         return (wfull, keys)
 
     def to_WSP(self):
@@ -1219,9 +1220,9 @@ class W(object):
         ----------
         gdf : geopandas.GeoDataFrame
             The original shapes whose topological relations are modelled in ``W``.
-        indexed_on : str 
+        indexed_on : str
             Column of ``geopandas.GeoDataFrame`` that the weights object uses
-            as an index. Default is ``None``, so the index of the 
+            as an index. Default is ``None``, so the index of the
             ``geopandas.GeoDataFrame`` is used.
         ax : matplotlib.axes.Axes
             Axis on which to plot the weights. Default is ``None``, so
@@ -1244,12 +1245,12 @@ class W(object):
             Figure on which the plot is made.
         ax : matplotlib.axes.Axes
             Axis on which the plot is made.
-        
+
         Notes
         -----
-        If you'd like to overlay the actual shapes from the 
+        If you'd like to overlay the actual shapes from the
         ``geopandas.GeoDataFrame``, call ``gdf.plot(ax=ax)`` after this.
-        To plot underneath, adjust the z-order of the plot as follows: 
+        To plot underneath, adjust the z-order of the plot as follows:
         ``gdf.plot(ax=ax,zorder=0)``.
 
         Examples
@@ -1319,9 +1320,6 @@ class WSP(object):
     sparse : scipy.sparse.{matrix-type}
         NxN object from ``scipy.sparse``
 
-    id_order : list
-        An ordered list of ids, assumed to match the ordering in ``sparse``.
-
     Attributes
     ----------
 
@@ -1353,7 +1351,7 @@ class WSP(object):
 
     """
 
-    def __init__(self, sparse, id_order=None):
+    def __init__(self, sparse, id_order=None, index=None):
         if not scipy.sparse.issparse(sparse):
             raise ValueError("must pass a scipy sparse object")
         rows, cols = sparse.shape
@@ -1361,13 +1359,38 @@ class WSP(object):
             raise ValueError("Weights object must be square")
         self.sparse = sparse.tocsr()
         self.n = sparse.shape[0]
+        self._cache = {}
         if id_order:
             if len(id_order) != self.n:
                 raise ValueError(
                     "Number of values in id_order must match shape of sparse"
                 )
-        self.id_order = id_order
-        self._cache = {}
+            else:
+                self._id_order = id_order
+                self._cache["id_order"] = self._id_order
+        # temp addition of index attribute
+        import pandas as pd  # will be removed after refactoring is done
+
+        if index is not None:
+            if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
+                raise TypeError("index must be an instance of pandas.Index dtype")
+            if len(index) != self.n:
+                raise ValueError("Number of values in index must match shape of sparse")
+        else:
+            index = pd.RangeIndex(self.n)
+        self.index = index
+
+    @property
+    def id_order(self):
+        """An ordered list of ids, assumed to match the ordering in ``sparse``."""
+        # Temporary solution until the refactoring is finished
+        if "id_order" not in self._cache:
+            if hasattr(self, "index"):
+                self._id_order = self.index.tolist()
+            else:
+                self._id_order = list(range(self.n))
+            self._cache["id_order"] = self._id_order
+        return self._id_order
 
     @property
     def s0(self):
@@ -1385,8 +1408,7 @@ class WSP(object):
 
     @property
     def trcWtW_WW(self):
-        """Trace of :math:`W^{'}W + WW`.
-        """
+        """Trace of :math:`W^{'}W + WW`."""
         if "trcWtW_WW" not in self._cache:
             self._trcWtW_WW = self.diagWtW_WW.sum()
             self._cache["trcWtW_WW"] = self._trcWtW_WW
@@ -1394,8 +1416,7 @@ class WSP(object):
 
     @property
     def diagWtW_WW(self):
-        """Diagonal of :math:`W^{'}W + WW`.
-        """
+        """Diagonal of :math:`W^{'}W + WW`."""
         if "diagWtW_WW" not in self._cache:
             wt = self.sparse.transpose()
             w = self.sparse

@@ -1,6 +1,2 @@
-nose
-nose-progressive
-nose-exclude
-coverage
-sphinx>=1.4.3
-coveralls
+black
+pre-commit

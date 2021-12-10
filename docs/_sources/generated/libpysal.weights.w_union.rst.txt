@@ -1,6 +1,0 @@
-libpysal.weights.w\_union
-=========================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: w_union
