@@ -11,7 +11,6 @@ from .util import (
     get_points_array,
     WSP2W,
 )
-
 import copy
 from warnings import warn as Warn
 from scipy.spatial import distance_matrix
@@ -84,7 +83,20 @@ class KNN(W):
     Notes
     -----
 
-    Ties between neighbors of equal distance are arbitrarily broken.
+    Ties between neighbors of equal distance are arbitrarily broken. 
+
+    Further, if many points occupy the same spatial location (i.e. observations are 
+    coincident), then you may need to increase k for those observations to 
+    acquire neighbors at different spatial locations. For example, if five
+    points are coincident, then their four nearest neighbors will all
+    occupy the same spatial location; only the fifth nearest neighbor will
+    result in those coincident points becoming connected to the graph as a
+    whole. 
+
+    Solutions to this problem include jittering the points (by adding
+    a small random value to each observation's location) or by adding 
+    higher-k neighbors only to the coincident points, using the
+    weights.w_sets.w_union() function. 
 
     See Also
     --------
@@ -111,19 +123,30 @@ class KNN(W):
             self.data = self.kdtree.data
         self.k = k
         self.p = p
-        this_nnq = self.kdtree.query(self.data, k=k + 1, p=p)
 
-        to_weight = this_nnq[1]
+        # these are both n x k+1
+        distances, indices = self.kdtree.query(self.data, k=k + 1, p=p)
+        full_indices = np.arange(self.kdtree.n)
+
+        # if an element in the indices matrix is equal to the corresponding
+        # index for that row, we want to mask that site from its neighbors
+        not_self_mask = indices != full_indices.reshape(-1, 1)
+        # if there are *too many duplicates per site*, then we may get some
+        # rows where the site index is not in the set of k+1 neighbors
+        # So, we need to know where these sites are
+        has_one_too_many = not_self_mask.sum(axis=1) == (k + 1)
+        # if a site has k+1 neighbors, drop its k+1th neighbor
+        not_self_mask[has_one_too_many, -1] &= False
+        not_self_indices = indices[not_self_mask].reshape(self.kdtree.n, -1)
+
+        to_weight = not_self_indices
         if ids is None:
-            ids = list(range(to_weight.shape[0]))
+            ids = list(full_indices)
+            named_indices = not_self_indices
+        else:
+            named_indices = np.asarray(ids)[not_self_indices]
+        neighbors = {idx: list(indices) for idx, indices in zip(ids, named_indices)}
 
-        neighbors = {}
-        for i, row in enumerate(to_weight):
-            row = row.tolist()
-            row.remove(i)
-            row = [ids[j] for j in row]
-            focal = ids[i]
-            neighbors[focal] = row
         W.__init__(self, neighbors, id_order=ids, **kwargs)
 
     @classmethod
@@ -693,6 +716,7 @@ class DistanceBand(W):
     threshold  : float
                  distance band
     p          : float
+                 DEPRECATED: use `distance_metric`
                  Minkowski p-norm distance metric parameter:
                  1<=p<=infinity
                  2: Euclidean distance
@@ -709,6 +733,7 @@ class DistanceBand(W):
                   values to use for keys of the neighbors and weights dicts
 
     build_sp    : boolean
+                  DEPRECATED
                   True to build sparse distance matrix and false to build dense
                   distance matrix; significant speed gains may be obtained
                   dending on the sparsity of the of distance_matrix and
@@ -766,12 +791,6 @@ class DistanceBand(W):
     >>> w.weights[0]
     [0.01, 0.007999999999999998]
 
-    Notes
-    -----
-
-    This was initially implemented running scipy 0.8.0dev (in epd 6.1).
-    earlier versions of scipy (0.7.0) have a logic bug in scipy/sparse/dok.py
-    so serge changed line 221 of that file on sal-dev to fix the logic bug.
 
     """
 
@@ -821,6 +840,7 @@ class DistanceBand(W):
             else:
                 self.data = data
                 self.kdtree = None
+
         self._band()
         neighbors, weights = self._distance_to_W(ids)
         W.__init__(
@@ -862,6 +882,7 @@ class DistanceBand(W):
 
     @classmethod
     def from_dataframe(cls, df, threshold, geom_col=None, ids=None, **kwargs):
+
         """
         Make DistanceBand weights from a dataframe.
 

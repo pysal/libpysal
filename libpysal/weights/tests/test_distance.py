@@ -217,7 +217,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
             self.arc_points, distance_metric="Arc", radius=cg.sphere.RADIUS_EARTH_KM
         )
         npoints = self.arc_points.shape[0]
-        full = np.matrix(
+        full = np.array(
             [
                 [arc(self.arc_points[i], self.arc_points[j]) for j in range(npoints)]
                 for i in range(npoints)
