@@ -1,8 +1,13 @@
 from scipy.spatial import Delaunay as _Delaunay
 from scipy import sparse
-from numba import njit
 from libpysal.weights import W, WSP
-import joblib, pandas, pygeos, numpy
+import pandas, numpy
+
+try:
+    from numba import njit
+except ModuleNotFoundErrror:
+    from libpysal.common import jit as njit
+
 
 # delaunay graphs and their subgraphs
 
@@ -28,7 +33,9 @@ class Delaunay(W):
 
     @classmethod
     def from_dataframe(cls, df, **kwargs):
-        return cls(pygeos.get_coordinates(pygeos.centroid(df.geometry.values.data)))
+        centroids = df.geometry.centroid
+        point_array = numpy.column_stack((centroids.x.values, centroids.y.values))
+        return cls(point_array)
 
 
 class Gabriel(Delaunay):
@@ -153,22 +160,6 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
             r.append(dkmax)
 
     return out, r
-
-
-class Mutual_Reachability(W):
-    def __init__(
-        self, coordinates, n_max=None, n_core=5, method="kdtree", metric="euclidean"
-    ):
-        # check to see if metric is supported by method using tree.valid_metrics
-        # so, kdtree can only do minkowski
-        # balltree can handle more
-        # approx can handle a ton, but wait to import pynndescent unless method = approx
-        # raise an error if the requested metric is not supported
-
-        # then, compute the core distances for each point
-        # finally, for all pairs of points, compute the distances for the nearest n_max
-        # points (possibly all points), and censor that by the core distance.
-        raise NotImplementedError()
 
 
 if __name__ == "__main__":
