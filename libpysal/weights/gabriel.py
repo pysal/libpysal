@@ -71,7 +71,7 @@ class Delaunay(W):
         geomtypes = df.geometry.type.unique()
         try:
             assert len(geomtypes) == 1
-            assert geomtype[0] == 'Point'
+            assert geomtypes[0] == 'Point'
             point_array = numpy.column_stack(
                     (df.geometry.x.values, df.geometry.y.values)
                     )
