@@ -10,7 +10,7 @@ coords = numpy.column_stack((geoms.x, geoms.y))
 
 def test_delaunay():
     a = gabriel.Delaunay(coords)
-    b = gabriel.Delaunay.from_dataframe(df)
+    b = gabriel.Delaunay.from_dataframe(df.centroid)
 
     assert a.neighbors == b.neighbors
 
@@ -19,7 +19,7 @@ def test_delaunay():
 
 def test_gabriel():
     c = gabriel.Gabriel(coords)
-    d = gabriel.Gabriel.from_dataframe(df)
+    d = gabriel.Gabriel.from_dataframe(df.centroid)
     c2 = gabriel.Delaunay(coords)
 
     assert c.neighbors == d.neighbors

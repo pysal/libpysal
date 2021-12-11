@@ -5,7 +5,7 @@ import pandas, numpy, warnings
 
 try:
     from numba import njit
-except ModuleNotFoundErrror:
+except ModuleNotFoundError:
     from libpysal.common import jit as njit
 
 __author__ = """"
