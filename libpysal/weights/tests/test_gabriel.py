@@ -28,3 +28,16 @@ def test_gabriel():
     for focal, neighbors in c.neighbors.items():
         dneighbors = c2[focal]
         assert set(neighbors) <= set(dneighbors)
+
+def test_rng():
+    e = gabriel.Relative_Neighborhood(coords)
+    f = gabriel.Relative_Neighborhood.from_dataframe(df.centroid)
+    dty = gabriel.Delaunay(coords)
+
+    assert e.neighbors == f.neighbors
+
+    assert e[1] != dty[1]
+    assert list(e[1].keys()) == [0,3,6,30,38]
+    for focal, neighbors in e.neighbors.items():
+        dneighbors = dty[focal]
+        assert set(neighbors) <= set(dneighbors)
