@@ -1,21 +1,56 @@
 from scipy.spatial import Delaunay as _Delaunay
 from scipy import sparse
 from libpysal.weights import W, WSP
-import pandas, numpy
+import pandas, numpy, warnings
 
 try:
     from numba import njit
 except ModuleNotFoundErrror:
     from libpysal.common import jit as njit
 
-
-# delaunay graphs and their subgraphs
+__author__ = """"
+Levi John Wolf (levi.john.wolf@gmailcom)
+Martin Fleischmann (martin@martinfleischmann.net)
+"""
 
 #### Classes
 
 
 class Delaunay(W):
+    """
+    Constructor of the Delaunay graph of a set of input points. 
+    Relies on scipy.spatial.Delaunay and numba to quickly construct
+    a graph from the input set of points. Will be slower without numba,
+    and will warn if this is missing. 
+
+    Arguments
+    ---------
+    coordinates :   array of points, (N,2)
+        numpy array of coordinates containing locations to compute the
+        delaunay triangulation
+    **kwargs    :   keyword argument list
+        keyword arguments passed directly to weights.W
+    
+    Notes
+    -----
+    The Delaunay triangulation can result in quite a few non-local links among
+    spatial coordinates. For a more useful graph, consider the weights.Voronoi
+    constructor, which builds a voronoi diagram among the points, clips the
+    Voronoi cells, and then constructs an adjacency graph among the clipped cells.
+    This graph among the clipped Voronoi cells generally represents the structure
+    of local adjacencies better than the "raw" Delaunay graph. 
+
+    However, if the unresricted Delaunay triangulation is needed, this class
+    will compute it much more quickly than Voronoi(coordinates, clip=None).
+    """
     def __init__(self, coordinates, **kwargs):
+        try:
+            from numba import njit
+        except ModuleNotFoundError:
+            warnings.warn("The numba package is used extensively in this module"
+                    " to accelerate the computation of graphs. Without numba,"
+                    " these computations may become unduly slow on large data."
+                    )
         edges, _ = self._voronoi_edges(coordinates)
         voronoi_neighbors = pandas.DataFrame(edges).groupby(0)[1].apply(list).to_dict()
         W.__init__(self, voronoi_neighbors, **kwargs)
@@ -33,13 +68,54 @@ class Delaunay(W):
 
     @classmethod
     def from_dataframe(cls, df, **kwargs):
-        centroids = df.geometry.centroid
-        point_array = numpy.column_stack((centroids.x.values, centroids.y.values))
-        return cls(point_array)
+        geomtypes = df.geometry.type.unique()
+        try:
+            assert len(geomtypes) == 1
+            assert geomtype[0] == 'Point'
+            point_array = numpy.column_stack(
+                    (df.geometry.x.values, df.geometry.y.values)
+                    )
+            return cls(point_array, **kwargs)
+        except AssertionError:
+            raise TypeError(
+                    f'The input dataframe has geometry types {geomtypes}'
+                    f' but this delaunay triangulation is only well-defined for points.'
+                    f' Choose a method to convert your dataframe into points (like using'
+                    f' the df.centroid) and use that to estimate this graph.'
+                    )
 
 
 class Gabriel(Delaunay):
+    """
+    Constructs the Gabriel graph of a set of points. This graph is a subset of 
+    the Delaunay triangulation where only "short" links are retained. This 
+    function is also accelerated using numba, and implemented on top of the
+    scipy.spatial.Delaunay class. 
+
+    For a link (i,j) connecting node i to j in the Delaunay triangulation
+    to be retained in the Gabriel graph, it must pass a point set exclusion test:
+    1. Construct the circle C_ij containing link (i,j) as its diameter
+    2. If any other node k is contained within C_ij, then remove link (i,j) 
+       from the graph. 
+    3. Once all links are evaluated, the remaining graph is the Gabriel graph. 
+
+    Arguments
+    ---------
+    coordinates :   array of points, (N,2)
+        numpy array of coordinates containing locations to compute the
+        delaunay triangulation
+    **kwargs    :   keyword argument list
+        keyword arguments passed directly to weights.W
+    """
     def __init__(self, coordinates, **kwargs):
+        try:
+            from numba import njit
+        except ModuleNotFoundError:
+            warnings.warn("The numba package is used extensively in this module"
+                    " to accelerate the computation of graphs. Without numba,"
+                    " these computations may become unduly slow on large data."
+                    )
+        edges, _ = self._voronoi_edges(coordinates)
         edges, dt = self._voronoi_edges(coordinates)
         droplist = _filter_gabriel(
             edges,
@@ -51,16 +127,39 @@ class Gabriel(Delaunay):
 
 
 class Relative_Neighborhood(Delaunay):
-    def __init__(self, coordinates, return_dkmax=False, **kwargs):
-        """
-        via toussaint, https://doi.org/10.1016/0031-3203(80)90066-7
-        """
+    """
+    Constructs the Relative Neighborhood graph from a set of points. 
+    This graph is a subset of the Delaunay triangulation, where only 
+    "relative neighbors" are retained. Further, it is a superset of
+    the Minimum Spanning Tree, with additional "relative neighbors"
+    introduced.
+
+    A relative neighbor pair of points i,j must be closer than the 
+    maximum distance between i (or j) and each other point k. 
+    This means that the points are at least as close to one another 
+    as they are to any other point. 
+    
+    Arguments
+    ---------
+    coordinates :   array of points, (N,2)
+        numpy array of coordinates containing locations to compute the
+        delaunay triangulation
+    **kwargs    :   keyword argument list
+        keyword arguments passed directly to weights.W
+    """
+    def __init__(self, coordinates, **kwargs):
+        try:
+            from numba import njit
+        except ModuleNotFoundError:
+            warnings.warn("The numba package is used extensively in this module"
+                    " to accelerate the computation of graphs. Without numba,"
+                    " these computations may become unduly slow on large data."
+                    )
+        edges, _ = self._voronoi_edges(coordinates)
         edges, dt = self._voronoi_edges(coordinates)
         output, dkmax = _filter_relativehood(
-            edges, dt.points, return_dkmax=return_dkmax
+            edges, dt.points, return_dkmax=False
         )
-        if not return_dkmax:
-            del dkmax
         row, col, data = zip(*output)
         sp = sparse.csc_matrix((data, (row, col))) #TODO: faster way than this?
         tmp = WSP(sp).to_W() 
@@ -72,6 +171,13 @@ class Relative_Neighborhood(Delaunay):
 
 @njit
 def _edges_from_simplices(simplices):
+    """
+    Construct the sets of links that correspond to the edges of each 
+    simplex. Each simplex has three "sides," and thus six undirected
+    edges. Thus, the input should be a list of three-length tuples, 
+    that are then converted into the six non-directed edges for 
+    each simplex.
+    """
     edges = []
     for simplex in simplices:
         edges.append((simplex[0], simplex[1]))
@@ -85,6 +191,23 @@ def _edges_from_simplices(simplices):
 
 @njit
 def _filter_gabriel(edges, coordinates):
+    """
+    For an input set of edges and coordinates, filter the input edges
+    depending on the Gabriel rule: 
+
+    For each simplex, let i,j be the diameter of the circle defined by
+    edge (i,j), and let k be the third point defining the simplex. The
+    limiting case for the Gabriel rule is when k is also on the circle
+    with diameter (i,j). In this limiting case, then simplex ijk must
+    be a right triangle, and dij**2 = djk**2 + dki**2 (by thales theorem). 
+
+    This means that when dij**2 > djk**2 + dki**2, then k is inside the circle. 
+    In contrast, when dij**2 < djk**2 + dji*2, k is outside of the circle. 
+
+    Therefore, it's sufficient to take each observation i, iterate over its
+    Delaunay neighbors j,k, and remove links whre dij**2 > djk**2 + dki**2 
+    in order to construct the Gabriel graph. 
+    """
     edge_pointer = 0
     n = edges.max()
     n_edges = len(edges)
@@ -98,14 +221,6 @@ def _filter_gabriel(edges, coordinates):
             if next_edge[0] != edge[0]:
                 break
             cardinality += 1
-        # let i,j be the diameter of a circle, and k be a third point making a triangle.
-        # the right triangle formed when k is on the circle is the limiting case for the
-        # gabriel link between ij. If k on the circle, then dij**2 = djk**2 + dki**2,
-        # by thales theorem (an inscribed triangle with hypotenuse as diameter is a
-        # right triangle.). When dij**2 > djk**2 + dki**2, k is inside of the circle.
-        # When dij**2 < dij**2 + djk**2, k is outside of the circle.
-        # Therefore, we can take each observation i, iterate over neighbors j,k and remove links
-        # where dij**2 > djk**2 + dki**2 to filter a delanuay graph to a gabriel one.
         for ix in range(edge_pointer, edge_pointer + cardinality):
             i, j = edges[ix]  # lookahead ensures that i is always edge[0]
             dij2 = ((coordinates[i] - coordinates[j]) ** 2).sum()
@@ -125,13 +240,15 @@ def _filter_gabriel(edges, coordinates):
 
 @njit
 def _filter_relativehood(edges, coordinates, return_dkmax=False):
+    """
+    This is a direct implementation of the algorithm from Toussaint (1980), RNG-2 
 
-    # RNG
-    # 1. Compute the delaunay
-    # 2. for each edge of the delaunay (i,j), compute
-    #    dkmax = max(d(k,i), d(k,j)) for k in 1..n, k != i, j
-    # 3. for each edge of the delaunay (i,j), prune
-    #    if any dkmax is greater than d(i,j)
+    1. Compute the delaunay
+    2. for each edge of the delaunay (i,j), compute
+       dkmax = max(d(k,i), d(k,j)) for k in 1..n, k != i, j
+    3. for each edge of the delaunay (i,j), prune
+       if any dkmax is greater than d(i,j)
+    """
     edge_pointer = 0
     n = edges.max()
     n_edges = len(edges)
@@ -161,105 +278,3 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
 
     return out, r
 
-
-if __name__ == "__main__":
-    import numpy, subprocess, geopandas, pandas, pygeos, time, libpysal, os
-    from rpy2.robjects import r
-
-    libpysal.examples.load_example("south.shp")
-    path = libpysal.examples.get_path("south.shp")
-    df = geopandas.read_file(path)
-
-    coords = pygeos.get_coordinates(df.geometry.centroid.values.data)
-    start1 = time.time()
-    voronoi_old = libpysal.weights.Voronoi(coords, clip="extent")
-    fin1 = time.time()
-    voronoi_old_elapsed = fin1 - start1
-
-    compile_start = time.time()
-    _edges_from_simplices(numpy.random.randint(0, 4, size=(4, 3)))
-    _filter_gabriel(
-        numpy.random.randint(0, 4, size=(4, 2)), numpy.random.normal(size=(4, 2))
-    )
-    compile_finish = time.time()
-    compile_time = compile_finish - compile_start
-
-    start2 = time.time()
-    dt = _Delaunay(coords)
-    edges = _edges_from_simplices(dt.simplices)
-    edges = (
-        pandas.DataFrame(numpy.asarray(list(edges)))
-        .sort_values([0, 1])
-        .drop_duplicates()
-        .values
-    )
-    droplist = _filter_gabriel(
-        edges,
-        dt.points,
-    )
-    output = set(map(tuple, edges)).difference(set(droplist))
-    gabriel_neighbors = pandas.DataFrame(output).groupby(0)[1].apply(list).to_dict()
-    gabriel_raw = libpysal.weights.W(gabriel_neighbors)
-    fin2 = time.time()
-    gabriel_raw_elapsed = fin2 - start2
-
-    for focal, gneighbors in gabriel_raw.neighbors.items():
-        vneighbors = voronoi_old.neighbors[focal]
-        assert set(gneighbors) <= set(vneighbors)
-
-    start3 = time.time()
-    delaunay = Delaunay(coords)
-    fin3 = time.time()
-    voronoi_new_elapsed = fin3 - start3
-
-    start4 = time.time()
-    gabriel = Gabriel(coords)
-    fin4 = time.time()
-    gabriel_elapsed = fin4 - start4
-    assert gabriel.n == delaunay.n
-    for focal, gneighbors in gabriel.neighbors.items():
-        dneighbors = delaunay.neighbors[focal]
-        assert set(gneighbors) <= set(dneighbors)
-    # for focal, dneighbors in delaunay.neighbors.items():
-    #    vold = voronoi_old.neighbors[focal]
-    #    assert vold == vneighbors fails due to clipping!
-
-    print(
-        f"""
-        Old Voronoi: {voronoi_old_elapsed:.2f}
-        Raw Gabriel: {gabriel_raw_elapsed:.2f}
-        Compile: {compile_time:.2f}
-        New Delaunay: {voronoi_new_elapsed:.2f}
-        Ref Gabriel: {gabriel_elapsed:.2f}
-        """
-    )
-
-    location = os.path.dirname(__file__)
-    with open(f"{location}/gabriel.R", "w") as f:
-        f.writelines(
-            [
-                "library(sf)\n"
-                "library(spdep)\n"
-                "library(dplyr)\n"
-                f"path <- '{path}'\n"
-                "df <- st_read(path)\n"
-                "network <- df %>% st_centroid() %>% st_coordinates() %>%  gabrielneigh()\n"
-                f'network %>% graph2nb(sym=T) %>% write.nb.gal("{location}/gabriel_r.gal")\n'
-            ]
-        )
-    subprocess.call(["/usr/local/bin/Rscript", "--vanilla", f"{location}/gabriel.R"])
-
-    gabriel_r = W.from_file(f"{location}/gabriel_r.gal")
-
-    for i, neighbors in gabriel.neighbors.items():
-        iname = str(i + 1)
-        nnames = [str(n + 1) for n in neighbors]
-        r_neighbors = gabriel_r.neighbors[iname]
-        assert set(r_neighbors) == set(nnames)
-
-    os.remove(f"{location}/gabriel_r.gal")
-    os.remove(f"{location}/gabriel.R")
-
-
-
-    Relative_Neighborhood(coords)
