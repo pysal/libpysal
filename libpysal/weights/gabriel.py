@@ -167,7 +167,7 @@ class Relative_Neighborhood(Delaunay):
     **kwargs    :   keyword argument list
         keyword arguments passed directly to weights.W
     """
-    def __init__(self, coordinates, **kwargs):
+    def __init__(self, coordinates, binary=True, **kwargs):
         try:
             from numba import njit
         except ModuleNotFoundError:
@@ -181,6 +181,8 @@ class Relative_Neighborhood(Delaunay):
             edges, dt.points, return_dkmax=False
         )
         row, col, data = zip(*output)
+        if binary:
+            data = numpy.ones_like(col, dtype=float)
         sp = sparse.csc_matrix((data, (row, col))) #TODO: faster way than this?
         tmp = WSP(sp).to_W() 
         W.__init__(self, tmp.neighbors, tmp.weights, **kwargs)
