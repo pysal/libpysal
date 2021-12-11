@@ -9,7 +9,7 @@ except ModuleNotFoundError:
     from libpysal.common import jit as njit
 
 __author__ = """"
-Levi John Wolf (levi.john.wolf@gmailcom)
+Levi John Wolf (levi.john.wolf@gmail.com)
 Martin Fleischmann (martin@martinfleischmann.net)
 """
 
@@ -35,10 +35,15 @@ class Delaunay(W):
     -----
     The Delaunay triangulation can result in quite a few non-local links among
     spatial coordinates. For a more useful graph, consider the weights.Voronoi
-    constructor, which builds a voronoi diagram among the points, clips the
+    constructor or the Gabriel graph.
+
+    The weights.Voronoi class builds a voronoi diagram among the points, clips the
     Voronoi cells, and then constructs an adjacency graph among the clipped cells.
     This graph among the clipped Voronoi cells generally represents the structure
     of local adjacencies better than the "raw" Delaunay graph. 
+
+    The weights.gabriel.Gabriel graph constructs a Delaunay graph, but only
+    includes the "short" links in the Delaunay graph. 
 
     However, if the unresricted Delaunay triangulation is needed, this class
     will compute it much more quickly than Voronoi(coordinates, clip=None).
@@ -68,6 +73,21 @@ class Delaunay(W):
 
     @classmethod
     def from_dataframe(cls, df, **kwargs):
+        """
+        Construct a Delaunay triangulation from a geopandas GeoDataFrame. 
+        Not that the input geometries in the dataframe must be Points. 
+        Polygons or lines must be converted to points (e.g. using 
+        df.geometry.centroid).
+
+        Arguments
+        ---------
+        df  :   geopandas.GeoDataFrame
+            GeoDataFrame containing points to construct the Delaunay 
+            Triangulation. 
+        **kwargs :  keyword arguments
+            Keyword arguments that are passed downwards to the weights.W
+            constructor.
+        """
         geomtypes = df.geometry.type.unique()
         try:
             assert len(geomtypes) == 1
