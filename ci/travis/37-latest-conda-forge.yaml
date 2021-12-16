@@ -3,18 +3,12 @@ channels:
   - conda-forge
 dependencies:
   - python=3.7
-  - appdirs
-  - beautifulsoup4
-  - jinja2
-  - pandas>=1.0
-  - scipy>=1.0
-  - xarray
+  - six
   # testing
+  - nose
   - codecov
   - matplotlib
-  - pytest
-  - pytest-cov
   # optional
-  - geopandas>=0.7.0
+  - geopandas
   - numba
   - zstd

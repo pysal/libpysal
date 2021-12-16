@@ -10,6 +10,7 @@ import os
 import webbrowser
 from os import environ, makedirs
 from os.path import exists, expanduser, join
+from appdirs import user_data_dir
 import zipfile
 import requests
 import pandas
@@ -19,15 +20,11 @@ from ..io import open as ps_open
 
 from typing import Union
 
-PYSALDATA = "pysal_data"
 
 
 def get_data_home():
-    """Return the path of the ``libpysal`` data directory. This folder (``~/pysal_data``)
-    is used by some large dataset loaders to avoid downloading the data multiple times.
-    Alternatively, it can be set by the 'PYSALDATA' environment variable or programmatically
-    by giving an explicit folder path. The ``'~'`` symbol is expanded to the user home
-    folder If the folder does not already exist, it is automatically created.
+    """Return the path of the ``libpysal`` data directory. This folder is platform specific.
+    If the folder does not already exist, it is automatically created.
 
     Returns
     -------
@@ -36,8 +33,9 @@ def get_data_home():
 
     """
 
-    data_home = environ.get("PYSALDATA", join("~", PYSALDATA))
-    data_home = expanduser(data_home)
+    appname = "pysal"
+    appauthor = "pysal"
+    data_home =  user_data_dir(appname, appauthor) 
     if not exists(data_home):
         makedirs(data_home, exist_ok=True)
     return data_home
