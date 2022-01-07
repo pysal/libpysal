@@ -14,12 +14,12 @@ import numbers
 from collections import defaultdict
 from itertools import tee
 from ..common import requires
-from distutils.version import LooseVersion
+from packaging.version import Version
 
 try:
     import geopandas as gpd
 
-    GPD_08 = str(gpd.__version__) >= LooseVersion("0.8.0")
+    GPD_08 = Version(gpd.__version__) >= Version("0.8.0")
 except ImportError:
     warn("geopandas not available. Some functionality will be disabled.")
 

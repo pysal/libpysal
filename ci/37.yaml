@@ -17,3 +17,4 @@ dependencies:
   - geopandas>=0.7.0
   - numba
   - zstd
+  - packaging
