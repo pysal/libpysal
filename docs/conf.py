@@ -46,7 +46,7 @@ extensions = [  #'sphinx_gallery.gen_gallery',
     "matplotlib.sphinxext.plot_directive",
     "nbsphinx",
 ]
-
+bibtex_bibfiles = ["_static/references.bib"]
 
 # sphinx_gallery_conf = {
 #      # path to your examples scripts
@@ -331,3 +331,5 @@ nbsphinx_execute_arguments = [
 mathjax_config = {
     "TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": True}},
 }
+
+
