@@ -1,3 +1,4 @@
+appdirs
 beautifulsoup4
 jinja2
 numpy>=1.3

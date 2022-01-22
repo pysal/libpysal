@@ -4,7 +4,7 @@
 from bs4 import BeautifulSoup
 import requests
 import warnings
-from .base import PYSALDATA, Example, get_list_of_files, get_data_home
+from .base import Example
 
 
 def poll_remotes():
