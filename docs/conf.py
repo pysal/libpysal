@@ -124,7 +124,7 @@ html_favicon = "_static/images/pysal_favicon.ico"
 #
 html_theme_options = {
     # Navigation bar title. (Default: ``project`` value)
-    "navbar_title": project,
+    "navbar_title": "libpysal",
     # Render the next and previous page links in navbar. (Default: true)
     "navbar_sidebarrel": False,
     # Render the current pages TOC in the navbar. (Default: true)
@@ -183,7 +183,7 @@ html_static_path = ["_static"]
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "%sdoc" % project
+htmlhelp_basename = "libpysaldoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -209,8 +209,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "%s.tex" % project,
-        u"%s Documentation" % project,
+        "libpysal.tex",
+        u"libpysal Documentation",
         u"pysal developers",
         "manual",
     ),
@@ -221,7 +221,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, project, u"%s Documentation" % project, [author], 1)]
+man_pages = [(master_doc, "libpysal", u"libpysal Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -232,10 +232,10 @@ man_pages = [(master_doc, project, u"%s Documentation" % project, [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        project,
-        u"%s Documentation" % project,
+        "libpysal",
+        u"libpysal Documentation",
         author,
-        project,
+        "libpysal",
         "One line description of project.",
         "Miscellaneous",
     ),
@@ -259,7 +259,6 @@ autosummary_generate = True
 # avoid showing members twice
 numpydoc_show_class_members = False
 numpydoc_use_plots = True
-class_members_toctree = True
 
 #
 numpydoc_show_inherited_class_members = True
@@ -273,8 +272,9 @@ plot_include_source = True
 
 
 def setup(app):
-    app.add_css_file("pysal-styles.css")
+    app.add_css_file("pysal-styles.css") 
 
+bibtex_bibfiles = ['_static/references.bib']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
@@ -286,48 +286,4 @@ intersphinx_mapping = {
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "python": ("https://docs.python.org/3.8/", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
-}
-
-
-# This is processed by Jinja2 and inserted before each notebook
-nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base=None) %}
-
-.. only:: html
-
-    .. role:: raw-html(raw)
-        :format: html
-
-    .. nbinfo::
-
-        This page was generated from `{{ docname }}`__.
-        Interactive online version:
-        :raw-html:`<a href="https://mybinder.org/v2/gh/pysal/libpysal/master?filepath={{ docname }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
-
-    __ https://github.com/pysal/libpysal/blob/master/{{ docname }}
-
-.. raw:: latex
-
-    \nbsphinxstartnotebook{\scriptsize\noindent\strut
-    \textcolor{gray}{The following section was generated from
-    \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
-"""
-
-# This is processed by Jinja2 and inserted after each notebook
-nbsphinx_epilog = r"""
-.. raw:: latex
-
-    \nbsphinxstopnotebook{\scriptsize\noindent\strut
-    \textcolor{gray}{\dotfill\ \sphinxcode{\sphinxupquote{\strut
-    {{ env.doc2path(env.docname, base='doc') | escape_latex }}}} ends here.}}
-"""
-
-# List of arguments to be passed to the kernel that executes the notebooks:
-nbsphinx_execute_arguments = [
-    "--InlineBackend.figure_formats={'svg', 'pdf'}",
-    "--InlineBackend.rc={'figure.dpi': 96}",
-]
-
-mathjax_config = {
-    "TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": True}},
 }

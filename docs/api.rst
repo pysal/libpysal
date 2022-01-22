@@ -22,6 +22,9 @@ Distance Weights
    libpysal.weights.DistanceBand
    libpysal.weights.Kernel
    libpysal.weights.KNN
+   libpysal.weights.Gabriel
+   libpysal.weights.Delaunay
+   libpysal.weights.Relative_Neighborhood
 
 Contiguity Weights
 ++++++++++++++++++
