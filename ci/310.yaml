@@ -14,16 +14,17 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
+  - pytest-dist
   # optional
   - geopandas>=0.7.0
-  - numba
-  - xarray
   - joblib
-  - zstd
+  - numba
   - packaging
+  - xarray
+  - zstd
   # for docs build action (this env only)
   - nbsphinx
   - numpydoc
-  - sphinx>=1.4.3
-  - sphinxcontrib-bibtex<2.0.0
+  - sphinx
+  - sphinxcontrib-bibtex
   - sphinx_bootstrap_theme

@@ -17,6 +17,8 @@ dependencies:
   - pytest-xdist
   # optional
   - geopandas>=0.7.0
+  - joblib
   - numba
-  - zstd
   - packaging
+  - xarray
+  - zstd
