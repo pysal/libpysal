@@ -1,0 +1,29 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - appdirs
+  - beautifulsoup4
+  - jinja2
+  - pandas>=1.0
+  - scipy>=1.0
+  - xarray
+  # testing
+  - codecov
+  - matplotlib
+  - pytest
+  - pytest-cov
+  # optional
+  - geopandas>=0.7.0
+  - numba
+  - xarray
+  - joblib
+  - zstd
+  - packaging
+  # for docs build action (this env only)
+  - nbsphinx
+  - numpydoc
+  - sphinx>=1.4.3
+  - sphinxcontrib-bibtex<2.0.0
+  - sphinx_bootstrap_theme
