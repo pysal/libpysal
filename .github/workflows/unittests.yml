@@ -12,11 +12,19 @@
    unittests:
      name: ${{ matrix.os }}, ${{ matrix.environment-file }}
      runs-on: ${{ matrix.os }}
+     env:
+       FETCH_EXAMPLES: python -c 'import libpysal; libpysal.examples.fetch_all()'
+       RUN_TEST: pytest -v -n auto libpysal --cov libpysal --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
      #timeout-minutes: 25
      strategy:
        matrix:
-         os: ['macos-latest', 'ubuntu-latest', 'windows-latest']
-         environment-file: [ci/37.yaml, ci/38.yaml, ci/39.yaml]
+         os: ['ubuntu-latest']
+         environment-file: [ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml]
+         include:
+           - environment-file: ci/310.yaml
+             os: macos-latest
+           - environment-file: ci/310.yaml
+             os: windows-latest
      
      steps:
        - name: checkout repo
@@ -31,18 +39,18 @@
        - name: run tests - bash
          shell: bash -l {0}
          run: |
-           python -c 'import libpysal; libpysal.examples.fetch_all()'
-           pytest -v libpysal --cov=libpysal --cov-report=xml
+           ${{ env.FETCH_EXAMPLES }}
+           ${{ env.RUN_TEST }}
          if: matrix.os != 'windows-latest'
        
        - name: run tests - powershell
          shell: powershell
-         run:  |
-           python -c 'import libpysal; libpysal.examples.fetch_all()'
-           pytest -v libpysal --cov=libpysal --cov-report=xml
+         run: |
+           ${{ env.FETCH_EXAMPLES }}
+           ${{ env.RUN_TEST }}
          if: matrix.os == 'windows-latest'
       
-       - name: ${{ matrix.os }}, ${{ matrix.environment-file }}
+       - name: codecov
          uses: codecov/codecov-action@v2 
          with:
            token: ${{ secrets.CODECOV_TOKEN }}

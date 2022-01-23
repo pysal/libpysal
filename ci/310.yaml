@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
+  - python=3.10
   - appdirs
   - beautifulsoup4
   - jinja2
@@ -22,3 +22,9 @@ dependencies:
   - packaging
   - xarray
   - zstd
+  # for docs build action (this env only)
+  - nbsphinx
+  - numpydoc
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme
