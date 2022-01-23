@@ -38,14 +38,16 @@
       
        - name: run tests - bash
          shell: bash -l {0}
-         run: ${{ env.FETCH_EXAMPLES }}
-         run: ${{ env.RUN_TEST }}
+         run: |
+           ${{ env.FETCH_EXAMPLES }}
+           ${{ env.RUN_TEST }}
          if: matrix.os != 'windows-latest'
        
        - name: run tests - powershell
          shell: powershell
-         run: ${{ env.FETCH_EXAMPLES }}
-         run: ${{ env.RUN_TEST }}
+         run: |
+           ${{ env.FETCH_EXAMPLES }}
+           ${{ env.RUN_TEST }}
          if: matrix.os == 'windows-latest'
       
        - name: codecov
