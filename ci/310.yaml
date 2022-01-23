@@ -14,7 +14,7 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
-  - pytest-dist
+  - pytest-xdist
   # optional
   - geopandas>=0.7.0
   - joblib
