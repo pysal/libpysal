@@ -14,6 +14,7 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
+  - pytest-xdist
   # optional
   - geopandas>=0.7.0
   - numba
@@ -21,9 +22,3 @@ dependencies:
   - joblib
   - zstd
   - packaging
-  # for docs build action (this env only)
-  - nbsphinx
-  - numpydoc
-  - sphinx>=1.4.3
-  - sphinxcontrib-bibtex<2.0.0
-  - sphinx_bootstrap_theme
