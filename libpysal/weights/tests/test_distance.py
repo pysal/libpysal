@@ -113,6 +113,9 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe(self):
+        df = pdio.read_files(self.polygon_path)
         # named active geometry
         df = df.set_geometry("the_geom")
         w = d.KNN.from_dataframe(df, k=4)
