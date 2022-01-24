@@ -117,6 +117,7 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
     def test_from_geodataframe(self):
         df = pdio.read_files(self.polygon_path)
         # named active geometry
+        df.rename(columns={"geometry": "the_geom"}, inplace=True)
         df = df.set_geometry("the_geom")
         w = d.KNN.from_dataframe(df, k=4)
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
@@ -182,11 +183,9 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         for k, v in w:
             self.assertEqual(v, self.grid_rook_w[k])
 
-    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
     @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         import pandas as pd
-        import geopandas as gpd
 
         geom_series = pdio.shp.shp2series(self.grid_path)
         random_data = np.random.random(size=len(geom_series))
@@ -195,6 +194,17 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         for k, v in w:
             self.assertEqual(v, self.grid_rook_w[k])
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe(self):
+        import geopandas as gpd
+        import pandas as pd
+
+        geom_series = pdio.shp.shp2series(self.grid_path)
+        random_data = np.random.random(size=len(geom_series))
+        df = pd.DataFrame({"obs": random_data, "geometry": geom_series})
+        w = d.DistanceBand.from_dataframe(df, 1)
+        for k, v in w:
+            self.assertEqual(v, self.grid_rook_w[k])
         # named geometry
         df = gpd.GeoDataFrame(df)
         df.rename(columns={"geometry": "the_geom"}, inplace=True)

@@ -115,6 +115,7 @@ class Contiguity_Mixin(object):
     def test_from_geodataframe(self):
         df = pdio.read_files(self.polygon_path)
         # named active geometry
+        df.rename(columns={"geometry": "the_geom"}, inplace=True)
         df = df.set_geometry("the_geom")
         w = self.cls.from_dataframe(df)
         self.assertEqual(w[self.known_wi], self.known_w)
