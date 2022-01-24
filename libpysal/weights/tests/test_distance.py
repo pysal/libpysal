@@ -12,6 +12,12 @@ from ... import examples as pysal_examples
 import unittest as ut
 
 PANDAS_EXTINCT = pandas is None
+try:
+    import geopandas
+
+    GEOPANDAS_EXTINCT = False
+except ImportError:
+    GEOPANDAS_EXTINCT = True
 # All instances should test these four methods, and define their own functional
 # tests based on common codepaths/estimated weights use cases.
 
@@ -173,6 +179,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         for k, v in w:
             self.assertEqual(v, self.grid_rook_w[k])
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
     @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         import pandas as pd
@@ -329,6 +336,9 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
         for k, v in list(w[self.known_wi5 - 1].items()):
             np.testing.assert_allclose(v, self.known_w5[k + 1], rtol=RTOL)
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe(self):
+        df = pdio.read_files(self.polygon_path)
         # named geometry
         df.rename(columns={"geometry": "the_geom"}, inplace=True)
         w = d.Kernel.from_dataframe(df, geom_col="the_geom")
