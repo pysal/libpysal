@@ -1,4 +1,3 @@
-from shapely.geometry.base import BaseGeometry
 from ..io.fileio import FileIO as psopen
 from .weights import W, WSP
 from .set_operations import w_subset
@@ -22,6 +21,12 @@ try:
     GPD_08 = Version(gpd.__version__) >= Version("0.8.0")
 except ImportError:
     warn("geopandas not available. Some functionality will be disabled.")
+
+try:
+    from shapely.geometry.base import BaseGeometry
+    HAS_SHAPELY = True
+except ImportError:
+    HAS_SHAPELY = False
 
 __all__ = [
     "lat2W",
@@ -1071,14 +1076,22 @@ def get_points_array(iterable):
     """
     first_choice, backup = tee(iterable)
     try:
-        data = np.vstack(
-            [
-                np.array(shape.centroid.coords)[0]
-                if isinstance(shape, BaseGeometry)
-                else np.array(shape.centroid)
-                for shape in first_choice
-            ]
-        )
+        if HAS_SHAPELY:
+            data = np.vstack(
+                [
+                    np.array(shape.centroid.coords)[0]
+                    if isinstance(shape, BaseGeometry)
+                    else np.array(shape.centroid)
+                    for shape in first_choice
+                ]
+            )
+        else:
+            data = np.vstack(
+                [
+                    np.array(shape.centroid)
+                    for shape in first_choice
+                ]
+            )
     except AttributeError:
         data = np.vstack([shape for shape in backup])
     return data
