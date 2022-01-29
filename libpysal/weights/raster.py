@@ -149,16 +149,39 @@ def get_nodata(da):
     try:
         return da.rio.nodata
     except:
-        candidates = [
-                '_FillValue', 'missing_value', 'fill_value', 'nodata'
-        ]
-        for i in candidates:
-            if i in da.attrs:
-                if type(i) == tuple:
-                    return da.attrs[i][0]
-                else:
-                    return da.attrs[i]
+        nodata = nodata_from_attrs(da.attrs)
+        if nodata is not None:
+            return nodata
         return None
+
+def nodata_from_attrs(attrs):
+    """
+    Identify nodata value in a `DataArray.attrs`
+
+    NOTE: follows guidance from https://corteva.github.io/rioxarray/stable/getting_started/nodata_management.html
+    ...
+
+    Arguments
+    ---------
+    attrs : dict
+           `DataArray.attrs` dictionary
+
+    Returns
+    -------
+    nodata : int/float
+            Value used for nodata pixels. If no value is available, `None` is
+            returned
+    """
+    candidates = [
+            '_FillValue', 'missing_value', 'fill_value', 'nodata'
+    ]
+    for i in candidates:
+        if i in attrs:
+            if type(i) == tuple:
+                return attrs[i][0]
+            else:
+                return attrs[i]
+    return None
 
 def da2WSP(
     da,
@@ -280,7 +303,7 @@ def da2WSP(
         include_nodata = False
         # Fallback method to build sparse matrix
         sw = lat2SW(*shape, criterion)
-        if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
+        if nodata is not None:
             sw = sw[mask]
             sw = sw[:, mask]
 
@@ -572,12 +595,13 @@ def _index2da(data, index, attrs, coords):
     dims = idx.names
     indexer = tuple(idx.codes)
     shape = tuple(lev.size for lev in idx.levels)
+    nodata = nodata_from_attrs(attrs)
 
     if coords is None:
         missing = np.prod(shape) > idx.shape[0]
         if missing:
-            if "nodatavals" in attrs:
-                fill_value = attrs["nodatavals"][0]
+            if nodata is not None:
+                fill_value = nodata
             else:
                 min_data = np.min(data)
                 fill_value = min_data - 1 if min_data < 0 else -1
@@ -590,7 +614,7 @@ def _index2da(data, index, attrs, coords):
         for dim, lev in zip(dims, idx.levels):
             coords[dim] = lev.to_numpy()
     else:
-        fill = attrs["nodatavals"][0] if "nodatavals" in attrs else 0
+        fill = nodata if nodata is not None else 0
         data_complete = np.full(shape, fill, data.dtype)
         data_complete[indexer] = data
 
