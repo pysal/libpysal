@@ -128,6 +128,37 @@ def da2W(
     w.index = wsp.index
     return w
 
+def get_nodata(da):
+    """
+    Identify nodata value in a `DataArray`
+
+    NOTE: follows guidance from https://corteva.github.io/rioxarray/stable/getting_started/nodata_management.html
+    ...
+
+    Arguments
+    ---------
+    da : xarray.DataArray
+        Input 2D or 3D DataArray with shape=(z, y, x)
+
+    Returns
+    -------
+    nodata : int/float
+            Value used for nodata pixels. If no value is available, `None` is
+            returned
+    """
+    try:
+        return da.rio.nodata
+    except:
+        candidates = [
+                '_FillValue', 'missing_value', 'fill_value', 'nodata'
+        ]
+        for i in candidates:
+            if i in da.attrs:
+                if type(i) == tuple:
+                    return da.attrs[i][0]
+                else:
+                    return da.attrs[i]
+        return None
 
 def da2WSP(
     da,
@@ -226,11 +257,12 @@ def da2WSP(
 
     ser = da.to_series()
     dtype = np.int32 if (shape[0] * shape[1]) < 46340 ** 2 else np.int64
-    if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
-        mask = (ser != da.attrs["nodatavals"][0]).to_numpy()
+    nodata = get_nodata(da)
+    if nodata is not None:
+        mask = (ser != nodata).to_numpy()
         ids = np.where(mask)[0]
         id_map = _idmap(ids, mask, dtype)
-        ser = ser[ser != da.attrs["nodatavals"][0]]
+        ser = ser[ser != nodata]
     else:
         ids = np.arange(len(ser), dtype=dtype)
         id_map = ids.copy()
