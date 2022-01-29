@@ -173,7 +173,7 @@ def nodata_from_attrs(attrs):
             returned
     """
     candidates = [
-            '_FillValue', 'missing_value', 'fill_value', 'nodata'
+            '_FillValue', 'missing_value', 'fill_value', 'nodata', 'nodatavals'
     ]
     for i in candidates:
         if i in attrs:
