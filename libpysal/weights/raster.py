@@ -149,10 +149,7 @@ def get_nodata(da):
     try:
         return da.rio.nodata
     except:
-        nodata = nodata_from_attrs(da.attrs)
-        if nodata is not None:
-            return nodata
-        return None
+        return nodata_from_attrs(da.attrs)
 
 def nodata_from_attrs(attrs):
     """
