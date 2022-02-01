@@ -481,7 +481,7 @@ def alpha_shape(xys, alpha):
     radii = r_circumcircle_triangle(a_pts, b_pts, c_pts)
     del triangles, a_pts, b_pts, c_pts
     geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
-    return geoms
+    return _filter_holes(geoms, xys)
 
 
 def _valid_hull(geoms, points):
@@ -703,6 +703,12 @@ def _construct_centers(a, b, radius):
     else:
         return down_x, down_y
 
+def _filter_holes(geoms, points):
+    if (geoms.interiors.apply(len) > 0).any():
+        from geopandas import points_from_xy
+        has_points, _ = points_from_xy(*points.T).sindex.query_bulk(geoms.values.data, predicate='contains')
+        geoms = geoms[geoms.index.isin(has_points)]
+    return geoms
 
 if __name__ == "__main__":
 
