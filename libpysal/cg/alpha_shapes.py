@@ -474,7 +474,6 @@ def alpha_shape(xys, alpha, filter_holes=True):
         warn(NUMBA_WARN)
     if xys.shape[0] < 4:
         from shapely import ops, geometry as geom
-
         return ops.unary_union([geom.Point(xy) for xy in xys]).convex_hull.buffer(0)
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
