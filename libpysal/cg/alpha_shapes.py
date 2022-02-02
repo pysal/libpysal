@@ -719,13 +719,13 @@ def _filter_holes(geoms, points):
         inside, outside = shells.sindex.query_bulk(geoms, predicate='within')
         # Now, create the sparse matrix relating the inner geom (rows) 
         # to the outer shell (cols) and take the sum. 
-        # A z-order of 1 means the polygon is only inside if its own exterior. This means it's a polygon.
+        # A z-order of 1 means the polygon is only inside if its own exterior. This means it's not a hole.
         # A z-order of 2 means the polygon is inside of exactly one other exterior. Because
         #   the hull generation method is restricted to be planar, this means the polygon is a hole. 
-        # In general, an even z-order means that the polygon is always exactly matched to one exterior. 
-        #   This means that the polygon forms the exterior of a hole. 
+        # In general, an even z-order means that the polygon is always exactly matched to one exterior, 
+        #   plus some number of intermediate exterior-hole pairs. Therefore, the polygon is a hole.
         # In general, an odd z-order means that there is an uneven number of exteriors. 
-        #   This means the polygon is filled. 
+        #   This means the polygon is not a hole. 
         zorder = sparse.csc_matrix((np.ones_like(inside), (inside, outside))).sum(axis=1)
         zorder = np.asarray(zorder).flatten()
         # Keep only the odd z-orders
