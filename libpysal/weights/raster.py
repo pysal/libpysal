@@ -146,9 +146,9 @@ def get_nodata(da):
             Value used for nodata pixels. If no value is available, `None` is
             returned
     """
-    try:
+    if hasattr(da, 'rio'):
         return da.rio.nodata
-    except:
+    else:
         return nodata_from_attrs(da.attrs)
 
 def nodata_from_attrs(attrs):
