@@ -427,7 +427,7 @@ def alpha_geoms(alpha, triangles, radii, xys):
 
 
 @requires("geopandas", "shapely")
-def alpha_shape(xys, alpha, filter_holes=True):
+def alpha_shape(xys, alpha):
     """Alpha-shape delineation (Edelsbrunner, Kirkpatrick & Seidel, 1983) from a collection of points
 
     Parameters
@@ -483,8 +483,7 @@ def alpha_shape(xys, alpha, filter_holes=True):
     radii = r_circumcircle_triangle(a_pts, b_pts, c_pts)
     del triangles, a_pts, b_pts, c_pts
     geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
-    if filter_holes:
-        geoms = _filter_holes(geoms, xys)
+    geoms = _filter_holes(geoms, xys)
     return geoms
 
 
