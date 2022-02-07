@@ -100,10 +100,10 @@ class Test_Alpha_Shapes(TestCase):
         np.testing.assert_allclose(centers, self.circle_verts)
     
     def test_holes(self):
-        numpy.random.seed(seed=100)
-        points = numpy.random.rand(1000, 2)*100
+        np.random.seed(seed=100)
+        points = np.random.rand(1000, 2)*100
         inv_alpha = 3.5
-        geoms = libpysal.cg.alpha_shape(points, 1/inv_alpha)
+        geoms = alpha_shape(points, 1/inv_alpha)
         assert len(geoms) == 1
         holes = geopandas.GeoSeries(geoms.interiors.explode()).reset_index(drop=True)
         assert len(holes) == 30
