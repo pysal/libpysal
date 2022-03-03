@@ -1,6 +1,9 @@
 from .. import gabriel
 from ... import examples
-import geopandas, numpy
+import numpy
+import pytest
+
+geopandas = pytest.importorskip("geopandas")
 
 path = examples.get_path("columbus.shp")
 df = geopandas.read_file(path)
