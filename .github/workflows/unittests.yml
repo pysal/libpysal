@@ -19,39 +19,39 @@
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml]
+         environment-file: [ci/37-minimal.yaml, ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml]
          include:
            - environment-file: ci/310.yaml
              os: macos-latest
            - environment-file: ci/310.yaml
              os: windows-latest
-     
+
      steps:
        - name: checkout repo
          uses: actions/checkout@v3
-       
+
        - name: setup micromamba
          uses: mamba-org/provision-with-micromamba@main
          with:
            environment-file: ${{ matrix.environment-file }}
            micromamba-version: 'latest'
-      
+
        - name: run tests - bash
          shell: bash -l {0}
          run: |
            ${{ env.FETCH_EXAMPLES }}
            ${{ env.RUN_TEST }}
          if: matrix.os != 'windows-latest'
-       
+
        - name: run tests - powershell
          shell: powershell
          run: |
            ${{ env.FETCH_EXAMPLES }}
            ${{ env.RUN_TEST }}
          if: matrix.os == 'windows-latest'
-      
+
        - name: codecov
-         uses: codecov/codecov-action@v2 
+         uses: codecov/codecov-action@v2
          with:
            token: ${{ secrets.CODECOV_TOKEN }}
            file: ./coverage.xml
