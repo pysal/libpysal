@@ -584,7 +584,7 @@ class W(object):
     def pct_nonzero(self):
         """Percentage of nonzero weights."""
         if "pct_nonzero" not in self._cache:
-            self._pct_nonzero = 100.0 * self.sparse.nnz / (1.0 * self._n ** 2)
+            self._pct_nonzero = 100.0 * self.sparse.nnz / (1.0 * self._n**2)
             self._cache["pct_nonzero"] = self._pct_nonzero
         return self._pct_nonzero
 
@@ -1293,8 +1293,8 @@ class W(object):
             if indexed_on is not None:
                 neighbors = gdf[gdf[indexed_on].isin(neighbors)].index.tolist()
                 idx = gdf[gdf[indexed_on] == idx].index.tolist()[0]
-            centroids = gdf.loc[neighbors].centroid.apply(lambda p: (p.x, p.y))
-            centroids = np.vstack(centroids.values)
+            centroids = gdf.loc[neighbors].centroid
+            centroids = np.stack([centroids.x, centroids.y], axis=1)
             focal = np.hstack(gdf.loc[idx].geometry.centroid.xy)
             seen = set()
             for nidx, neighbor in zip(neighbors, centroids):
@@ -1303,11 +1303,8 @@ class W(object):
                 ax.plot(*list(zip(focal, neighbor)), marker=None, **edge_kws)
                 seen.update((idx, nidx))
                 seen.update((nidx, idx))
-        ax.scatter(
-            gdf.centroid.apply(lambda p: p.x),
-            gdf.centroid.apply(lambda p: p.y),
-            **node_kws
-        )
+        centroids = gdf.centroid
+        ax.scatter(centroids.x, centroids.y, **node_kws)
         return f, ax
 
 
