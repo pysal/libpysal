@@ -207,10 +207,6 @@ def voronoi_frames(points, radius=None, clip="extent"):
         * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of the input points.
         * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using ``libpysal.cg.alpha_shape_auto``).
         * Polygon -- Clip to an arbitrary Polygon.
-    
-    tolerance : float
-        The percent of map width to use to buffer the extent of the map,
-        if clipping (default: ``.01``, or 1%).
 
     Returns
     -------
