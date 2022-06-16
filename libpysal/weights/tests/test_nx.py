@@ -1,5 +1,7 @@
 import unittest as ut
 import numpy as np
+import scipy as sp
+from packaging.version import Version
 from ..util import lat2W
 from ..weights import W
 
@@ -8,8 +10,9 @@ try:
 except ImportError:
     nx = None
 
+SP_18 = Version(sp.__version__) >= Version('1.8')
 
-@ut.skipIf(nx is None, "Missing networkx")
+@ut.skipIf((nx is None) or (not SP_18), "Missing networkx or old scipy")
 class Test_NetworkXConverter(ut.TestCase):
     def setUp(self):
         self.known_nx = nx.random_regular_graph(4, 10, seed=8879)
