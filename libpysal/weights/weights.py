@@ -346,7 +346,7 @@ class W(object):
         try:
             import networkx as nx
         except ImportError:
-            raise ImportError("NetworkX is required to use this function.")
+            raise ImportError("NetworkX 2.7+ is required to use this function.")
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
         return nx.from_scipy_sparse_array(self.sparse, create_using=G)
 
@@ -370,7 +370,7 @@ class W(object):
         try:
             import networkx as nx
         except ImportError:
-            raise ImportError("NetworkX is required to use this function.")
+            raise ImportError("NetworkX 2.7+ is required to use this function.")
         sparse_array = nx.to_scipy_sparse_array(graph)
         w = WSP(sparse_array).to_W()
         return w
