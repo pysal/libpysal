@@ -346,9 +346,9 @@ class W(object):
         try:
             import networkx as nx
         except ImportError:
-            raise ImportError("NetworkX is required to use this function.")
+            raise ImportError("NetworkX 2.7+ is required to use this function.")
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
-        return nx.from_scipy_sparse_matrix(self.sparse, create_using=G)
+        return nx.from_scipy_sparse_array(self.sparse, create_using=G)
 
     @classmethod
     def from_networkx(cls, graph, weight_col="weight"):
@@ -370,9 +370,9 @@ class W(object):
         try:
             import networkx as nx
         except ImportError:
-            raise ImportError("NetworkX is required to use this function.")
-        sparse_matrix = nx.to_scipy_sparse_matrix(graph)
-        w = WSP(sparse_matrix).to_W()
+            raise ImportError("NetworkX 2.7+ is required to use this function.")
+        sparse_array = nx.to_scipy_sparse_array(graph)
+        w = WSP(sparse_array).to_W()
         return w
 
     @property
@@ -584,7 +584,7 @@ class W(object):
     def pct_nonzero(self):
         """Percentage of nonzero weights."""
         if "pct_nonzero" not in self._cache:
-            self._pct_nonzero = 100.0 * self.sparse.nnz / (1.0 * self._n ** 2)
+            self._pct_nonzero = 100.0 * self.sparse.nnz / (1.0 * self._n**2)
             self._cache["pct_nonzero"] = self._pct_nonzero
         return self._pct_nonzero
 

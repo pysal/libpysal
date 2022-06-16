@@ -18,6 +18,7 @@ dependencies:
   # optional
   - geopandas>=0.7.0
   - joblib
+  - networkx
   - numba
   - packaging
   - xarray
