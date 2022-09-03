@@ -1293,6 +1293,8 @@ class W(object):
             if indexed_on is not None:
                 neighbors = gdf[gdf[indexed_on].isin(neighbors)].index.tolist()
                 idx = gdf[gdf[indexed_on] == idx].index.tolist()[0]
+            else:
+                neighbors = list(neighbors)
             centroids = gdf.loc[neighbors].centroid
             centroids = np.stack([centroids.x, centroids.y], axis=1)
             focal = np.hstack(gdf.loc[idx].geometry.centroid.xy)
