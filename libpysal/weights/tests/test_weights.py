@@ -1,5 +1,6 @@
 import os
 import tempfile
+import warnings
 
 import unittest
 from ..weights import W, WSP
@@ -12,6 +13,20 @@ from ..distance import KNN
 import numpy as np
 
 NPTA3E = np.testing.assert_array_almost_equal
+
+try:
+    import geopandas
+
+    GEOPANDAS_EXTINCT = False
+except ImportError:
+    GEOPANDAS_EXTINCT = True
+
+try:
+    import matplotlib
+
+    MPL_EXTINCT = False
+except ImportError:
+    MPL_EXTINCT = True
 
 
 class TestW(unittest.TestCase):
@@ -354,6 +369,13 @@ class TestW(unittest.TestCase):
             self.w.to_file(path)
             new = W.from_file(path)
         np.testing.assert_array_equal(self.w.sparse.toarray(), new.sparse.toarray())
+
+    @unittest.skipIf(GEOPANDAS_EXTINCT or MPL_EXTINCT, "Missing dependencies")
+    def test_plot(self):
+        df = geopandas.read_file(examples.get_path("10740.shp"))
+        with warnings.catch_warnings(record=True) as record:
+            self.w.plot(df)
+        assert len(record) == 0
 
 
 class Test_WSP_Back_To_W(unittest.TestCase):
