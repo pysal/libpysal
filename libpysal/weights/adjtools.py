@@ -2,7 +2,12 @@ import numpy as np
 
 
 def adjlist_apply(
-    X, W=None, alist=None, func=np.subtract, skip_verify=False, to_adjlist_kws=dict()
+    X,
+    W=None,
+    alist=None,
+    func=np.subtract,
+    skip_verify=False,
+    to_adjlist_kws=dict(drop_islands=False),
 ):
     """
     apply a function to an adajcency list, getting an adjacency list and result.
@@ -33,7 +38,7 @@ def adjlist_apply(
                 Do this if you are certain the adjacency list and W agree and would like to
                 avoid re-instantiating a W from the adjacency list.
     to_adjlist_kws : dict
-        Keyword arguments for ``W.to_adjlist()``. Default is ``dict()``.
+        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=False)``.
 
     Returns
     -------
@@ -43,9 +48,7 @@ def adjlist_apply(
         import pandas as pd
     except ImportError:
         raise ImportError("pandas must be installed to use this function")
-    W, alist = _get_W_and_alist(
-        W, alist, skip_verify=skip_verify, to_adjlist_kws=to_adjlist_kws
-    )
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=skip_verify)
     if len(X.shape) > 1:
         if X.shape[-1] > 1:
             return _adjlist_mvapply(
@@ -85,9 +88,7 @@ def _adjlist_mvapply(
     except ImportError:
         raise ImportError("pandas must be installed to use this function")
     assert len(X.shape) == 2, "data is not two-dimensional"
-    W, alist = _get_W_and_alist(
-        W=W, alist=alist, skip_verify=skip_verify, to_adjlist_kws=to_adjlist_kws
-    )
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=skip_verify)
     assert X.shape[0] == W.n, "number of samples in X does not match W"
     try:
         names = X.columns.tolist()
@@ -120,7 +121,7 @@ def _adjlist_mvapply(
     return alist_atts
 
 
-def _get_W_and_alist(W, alist, skip_verify=False, to_adjlist_kws=dict()):
+def _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=False):
     """
     Either:
     1. compute a W from an alist
@@ -153,7 +154,7 @@ def adjlist_map(
     alist=None,
     focal_col="focal",
     neighbor_col="neighbor",
-    to_adjlist_kws=dict(),
+    to_adjlist_kws=dict(drop_islands=False),
 ):
     """
     Map a set of functions over a W or adjacency list
@@ -179,7 +180,7 @@ def adjlist_map(
     neighbor_col:   string
                     name of column in alist containing the neighboring observation ids
     to_adjlist_kws : dict
-        Keyword arguments for ``W.to_adjlist()``. Default is ``dict()``.
+        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=False)``.
 
     Returns
     -------
@@ -203,11 +204,11 @@ def adjlist_map(
     assert data.shape[1] == len(
         funcs
     ), "shape of data does not match the number of functions provided"
-    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws=to_adjlist_kws)
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws)
     fnames = set([f.__name__ for f in funcs])
     for i, (column, function) in enumerate(zip(data.T, funcs)):
         alist = adjlist_apply(
-            X=column, W=W, alist=alist, skip_verify=True, to_adjlist_kws=to_adjlist_kws
+            column, W=W, alist=alist, skip_verify=True, to_adjlist_kws=to_adjlist_kws
         )
         alist.drop(["att_focal", "att_neighbor"], axis=1, inplace=True)
         alist = alist.rename(
