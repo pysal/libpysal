@@ -22,8 +22,19 @@ class Test_Adjlist(ut.TestCase):
     def setUp(self):
         self.knownW = io.open(examples.get_path("columbus.gal")).read()
 
-    def test_round_trip(self):
-        adjlist = self.knownW.to_adjlist(remove_symmetric=False).astype(int)
+    def test_round_trip_drop_islands_true(self):
+        adjlist = self.knownW.to_adjlist(
+            remove_symmetric=False, drop_islands=True
+        ).astype(int)
+        w_from_adj = weights.W.from_adjlist(adjlist)
+        np.testing.assert_allclose(
+            w_from_adj.sparse.toarray(), self.knownW.sparse.toarray()
+        )
+
+    def test_round_trip_drop_islands_false(self):
+        adjlist = self.knownW.to_adjlist(
+            remove_symmetric=False, drop_islands=True
+        ).astype(int)
         w_from_adj = weights.W.from_adjlist(adjlist)
         np.testing.assert_allclose(
             w_from_adj.sparse.toarray(), self.knownW.sparse.toarray()
@@ -31,34 +42,36 @@ class Test_Adjlist(ut.TestCase):
 
     def test_filter(self):
         grid = lat2W(2, 2)
-        alist = grid.to_adjlist(remove_symmetric=True)
+        alist = grid.to_adjlist(remove_symmetric=True, drop_islands=True)
         assert len(alist) == 4
         with self.assertRaises(AssertionError):
             # build this manually because of bug libpysal#322
-            alist_neighbors = alist.groupby('focal').neighbor.apply(list).to_dict()
-            all_ids = set(alist_neighbors.keys()).union(*map(set, alist_neighbors.values()))
+            alist_neighbors = alist.groupby("focal").neighbor.apply(list).to_dict()
+            all_ids = set(alist_neighbors.keys()).union(
+                *map(set, alist_neighbors.values())
+            )
             for idx in set(all_ids).difference(set(alist_neighbors.keys())):
                 alist_neighbors[idx] = []
             badgrid = weights.W(alist_neighbors)
-            np.testing.assert_allclose(badgrid.sparse.toarray(),
-                                       grid.sparse.toarray())
+            np.testing.assert_allclose(badgrid.sparse.toarray(), grid.sparse.toarray())
         assert set(alist.focal.unique()) == {0, 1, 2}
         assert set(alist.neighbor.unique()) == {1, 2, 3}
         assert alist.weight.unique().item() == 1
         grid = lat2W(2, 2, id_type="string")
-        alist = grid.to_adjlist(remove_symmetric=True)
+        alist = grid.to_adjlist(remove_symmetric=True, drop_islands=True)
         assert len(alist) == 4
         with self.assertRaises(AssertionError):
             # build this manually because of bug libpysal#322
-            alist_neighbors = alist.groupby('focal').neighbor.apply(list).to_dict()
-            all_ids = set(alist_neighbors.keys()).union(*map(set, alist_neighbors.values()))
+            alist_neighbors = alist.groupby("focal").neighbor.apply(list).to_dict()
+            all_ids = set(alist_neighbors.keys()).union(
+                *map(set, alist_neighbors.values())
+            )
             for idx in set(all_ids).difference(set(alist_neighbors.keys())):
                 alist_neighbors[idx] = []
             badgrid = weights.W(alist_neighbors)
-            np.testing.assert_allclose(badgrid.sparse.toarray(),
-                                       grid.sparse.toarray())
-        tuples = set([tuple(t) for t in alist[['focal','neighbor']].values])
-        full_alist = grid.to_adjlist()
+            np.testing.assert_allclose(badgrid.sparse.toarray(), grid.sparse.toarray())
+        tuples = set([tuple(t) for t in alist[["focal", "neighbor"]].values])
+        full_alist = grid.to_adjlist(drop_islands=True)
         all_possible = set([tuple(t) for t in full_alist[["focal", "neighbor"]].values])
         assert tuples.issubset(all_possible), (
             "the de-duped adjlist has links " "not in the duplicated adjlist."
