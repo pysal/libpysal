@@ -90,7 +90,7 @@ class Test_Adjlist(ut.TestCase):
 
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
         W = weights.Queen.from_dataframe(df)
-        alist = adj.adjlist_apply(df[col], W=W)
+        alist = adj.adjlist_apply(df[col], W=W, to_adjlist_kws=dict(drop_islands=True))
         right_hovals = alist.groupby("focal").att_focal.unique()
         assert (right_hovals == df[col]).all()
         allpairs = np.subtract.outer(df[col].values, df[col].values)
@@ -106,9 +106,15 @@ class Test_Adjlist(ut.TestCase):
 
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
         W = weights.Queen.from_dataframe(df)
+
         ssq = lambda x_y: np.sum((x_y[0] - x_y[1]) ** 2).item()
         ssq.__name__ = "sum_of_squares"
-        alist = adj.adjlist_apply(df[["HOVAL", "CRIME", "INC"]], W=W, func=ssq)
+        alist = adj.adjlist_apply(
+            df[["HOVAL", "CRIME", "INC"]],
+            W=W,
+            func=ssq,
+            to_adjlist_kws=dict(drop_islands=True),
+        )
         known_ssq = [
             1301.1639302990804,
             3163.46450914361,
@@ -134,7 +140,7 @@ class Test_Adjlist(ut.TestCase):
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
         W = weights.Queen.from_dataframe(df)
         hoval, crime, inc = list(map(self.apply_and_compare_columbus, atts))
-        mapped = adj.adjlist_map(df[atts], W=W)
+        mapped = adj.adjlist_map(df[atts], W=W, to_adjlist_kws=dict(drop_islands=True))
         for name, data in zip(atts, (hoval, crime, inc)):
             np.testing.assert_allclose(
                 data, mapped["_".join(("subtract", name))].values
