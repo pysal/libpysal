@@ -164,7 +164,7 @@ def lag_categorical(w, y, ties="tryself"):
     y = y.flatten()
     output = np.zeros_like(y)
     labels = np.unique(y)
-    normalized_labels = np.zeros(y.shape, dtype=np.int)
+    normalized_labels = np.zeros(y.shape, dtype=int)
     for i, label in enumerate(labels):
         normalized_labels[y == label] = i
     for focal_name, neighbors in w:
@@ -197,7 +197,7 @@ def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
     Parameters
     ----------
     idx                 : int
-                          index (aligned with `normalized_labels`) of the 
+                          index (aligned with `normalized_labels`) of the
                           current observation being resolved.
     normalized_labels   : (n,) array of ints
                           normalized array of labels for each observation
@@ -206,17 +206,17 @@ def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
     neighbors           : dict of (neighbor_name : weight)
                           the elements of the weights object, identical to w[idx]
     method              : string
-                          configuration option to use a specific tiebreaking method. 
+                          configuration option to use a specific tiebreaking method.
                           supported options are:
                           1. tryself: Use the focal observation's label to tiebreak.
-                                      If this doesn't successfully break the tie, 
+                                      If this doesn't successfully break the tie,
                                       (which only occurs if it induces a new tie),
-                                      decide randomly. 
+                                      decide randomly.
                           2. random: Resolve the tie randomly amongst winners.
                           3. lowest: Pick the lowest-value label amongst winners.
                           4. highest: Pick the highest-value label amongst winners.
     w                   : pysal.W object
-                          a PySAL weights object aligned with normalized_labels. 
+                          a PySAL weights object aligned with normalized_labels.
 
     Returns
     -------
