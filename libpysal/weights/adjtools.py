@@ -7,7 +7,7 @@ def adjlist_apply(
     alist=None,
     func=np.subtract,
     skip_verify=False,
-    to_adjlist_kws=dict(drop_islands=False),
+    to_adjlist_kws=dict(drop_islands=None),
 ):
     """
     apply a function to an adajcency list, getting an adjacency list and result.
@@ -38,7 +38,7 @@ def adjlist_apply(
                 Do this if you are certain the adjacency list and W agree and would like to
                 avoid re-instantiating a W from the adjacency list.
     to_adjlist_kws : dict
-        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=False)``.
+        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=None)``.
 
     Returns
     -------
@@ -154,7 +154,7 @@ def adjlist_map(
     alist=None,
     focal_col="focal",
     neighbor_col="neighbor",
-    to_adjlist_kws=dict(drop_islands=False),
+    to_adjlist_kws=dict(drop_islands=None),
 ):
     """
     Map a set of functions over a W or adjacency list
@@ -180,7 +180,7 @@ def adjlist_map(
     neighbor_col:   string
                     name of column in alist containing the neighboring observation ids
     to_adjlist_kws : dict
-        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=False)``.
+        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=None)``.
 
     Returns
     -------
