@@ -937,7 +937,7 @@ class _NodeCursor(object):
         clusterings = [
             k_means_cluster(self.root, k, s_children) for k in range(2, MAX_KMEANS)
         ]
-        # score, bestcluster = max([(silhouette_coeff(c), c) for c in clusterings])
+
         score, bestcluster = max(
             [(silhouette_coeff(c), c) for c in clusterings], key=lambda x: x[0]
         )
