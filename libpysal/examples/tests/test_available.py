@@ -34,8 +34,8 @@ class Testexamples(unittest.TestCase):
         elif os_name == 'Windows':
             heads = head.split("\\")
             self.assertEqual(heads[1], 'Users')
-            self.assertEqual(heads[-1], 'Local')
-            self.assertEqual(heads[-2], 'AppData')
+            self.assertEqual(heads[-2], 'Local')
+            self.assertEqual(heads[-3], 'AppData')
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testexamples)
 
