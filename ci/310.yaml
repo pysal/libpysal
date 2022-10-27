@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - appdirs
+  - platformdirs
   - beautifulsoup4
   - jinja2
   - pandas>=1.0
