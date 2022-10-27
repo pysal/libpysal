@@ -19,7 +19,7 @@
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [ci/37-minimal.yaml, ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml]
+         environment-file: [ci/37-minimal.yaml, ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml, ci/310_shapely20b1.yaml]
          include:
            - environment-file: ci/310.yaml
              os: macos-latest
@@ -35,6 +35,7 @@
          with:
            environment-file: ${{ matrix.environment-file }}
            micromamba-version: 'latest'
+           channel-priority: 'flexible'
 
        - name: run tests - bash
          shell: bash -l {0}
