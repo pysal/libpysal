@@ -31,6 +31,11 @@ class Testexamples(unittest.TestCase):
             self.assertEqual(heads[1], 'Users')
             self.assertEqual(heads[-1], 'Application Support')
             self.assertEqual(heads[-2], 'Library')
+        elif os_name == 'Windows':
+            heads = head.split("\\")
+            self.assertEqual(heads[1], 'Users')
+            self.assertEqual(heads[-1], 'Local')
+            self.assertEqual(heads[-2], 'AppData')
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testexamples)
 
