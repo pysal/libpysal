@@ -1,4 +1,6 @@
 import itertools
+from types import NoneType
+import warnings
 
 import numpy
 
@@ -133,10 +135,17 @@ class Rook(W):
 
     @classmethod
     def from_dataframe(
-        cls, df, geom_col=None, idVariable=None, ids=None, id_order=None, **kwargs
+        cls,
+        df,
+        geom_col=None,
+        idVariable=None,
+        ids=None,
+        id_order=None,
+        use_index=None,
+        **kwargs,
     ):
         """
-        Construct a weights object from a pandas dataframe with a geometry
+        Construct a weights object from a (geo)pandas dataframe with a geometry
         column. This will cast the polygons to PySAL polygons, then build the W
         using ids from the dataframe.
 
@@ -149,16 +158,24 @@ class Rook(W):
                       the name of the column in `df` that contains the
                       geometries. Defaults to active geometry column.
         idVariable  : string
+                      DEPRECATED - use `ids` instead.
                       the name of the column to use as IDs. If nothing is
                       provided, the dataframe index is used
-        ids         : list
-                      a list of ids to use to index the spatial weights object.
-                      Order is not respected from this list.
+        ids         : list-like, string
+                      a list-like of ids to use to index the spatial weights object or
+                      the name of the column to use as IDs. If nothing is
+                      provided, the dataframe index is used if `use_index=True` or
+                      a positional index is used if `use_index=False`.
+                      Order of the resulting W is not respected from this list.
         id_order    : list
-                      an ordered list of ids to use to index the spatial weights
+                      DEPRECATED - argument is deprecated and will be removed.
+                      An ordered list of ids to use to index the spatial weights
                       object. If used, the resulting weights object will iterate
                       over results in the order of the names provided in this
                       argument.
+        use_index   : bool
+                      use index of `df` as `ids` to index the spatial weights object.
+                      Defaults to False but in future will default to True.
 
         See Also
         --------
@@ -167,61 +184,58 @@ class Rook(W):
         """
         if geom_col is None:
             geom_col = df.geometry.name
+
         if id_order is not None:
+            warnings.warn(
+                "`id_order` is deprecated and will be removed in future.",
+                FutureWarning,
+                stacklevel=2,
+            )
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
                 # idVariable column
                 id_order = list(df.get(idVariable, ids))
             else:
                 id_order = df.get(id_order, ids)
-        elif idVariable is not None:
-            ids = df.get(idVariable).tolist()
-        elif isinstance(ids, str):
-            ids = df.get(ids).tolist()
-        return cls.from_iterable(
-            df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
-        )
 
-    @classmethod
-    def from_dataframe_new(cls, df, geom_col=None, ids=None, **kwargs):
-        """
-        Construct a weights object from a (geo)pandas (Geo)DataFrame
-        with a geometry column.
+        if idVariable is not None:
+            if ids is None:
+                warnings.warn(
+                    "`idVariable` is deprecated and will be removed in future. "
+                    "Use `ids` instead.",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                ids = idVariable
+            else:
+                warnings.warn(
+                    "Both `idVariable` and `ids` passed, using `ids`.",
+                    UserWarning,
+                    stacklevel=2,
+                )
 
-        Parameters
-        ----------
-        df          : DataFrame
-                        a :class: `pandas.DataFrame` containing geometries to use
-                        for spatial weights
-        geom_col    : string
-                        the name of the column in `df` that contains the
-                        geometries. Defaults to active geometry column.
-        ids         : str, list, np.array, pd.Series (default None)
-                        A definition of ids to use to index the spatial weights object.
-                        Could be the name of the dataframe column, `list`, `numpy.array`,
-                        or `pandas.Series`. If `list`, `numpy.array` or
-                        `pandas.Series` are used then it must have same length as dataframe.
-
-        **kwargs    : dict
-                        Additional arguments to be passed on to the W constructor
-
-
-        See Also
-        --------
-        :class:`libpysal.weights.weights.W`
-        :class:`libpysal.weights.contiguity.Rook`
-        """
-
-        if geom_col is None:
-            geom_col = df.geometry.name
+        if ids is None:
+            if use_index is None:
+                warnings.warn(
+                    "`use_index` defaults to False but will default to True in future. "
+                    "Set True/False directly to control this behavior and silence this "
+                    "warning",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                use_index = False
+            if use_index:
+                ids = df.index.tolist()
 
         if isinstance(ids, str):
             ids = df[ids]
 
-        if not isinstance(ids, list):
+        if not isinstance(ids, (list, NoneType)):
             ids = ids.tolist()
 
-        return cls.from_iterable(df[geom_col].tolist(), ids=ids, **kwargs)
+        return cls.from_iterable(
+            df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
+        )
 
     @classmethod
     def from_xarray(
@@ -399,9 +413,18 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col=None, **kwargs):
+    def from_dataframe(
+        cls,
+        df,
+        geom_col=None,
+        idVariable=None,
+        ids=None,
+        id_order=None,
+        use_index=None,
+        **kwargs,
+    ):
         """
-        Construct a weights object from a pandas dataframe with a geometry
+        Construct a weights object from a (geo)pandas dataframe with a geometry
         column. This will cast the polygons to PySAL polygons, then build the W
         using ids from the dataframe.
 
@@ -412,46 +435,86 @@ class Queen(W):
                       for spatial weights
         geom_col    : string
                       the name of the column in `df` that contains the
-                      geometries. Defaults to active geometry column
+                      geometries. Defaults to active geometry column.
         idVariable  : string
+                      DEPRECATED - use `ids` instead.
                       the name of the column to use as IDs. If nothing is
                       provided, the dataframe index is used
-        ids         : list
-                      a list of ids to use to index the spatial weights object.
-                      Order is not respected from this list.
+        ids         : list-like, string
+                      a list-like of ids to use to index the spatial weights object or
+                      the name of the column to use as IDs. If nothing is
+                      provided, the dataframe index is used if `use_index=True` or
+                      a positional index is used if `use_index=False`.
+                      Order of the resulting W is not respected from this list.
         id_order    : list
-                      an ordered list of ids to use to index the spatial weights
+                      DEPRECATED - argument is deprecated and will be removed.
+                      An ordered list of ids to use to index the spatial weights
                       object. If used, the resulting weights object will iterate
                       over results in the order of the names provided in this
                       argument.
+        use_index   : bool
+                      use index of `df` as `ids` to index the spatial weights object.
+                      Defaults to False but in future will default to True.
 
         See Also
         --------
         :class:`libpysal.weights.weights.W`
-        :class:`libpysal.weights.contiguity.Queen`
+        :class:`libpysal.weights.contiguity.Rook`
         """
-        idVariable = kwargs.pop("idVariable", None)
-        ids = kwargs.pop("ids", None)
-        id_order = kwargs.pop("id_order", None)
         if geom_col is None:
             geom_col = df.geometry.name
+
         if id_order is not None:
+            warnings.warn(
+                "`id_order` is deprecated and will be removed in future.",
+                FutureWarning,
+                stacklevel=2,
+            )
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
                 # idVariable column
-                ids = list(df.get(idVariable, ids))
-                id_order = ids
-            elif isinstance(id_order, str):
-                ids = df.get(id_order, ids)
-                id_order = ids
-        elif idVariable is not None:
-            ids = df.get(idVariable).tolist()
-        elif isinstance(ids, str):
-            ids = df.get(ids).tolist()
-        w = cls.from_iterable(
+                id_order = list(df.get(idVariable, ids))
+            else:
+                id_order = df.get(id_order, ids)
+
+        if idVariable is not None:
+            if ids is None:
+                warnings.warn(
+                    "`idVariable` is deprecated and will be removed in future. "
+                    "Use `ids` instead.",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                ids = idVariable
+            else:
+                warnings.warn(
+                    "Both `idVariable` and `ids` passed, using `ids`.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+
+        if ids is None:
+            if use_index is None:
+                warnings.warn(
+                    "`use_index` defaults to False but will default to True in future. "
+                    "Set True/False directly to control this behavior and silence this "
+                    "warning",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                use_index = False
+            if use_index:
+                ids = df.index.tolist()
+
+        if isinstance(ids, str):
+            ids = df[ids]
+
+        if not isinstance(ids, (list, NoneType)):
+            ids = ids.tolist()
+
+        return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
-        return w
 
     @classmethod
     def from_xarray(
