@@ -21,6 +21,7 @@ except ImportError:
 
 try:
     import shapely
+
     HAS_SHAPELY = True
 except ImportError:
     HAS_SHAPELY = False
@@ -97,7 +98,6 @@ class Contiguity_Mixin(object):
         # test named, sparse from point array
         pass
 
-
     @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         # basic
@@ -110,7 +110,6 @@ class Contiguity_Mixin(object):
         w = self.cls.from_dataframe(df, geom_col="the_geom")
         self.assertEqual(w[self.known_wi], self.known_w)
 
-
     @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
     def test_from_geodataframe(self):
         df = pdio.read_files(self.polygon_path)
@@ -121,7 +120,7 @@ class Contiguity_Mixin(object):
         self.assertEqual(w[self.known_wi], self.known_w)
 
         # named geometry + named obs
-        w = self.cls.from_dataframe(df, geom_col="the_geom", idVariable=self.idVariable)
+        w = self.cls.from_dataframe(df, geom_col="the_geom", ids=self.idVariable)
         self.assertEqual(w[self.known_name], self.known_namedw)
 
     def test_from_xarray(self):
@@ -129,7 +128,7 @@ class Contiguity_Mixin(object):
         self.assertEqual(w[self.known_wi_da], self.known_w_da)
         ws = self.cls.from_xarray(self.da)
         srowvec = ws.sparse[self.known_wspi_da].todense().tolist()[0]
-        this_w = {i:k for i,k in enumerate(srowvec) if k>0}
+        this_w = {i: k for i, k in enumerate(srowvec) if k > 0}
         self.assertEqual(this_w, self.known_wsp_da)
 
 
@@ -151,7 +150,7 @@ class Test_Queen(ut.TestCase, Contiguity_Mixin):
         self.cls = c.Queen
         self.idVariable = "POLYID"
         self.known_name = 5
-        self.known_namedw = {k+1:v for k,v in list(self.known_w.items())}
+        self.known_namedw = {k + 1: v for k, v in list(self.known_w.items())}
         self.known_wspi_da = 1
         self.known_wsp_da = {0: 1, 2: 1, 4: 1, 5: 1, 6: 1}
         self.known_wi_da = (1, -30.0, -60.0)
@@ -163,8 +162,8 @@ class Test_Queen(ut.TestCase, Contiguity_Mixin):
             (1, -30.0, 60.0): 1,
             (1, 30.0, -180.0): 1,
             (1, 30.0, -60.0): 1,
-            (1, 30.0, 60.0): 1
-            }
+            (1, 30.0, 60.0): 1,
+        }
 
     @ut.skipIf(GEOPANDAS_EXTINCT, "Missing Geopandas")
     def test_linestrings(self):
@@ -197,11 +196,15 @@ class Test_Rook(ut.TestCase, Contiguity_Mixin):
         self.cls = c.Rook
         self.idVariable = "POLYID"
         self.known_name = 5
-        self.known_namedw = {k+1:v for k,v in list(self.known_w.items())}
+        self.known_namedw = {k + 1: v for k, v in list(self.known_w.items())}
         self.known_wspi_da = 1
         self.known_wsp_da = {0: 1, 2: 1, 5: 1}
         self.known_wi_da = (1, -30.0, -180.0)
-        self.known_w_da = {(1, 30.0, -180.0): 1, (1, -30.0, -60.0): 1, (1, -90.0, -180.0): 1}
+        self.known_w_da = {
+            (1, 30.0, -180.0): 1,
+            (1, -30.0, -60.0): 1,
+            (1, -90.0, -180.0): 1,
+        }
 
 
 class Test_Voronoi(ut.TestCase):
