@@ -1,5 +1,4 @@
 import itertools
-from types import NoneType
 import warnings
 
 import numpy
@@ -230,7 +229,7 @@ class Rook(W):
         if isinstance(ids, str):
             ids = df[ids]
 
-        if not isinstance(ids, (list, NoneType)):
+        if not isinstance(ids, list) and ids is not None:
             ids = ids.tolist()
 
         return cls.from_iterable(
@@ -509,7 +508,7 @@ class Queen(W):
         if isinstance(ids, str):
             ids = df[ids]
 
-        if not isinstance(ids, (list, NoneType)):
+        if not isinstance(ids, list) and ids is not None:
             ids = ids.tolist()
 
         return cls.from_iterable(
