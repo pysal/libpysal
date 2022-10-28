@@ -232,6 +232,9 @@ class Rook(W):
         if not isinstance(ids, list) and ids is not None:
             ids = ids.tolist()
 
+        if len(ids) != len(df):
+            raise ValueError("The length of `ids` does not match the length of df.")
+
         return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
@@ -458,7 +461,7 @@ class Queen(W):
         See Also
         --------
         :class:`libpysal.weights.weights.W`
-        :class:`libpysal.weights.contiguity.Rook`
+        :class:`libpysal.weights.contiguity.Queen`
         """
         if geom_col is None:
             geom_col = df.geometry.name
@@ -510,6 +513,9 @@ class Queen(W):
 
         if not isinstance(ids, list) and ids is not None:
             ids = ids.tolist()
+
+        if len(ids) != len(df):
+            raise ValueError("The length of `ids` does not match the length of df.")
 
         return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
