@@ -10,7 +10,7 @@ import os
 import webbrowser
 from os import environ, makedirs
 from os.path import exists, expanduser, join
-from appdirs import user_data_dir
+from platformdirs import user_data_dir
 import zipfile
 import requests
 import pandas
