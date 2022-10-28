@@ -371,7 +371,7 @@ class W(object):
             import networkx as nx
         except ImportError:
             raise ImportError("NetworkX 2.7+ is required to use this function.")
-        sparse_array = nx.to_scipy_sparse_matrix(graph)
+        sparse_array = nx.to_scipy_sparse_array(graph)
         w = WSP(sparse_array).to_W()
         return w
 
