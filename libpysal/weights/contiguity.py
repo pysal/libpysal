@@ -226,14 +226,15 @@ class Rook(W):
             if use_index:
                 ids = df.index.tolist()
 
-        if isinstance(ids, str):
-            ids = df[ids]
+        else:
+            if isinstance(ids, str):
+                ids = df[ids]
 
-        if not isinstance(ids, list) and ids is not None:
-            ids = ids.tolist()
+            if not isinstance(ids, list):
+                ids = ids.tolist()
 
-        if len(ids) != len(df):
-            raise ValueError("The length of `ids` does not match the length of df.")
+            if len(ids) != len(df):
+                raise ValueError("The length of `ids` does not match the length of df.")
 
         return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
@@ -508,14 +509,15 @@ class Queen(W):
             if use_index:
                 ids = df.index.tolist()
 
-        if isinstance(ids, str):
-            ids = df[ids]
+        else:
+            if isinstance(ids, str):
+                ids = df[ids]
 
-        if not isinstance(ids, list) and ids is not None:
-            ids = ids.tolist()
+            if not isinstance(ids, list):
+                ids = ids.tolist()
 
-        if len(ids) != len(df):
-            raise ValueError("The length of `ids` does not match the length of df.")
+            if len(ids) != len(df):
+                raise ValueError("The length of `ids` does not match the length of df.")
 
         return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
