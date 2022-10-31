@@ -1,5 +1,4 @@
-"""Handle remote datasets.
-"""
+"""Handle remote datasets."""
 
 from bs4 import BeautifulSoup
 import requests
@@ -16,7 +15,6 @@ def poll_remotes():
         Example datasets keyed by the dataset name.
 
     """
-
     # Geoda Center Data Sets
 
     url = "https://geodacenter.github.io/data-and-lab//"
@@ -95,17 +93,19 @@ def poll_remotes():
     return datasets
 
 
-#datasets = poll_remotes()
-
 class Remotes:
+    """Remote datasets."""
+
     def __init__(self):
+        """Initialize Remotes."""
         self._datasets = None
 
     @property
     def datasets(self):
+        """Create dictionary of remotes."""
         if self._datasets is None:
             self._datasets = poll_remotes()
         return self._datasets
 
-datasets = Remotes()
 
+datasets = Remotes()
