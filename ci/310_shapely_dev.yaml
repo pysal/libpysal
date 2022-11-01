@@ -22,7 +22,7 @@ dependencies:
   - networkx
   - numba
   - packaging
-  - shapely==2.0b1
+  - shapely>=2.0b1
   - xarray
   - zstd
   # for docs build action (this env only)

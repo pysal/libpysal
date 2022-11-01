@@ -19,12 +19,13 @@
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [ci/37-minimal.yaml, ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml, ci/310_shapely20b1.yaml]
+         environment-file: [ci/37-minimal.yaml, ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml, ci/310_shapely_dev.yaml]
          include:
            - environment-file: ci/310.yaml
              os: macos-latest
            - environment-file: ci/310.yaml
              os: windows-latest
+       fail-fast: false
 
      steps:
        - name: checkout repo
