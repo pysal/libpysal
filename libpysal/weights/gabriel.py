@@ -59,8 +59,16 @@ class Delaunay(W):
                 " these computations may become unduly slow on large data."
             )
         edges, _ = self._voronoi_edges(coordinates)
+        ids = kwargs.get("ids")
+        if ids is not None:
+            ids = numpy.asarray(ids)
+            edges = numpy.column_stack((ids[edges[:, 0]], ids[edges[:, 1]]))
+            del kwargs["ids"]
+        else:
+            ids = numpy.arange(coordinates.shape[0])
+
         voronoi_neighbors = pandas.DataFrame(edges).groupby(0)[1].apply(list).to_dict()
-        W.__init__(self, voronoi_neighbors, **kwargs)
+        W.__init__(self, voronoi_neighbors, id_order=list(ids), **kwargs)
 
     def _voronoi_edges(self, coordinates):
         dt = _Delaunay(coordinates)
@@ -171,15 +179,22 @@ class Gabriel(Delaunay):
                 " to accelerate the computation of graphs. Without numba,"
                 " these computations may become unduly slow on large data."
             )
-        edges, _ = self._voronoi_edges(coordinates)
         edges, dt = self._voronoi_edges(coordinates)
         droplist = _filter_gabriel(
             edges,
             dt.points,
         )
-        output = set(map(tuple, edges)).difference(set(droplist))
+        output = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist))))
+        ids = kwargs.get("ids")
+        if ids is not None:
+            ids = numpy.asarray(ids)
+            output = numpy.column_stack((ids[output[:, 0]], ids[output[:, 1]]))
+            del kwargs["ids"]
+        else:
+            ids = numpy.arange(coordinates.shape[0])
+
         gabriel_neighbors = pandas.DataFrame(output).groupby(0)[1].apply(list).to_dict()
-        W.__init__(self, gabriel_neighbors, **kwargs)
+        W.__init__(self, gabriel_neighbors, id_order=list(ids), **kwargs)
 
 
 class Relative_Neighborhood(Delaunay):
@@ -213,15 +228,20 @@ class Relative_Neighborhood(Delaunay):
                 " to accelerate the computation of graphs. Without numba,"
                 " these computations may become unduly slow on large data."
             )
-        edges, _ = self._voronoi_edges(coordinates)
         edges, dt = self._voronoi_edges(coordinates)
         output, dkmax = _filter_relativehood(edges, dt.points, return_dkmax=False)
         row, col, data = zip(*output)
         if binary:
             data = numpy.ones_like(col, dtype=float)
         sp = sparse.csc_matrix((data, (row, col)))  # TODO: faster way than this?
-        tmp = WSP(sp).to_W()
-        W.__init__(self, tmp.neighbors, tmp.weights, **kwargs)
+        ids = kwargs.get("ids")
+        if ids is None:
+            ids = numpy.arange(sp.shape[0])
+        else:
+            del kwargs["ids"]
+        ids = list(ids)
+        tmp = WSP(sp, id_order=ids).to_W()
+        W.__init__(self, tmp.neighbors, tmp.weights, id_order=ids, **kwargs)
 
 
 #### utilities
