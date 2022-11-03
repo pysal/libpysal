@@ -236,6 +236,9 @@ class Rook(W):
             if len(ids) != len(df):
                 raise ValueError("The length of `ids` does not match the length of df.")
 
+        if id_order is None:
+            id_order = ids
+
         return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
@@ -519,6 +522,9 @@ class Queen(W):
             if len(ids) != len(df):
                 raise ValueError("The length of `ids` does not match the length of df.")
 
+        if id_order is None:
+            id_order = ids
+
         return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
@@ -639,7 +645,7 @@ def _from_dataframe(df, **kwargs):
     """
     Construct a voronoi contiguity weight directly from a dataframe.
     Note that if criterion='rook', this is identical to the delaunay
-    graph for the points.
+    graph for the points if no clipping of the voronoi cells is applied.
 
     If the input dataframe is of any other geometry type than "Point",
     a value error is raised.
