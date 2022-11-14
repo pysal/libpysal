@@ -3,19 +3,21 @@
 import os
 import platform
 import unittest
-import numpy as np
 import pandas
 
-from .. import available
+from .. import (available, get_url, load_example)
+
 from ..base import get_data_home
 
 os_name = platform.system()
+
 
 class Testexamples(unittest.TestCase):
 
     def test_available(self):
         examples = available()
         self.assertEqual(type(examples), pandas.core.frame.DataFrame)
+        self.assertEqual(examples.shape, (98, 3))
 
     def test_data_home(self): 
         pth = get_data_home()
@@ -36,6 +38,17 @@ class Testexamples(unittest.TestCase):
             self.assertEqual(heads[1], 'Users')
             self.assertEqual(heads[-2], 'Local')
             self.assertEqual(heads[-3], 'AppData')
+
+    def test_get_url(self):
+        self.assertEqual(get_url('10740'), None)
+        url = 'https://geodacenter.github.io/data-and-lab//data/baltimore.zip'
+        self.assertEqual(get_url('Baltimore'), url)
+
+    def test_load_example(self):
+        taz = load_example("taz")
+        flist = taz.get_file_list()
+        self.assertEquals(len(flist), 4)
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testexamples)
 
