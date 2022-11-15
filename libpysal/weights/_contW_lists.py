@@ -34,8 +34,7 @@ def _get_boundary_points(shape):
     else:
         raise TypeError(
             "Input shape must be a Polygon, Multipolygon, LineString, "
-            " or MultiLinestring and was "
-            " instead: {}".format(shape.type)
+            f" or MultiLinestring and was instead: {shape.type}"
         )
 
 
@@ -120,5 +119,5 @@ class ContiguityWeightsLists:
                     except:
                         pass
         else:
-            raise Exception("Weight type {} Not Understood!".format(self.wttype))
+            raise Exception(f"Weight type {self.wttype} Not Understood!")
         self.w = w
