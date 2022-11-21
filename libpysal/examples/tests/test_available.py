@@ -23,10 +23,12 @@ class Testexamples(unittest.TestCase):
         head, tail = os.path.split(pth)
         self.assertEqual(tail, "pysal")
         if os_name == "Linux":
-            heads = head.split("/")
-            self.assertEqual(heads[1], "home")
-            self.assertEqual(heads[-1], "share")
-            self.assertEqual(heads[-2], ".local")
+            if "XDG_DATA_HOME" in os.environ:
+                self.assertEqual(head, os.environ["XDG_DATA_HOME"])
+            else:
+                heads = head.split("/")
+                self.assertEqual(heads[-1], "share")
+                self.assertEqual(heads[-2], ".local")
         elif os_name == "Darwin":
             heads = head.split("/")
             self.assertEqual(heads[1], "Users")
