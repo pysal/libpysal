@@ -16,6 +16,7 @@ from warnings import warn as Warn
 from scipy.spatial import distance_matrix
 import scipy.sparse as sp
 import numpy as np
+import warnings
 
 
 def knnW(data, k=2, p=2, ids=None, radius=None, distance_metric="euclidean"):
@@ -83,20 +84,20 @@ class KNN(W):
     Notes
     -----
 
-    Ties between neighbors of equal distance are arbitrarily broken. 
+    Ties between neighbors of equal distance are arbitrarily broken.
 
-    Further, if many points occupy the same spatial location (i.e. observations are 
-    coincident), then you may need to increase k for those observations to 
+    Further, if many points occupy the same spatial location (i.e. observations are
+    coincident), then you may need to increase k for those observations to
     acquire neighbors at different spatial locations. For example, if five
     points are coincident, then their four nearest neighbors will all
     occupy the same spatial location; only the fifth nearest neighbor will
     result in those coincident points becoming connected to the graph as a
-    whole. 
+    whole.
 
     Solutions to this problem include jittering the points (by adding
-    a small random value to each observation's location) or by adding 
+    a small random value to each observation's location) or by adding
     higher-k neighbors only to the coincident points, using the
-    weights.w_sets.w_union() function. 
+    weights.w_sets.w_union() function.
 
     See Also
     --------
@@ -214,6 +215,10 @@ class KNN(W):
         --------
         :class:`libpysal.weights.weights.W`
         """
+        warnings.warn(
+            "`from_shapefile` will be deprecated in" "a future version of libpysal.",
+            FutureWarning,
+        )
         return cls(get_points_array_from_shapefile(filepath), *args, **kwargs)
 
     @classmethod
@@ -583,6 +588,10 @@ class Kernel(W):
         ---------
         :class:`libpysal.weights.weights.W`
         """
+        warnings.warn(
+            "`from_shapefile` will be deprecated in" "a future version of libpysal.",
+            FutureWarning,
+        )
         points = get_points_array_from_shapefile(filepath)
         if idVariable is not None:
             ids = get_ids(filepath, idVariable)
@@ -691,13 +700,13 @@ class Kernel(W):
         elif self.function == "uniform":
             self.kernel = [np.ones(zi.shape) * 0.5 for zi in zs]
         elif self.function == "quadratic":
-            self.kernel = [(3.0 / 4) * (1 - zi ** 2) for zi in zs]
+            self.kernel = [(3.0 / 4) * (1 - zi**2) for zi in zs]
         elif self.function == "quartic":
-            self.kernel = [(15.0 / 16) * (1 - zi ** 2) ** 2 for zi in zs]
+            self.kernel = [(15.0 / 16) * (1 - zi**2) ** 2 for zi in zs]
         elif self.function == "gaussian":
             c = np.pi * 2
             c = c ** (-0.5)
-            self.kernel = [c * np.exp(-(zi ** 2) / 2.0) for zi in zs]
+            self.kernel = [c * np.exp(-(zi**2) / 2.0) for zi in zs]
         else:
             print(("Unsupported kernel function", self.function))
 
@@ -864,6 +873,10 @@ class DistanceBand(W):
         Kernel Weights Object
 
         """
+        warnings.warn(
+            "`from_shapefile` will be deprecated in" "a future version of libpysal.",
+            FutureWarning,
+        )
         points = get_points_array_from_shapefile(filepath)
         if idVariable is not None:
             ids = get_ids(filepath, idVariable)

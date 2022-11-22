@@ -1,6 +1,7 @@
 import itertools
 
 import numpy
+import warnings
 
 from ..cg import voronoi_frames
 from ..io.fileio import FileIO
@@ -96,6 +97,10 @@ class Rook(W):
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Rook`
         """
+        warnings.warn(
+            "`from_shapefile` will be deprecated in" "a future version of libpysal.",
+            FutureWarning,
+        )
         sparse = kwargs.pop("sparse", False)
         if idVariable is not None:
             ids = get_ids(filepath, idVariable)
@@ -158,7 +163,7 @@ class Rook(W):
                       an ordered list of ids to use to index the spatial weights
                       object. If used, the resulting weights object will iterate
                       over results in the order of the names provided in this
-                      argument. 
+                      argument.
 
         See Also
         --------
@@ -227,7 +232,7 @@ class Rook(W):
         Returns
         -------
         w : libpysal.weights.W/libpysal.weights.WSP
-            instance of spatial weights class W or WSP with an index attribute 
+            instance of spatial weights class W or WSP with an index attribute
 
         Notes
         -----
@@ -322,6 +327,10 @@ class Queen(W):
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Queen`
         """
+        warnings.warn(
+            "`from_shapefile` will be deprecated in" "a future version of libpysal.",
+            FutureWarning,
+        )
         sparse = kwargs.pop("sparse", False)
         if idVariable is not None:
             ids = get_ids(filepath, idVariable)
@@ -382,7 +391,7 @@ class Queen(W):
                       an ordered list of ids to use to index the spatial weights
                       object. If used, the resulting weights object will iterate
                       over results in the order of the names provided in this
-                      argument. 
+                      argument.
 
         See Also
         --------
@@ -457,7 +466,7 @@ class Queen(W):
         Returns
         -------
         w : libpysal.weights.W/libpysal.weights.WSP
-            instance of spatial weights class W or WSP with an index attribute 
+            instance of spatial weights class W or WSP with an index attribute
 
         Notes
         -----
@@ -526,17 +535,17 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
 
 def _from_dataframe(df, **kwargs):
     """
-    Construct a voronoi contiguity weight directly from a dataframe. 
+    Construct a voronoi contiguity weight directly from a dataframe.
     Note that if criterion='rook', this is identical to the delaunay
-    graph for the points. 
+    graph for the points.
 
     If the input dataframe is of any other geometry type than "Point",
-    a value error is raised. 
+    a value error is raised.
 
     Parameters
     ----------
     df          :   pandas.DataFrame
-                    dataframe containing point geometries for a 
+                    dataframe containing point geometries for a
                     voronoi diagram.
 
     Returns
@@ -561,14 +570,14 @@ Voronoi.from_dataframe = _from_dataframe
 
 def _build(polygons, criterion="rook", ids=None):
     """
-    This is a developer-facing function to construct a spatial weights object. 
+    This is a developer-facing function to construct a spatial weights object.
 
     Parameters
     ----------
     polygons    : list
                   list of pysal polygons to use to build contiguity
     criterion   : string
-                  option of which kind of contiguity to build. Is either "rook" or "queen" 
+                  option of which kind of contiguity to build. Is either "rook" or "queen"
     ids         : list
                   list of ids to use to index the neighbor dictionary
 
@@ -576,12 +585,12 @@ def _build(polygons, criterion="rook", ids=None):
     -------
     tuple containing (neighbors, ids), where neighbors is a dictionary
     describing contiguity relations and ids is the list of ids used to index
-    that dictionary. 
+    that dictionary.
 
     NOTE: this is different from the prior behavior of buildContiguity, which
           returned an actual weights object. Since this just dispatches for the
           classes above, this returns the raw ingredients for a spatial weights
-          object, not the object itself. 
+          object, not the object itself.
     """
     if ids and len(ids) != len(set(ids)):
         raise ValueError(
@@ -621,7 +630,7 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     This is a deprecated function.
 
     It builds a contiguity W from the polygons provided. As such, it is now
-    identical to calling the class constructors for Rook or Queen. 
+    identical to calling the class constructors for Rook or Queen.
     """
     # Warn('This function is deprecated. Please use the Rook or Queen classes',
     #        UserWarning)
