@@ -24,6 +24,7 @@ except ImportError:
 
 try:
     from shapely.geometry.base import BaseGeometry
+
     HAS_SHAPELY = True
 except ImportError:
     HAS_SHAPELY = False
@@ -38,7 +39,6 @@ __all__ = [
     "remap_ids",
     "full2W",
     "full",
-    "WSP2W",
     "insert_diagonal",
     "fill_diagonal",
     "get_ids",
@@ -534,17 +534,17 @@ def higher_order_sp(
         )
 
     if lower_order:
-        wk = sum(map(lambda x: w ** x, range(2, k + 1)))
+        wk = sum(map(lambda x: w**x, range(2, k + 1)))
         shortest_path = False
     else:
-        wk = w ** k
+        wk = w**k
 
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck))
 
     if shortest_path:
         for j in range(1, k):
-            wj = w ** j
+            wj = w**j
             rj, cj = wj.nonzero()
             sj = set(zip(rj, cj))
             sk.difference_update(sj)
@@ -785,72 +785,6 @@ def full2W(m, ids=None, **kwargs):
     return W(neighbors, weights, id_order=ids, **kwargs)
 
 
-def WSP2W(wsp, **kwargs):
-
-    """
-    Convert a pysal WSP object (thin weights matrix) to a pysal W object.
-
-    Parameters
-    ----------
-    wsp                     : WSP
-                              PySAL sparse weights object
-    **kwargs                : keyword arguments
-                              optional arguments for :class:`pysal.weights.W`
-
-    Returns
-    -------
-    w       : W
-              PySAL weights object
-
-    Examples
-    --------
-    >>> from libpysal.weights import lat2W, WSP, WSP2W
-
-    Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
-    (rook contiguity), then construct a PySAL sparse weights object (wsp).
-
-    >>> sp = lat2SW(2, 5)
-    >>> wsp = WSP(sp)
-    >>> wsp.n
-    10
-    >>> wsp.sparse[0].todense()
-    matrix([[0, 1, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=int8)
-
-    Convert this sparse weights object to a standard PySAL weights object.
-
-    >>> w = WSP2W(wsp)
-    >>> w.n
-    10
-    >>> print(w.full()[0][0])
-    [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
-
-
-    """
-    wsp.sparse
-    indices = wsp.sparse.indices
-    data = wsp.sparse.data
-    indptr = wsp.sparse.indptr
-    id_order = wsp.id_order
-    if id_order:
-        # replace indices with user IDs
-        indices = [id_order[i] for i in indices]
-    else:
-        id_order = list(range(wsp.n))
-    neighbors, weights = {}, {}
-    start = indptr[0]
-    for i in range(wsp.n):
-        oid = id_order[i]
-        end = indptr[i + 1]
-        neighbors[oid] = indices[start:end]
-        weights[oid] = data[start:end]
-        start = end
-    ids = copy.copy(wsp.id_order)
-    w = W(neighbors, weights, ids, **kwargs)
-    w._sparse = copy.deepcopy(wsp.sparse)
-    w._cache["sparse"] = w._sparse
-    return w
-
-
 def insert_diagonal(w, val=1.0, wsp=False):
     warn("This function is deprecated. Use fill_diagonal instead.")
     return fill_diagonal(w, val=val, wsp=wsp)
@@ -1086,12 +1020,7 @@ def get_points_array(iterable):
                 ]
             )
         else:
-            data = np.vstack(
-                [
-                    np.array(shape.centroid)
-                    for shape in first_choice
-                ]
-            )
+            data = np.vstack([np.array(shape.centroid) for shape in first_choice])
     except AttributeError:
         data = np.vstack([shape for shape in backup])
     return data

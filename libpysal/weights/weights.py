@@ -41,8 +41,8 @@ class W(object):
        This can be set after creation by setting the ``id_order`` property.
     silence_warnings : bool
        By default ``libpysal`` will print a warning if the dataset contains
-       any disconnected components or islands. To silence this warning set this
-       parameter to ``True``.
+       any disconnected components or isolates. To silence this
+       warning set this parameter to ``True``.
     ids : list
         Values to use for keys of the neighbors and weights ``dict`` objects.
 
@@ -59,7 +59,7 @@ class W(object):
     id2i
     id_order
     id_order_set
-    islands
+    isolates
     max_neighbors
     mean_neighbors
     min_neighbors
@@ -83,13 +83,17 @@ class W(object):
     --------
 
     >>> from libpysal.weights import W
-    >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4], 4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7], 7: [4, 6, 8], 8: [5, 7]}
-    >>> weights = {0: [1, 1], 1: [1, 1, 1], 2: [1, 1], 3: [1, 1, 1], 4: [1, 1, 1, 1], 5: [1, 1, 1], 6: [1, 1], 7: [1, 1, 1], 8: [1, 1]}
+    >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4],
+                     4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7],
+                     7: [4, 6, 8], 8: [5, 7]}
+    >>> weights = {0: [1, 1], 1: [1, 1, 1], 2: [1, 1], 3: [1, 1, 1],
+                   4: [1, 1, 1, 1], 5: [1, 1, 1], 6: [1, 1], 7: [1, 1, 1],
+                   8: [1, 1]}
     >>> w = W(neighbors, weights)
     >>> "%.3f"%w.pct_nonzero
     '29.630'
 
-    Read from external `.gal file <https://geodacenter.github.io/workbook/4a_contig_weights/lab4a.html#gal-weights-file>`_.
+    Read from external .gal file
 
     >>> import libpysal
     >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
@@ -100,7 +104,9 @@ class W(object):
 
     Set weights implicitly.
 
-    >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4], 4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7], 7: [4, 6, 8], 8: [5, 7]}
+    >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4],
+                     4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7], 7: [4, 6, 8],
+                     8: [5, 7]}
     >>> w = W(neighbors)
     >>> round(w.pct_nonzero,3)
     29.63
@@ -121,14 +127,14 @@ class W(object):
     >>> w.histogram
     [(2, 4), (3, 392), (4, 9604)]
 
-    Disconnected observations (islands):
+    Disconnected observations (isolates):
 
     >>> from libpysal.weights import W
     >>> w = W({1:[0],0:[1],2:[], 3:[]})
 
     UserWarning: The weights matrix is not fully connected:
     There are 3 disconnected components.
-    There are 2 islands with ids: 2, 3.
+    There are 2 isolates with ids: 2, 3.
 
     """
 
@@ -221,13 +227,16 @@ class W(object):
 
     @classmethod
     def from_shapefile(cls, *args, **kwargs):
-        # we could also just "do the right thing," but I think it'd make sense to
-        # try and get people to use `Rook.from_shapefile(shapefile)` rather than
-        # W.from_shapefile(shapefile, type=`rook`), otherwise we'd need to build
-        # a type dispatch table. Generic W should be for stuff we don't know
-        # anything about.
+        # we could also just "do the right thing," but I think it'd
+        # make sense to try and get people to use
+        # `Rook.from_shapefile(shapefile)` rather than
+        # W.from_shapefile(shapefile, type=`rook`), otherwise we'd
+        # need to build a type dispatch table. Generic W should be for
+        # stuff we don't know anything about.
+
         raise NotImplementedError(
-            "Use type-specific constructors, like Rook, Queen, DistanceBand, or Kernel"
+            "Use type-specific constructors, like Rook, \
+             DistanceBand, or Kernel"
         )
 
     @classmethod
@@ -313,12 +322,17 @@ class W(object):
             )
         if (drop_islands is None) and not (self.silence_warnings):
             warnings.warn(
-                "In the next version of libpysal, observations with no neighbors will be included in adjacency lists as loops (row with the same focal and neighbor) with zero weight. In the current version, observations with no neighbors are dropped. If you would like to keep the current behavior, use drop_islands=True in this function",
+                "In the next version of libpysal, observations with no \
+                neighbors will be included in adjacency lists as loops \
+                (row with the same focal and neighbor) with zero \
+                weight. In the current version, observations with no \
+                neighbors are dropped. If you would like to keep the \
+                current behavior, use drop_islands=True in this \
+                function",
                 DeprecationWarning,
             )
             drop_islands = True
 
-        links = []
         focal_ix, neighbor_ix = self.sparse.nonzero()
         names = np.asarray(self.id_order)
         focal = names[focal_ix]
@@ -346,7 +360,10 @@ class W(object):
         try:
             import networkx as nx
         except ImportError:
-            raise ImportError("NetworkX 2.7+ is required to use this function.")
+            raise ImportError(
+                "NetworkX 2.7+ is required to \
+            use this function."
+            )
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
         return nx.from_scipy_sparse_array(self.sparse, create_using=G)
 
@@ -370,7 +387,10 @@ class W(object):
         try:
             import networkx as nx
         except ImportError:
-            raise ImportError("NetworkX 2.7+ is required to use this function.")
+            raise ImportError(
+                "NetworkX 2.7+ is required to \
+            use this function."
+            )
         sparse_array = nx.to_scipy_sparse_array(graph)
         w = WSP(sparse_array).to_W()
         return w
@@ -648,12 +668,21 @@ class W(object):
         return self._asymmetries
 
     @property
-    def islands(self):
+    def islands(self):  # remove in meta 23.06
         """List of ids without any neighbors."""
+        warnings.warn("islands is deprecated. Use isolates.")
         if "islands" not in self._cache:
             self._islands = [i for i, c in list(self.cardinalities.items()) if c == 0]
             self._cache["islands"] = self._islands
         return self._islands
+
+    @property
+    def isolates(self):
+        """List of ids without any neighbors."""
+        if "isolates" not in self._cache:
+            self._isolates = [i for i, c in list(self.cardinalities.items()) if c == 0]
+            self._cache["isolates"] = self._isolates
+        return self._isolates
 
     @property
     def histogram(self):
@@ -741,8 +770,8 @@ class W(object):
         old_ids = self._id_order
         if len(old_ids) != len(new_ids):
             raise Exception(
-                "W.remap_ids: length of `old_ids` does not match             that of"
-                " new_ids"
+                "W.remap_ids: length of `old_ids` does not match \
+                that of new_ids"
             )
         if len(set(new_ids)) != len(new_ids):
             raise Exception("W.remap_ids: list `new_ids` contains duplicates")
@@ -973,7 +1002,7 @@ class W(object):
                     row_sum = sum(wijs) * 1.0
                     if row_sum == 0.0:
                         if not self.silence_warnings:
-                            print(("WARNING: ", i, " is an island (no neighbors)"))
+                            print(("WARNING: ", i, " is an isolate."))
                     weights[i] = [wij / row_sum for wij in wijs]
                 weights = weights
                 self.transformations[value] = weights
@@ -1009,7 +1038,6 @@ class W(object):
                 # variance stabilizing
                 weights = {}
                 q = {}
-                k = self.cardinalities
                 s = {}
                 Q = 0.0
                 self.weights = self.transformations["O"]
@@ -1072,7 +1100,10 @@ class W(object):
         []
         >>> w.transform='r'
         >>> w.asymmetry()
-        [(0, 1), (0, 3), (1, 0), (1, 2), (1, 4), (2, 1), (2, 5), (3, 0), (3, 4), (3, 6), (4, 1), (4, 3), (4, 5), (4, 7), (5, 2), (5, 4), (5, 8), (6, 3), (6, 7), (7, 4), (7, 6), (7, 8), (8, 5), (8, 7)]
+        [(0, 1), (0, 3), (1, 0), (1, 2), (1, 4), (2, 1), (2, 5), (3,
+        0), (3, 4), (3, 6), (4, 1), (4, 3), (4, 5), (4, 7), (5, 2),
+        (5, 4), (5, 8), (6, 3), (6, 7), (7, 4), (7, 6), (7, 8), (8,
+        5), (8, 7)]
         >>> result = w.asymmetry(intrinsic=False)
         >>> result
         []
@@ -1138,7 +1169,8 @@ class W(object):
         Examples
         --------
         >>> from libpysal.weights import W, full
-        >>> neighbors = {'first':['second'],'second':['first','third'],'third':['second']}
+        >>> neighbors = {'first':['second'],'second':['first','third'],
+        'third':['second']}
         >>> weights = {'first':[1],'second':[1,1],'third':[1]}
         >>> w = W(neighbors, weights)
         >>> wf, ids = full(w)
@@ -1168,7 +1200,8 @@ class W(object):
         Examples
         --------
         >>> from libpysal.weights import W, WSP
-        >>> neighbors={'first':['second'],'second':['first','third'],'third':['second']}
+        >>> neighbors={'first':['second'],'second':['first','third'],
+        'third':['second']}
         >>> weights={'first':[1],'second':[1,1],'third':[1]}
         >>> w=W(neighbors,weights)
         >>> wsp=w.to_WSP()
@@ -1219,7 +1252,8 @@ class W(object):
         Parameters
         ----------
         gdf : geopandas.GeoDataFrame
-            The original shapes whose topological relations are modelled in ``W``.
+            The original shapes whose topological relations are modelled
+            in ``W``.
         indexed_on : str
             Column of ``geopandas.GeoDataFrame`` that the weights object uses
             as an index. Default is ``None``, so the index of the
@@ -1261,7 +1295,8 @@ class W(object):
         >>> import geopandas
         >>> gdf = geopandas.read_file(lp.examples.get_path("columbus.shp"))
         >>> weights = Queen.from_dataframe(gdf)
-        >>> tmp = weights.plot(gdf, color='firebrickred', node_kws=dict(marker='*', color='k'))
+        >>> tmp = weights.plot(gdf, color='firebrickred',
+                               node_kws=dict(marker='*', color='k'))
         """
         try:
             import matplotlib.pyplot as plt
@@ -1373,17 +1408,25 @@ class WSP(object):
 
         if index is not None:
             if not isinstance(index, (pd.Index, pd.MultiIndex, pd.RangeIndex)):
-                raise TypeError("index must be an instance of pandas.Index dtype")
+                raise TypeError(
+                    "index must be an instance of \
+                pandas.Index dtype"
+                )
             if len(index) != self.n:
-                raise ValueError("Number of values in index must match shape of sparse")
+                raise ValueError(
+                    "Number of values in index must \
+                match shape of sparse"
+                )
         else:
             index = pd.RangeIndex(self.n)
         self.index = index
 
     @property
     def id_order(self):
-        """An ordered list of ids, assumed to match the ordering in ``sparse``."""
+        """An ordered list of ids, assumed to match the ordering
+        in ``sparse``."""
         # Temporary solution until the refactoring is finished
+
         if "id_order" not in self._cache:
             if hasattr(self, "index"):
                 self._id_order = self.index.tolist()
@@ -1504,3 +1547,69 @@ class WSP(object):
         w._sparse = copy.deepcopy(self.sparse)
         w._cache["sparse"] = w._sparse
         return w
+
+
+def WSP2W(wsp, **kwargs):
+
+    """
+    Convert a pysal WSP object (thin weights matrix) to a pysal W object.
+
+    Parameters
+    ----------
+    wsp                     : WSP
+                              PySAL sparse weights object
+    **kwargs                : keyword arguments
+                              optional arguments for :class:`pysal.weights.W`
+
+    Returns
+    -------
+    w       : W
+              PySAL weights object
+
+    Examples
+    --------
+    >>> from libpysal.weights import lat2W, WSP, WSP2W
+
+    Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
+    (rook contiguity), then construct a PySAL sparse weights object (wsp).
+
+    >>> sp = lat2SW(2, 5)
+    >>> wsp = WSP(sp)
+    >>> wsp.n
+    10
+    >>> wsp.sparse[0].todense()
+    matrix([[0, 1, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=int8)
+
+    Convert this sparse weights object to a standard PySAL weights object.
+
+    >>> w = WSP2W(wsp)
+    >>> w.n
+    10
+    >>> print(w.full()[0][0])
+    [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
+
+
+    """
+    wsp.sparse
+    indices = wsp.sparse.indices
+    data = wsp.sparse.data
+    indptr = wsp.sparse.indptr
+    id_order = wsp.id_order
+    if id_order:
+        # replace indices with user IDs
+        indices = [id_order[i] for i in indices]
+    else:
+        id_order = list(range(wsp.n))
+    neighbors, weights = {}, {}
+    start = indptr[0]
+    for i in range(wsp.n):
+        oid = id_order[i]
+        end = indptr[i + 1]
+        neighbors[oid] = indices[start:end]
+        weights[oid] = data[start:end]
+        start = end
+    ids = copy.copy(wsp.id_order)
+    w = W(neighbors, weights, ids, **kwargs)
+    w._sparse = copy.deepcopy(wsp.sparse)
+    w._cache["sparse"] = w._sparse
+    return w
