@@ -10,6 +10,8 @@ import warnings
 import numpy as np
 import scipy.sparse
 from scipy.sparse.csgraph import connected_components
+from sklearn import preprocessing
+from collections import defaultdict
 
 # from .util import full, WSP2W resolve import cycle by
 # forcing these into methods
@@ -384,6 +386,73 @@ class W(object):
             self._sparse = self._build_sparse()
             self._cache["sparse"] = self._sparse
         return self._sparse
+
+    @classmethod
+    def from_sparse(cls, sparse):
+        """Convert a ``scipy.sparse`` array to a PySAL ``W`` object.
+
+        Parameters
+        ----------
+        sparse : scipy.sparse array
+
+        Returns
+        -------
+        w : libpysal.weights.W
+            A ``W`` object containing the same graph as the ``scipy.sparse`` graph.
+
+
+        Notes
+        -----
+        When the sparse array has a zero in its data attribute, and
+        the corresponding row and column values are equal, the value
+        for the pysal weight will be 0 for the "loop".
+        """
+        coo = sparse.tocoo()
+        neighbors = defaultdict(list)
+        weights = defaultdict(list)
+        for k, v, w in zip(coo.row, coo.col, coo.data):
+            neighbors[k].append(v)
+            weights[k].append(w)
+        return W(neighbors=neighbors, weights=weights)
+
+    def to_sparse(self, fmt="coo"):
+        """Generate a ``scipy.sparse`` array object from a pysal W.
+
+        Parameters
+        ----------
+        fmt : {'bsr', 'coo', 'csc', 'csr'}
+          scipy.sparse format
+
+        Returns
+        -------
+        scipy.sparse array
+          A scipy.sparse array with a format of fmt.
+
+        Notes
+        -----
+        The keys of the w.neighbors are encoded
+        to determine row,col in the sparse array.
+
+        """
+        disp = {}
+        disp["bsr"] = scipy.sparse.bsr_array
+        disp["coo"] = scipy.sparse.coo_array
+        disp["csc"] = scipy.sparse.csc_array
+        disp["csr"] = scipy.sparse.csr_array
+        fmt_l = fmt.lower()
+        if fmt_l in disp:
+            adj_list = self.to_adjlist(drop_islands=False)
+            data = adj_list.weight
+            row = adj_list.focal
+            col = adj_list.neighbor
+            le = preprocessing.LabelEncoder()
+            le.fit(row)
+            row = le.transform(row)
+            col = le.transform(col)
+            n = self.n
+            return disp[fmt_l]((data, (row, col)), shape=(n, n))
+        else:
+            warnings.warn(f"{fmt} not supported.")
 
     @property
     def n_components(self):
@@ -1306,7 +1375,7 @@ class W(object):
         ax.scatter(
             gdf.centroid.apply(lambda p: p.x),
             gdf.centroid.apply(lambda p: p.y),
-            **node_kws
+            **node_kws,
         )
         return f, ax
 
