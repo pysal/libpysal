@@ -689,6 +689,11 @@ class TestWSP(unittest.TestCase):
     def test_s0(self):
         self.assertEqual(self.w3x3.s0, 24.0)
 
+    def test_from_WSP(self):
+        w = W.from_WSP(self.wsp)
+        self.assertEqual(w.n, 100)
+        self.assertEqual(w.pct_nonzero, 4.62)
+
 
 if __name__ == "__main__":
     unittest.main()
