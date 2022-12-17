@@ -272,14 +272,12 @@ class W(object):
         >>> print(w.full()[0][0])
         [0 1 0 0 0 1 0 0 0 0]
         """
-        WSP.sparse
-        indices = WSP.sparse.indices
         data = WSP.sparse.data
         indptr = WSP.sparse.indptr
         id_order = WSP.id_order
         if id_order:
             # replace indices with user IDs
-            indices = [id_order[i] for i in indices]
+            indices = [id_order[i] for i in WSP.sparse.indices]
         else:
             id_order = list(range(WSP.n))
         neighbors, weights = {}, {}
