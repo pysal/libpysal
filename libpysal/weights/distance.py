@@ -580,7 +580,7 @@ class Kernel(W):
         Kernel Weights Object
 
         See Also
-        ---------
+        --------
         :class:`libpysal.weights.weights.W`
         """
         points = get_points_array_from_shapefile(filepath)
@@ -860,7 +860,7 @@ class DistanceBand(W):
                       name of column in shapefile's DBF to use for ids
 
         Returns
-        --------
+        -------
         Kernel Weights Object
 
         """
