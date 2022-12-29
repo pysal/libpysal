@@ -23,8 +23,8 @@ class Delaunay(W):
     a graph from the input set of points. Will be slower without numba,
     and will warn if this is missing. 
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     coordinates :   array of points, (N,2)
         numpy array of coordinates containing locations to compute the
         delaunay triangulation
@@ -79,8 +79,8 @@ class Delaunay(W):
         Polygons or lines must be converted to points (e.g. using 
         df.geometry.centroid).
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         df  :   geopandas.GeoDataFrame
             GeoDataFrame containing points to construct the Delaunay 
             Triangulation. 
@@ -114,13 +114,14 @@ class Gabriel(Delaunay):
 
     For a link (i,j) connecting node i to j in the Delaunay triangulation
     to be retained in the Gabriel graph, it must pass a point set exclusion test:
+
     1. Construct the circle C_ij containing link (i,j) as its diameter
     2. If any other node k is contained within C_ij, then remove link (i,j) 
        from the graph. 
     3. Once all links are evaluated, the remaining graph is the Gabriel graph. 
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     coordinates :   array of points, (N,2)
         numpy array of coordinates containing locations to compute the
         delaunay triangulation
@@ -159,8 +160,8 @@ class Relative_Neighborhood(Delaunay):
     This means that the points are at least as close to one another 
     as they are to any other point. 
     
-    Arguments
-    ---------
+    Parameters
+    ----------
     coordinates :   array of points, (N,2)
         numpy array of coordinates containing locations to compute the
         delaunay triangulation

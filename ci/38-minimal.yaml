@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.7
+  - python=3.8
   - platformdirs
   - beautifulsoup4
   - jinja2
@@ -15,11 +15,3 @@ dependencies:
   - pytest
   - pytest-cov
   - pytest-xdist
-  - networkx=2.7
-  # optional
-  - geopandas>=0.7.0
-  - joblib
-  - numba
-  - packaging
-  - xarray
-  - zstd
