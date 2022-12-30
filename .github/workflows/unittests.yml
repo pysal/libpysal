@@ -20,7 +20,6 @@
        matrix:
          os: ['ubuntu-latest']
          environment-file: [
-            ci/38-minimal.yaml,
             ci/38.yaml,
             ci/39.yaml,
             ci/310.yaml,

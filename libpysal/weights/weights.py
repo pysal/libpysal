@@ -234,7 +234,67 @@ class W(object):
 
     @classmethod
     def from_WSP(cls, WSP, silence_warnings=True):
-        return WSP2W(WSP, silence_warnings=silence_warnings)
+        """Create a pysal W from a pysal WSP object (thin weights matrix).
+
+        Parameters
+        ----------
+        wsp                     : WSP
+                                PySAL sparse weights object
+
+        silence_warnings        : bool
+           By default ``libpysal`` will print a warning if the dataset contains
+           any disconnected components or islands. To silence this warning set this
+           parameter to ``True``.
+
+
+        Returns
+        -------
+        w       : W
+                PySAL weights object
+
+        Examples
+        --------
+        >>> from libpysal.weights import lat2W, WSP, W
+
+        Build a 10x10 scipy.sparse matrix for a rectangular 2x5 region of cells
+        (rook contiguity), then construct a PySAL sparse weights object (wsp).
+
+        >>> sp = lat2SW(2, 5)
+        >>> wsp = WSP(sp)
+        >>> wsp.n
+        10
+        >>> wsp.sparse[0].todense()
+        matrix([[0, 1, 0, 0, 0, 1, 0, 0, 0, 0]], dtype=int8)
+
+        Create a standard PySAL W from this sparse weights object.
+
+        >>> w = W.from_WSP(wsp)
+        >>> w.n
+        10
+        >>> print(w.full()[0][0])
+        [0 1 0 0 0 1 0 0 0 0]
+        """
+        data = WSP.sparse.data
+        indptr = WSP.sparse.indptr
+        id_order = WSP.id_order
+        if id_order:
+            # replace indices with user IDs
+            indices = [id_order[i] for i in WSP.sparse.indices]
+        else:
+            id_order = list(range(WSP.n))
+        neighbors, weights = {}, {}
+        start = indptr[0]
+        for i in range(WSP.n):
+            oid = id_order[i]
+            end = indptr[i + 1]
+            neighbors[oid] = indices[start:end]
+            weights[oid] = data[start:end]
+            start = end
+        ids = copy.copy(WSP.id_order)
+        w = W(neighbors, weights, ids, silence_warnings=silence_warnings)
+        w._sparse = copy.deepcopy(WSP.sparse)
+        w._cache["sparse"] = w._sparse
+        return w
 
     @classmethod
     def from_adjlist(
@@ -452,7 +512,7 @@ class W(object):
             n = self.n
             return disp[fmt_l]((data, (row, col)), shape=(n, n))
         else:
-            warnings.warn(f"{fmt} not supported.")
+            raise ValueError(f"unsupported sparse format: {fmt}")
 
     @property
     def n_components(self):
