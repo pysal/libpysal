@@ -24,6 +24,7 @@ except ImportError:
 
 try:
     from shapely.geometry.base import BaseGeometry
+
     HAS_SHAPELY = True
 except ImportError:
     HAS_SHAPELY = False
@@ -534,17 +535,17 @@ def higher_order_sp(
         )
 
     if lower_order:
-        wk = sum(map(lambda x: w ** x, range(2, k + 1)))
+        wk = sum(map(lambda x: w**x, range(2, k + 1)))
         shortest_path = False
     else:
-        wk = w ** k
+        wk = w**k
 
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck))
 
     if shortest_path:
         for j in range(1, k):
-            wj = w ** j
+            wj = w**j
             rj, cj = wj.nonzero()
             sj = set(zip(rj, cj))
             sk.difference_update(sj)
@@ -826,14 +827,12 @@ def WSP2W(wsp, **kwargs):
 
 
     """
-    wsp.sparse
-    indices = wsp.sparse.indices
     data = wsp.sparse.data
     indptr = wsp.sparse.indptr
     id_order = wsp.id_order
     if id_order:
         # replace indices with user IDs
-        indices = [id_order[i] for i in indices]
+        indices = [id_order[i] for i in wsp.sparse.indices]
     else:
         id_order = list(range(wsp.n))
     neighbors, weights = {}, {}
@@ -1086,12 +1085,7 @@ def get_points_array(iterable):
                 ]
             )
         else:
-            data = np.vstack(
-                [
-                    np.array(shape.centroid)
-                    for shape in first_choice
-                ]
-            )
+            data = np.vstack([np.array(shape.centroid) for shape in first_choice])
     except AttributeError:
         data = np.vstack([shape for shape in backup])
     return data
