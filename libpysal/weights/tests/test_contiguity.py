@@ -123,6 +123,16 @@ class Contiguity_Mixin(object):
         w = self.cls.from_dataframe(df, geom_col="the_geom", ids=self.idVariable)
         self.assertEqual(w[self.known_name], self.known_namedw)
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe_order(self):
+        import geopandas
+
+        south = geopandas.read_file(pysal_examples.get_path("south.shp"))
+        expected = south.FIPS.iloc[:5].tolist()
+        for ids_ in ("FIPS", south.FIPS):
+            w = self.cls.from_dataframe(south, ids=ids_)
+            self.assertEqual(w.id_order[:5], expected)
+
     def test_from_xarray(self):
         w = self.cls.from_xarray(self.da, sparse=False, n_jobs=-1)
         self.assertEqual(w[self.known_wi_da], self.known_w_da)
