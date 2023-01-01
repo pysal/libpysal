@@ -39,7 +39,7 @@ class Rook(W):
                 optional arguments for :class:`pysal.weights.W`
 
     See Also
-    ---------
+    --------
     :class:`libpysal.weights.weights.W`
     """
 
