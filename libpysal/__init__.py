@@ -20,10 +20,6 @@ io
 weights
     Tools for creating and manipulating weights
 """
-from . import cg
-from . import io
-from . import weights
-from . import examples
 
 from . import _version
 
