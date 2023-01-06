@@ -9,7 +9,7 @@ https://github.com/pysal/libpysal/compare/v4.7.0...master
 - W.to_sparse
 
 ### Changed
-- [No longer polling remotes on init](https://github.com/pysal/libpysal/pull/504) @sjsrey
+- [No longer polling remotes on init](https://github.com/pysal/libpysal/pull/504) [@sjsrey](https://github.com/sjsrey/
 
 ### Fixed
 
