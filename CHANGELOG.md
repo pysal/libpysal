@@ -1,8 +1,36 @@
-# Version 4.3.0 (2020-06-28)
+# Changelog
+
+## [Unreleased]
+https://github.com/pysal/libpysal/compare/v4.7.0...master
+
+### Added
+
+- W.from_WSP
+- W.to_sparse
+
+### Fixed
+
+- Fixed Linux user path test
+- Fixed Sphinx Warnings
+
+### Removed
+
+- Support for Python 3.7
+
+
+## [4.7.0] (2022-11-17)
+
+### Changed
+
+- Addressed [ShapleyDepreciationWarning](https://github.com/pysal/libpysal/pull/488 )
+- Swapped [platformdirs for appdirs](https://github.com/pysal/libpysal/pull/481)
+- Increased [granularity in example handling](https://github.com/pysal/libpysal/pull/486)
+
+## Version 4.3.0 (2020-06-28)
 
 We closed a total of 85 issues (enhancements and bug fixes) through 27 pull requests, since our last release on 2020-02-01.
 
-## Issues Closed
+### Issues Closed
   - Standardize libpysal/examples/*.py docstrings (#294)
   - Fetch (#295)
   - Mac builds seem to take longer — bump up timeout (#273)
@@ -62,7 +90,7 @@ We closed a total of 85 issues (enhancements and bug fixes) through 27 pull requ
   - test_map breakage due to pandas 1.0 deprecation of ufunc.outer (#236)
   - BUG:  ufunc.outer deprecated (#237)
 
-## Pull Requests
+### Pull Requests
   - Standardize libpysal/examples/*.py docstrings (#294)
   - Fetch (#295)
   - Mac builds seem to take longer — bump up timeout (#273)
