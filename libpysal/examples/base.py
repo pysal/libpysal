@@ -175,13 +175,17 @@ class Example:
         """Download the files for the example."""
 
         if not self.downloaded():
-            request = requests.get(self.download_url)
-            archive = zipfile.ZipFile(io.BytesIO(request.content))
-            target = os.path.join(path, self.root)
-            print("Downloading {} to {}".format(self.name, target))
-            archive.extractall(path=target)
-            self.zipfile = archive
-            self.installed = True
+            try:
+                request = requests.get(self.download_url)
+                archive = zipfile.ZipFile(io.BytesIO(request.content))
+                target = os.path.join(path, self.root)
+                print("Downloading {} to {}".format(self.name, target))
+                archive.extractall(path=target)
+                self.zipfile = archive
+                self.installed = True
+            except requests.exceptions.RequestException as e:  
+                raise SystemExit(e)
+            
 
     def get_file_list(self) -> Union[list, None]:
         """Get the list of local files for the example."""
