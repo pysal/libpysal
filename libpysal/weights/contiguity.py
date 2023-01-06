@@ -1,16 +1,18 @@
 import itertools
 
 import numpy
+import pandas as pd
 
 from ..cg import voronoi_frames
 from ..io.fileio import FileIO
 from ._contW_lists import ContiguityWeightsLists
+from .raster import da2W, da2WSP
 from .util import get_ids, get_points_array
 from .weights import WSP, W
-from .raster import da2W, da2WSP
 
 try:
     from shapely.geometry import Point as shapely_point
+
     from ..cg.shapes import Point as pysal_point
 
     point_type = (shapely_point, pysal_point)
@@ -133,7 +135,14 @@ class Rook(W):
 
     @classmethod
     def from_dataframe(
-        cls, df, geom_col=None, idVariable=None, ids=None, id_order=None, **kwargs
+        cls,
+        df,
+        geom_col=None,
+        idVariable=None,
+        ids=None,
+        id_order=None,
+        perimeter=False,
+        **kwargs,
     ):
         """
         Construct a weights object from a pandas dataframe with a geometry
@@ -158,7 +167,7 @@ class Rook(W):
                       an ordered list of ids to use to index the spatial weights
                       object. If used, the resulting weights object will iterate
                       over results in the order of the names provided in this
-                      argument. 
+                      argument.
 
         See Also
         --------
@@ -178,9 +187,12 @@ class Rook(W):
             ids = df.get(idVariable).tolist()
         elif isinstance(ids, str):
             ids = df.get(ids).tolist()
-        return cls.from_iterable(
+        w = cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
+        if perimeter:
+            w = _return_length_weighted_w(w, df)
+        return w
 
     @classmethod
     def from_xarray(
@@ -227,7 +239,7 @@ class Rook(W):
         Returns
         -------
         w : libpysal.weights.W/libpysal.weights.WSP
-            instance of spatial weights class W or WSP with an index attribute 
+            instance of spatial weights class W or WSP with an index attribute
 
         Notes
         -----
@@ -358,7 +370,7 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col=None, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, perimeter=False, **kwargs):
         """
         Construct a weights object from a pandas dataframe with a geometry
         column. This will cast the polygons to PySAL polygons, then build the W
@@ -382,7 +394,7 @@ class Queen(W):
                       an ordered list of ids to use to index the spatial weights
                       object. If used, the resulting weights object will iterate
                       over results in the order of the names provided in this
-                      argument. 
+                      argument.
 
         See Also
         --------
@@ -410,6 +422,10 @@ class Queen(W):
         w = cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
+        if perimeter:
+            w = _return_length_weighted_w(w, df)
+        return w
+
         return w
 
     @classmethod
@@ -457,7 +473,7 @@ class Queen(W):
         Returns
         -------
         w : libpysal.weights.W/libpysal.weights.WSP
-            instance of spatial weights class W or WSP with an index attribute 
+            instance of spatial weights class W or WSP with an index attribute
 
         Notes
         -----
@@ -526,17 +542,17 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
 
 def _from_dataframe(df, **kwargs):
     """
-    Construct a voronoi contiguity weight directly from a dataframe. 
+    Construct a voronoi contiguity weight directly from a dataframe.
     Note that if criterion='rook', this is identical to the delaunay
-    graph for the points. 
+    graph for the points.
 
     If the input dataframe is of any other geometry type than "Point",
-    a value error is raised. 
+    a value error is raised.
 
     Parameters
     ----------
     df          :   pandas.DataFrame
-                    dataframe containing point geometries for a 
+                    dataframe containing point geometries for a
                     voronoi diagram.
 
     Returns
@@ -561,14 +577,14 @@ Voronoi.from_dataframe = _from_dataframe
 
 def _build(polygons, criterion="rook", ids=None):
     """
-    This is a developer-facing function to construct a spatial weights object. 
+    This is a developer-facing function to construct a spatial weights object.
 
     Parameters
     ----------
     polygons    : list
                   list of pysal polygons to use to build contiguity
     criterion   : string
-                  option of which kind of contiguity to build. Is either "rook" or "queen" 
+                  option of which kind of contiguity to build. Is either "rook" or "queen"
     ids         : list
                   list of ids to use to index the neighbor dictionary
 
@@ -576,12 +592,12 @@ def _build(polygons, criterion="rook", ids=None):
     -------
     tuple containing (neighbors, ids), where neighbors is a dictionary
     describing contiguity relations and ids is the list of ids used to index
-    that dictionary. 
+    that dictionary.
 
     NOTE: this is different from the prior behavior of buildContiguity, which
           returned an actual weights object. Since this just dispatches for the
           classes above, this returns the raw ingredients for a spatial weights
-          object, not the object itself. 
+          object, not the object itself.
     """
     if ids and len(ids) != len(set(ids)):
         raise ValueError(
@@ -621,7 +637,7 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     This is a deprecated function.
 
     It builds a contiguity W from the polygons provided. As such, it is now
-    identical to calling the class constructors for Rook or Queen. 
+    identical to calling the class constructors for Rook or Queen.
     """
     # Warn('This function is deprecated. Please use the Rook or Queen classes',
     #        UserWarning)
@@ -631,3 +647,64 @@ def buildContiguity(polygons, criterion="rook", ids=None):
         return Queen(polygons, ids=ids)
     else:
         raise Exception('Weights criterion "{}" was not found.'.format(criterion))
+
+
+def _return_length_weighted_w(w, data):
+    """
+    Returns a PySAL weights object that the weights represent the length of the common boundary of two areal units that share border.
+    Author: Levi Wolf <levi.john.wolf@gmail.com>.
+    Thank you, Levi!
+
+    Parameters
+    ----------
+
+    w : libpsal.weights.Rook.
+
+    Returns
+    --------
+
+    w :
+
+    """
+    try:
+        import geopandas as gpd
+    except ImportError as e:
+        raise e('You must have geopandas installed to create perimeter-weighted weights')
+    adjlist = w.to_adjlist()
+    islands = pd.DataFrame.from_records(
+        [{"focal": island, "neighbor": island, "weight": 0} for island in w.islands]
+    )
+    merged = adjlist.merge(
+        data.geometry.to_frame("geometry"),
+        left_on="focal",
+        right_index=True,
+        how="left",
+    ).merge(
+        data.geometry.to_frame("geometry"),
+        left_on="neighbor",
+        right_index=True,
+        how="left",
+        suffixes=("_focal", "_neighbor"),
+    )
+    # Transforming from pandas to geopandas
+    merged = gpd.GeoDataFrame(merged, geometry="geometry_focal")
+    merged["geometry_neighbor"] = gpd.GeoSeries(merged.geometry_neighbor)
+
+    # Getting the shared boundaries
+    merged["shared_boundary"] = merged.geometry_focal.intersection(
+        merged.set_geometry("geometry_neighbor")
+    )
+
+    # Putting it back to a matrix
+    merged["weight"] = merged.set_geometry("shared_boundary").length
+    merged_with_islands = pd.concat((merged, islands))
+    length_weighted_w = W.from_adjlist(
+        merged_with_islands[["focal", "neighbor", "weight"]]
+    )
+    for island in w.islands:
+        length_weighted_w.neighbors[island] = []
+        del length_weighted_w.weights[island]
+
+    length_weighted_w._reset()
+
+    return length_weighted_w
