@@ -43,10 +43,12 @@ class TestPerimeter(unittest.TestCase):
 
     def test_return_length_weighted_us(self):
         w1 = _return_length_weighted_w(self.wus, self.usgdf)
-        self.assertAlmostEqual(w1[0], {7: 354625.0684908081, 10: 605834.5010118643})
+        self.assertAlmostEqual(w1[0][7], 354625.0684908081)
+        self.assertAlmostEqual(w1[0][10],  605834.5010118643)
         NPTA3E(w1[0][7], w1[7][0])
         w1.transform = "r"
-        self.assertAlmostEqual(w1[0], {7: 0.3692243585791264, 10: 0.6307756414208736})
+        self.assertAlmostEqual(w1[0][7],  0.3692243585791264)
+        self.assertAlmostEqual(w1[7][0],  0.12891667056448083)
         self.assertNotAlmostEquals(w1[0][7], w1[7][0])
 
 
