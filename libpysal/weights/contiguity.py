@@ -144,6 +144,7 @@ class Rook(W):
         id_order=None,
         use_index=None,
         perimeter=False,
+        perim_std=False,
         **kwargs,
     ):
         """
@@ -181,6 +182,9 @@ class Rook(W):
         perimeter   : bool
                       if True, use the length of the shared boundary between adjacent units as
                       the weight value
+        perim_std   : bool
+                      if True, (and `perimeter==True`), then perimeter weights are set to the
+                      ratio of the shared boudary length to the focal unit's perimeter
 
         See Also
         --------
@@ -249,7 +253,7 @@ class Rook(W):
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
         if perimeter:
-            w = _return_length_weighted_w(w, df)
+            w = _return_length_weighted_w(w, df, perim_std)
         return w
 
 
@@ -438,6 +442,7 @@ class Queen(W):
         id_order=None,
         use_index=None,
         perimeter=False,
+        perim_std=False,
         **kwargs,
     ):
         """
@@ -475,6 +480,9 @@ class Queen(W):
         perimeter   : bool
                       if True, use the length of the shared boundary between adjacent units as
                       the weight value
+        perim_std   : bool
+                      if True, (and `perimeter==True`), then perimeter weights are set to the
+                      ratio of the shared boudary length to the focal unit's perimeter
 
         See Also
         --------
@@ -543,7 +551,7 @@ class Queen(W):
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
         if perimeter:
-            w = _return_length_weighted_w(w, df)
+            w = _return_length_weighted_w(w, df, perim_std)
         return w
 
 
@@ -768,7 +776,7 @@ def buildContiguity(polygons, criterion="rook", ids=None):
         raise Exception('Weights criterion "{}" was not found.'.format(criterion))
 
 
-def _return_length_weighted_w(w, data):
+def _return_length_weighted_w(w, data, perimeter_standardize=False):
     """Return a W object whose value is the length of the common boundary of two areal units that share border.
 
     Parameters
@@ -804,6 +812,7 @@ def _return_length_weighted_w(w, data):
     )
     # Transforming from pandas to geopandas
     merged = gpd.GeoDataFrame(merged, geometry="geometry_focal")
+    total_boundary_length = merged.boundary.length
     merged["geometry_neighbor"] = gpd.GeoSeries(merged.geometry_neighbor)
 
     # Getting the shared boundaries
@@ -812,7 +821,10 @@ def _return_length_weighted_w(w, data):
     )
 
     # Putting it back to a matrix
-    merged["weight"] = merged.set_geometry("shared_boundary").length
+    if perimeter_standardize:
+        merged['weight'] = merged.set_geometry("shared_boundary").length / total_boundary_length
+    else:
+        merged["weight"] = merged.set_geometry("shared_boundary").length
     merged_with_islands = pd.concat((merged, islands))
     length_weighted_w = W.from_adjlist(
         merged_with_islands[["focal", "neighbor", "weight"]]
