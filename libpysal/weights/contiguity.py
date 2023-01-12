@@ -776,13 +776,16 @@ def buildContiguity(polygons, criterion="rook", ids=None):
         raise Exception('Weights criterion "{}" was not found.'.format(criterion))
 
 
-def _return_length_weighted_w(w, data, perimeter_standardize=False):
+def _return_length_weighted_w(w, data, perimeter_standardize):
     """Return a W object whose value is the length of the common boundary of two areal units that share border.
 
     Parameters
     ----------
     w : libpsal.weights.Rook
     data : pandas.DataFrame
+    perimeter_standardize: bool
+        if True, scale the weight value equal to the shared
+        boundary divided by the total boundary of the focal unit.
 
     Returns
     --------
