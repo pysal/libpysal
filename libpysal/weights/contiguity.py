@@ -2,16 +2,18 @@ import itertools
 import warnings
 
 import numpy
+import pandas as pd
 
 from ..cg import voronoi_frames
 from ..io.fileio import FileIO
 from ._contW_lists import ContiguityWeightsLists
+from .raster import da2W, da2WSP
 from .util import get_ids, get_points_array
 from .weights import WSP, W
-from .raster import da2W, da2WSP
 
 try:
     from shapely.geometry import Point as shapely_point
+
     from ..cg.shapes import Point as pysal_point
 
     point_type = (shapely_point, pysal_point)
@@ -141,6 +143,7 @@ class Rook(W):
         ids=None,
         id_order=None,
         use_index=None,
+        perimeter=False,
         **kwargs,
     ):
         """
@@ -175,6 +178,9 @@ class Rook(W):
         use_index   : bool
                       use index of `df` as `ids` to index the spatial weights object.
                       Defaults to False but in future will default to True.
+        perimeter   : bool
+                      if True, use the length of the shared boundary between adjacent units as
+                      the weight value
 
         See Also
         --------
@@ -239,9 +245,13 @@ class Rook(W):
         if id_order is None:
             id_order = ids
 
-        return cls.from_iterable(
+        w = cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
+        if perimeter:
+            w = _return_length_weighted_w(w, df)
+        return w
+
 
     @classmethod
     def from_xarray(
@@ -427,6 +437,7 @@ class Queen(W):
         ids=None,
         id_order=None,
         use_index=None,
+        perimeter=False,
         **kwargs,
     ):
         """
@@ -461,6 +472,9 @@ class Queen(W):
         use_index   : bool
                       use index of `df` as `ids` to index the spatial weights object.
                       Defaults to False but in future will default to True.
+        perimeter   : bool
+                      if True, use the length of the shared boundary between adjacent units as
+                      the weight value
 
         See Also
         --------
@@ -525,9 +539,13 @@ class Queen(W):
         if id_order is None:
             id_order = ids
 
-        return cls.from_iterable(
+        w =  cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
+        if perimeter:
+            w = _return_length_weighted_w(w, df)
+        return w
+
 
     @classmethod
     def from_xarray(
@@ -748,3 +766,61 @@ def buildContiguity(polygons, criterion="rook", ids=None):
         return Queen(polygons, ids=ids)
     else:
         raise Exception('Weights criterion "{}" was not found.'.format(criterion))
+
+
+def _return_length_weighted_w(w, data):
+    """Return a W object whose value is the length of the common boundary of two areal units that share border.
+
+    Parameters
+    ----------
+    w : libpsal.weights.Rook
+    data : pandas.DataFrame
+
+    Returns
+    --------
+    w : libpysal.weights.W
+        weights object with values equal to the shared border of ij
+
+    """
+    try:
+        import geopandas as gpd
+    except ImportError as e:
+        raise e('You must have geopandas installed to create perimeter-weighted weights')
+    adjlist = w.to_adjlist()
+    islands = pd.DataFrame.from_records(
+        [{"focal": island, "neighbor": island, "weight": 0} for island in w.islands]
+    )
+    merged = adjlist.merge(
+        data.geometry.to_frame("geometry"),
+        left_on="focal",
+        right_index=True,
+        how="left",
+    ).merge(
+        data.geometry.to_frame("geometry"),
+        left_on="neighbor",
+        right_index=True,
+        how="left",
+        suffixes=("_focal", "_neighbor"),
+    )
+    # Transforming from pandas to geopandas
+    merged = gpd.GeoDataFrame(merged, geometry="geometry_focal")
+    merged["geometry_neighbor"] = gpd.GeoSeries(merged.geometry_neighbor)
+
+    # Getting the shared boundaries
+    merged["shared_boundary"] = merged.geometry_focal.intersection(
+        merged.set_geometry("geometry_neighbor")
+    )
+
+    # Putting it back to a matrix
+    merged["weight"] = merged.set_geometry("shared_boundary").length
+    merged_with_islands = pd.concat((merged, islands))
+    length_weighted_w = W.from_adjlist(
+        merged_with_islands[["focal", "neighbor", "weight"]]
+    )
+    for island in w.islands:
+        length_weighted_w.neighbors[island] = []
+        del length_weighted_w.weights[island]
+
+    length_weighted_w._reset()
+
+    return length_weighted_w
