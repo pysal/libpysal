@@ -22,7 +22,7 @@ class TestPerimeter(unittest.TestCase):
         dv.extend(list(range(1, 7)))
         gdf["dv"] = dv
         gdf = gdf.dissolve(by="dv")
-        self.w0 = Rook.from_dataframe(gdf, perimeter=True)
+        self.w0 = Rook.from_dataframe(gdf, perimeter=True, perim_std=False)
         self.gdf = gdf
 
         # us case
@@ -36,13 +36,13 @@ class TestPerimeter(unittest.TestCase):
         NPTA3E(self.w0.pct_nonzero, 40.81632653)
 
     def test_return_length_weighted(self):
-        w1 = _return_length_weighted_w(self.w0, self.gdf)
+        w1 = _return_length_weighted_w(self.w0, self.gdf, False)
         NPTA3E(w1.pct_nonzero, 40.81632653)
         self.assertEqual(w1.weights[0], [1, 1, 1])
         self.assertEqual(w1.weights[2], [1, 1, 1, 1])
 
     def test_return_length_weighted_us(self):
-        w1 = _return_length_weighted_w(self.wus, self.usgdf)
+        w1 = _return_length_weighted_w(self.wus, self.usgdf, False)
         self.assertAlmostEqual(w1[0][7], 354625.0684908081)
         self.assertAlmostEqual(w1[0][10],  605834.5010118643)
         NPTA3E(w1[0][7], w1[7][0])
