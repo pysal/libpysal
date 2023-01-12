@@ -820,7 +820,7 @@ def _return_length_weighted_w(w, data, perimeter_standardize):
 
     # Getting the shared boundaries
     merged["shared_boundary"] = merged.geometry_focal.intersection(
-        merged.set_geometry("geometry_neighbor")
+        merged["geometry_neighbor"]
     )
 
     # Putting it back to a matrix
