@@ -825,7 +825,7 @@ def _return_length_weighted_w(w, data, perimeter_standardize):
 
     # Putting it back to a matrix
     if perimeter_standardize:
-        merged['weight'] = merged.set_geometry("shared_boundary").length / total_boundary_length
+        merged['weight'] = merged["shared_boundary"].length / total_boundary_length
     else:
         merged["weight"] = merged.set_geometry("shared_boundary").length
     merged_with_islands = pd.concat((merged, islands))
