@@ -1,24 +1,28 @@
 # Changelog
 
 ## [Unreleased]
-https://github.com/pysal/libpysal/compare/v4.7.0...master
 
 ### Added
 
-- W.from_WSP
-- W.to_sparse
+- W.to_sparse  [#498](https://github.com/pysal/libpysal/pull/498) [@sjsrey](https://github.com/sjsrey/)
+- W.from_WSP [#496](https://github.com/pysal/libpysal/pull/496) [@sjsrey](https://github.com/sjsrey/)
+
 
 ### Changed
-- [No longer polling remotes on init](https://github.com/pysal/libpysal/pull/504) [@sjsrey](https://github.com/sjsrey/)
+- No longer polling remotes on init [#504](https://github.com/pysal/libpysal/pull/504) [@sjsrey](https://github.com/sjsrey/)
+- Change the handling of IDs in from_dataframe constructors [#477](https://github.com/pysal/libpysal/pull477) [@martinfleis](https://github.com/martinfleis)
 
 ### Fixed
 
-- Fixed Linux user path test
-- Fixed Sphinx Warnings
+- Fixed Sphinx Warnings [#492](https://github.com/pysal/libpysal/pull/492) [@QuLogic](https://github.com/QuLogic)
+- Fixed Linux user path test [#491](https://github.com/pysal/libpysal/pull/481) [@QuLogic](https://github.com/QuLogic)
+
 
 ### Removed
 
-- Support for Python 3.7
+- Sklearn dependency [#509](https://github.com/pysal/libpysal/pull/509) [@sjsrey](https://github.com/sjsrey/)
+- Support for Python 3.7 [#502](https://github.com/pysal/libpysal/pull/502) [@jGaboardi](https://github.com/jGaboardi)
+
 
 
 ## [4.7.0] (2022-11-17)
