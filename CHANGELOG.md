@@ -9,6 +9,7 @@
 
 
 ### Changed
+- Changlog conventions [#505](https://github.com/pysal/libpysal/pull/505) [@sjsrey](https://github.com/sjsrey/)
 - No longer polling remotes on init [#504](https://github.com/pysal/libpysal/pull/504) [@sjsrey](https://github.com/sjsrey/)
 - Change the handling of IDs in from_dataframe constructors [#477](https://github.com/pysal/libpysal/pull477) [@martinfleis](https://github.com/martinfleis)
 
