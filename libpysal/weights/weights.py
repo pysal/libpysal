@@ -10,8 +10,8 @@ import warnings
 import numpy as np
 import scipy.sparse
 from scipy.sparse.csgraph import connected_components
-from sklearn import preprocessing
 from collections import defaultdict
+
 
 # from .util import full, WSP2W resolve import cycle by
 # forcing these into methods
@@ -19,6 +19,56 @@ from . import adjtools
 from ..io.fileio import FileIO as popen
 
 __all__ = ["W", "WSP"]
+
+
+class _LabelEncoder(object):
+    """Encode labels with values between 0 and n_classes-1.
+
+    Attributes
+    ----------
+    classes_: array of shape [n_classes]
+        Class labels for each index.
+
+    Examples
+    --------
+    >>> le = _LabelEncoder()
+    >>> le.fit(["NY", "CA", "NY", "CA", "TX", "TX"])
+    >>> le.classes_
+    array(['CA', 'NY', 'TX'])
+    >>> le.transform(["NY", "CA", "NY", "CA", "TX", "TX"])
+    array([1, 0, 1, 0, 2, 2])
+    """
+
+    def fit(self, y):
+        """Fit label encoder.
+
+        Parameters
+        ----------
+        y : list
+            list of labels
+
+        Returns
+        -------
+        self : instance of self.
+          Fitted label encoder.
+        """
+        self.classes_ = np.unique(y)
+        return self
+
+    def transform(self, y):
+        """Transform labels to normalized encoding.
+
+        Parameters
+        ----------
+        y : list
+            list of labels
+
+        Returns
+        -------
+        y : array
+            array of normalized labels.
+        """
+        return np.searchsorted(self.classes_, y)
 
 
 class W(object):
@@ -505,7 +555,7 @@ class W(object):
             data = adj_list.weight
             row = adj_list.focal
             col = adj_list.neighbor
-            le = preprocessing.LabelEncoder()
+            le = _LabelEncoder()
             le.fit(row)
             row = le.transform(row)
             col = le.transform(col)

@@ -3,7 +3,7 @@ import tempfile
 
 import unittest
 import pytest
-from ..weights import W, WSP
+from ..weights import W, WSP, _LabelEncoder
 from .. import util
 from ..util import WSP2W, lat2W
 from ..contiguity import Rook
@@ -723,6 +723,15 @@ class TestWSP(unittest.TestCase):
         w = W.from_WSP(self.wsp)
         self.assertEqual(w.n, 100)
         self.assertEqual(w.pct_nonzero, 4.62)
+
+    def test_LabelEncoder(self):
+        le = _LabelEncoder()
+        le.fit(["NY", "CA", "NY", "CA", "TX", "TX"])
+        np.testing.assert_equal(le.classes_, np.array(["CA", "NY", "TX"]))
+        np.testing.assert_equal(
+            le.transform(["NY", "CA", "NY", "CA", "TX", "TX"]),
+            np.array([1, 0, 1, 0, 2, 2]),
+        )
 
 
 if __name__ == "__main__":
