@@ -432,12 +432,9 @@ class W(object):
 
         links = []
         focal_ix, neighbor_ix = self.sparse.nonzero()
-        names = np.asarray(self.id_order)
-        focal = names[focal_ix]
-        neighbor = names[neighbor_ix]
         weights = self.sparse.data
         adjlist = pandas.DataFrame(
-            {focal_col: focal, neighbor_col: neighbor, weight_col: weights}
+            {focal_col: focal_ix, neighbor_col: neighbor_ix, weight_col: weights}
         )
         if remove_symmetric:
             adjlist = adjtools.filter_adjlist(adjlist)
