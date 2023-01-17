@@ -432,6 +432,9 @@ class W(object):
 
         links = []
         focal_ix, neighbor_ix = self.sparse.nonzero()
+        idxs = np.array(list(self.neighbors.keys()))
+        focal_ix = idxs[focal_ix]
+        neighbor_ix = idxs[neighbor_ix]
         weights = self.sparse.data
         adjlist = pandas.DataFrame(
             {focal_col: focal_ix, neighbor_col: neighbor_ix, weight_col: weights}
