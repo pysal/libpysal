@@ -391,6 +391,7 @@ class W(object):
         focal_col="focal",
         neighbor_col="neighbor",
         weight_col="weight",
+        sort_joins=False,
     ):
         """
         Compute an adjacency list representation of a weights object.
@@ -416,6 +417,10 @@ class W(object):
             Name of the column in which to store "destination" node ids.
         weight_col : str
             Name of the column in which to store weight information.
+        sort_joins : bool
+            Whether or not to lexicographically sort the adjacency
+            list by (focal_col, neighbor_col). Default is False.
+
         """
         try:
             import pandas
@@ -446,7 +451,9 @@ class W(object):
                 {focal_col: self.islands, neighbor_col: self.islands, weight_col: 0}
             )
             adjlist = pandas.concat((adjlist, island_adjlist)).reset_index(drop=True)
-        return adjlist.sort_values([focal_col, neighbor_col])
+        if sort_joins:
+            return adjlist.sort_values([focal_col, neighbor_col])
+        return adjlist
 
     def to_networkx(self):
         """Convert a weights object to a ``networkx`` graph.

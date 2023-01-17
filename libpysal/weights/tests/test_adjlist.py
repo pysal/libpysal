@@ -145,3 +145,18 @@ class Test_Adjlist(ut.TestCase):
             np.testing.assert_allclose(
                 data, mapped["_".join(("subtract", name))].values
             )
+
+    def test_sort(self):
+        from libpysal import examples
+        from libpysal.weights import Rook
+
+        us = geopandas.read_file(examples.get_path("us48.shp"))
+        w = Rook.from_dataframe(us.set_index("STATE_FIPS"), use_index=True)
+        unsorted_al = w.to_adjlist(sort_joins=False)
+        sorted_al = w.to_adjlist(sort_joins=True)
+        sv = ["01"] * 4
+        sv.append("04")
+        sv = np.array(sv)
+        usv = np.array(["53", "53", "30", "30", "30"])
+        np.testing.assert_array_equal(unsorted_al.focal.values[:5], usv)
+        np.testing.assert_array_equal(sorted_al.focal.values[:5], sv)
