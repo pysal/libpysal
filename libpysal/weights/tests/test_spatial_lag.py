@@ -10,9 +10,9 @@ class Test_spatial_lag(unittest.TestCase):
     def setUp(self):
         self.neighbors = {"c": ["b"], "b": ["c", "a"], "a": ["b"]}
         self.weights = {"c": [1.0], "b": [1.0, 1.0], "a": [1.0]}
-        self.id_order = ["a", "b", "c"]
+        self.ids = ["a", "b", "c"]
         self.weights = {"c": [1.0], "b": [1.0, 1.0], "a": [1.0]}
-        self.w = W(self.neighbors, self.weights, self.id_order)
+        self.w = W(self.neighbors, self.weights, ids=self.ids)
         self.y = np.array([0, 1, 2])
         self.wlat = lat2W(3, 3)
         self.ycat = ["a", "b", "a", "b", "c", "b", "c", "b", "c"]
@@ -23,9 +23,9 @@ class Test_spatial_lag(unittest.TestCase):
     def test_lag_spatial(self):
         yl = lag_spatial(self.w, self.y)
         np.testing.assert_array_almost_equal(yl, [1.0, 2.0, 1.0])
-        self.w.id_order = ["b", "c", "a"]
+        #self.w.ids = ["b", "c", "a"]
         y = np.array([1, 2, 0])
-        yl = lag_spatial(self.w, y)
+        yl = lag_spatial(W(self.neighbors, self.weights, id_order=["b", "c", "a"]), y)
         np.testing.assert_array_almost_equal(yl, [2.0, 1.0, 1.0])
         w = lat2W(3, 3)
         y = np.arange(9)

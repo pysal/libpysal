@@ -61,7 +61,7 @@ def adjlist_apply(
             )
     else:
         vec = np.asarray(X).flatten()
-    ids = np.asarray(W.id_order)[:, None]
+    ids = np.asarray(W.ids)[:, None]
     table = pd.DataFrame(ids, columns=["id"])
     table = pd.concat((table, pd.DataFrame(vec[:, None], columns=("att",))), axis=1)
     alist_atts = pd.merge(alist, table, how="left", left_on="focal", right_on="id")
@@ -94,7 +94,7 @@ def _adjlist_mvapply(
         names = X.columns.tolist()
     except AttributeError:
         names = list(map(str, list(range(X.shape[1]))))
-    ids = np.asarray(W.id_order)[:, None]
+    ids = np.asarray(W.ids)[:, None]
     table = pd.DataFrame(ids, columns=["id"])
     table = pd.concat((table, pd.DataFrame(X, columns=names)), axis=1)
     alist_atts = pd.merge(alist, table, how="left", left_on="focal", right_on="id")

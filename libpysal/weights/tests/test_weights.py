@@ -696,12 +696,12 @@ class Test_WSP_Back_To_W(unittest.TestCase):
 class TestWSP(unittest.TestCase):
     def setUp(self):
         self.w = psopen(examples.get_path("sids2.gal")).read()
-        self.wsp = WSP(self.w.sparse, self.w.id_order)
+        self.wsp = WSP(self.w.sparse, self.w.ids)
         w3x3 = util.lat2W(3, 3)
         self.w3x3 = WSP(w3x3.sparse)
 
     def test_WSP(self):
-        self.assertEqual(self.w.id_order, self.wsp.id_order)
+        self.assertEqual(self.w.ids, self.wsp.ids)
         self.assertEqual(self.w.n, self.wsp.n)
         np.testing.assert_array_equal(
             self.w.sparse.todense(), self.wsp.sparse.todense()

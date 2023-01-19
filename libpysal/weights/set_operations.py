@@ -393,7 +393,7 @@ def w_subset(w1, ids, **kwargs):
         else:
             neighbors[i] = []
 
-    return W(neighbors, id_order=list(ids), **kwargs)
+    return W(neighbors, ids=list(ids), **kwargs)
 
 
 def w_clip(w1, w2, outSP=True, **kwargs):
@@ -425,7 +425,7 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     -------
     wc      : W
               W, scipy.sparse.csr.csr_matrix
-              Clipped W object (sparse if outSP=Ture). It inherits ``id_order`` from w1.
+              Clipped W object (sparse if outSP=Ture). It inherits ``ids`` from w1.
 
     Examples
     --------
@@ -507,16 +507,16 @@ def w_clip(w1, w2, outSP=True, **kwargs):
 
     from .util import WSP2W
 
-    if not w1.id_order:
-        w1.id_order = None
-    id_order = w1.id_order
+    if not w1.ids:
+        w1.ids = None
+    ids = w1.ids
     if not isspmatrix_csr(w1):
         w1 = w1.sparse
     if not isspmatrix_csr(w2):
         w2 = w2.sparse
     w2.data = ones(w2.data.shape)
     wc = w1.multiply(w2)
-    wc = WSP(wc, id_order=id_order)
+    wc = WSP(wc, ids=ids)
     if not outSP:
         wc = WSP2W(wc, **kwargs)
     return wc

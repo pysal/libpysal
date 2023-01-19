@@ -108,6 +108,7 @@ class W(object):
     diagWtW
     diagWtW_WW
     histogram
+    ids
     id2i
     id_order
     id_order_set
@@ -197,14 +198,31 @@ class W(object):
         self.weights = weights
         self.transformations["O"] = self.weights.copy()  # original weights
         self.transform = "O"
+        
+        if ids is None:
+            ids = list(self.neighbors.keys())
+        self.ids = ids
+
         if id_order is None:
             self._id_order = list(self.neighbors.keys())
             self._id_order.sort()
             self._id_order_set = False
+            self.ids = self._id_order
         else:
+            
+            # these two lines here for legacy. Remove after deprecation
             self._id_order = id_order
             self._id_order_set = True
+            
+            self.ids = id_order
+            warnings.warn(
+                "`id_order` is deprecated and will be removed in future.",
+                FutureWarning,
+                stacklevel=2,
+            )
+
         self._reset()
+
         self._n = len(self.weights)
         if (not self.silence_warnings) and (self.n_components > 1):
             message = (
@@ -222,6 +240,16 @@ class W(object):
                     ", ".join(str(island) for island in self.islands),
                 )
             warnings.warn(message)
+            
+    @property
+    def id_order(self):
+        warnings.warn(
+            "`id_order` is deprecated and will be removed in future.",
+            FutureWarning,
+            stacklevel=2,
+        )
+
+        return self.ids
 
     def _reset(self):
         """Reset properties."""
@@ -326,10 +354,13 @@ class W(object):
         """
         data = WSP.sparse.data
         indptr = WSP.sparse.indptr
-        id_order = WSP.id_order
-        if id_order:
+        ids = WSP.ids
+        if WSP.id_order:
             # replace indices with user IDs
-            indices = [id_order[i] for i in WSP.sparse.indices]
+            id_order = ids
+        if ids:
+            # replace indices with user IDs
+            indices = [ids[i] for i in WSP.sparse.indices]
         else:
             id_order = list(range(WSP.n))
         neighbors, weights = {}, {}
@@ -340,7 +371,7 @@ class W(object):
             neighbors[oid] = indices[start:end]
             weights[oid] = data[start:end]
             start = end
-        ids = copy.copy(WSP.id_order)
+        ids = copy.copy(WSP.ids)
         w = W(neighbors, weights, ids, silence_warnings=silence_warnings)
         w._sparse = copy.deepcopy(WSP.sparse)
         w._cache["sparse"] = w._sparse
@@ -779,7 +810,7 @@ class W(object):
         """Number of neighbors for each observation."""
         if "cardinalities" not in self._cache:
             c = {}
-            for i in self._id_order:
+            for i in self.ids:
                 c[i] = len(self.neighbors[i])
             self._cardinalities = c
             self._cache["cardinalities"] = self._cardinalities
@@ -890,7 +921,7 @@ class W(object):
         8 8
         >>>
         """
-        for i in self._id_order:
+        for i in self.ids:
             yield i, dict(list(zip(self.neighbors[i], self.weights[i])))
 
     def remap_ids(self, new_ids):
@@ -924,7 +955,7 @@ class W(object):
         ['id3', 'id1']
         """
 
-        old_ids = self._id_order
+        old_ids = self.ids
         if len(old_ids) != len(new_ids):
             raise Exception(
                 "W.remap_ids: length of `old_ids` does not match             that of"
@@ -948,9 +979,9 @@ class W(object):
             self.weights = new_weights
             self.transformations["O"] = new_transformations
 
-            id_order = [self._id_order.index(o) for o in old_ids]
-            for i, id_ in enumerate(id_order):
-                self.id_order[id_] = new_ids[i]
+            ids = [self.ids.index(o) for o in old_ids]
+            for i, id_ in enumerate(ids):
+                self.ids[id_] = new_ids[i]
 
             self._reset()
 
@@ -990,10 +1021,10 @@ class W(object):
         6 6
         7 7
         8 8
-        >>> w.id_order
+        >>> w.ids
         [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        >>> w.id_order=range(8,-1,-1)
-        >>> list(w.id_order)
+        >>> w.ids=range(8,-1,-1)
+        >>> list(w.ids)
         [8, 7, 6, 5, 4, 3, 2, 1, 0]
         >>> for i,w_i in enumerate(w):
         ...     print(i,w_i[0])
@@ -1010,8 +1041,8 @@ class W(object):
 
         """
 
-        if set(self._id_order) == set(ordered_ids):
-            self._id_order = ordered_ids
+        if set(self._ids) == set(ordered_ids):
+            self._ids = ordered_ids
             self._id_order_set = True
             self._reset()
         else:
@@ -1021,9 +1052,9 @@ class W(object):
         """Returns the ids for the observations in the order in which they
         would be encountered if iterating over the weights.
         """
-        return self._id_order
+        return self.ids
 
-    id_order = property(__get_id_order, __set_id_order)
+    #id_order = property(__get_id_order, __set_id_order)
 
     @property
     def id_order_set(self):
@@ -1294,7 +1325,7 @@ class W(object):
         if not inplace:
             neighbors = copy.deepcopy(self.neighbors)
             weights = copy.deepcopy(self.weights)
-            out_W = W(neighbors, weights, id_order=self.id_order)
+            out_W = W(neighbors, weights, ids=self.ids)
             out_W.symmetrize(inplace=True)
             return out_W
         else:
@@ -1337,8 +1368,8 @@ class W(object):
         """
         wfull = self.sparse.toarray()
         keys = list(self.neighbors.keys())
-        if self.id_order:
-            keys = self.id_order
+        if self.ids:
+            keys = self.ids
 
         return (wfull, keys)
 
@@ -1370,7 +1401,7 @@ class W(object):
         WSP
 
         """
-        return WSP(self.sparse, self._id_order)
+        return WSP(self.sparse, self.ids)
 
     def set_shapefile(self, shapefile, idVariable=None, full=False):
         """
@@ -1537,7 +1568,7 @@ class WSP(object):
 
     """
 
-    def __init__(self, sparse, id_order=None, index=None):
+    def __init__(self, sparse, ids=None, id_order=None, index=None):
         if not scipy.sparse.issparse(sparse):
             raise ValueError("must pass a scipy sparse object")
         rows, cols = sparse.shape
@@ -1547,13 +1578,15 @@ class WSP(object):
         self.n = sparse.shape[0]
         self._cache = {}
         if id_order:
-            if len(id_order) != self.n:
+            ids = id_order
+        if ids:
+            if len(ids) != self.n:
                 raise ValueError(
                     "Number of values in id_order must match shape of sparse"
                 )
             else:
-                self._id_order = id_order
-                self._cache["id_order"] = self._id_order
+                self._ids = ids
+                self._cache["ids"] = self._ids
         # temp addition of index attribute
         import pandas as pd  # will be removed after refactoring is done
 
@@ -1567,16 +1600,22 @@ class WSP(object):
         self.index = index
 
     @property
-    def id_order(self):
+    def ids(self):
         """An ordered list of ids, assumed to match the ordering in ``sparse``."""
         # Temporary solution until the refactoring is finished
-        if "id_order" not in self._cache:
+        if "ids" not in self._cache:
+
             if hasattr(self, "index"):
-                self._id_order = self.index.tolist()
+                self._ids = self.index.tolist()
             else:
-                self._id_order = list(range(self.n))
-            self._cache["id_order"] = self._id_order
-        return self._id_order
+                self._ids = list(range(self.n))
+        self._cache["ids"] = self._ids
+
+        return self._ids
+    
+    def id_order(self):
+        
+        return self._ids
 
     @property
     def s0(self):
@@ -1623,7 +1662,7 @@ class WSP(object):
         -------
         A ``WSP`` instance.
         """
-        return cls(W.sparse, id_order=W.id_order)
+        return cls(W.sparse, ids=W.ids)
 
     def to_W(self, silence_warnings=False):
         """
@@ -1671,7 +1710,7 @@ class WSP(object):
         indices = list(self.sparse.indices)
         data = list(self.sparse.data)
         indptr = list(self.sparse.indptr)
-        id_order = self.id_order
+        id_order = self.ids
         if id_order:
             # replace indices with user IDs
             indices = [id_order[i] for i in indices]
@@ -1685,7 +1724,7 @@ class WSP(object):
             neighbors[oid] = indices[start:end]
             weights[oid] = data[start:end]
             start = end
-        ids = copy.copy(self.id_order)
+        ids = copy.copy(self.ids)
         w = W(neighbors, weights, ids, silence_warnings=silence_warnings)
         w._sparse = copy.deepcopy(self.sparse)
         w._cache["sparse"] = w._sparse

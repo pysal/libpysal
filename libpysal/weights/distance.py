@@ -147,7 +147,7 @@ class KNN(W):
             named_indices = np.asarray(ids)[not_self_indices]
         neighbors = {idx: list(indices) for idx, indices in zip(ids, named_indices)}
 
-        W.__init__(self, neighbors, id_order=ids, **kwargs)
+        W.__init__(self, neighbors, ids=ids, **kwargs)
 
     @classmethod
     def from_shapefile(cls, filepath, *args, **kwargs):
@@ -341,14 +341,14 @@ class KNN(W):
             new_data = np.asarray(new_data).reshape(-1, 2)
             data = np.vstack((self.data, new_data)).reshape(-1, 2)
             if new_ids is not None:
-                ids = copy.deepcopy(self.id_order)
+                ids = copy.deepcopy(self.ids)
                 ids.extend(list(new_ids))
             else:
                 ids = list(range(data.shape[0]))
         elif (new_data is None) and (new_ids is None):
             # If not, we can use the same kdtree we have
             data = self.kdtree
-            ids = self.id_order
+            ids = self.ids
         elif (new_data is None) and (new_ids is not None):
             Warn("Remapping ids must be done using w.remap_ids")
         if k is None:
@@ -945,7 +945,7 @@ class DistanceBand(W):
             self.dmat[self.dmat > 0] = 1
             self.dmat.eliminate_zeros()
             tempW = WSP2W(
-                WSP(self.dmat, id_order=ids), silence_warnings=self.silence_warnings
+                WSP(self.dmat, ids=ids), silence_warnings=self.silence_warnings
             )
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())
@@ -957,7 +957,7 @@ class DistanceBand(W):
             weighted[weighted == np.inf] = 0
             weighted.eliminate_zeros()
             tempW = WSP2W(
-                WSP(weighted, id_order=ids), silence_warnings=self.silence_warnings
+                WSP(weighted, ids=ids), silence_warnings=self.silence_warnings
             )
             neighbors = tempW.neighbors
             weight_keys = list(tempW.weights.keys())

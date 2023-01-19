@@ -254,7 +254,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         centroids = [p.centroid for p in polys]
         w_db = d.DistanceBand(centroids, 1, build_sp=False)
 
-        for k in w_db.id_order:
+        for k in w_db.ids:
             np.testing.assert_equal(w_db[k], w_rook[k])
 
     @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")

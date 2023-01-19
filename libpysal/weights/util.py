@@ -829,21 +829,21 @@ def WSP2W(wsp, **kwargs):
     """
     data = wsp.sparse.data
     indptr = wsp.sparse.indptr
-    id_order = wsp.id_order
-    if id_order:
+    ids = wsp.ids
+    if ids:
         # replace indices with user IDs
-        indices = [id_order[i] for i in wsp.sparse.indices]
+        indices = [ids[i] for i in wsp.sparse.indices]
     else:
-        id_order = list(range(wsp.n))
+        ids = list(range(wsp.n))
     neighbors, weights = {}, {}
     start = indptr[0]
     for i in range(wsp.n):
-        oid = id_order[i]
+        oid = ids[i]
         end = indptr[i + 1]
         neighbors[oid] = indices[start:end]
         weights[oid] = data[start:end]
         start = end
-    ids = copy.copy(wsp.id_order)
+    ids = copy.copy(wsp.ids)
     w = W(neighbors, weights, ids, **kwargs)
     w._sparse = copy.deepcopy(wsp.sparse)
     w._cache["sparse"] = w._sparse

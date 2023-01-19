@@ -68,7 +68,7 @@ class Delaunay(W):
             ids = numpy.arange(coordinates.shape[0])
 
         voronoi_neighbors = pandas.DataFrame(edges).groupby(0)[1].apply(list).to_dict()
-        W.__init__(self, voronoi_neighbors, id_order=list(ids), **kwargs)
+        W.__init__(self, voronoi_neighbors, ids=list(ids), **kwargs)
 
     def _voronoi_edges(self, coordinates):
         dt = _Delaunay(coordinates)
@@ -195,7 +195,7 @@ class Gabriel(Delaunay):
             ids = numpy.arange(coordinates.shape[0])
 
         gabriel_neighbors = pandas.DataFrame(output).groupby(0)[1].apply(list).to_dict()
-        W.__init__(self, gabriel_neighbors, id_order=list(ids), **kwargs)
+        W.__init__(self, gabriel_neighbors, ids=list(ids), **kwargs)
 
 
 class Relative_Neighborhood(Delaunay):
@@ -241,8 +241,8 @@ class Relative_Neighborhood(Delaunay):
         else:
             del kwargs["ids"]
         ids = list(ids)
-        tmp = WSP(sp, id_order=ids).to_W()
-        W.__init__(self, tmp.neighbors, tmp.weights, id_order=ids, **kwargs)
+        tmp = WSP(sp, ids=ids).to_W()
+        W.__init__(self, tmp.neighbors, tmp.weights, ids=ids, **kwargs)
 
 
 #### utilities
