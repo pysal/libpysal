@@ -63,12 +63,13 @@ class Delaunay(W):
         if ids is not None:
             ids = numpy.asarray(ids)
             edges = numpy.column_stack((ids[edges[:, 0]], ids[edges[:, 1]]))
-            del kwargs["ids"]
+            kwargs["ids"] = list(ids)
         else:
             ids = numpy.arange(coordinates.shape[0])
+            kwargs['ids'] = list(ids)
 
         voronoi_neighbors = pandas.DataFrame(edges).groupby(0)[1].apply(list).to_dict()
-        W.__init__(self, voronoi_neighbors, ids=list(ids), **kwargs)
+        W.__init__(self, voronoi_neighbors, **kwargs)
 
     def _voronoi_edges(self, coordinates):
         dt = _Delaunay(coordinates)
@@ -190,12 +191,14 @@ class Gabriel(Delaunay):
         if ids is not None:
             ids = numpy.asarray(ids)
             output = numpy.column_stack((ids[output[:, 0]], ids[output[:, 1]]))
-            del kwargs["ids"]
+            kwargs["ids"] = list(ids)
         else:
             ids = numpy.arange(coordinates.shape[0])
+            kwargs['ids'] = list(ids)
 
         gabriel_neighbors = pandas.DataFrame(output).groupby(0)[1].apply(list).to_dict()
-        W.__init__(self, gabriel_neighbors, ids=list(ids), **kwargs)
+
+        W.__init__(self, gabriel_neighbors, **kwargs)
 
 
 class Relative_Neighborhood(Delaunay):
@@ -239,10 +242,10 @@ class Relative_Neighborhood(Delaunay):
         if ids is None:
             ids = numpy.arange(sp.shape[0])
         else:
-            del kwargs["ids"]
+            kwargs["ids"] = ids
         ids = list(ids)
         tmp = WSP(sp, ids=ids).to_W()
-        W.__init__(self, tmp.neighbors, tmp.weights, ids=ids, **kwargs)
+        W.__init__(self, tmp.neighbors, tmp.weights, **kwargs)
 
 
 #### utilities
