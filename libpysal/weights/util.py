@@ -569,7 +569,7 @@ def higher_order_sp(
                 d[k].append(v)
             else:
                 d[k] = [v]
-        return WSP(W(neighbors=d, **kwargs).sparse)
+        return W(neighbors=d, **kwargs).to_WSP()
 
 
 def w_local_cluster(w):

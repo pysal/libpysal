@@ -216,7 +216,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w.n, 10)
         self.assertEqual(w[0], {1: 1, 5: 1})
         w = psopen(examples.get_path("sids2.gal"), "r").read()
-        wsp = WSP(w.sparse, w.id_order)
+        wsp = WSP(w.sparse, w.ids)
         w = util.WSP2W(wsp)
         self.assertEqual(w.n, 100)
         self.assertEqual(

@@ -246,7 +246,7 @@ class W(object):
                 stacklevel=2,
             )
             ids = id_order
-        if ids:
+        if ids and len(ids)>0:
             namer = dict(zip(self.neighbors.keys(), ids))
             self.df = self.df.reset_index()
             self.df[["focal", "neighbor"]] = self.df[["focal", "neighbor"]].replace(
