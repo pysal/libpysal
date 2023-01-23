@@ -133,7 +133,7 @@ def _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=False):
     if (alist is None) and (W is not None):
         alist = W.to_adjlist(**to_adjlist_kws)
     elif (W is None) and (alist is not None):
-        from .weights import W
+        from ..weights import W
 
         W = W.from_adjlist(alist, **to_adjlist_kws)
     elif (W is None) and (alist is None):

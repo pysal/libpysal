@@ -222,7 +222,8 @@ class Rook(W):
                     UserWarning,
                     stacklevel=2,
                 )
-
+        if ids and id_order:
+            id_order = ids
         if ids is None:
             if use_index is None:
                 warnings.warn(
@@ -250,7 +251,7 @@ class Rook(W):
             id_order = ids
 
         w = cls.from_iterable(
-            df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
+            df[geom_col].tolist(), ids=ids, **kwargs
         )
         if perimeter:
             w = _return_length_weighted_w(w, df, perim_std)
@@ -797,7 +798,7 @@ def _return_length_weighted_w(w, data, perimeter_standardize):
         import geopandas as gpd
     except ImportError as e:
         raise e('You must have geopandas installed to create perimeter-weighted weights')
-    adjlist = w.to_adjlist()
+    adjlist = w.to_adjlist(sort_joins=False, drop_islands=True)
     islands = pd.DataFrame.from_records(
         [{"focal": island, "neighbor": island, "weight": 0} for island in w.islands]
     )
@@ -836,6 +837,6 @@ def _return_length_weighted_w(w, data, perimeter_standardize):
         length_weighted_w.neighbors[island] = []
         del length_weighted_w.weights[island]
 
-    length_weighted_w._reset()
+    length_weighted_w
 
     return length_weighted_w

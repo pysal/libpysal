@@ -1,19 +1,21 @@
-from ..io.fileio import FileIO as psopen
-from .weights import W, WSP
-from .set_operations import w_subset
-import numpy as np
-from scipy import sparse
-from scipy.spatial import KDTree
 import copy
-import scipy.spatial
-import os
-import scipy
-from warnings import warn
 import numbers
+import os
 from collections import defaultdict
 from itertools import tee
-from ..common import requires
+from warnings import warn
+
+import numpy as np
+import scipy
+import scipy.spatial
 from packaging.version import Version
+from scipy import sparse
+from scipy.spatial import KDTree
+
+from ..common import requires
+from ..io.fileio import FileIO as psopen
+from .set_operations import w_subset
+from .weights import WSP, W
 
 try:
     import geopandas as gpd
@@ -36,7 +38,6 @@ __all__ = [
     "order",
     "higher_order",
     "shimbel",
-    "remap_ids",
     "full2W",
     "full",
     "WSP2W",
@@ -237,7 +238,7 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int", **kwargs):
             alt_weights[key] = weights[i]
         w = alt_w
         weights = alt_weights
-    return W(w, weights, ids=ids, id_order=ids[:], **kwargs)
+    return W(w, weights, ids=ids, **kwargs)
 
 
 def block_weights(regimes, ids=None, sparse=False, **kwargs):
@@ -388,7 +389,7 @@ def order(w, kmax=3):
 
     """
 
-    ids = w.id_order
+    ids = w.ids
     info = {}
     for id_ in ids:
         s = [0] * w.n
@@ -519,7 +520,7 @@ def higher_order_sp(
     id_order = None
     if issubclass(type(w), W) or isinstance(w, W):
         if np.unique(np.hstack(list(w.weights.values()))) == np.array([1.0]):
-            id_order = w.id_order
+            id_order = w.ids
             w = w.sparse
         else:
             raise ValueError("Weights are not binary (0,1)")
@@ -658,7 +659,7 @@ def shimbel(w):
     """
 
     info = {}
-    ids = w.id_order
+    ids = w.ids
     for i in ids:
         s = [0] * w.n
         s[ids.index(i)] = -1
@@ -783,7 +784,7 @@ def full2W(m, ids=None, **kwargs):
         if ids:
             ngh = [ids[j] for j in ngh]
         neighbors[i] = ngh
-    return W(neighbors, weights, id_order=ids, **kwargs)
+    return W(neighbors, weights, ids=ids, **kwargs)
 
 
 def WSP2W(wsp, **kwargs):
@@ -830,11 +831,7 @@ def WSP2W(wsp, **kwargs):
     data = wsp.sparse.data
     indptr = wsp.sparse.indptr
     ids = wsp.ids
-    if ids:
-        # replace indices with user IDs
-        indices = [ids[i] for i in wsp.sparse.indices]
-    else:
-        ids = list(range(wsp.n))
+    indices = [ids[i] for i in wsp.sparse.indices]
     neighbors, weights = {}, {}
     start = indptr[0]
     for i in range(wsp.n):
@@ -843,10 +840,7 @@ def WSP2W(wsp, **kwargs):
         neighbors[oid] = indices[start:end]
         weights[oid] = data[start:end]
         start = end
-    ids = copy.copy(wsp.ids)
-    w = W(neighbors, weights, ids, **kwargs)
-    w._sparse = copy.deepcopy(wsp.sparse)
-    w._cache["sparse"] = w._sparse
+    w = W(neighbors, weights, ids=ids, **kwargs)
     return w
 
 
@@ -914,74 +908,11 @@ def fill_diagonal(w, val=1.0, wsp=False):
         w_new.setdiag([val] * w.n)
     else:
         raise Exception("Invalid value passed to diagonal")
-    w_out = WSP(w_new, copy.copy(w.id_order))
+    w_out = WSP(w_new, copy.copy(w.ids))
     if wsp:
         return w_out
     else:
-        return WSP2W(w_out)
-
-
-def remap_ids(w, old2new, id_order=[], **kwargs):
-    """
-    Remaps the IDs in a spatial weights object.
-
-    Parameters
-    ----------
-    w        : W
-               Spatial weights object
-
-    old2new  : dictionary
-               Dictionary where the keys are the IDs in w (i.e. "old IDs") and
-               the values are the IDs to replace them (i.e. "new IDs")
-
-    id_order : list
-               An ordered list of new IDs, which defines the order of observations when
-               iterating over W. If not set then the id_order in w will be
-               used.
-    **kwargs : keyword arguments
-               optional arguments for :class:`pysal.weights.W`
-
-
-    Returns
-    -------
-
-    implicit : W
-               Spatial weights object with new IDs
-
-    Examples
-    --------
-    >>> from libpysal.weights import lat2W
-    >>> w = lat2W(3,2)
-    >>> w.id_order
-    [0, 1, 2, 3, 4, 5]
-    >>> w.neighbors[0]
-    [2, 1]
-    >>> old_to_new = {0:'a', 1:'b', 2:'c', 3:'d', 4:'e', 5:'f'}
-    >>> w_new = remap_ids(w, old_to_new)
-    >>> w_new.id_order
-    ['a', 'b', 'c', 'd', 'e', 'f']
-    >>> w_new.neighbors['a']
-    ['c', 'b']
-
-    """
-
-    if not isinstance(w, W):
-        raise Exception("w must be a spatial weights object")
-    new_neigh = {}
-    new_weights = {}
-    for key, value in list(w.neighbors.items()):
-        new_values = [old2new[i] for i in value]
-        new_key = old2new[key]
-        new_neigh[new_key] = new_values
-        new_weights[new_key] = copy.copy(w.weights[key])
-    if id_order:
-        return W(new_neigh, new_weights, id_order, **kwargs)
-    else:
-        if w.id_order:
-            id_order = [old2new[i] for i in w.id_order]
-            return W(new_neigh, new_weights, id_order, **kwargs)
-        else:
-            return W(new_neigh, new_weights, **kwargs)
+        return w_out.to_W()
 
 
 def get_ids(in_shps, idVariable):
