@@ -238,7 +238,7 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int", **kwargs):
             alt_weights[key] = weights[i]
         w = alt_w
         weights = alt_weights
-    return W(w, weights, ids=ids, **kwargs)
+    return W(w, weights, **kwargs)
 
 
 def block_weights(regimes, ids=None, sparse=False, **kwargs):
@@ -297,11 +297,10 @@ def block_weights(regimes, ids=None, sparse=False, **kwargs):
         members = NPNZ(regimes == rid)[0]
         for member in members:
             neighbors[member] = members[NPNZ(members != member)[0]].tolist()
-    w = W(neighbors, **kwargs)
-    if ids is not None:
-        w.remap_ids(ids)
+    w = W(neighbors, ids=ids, **kwargs)
+
     if sparse:
-        w = WSP(w.sparse, id_order=ids)
+        w = WSP(w.sparse, ids=ids)
     return w
 
 
@@ -772,6 +771,7 @@ def full2W(m, ids=None, **kwargs):
     """
     if m.shape[0] != m.shape[1]:
         raise ValueError("Your array is not square")
+
     neighbors, weights = {}, {}
     for i in range(m.shape[0]):
         # for i, row in enumerate(m):
@@ -784,7 +784,7 @@ def full2W(m, ids=None, **kwargs):
         if ids:
             ngh = [ids[j] for j in ngh]
         neighbors[i] = ngh
-    return W(neighbors, weights, ids=ids, **kwargs)
+    return W(neighbors, weights, **kwargs)
 
 
 def WSP2W(wsp, **kwargs):

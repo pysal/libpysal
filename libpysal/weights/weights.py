@@ -14,6 +14,7 @@ import scipy.sparse
 from scipy.sparse.csgraph import connected_components
 
 from ..io.fileio import FileIO as popen
+
 # from .util import full, WSP2W resolve import cycle by
 # forcing these into methods
 from . import adjtools
@@ -26,11 +27,12 @@ def _dict_to_df(neighbors, weights):
     for key in neighbors.keys():
         combined[key] = {}
         for i, neighbor in enumerate(neighbors[key]):
-            combined[key][neighbor] =  weights[key][i]
+            combined[key][neighbor] = weights[key][i]
     combineddf = pd.DataFrame.from_dict(combined).stack()
-    combineddf = combineddf.to_frame(name='weight')
-    combineddf.index.set_names(['focal', 'neighbor'], inplace=True)
+    combineddf = combineddf.to_frame(name="weight")
+    combineddf.index.set_names(["focal", "neighbor"], inplace=True)
     return combineddf
+
 
 class _LabelEncoder(object):
     """Encode labels with values between 0 and n_classes-1.
@@ -200,23 +202,40 @@ class W(object):
         self, neighbors, weights=None, id_order=None, silence_warnings=False, ids=None
     ):
         self.silence_warnings = silence_warnings
-
+        islands = list()
         if not weights:
             weights = {}
             for key in neighbors:
+                if len(neighbors[key]) == 0:
+                    islands.append(key)
                 weights[key] = [1.0] * len(neighbors[key])
 
         self.df = _dict_to_df(neighbors, weights)
-
+        self.islands = islands
+        islands_list = list()
+        if len(self.islands) > 0:
+            for island in self.islands:
+                islands_list.append(
+                    pd.DataFrame(
+                        {"weight": 0},
+                        index=pd.MultiIndex.from_arrays(
+                            [[island], [island]], names=["focal", "neighbor"]
+                        ),
+                    )
+                )
+            islands_list = pd.concat(islands_list)
+            self.df = pd.concat([self.df, islands_list])
         # weights transformations are columns in the weights dataframe
-        self.df['weight_o'] = self.df['weight']  # original weights
-        
+        self.df["weight_o"] = self.df["weight"]  # original weights
+
         # stashed them here in init to see how they work. In practice we can check
         # whether the column exists and create if not when the transformer method is called
-        self.df['weight_r'] = self.df['weight'] / self.df.groupby('focal')['weight'].transform('sum')
-        self.df['weight_b'] = 1
-        self.df['weight_d'] = None # not yet implemented
-        self.df['weight_v'] = None # not yet implemented
+        self.df["weight_r"] = self.df["weight"] / self.df.groupby("focal")[
+            "weight"
+        ].transform("sum")
+        self.df["weight_b"] = 1
+        self.df["weight_d"] = None  # not yet implemented
+        self.df["weight_v"] = None  # not yet implemented
 
         self.transform = "O"
 
@@ -230,8 +249,10 @@ class W(object):
         if ids:
             namer = dict(zip(self.neighbors.keys(), ids))
             self.df = self.df.reset_index()
-            self.df[['focal', 'neighbor']] = self.df[['focal', 'neighbor']].replace(namer)
-            self.df = self.df.set_index(['focal', 'neighbor'])
+            self.df[["focal", "neighbor"]] = self.df[["focal", "neighbor"]].replace(
+                namer
+            )
+            self.df = self.df.set_index(["focal", "neighbor"])
 
         if (not self.silence_warnings) and (self.n_components > 1):
             message = (
@@ -252,23 +273,30 @@ class W(object):
 
     @property
     def weights(self):
-        weights = self.df.groupby('focal').agg(list)['weight'].to_dict()
+        weights = self.df.groupby("focal").agg(list)["weight"].to_dict()
+        for island in self.islands:
+            weights[island] = []
         return weights
 
     @property
     def neighbors(self):
-        neighbors = self.df.reset_index().groupby('focal').agg(lambda x: list(x.unique()))['neighbor'].to_dict()
+        neighbors = (
+            self.df.reset_index()
+            .groupby("focal")
+            .agg(lambda x: list(x.unique()))["neighbor"]
+            .to_dict()
+        )
+        for island in self.islands:
+            neighbors[island] = []
         return neighbors
-        
-
 
     @property
     def id_order(self):
         warnings.warn(
-                "`id_order` is deprecated and will be removed in future.",
-                FutureWarning,
-                stacklevel=2,
-            )
+            "`id_order` is deprecated and will be removed in future.",
+            FutureWarning,
+            stacklevel=2,
+        )
         return self.ids
 
     @property
@@ -496,7 +524,7 @@ class W(object):
         A ``networkx`` graph representation of the ``W`` object.
         """
         try:
-            import networkx as n
+            import networkx as nx
         except ImportError:
             raise ImportError("NetworkX 2.7+ is required to use this function.")
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
@@ -604,22 +632,20 @@ class W(object):
     @cached_property
     def n_components(self):
         """Store whether the adjacency matrix is fully connected."""
-        n_components, component_labels = connected_components(
-                self.sparse
-            )
+        n_components, component_labels = connected_components(self.sparse)
         return n_components
 
     @cached_property
     def component_labels(self):
         """Store the graph component in which each observation falls."""
-        n_components, component_labels = connected_components(
-                self.sparse
-            )
+        n_components, component_labels = connected_components(self.sparse)
         return component_labels
 
     def _build_sparse(self):
-        """Construct the sparse attribute."""        
-        return scipy.sparse.csr_matrix(self.df.unstack()['weight'].reindex(self.ids)[self.ids].fillna(0).to_numpy())
+        """Construct the sparse attribute."""
+        return scipy.sparse.csr_matrix(
+            self.df.unstack()["weight"].reindex(self.ids)[self.ids].fillna(0).to_numpy()
+        )
 
     @property
     def ids(self):
@@ -637,7 +663,7 @@ class W(object):
     @property
     def n(self):
         """Number of units."""
-        n= len(self.ids)
+        n = len(self.ids)
         return n
 
     @cached_property
@@ -762,7 +788,12 @@ class W(object):
     @cached_property
     def cardinalities(self):
         """Number of neighbors for each observation."""
-        cards = self.df.groupby('focal').count().rename(columns={'weight':'n_neighbors'}).unstack()['n_neighbors']
+        cards = (
+            self.df.groupby("focal")
+            .count()
+            .rename(columns={"weight": "n_neighbors"})
+            .unstack()["n_neighbors"]
+        )
         return cards
 
     @cached_property
@@ -812,7 +843,12 @@ class W(object):
         """Cardinality histogram as a dictionary where key is the id and
         value is the number of neighbors for that unit.
         """
-        return self.df.groupby('focal').count().rename({'weight':'# neighbors'}, axis=1).hist()
+        return (
+            self.df.groupby("focal")
+            .count()
+            .rename({"weight": "# neighbors"}, axis=1)
+            .hist()
+        )
 
     def __getitem__(self, key):
         """Allow a dictionary like interaction with the weights class.
@@ -825,7 +861,7 @@ class W(object):
         >>> w[0] == dict({1: 1.0, 5: 1.0})
         True
         """
-        loc = self.df.loc[key].to_dict()['weight']
+        loc = self.df.loc[key].to_dict()["weight"]
         return loc
 
     def __iter__(self):
@@ -851,7 +887,7 @@ class W(object):
         >>>
         """
         for i in self.ids:
-            yield i, self.df.loc[i].to_dict()['weight']
+            yield i, self.df.loc[i].to_dict()["weight"]
 
     def remap_ids(self, new_ids):
         """
@@ -888,8 +924,10 @@ class W(object):
         if new_ids is None:
             new_ids = list(range(len(old_ids)))
         self.df = self.df.reset_index()
-        self.df[['focal', 'neighbor']] = self.df[['focal', 'neighbor']].replace(dict(zip(old_ids, new_ids)))
-        self.df = self.df.set_index(['focal', 'neighbor'])
+        self.df[["focal", "neighbor"]] = self.df[["focal", "neighbor"]].replace(
+            dict(zip(old_ids, new_ids))
+        )
+        self.df = self.df.set_index(["focal", "neighbor"])
 
     def __set_id_order(self, ordered_ids):
         """Set the iteration order in w. ``W`` can be iterated over. On
@@ -959,7 +997,6 @@ class W(object):
         would be encountered if iterating over the weights.
         """
         return self.ids
-
 
     def get_transform(self):
         """Getter for transform property.
@@ -1035,19 +1072,19 @@ class W(object):
         self._transform = value
 
         if value == "R":
-            self.df['weight'] = self.df['weight_r']
+            self.df["weight"] = self.df["weight_r"]
 
         elif value == "D":
-            self.df['weight'] = self.df['weight_d']
+            self.df["weight"] = self.df["weight_d"]
 
         elif value == "B":
-            self.df['weight'] = self.df['weight_b']
+            self.df["weight"] = self.df["weight_b"]
 
         elif value == "V":
-            self.df['weight'] = self.df['weight_v']
+            self.df["weight"] = self.df["weight_v"]
 
         elif value == "O":
-            self.df['weight'] = self.df['weight_o']
+            self.df["weight"] = self.df["weight_o"]
 
         else:
             raise Exception("unsupported weights transformation")
@@ -1167,7 +1204,9 @@ class W(object):
         >>> ids
         ['first', 'second', 'third']
         """
-        wfull = self.df.unstack()['weight'].reindex(self.ids)[self.ids].fillna(0).to_numpy()
+        wfull = (
+            self.df.unstack()["weight"].reindex(self.ids)[self.ids].fillna(0).to_numpy()
+        )
         keys = self.ids
 
         return (wfull, keys)

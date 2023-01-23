@@ -139,15 +139,16 @@ class KNN(W):
         not_self_mask[has_one_too_many, -1] &= False
         not_self_indices = indices[not_self_mask].reshape(self.kdtree.n, -1)
 
-        to_weight = not_self_indices
         if ids is None:
             ids = list(full_indices)
             named_indices = not_self_indices
         else:
             named_indices = np.asarray(ids)[not_self_indices]
-        neighbors = {idx: list(indices) for idx, indices in zip(ids, named_indices)}
 
-        W.__init__(self, neighbors, ids=ids, **kwargs)
+        neighbors = {idx: list(indices) for idx, indices in zip(ids, named_indices)}
+        
+
+        W.__init__(self, neighbors, **kwargs)
 
     @classmethod
     def from_shapefile(cls, filepath, *args, **kwargs):
