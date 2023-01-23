@@ -54,7 +54,7 @@ class Rook(W):
             polygons, vertices = voronoi_frames(get_points_array(polygons))
             polygons = list(polygons.geometry)
         neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
-        W.__init__(self, neighbors, ids=ids, **kw)
+        W.__init__(self, neighbors, **kw)
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):
@@ -350,7 +350,7 @@ class Queen(W):
             polygons, vertices = voronoi_frames(get_points_array(polygons))
             polygons = list(polygons.geometry)
         neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
-        W.__init__(self, neighbors, ids=ids, **kw)
+        W.__init__(self, neighbors, **kw)
 
     @classmethod
     def from_shapefile(cls, filepath, idVariable=None, full=False, **kwargs):

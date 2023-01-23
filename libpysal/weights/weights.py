@@ -395,10 +395,7 @@ class W(object):
             neighbors[oid] = indices[start:end]
             weights[oid] = data[start:end]
             start = end
-        ids = copy.copy(WSP.ids)
         w = W(neighbors, weights, silence_warnings=silence_warnings)
-        w._sparse = copy.deepcopy(WSP.sparse)
-        #w._cache["sparse"] = w._sparse
         return w
 
     @classmethod
@@ -488,24 +485,7 @@ class W(object):
             )
             drop_islands = True
 
-        links = []
-        focal_ix, neighbor_ix = self.sparse.nonzero()
-        idxs = np.array(list(self.neighbors.keys()))
-        focal_ix = idxs[focal_ix]
-        neighbor_ix = idxs[neighbor_ix]
-        weights = self.sparse.data
-        adjlist = pandas.DataFrame(
-            {focal_col: focal_ix, neighbor_col: neighbor_ix, weight_col: weights}
-        )
-        if remove_symmetric:
-            adjlist = adjtools.filter_adjlist(adjlist)
-        if not drop_islands:
-            island_adjlist = pandas.DataFrame(
-                {focal_col: self.islands, neighbor_col: self.islands, weight_col: 0}
-            )
-            adjlist = pandas.concat((adjlist, island_adjlist)).reset_index(drop=True)
-        if sort_joins:
-            return adjlist.sort_values([focal_col, neighbor_col])
+        adjlist = self.df.reset_index()[[focal_col, neighbor_col, weight_col]]
         return adjlist
 
     def to_networkx(self):
@@ -516,7 +496,7 @@ class W(object):
         A ``networkx`` graph representation of the ``W`` object.
         """
         try:
-            import networkx as nx
+            import networkx as n
         except ImportError:
             raise ImportError("NetworkX 2.7+ is required to use this function.")
         G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
@@ -648,7 +628,7 @@ class W(object):
 
     @property
     def id2i(self):
-        """Dictionary where the key is an ID and the value is that ID's
+        """Mapping of the W ids to their index order in the matrix representation
         index in ``W.id_order``.
         """
         id2i = dict(zip(self.ids, list(range(len(self.ids)))))
