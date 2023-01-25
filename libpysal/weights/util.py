@@ -828,20 +828,20 @@ def WSP2W(wsp, **kwargs):
 
 
     """
-    data = wsp.sparse.data
-    indptr = wsp.sparse.indptr
-    ids = wsp.ids
-    indices = [ids[i] for i in wsp.sparse.indices]
-    neighbors, weights = {}, {}
-    start = indptr[0]
-    for i in range(wsp.n):
-        oid = ids[i]
-        end = indptr[i + 1]
-        neighbors[oid] = indices[start:end]
-        weights[oid] = data[start:end]
-        start = end
-    w = W(neighbors, weights, ids=ids, **kwargs)
-    return w
+    # data = wsp.sparse.data
+    # indptr = wsp.sparse.indptr
+    # ids = wsp.ids
+    # indices = [ids[i] for i in wsp.sparse.indices]
+    # neighbors, weights = {}, {}
+    # start = indptr[0]
+    # for i in range(wsp.n):
+    #     oid = ids[i]
+    #     end = indptr[i + 1]
+    #     neighbors[oid] = indices[start:end]
+    #     weights[oid] = data[start:end]
+    #     start = end
+    # w = W(neighbors, weights, ids=ids, **kwargs)
+    return wsp.to_W()
 
 
 def insert_diagonal(w, val=1.0, wsp=False):

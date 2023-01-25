@@ -235,7 +235,9 @@ class W(object):
         ].transform("sum")
         self.df["weight_b"] = 1
         self.df["weight_d"] = None  # not yet implemented
-        self.df["weight_v"] = None  # not yet implemented
+        self.df["weight_v"] = np.sqrt(
+            self.df.groupby("focal")["weight"].transform("sum")
+        )
 
         self.transform = "O"
 
@@ -246,7 +248,7 @@ class W(object):
                 stacklevel=2,
             )
             ids = id_order
-        if ids and len(ids)>0:
+        if ids and len(ids) > 0:
             namer = dict(zip(self.neighbors.keys(), ids))
             self.df = self.df.reset_index()
             self.df[["focal", "neighbor"]] = self.df[["focal", "neighbor"]].replace(
@@ -1161,20 +1163,9 @@ class W(object):
         longer guaranteed to have ``k`` neighbors for each observation.
         """
         if not inplace:
-            neighbors = copy.deepcopy(self.neighbors)
-            weights = copy.deepcopy(self.weights)
-            out_W = W(neighbors, weights, ids=self.ids)
-            out_W.symmetrize(inplace=True)
+            out_W = W(self.neighbors, self.weights)
+            out_W.symmetrize()
             return out_W
-        else:
-            for focal, fneighbs in list(self.neighbors.items()):
-                for j, neighbor in enumerate(fneighbs):
-                    neighb_neighbors = self.neighbors[neighbor]
-                    if focal not in neighb_neighbors:
-                        self.neighbors[neighbor].append(focal)
-                        self.weights[neighbor].append(self.weights[focal][j])
-            self._cache = dict()
-            return
 
     def full(self):
         """Generate a full ``numpy.ndarray``.
