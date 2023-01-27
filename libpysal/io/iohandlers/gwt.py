@@ -218,7 +218,7 @@ class GwtIO(FileIO.FileIO):
             weights, neighbors = self._readlines(id_type)
 
         self.pos += 1
-        w = W(neighbors, weights, ids=id_order)
+        w = W(neighbors, weights, id_order)
         # w.transform = 'b'
 
         # set meta data

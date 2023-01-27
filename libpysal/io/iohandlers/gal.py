@@ -181,7 +181,7 @@ class GalIO(fileio.FileIO):
 
             self.pos += 1
 
-            w = W(neighbors, ids=ids)
+            w = W(neighbors, id_order=ids)
 
         return w
 
@@ -244,7 +244,7 @@ class GalIO(fileio.FileIO):
         self._complain_ifclosed(self.closed)
 
         if issubclass(type(obj), W):
-            IDS = obj.ids
+            IDS = obj.id_order
             self.file.write("%d\n" % (obj.n))
 
             for id in IDS:

@@ -9,6 +9,9 @@ from . import wkt
 from . import geoda_txt
 from . import csvWrapper
 from . import pyDbfIO
+from . import arcgis_dbf
+from . import arcgis_swm
+from . import arcgis_txt
 from . import dat
 from . import geobugs_txt
 from . import mat
