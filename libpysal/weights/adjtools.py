@@ -142,7 +142,7 @@ def _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=False):
         from .weights import W as W_
 
         np.testing.assert_allclose(
-            W.sparse.toarray(), W_.from_adjlist(alist).sparse.toarray()
+            W.sparse.todense(), W_.from_adjlist(alist).sparse.todense()
         )
     return W, alist
 

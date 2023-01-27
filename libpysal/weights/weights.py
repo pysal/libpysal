@@ -4,7 +4,6 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, eli knaap <ek@knaaptime.com>"
 
 import copy
 import warnings
-from collections import defaultdict
 from functools import cached_property
 from os.path import basename as BASENAME
 
@@ -22,12 +21,14 @@ from . import adjtools
 __all__ = ["W", "WSP"]
 
 
-def _dict_to_df(neighbors, weights):
+def _dict_to_df(neighbors, weights, ids=None):
+    if ids is None:
+        ids = list(neighbors.keys())
     combined = {}
-    for key in neighbors.keys():
-        combined[key] = {}
-        for i, neighbor in enumerate(neighbors[key]):
-            combined[key][neighbor] = weights[key][i]
+    for i, key in enumerate(neighbors.keys()):
+        combined[ids[i]] = {}
+        for ix, neighbor in enumerate(neighbors[ids[i]]):
+            combined[ids[i]][neighbor] = weights[ids[i]][ix]
     combineddf = pd.DataFrame.from_dict(combined).stack()
     combineddf = combineddf.to_frame(name="weight")
     combineddf.index.set_names(["focal", "neighbor"], inplace=True)
@@ -210,7 +211,7 @@ class W(object):
                     islands.append(key)
                 weights[key] = [1.0] * len(neighbors[key])
 
-        self.df = _dict_to_df(neighbors, weights)
+        self.df = _dict_to_df(neighbors, weights, ids)
         self.islands = islands
         islands_list = list()
         if len(self.islands) > 0:
@@ -249,12 +250,8 @@ class W(object):
             )
             ids = id_order
         if ids and len(ids) > 0:
-            namer = dict(zip(self.neighbors.keys(), ids))
-            self.df = self.df.reset_index()
-            self.df[["focal", "neighbor"]] = self.df[["focal", "neighbor"]].replace(
-                namer
-            )
-            self.df = self.df.set_index(["focal", "neighbor"])
+            # re-align islands
+            self.df = self.df.reindex(ids, level=0).reindex(ids, level=1)
 
         if (not self.silence_warnings) and (self.n_components > 1):
             message = (
@@ -557,7 +554,7 @@ class W(object):
         w = WSP(sparse_array).to_W()
         return w
 
-    @cached_property
+    @property
     def sparse(self):
         """Sparse matrix object. For any matrix manipulations required for w,
         ``w.sparse`` should be used. This is based on ``scipy.sparse``.
@@ -584,12 +581,25 @@ class W(object):
         the corresponding row and column values are equal, the value
         for the pysal weight will be 0 for the "loop".
         """
-        coo = sparse.tocoo()
-        neighbors = defaultdict(list)
-        weights = defaultdict(list)
-        for k, v, w in zip(coo.row, coo.col, coo.data):
-            neighbors[k].append(v)
-            weights[k].append(w)
+
+        adj = pd.Series.sparse.from_coo(sparse.tocoo()).to_frame(name="weight")
+        adj.index.set_names(["focal", "neighbor"], inplace=True)
+        adj = adj.sparse.to_dense()
+
+        weights = adj.groupby("focal").agg(list)["weight"].to_dict()
+        neighbors = (
+            adj.reset_index()
+            .groupby("focal")
+            .agg(lambda x: list(x.unique()))["neighbor"]
+            .to_dict()
+        )
+        if not len(neighbors.keys()) == sparse.shape[0]:
+            # the sparse matrix will encode islands as all-null rows. If there are missing indices from the dense table, those are islands
+            missing = [i for i in list(range(0, sparse.shape[0])) if i not in neighbors.keys()]
+            for island in missing:
+                neighbors[island] = [island]
+                weights[island] = [0]
+
         return W(neighbors=neighbors, weights=weights)
 
     def to_sparse(self, fmt="coo"):
@@ -611,25 +621,26 @@ class W(object):
         to determine row,col in the sparse array.
 
         """
-        disp = {}
-        disp["bsr"] = scipy.sparse.bsr_array
-        disp["coo"] = scipy.sparse.coo_array
-        disp["csc"] = scipy.sparse.csc_array
-        disp["csr"] = scipy.sparse.csr_array
-        fmt_l = fmt.lower()
-        if fmt_l in disp:
-            adj_list = self.to_adjlist(drop_islands=False)
-            data = adj_list.weight
-            row = adj_list.focal
-            col = adj_list.neighbor
-            le = _LabelEncoder()
-            le.fit(row)
-            row = le.transform(row)
-            col = le.transform(col)
-            n = self.n
-            return disp[fmt_l]((data, (row, col)), shape=(n, n))
-        else:
-            raise ValueError(f"unsupported sparse format: {fmt}")
+        # disp = {}
+        # disp["bsr"] = scipy.sparse.bsr_array
+        # disp["coo"] = scipy.sparse.coo_array
+        # disp["csc"] = scipy.sparse.csc_array
+        # disp["csr"] = scipy.sparse.csr_array
+        # fmt_l = fmt.lower()
+        # if fmt_l in disp:
+        #     adj_list = self.to_adjlist(drop_islands=False)
+        #     data = adj_list.weight
+        #     row = adj_list.focal
+        #     col = adj_list.neighbor
+        #     le = _LabelEncoder()
+        #     le.fit(row)
+        #     row = le.transform(row)
+        #     col = le.transform(col)
+        #     n = self.n
+        #     return disp[fmt_l]((data, (row, col)), shape=(n, n))
+        # else:
+        #     raise ValueError(f"unsupported sparse format: {fmt}")
+        return self.sparse
 
     @cached_property
     def n_components(self):
@@ -645,8 +656,19 @@ class W(object):
 
     def _build_sparse(self):
         """Construct the sparse attribute."""
-        return scipy.sparse.csr_matrix(
-            self.df.unstack()["weight"].reindex(self.ids)[self.ids].fillna(0).to_numpy()
+        return (
+            self.df["weight"]
+            # sort the "focal" column by its order in `ids``
+            .reindex(self.ids, level=0)
+            # sort the "neighbor" column by its order
+            #.sort_index(level=1)
+            .reindex(self.ids, level=1)
+
+            .astype("Sparse[float]")
+            .sparse.to_coo(
+                row_levels=["focal"], column_levels=["neighbor"], sort_labels=True
+            )[0]
+            .tocsr()
         )
 
     @property
@@ -841,16 +863,23 @@ class W(object):
         return i
 
     @property
+    def neighbor_offsets(self):
+        warnings.warn(
+            "`neighbor_offsets` is deprecated and will be removed in the future"
+        )
+        return self.neighbors
+
+    @property
     def histogram(self):
         """Cardinality histogram as a dictionary where key is the id and
         value is the number of neighbors for that unit.
         """
-        return (
-            self.df.groupby("focal")
-            .count()
-            .rename({"weight": "# neighbors"}, axis=1)
-            .hist()
-        )
+        return list(self.cardinalities.value_counts().items())
+
+    @property
+    def id_order_set(self):
+        warnings.warn("`id_order` is deprecated and will be removed in the future")
+        return True
 
     def __getitem__(self, key):
         """Allow a dictionary like interaction with the weights class.
@@ -1141,11 +1170,12 @@ class W(object):
         """
 
         if intrinsic:
-            wd = self.sparse.transpose() - self.sparse
+            sp = self.sparse
+            wd = sp.transpose() - sp
         else:
             transform = self.transform
             self.transform = "b"
-            wd = self.sparse.transpose() - self.sparse
+            wd = sp.transpose() - sp
             self.transform = transform
 
         ids = np.nonzero(wd)
@@ -1162,10 +1192,16 @@ class W(object):
         a neighbor. This returns a generic ``W`` object, since the object is no
         longer guaranteed to have ``k`` neighbors for each observation.
         """
-        if not inplace:
-            out_W = W(self.neighbors, self.weights)
-            out_W.symmetrize()
-            return out_W
+        neighbors = copy.deepcopy(self.neighbors)
+        weights = copy.deepcopy(self.weights)
+        for focal, fneighbs in list(self.neighbors.items()):
+            for j, neighbor in enumerate(fneighbs):
+                neighb_neighbors = self.neighbors[neighbor]
+                if focal not in neighb_neighbors:
+                    self.neighbors[neighbor].append(focal)
+                    self.weights[neighbor].append(self.weights[focal][j])
+        out_W = W(neighbors, weights)
+        return out_W
 
     def full(self):
         """Generate a full ``numpy.ndarray``.
@@ -1195,9 +1231,7 @@ class W(object):
         >>> ids
         ['first', 'second', 'third']
         """
-        wfull = (
-            self.df.unstack()["weight"].reindex(self.ids)[self.ids].fillna(0).to_numpy()
-        )
+        wfull = self.sparse.todense()
         keys = self.ids
 
         return (wfull, keys)

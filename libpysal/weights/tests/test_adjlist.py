@@ -28,7 +28,7 @@ class Test_Adjlist(ut.TestCase):
         ).astype(int)
         w_from_adj = weights.W.from_adjlist(adjlist)
         np.testing.assert_allclose(
-            w_from_adj.sparse.toarray(), self.knownW.sparse.toarray()
+            w_from_adj.sparse.todense(), self.knownW.sparse.todense()
         )
 
     def test_round_trip_drop_islands_false(self):
@@ -37,7 +37,7 @@ class Test_Adjlist(ut.TestCase):
         ).astype(int)
         w_from_adj = weights.W.from_adjlist(adjlist)
         np.testing.assert_allclose(
-            w_from_adj.sparse.toarray(), self.knownW.sparse.toarray()
+            w_from_adj.sparse.todense(), self.knownW.sparse.todense()
         )
 
     def test_filter(self):
@@ -53,7 +53,7 @@ class Test_Adjlist(ut.TestCase):
             for idx in set(all_ids).difference(set(alist_neighbors.keys())):
                 alist_neighbors[idx] = []
             badgrid = weights.W(alist_neighbors)
-            np.testing.assert_allclose(badgrid.sparse.toarray(), grid.sparse.toarray())
+            np.testing.assert_allclose(badgrid.sparse.todense(), grid.sparse.todense())
         assert set(alist.focal.unique()) == {0, 1, 2}
         assert set(alist.neighbor.unique()) == {1, 2, 3}
         assert alist.weight.unique().item() == 1
@@ -69,7 +69,7 @@ class Test_Adjlist(ut.TestCase):
             for idx in set(all_ids).difference(set(alist_neighbors.keys())):
                 alist_neighbors[idx] = []
             badgrid = weights.W(alist_neighbors)
-            np.testing.assert_allclose(badgrid.sparse.toarray(), grid.sparse.toarray())
+            np.testing.assert_allclose(badgrid.sparse.todense(), grid.sparse.todense())
         tuples = set([tuple(t) for t in alist[["focal", "neighbor"]].values])
         full_alist = grid.to_adjlist(drop_islands=True)
         all_possible = set([tuple(t) for t in full_alist[["focal", "neighbor"]].values])
@@ -94,7 +94,7 @@ class Test_Adjlist(ut.TestCase):
         right_hovals = alist.groupby("focal").att_focal.unique()
         assert (right_hovals == df[col]).all()
         allpairs = np.subtract.outer(df[col].values, df[col].values)
-        flat_diffs = allpairs[W.sparse.toarray().astype(bool)]
+        flat_diffs = allpairs[W.sparse.todense().astype(bool)]
         np.testing.assert_allclose(flat_diffs, alist["subtract"].values)
         return flat_diffs
 

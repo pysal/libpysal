@@ -335,16 +335,16 @@ class TestW(unittest.TestCase):
 
     def test_symmetrize(self):
         symm = self.w.symmetrize()
-        np.testing.assert_allclose(symm.sparse.toarray(), self.w.sparse.toarray())
+        np.testing.assert_allclose(symm.sparse.todense(), self.w.sparse.todense())
         knn = KNN.from_shapefile(
             examples.get_path("baltim.shp"), k=10, silence_warnings=True
         )
         sknn = knn.symmetrize()
-        assert not np.allclose(knn.sparse.toarray(), sknn.sparse.toarray())
-        np.testing.assert_allclose(sknn.sparse.toarray(), sknn.sparse.toarray().T)
+        assert not np.allclose(knn.sparse.todense(), sknn.sparse.todense())
+        np.testing.assert_allclose(sknn.sparse.todense(), sknn.sparse.todense().T)
         knn.symmetrize(inplace=True)
-        np.testing.assert_allclose(sknn.sparse.toarray(), knn.sparse.toarray())
-        np.testing.assert_allclose(knn.sparse.toarray().T, knn.sparse.toarray())
+        np.testing.assert_allclose(sknn.sparse.todense(), knn.sparse.todense())
+        np.testing.assert_allclose(knn.sparse.todense().T, knn.sparse.todense())
 
     def test_connected_components(self):
         disco = {0: [1], 1: [0], 2: [3], 3: [2]}
@@ -356,10 +356,11 @@ class TestW(unittest.TestCase):
             path = os.path.join(str(tmpdir), "tmp.gal")
             self.w.to_file(path)
             new = W.from_file(path)
-        np.testing.assert_array_equal(self.w.sparse.toarray(), new.sparse.toarray())
+        np.testing.assert_array_equal(self.w.sparse.todense(), new.sparse.todense())
 
     def test_to_sparse(self):
         sparse = self.w_islands.to_sparse()
+        sparse=sparse.tocoo()
         np.testing.assert_array_equal(sparse.data, [1, 1, 1, 1, 0])
         np.testing.assert_array_equal(sparse.row, [0, 1, 1, 2, 3])
         np.testing.assert_array_equal(sparse.col, [1, 0, 2, 1, 3])
@@ -484,7 +485,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
     def test_cardinalities(self):
         w = util.lat2W(3, 3)
         self.assertEqual(
-            w.cardinalities, {0: 2, 1: 3, 2: 2, 3: 3, 4: 4, 5: 3, 6: 2, 7: 3, 8: 2}
+            w.cardinalities.to_dict(), {0: 2, 1: 3, 2: 2, 3: 3, 4: 4, 5: 3, 6: 2, 7: 3, 8: 2}
         )
 
     def test_diagW2(self):
