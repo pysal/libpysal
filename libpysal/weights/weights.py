@@ -234,6 +234,8 @@ class W(object):
             "weight"
         ].transform("sum")
         self.df["weight_b"] = 1
+        self.df.loc[self.islands, "weight_b"] = 0
+
         self.df["weight_d"] = None  # not yet implemented
         self.df["weight_v"] = np.sqrt(
             self.df.groupby("focal")["weight"].transform("sum")
@@ -423,7 +425,7 @@ class W(object):
             neighbors[oid] = indices[start:end]
             weights[oid] = data[start:end]
             start = end
-        w = W(neighbors, weights, silence_warnings=silence_warnings)
+        w = W.from_sparse(WSP.sparse, ids=ids)
         return w
 
     @classmethod
@@ -563,7 +565,7 @@ class W(object):
         return self._build_sparse()
 
     @classmethod
-    def from_sparse(cls, sparse):
+    def from_sparse(cls, sparse, ids=None):
         """Convert a ``scipy.sparse`` array to a PySAL ``W`` object.
 
         Parameters
@@ -591,7 +593,7 @@ class W(object):
         neighbors = (
             adj.reset_index()
             .groupby("focal")
-            .agg(lambda x: list(x.unique()))["neighbor"]
+            .agg(list)["neighbor"]
             .to_dict()
         )
         if not len(neighbors.keys()) == sparse.shape[0]:
@@ -603,7 +605,7 @@ class W(object):
                 neighbors[island] = [island]
                 weights[island] = [0]
 
-        return W(neighbors=neighbors, weights=weights)
+        return W(neighbors=neighbors, weights=weights, ids=ids)
 
     def to_sparse(self, fmt="coo"):
         """Generate a ``scipy.sparse`` array object from a pysal W.
@@ -812,6 +814,7 @@ class W(object):
             .rename(columns={"weight": "n_neighbors"})
             .unstack()["n_neighbors"]
         )
+        cards.loc[self.islands] = 0
         return cards
 
     @cached_property
@@ -868,7 +871,7 @@ class W(object):
         """Cardinality histogram as a dictionary where key is the id and
         value is the number of neighbors for that unit.
         """
-        return list(self.cardinalities.value_counts().items())
+        return list(self.cardinalities.value_counts().sort_index().items())
 
     @property
     def id_order_set(self):
@@ -1110,9 +1113,10 @@ class W(object):
 
         elif value == "O":
             self.df["weight"] = self.df["weight_o"]
-
         else:
             raise Exception("unsupported weights transformation")
+        self.df.loc[self.islands, "weight"] = 0
+        self.df = self.df.fillna(0)
 
     transform = property(get_transform, set_transform)
 
