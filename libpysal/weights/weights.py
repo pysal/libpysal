@@ -595,7 +595,9 @@ class W(object):
         )
         if not len(neighbors.keys()) == sparse.shape[0]:
             # the sparse matrix will encode islands as all-null rows. If there are missing indices from the dense table, those are islands
-            missing = [i for i in list(range(0, sparse.shape[0])) if i not in neighbors.keys()]
+            missing = [
+                i for i in list(range(0, sparse.shape[0])) if i not in neighbors.keys()
+            ]
             for island in missing:
                 neighbors[island] = [island]
                 weights[island] = [0]
@@ -621,26 +623,18 @@ class W(object):
         to determine row,col in the sparse array.
 
         """
-        # disp = {}
-        # disp["bsr"] = scipy.sparse.bsr_array
-        # disp["coo"] = scipy.sparse.coo_array
-        # disp["csc"] = scipy.sparse.csc_array
-        # disp["csr"] = scipy.sparse.csr_array
-        # fmt_l = fmt.lower()
-        # if fmt_l in disp:
-        #     adj_list = self.to_adjlist(drop_islands=False)
-        #     data = adj_list.weight
-        #     row = adj_list.focal
-        #     col = adj_list.neighbor
-        #     le = _LabelEncoder()
-        #     le.fit(row)
-        #     row = le.transform(row)
-        #     col = le.transform(col)
-        #     n = self.n
-        #     return disp[fmt_l]((data, (row, col)), shape=(n, n))
-        # else:
-        #     raise ValueError(f"unsupported sparse format: {fmt}")
-        return self.sparse
+        kinds = ["bsr", "coo", "csc", "csr"]
+        fmt_l = fmt.lower()
+        if fmt_l not in kinds:
+            raise ValueError(f"unsupported sparse format: {fmt}")
+        elif fmt_l == "bsr":
+            return self.sparse.tobsr()
+        elif fmt_l == "csc":
+            return self.sparse.tocsc()
+        elif fmt_l == "coo":
+            return self.sparse.tocoo()
+        else:
+            return self.sparse
 
     @cached_property
     def n_components(self):
@@ -661,9 +655,8 @@ class W(object):
             # sort the "focal" column by its order in `ids``
             .reindex(self.ids, level=0)
             # sort the "neighbor" column by its order
-            #.sort_index(level=1)
+            # .sort_index(level=1)
             .reindex(self.ids, level=1)
-
             .astype("Sparse[float]")
             .sparse.to_coo(
                 row_levels=["focal"], column_levels=["neighbor"], sort_labels=True
