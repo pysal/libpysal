@@ -21,14 +21,12 @@ from . import adjtools
 __all__ = ["W", "WSP"]
 
 
-def _dict_to_df(neighbors, weights, ids=None):
-    if ids is None:
-        ids = list(neighbors.keys())
-    combined = {}
-    for i, key in enumerate(neighbors.keys()):
-        combined[ids[i]] = {}
-        for ix, neighbor in enumerate(neighbors[ids[i]]):
-            combined[ids[i]][neighbor] = weights[ids[i]][ix]
+def _dict_to_df(neighbors, weights):
+
+    combined = dict()
+    for key in neighbors.keys():
+        combined[key] = dict(zip(neighbors[key], weights[key]))
+
     combineddf = pd.DataFrame.from_dict(combined).stack()
     combineddf = combineddf.to_frame(name="weight")
     combineddf.index.set_names(["focal", "neighbor"], inplace=True)
@@ -211,9 +209,10 @@ class W(object):
                     islands.append(key)
                 weights[key] = [1.0] * len(neighbors[key])
 
-        self.df = _dict_to_df(neighbors, weights, ids)
+        self.df = _dict_to_df(neighbors, weights)
         self.islands = islands
         islands_list = list()
+        # islands become self-loops with zero weight
         if len(self.islands) > 0:
             for island in self.islands:
                 islands_list.append(
@@ -249,8 +248,13 @@ class W(object):
                 stacklevel=2,
             )
             ids = id_order
-        if ids and len(ids) > 0:
+        if ids is not None and len(ids) > 0:
             # re-align islands
+            self.df = self.df.reset_index()
+            self.df[["focal", "neighbor"]] = self.df[["focal", "neighbor"]].replace(
+                dict(zip(list(weights.keys()), ids))
+            )
+            self.df = self.df.set_index(["focal", "neighbor"])
             self.df = self.df.reindex(ids, level=0).reindex(ids, level=1)
 
         if (not self.silence_warnings) and (self.n_components > 1):
@@ -280,10 +284,7 @@ class W(object):
     @property
     def neighbors(self):
         neighbors = (
-            self.df.reset_index()
-            .groupby("focal")
-            .agg(lambda x: list(x.unique()))["neighbor"]
-            .to_dict()
+            self.df.reset_index().groupby("focal").agg(list)["neighbor"].to_dict()
         )
         for island in self.islands:
             neighbors[island] = []
@@ -1224,7 +1225,7 @@ class W(object):
         >>> ids
         ['first', 'second', 'third']
         """
-        wfull = self.sparse.todense()
+        wfull = np.array(self.sparse.todense())
         keys = self.ids
 
         return (wfull, keys)
@@ -1540,7 +1541,6 @@ class WSP(object):
         [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
 
         """
-        df = pd.DataFrame(self.sparse.todense(), index=self.ids)
         indices = list(self.sparse.indices)
         data = list(self.sparse.data)
         indptr = list(self.sparse.indptr)

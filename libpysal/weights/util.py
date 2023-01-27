@@ -297,7 +297,7 @@ def block_weights(regimes, ids=None, sparse=False, **kwargs):
         members = NPNZ(regimes == rid)[0]
         for member in members:
             neighbors[member] = members[NPNZ(members != member)[0]].tolist()
-    w = W(neighbors, **kwargs)
+    w = W(neighbors, ids=ids, **kwargs)
 
     if sparse:
         w = WSP(w.sparse, ids=ids)
