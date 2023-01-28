@@ -82,13 +82,13 @@ class Testutil(unittest.TestCase):
                 3.0,
             ]
         )
-        w = util.block_weights(regimes)
+        w = util.block_weights(regimes).sort_neighbors()
         ww0 = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         self.assertEqual(w.weights[0], ww0)
         wn0 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 20]
         self.assertEqual(w.neighbors[0], wn0)
         regimes = ["n", "n", "s", "s", "e", "e", "w", "w", "e"]
-        w = util.block_weights(regimes)
+        w = util.block_weights(regimes).sort_neighbors()
         wn = {
             0: [1],
             1: [0],
@@ -102,12 +102,11 @@ class Testutil(unittest.TestCase):
         }
         self.assertEqual(w.neighbors, wn)
         ids = ["id-%i" % i for i in range(len(regimes))]
-        w = util.block_weights(regimes, ids=np.array(ids))
+        w = util.block_weights(regimes).sort_neighbors(inplace=True)
+        w.remap_ids(ids)
         w0 = {"id-1": 1.0}
         self.assertEqual(w["id-0"], w0)
-        w = util.block_weights(regimes, ids=ids)
-        w0 = {"id-1": 1.0}
-        self.assertEqual(w["id-0"], w0)
+
 
     def test_comb(self):
         x = list(range(4))
@@ -123,7 +122,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w3105, w3[1][0:5])
 
     def test_higher_order(self):
-        w10 = lat2W(10, 10)
+        w10 = lat2W(10, 10).sort_neighbors()
         w10_2 = util.higher_order(w10, 2)
         w10_20 = {2: 1.0, 11: 1.0, 20: 1.0}
         self.assertEqual(w10_20, w10_2[0])
@@ -137,7 +136,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w5_20, w5_2[0])
 
     def test_higher_order_sp(self):
-        w10 = lat2W(10, 10)
+        w10 = lat2W(10, 10).sort_neighbors()
         w10_3 = util.higher_order_sp(w10, 3)
         w10_30 = {30: 1.0, 21: 1.0, 12: 1.0, 3: 1.0}
         self.assertEqual(w10_30, w10_3[0])
@@ -175,7 +174,7 @@ class Testutil(unittest.TestCase):
             util.higher_order(ww, 3)
 
     def test_shimbel(self):
-        w5 = lat2W()
+        w5 = lat2W().sort_neighbors()
         w5_shimbel = util.shimbel(w5)
         w5_shimbel024 = 8
         self.assertEqual(w5_shimbel024, w5_shimbel[0][24])
@@ -237,7 +236,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w1[0], r1)
 
     def test_remap_ids(self):
-        w = lat2W(3, 2)
+        w = lat2W(3, 2).sort_neighbors()
         wid_order = [0, 1, 2, 3, 4, 5]
         self.assertEqual(wid_order, w.id_order)
         wneighbors0 = [2, 1]

@@ -204,7 +204,7 @@ class W(object):
         islands = list()
         if not weights:
             weights = {}
-            for key in neighbors:
+            for key in neighbors.keys():
                 if len(neighbors[key]) == 0:
                     islands.append(key)
                 weights[key] = [1.0] * len(neighbors[key])
@@ -235,6 +235,7 @@ class W(object):
                 stacklevel=2,
             )
             ids = id_order
+
         if ids is not None and len(ids) > 0:
             # re-align islands
             self.df = self.df.reset_index()
@@ -242,7 +243,9 @@ class W(object):
                 dict(zip(list(weights.keys()), ids))
             )
             self.df = self.df.set_index(["focal", "neighbor"])
-            self.df = self.df.reindex(ids, level=0).reindex(ids, level=1)
+        if ids is None:
+            ids = list(neighbors.keys())
+        self.df = self.df.reindex(ids, level=0).reindex(ids, level=1)
 
         if (not self.silence_warnings) and (self.n_components > 1):
             message = (
@@ -261,7 +264,7 @@ class W(object):
                 )
             warnings.warn(message)
 
-    def sort_neighbors(self, ids, inplace=True):
+    def sort_neighbors(self, ids=None, inplace=False):
         """Sort the neighbors in the W object by their values in ids (e.g. to align with another dataframe)
 
         Parameters
@@ -275,7 +278,10 @@ class W(object):
             the W with neighbors sorted by values in `ids`
         """
         df = self.df.copy()
-        df = df.reindex(ids, level=0).reindex(ids, level=1)
+        if ids is None:
+            df = df.sort_index(level=0).sort_index(level=0)
+        else:
+            df = df.reindex(ids, level=0).reindex(ids, level=1)
         if inplace:
             self.df = df
             return self
@@ -286,7 +292,12 @@ class W(object):
 
     @property
     def weights(self):
-        weights = self.df.groupby("focal").agg(list)["weight"].to_dict()
+        weights = (
+            self.df.groupby("focal")
+            .agg(list)["weight"]
+            .reindex(self._sort_order)
+            .to_dict()
+        )
         for island in self.islands:
             weights[island] = []
         return weights
@@ -294,7 +305,11 @@ class W(object):
     @property
     def neighbors(self):
         neighbors = (
-            self.df.reset_index().groupby("focal").agg(list)["neighbor"].to_dict()
+            self.df.reset_index()
+            .groupby("focal")
+            .agg(list)["neighbor"]
+            .reindex(self._sort_order)
+            .to_dict()
         )
         for island in self.islands:
             neighbors[island] = []
@@ -642,17 +657,17 @@ class W(object):
         """Construct the sparse attribute."""
         return (
             self.df["weight"]
-            # sort the "focal" column by its order in `ids``
-            .reindex(self.ids, level=0)
-            # sort the "neighbor" column by its order
-            # .sort_index(level=1)
-            .reindex(self.ids, level=1)
             .astype("Sparse[float]")
             .sparse.to_coo(
                 row_levels=["focal"], column_levels=["neighbor"], sort_labels=True
             )[0]
             .tocsr()
         )
+
+    @property
+    def _sort_order(self):
+        order = self.df.index.get_level_values(0).unique().tolist()
+        return order
 
     @property
     def ids(self):
@@ -792,7 +807,7 @@ class W(object):
         p = 100.0 * self.sparse.nnz / (1.0 * self.n**2)
         return p
 
-    @cached_property
+    @property
     def cardinalities(self):
         """Number of neighbors for each observation."""
         cards = (

@@ -13,8 +13,9 @@ class Test_spatial_lag(unittest.TestCase):
         self.ids = ["a", "b", "c"]
         self.weights = {"c": [1.0], "b": [1.0, 1.0], "a": [1.0]}
         self.w = W(self.neighbors, self.weights, )
+        self.w.remap_ids(['a', 'b', 'c'])
         self.y = np.array([0, 1, 2])
-        self.wlat = lat2W(3, 3)
+        self.wlat = lat2W(3, 3).sort_neighbors()
         self.ycat = ["a", "b", "a", "b", "c", "b", "c", "b", "c"]
         self.ycat2 = ["a", "c", "c", "d", "b", "a", "d", "d", "c"]
         self.ym = np.vstack((self.ycat, self.ycat2)).T
@@ -23,11 +24,10 @@ class Test_spatial_lag(unittest.TestCase):
     def test_lag_spatial(self):
         yl = lag_spatial(self.w, self.y)
         np.testing.assert_array_almost_equal(yl, [1.0, 2.0, 1.0])
-        #self.w.ids = ["b", "c", "a"]
         y = np.array([1, 2, 0])
-        yl = lag_spatial(W(self.neighbors, self.weights,ids=["b", "c", "a"]), y)
+        yl = lag_spatial(W(self.neighbors, self.weights).sort_neighbors(["b", "c", "a"]), y)
         np.testing.assert_array_almost_equal(yl, [2.0, 1.0, 1.0])
-        w = lat2W(3, 3)
+        w = lat2W(3, 3).sort_neighbors()
         y = np.arange(9)
         yl = lag_spatial(w, y)
         ylc = np.array([4.0, 6.0, 6.0, 10.0, 16.0, 14.0, 10.0, 18.0, 12.0])

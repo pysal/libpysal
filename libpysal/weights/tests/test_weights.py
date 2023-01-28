@@ -45,7 +45,7 @@ class TestW(unittest.TestCase):
             8: [1, 1],
         }
 
-        self.w3x3 = util.lat2W(3, 3)
+        self.w3x3 = util.lat2W(3, 3).sort_neighbors()
         self.w_islands = W({0: [1], 1: [0, 2], 2: [1], 3: []})
 
     def test_W(self):
@@ -60,7 +60,7 @@ class TestW(unittest.TestCase):
         self.assertEqual(w.pct_nonzero, 29.62962962962963)
 
     def test___iter__(self):
-        w = lat2W(3, 3)
+        w = lat2W(3, 3).sort_neighbors()
         res = {}
         for i, wi in enumerate(w):
             res[i] = wi
@@ -68,7 +68,7 @@ class TestW(unittest.TestCase):
         self.assertEqual(res[8], (8, {5: 1.0, 7: 1.0}))
 
     def test_asymmetries(self):
-        w = lat2W(3, 3)
+        w = lat2W(3, 3).sort_neighbors()
         w.transform = "r"
         result = w.asymmetry()
         self.assertEqual(
@@ -102,13 +102,13 @@ class TestW(unittest.TestCase):
         )
 
     def test_asymmetry(self):
-        w = lat2W(3, 3)
+        w = lat2W(3, 3).sort_neighbors()
         self.assertEqual(w.asymmetry(), [])
         w.transform = "r"
         self.assertFalse(w.asymmetry() == [])
 
     def test_cardinalities(self):
-        w = lat2W(3, 3)
+        w = lat2W(3, 3).sort_neighbors()
         self.assertEqual(
             w.cardinalities, {0: 2, 1: 3, 2: 2, 3: 3, 4: 4, 5: 3, 6: 2, 7: 3, 8: 2}
         )
@@ -235,15 +235,15 @@ class TestW(unittest.TestCase):
         self.assertEqual(self.w3x3.max_neighbors, 4)
 
     def test_mean_neighbors(self):
-        w = util.lat2W()
+        w = util.lat2W().sort_neighbors()
         self.assertEqual(w.mean_neighbors, 3.2)
 
     def test_min_neighbors(self):
-        w = util.lat2W()
+        w = util.lat2W().sort_neighbors()
         self.assertEqual(w.min_neighbors, 2)
 
     def test_n(self):
-        w = util.lat2W()
+        w = util.lat2W().sort_neighbors()
         self.assertEqual(w.n, 25)
 
     def test_neighbor_offsets(self):
@@ -265,7 +265,7 @@ class TestW(unittest.TestCase):
         self.assertEqual(self.w3x3.nonzero, 24)
 
     def test_order(self):
-        w = util.lat2W(3, 3)
+        w = util.lat2W(3, 3).sort_neighbors()
         o = {
             0: [-1, 1, 2, 1, 2, 3, 2, 3, 0],
             1: [1, -1, 1, 2, 1, 2, 3, 2, 3],
@@ -301,7 +301,7 @@ class TestW(unittest.TestCase):
         self.assertEqual(self.w3x3.sd, 0.66666666666666663)
 
     def test_set_transform(self):
-        w = util.lat2W(2, 2)
+        w = util.lat2W(2, 2).sort_neighbors()
         self.assertEqual(w.transform, "O")
         self.assertEqual(w.weights[0], [1.0, 1.0])
         w.transform = "r"
@@ -419,8 +419,8 @@ class Test_WSP_Back_To_W(unittest.TestCase):
             8: [1, 1],
         }
 
-        self.w3x3 = util.lat2W(3, 3)
-        w3x3 = WSP(self.w3x3.sparse, self.w3x3.id_order)
+        self.w3x3 = util.lat2W(3, 3).sort_neighbors()
+        w3x3 = WSP(self.w3x3.sparse, self.w3x3.ids)
         self.w3x3 = WSP2W(w3x3)
 
     def test_W(self):
@@ -435,7 +435,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEqual(w.pct_nonzero, 29.62962962962963)
 
     def test___iter__(self):
-        w = util.lat2W(3, 3)
+        w = util.lat2W(3, 3).sort_neighbors()
         res = {}
         for i, wi in enumerate(w):
             res[i] = wi
@@ -443,7 +443,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEqual(res[8], (8, {5: 1.0, 7: 1.0}))
 
     def test_asymmetries(self):
-        w = util.lat2W(3, 3)
+        w = util.lat2W(3, 3).sort_neighbors()
         w.transform = "r"
         result = w.asymmetry()
         self.assertEqual(
@@ -477,13 +477,13 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         )
 
     def test_asymmetry(self):
-        w = util.lat2W(3, 3)
+        w = util.lat2W(3, 3).sort_neighbors()
         self.assertEqual(w.asymmetry(), [])
         w.transform = "r"
         self.assertFalse(w.asymmetry() == [])
 
     def test_cardinalities(self):
-        w = util.lat2W(3, 3)
+        w = util.lat2W(3, 3).sort_neighbors()
         self.assertEqual(
             w.cardinalities.to_dict(), {0: 2, 1: 3, 2: 2, 3: 3, 4: 4, 5: 3, 6: 2, 7: 3, 8: 2}
         )
@@ -610,22 +610,22 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEqual(self.w3x3.max_neighbors, 4)
 
     def test_mean_neighbors(self):
-        w = util.lat2W()
+        w = util.lat2W().sort_neighbors()
         self.assertEqual(w.mean_neighbors, 3.2)
 
     def test_min_neighbors(self):
-        w = util.lat2W()
+        w = util.lat2W().sort_neighbors()
         self.assertEqual(w.min_neighbors, 2)
 
     def test_n(self):
-        w = util.lat2W()
+        w = util.lat2W().sort_neighbors()
         self.assertEqual(w.n, 25)
 
     def test_nonzero(self):
         self.assertEqual(self.w3x3.nonzero, 24)
 
     def test_order(self):
-        w = util.lat2W(3, 3)
+        w = util.lat2W(3, 3).sort_neighbors()
         o = {
             0: [-1, 1, 2, 1, 2, 3, 2, 3, 0],
             1: [1, -1, 1, 2, 1, 2, 3, 2, 3],
@@ -661,7 +661,7 @@ class Test_WSP_Back_To_W(unittest.TestCase):
         self.assertEqual(self.w3x3.sd, 0.66666666666666663)
 
     def test_set_transform(self):
-        w = util.lat2W(2, 2)
+        w = util.lat2W(2, 2).sort_neighbors()
         self.assertEqual(w.transform, "O")
         self.assertEqual(w.weights[0], [1.0, 1.0])
         w.transform = "r"
@@ -698,7 +698,7 @@ class TestWSP(unittest.TestCase):
     def setUp(self):
         self.w = psopen(examples.get_path("sids2.gal")).read()
         self.wsp = WSP(self.w.sparse, self.w.ids)
-        w3x3 = util.lat2W(3, 3)
+        w3x3 = util.lat2W(3, 3).sort_neighbors()
         self.w3x3 = WSP(w3x3.sparse)
 
     def test_WSP(self):
