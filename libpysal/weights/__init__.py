@@ -1,4 +1,4 @@
-from ..weights import *
+from .weights import *
 from .distance import *
 from .contiguity import *
 from .spintW import *

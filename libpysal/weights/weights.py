@@ -406,26 +406,7 @@ class W(object):
         >>> print(w.full()[0][0])
         [0 1 0 0 0 1 0 0 0 0]
         """
-        data = WSP.sparse.data
-        indptr = WSP.sparse.indptr
-        ids = WSP.ids
-        if WSP.ids:
-            # replace indices with user IDs
-            id_order = ids
-        if ids:
-            # replace indices with user IDs
-            indices = [ids[i] for i in WSP.sparse.indices]
-        else:
-            id_order = list(range(WSP.n))
-        neighbors, weights = {}, {}
-        start = indptr[0]
-        for i in range(WSP.n):
-            oid = id_order[i]
-            end = indptr[i + 1]
-            neighbors[oid] = indices[start:end]
-            weights[oid] = data[start:end]
-            start = end
-        w = W.from_sparse(WSP.sparse, ids=ids)
+        w = W.from_sparse(WSP.sparse, ids=WSP.ids)
         return w
 
     @classmethod
@@ -455,15 +436,21 @@ class W(object):
         if try_weightcol is None:
             adjlist = adjlist.copy(deep=True)
             adjlist["weight"] = 1
-        grouper = adjlist.groupby(focal_col)
-        neighbors = dict()
-        weights = dict()
-        for ix, chunk in grouper:
-            neighbors_to_ix = chunk[neighbor_col].values
-            weights_to_ix = chunk[weight_col].values
-            mask = neighbors_to_ix != ix
-            neighbors[ix] = neighbors_to_ix[mask].tolist()
-            weights[ix] = weights_to_ix[mask].tolist()
+        # grouper = adjlist.groupby(focal_col)
+        # neighbors = dict()
+        # weights = dict()
+        # for ix, chunk in grouper:
+        #     neighbors_to_ix = chunk[neighbor_col].values
+        #     weights_to_ix = chunk[weight_col].values
+        #     mask = neighbors_to_ix != ix
+        #     neighbors[ix] = neighbors_to_ix[mask].tolist()
+        #     weights[ix] = weights_to_ix[mask].tolist()
+        
+        weights = adjlist.groupby(focal_col).agg(list)[weight_col].to_dict()
+        neighbors = adjlist.reset_index().groupby(focal_col).agg(list)[neighbor_col].to_dict()
+
+
+       #return W(neighbors=neighbors, weights=weights)
         return cls(neighbors=neighbors, weights=weights)
 
     def to_adjlist(
@@ -516,6 +503,9 @@ class W(object):
             drop_islands = True
 
         adjlist = self.df.reset_index()[[focal_col, neighbor_col, weight_col]]
+        if drop_islands:
+            # internal adjlist codes islands as self neigbor with 0 weight
+            adjlist = adjlist[adjlist[weight_col]!=0]
         return adjlist
 
     def to_networkx(self):
@@ -558,6 +548,8 @@ class W(object):
         return w
 
     @property
+    # in theory we want `.sparse` as chached and `to_sparse` to build from scratch
+    # but if this is cached, it wont be updated e.g. after a weights transform
     def sparse(self):
         """Sparse matrix object. For any matrix manipulations required for w,
         ``w.sparse`` should be used. This is based on ``scipy.sparse``.
@@ -590,14 +582,10 @@ class W(object):
         adj = adj.sparse.to_dense()
 
         weights = adj.groupby("focal").agg(list)["weight"].to_dict()
-        neighbors = (
-            adj.reset_index()
-            .groupby("focal")
-            .agg(list)["neighbor"]
-            .to_dict()
-        )
+        neighbors = adj.reset_index().groupby("focal").agg(list)["neighbor"].to_dict()
         if not len(neighbors.keys()) == sparse.shape[0]:
-            # the sparse matrix will encode islands as all-null rows. If there are missing indices from the dense table, those are islands
+            # the sparse matrix will encode islands as all-null rows. If there are missing indices from the dense table,
+            # those are islands that were lost in the conversion
             missing = [
                 i for i in list(range(0, sparse.shape[0])) if i not in neighbors.keys()
             ]
@@ -626,18 +614,19 @@ class W(object):
         to determine row,col in the sparse array.
 
         """
+        sparse = self._build_sparse()
         kinds = ["bsr", "coo", "csc", "csr"]
         fmt_l = fmt.lower()
         if fmt_l not in kinds:
             raise ValueError(f"unsupported sparse format: {fmt}")
         elif fmt_l == "bsr":
-            return self.sparse.tobsr()
+            return sparse.tobsr()
         elif fmt_l == "csc":
-            return self.sparse.tocsc()
+            return sparse.tocsc()
         elif fmt_l == "coo":
-            return self.sparse.tocoo()
+            return sparse.tocoo()
         else:
-            return self.sparse
+            return sparse
 
     @cached_property
     def n_components(self):
@@ -956,75 +945,6 @@ class W(object):
             dict(zip(old_ids, new_ids))
         )
         self.df = self.df.set_index(["focal", "neighbor"])
-
-    def __set_id_order(self, ordered_ids):
-        """Set the iteration order in w. ``W`` can be iterated over. On
-        construction the iteration order is set to the lexicographic order of
-        the keys in the ``w.weights`` dictionary. If a specific order
-        is required it can be set with this method.
-
-        Parameters
-        ----------
-
-        ordered_ids : sequence
-            Identifiers for observations in specified order.
-
-        Notes
-        -----
-
-        The ``ordered_ids`` parameter is checked against the ids implied
-        by the keys in ``w.weights``. If they are not equivalent sets an
-        exception is raised and the iteration order is not changed.
-
-        Examples
-        --------
-
-        >>> from libpysal.weights import lat2W
-        >>> w=lat2W(3,3)
-        >>> for i,wi in enumerate(w):
-        ...     print(i, wi[0])
-        ...
-        0 0
-        1 1
-        2 2
-        3 3
-        4 4
-        5 5
-        6 6
-        7 7
-        8 8
-        >>> w.ids
-        [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        >>> w.ids=range(8,-1,-1)
-        >>> list(w.ids)
-        [8, 7, 6, 5, 4, 3, 2, 1, 0]
-        >>> for i,w_i in enumerate(w):
-        ...     print(i,w_i[0])
-        ...
-        0 8
-        1 7
-        2 6
-        3 5
-        4 4
-        5 3
-        6 2
-        7 1
-        8 0
-
-        """
-
-        if set(self._ids) == set(ordered_ids):
-            self._ids = ordered_ids
-            self._id_order_set = True
-            self._reset()
-        else:
-            raise Exception("ordered_ids do not align with W ids")
-
-    def __get_id_order(self):
-        """Returns the ids for the observations in the order in which they
-        would be encountered if iterating over the weights.
-        """
-        return self.ids
 
     def get_transform(self):
         """Getter for transform property.
@@ -1502,68 +1422,6 @@ class WSP(object):
         A ``WSP`` instance.
         """
         return cls(W.sparse, ids=W.ids)
-
-    def to_W2(self, silence_warnings=False):
-        """
-        Convert a pysal WSP object (thin weights matrix) to a pysal W object.
-
-        Parameters
-        ----------
-        self : WSP
-            PySAL sparse weights object.
-        silence_warnings : bool
-            Switch to ``True`` to turn off print statements for every
-            observation with islands. Default is ``False``, which does
-            not silence warnings.
-
-        Returns
-        -------
-        w : W
-            PySAL weights object.
-
-        Examples
-        --------
-        >>> from libpysal.weights import lat2SW, WSP, WSP2W
-
-        Build a 10x10 ``scipy.sparse`` matrix for a rectangular 2x5
-        region of cells (rook contiguity), then construct a ``libpysal``
-        sparse weights object (``self``).
-
-        >>> sp = lat2SW(2, 5)
-        >>> self = WSP(sp)
-        >>> self.n
-        10
-        >>> print(self.sparse[0].todense())
-        [[0 1 0 0 0 1 0 0 0 0]]
-
-        Convert this sparse weights object to a standard PySAL weights object.
-
-        >>> w = WSP2W(self)
-        >>> w.n
-        10
-        >>> print(w.full()[0][0])
-        [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
-
-        """
-        indices = list(self.sparse.indices)
-        data = list(self.sparse.data)
-        indptr = list(self.sparse.indptr)
-        id_order = self.ids
-        if id_order:
-            # replace indices with user IDs
-            indices = [id_order[i] for i in indices]
-        else:
-            id_order = list(range(self.n))
-        neighbors, weights = {}, {}
-        start = indptr[0]
-        for i in range(self.n):
-            oid = id_order[i]
-            end = indptr[i + 1]
-            neighbors[oid] = indices[start:end]
-            weights[oid] = data[start:end]
-            start = end
-        w = W(neighbors, weights, ids=id_order, silence_warnings=silence_warnings)
-        return w
 
     def to_W(self, silence_warnings=False):
         """

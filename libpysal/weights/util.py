@@ -60,6 +60,20 @@ __all__ = [
 KDTREE_TYPES = [scipy.spatial.KDTree, scipy.spatial.cKDTree]
 
 
+def remap_ids(W, new_ids):
+    # probably should not do it this way, but the function needs to exist for importing elsewhere, so why not have it "work"
+    old_ids = W.ids
+    if new_ids is None:
+        new_ids = list(range(len(old_ids)))
+    W.df = W.df.reset_index()
+    W.df[["focal", "neighbor"]] = W.df[["focal", "neighbor"]].replace(
+        dict(zip(old_ids, new_ids))
+    )
+    W.df = W.df.set_index(["focal", "neighbor"])
+
+    return W
+
+
 def hexLat2W(nrows=5, ncols=5, **kwargs):
     """
     Create a W object for a hexagonal lattice.
