@@ -210,11 +210,10 @@ class W(object):
                 weights[key] = [1.0] * len(neighbors[key])
 
         self.df = _dict_to_df(neighbors, weights)
-        self.islands = islands
         islands_list = list()
         # islands become self-loops with zero weight
-        if len(self.islands) > 0:
-            for island in self.islands:
+        if len(islands) > 0:
+            for island in islands:
                 islands_list.append(
                     pd.DataFrame(
                         {"weight": 0},
@@ -227,21 +226,7 @@ class W(object):
             self.df = pd.concat([self.df, islands_list])
         # weights transformations are columns in the weights dataframe
         self.df["weight_o"] = self.df["weight"]  # original weights
-
-        # stashed them here in init to see how they work. In practice we can check
-        # whether the column exists and create if not when the transformer method is called
-        self.df["weight_r"] = self.df["weight"] / self.df.groupby("focal")[
-            "weight"
-        ].transform("sum")
-        self.df["weight_b"] = 1
-        self.df.loc[self.islands, "weight_b"] = 0
-
-        self.df["weight_d"] = None  # not yet implemented
-        self.df["weight_v"] = np.sqrt(
-            self.df.groupby("focal")["weight"].transform("sum")
-        )
-
-        self.transform = "O"
+        self.set_transform("o")
 
         if id_order:
             warnings.warn(
@@ -264,7 +249,7 @@ class W(object):
                 "The weights matrix is not fully connected: "
                 "\n There are %d disconnected components." % self.n_components
             )
-            ni = len(self.islands)
+            ni = len(islands)
             if ni == 1:
                 message = message + "\n There is 1 island with id: %s." % (
                     str(self.islands[0])
@@ -272,9 +257,32 @@ class W(object):
             elif ni > 1:
                 message = message + "\n There are %d islands with ids: %s." % (
                     ni,
-                    ", ".join(str(island) for island in self.islands),
+                    ", ".join(str(island) for island in islands),
                 )
             warnings.warn(message)
+
+    def sort_neighbors(self, ids, inplace=True):
+        """Sort the neighbors in the W object by their values in ids (e.g. to align with another dataframe)
+
+        Parameters
+        ----------
+        ids : list-like
+            a list of ids the same length as W.n to be
+
+        Returns
+        -------
+        W
+            the W with neighbors sorted by values in `ids`
+        """
+        df = self.df.copy()
+        df = df.reindex(ids, level=0).reindex(ids, level=1)
+        if inplace:
+            self.df = df
+            return self
+        else:
+            w = W.from_adjlist(df)
+            w.df = df
+            return w
 
     @property
     def weights(self):
@@ -436,21 +444,11 @@ class W(object):
         if try_weightcol is None:
             adjlist = adjlist.copy(deep=True)
             adjlist["weight"] = 1
-        # grouper = adjlist.groupby(focal_col)
-        # neighbors = dict()
-        # weights = dict()
-        # for ix, chunk in grouper:
-        #     neighbors_to_ix = chunk[neighbor_col].values
-        #     weights_to_ix = chunk[weight_col].values
-        #     mask = neighbors_to_ix != ix
-        #     neighbors[ix] = neighbors_to_ix[mask].tolist()
-        #     weights[ix] = weights_to_ix[mask].tolist()
-        
+
         weights = adjlist.groupby(focal_col).agg(list)[weight_col].to_dict()
-        neighbors = adjlist.reset_index().groupby(focal_col).agg(list)[neighbor_col].to_dict()
-
-
-       #return W(neighbors=neighbors, weights=weights)
+        neighbors = (
+            adjlist.reset_index().groupby(focal_col).agg(list)[neighbor_col].to_dict()
+        )
         return cls(neighbors=neighbors, weights=weights)
 
     def to_adjlist(
@@ -502,10 +500,10 @@ class W(object):
             )
             drop_islands = True
 
-        adjlist = self.df.reset_index()[[focal_col, neighbor_col, weight_col]]
+        adjlist = self.df.copy().reset_index()[[focal_col, neighbor_col, weight_col]]
         if drop_islands:
             # internal adjlist codes islands as self neigbor with 0 weight
-            adjlist = adjlist[adjlist[weight_col]!=0]
+            adjlist = adjlist[adjlist[weight_col] != 0]
         return adjlist
 
     def to_networkx(self):
@@ -590,8 +588,8 @@ class W(object):
                 i for i in list(range(0, sparse.shape[0])) if i not in neighbors.keys()
             ]
             for island in missing:
-                neighbors[island] = [island]
-                weights[island] = [0]
+                neighbors[island] = []
+                weights[island] = []
 
         return W(neighbors=neighbors, weights=weights, ids=ids)
 
@@ -842,11 +840,14 @@ class W(object):
         a = self.asymmetry()
         return a
 
-    @cached_property
+    @property
     def islands(self):
-        """List of ids without any neighbors."""
-        i = [i for i, c in self.cardinalities.to_dict().items() if c == 0]
-        return i
+        df = self.df.copy()
+        df = df.reset_index()
+        df = df[(df["focal"] == df["neighbor"]) & (df["weight"] == 0)]
+        islands = df[df["weight"] == 0]
+        islands = islands["focal"].unique().tolist()
+        return islands
 
     @property
     def neighbor_offsets(self):
@@ -1020,21 +1021,37 @@ class W(object):
         self._transform = value
 
         if value == "R":
+            if "weights_r" not in self.df.columns:
+                self.df["weight_r"] = self.df["weight"] / self.df.groupby("focal")[
+                    "weight"
+                ].transform("sum")
             self.df["weight"] = self.df["weight_r"]
 
         elif value == "D":
+            raise NotImplementedError()
+            if "weights_d" not in self.df.columns:
+                self.df["weight_d"] = None  # not yet implemented
             self.df["weight"] = self.df["weight_d"]
 
         elif value == "B":
+            if "weight_b" not in self.df.columns:
+                self.df["weight_b"] = 1
             self.df["weight"] = self.df["weight_b"]
+            self.df.loc[self.islands, "weight_b"] = 0
 
         elif value == "V":
+            if "weight_v" not in self.df.columns:
+                self.df["weight_v"] = np.sqrt(
+                    self.df.groupby("focal")["weight"].transform("sum")
+                )
             self.df["weight"] = self.df["weight_v"]
 
         elif value == "O":
             self.df["weight"] = self.df["weight_o"]
         else:
             raise Exception("unsupported weights transformation")
+
+        # reset islands to have a 0 weight
         self.df.loc[self.islands, "weight"] = 0
         self.df = self.df.fillna(0)
 
@@ -1465,23 +1482,5 @@ class WSP(object):
         [0. 1. 0. 0. 0. 1. 0. 0. 0. 0.]
 
         """
-
-        indices = list(self.sparse.indices)
-        data = list(self.sparse.data)
-        indptr = list(self.sparse.indptr)
-        id_order = self.ids
-        if id_order:
-            # replace indices with user IDs
-            indices = [id_order[i] for i in indices]
-        else:
-            id_order = list(range(self.n))
-        neighbors, weights = {}, {}
-        start = indptr[0]
-        for i in range(self.n):
-            oid = id_order[i]
-            end = indptr[i + 1]
-            neighbors[oid] = indices[start:end]
-            weights[oid] = data[start:end]
-            start = end
-        w = W(neighbors, weights, ids=id_order, silence_warnings=silence_warnings)
+        w = W.from_sparse(self.sparse, ids=self.ids)
         return w
