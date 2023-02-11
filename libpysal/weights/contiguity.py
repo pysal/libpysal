@@ -222,7 +222,8 @@ class Rook(W):
                     UserWarning,
                     stacklevel=2,
                 )
-        if ids and id_order:
+
+        if ids is not None and id_order:
             id_order = ids
         if ids is None:
             if use_index is None:
@@ -233,6 +234,7 @@ class Rook(W):
                     FutureWarning,
                     stacklevel=2,
                 )
+
                 use_index = False
             if use_index:
                 ids = df.index.tolist()
@@ -250,13 +252,10 @@ class Rook(W):
         if id_order is None:
             id_order = ids
 
-        w = cls.from_iterable(
-            df[geom_col].tolist(), ids=ids, **kwargs
-        )
+        w = cls.from_iterable(df[geom_col].tolist(), ids=ids, **kwargs)
         if perimeter:
             w = _return_length_weighted_w(w, df, perim_std)
         return w
-
 
     @classmethod
     def from_xarray(
@@ -522,6 +521,8 @@ class Queen(W):
                     stacklevel=2,
                 )
 
+        if ids is not None and id_order:
+            id_order = ids
         if ids is None:
             if use_index is None:
                 warnings.warn(
@@ -548,13 +549,12 @@ class Queen(W):
         if id_order is None:
             id_order = ids
 
-        w =  cls.from_iterable(
+        w = cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
         if perimeter:
             w = _return_length_weighted_w(w, df, perim_std)
         return w
-
 
     @classmethod
     def from_xarray(
@@ -797,7 +797,9 @@ def _return_length_weighted_w(w, data, perimeter_standardize):
     try:
         import geopandas as gpd
     except ImportError as e:
-        raise e('You must have geopandas installed to create perimeter-weighted weights')
+        raise e(
+            "You must have geopandas installed to create perimeter-weighted weights"
+        )
     adjlist = w.to_adjlist(sort_joins=False, drop_islands=True)
     islands = pd.DataFrame.from_records(
         [{"focal": island, "neighbor": island, "weight": 0} for island in w.islands]
@@ -826,7 +828,7 @@ def _return_length_weighted_w(w, data, perimeter_standardize):
 
     # Putting it back to a matrix
     if perimeter_standardize:
-        merged['weight'] = merged["shared_boundary"].length / total_boundary_length
+        merged["weight"] = merged["shared_boundary"].length / total_boundary_length
     else:
         merged["weight"] = merged["shared_boundary"].length
     merged_with_islands = pd.concat((merged, islands))
