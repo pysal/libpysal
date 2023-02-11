@@ -44,7 +44,7 @@ def _dict_to_df(neighbors, weights):
         combined[key] = dict(zip(neighbors[key], weights[key]))
 
     # stacking converts from a matrix into a multiindex
-    adjlist = pd.DataFrame.from_dict(combined).T.stack()
+    adjlist = pd.DataFrame.from_dict(combined, orient='index').stack()
     # convert from a series to a dataframe
     adjlist = adjlist.to_frame(name="weight")
     adjlist.index.set_names(["focal", "neighbor"], inplace=True)
