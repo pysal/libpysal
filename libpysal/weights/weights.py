@@ -43,8 +43,11 @@ def _dict_to_df(neighbors, weights):
     for key in neighbors.keys():
         combined[key] = dict(zip(neighbors[key], weights[key]))
 
-    # stacking converts from a matrix into a multiindex
-    adjlist = pd.DataFrame.from_dict(combined, orient='index').stack()
+    # create a matrix df from the dicts and fill with sparse-nan type
+    # stacking converts from a matrix into a multiindex dataframe
+    adjlist = pd.DataFrame.from_dict(
+        combined, dtype="Sparse[float]", orient="index"
+    ).stack().sparse.to_dense() # convert back to dense otherwise .loc unavailable
     # convert from a series to a dataframe
     adjlist = adjlist.to_frame(name="weight")
     adjlist.index.set_names(["focal", "neighbor"], inplace=True)
