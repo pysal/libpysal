@@ -22,15 +22,33 @@ __all__ = ["W", "WSP"]
 
 
 def _dict_to_df(neighbors, weights):
+    """convert two dictionaries into a multiindex adjlist
 
+    Parameters
+    ----------
+    neighbors : dict
+        dict of lists, where key is focal observation and value is list of neighbors
+    weights : dict
+        dict of lists, where key is focal observation and value is list of neighbor weight values
+
+    Returns
+    -------
+    pandas.DataFrame
+        an adjacency list representation stored as a multiindex dataframe, with outer index
+        storing the focal observation, and the inner observation storing the neighbor (O-->D).
+        The single column (weight) stores the focal:neighbor weight value
+    """
+    # create a single dict of dicts and convert into a dataframe
     combined = dict()
     for key in neighbors.keys():
         combined[key] = dict(zip(neighbors[key], weights[key]))
 
-    combineddf = pd.DataFrame.from_dict(combined).stack()
-    combineddf = combineddf.to_frame(name="weight")
-    combineddf.index.set_names(["focal", "neighbor"], inplace=True)
-    return combineddf
+    # stacking converts from a matrix into a multiindex
+    adjlist = pd.DataFrame.from_dict(combined).stack()
+    # convert from a series to a dataframe
+    adjlist = adjlist.to_frame(name="weight")
+    adjlist.index.set_names(["focal", "neighbor"], inplace=True)
+    return adjlist
 
 
 class _LabelEncoder(object):
@@ -666,11 +684,13 @@ class W(object):
 
     @property
     def _sort_order(self):
+        """Return the order in which focal observations are listed in `self.df` (this is the ordering of the sparse matrix)"""
         order = self.df.index.get_level_values(0).unique().tolist()
         return order
 
     @property
     def ids(self):
+        """The indices of each neighbor, listed in their order of appearance in self.df"""
         ids = list(self.neighbors.keys())
         return ids
 
@@ -869,7 +889,7 @@ class W(object):
         warnings.warn(
             "`neighbor_offsets` is deprecated and will be removed in the future"
         )
-        return self.neighbors
+        return self.id2i
 
     @property
     def histogram(self):
@@ -881,7 +901,7 @@ class W(object):
     @property
     def id_order_set(self):
         warnings.warn("`id_order` is deprecated and will be removed in the future")
-        return True
+        return None
 
     def __getitem__(self, key):
         """Allow a dictionary like interaction with the weights class.
@@ -1181,7 +1201,7 @@ class W(object):
         >>> ids
         ['first', 'second', 'third']
         """
-        wfull = np.array(self.sparse.todense())
+        wfull = np.array(self.sparse.todense()).transpose()
         keys = self.ids
 
         return (wfull, keys)
