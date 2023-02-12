@@ -63,11 +63,11 @@ class Contiguity_Mixin(object):
         self.assertEqual(w[self.known_wi], self.known_w)
 
         # sparse
-        # w = self.cls(self.polygons, sparse=True)
-        # srowvec = ws.sparse[self.known_wi].todense().tolist()[0]
-        # this_w = {ihttps://github.com/pysalhttps://github.com/pysal:k for i,k in enumerate(srowvec) if k>0}
-        # self.assertEqual(this_w, self.known_w)
-        # ids = ps.weights2.utils.get_ids(self.polygon_path, self.idVariable)
+        w = self.cls(self.polygons, sparse=True)
+        srowvec = ws.sparse[self.known_wi].todense().tolist()[0]
+        this_w = {i: k for i, k in enumerate(srowvec) if k > 0}
+        self.assertEqual(this_w, self.known_w)
+        ids = ps.weights2.utils.get_ids(self.polygon_path, self.idVariable)
 
         # named
         ids = util.get_ids(self.polygon_path, self.idVariable)
