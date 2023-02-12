@@ -110,7 +110,7 @@ class TestW(unittest.TestCase):
     def test_cardinalities(self):
         w = lat2W(3, 3).sort_neighbors()
         self.assertEqual(
-            w.cardinalities, {0: 2, 1: 3, 2: 2, 3: 3, 4: 4, 5: 3, 6: 2, 7: 3, 8: 2}
+            w.cardinalities.to_dict(), {0: 2, 1: 3, 2: 2, 3: 3, 4: 4, 5: 3, 6: 2, 7: 3, 8: 2}
         )
 
     def test_diagW2(self):
@@ -365,15 +365,15 @@ class TestW(unittest.TestCase):
         np.testing.assert_array_equal(sparse.row, [0, 1, 1, 2, 3])
         np.testing.assert_array_equal(sparse.col, [1, 0, 2, 1, 3])
         sparse = self.w_islands.to_sparse("bsr")
-        self.assertIsInstance(sparse, scipy.sparse._arrays.bsr_array)
+        self.assertIsInstance(sparse, scipy.sparse._bsr.bsr_array)
         sparse = self.w_islands.to_sparse("csr")
-        self.assertIsInstance(sparse, scipy.sparse._arrays.csr_array)
+        self.assertIsInstance(sparse, scipy.sparse._csr.csr_matrix)
         sparse = self.w_islands.to_sparse("coo")
-        self.assertIsInstance(sparse, scipy.sparse._arrays.coo_array)
+        self.assertIsInstance(sparse, scipy.sparse._coo.coo_array)
         sparse = self.w_islands.to_sparse("csc")
-        self.assertIsInstance(sparse, scipy.sparse._arrays.csc_array)
+        self.assertIsInstance(sparse, scipy.sparse._csc.csc_array)
         sparse = self.w_islands.to_sparse()
-        self.assertIsInstance(sparse, scipy.sparse._arrays.coo_array)
+        self.assertIsInstance(sparse, scipy.sparse._coo.coo_array)
 
     def test_sparse_fmt(self):
         with pytest.raises(ValueError) as exc_info:

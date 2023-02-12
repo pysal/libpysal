@@ -45,9 +45,11 @@ def _dict_to_df(neighbors, weights):
 
     # create a matrix df from the dicts and fill with sparse-nan type
     # stacking converts from a matrix into a multiindex dataframe
-    adjlist = pd.DataFrame.from_dict(
-        combined, dtype="Sparse[float]", orient="index"
-    ).stack().sparse.to_dense() # convert back to dense otherwise .loc unavailable
+    adjlist = (
+        pd.DataFrame.from_dict(combined, dtype="Sparse[float]", orient="index")
+        .stack()
+        .sparse.to_dense()
+    )  # convert back to dense otherwise .loc unavailable
     # convert from a series to a dataframe
     adjlist = adjlist.to_frame(name="weight")
     adjlist.index.set_names(["focal", "neighbor"], inplace=True)
@@ -945,7 +947,7 @@ class W(object):
         for i in self.ids:
             yield i, self.df.loc[i].to_dict()["weight"]
 
-    def remap_ids(self, new_ids):
+    def remap_ids(self, new_ids, inplace=True):
         """
         In place modification throughout ``W`` of id values from
         ``w.id_order`` to ``new_ids`` in all.
@@ -979,11 +981,21 @@ class W(object):
         old_ids = self.ids
         if new_ids is None:
             new_ids = list(range(len(old_ids)))
-        self.df = self.df.reset_index()
-        self.df[["focal", "neighbor"]] = self.df[["focal", "neighbor"]].replace(
-            dict(zip(old_ids, new_ids))
-        )
-        self.df = self.df.set_index(["focal", "neighbor"])
+        df = self.df.copy()
+        df = df.reset_index()
+        if isinstance(new_ids, list):
+            replacer = dict(zip(old_ids, new_ids))
+        elif isinstance(new_ids, dict):
+            replacer = new_ids
+        else:
+            raise Exception("`new_ids` must be either a list or a dict")
+        df[["focal", "neighbor"]] = df[["focal", "neighbor"]].replace(replacer)
+        df = df.set_index(["focal", "neighbor"])
+        if inplace:
+            self.df = df
+            return
+        else:
+            return W.from_adjlist(df)
 
     def get_transform(self):
         """Getter for transform property.
@@ -1167,12 +1179,12 @@ class W(object):
         """
         neighbors = copy.deepcopy(self.neighbors)
         weights = copy.deepcopy(self.weights)
-        for focal, fneighbs in list(self.neighbors.items()):
+        for focal, fneighbs in list(neighbors.items()):
             for j, neighbor in enumerate(fneighbs):
-                neighb_neighbors = self.neighbors[neighbor]
+                neighb_neighbors = neighbors[neighbor]
                 if focal not in neighb_neighbors:
-                    self.neighbors[neighbor].append(focal)
-                    self.weights[neighbor].append(self.weights[focal][j])
+                    neighbors[neighbor].append(focal)
+                    weights[neighbor].append(weights[focal][j])
         out_W = W(neighbors, weights)
         return out_W
 
@@ -1204,7 +1216,7 @@ class W(object):
         >>> ids
         ['first', 'second', 'third']
         """
-        wfull = np.array(self.sparse.todense()).transpose()
+        wfull = np.array(self.sparse.todense())
         keys = self.ids
 
         return (wfull, keys)
