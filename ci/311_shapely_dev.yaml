@@ -20,7 +20,6 @@ dependencies:
   - geopandas>=0.12.0
   - joblib
   - networkx
-  - numba
   - packaging
   - shapely>=2.0b1
   - xarray
