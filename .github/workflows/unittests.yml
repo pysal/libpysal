@@ -23,7 +23,7 @@
             ci/38.yaml,
             ci/39.yaml,
             ci/310.yaml,
-            ci/310_shapely_dev.yaml
+            ci/310_shapely_dev.yaml,
             ci/311_shapely_dev.yaml
          ]
          include:
