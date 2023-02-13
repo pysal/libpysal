@@ -24,6 +24,7 @@
             ci/39.yaml,
             ci/310.yaml,
             ci/310_shapely_dev.yaml
+            ci/311_shapely_dev.yaml
          ]
          include:
            - environment-file: ci/310.yaml
