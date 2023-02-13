@@ -63,11 +63,11 @@ class Contiguity_Mixin(object):
         self.assertEqual(w[self.known_wi], self.known_w)
 
         # sparse
-        # w = self.cls(self.polygons, sparse=True)
-        # srowvec = ws.sparse[self.known_wi].todense().tolist()[0]
-        # this_w = {i:k for i,k in enumerate(srowvec) if k>0}
-        # self.assertEqual(this_w, self.known_w)
-        # ids = ps.weights2.utils.get_ids(self.polygon_path, self.idVariable)
+        w = self.cls(self.polygons, sparse=True)
+        srowvec = ws.sparse[self.known_wi].todense().tolist()[0]
+        this_w = {i: k for i, k in enumerate(srowvec) if k > 0}
+        self.assertEqual(this_w, self.known_w)
+        ids = ps.weights2.utils.get_ids(self.polygon_path, self.idVariable)
 
         # named
         ids = util.get_ids(self.polygon_path, self.idVariable)
@@ -135,7 +135,7 @@ class Contiguity_Mixin(object):
 
     def test_from_xarray(self):
         w = self.cls.from_xarray(self.da, sparse=False, n_jobs=-1)
-        self.assertEqual(w[self.known_wi_da], self.known_w_da)
+        self.assertEqual(w[8], self.known_w_da)
         ws = self.cls.from_xarray(self.da)
         srowvec = ws.sparse[self.known_wspi_da].todense().tolist()[0]
         this_w = {i: k for i, k in enumerate(srowvec) if k > 0}
@@ -164,16 +164,7 @@ class Test_Queen(ut.TestCase, Contiguity_Mixin):
         self.known_wspi_da = 1
         self.known_wsp_da = {0: 1, 2: 1, 4: 1, 5: 1, 6: 1}
         self.known_wi_da = (1, -30.0, -60.0)
-        self.known_w_da = {
-            (1, -90.0, -180.0): 1,
-            (1, -90.0, -60.0): 1,
-            (1, -90.0, 60.0): 1,
-            (1, -30.0, -180.0): 1,
-            (1, -30.0, 60.0): 1,
-            (1, 30.0, -180.0): 1,
-            (1, 30.0, -60.0): 1,
-            (1, 30.0, 60.0): 1,
-        }
+        self.known_w_da = {4: 1.0, 5: 1.0, 9: 1.0, 12: 1.0, 13: 1.0}
 
     @ut.skipIf(GEOPANDAS_EXTINCT, "Missing Geopandas")
     def test_linestrings(self):
@@ -210,11 +201,7 @@ class Test_Rook(ut.TestCase, Contiguity_Mixin):
         self.known_wspi_da = 1
         self.known_wsp_da = {0: 1, 2: 1, 5: 1}
         self.known_wi_da = (1, -30.0, -180.0)
-        self.known_w_da = {
-            (1, 30.0, -180.0): 1,
-            (1, -30.0, -60.0): 1,
-            (1, -90.0, -180.0): 1,
-        }
+        self.known_w_da = {4: 1.0, 9: 1.0, 12: 1.0}
 
 
 class Test_Voronoi(ut.TestCase):
