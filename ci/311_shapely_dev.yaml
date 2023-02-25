@@ -1,7 +1,6 @@
 name: test
 channels:
   - conda-forge
-  - conda-forge/label/shapely_dev
 dependencies:
   - python=3.11
   - platformdirs
