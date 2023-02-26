@@ -18,7 +18,7 @@ dependencies:
   - geopandas>=0.10.0
   - shapely=1.8
   - joblib
-  - networkx=2.6
+  - networkx=2.7
   - numba=0.54
   - packaging
   - zstd
