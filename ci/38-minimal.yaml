@@ -23,6 +23,5 @@ dependencies:
   - packaging
   - zstd
   - pip
-  pip:
-    - platformdirs==2.0.2
-
+  - pip:
+      - platformdirs==2.0.2
