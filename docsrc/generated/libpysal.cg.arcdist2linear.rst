@@ -1,6 +1,0 @@
-libpysal.cg.arcdist2linear
-==========================
-
-.. currentmodule:: libpysal.cg
-
-.. autofunction:: arcdist2linear

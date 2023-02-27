@@ -20,6 +20,7 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
 
     Parameters
     ----------
+
     Wo : libpysal.weights.W
         A `W` object for origin locations as a :math:`o \cdot o`
         spatial weight object amongst :math:`o` origins.
@@ -35,6 +36,7 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
 
     Returns
     -------
+
     Ww : libpysal.weights.WSP
         A sparse spatial contiguity `W` object for assocations between flows
         between :math:`o` origins and :math:`d` destinations,
@@ -42,6 +44,7 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
 
     Raises
     ------
+
     AttributeError
         The ``Wo`` argument is not binary.
     AttributeError
@@ -100,6 +103,7 @@ def netW(link_list, share="A", transform="r", **kwargs):
 
     Parameters
     ----------
+
     link_list : list
         Collection of tuples where each ``tuple`` is of the form :math:`(o,d)`
         where :math:`o` is an origin id and :math:`d` is a destination id.
@@ -119,6 +123,7 @@ def netW(link_list, share="A", transform="r", **kwargs):
 
     Returns
     -------
+
     netW : libpysal.weights.W
         A nodal contiguity `W` object for network edges or
         flows representing the binary adjacency of the network
@@ -126,6 +131,7 @@ def netW(link_list, share="A", transform="r", **kwargs):
 
     Raises
     ------
+
     AttributeError
         The ``share`` parameter must be ``'O'``, ``'D'``, ``'OD'``, or ``'C'``.
 
@@ -206,6 +212,7 @@ def vecW(
 
     Parameters
     ----------
+
     origin_x : {list, numpy.ndarray}
         A vector of origin x-coordinates.
     origin_y : {list, numpy.ndarray}
@@ -242,6 +249,7 @@ def vecW(
 
     Returns
     -------
+
     w : libpysal.weights.DistanceBand
         A ``libpysal.weights.DistanceBand`` `W` object that uses 4-dimenional
         distances between vectors of origin and destination coordinates.
@@ -285,6 +293,7 @@ def mat2L(edge_matrix):
 
     Parameters
     ----------
+
     edge_matrix : numpy.ndarray
         A matrix where rows denote network edge origins, columns denote
         network edge destinations, and non-zero entries denote the
@@ -292,11 +301,13 @@ def mat2L(edge_matrix):
 
     Raises
     ------
+
     AttributeError
         The input matrix is not two dimensional.
 
     Returns
     -------
+
     edge_list : list
         Collection of tuples where each ``tuple`` is of the form :math:`(o,d)`
         where :math:`o` is an origin id and :math:`d` is a destination id.

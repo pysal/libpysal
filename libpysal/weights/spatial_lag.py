@@ -19,6 +19,7 @@ def lag_spatial(w, y):
 
     Parameters
     ----------
+
     w : libpysal.weights.weights.W
         A PySAL spatial weights object.
     y : array-like
@@ -26,6 +27,7 @@ def lag_spatial(w, y):
 
     Returns
     -------
+
     wy : numpy.ndarray
         An array of numeric values for the spatial lag.
 
@@ -97,6 +99,7 @@ def lag_categorical(w, y, ties="tryself"):
 
     Parameters
     ----------
+
     w : libpysal.weights.weights.W
         PySAL spatial weights object.
     y : iterable
@@ -117,6 +120,7 @@ def lag_categorical(w, y, ties="tryself"):
 
     Returns
     -------
+
     output : numpy.ndarray
         An :math:`(n \cdot k)` column vector containing
         the most common neighboring observation.
@@ -175,8 +179,7 @@ def lag_categorical(w, y, ties="tryself"):
     y = y.flatten()
     output = np.zeros_like(y)
     labels = np.unique(y)
-    normalized_labels = np.zeros(y.shape, dtype=np.int)
-
+    normalized_labels = np.zeros(y.shape, dtype=int)
     for i, label in enumerate(labels):
         normalized_labels[y == label] = i
     for focal_name, neighbors in w:
@@ -205,6 +208,7 @@ def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
 
     Parameters
     ---------
+
     idx : int
         The index (aligned with ``normalized_labels``) of
         the current observation being resolved.
@@ -223,11 +227,13 @@ def _resolve_ties(idx, normalized_labels, tally, neighbors, method, w):
 
     Returns
     -------
+
     label : int
         An integer denoting which label to use to label the observation.
 
     Raises
     ------
+
     KeyError
         The tie-breaking method for categorical lag is not recognized.
 

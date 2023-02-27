@@ -7,8 +7,9 @@ __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow, Hu Shao
 
 import math
 from .sphere import arcdist
-
 from typing import Union
+import warnings
+
 
 __all__ = [
     "Point",
@@ -20,6 +21,9 @@ __all__ = [
     "Rectangle",
     "asShape",
 ]
+
+
+dep_msg = "Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal."
 
 
 def asShape(obj):
@@ -96,7 +100,7 @@ class Point(Geometry):
     """
 
     def __init__(self, loc):
-
+        warnings.warn(dep_msg, FutureWarning)
         self.__loc = tuple(map(float, loc))
 
     @classmethod
@@ -373,7 +377,7 @@ class LineSegment(Geometry):
     """
 
     def __init__(self, start_pt, end_pt):
-
+        warnings.warn(dep_msg, FutureWarning)
         self._p1 = start_pt
         self._p2 = end_pt
         self._reset_props()
@@ -811,7 +815,7 @@ class VerticalLine(Geometry):
     """
 
     def __init__(self, x):
-
+        warnings.warn(dep_msg, FutureWarning)
         self._x = float(x)
         self.m = float("inf")
         self.b = float("nan")
@@ -883,7 +887,7 @@ class Line(Geometry):
     """
 
     def __init__(self, m, b):
-
+        warnings.warn(dep_msg, FutureWarning)
         if m == float("inf"):
             raise ArithmeticError("Slope cannot be infinite.")
 
@@ -971,7 +975,7 @@ class Ray:
     """
 
     def __init__(self, origin, second_p):
-
+        warnings.warn(dep_msg, FutureWarning)
         self.o = origin
         self.p = second_p
 
@@ -999,7 +1003,7 @@ class Chain(Geometry):
     """
 
     def __init__(self, vertices: list):
-
+        warnings.warn(dep_msg, FutureWarning)
         if isinstance(vertices[0], list):
             self._vertices = [part for part in vertices]
         else:
@@ -1201,6 +1205,7 @@ class Ring(Geometry):
     """
 
     def __init__(self, vertices):
+        warnings.warn(dep_msg, FutureWarning)
         if vertices[0] != vertices[-1]:
             vertices = vertices[:] + vertices[0:1]
             # msg = "Supplied vertices do not form a closed ring, "
@@ -1484,7 +1489,7 @@ class Polygon(Geometry):
     """
 
     def __init__(self, vertices, holes=None):
-
+        warnings.warn(dep_msg, FutureWarning)
         self._part_rings = []
         self._hole_rings = []
 
@@ -1915,7 +1920,7 @@ class Rectangle(Geometry):
     """
 
     def __init__(self, left, lower, right, upper):
-
+        warnings.warn(dep_msg, FutureWarning)
         if right < left or upper < lower:
             raise ArithmeticError("Rectangle must have positive area.")
         self.left = float(left)

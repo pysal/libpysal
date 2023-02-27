@@ -1,6 +1,0 @@
-libpysal.weights.block\_weights
-===============================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: block_weights

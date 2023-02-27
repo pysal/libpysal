@@ -12,6 +12,12 @@ from ... import examples as pysal_examples
 import unittest as ut
 
 PANDAS_EXTINCT = pandas is None
+try:
+    import geopandas
+
+    GEOPANDAS_EXTINCT = False
+except ImportError:
+    GEOPANDAS_EXTINCT = True
 # All instances should test these four methods, and define their own functional
 # tests based on common codepaths/estimated weights use cases.
 
@@ -100,7 +106,11 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
         self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe(self):
+        df = pdio.read_files(self.polygon_path)
         # named active geometry
+        df.rename(columns={"geometry": "the_geom"}, inplace=True)
         df = df.set_geometry("the_geom")
         w = d.KNN.from_dataframe(df, k=4)
         self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
@@ -169,7 +179,6 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         import pandas as pd
-        import geopandas as gpd
 
         geom_series = pdio.shp.shp2series(self.grid_path)
         random_data = np.random.random(size=len(geom_series))
@@ -178,6 +187,17 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         for k, v in w:
             self.assertEqual(v, self.grid_rook_w[k])
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe(self):
+        import geopandas as gpd
+        import pandas as pd
+
+        geom_series = pdio.shp.shp2series(self.grid_path)
+        random_data = np.random.random(size=len(geom_series))
+        df = pd.DataFrame({"obs": random_data, "geometry": geom_series})
+        w = d.DistanceBand.from_dataframe(df, 1)
+        for k, v in w:
+            self.assertEqual(v, self.grid_rook_w[k])
         # named geometry
         df = gpd.GeoDataFrame(df)
         df.rename(columns={"geometry": "the_geom"}, inplace=True)
@@ -209,7 +229,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
             self.arc_points, distance_metric="Arc", radius=cg.sphere.RADIUS_EARTH_KM
         )
         npoints = self.arc_points.shape[0]
-        full = np.matrix(
+        full = np.array(
             [
                 [arc(self.arc_points[i], self.arc_points[j]) for j in range(npoints)]
                 for i in range(npoints)
@@ -321,6 +341,9 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
         for k, v in list(w[self.known_wi5 - 1].items()):
             np.testing.assert_allclose(v, self.known_w5[k + 1], rtol=RTOL)
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe(self):
+        df = pdio.read_files(self.polygon_path)
         # named geometry
         df.rename(columns={"geometry": "the_geom"}, inplace=True)
         w = d.Kernel.from_dataframe(df, geom_col="the_geom")

@@ -68,9 +68,9 @@ def to_gdf(df, geom_col="geometry", **kw):
     """
 
     from geopandas import GeoDataFrame
-    from shapely.geometry import asShape as sShape
+    from shapely.geometry import shape
 
-    df[geom_col] = df[geom_col].apply(sShape)
+    df[geom_col] = df[geom_col].apply(shape)
 
     gdf = GeoDataFrame(df, geometry=geom_col, **kw)
 

@@ -56,8 +56,8 @@ def _atomic_op(df, geom_col="geometry", inplace=False, _func=None, **kwargs):
 _doc_template = """
 Tabular version of pysal.contrib.shapely_ext.{n}
 
-Arguments
----------
+Parameters
+----------
 df : pandas.DataFrame
     A pandas dataframe with a geometry column.
 geom_col : str

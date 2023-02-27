@@ -1,11 +1,19 @@
 import numpy as np
 
 
-def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
+def adjlist_apply(
+    X,
+    W=None,
+    alist=None,
+    func=np.subtract,
+    skip_verify=False,
+    to_adjlist_kws=dict(drop_islands=None),
+):
     """Apply a function to an adajcency list, getting an adjacency list and result.
 
     Parameters
     ----------
+
     X : iterable
         An :math:`(N,P)`-length iterable to apply ``func`` to. If :math:`(N,1)`,
         then ``func`` must take 2 arguments and return a single reduction.
@@ -32,15 +40,19 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
         list. Do this if you are certain the adjacency list and `W` agree and
         would like to avoid re-instantiating a `W` from the adjacency list.
         Default is ``False``.
+    to_adjlist_kws : dict
+        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=None)``.
 
     Returns
     -------
+
     alist_atts : list
         An adjacency list (or modifies ``alist`` inplace)
         with the function applied to each row.
 
     Raises
     ------
+
     ImportError
         Pandas must be installed to use this function.
 
@@ -51,12 +63,17 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     except ImportError:
         raise ImportError("Pandas must be installed to use this function.")
 
-    W, alist = _get_W_and_alist(W, alist, skip_verify=skip_verify)
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=skip_verify)
 
     if len(X.shape) > 1:
         if X.shape[-1] > 1:
             return _adjlist_mvapply(
-                X, W=W, alist=alist, func=func, skip_verify=skip_verify
+                X,
+                W=W,
+                alist=alist,
+                func=func,
+                skip_verify=skip_verify,
+                to_adjlist_kws=to_adjlist_kws,
             )
     else:
         vec = np.asarray(X).flatten()
@@ -81,7 +98,9 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     return alist_atts
 
 
-def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
+def _adjlist_mvapply(
+    X, W=None, alist=None, func=None, skip_verify=False, to_adjlist_kws=dict()
+):
     """This function is used when ``X`` is multi-dimensional. See
     ``libpysal.weights.adjtools.adjlist_apply()`` for
     Parameters, Returns, and Raises information.
@@ -95,7 +114,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
 
     assert len(X.shape) == 2, "Data is not two-dimensional."
 
-    W, alist = _get_W_and_alist(W=W, alist=alist, skip_verify=skip_verify)
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=skip_verify)
 
     assert X.shape[0] == W.n, "The number of samples in X does not match W."
 
@@ -133,7 +152,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
     return alist_atts
 
 
-def _get_W_and_alist(W, alist, skip_verify=False):
+def _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=False):
     """Either (1) compute a `W` from an ``alist``; (2) compute an adjacency list
     from a `W`; (3) raise a ``ValueError`` if neither are provided; or (4) raise an
     ``AssertionError`` if both `W` and ``adjlist`` are provided and don't match.
@@ -143,18 +162,19 @@ def _get_W_and_alist(W, alist, skip_verify=False):
 
     Raises
     ------
+
     ValueError
         Either W or Adjacency List must be provided.
 
     """
 
     if (alist is None) and (W is not None):
-        alist = W.to_adjlist()
+        alist = W.to_adjlist(**to_adjlist_kws)
 
     elif (W is None) and (alist is not None):
         from .weights import W
 
-        W = W.from_adjlist(alist)
+        W = W.from_adjlist(alist, **to_adjlist_kws)
 
     elif (W is None) and (alist is None):
         raise ValueError("Either W or Adjacency List must be provided.")
@@ -176,11 +196,13 @@ def adjlist_map(
     alist=None,
     focal_col="focal",
     neighbor_col="neighbor",
+    to_adjlist_kws=dict(drop_islands=None),
 ):
     """Map a set of functions over a `W` or an adjacency list.
 
     Parameters
     ----------
+
     data : {numpy.ndarray, pandas.Dataframe}
         `N x P` array of `N` observations and `P` covariates.
     funcs : iterable or callable
@@ -203,15 +225,19 @@ def adjlist_map(
     neighbor_col : str
         The name of column in ``alist`` containing the neighboring observation ids.
         Default is ``'neighbor'``.
+    to_adjlist_kws : dict
+        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=None)``.
 
     Returns
     -------
+
     alist : list
         An adjacency list (or modifies one if provided) with each function
         applied to the column of the data.
 
     Raises
     ------
+
     ImportError
         Pandas must be installed to use this function.
 
@@ -241,12 +267,14 @@ def adjlist_map(
     assert data.shape[1] == len(
         funcs
     ), "The shape of 'data' does not match the number of functions provided."
-    W, alist = _get_W_and_alist(W, alist)
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws)
 
     fnames = set([f.__name__ for f in funcs])
 
     for i, (column, function) in enumerate(zip(data.T, funcs)):
-        alist = adjlist_apply(X=column, W=W, alist=alist, skip_verify=True)
+        alist = adjlist_apply(
+            column, W=W, alist=alist, skip_verify=True, to_adjlist_kws=to_adjlist_kws
+        )
         alist.drop(["att_focal", "att_neighbor"], axis=1, inplace=True)
         alist = alist.rename(
             columns={function.__name__: "_".join((function.__name__, names[i]))}
@@ -274,6 +302,7 @@ def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
 
     Returns
     -------
+
     adjlist : pandas.DataFrame
         An adjacency table with reversible entries removed.
 

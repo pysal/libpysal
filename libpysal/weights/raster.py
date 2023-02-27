@@ -18,7 +18,6 @@ if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 
         return intercepted_function
 
-
 else:
     from ..common import jit
 
@@ -74,7 +73,7 @@ def da2W(
     -----
     1. Lower order contiguities are also selected.
     2. Returned object contains `index` attribute that includes a
-    `Pandas.MultiIndex` object from the DataArray.
+       `Pandas.MultiIndex` object from the DataArray.
 
     Examples
     --------
@@ -175,7 +174,7 @@ def da2WSP(
     -----
     1. Lower order contiguities are also selected.
     2. Returned object contains `index` attribute that includes a
-    `Pandas.MultiIndex` object from the DataArray.
+       `Pandas.MultiIndex` object from the DataArray.
 
     Examples
     --------
@@ -225,7 +224,7 @@ def da2WSP(
         da = da[slice_dict]
 
     ser = da.to_series()
-    dtype = np.int32 if (shape[0] * shape[1]) < 46340 ** 2 else np.int64
+    dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
     if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
         mask = (ser != da.attrs["nodatavals"][0]).to_numpy()
         ids = np.where(mask)[0]
@@ -279,7 +278,11 @@ def da2WSP(
                 *shape, ids, id_map, criterion, k_nas, dtype, n_jobs
             )  # -> (data, (row, col))
 
-        sw = sparse.csr_matrix(sw_tup, shape=(n, n), dtype=np.int8,)
+        sw = sparse.csr_matrix(
+            sw_tup,
+            shape=(n, n),
+            dtype=np.int8,
+        )
 
     # Higher_order functionality, this uses idea from
     # libpysal#313 for adding higher order neighbors.
@@ -288,7 +291,7 @@ def da2WSP(
     # then eliminate zeros from the data. This changes the
     # sparcity of the csr_matrix !!
     if k > 1 and not include_nodata:
-        sw = sum(map(lambda x: sw ** x, range(1, k + 1)))
+        sw = sum(map(lambda x: sw**x, range(1, k + 1)))
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
@@ -303,7 +306,7 @@ def w2da(data, w, attrs={}, coords=None):
     Creates xarray.DataArray object from passed data aligned with W object.
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to w
     w : libpysal.weights.W
@@ -346,7 +349,7 @@ def wsp2da(data, wsp, attrs={}, coords=None):
     Creates xarray.DataArray object from passed data aligned with WSP object.
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to wsp
     wsp : libpysal.weights.WSP
@@ -389,7 +392,7 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     Creates 2 or 3 dimensional test xarray.DataArray object
 
     Parameters
-    ---------
+    ----------
     shape : tuple
         Tuple containing shape of the DataArray aligned with
         following dimension = (lat, lon) or (layer, lat, lon)
@@ -511,7 +514,7 @@ def _index2da(data, index, attrs, coords):
     Creates xarray.DataArray object from passed data
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to index
     index : pd.MultiIndex
@@ -588,7 +591,13 @@ def _idmap(ids, mask, dtype):
 
 @jit(nopython=True, fastmath=True)
 def _SWbuilder(
-    nrows, ncols, ids, id_map, criterion, k, dtype,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
 ):
     """
     Computes data and orders rows, cols, data for a single chunk
@@ -628,7 +637,13 @@ def _SWbuilder(
 
 @jit(nopython=True, fastmath=True, nogil=True)
 def _compute_chunk(
-    nrows, ncols, ids, id_map, criterion, k, dtype,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
 ):
     """
     Computes rows cols for a single chunk
@@ -751,7 +766,9 @@ def _compute_chunk(
 
 @jit(nopython=True, fastmath=True)
 def _chunk_generator(
-    n_jobs, starts, ids,
+    n_jobs,
+    starts,
+    ids,
 ):
     """
     Construct chunks to iterate over within numba in parallel
@@ -779,7 +796,14 @@ def _chunk_generator(
 
 
 def _parSWbuilder(
-    nrows, ncols, ids, id_map, criterion, k, dtype, n_jobs,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
+    n_jobs,
 ):
     """
     Computes data and orders rows, cols, data in parallel using numba

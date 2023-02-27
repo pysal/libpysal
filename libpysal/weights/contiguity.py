@@ -1,4 +1,6 @@
 import itertools
+import warnings
+
 import numpy
 
 from ..cg import voronoi_frames
@@ -31,6 +33,7 @@ class Rook(W):
 
     Parameters
     ----------
+
     polygons : list
         A collection of PySAL shapes from which to build weights.
     **kwargs : dict
@@ -65,6 +68,7 @@ class Rook(W):
 
         Parameters
         ----------
+
         filepath : str
             The name of polygon shapefile including the file extension.
         idVariable : str
@@ -81,6 +85,7 @@ class Rook(W):
 
         Returns
         -------
+
         w : libpysal.weights.Rook
             A rook-style instance of spatial weights.
 
@@ -135,6 +140,7 @@ class Rook(W):
 
         Parameters
         ----------
+
         iterable : iterable
             A collection of of shapes to be cast to PySAL shapes. Must
             support iteration. Can be either Shapely or PySAL shapes.
@@ -145,6 +151,7 @@ class Rook(W):
 
         Returns
         -------
+
         w : libpysal.weights.Rook
             A rook-style instance of spatial weights.
 
@@ -167,7 +174,14 @@ class Rook(W):
 
     @classmethod
     def from_dataframe(
-        cls, df, geom_col=None, idVariable=None, ids=None, id_order=None, **kwargs
+        cls,
+        df,
+        geom_col=None,
+        idVariable=None,
+        ids=None,
+        id_order=None,
+        use_index=None,
+        **kwargs,
     ):
         """Construct a weights object from a ``pandas.DataFrame`` with a geometry
         column. This will cast the polygons to PySAL polygons, then build the `W`
@@ -175,6 +189,7 @@ class Rook(W):
 
         Parameters
         ----------
+
         df : pandas.DataFrame
             A ``pandas.DataFrame`` containing geometries to use for spatial weights.
         geom_col : {None, str}
@@ -190,6 +205,9 @@ class Rook(W):
             An ordered list of ids to use to index the spatial weights object. If
             used, the resulting weights object will iterate over results in the
             order of the names provided in this argument. Default is ``None``.
+        use_index : bool
+            Use the index of ``df`` as ``ids`` to index the spatial weights object.
+            Defaults to ``False`` but in future will default to ``True``.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Rook``.
 
@@ -210,18 +228,61 @@ class Rook(W):
             geom_col = df.geometry.name
 
         if id_order is not None:
+            warnings.warn(
+                "`id_order` is deprecated and will be removed in future.",
+                FutureWarning,
+                stacklevel=2,
+            )
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if ``idVariable`` is ``None``, we want ids.
                 # Otherwise, we want the ``idVariable`` column.
                 id_order = list(df.get(idVariable, ids))
             else:
                 id_order = df.get(id_order, ids)
-        elif idVariable is not None:
-            ids = df.get(idVariable).tolist()
-        elif isinstance(ids, str):
-            ids = df.get(ids).tolist()
 
-        w = cls.from_iterable(
+        if idVariable is not None:
+            if ids is None:
+                warnings.warn(
+                    "`idVariable` is deprecated and will be removed in future. "
+                    "Use `ids` instead.",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                ids = idVariable
+            else:
+                warnings.warn(
+                    "Both `idVariable` and `ids` passed, using `ids`.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+
+        if ids is None:
+            if use_index is None:
+                warnings.warn(
+                    "`use_index` defaults to False but will default to True in future. "
+                    "Set True/False directly to control this behavior and silence this "
+                    "warning",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                use_index = False
+            if use_index:
+                ids = df.index.tolist()
+
+        else:
+            if isinstance(ids, str):
+                ids = df[ids]
+
+            if not isinstance(ids, list):
+                ids = ids.tolist()
+
+            if len(ids) != len(df):
+                raise ValueError("The length of `ids` does not match the length of df.")
+
+        if id_order is None:
+            id_order = ids
+
+        return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
 
@@ -245,6 +306,7 @@ class Rook(W):
 
         Parameters
         ----------
+
         da : xarray.DataArray
             Input 2D or 3D DataArray with shape=(z, y, x).
         z_value : {int, str, float}
@@ -270,8 +332,9 @@ class Rook(W):
 
         Returns
         -------
+
         w : {libpysal.weights.W, libpysal.weights.WSP}
-            An instance of spatial weights class `W` or `WSP`.
+            An instance of spatial weights class `W` or `WSP` with an index attribute.
 
         See Also
         --------
@@ -281,9 +344,10 @@ class Rook(W):
 
         Notes
         -----
+
         1. Lower order contiguities are also selected.
-        2. Returned object contains `index` attribute that includes a 
-        `Pandas.MultiIndex` object from the DataArray.
+        2. Returned object contains `index` attribute that includes a
+           `Pandas.MultiIndex` object from the DataArray.
 
         """
 
@@ -334,6 +398,7 @@ class Queen(W):
 
         Parameters
         ----------
+
         filepath : str
             The name of polygon shapefile including the file extension.
         idVariable : str
@@ -411,6 +476,7 @@ class Queen(W):
 
         Parameters
         ----------
+
         iterable : iterable
             A collection of of shapes to be cast to PySAL shapes. Must
             support iteration. Can be either Shapely or PySAL shapes.
@@ -421,6 +487,7 @@ class Queen(W):
 
         Returns
         -------
+
         w : libpysal.weights.Queen
             A queen-style instance of spatial weights.
 
@@ -442,23 +509,53 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col=None, **kwargs):
+    def from_dataframe(
+        cls,
+        df,
+        geom_col=None,
+        idVariable=None,
+        ids=None,
+        id_order=None,
+        use_index=None,
+        **kwargs,
+    ):
         """Construct a weights object from a ``pandas.DataFrame`` with a geometry
         column. This will cast the polygons to PySAL polygons, then build the `W`
         using ids from the dataframe.
 
         Parameters
         ----------
+
         df : pandas.DataFrame
             A ``pandas.DataFrame`` containing geometries to use for spatial weights.
         geom_col : {None, str}
             The name of the column in ``df`` that contains the
             geometries. Defaults to the active geometry column.
+        idVariable : str
+            DEPRECATED - use `ids` instead.
+            the name of the column to use as IDs. If nothing is
+            provided, the dataframe index is used.
+        ids : list-like, string
+            a list-like of ids to use to index the spatial weights object or
+            the name of the column to use as IDs. If nothing is
+            provided, the dataframe index is used if `use_index=True` or
+            a positional index is used if `use_index=False`.
+            Order of the resulting W is not respected from this list.
+        id_order : list
+            DEPRECATED - argument is deprecated and will be removed.
+            An ordered list of ids to use to index the spatial weights
+            object. If used, the resulting weights object will iterate
+            over results in the order of the names provided in this
+            argument.
+        use_index : bool
+            use index of `df` as `ids` to index the spatial weights object.
+            Defaults to False but in future will default to True.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Queen``.
 
         Returns
         -------
+
         w : libpysal.weights.Queen
             A queen-style instance of spatial weights.
 
@@ -470,32 +567,67 @@ class Queen(W):
 
         """
 
-        idVariable = kwargs.pop("idVariable", None)
-        ids = kwargs.pop("ids", None)
-        id_order = kwargs.pop("id_order", None)
-
         if geom_col is None:
             geom_col = df.geometry.name
 
         if id_order is not None:
+            warnings.warn(
+                "`id_order` is deprecated and will be removed in future.",
+                FutureWarning,
+                stacklevel=2,
+            )
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
                 # idVariable column
-                ids = list(df.get(idVariable, ids))
-                id_order = ids
-            elif isinstance(id_order, str):
-                ids = df.get(id_order, ids)
-                id_order = ids
-        elif idVariable is not None:
-            ids = df.get(idVariable).tolist()
-        elif isinstance(ids, str):
-            ids = df.get(ids).tolist()
+                id_order = list(df.get(idVariable, ids))
+            else:
+                id_order = df.get(id_order, ids)
 
-        w = cls.from_iterable(
+        if idVariable is not None:
+            if ids is None:
+                warnings.warn(
+                    "`idVariable` is deprecated and will be removed in future. "
+                    "Use `ids` instead.",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                ids = idVariable
+            else:
+                warnings.warn(
+                    "Both `idVariable` and `ids` passed, using `ids`.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+
+        if ids is None:
+            if use_index is None:
+                warnings.warn(
+                    "`use_index` defaults to False but will default to True in future. "
+                    "Set True/False directly to control this behavior and silence this "
+                    "warning",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                use_index = False
+            if use_index:
+                ids = df.index.tolist()
+
+        else:
+            if isinstance(ids, str):
+                ids = df[ids]
+
+            if not isinstance(ids, list):
+                ids = ids.tolist()
+
+            if len(ids) != len(df):
+                raise ValueError("The length of `ids` does not match the length of df.")
+
+        if id_order is None:
+            id_order = ids
+
+        return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
-
-        return w
 
     @classmethod
     def from_xarray(
@@ -516,6 +648,7 @@ class Queen(W):
 
         Parameters
         ----------
+
         da : xarray.DataArray
             Input 2D or 3D DataArray with shape=(z, y, x).
         z_value : {int, str, float}
@@ -541,8 +674,9 @@ class Queen(W):
 
         Returns
         -------
+
         w : {libpysal.weights.W, libpysal.weights.WSP}
-            An instance of spatial weights class `W` or `WSP`.
+            An instance of spatial weights class `W` or `WSP` with an index attribute.
 
         See Also
         --------
@@ -552,9 +686,10 @@ class Queen(W):
 
         Notes
         -----
+
         1. Lower order contiguities are also selected.
-        2. Returned object contains `index` attribute that includes a 
-        `Pandas.MultiIndex` object from the DataArray.
+        2. Returned object contains `index` attribute that includes a
+           `Pandas.MultiIndex` object from the DataArray.
 
         """
 
@@ -571,6 +706,7 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
 
     Parameters
     ----------
+
     points : array-like
         An array-like ``(n,2)`` object of coordinates for point locations.
     criterion : str
@@ -583,11 +719,13 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
 
     Returns
     -------
+
     w : libpysal.weights.Voronoi
         A voronoi-style instance of spatial weights.
 
     Raises
     ------
+
     ValueError
         An unsupported value of ``criterion`` was passed in.
 
@@ -624,10 +762,16 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
 
 
 def _from_dataframe(df, **kwargs):
-    """Construct Voronoi contiguity weights directly from a dataframe.
+    """Construct a voronoi contiguity weight directly from a dataframe.
+    Note that if ``criterion='rook'``, this is identical to the delaunay
+    graph for the points if no clipping of the voronoi cells is applied.
+
+    If the input dataframe is of any other geometry type than "Point",
+    a value error is raised.
 
     Parameters
     ----------
+
     df : pandas.DataFrame
         A dataframe containing point geometries for a Voronoi diagram.
     **kwargs : dict
@@ -645,6 +789,7 @@ def _from_dataframe(df, **kwargs):
 
     Raises
     ------
+
     NotImplementedError
         If the input dataframe is of any other geometry type than ``Point``,
         a ``ValueError`` is caught and raised as a ``NotImplementedError``.
@@ -743,7 +888,6 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     """This is a deprecated function. It builds a contiguity `W` from the
     polygons provided. As such, it is now identical to calling the class
     constructors for `Rook` or `Queen`.
-
     """
     # Warn('This function is deprecated. Please use the Rook or Queen classes', UserWarning)
 

@@ -14,7 +14,6 @@ from .util import (
     get_points_array,
     WSP2W,
 )
-
 import copy
 from warnings import warn as Warn
 from scipy.spatial import distance_matrix
@@ -34,6 +33,7 @@ class KNN(W):
 
     Parameters
     ----------
+
     data : {libpysal.cg.KDTree, libpysal.cg.ArcKDTree}
         An ``(n,k)`` array of `n` observations on `k` characteristics
         used to measure distances between the `n` objects.
@@ -58,6 +58,7 @@ class KNN(W):
 
     Returns
     -------
+
     w : libpysal.weights.KNN
         A `k` nearest neighbors weights instance.
 
@@ -93,6 +94,19 @@ class KNN(W):
 
     Ties between neighbors of equal distance are arbitrarily broken.
 
+    Further, if many points occupy the same spatial location (i.e. observations are
+    coincident), then you may need to increase k for those observations to
+    acquire neighbors at different spatial locations. For example, if five
+    points are coincident, then their four nearest neighbors will all
+    occupy the same spatial location; only the fifth nearest neighbor will
+    result in those coincident points becoming connected to the graph as a
+    whole.
+
+    Solutions to this problem include jittering the points (by adding
+    a small random value to each observation's location) or by adding
+    higher-k neighbors only to the coincident points, using the
+    weights.w_sets.w_union() function.
+
     See Also
     --------
 
@@ -124,20 +138,28 @@ class KNN(W):
         self.k = k
         self.p = p
 
-        this_nnq = self.kdtree.query(self.data, k=k + 1, p=p)
+        # these are both n x k+1
+        distances, indices = self.kdtree.query(self.data, k=k + 1, p=p)
+        full_indices = np.arange(self.kdtree.n)
 
-        to_weight = this_nnq[1]
+        # if an element in the indices matrix is equal to the corresponding
+        # index for that row, we want to mask that site from its neighbors
+        not_self_mask = indices != full_indices.reshape(-1, 1)
+        # if there are *too many duplicates per site*, then we may get some
+        # rows where the site index is not in the set of k+1 neighbors
+        # So, we need to know where these sites are
+        has_one_too_many = not_self_mask.sum(axis=1) == (k + 1)
+        # if a site has k+1 neighbors, drop its k+1th neighbor
+        not_self_mask[has_one_too_many, -1] &= False
+        not_self_indices = indices[not_self_mask].reshape(self.kdtree.n, -1)
 
+        to_weight = not_self_indices
         if ids is None:
-            ids = list(range(to_weight.shape[0]))
-
-        neighbors = {}
-        for i, row in enumerate(to_weight):
-            row = row.tolist()
-            row.remove(i)
-            row = [ids[j] for j in row]
-            focal = ids[i]
-            neighbors[focal] = row
+            ids = list(full_indices)
+            named_indices = not_self_indices
+        else:
+            named_indices = np.asarray(ids)[not_self_indices]
+        neighbors = {idx: list(indices) for idx, indices in zip(ids, named_indices)}
 
         W.__init__(self, neighbors, id_order=ids, **kwargs)
 
@@ -147,6 +169,7 @@ class KNN(W):
 
         Parameters
         ----------
+
         filepath : str
             The name of polygon shapefile (including the file extension)
             containing attribute data.
@@ -157,6 +180,7 @@ class KNN(W):
 
         Returns
         -------
+
         w : libpysal.weights.KNN
             A `k` nearest neighbors weights instance.
 
@@ -213,6 +237,7 @@ class KNN(W):
 
         Parameters
         ----------
+
         array : numpy.ndarray
             An ``(n, k)`` array representing `n` observations on `k`
             characteristics used to measure distances between the `n` objects.
@@ -223,6 +248,7 @@ class KNN(W):
 
         Returns
         -------
+
         w : libpysal.weights.KNN
             A `k` nearest neighbors weights instance.
 
@@ -271,11 +297,14 @@ class KNN(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col=None, ids=None, *args, **kwargs):
+    def from_dataframe(
+        cls, df, geom_col=None, ids=None, use_index=True, *args, **kwargs
+    ):
         """Make `KNN` weights from a dataframe.
 
         Parameters
         ----------
+
         df : pandas.DataFrame
             A dataframe with a geometry column that can be used
             to construct a `W` object.
@@ -286,6 +315,8 @@ class KNN(W):
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
             If ``None``, ``df.index`` is used. Default is ``None``.
+        use_index : bool
+            use index of `df` as `ids` to index the spatial weights object.
         *args : iterable
             Positional arguments for ``libpysal.weights.KNN``.
         **kwargs : dict
@@ -293,6 +324,7 @@ class KNN(W):
 
         Returns
         -------
+
         w : libpysal.weights.KNN
             A `k` nearest neighbors weights instance.
 
@@ -308,7 +340,7 @@ class KNN(W):
 
         pts = get_points_array(df[geom_col])
 
-        if ids is None:
+        if ids is None and use_index:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
@@ -322,6 +354,7 @@ class KNN(W):
 
         Parameters
         ----------
+
         k : int
             The number of nearest neighbors. Default is ``None``.
         p : {int, float}
@@ -341,6 +374,7 @@ class KNN(W):
 
         Returns
         -------
+
         w : libpysal.weights.KNN
             A copy of the `k` nearest neighbors weights instance using the
             new parameterization, or ``None`` if the object is reweighted in place.
@@ -381,6 +415,7 @@ class Kernel(W):
 
     Parameters
     ----------
+
     data : {libpysal.cg.KDTree, libpysal.cg.ArcKDTree}
         An :math:`(n,k)` array of :math:`n` observations on :math:`k`
         characteristics used to measure distances between the :math:`n` objects.
@@ -454,6 +489,7 @@ class Kernel(W):
 
     Attributes
     ----------
+
     weights : dict
         Dictionary keyed by id with a list of weights for each neighbor.
     neighbors : dict
@@ -613,6 +649,7 @@ class Kernel(W):
 
         Parameters
         ----------
+
         filepath : str
             The name of polygon shapefile (including the file extension)
             containing attribute data.
@@ -624,6 +661,7 @@ class Kernel(W):
 
         Returns
         -------
+
         w : libpysal.weights.Kernel
             A kernel weights instance.
 
@@ -651,6 +689,7 @@ class Kernel(W):
 
         Parameters
         ----------
+
         array : numpy.ndarray
             An ``(n, k)`` array representing `n` observations on `k`
             characteristics used to measure distances between the `n` objects.
@@ -659,8 +698,10 @@ class Kernel(W):
 
         Returns
         -------
+
         w : libpysal.weights.Kernel
             A kernel weights instance.
+
 
         See Also
         --------
@@ -668,17 +709,15 @@ class Kernel(W):
         libpysal.weights.W
 
         """
-
-        w = cls(array, **kwargs)
-
-        return w
+        return cls(array, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, geom_col=None, ids=None, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, ids=None, use_index=True, **kwargs):
         """Construct kernel-based weights from a dataframe.
 
         Parameters
         ----------
+
         df : pandas.DataFrame
             A dataframe with a geometry column that can be used
             to construct a PySAL `W` object.
@@ -689,11 +728,14 @@ class Kernel(W):
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
             If ``None``, ``df.index`` is used. Default is ``None``.
+        use_index : bool
+            use index of `df` as `ids` to index the spatial weights object.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.Kernel``.
 
         Returns
         -------
+
         w : libpysal.weights.Kernel
             A kernel weights instance.
 
@@ -709,7 +751,7 @@ class Kernel(W):
 
         pts = get_points_array(df[geom_col])
 
-        if ids is None:
+        if ids is None and use_index:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
@@ -723,11 +765,13 @@ class Kernel(W):
 
         Parameters
         ----------
+
         ids : list
             See ``ids`` in ``libpysal.weights.Kernel``. Default is ``None``.
 
         Returns
         -------
+
         allneighbors : dict
             Index lookup of all neighbors.
         weights : dict
@@ -803,13 +847,13 @@ class Kernel(W):
         elif self.function == "uniform":
             self.kernel = [np.ones(zi.shape) * 0.5 for zi in zs]
         elif self.function == "quadratic":
-            self.kernel = [(3.0 / 4) * (1 - zi ** 2) for zi in zs]
+            self.kernel = [(3.0 / 4) * (1 - zi**2) for zi in zs]
         elif self.function == "quartic":
-            self.kernel = [(15.0 / 16) * (1 - zi ** 2) ** 2 for zi in zs]
+            self.kernel = [(15.0 / 16) * (1 - zi**2) ** 2 for zi in zs]
         elif self.function == "gaussian":
             c = np.pi * 2
             c = c ** (-0.5)
-            self.kernel = [c * np.exp(-(zi ** 2) / 2.0) for zi in zs]
+            self.kernel = [c * np.exp(-(zi**2) / 2.0) for zi in zs]
         else:
             print(("Unsupported kernel function", self.function))
 
@@ -819,6 +863,7 @@ class DistanceBand(W):
 
     Parameters
     ----------
+
     data : {array-like, libpysal.cg.KDTree}
         ``(n,k)`` or ``KDTree`` where ``KDtree.data`` is an ``(n,k)`` array
         of `n` observations on `k` characteristics used to measure
@@ -858,6 +903,7 @@ class DistanceBand(W):
 
     Attributes
     ----------
+
     weights : dict
         Neighbor weights keyed by observation id.
     neighbors : dict
@@ -865,6 +911,7 @@ class DistanceBand(W):
 
     Raises
     ------
+
     Value Error
         An array was unable to be instantiated with ``data``.
 
@@ -989,6 +1036,7 @@ class DistanceBand(W):
 
         Parameters
         ----------
+
         filepath : str
             The name of polygon shapefile (including the file extension)
             containing attribute data.
@@ -1002,6 +1050,7 @@ class DistanceBand(W):
 
         Returns
         -------
+
         w : libpysal.weights.DistanceBand
             A distance band weights instance.
 
@@ -1024,6 +1073,7 @@ class DistanceBand(W):
 
         Parameters
         ----------
+
         array : numpy.ndarray
             An ``(n, k)`` array representing `n` observations on `k`
             characteristics used to measure distances between the `n` objects.
@@ -1034,21 +1084,23 @@ class DistanceBand(W):
 
         Returns
         -------
+
         w : libpysal.weights.DistanceBand
             A distance band weights instance.
-
         """
 
-        w = cls(array, threshold, **kwargs)
-
-        return w
+        return cls(array, threshold, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, threshold, geom_col=None, ids=None, **kwargs):
-        """Construct a distance band weights object from a dataframe.
+    def from_dataframe(
+        cls, df, threshold, geom_col=None, ids=None, use_index=True, **kwargs
+    ):
+        """
+        Make DistanceBand weights from a dataframe.
 
         Parameters
         ----------
+
         df : pandas.DataFrame
             A dataframe with a geometry column that can be used
             to construct a PySAL `W` object.
@@ -1061,13 +1113,10 @@ class DistanceBand(W):
             If string, the column name of the indices from the dataframe.
             If iterable, a list of ids to use for the `W`.
             If ``None``, ``df.index`` is used. Default is ``None``.
+        use_index : bool
+            use index of `df` as `ids` to index the spatial weights object.
         **kwargs : dict
             Keyword arguments for ``libpysal.weights.DistanceBand``.
-
-        Returns
-        -------
-        w : libpysal.weights.DistanceBand
-            A distance band weights instance.
 
         """
 
@@ -1076,7 +1125,7 @@ class DistanceBand(W):
 
         pts = get_points_array(df[geom_col])
 
-        if ids is None:
+        if ids is None and use_index:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
@@ -1106,11 +1155,13 @@ class DistanceBand(W):
 
         Parameters
         ----------
+
         ids : list
             See ``ids`` in ``libpysal.weights.DistanceBand``. Default is ``None``.
 
         Returns
         -------
+
         neighbors : dict
             Index lookup of all neighbors.
         weights : dict
@@ -1147,6 +1198,7 @@ class DistanceBand(W):
 
         Parameters
         ----------
+
         x : array-like
             X values.
         y : array-like
@@ -1156,6 +1208,7 @@ class DistanceBand(W):
 
         Returns
         -------
+
         sp_mtx : scipy.sparse.csr_matrix
             A Compressed Sparse Row matrix.
 
