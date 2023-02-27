@@ -1,14 +1,13 @@
 name: test
 channels:
   - conda-forge
-  - conda-forge/label/shapely_dev
 dependencies:
-  - python=3.10
+  - python=3.11
   - platformdirs
   - beautifulsoup4
   - jinja2
-  - pandas>=1.0
-  - scipy>=1.0
+  - pandas
+  - scipy
   - xarray
   # testing
   - codecov
@@ -20,14 +19,7 @@ dependencies:
   - geopandas>=0.12.0
   - joblib
   - networkx
-  - numba
   - packaging
   - shapely>=2.0b1
   - xarray
   - zstd
-  # for docs build action (this env only)
-  - nbsphinx
-  - numpydoc
-  - sphinx
-  - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
