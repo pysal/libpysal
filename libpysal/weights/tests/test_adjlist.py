@@ -145,3 +145,45 @@ class Test_Adjlist(ut.TestCase):
             np.testing.assert_allclose(
                 data, mapped["_".join(("subtract", name))].values
             )
+
+    def test_sort(self):
+        from libpysal import examples
+        from libpysal.weights import Rook
+
+        us = geopandas.read_file(examples.get_path("us48.shp"))
+        w = Rook.from_dataframe(us.set_index("STATE_FIPS"), use_index=True)
+        unsorted_al = w.to_adjlist(sort_joins=False)
+        sorted_al = w.to_adjlist(sort_joins=True)
+        sv = ["01"] * 4
+        sv.append("04")
+        sv = np.array(sv)
+        usv = np.array(["53", "53", "30", "30", "30"])
+        np.testing.assert_array_equal(unsorted_al.focal.values[:5], usv)
+        np.testing.assert_array_equal(sorted_al.focal.values[:5], sv)
+        
+    def test_ids(self):
+        df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
+        df["my_id"] = range(3, len(df) + 3)
+        W = weights.Queen.from_dataframe(df, ids="my_id")
+        W_adj = W.to_adjlist(drop_islands=True)
+        for i in range(3, 8):
+            assert i in W_adj.focal
+            assert i in W_adj.neighbor
+        for i in W_adj.focal:
+            assert i in list(range(3, len(df) + 3))
+        for i in W_adj.neighbor:
+            assert i in list(range(3, len(df) + 3))
+
+    def test_str_ids(self):
+        df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
+        snakes = ["mamba", "boa", "python", "rattlesnake", "cobra"]
+        df["my_str_id"] = snakes
+        W = weights.Queen.from_dataframe(df, ids="my_str_id")
+        W_adj = W.to_adjlist(drop_islands=True)
+        for i in snakes:
+            (W_adj.focal == i).any()
+            (W_adj.neighbor == i).any()
+        for i in W_adj.focal:
+            assert i in snakes
+        for i in W_adj.neighbor:
+            assert i in snakes

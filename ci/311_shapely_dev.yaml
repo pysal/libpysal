@@ -2,8 +2,8 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.8
-  - appdirs
+  - python=3.11
+  - platformdirs
   - beautifulsoup4
   - jinja2
   - pandas>=1.0
@@ -16,10 +16,16 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
-  - geopandas>=0.7.0
+  - geopandas>=0.12.0
   - joblib
   - networkx
-  - numba
   - packaging
+  - shapely>=2.0b1
   - xarray
   - zstd
+  # for docs build action (this env only)
+  - nbsphinx
+  - numpydoc
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme

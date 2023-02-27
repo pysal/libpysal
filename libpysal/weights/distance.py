@@ -83,20 +83,20 @@ class KNN(W):
     Notes
     -----
 
-    Ties between neighbors of equal distance are arbitrarily broken. 
+    Ties between neighbors of equal distance are arbitrarily broken.
 
-    Further, if many points occupy the same spatial location (i.e. observations are 
-    coincident), then you may need to increase k for those observations to 
+    Further, if many points occupy the same spatial location (i.e. observations are
+    coincident), then you may need to increase k for those observations to
     acquire neighbors at different spatial locations. For example, if five
     points are coincident, then their four nearest neighbors will all
     occupy the same spatial location; only the fifth nearest neighbor will
     result in those coincident points becoming connected to the graph as a
-    whole. 
+    whole.
 
     Solutions to this problem include jittering the points (by adding
-    a small random value to each observation's location) or by adding 
+    a small random value to each observation's location) or by adding
     higher-k neighbors only to the coincident points, using the
-    weights.w_sets.w_union() function. 
+    weights.w_sets.w_union() function.
 
     See Also
     --------
@@ -271,7 +271,9 @@ class KNN(W):
         return cls(array, *args, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, geom_col=None, ids=None, *args, **kwargs):
+    def from_dataframe(
+        cls, df, geom_col=None, ids=None, use_index=True, *args, **kwargs
+    ):
         """
         Make KNN weights from a dataframe.
 
@@ -283,10 +285,14 @@ class KNN(W):
         geom_col :  string
                     the name of the column in `df` that contains the
                     geometries. Defaults to active geometry column.
-        ids     :   string or iterable
-                    if string, the column name of the indices from the dataframe
-                    if iterable, a list of ids to use for the W
-                    if None, df.index is used.
+        ids     :   list-like, string
+                    a list-like of ids to use to index the spatial weights object or
+                    the name of the column to use as IDs. If nothing is
+                    provided, the dataframe index is used if `use_index=True` or
+                    a positional index is used if `use_index=False`.
+                    Order of the resulting W is not respected from this list.
+        use_index   : bool
+                    use index of `df` as `ids` to index the spatial weights object.
 
         See Also
         --------
@@ -295,7 +301,7 @@ class KNN(W):
         if geom_col is None:
             geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
-        if ids is None:
+        if ids is None and use_index:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
@@ -580,7 +586,7 @@ class Kernel(W):
         Kernel Weights Object
 
         See Also
-        ---------
+        --------
         :class:`libpysal.weights.weights.W`
         """
         points = get_points_array_from_shapefile(filepath)
@@ -603,7 +609,7 @@ class Kernel(W):
         return cls(array, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, geom_col=None, ids=None, **kwargs):
+    def from_dataframe(cls, df, geom_col=None, ids=None, use_index=True, **kwargs):
         """
         Make Kernel weights from a dataframe.
 
@@ -615,10 +621,14 @@ class Kernel(W):
         geom_col :  string
                     the name of the column in `df` that contains the
                     geometries. Defaults to active geometry column.
-        ids     :   string or iterable
-                    if string, the column name of the indices from the dataframe
-                    if iterable, a list of ids to use for the W
-                    if None, df.index is used.
+        ids     :   list-like, string
+                    a list-like of ids to use to index the spatial weights object or
+                    the name of the column to use as IDs. If nothing is
+                    provided, the dataframe index is used if `use_index=True` or
+                    a positional index is used if `use_index=False`.
+                    Order of the resulting W is not respected from this list.
+        use_index   : bool
+                    use index of `df` as `ids` to index the spatial weights object.
 
         See Also
         --------
@@ -627,7 +637,7 @@ class Kernel(W):
         if geom_col is None:
             geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
-        if ids is None:
+        if ids is None and use_index:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()
@@ -691,13 +701,13 @@ class Kernel(W):
         elif self.function == "uniform":
             self.kernel = [np.ones(zi.shape) * 0.5 for zi in zs]
         elif self.function == "quadratic":
-            self.kernel = [(3.0 / 4) * (1 - zi ** 2) for zi in zs]
+            self.kernel = [(3.0 / 4) * (1 - zi**2) for zi in zs]
         elif self.function == "quartic":
-            self.kernel = [(15.0 / 16) * (1 - zi ** 2) ** 2 for zi in zs]
+            self.kernel = [(15.0 / 16) * (1 - zi**2) ** 2 for zi in zs]
         elif self.function == "gaussian":
             c = np.pi * 2
             c = c ** (-0.5)
-            self.kernel = [c * np.exp(-(zi ** 2) / 2.0) for zi in zs]
+            self.kernel = [c * np.exp(-(zi**2) / 2.0) for zi in zs]
         else:
             print(("Unsupported kernel function", self.function))
 
@@ -860,7 +870,7 @@ class DistanceBand(W):
                       name of column in shapefile's DBF to use for ids
 
         Returns
-        --------
+        -------
         Kernel Weights Object
 
         """
@@ -881,7 +891,9 @@ class DistanceBand(W):
         return cls(array, threshold, **kwargs)
 
     @classmethod
-    def from_dataframe(cls, df, threshold, geom_col=None, ids=None, **kwargs):
+    def from_dataframe(
+        cls, df, threshold, geom_col=None, ids=None, use_index=True, **kwargs
+    ):
 
         """
         Make DistanceBand weights from a dataframe.
@@ -894,16 +906,20 @@ class DistanceBand(W):
         geom_col :  string
                     the name of the column in `df` that contains the
                     geometries. Defaults to active geometry column.
-        ids     :   string or iterable
-                    if string, the column name of the indices from the dataframe
-                    if iterable, a list of ids to use for the W
-                    if None, df.index is used.
+        ids     :   list-like, string
+                    a list-like of ids to use to index the spatial weights object or
+                    the name of the column to use as IDs. If nothing is
+                    provided, the dataframe index is used if `use_index=True` or
+                    a positional index is used if `use_index=False`.
+                    Order of the resulting W is not respected from this list.
+        use_index   : bool
+                    use index of `df` as `ids` to index the spatial weights object.
 
         """
         if geom_col is None:
             geom_col = df.geometry.name
         pts = get_points_array(df[geom_col])
-        if ids is None:
+        if ids is None and use_index:
             ids = df.index.tolist()
         elif isinstance(ids, str):
             ids = df[ids].tolist()

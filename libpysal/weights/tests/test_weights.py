@@ -2,7 +2,8 @@ import os
 import tempfile
 
 import unittest
-from ..weights import W, WSP
+import pytest
+from ..weights import W, WSP, _LabelEncoder
 from .. import util
 from ..util import WSP2W, lat2W
 from ..contiguity import Rook
@@ -10,6 +11,7 @@ from ...io.fileio import FileIO as psopen
 from ... import examples
 from ..distance import KNN
 import numpy as np
+import scipy.sparse
 
 NPTA3E = np.testing.assert_array_almost_equal
 
@@ -44,6 +46,7 @@ class TestW(unittest.TestCase):
         }
 
         self.w3x3 = util.lat2W(3, 3)
+        self.w_islands = W({0: [1], 1: [0, 2], 2: [1], 3: []})
 
     def test_W(self):
         w = W(self.neighbors, self.weights, silence_warnings=True)
@@ -354,6 +357,33 @@ class TestW(unittest.TestCase):
             self.w.to_file(path)
             new = W.from_file(path)
         np.testing.assert_array_equal(self.w.sparse.toarray(), new.sparse.toarray())
+
+    def test_to_sparse(self):
+        sparse = self.w_islands.to_sparse()
+        np.testing.assert_array_equal(sparse.data, [1, 1, 1, 1, 0])
+        np.testing.assert_array_equal(sparse.row, [0, 1, 1, 2, 3])
+        np.testing.assert_array_equal(sparse.col, [1, 0, 2, 1, 3])
+        sparse = self.w_islands.to_sparse("bsr")
+        self.assertIsInstance(sparse, scipy.sparse._arrays.bsr_array)
+        sparse = self.w_islands.to_sparse("csr")
+        self.assertIsInstance(sparse, scipy.sparse._arrays.csr_array)
+        sparse = self.w_islands.to_sparse("coo")
+        self.assertIsInstance(sparse, scipy.sparse._arrays.coo_array)
+        sparse = self.w_islands.to_sparse("csc")
+        self.assertIsInstance(sparse, scipy.sparse._arrays.csc_array)
+        sparse = self.w_islands.to_sparse()
+        self.assertIsInstance(sparse, scipy.sparse._arrays.coo_array)
+
+    def test_sparse_fmt(self):
+        with pytest.raises(ValueError) as exc_info:
+            sparse = self.w_islands.to_sparse("dog")
+
+    def test_from_sparse(self):
+        sparse = self.w_islands.to_sparse()
+        w = W.from_sparse(sparse)
+        self.assertEqual(w.n, 4)
+        self.assertEqual(len(w.islands), 0)
+        self.assertEqual(w.neighbors[3], [3])
 
 
 class Test_WSP_Back_To_W(unittest.TestCase):
@@ -688,6 +718,20 @@ class TestWSP(unittest.TestCase):
 
     def test_s0(self):
         self.assertEqual(self.w3x3.s0, 24.0)
+
+    def test_from_WSP(self):
+        w = W.from_WSP(self.wsp)
+        self.assertEqual(w.n, 100)
+        self.assertEqual(w.pct_nonzero, 4.62)
+
+    def test_LabelEncoder(self):
+        le = _LabelEncoder()
+        le.fit(["NY", "CA", "NY", "CA", "TX", "TX"])
+        np.testing.assert_equal(le.classes_, np.array(["CA", "NY", "TX"]))
+        np.testing.assert_equal(
+            le.transform(["NY", "CA", "NY", "CA", "TX", "TX"]),
+            np.array([1, 0, 1, 0, 2, 2]),
+        )
 
 
 if __name__ == "__main__":
