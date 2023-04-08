@@ -29,7 +29,7 @@ try:
     assert Version(shapely.__version__) >= Version("2")
 
     HAS_SHAPELY = True
-except ModuleNotFoundError:
+except (ModuleNotFoundError, AssertionError):
     HAS_SHAPELY = False
 
 
