@@ -24,6 +24,9 @@ if not HAS_JIT:
 
 try:
     import shapely
+    from packaging.version import Version
+
+    assert Version(shapely.__version__) >= Version("2")
 
     HAS_SHAPELY = True
 except ModuleNotFoundError:
@@ -739,7 +742,6 @@ def _filter_holes(geoms, points):
 
 
 if __name__ == "__main__":
-
     import matplotlib.pyplot as plt
     import time
     import geopandas as gpd
