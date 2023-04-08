@@ -23,11 +23,11 @@ if not HAS_JIT:
     )
 
 try:
-    import pygeos
+    import shapely
 
-    HAS_PYGEOS = True
+    HAS_SHAPELY = True
 except ModuleNotFoundError:
-    HAS_PYGEOS = False
+    HAS_SHAPELY = False
 
 
 EPS = np.finfo(float).eps
@@ -513,8 +513,8 @@ def _valid_hull(geoms, points):
     if geoms.shape[0] != 1:
         return False
     # if any (xys) points do not intersect the polygon
-    if HAS_PYGEOS:
-        return pygeos.intersects(pygeos.from_shapely(geoms[0]), points).all()
+    if HAS_SHAPELY:
+        return shapely.intersects(geoms[0], points).all()
     else:
         for point in points:
             if not point.intersects(geoms[0]):
@@ -621,8 +621,8 @@ def alpha_shape_auto(
     triangles = triangulation.simplices[radii_sorted_i][::-1]
     radii = radii[radii_sorted_i][::-1]
     geoms_prev = _alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
-    if HAS_PYGEOS:
-        points = pygeos.points(xys)
+    if HAS_SHAPELY:
+        points = shapely.points(xys)
     else:
         points = [geom.Point(pnt) for pnt in xys]
     if verbose:
