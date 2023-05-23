@@ -1,0 +1,15 @@
+name: Test reverse dependencies
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: martinfleis/reverse-dependency-testing@main
+        with:
+            package_name: "libpysla"
