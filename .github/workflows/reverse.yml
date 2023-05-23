@@ -12,4 +12,4 @@ jobs:
 
       - uses: martinfleis/reverse-dependency-testing@main
         with:
-            package_name: "libpysla"
+            package_name: "libpysal"
