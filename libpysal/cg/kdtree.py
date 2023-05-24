@@ -311,4 +311,4 @@ class Arc_KDTree(temp_KDTree):
         # print D.data
         a2l = lambda x: sphere.linear2arcdist(x, self.radius)
         # print map(a2l,D.data)
-        return scipy.sparse.coo_matrix((list(map(a2l, D.data)), (D.row, D.col))).todok()
+        return scipy.sparse.coo_array((list(map(a2l, D.data)), (D.row, D.col))).todok()

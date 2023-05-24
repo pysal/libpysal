@@ -6,7 +6,7 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, Charles Schmidt <schmidtc@gmail.com>
 
 import copy
 from .weights import W, WSP
-from scipy.sparse import isspmatrix_csr
+from scipy.sparse import issparse
 from numpy import ones
 
 __all__ = [
@@ -407,11 +407,11 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     Parameters
     ----------
     w1                      : W
-                              W, scipy.sparse.csr.csr_matrix
+                              W, scipy.sparse.csr.csr_array
                               Potentially continuous weights matrix to be clipped. The clipped
                               matrix wc will have at most the same elements as w1.
     w2                      : W
-                              W, scipy.sparse.csr.csr_matrix
+                              W, scipy.sparse.csr.csr_array
                               Weights matrix to use as shell to clip w1. Automatically
                               converted to binary format. Only non-zero elements in w2 will be
                               kept non-zero in wc. NOTE: assumed to be of the same shape as w1
@@ -424,7 +424,7 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     Returns
     -------
     wc      : W
-              W, scipy.sparse.csr.csr_matrix
+              W, scipy.sparse.csr.csr_array
               Clipped W object (sparse if outSP=Ture). It inherits ``id_order`` from w1.
 
     Examples
@@ -510,9 +510,9 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     if not w1.id_order:
         w1.id_order = None
     id_order = w1.id_order
-    if not isspmatrix_csr(w1):
+    if not issparse(w1):
         w1 = w1.sparse
-    if not isspmatrix_csr(w2):
+    if not issparse(w2):
         w2 = w2.sparse
     w2.data = ones(w2.data.shape)
     wc = w1.multiply(w2)

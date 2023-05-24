@@ -466,7 +466,7 @@ def higher_order_sp(
     Parameters
     ----------
     w             : W
-                            sparse_matrix, spatial weights object or
+                            sparse array, spatial weights object or
                             scipy.sparse.csr.csr_instance
     k             : int
                     Order of contiguity
@@ -523,7 +523,9 @@ def higher_order_sp(
             w = w.sparse
         else:
             raise ValueError("Weights are not binary (0,1)")
-    elif scipy.sparse.isspmatrix_csr(w):
+    elif scipy.sparse.issparse(w):
+        if w.format != "csr":
+            w = w.tocsr()
         if not np.unique(w.data) == np.array([1.0]):
             raise ValueError(
                 "Sparse weights matrix is not binary (0,1) weights matrix."
@@ -531,7 +533,7 @@ def higher_order_sp(
     else:
         raise TypeError(
             "Weights provided are neither a binary W object nor "
-            "a scipy.sparse.csr_matrix"
+            "a scipy.sparse.csr_array"
         )
 
     if lower_order:
@@ -787,7 +789,6 @@ def full2W(m, ids=None, **kwargs):
 
 
 def WSP2W(wsp, **kwargs):
-
     """
     Convert a pysal WSP object (thin weights matrix) to a pysal W object.
 
@@ -1201,8 +1202,8 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     Returns
     -------
 
-    w : scipy.sparse.dia_matrix
-        instance of a scipy sparse matrix
+    w : scipy.sparse.dia_array
+        instance of a scipy sparse array
 
     Notes
     -----
@@ -1252,7 +1253,7 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
         offsets.append(-(ncols + 1))
     data = np.concatenate(diagonals)
     offsets = np.array(offsets)
-    m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8)
+    m = sparse.dia_array((data, offsets), shape=(n, n), dtype=np.int8)
     m = m + m.T
     if row_st:
         m = sparse.spdiags(1.0 / m.sum(1).T, 0, *m.shape) * m
@@ -1686,7 +1687,6 @@ def fuzzy_contiguity(
 
 
 if __name__ == "__main__":
-
     from libpysal.weights import lat2W
 
     assert (lat2W(5, 5).sparse.todense() == lat2SW(5, 5).todense()).all()

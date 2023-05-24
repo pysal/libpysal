@@ -206,11 +206,11 @@ class Relative_Neighborhood(Delaunay):
     the Minimum Spanning Tree, with additional "relative neighbors"
     introduced.
 
-    A relative neighbor pair of points i,j must be closer than the 
-    maximum distance between i (or j) and each other point k. 
-    This means that the points are at least as close to one another 
-    as they are to any other point. 
-    
+    A relative neighbor pair of points i,j must be closer than the
+    maximum distance between i (or j) and each other point k.
+    This means that the points are at least as close to one another
+    as they are to any other point.
+
     Parameters
     ----------
     coordinates :   array of points, (N,2)
@@ -234,7 +234,7 @@ class Relative_Neighborhood(Delaunay):
         row, col, data = zip(*output)
         if binary:
             data = numpy.ones_like(col, dtype=float)
-        sp = sparse.csc_matrix((data, (row, col)))  # TODO: faster way than this?
+        sp = sparse.csc_array((data, (row, col)))  # TODO: faster way than this?
         ids = kwargs.get("ids")
         if ids is None:
             ids = numpy.arange(sp.shape[0])

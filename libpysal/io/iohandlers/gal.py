@@ -148,7 +148,7 @@ class GalIO(fileio.FileIO):
             ids = np.unique(row)
             row = np.array([np.where(ids == j)[0] for j in row]).flatten()
             col = np.array([np.where(ids == j)[0] for j in col]).flatten()
-            spmat = sparse.csr_matrix((data, (row, col)), shape=(n, n))
+            spmat = sparse.csr_array((data, (row, col)), shape=(n, n))
 
             w = WSP(spmat)
 

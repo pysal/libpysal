@@ -608,7 +608,7 @@ class W(object):
         row = np.array(row)
         col = np.array(col)
         data = np.array(data)
-        s = scipy.sparse.csr_matrix((data, (row, col)), shape=(self.n, self.n))
+        s = scipy.sparse.csr_array((data, (row, col)), shape=(self.n, self.n))
         return s
 
     @property
@@ -1526,7 +1526,7 @@ class WSP(object):
     >>> rows = [0, 1, 1, 2, 2, 3]
     >>> cols = [1, 0, 2, 1, 3, 3]
     >>> weights =  [1, 0.75, 0.25, 0.9, 0.1, 1]
-    >>> sparse = scipy.sparse.csr_matrix((weights, (rows, cols)), shape=(4,4))
+    >>> sparse = scipy.sparse.csr_array((weights, (rows, cols)), shape=(4,4))
     >>> w = WSP(sparse)
     >>> w.s0
     4.0
