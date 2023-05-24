@@ -437,7 +437,7 @@ class W(object):
 
         links = []
         focal_ix, neighbor_ix = self.sparse.nonzero()
-        idxs = np.array(list(self.neighbors.keys()))
+        idxs = np.array(self.id_order)
         focal_ix = idxs[focal_ix]
         neighbor_ix = idxs[neighbor_ix]
         weights = self.sparse.data

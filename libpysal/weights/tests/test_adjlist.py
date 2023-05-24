@@ -160,7 +160,7 @@ class Test_Adjlist(ut.TestCase):
         usv = np.array(["53", "53", "30", "30", "30"])
         np.testing.assert_array_equal(unsorted_al.focal.values[:5], usv)
         np.testing.assert_array_equal(sorted_al.focal.values[:5], sv)
-        
+
     def test_ids(self):
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
         df["my_id"] = range(3, len(df) + 3)
@@ -187,3 +187,9 @@ class Test_Adjlist(ut.TestCase):
             assert i in snakes
         for i in W_adj.neighbor:
             assert i in snakes
+
+    def test_lat2w(self):
+        w = lat2W(5, 5)
+        manual_neighbors = w.to_adjlist().groupby("focal").neighbor.agg(list).to_dict()
+        for focal, neighbors in w.neighbors.items():
+            self.assertEqual(set(manual_neighbors[focal]), set(neighbors))
