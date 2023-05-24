@@ -189,7 +189,7 @@ class Test_Adjlist(ut.TestCase):
             assert i in snakes
 
     def test_lat2w(self):
-        w = lat2W(3, 3)
+        w = lat2W(5, 5)
         manual_neighbors = w.to_adjlist().groupby("focal").neighbor.agg(list).to_dict()
         for focal, neighbors in w.neighbors.items():
             self.assertEqual(set(manual_neighbors[focal]), set(neighbors))
