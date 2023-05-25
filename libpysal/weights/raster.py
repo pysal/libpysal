@@ -22,8 +22,6 @@ if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 else:
     from ..common import jit
 
-__author__ = "Mragank Shekhar <yesthisismrshekhar@gmail.com>"
-
 __all__ = ["da2W", "da2WSP", "w2da", "wsp2da", "testDataArray"]
 
 
@@ -76,7 +74,7 @@ def da2W(
     -----
     1. Lower order contiguities are also selected.
     2. Returned object contains `index` attribute that includes a
-    `Pandas.MultiIndex` object from the DataArray.
+       `Pandas.MultiIndex` object from the DataArray.
 
     Examples
     --------
@@ -177,7 +175,7 @@ def da2WSP(
     -----
     1. Lower order contiguities are also selected.
     2. Returned object contains `index` attribute that includes a
-    `Pandas.MultiIndex` object from the DataArray.
+       `Pandas.MultiIndex` object from the DataArray.
 
     Examples
     --------
@@ -281,7 +279,11 @@ def da2WSP(
                 *shape, ids, id_map, criterion, k_nas, dtype, n_jobs
             )  # -> (data, (row, col))
 
-        sw = sparse.csr_matrix(sw_tup, shape=(n, n), dtype=np.int8,)
+        sw = sparse.csr_matrix(
+            sw_tup,
+            shape=(n, n),
+            dtype=np.int8,
+        )
 
     # Higher_order functionality, this uses idea from
     # libpysal#313 for adding higher order neighbors.
@@ -305,7 +307,7 @@ def w2da(data, w, attrs={}, coords=None):
     Creates xarray.DataArray object from passed data aligned with W object.
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to w
     w : libpysal.weights.W
@@ -348,7 +350,7 @@ def wsp2da(data, wsp, attrs={}, coords=None):
     Creates xarray.DataArray object from passed data aligned with WSP object.
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to wsp
     wsp : libpysal.weights.WSP
@@ -391,7 +393,7 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     Creates 2 or 3 dimensional test xarray.DataArray object
 
     Parameters
-    ---------
+    ----------
     shape : tuple
         Tuple containing shape of the DataArray aligned with
         following dimension = (lat, lon) or (layer, lat, lon)
@@ -513,7 +515,7 @@ def _index2da(data, index, attrs, coords):
     Creates xarray.DataArray object from passed data
 
     Parameters
-    ---------
+    ----------
     data : array/list/pd.Series
         1d array-like data with dimensionality conforming to index
     index : pd.MultiIndex
@@ -559,10 +561,9 @@ def _index2da(data, index, attrs, coords):
         fill = attrs["nodatavals"][0] if "nodatavals" in attrs else 0
         data_complete = np.full(shape, fill, data.dtype)
         data_complete[indexer] = data
-        data_complete = data_complete[:, ::-1]
 
     da = DataArray(data_complete, coords=coords, dims=dims, attrs=attrs)
-    return da.sortby(dims[-2], False)
+    return da
 
 
 @jit(nopython=True, fastmath=True)
@@ -591,7 +592,13 @@ def _idmap(ids, mask, dtype):
 
 @jit(nopython=True, fastmath=True)
 def _SWbuilder(
-    nrows, ncols, ids, id_map, criterion, k, dtype,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
 ):
     """
     Computes data and orders rows, cols, data for a single chunk
@@ -631,7 +638,13 @@ def _SWbuilder(
 
 @jit(nopython=True, fastmath=True, nogil=True)
 def _compute_chunk(
-    nrows, ncols, ids, id_map, criterion, k, dtype,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
 ):
     """
     Computes rows cols for a single chunk
@@ -754,7 +767,9 @@ def _compute_chunk(
 
 @jit(nopython=True, fastmath=True)
 def _chunk_generator(
-    n_jobs, starts, ids,
+    n_jobs,
+    starts,
+    ids,
 ):
     """
     Construct chunks to iterate over within numba in parallel
@@ -782,7 +797,14 @@ def _chunk_generator(
 
 
 def _parSWbuilder(
-    nrows, ncols, ids, id_map, criterion, k, dtype, n_jobs,
+    nrows,
+    ncols,
+    ids,
+    id_map,
+    criterion,
+    k,
+    dtype,
+    n_jobs,
 ):
     """
     Computes data and orders rows, cols, data in parallel using numba

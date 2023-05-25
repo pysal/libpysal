@@ -1,6 +1,0 @@
-libpysal.weights.w\_clip
-========================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: w_clip

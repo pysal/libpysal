@@ -1,6 +1,0 @@
-libpysal.examples.explain
-=========================
-
-.. currentmodule:: libpysal.examples
-
-.. autofunction:: explain

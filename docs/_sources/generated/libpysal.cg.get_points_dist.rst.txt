@@ -1,6 +1,0 @@
-libpysal.cg.get\_points\_dist
-=============================
-
-.. currentmodule:: libpysal.cg
-
-.. autofunction:: get_points_dist

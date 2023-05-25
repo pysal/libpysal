@@ -51,14 +51,14 @@ SHAPE_TYPE_ERR = "%r does not appear to be a shape."
 def to_wkb(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.to_wkb()
 
 
 def to_wkt(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.to_wkt()
 
 
@@ -67,7 +67,7 @@ def to_wkt(shape):
 def area(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.area
 
 
@@ -76,15 +76,15 @@ def distance(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.distance(o2)
 
 
 def length(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.length
 
 
@@ -93,7 +93,7 @@ def length(shape):
 def boundary(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     res = o.boundary
     return asShape(res)
 
@@ -101,14 +101,14 @@ def boundary(shape):
 def bounds(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.bounds
 
 
 def centroid(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     res = o.centroid
     return asShape(res)
 
@@ -116,7 +116,7 @@ def centroid(shape):
 def representative_point(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     res = o.representative_point()
     return asShape(res)
 
@@ -124,7 +124,7 @@ def representative_point(shape):
 def convex_hull(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     res = o.convex_hull
     return asShape(res)
 
@@ -132,7 +132,7 @@ def convex_hull(shape):
 def envelope(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     res = o.envelope
     return asShape(res)
 
@@ -140,7 +140,7 @@ def envelope(shape):
 def buffer(shape, radius, resolution=16):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     res = o.buffer(radius, resolution)
     return asShape(res)
 
@@ -148,7 +148,7 @@ def buffer(shape, radius, resolution=16):
 def simplify(shape, tolerance, preserve_topology=True):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     res = o.simplify(tolerance, preserve_topology)
     return asShape(res)
 
@@ -160,8 +160,8 @@ def difference(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     res = o.difference(o2)
     return asShape(res)
 
@@ -171,8 +171,8 @@ def intersection(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     res = o.intersection(o2)
     return asShape(res)
 
@@ -182,8 +182,8 @@ def symmetric_difference(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     res = o.symmetric_difference(o2)
     return asShape(res)
 
@@ -193,8 +193,8 @@ def union(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     res = o.union(o2)
     return asShape(res)
 
@@ -204,8 +204,8 @@ def cascaded_union(shapes):
     for shape in shapes:
         if not hasattr(shape, GEO_INTERFACE_ATTR):
             raise TypeError(SHAPE_TYPE_ERR % shape)
-        o.append(geom.asShape(shape))
-    res = shops.cascaded_union(o)
+        o.append(geom.shape(shape))
+    res = shops.unary_union(o)
     return asShape(res)
 
 
@@ -219,7 +219,7 @@ def unary_union(shapes):
     for shape in shapes:
         if not hasattr(shape, GEO_INTERFACE_ATTR):
             raise TypeError(SHAPE_TYPE_ERR % shape)
-        o.append(geom.asShape(shape))
+        o.append(geom.shape(shape))
     res = shops.unary_union(o)
     return asShape(res)
 
@@ -229,35 +229,35 @@ def unary_union(shapes):
 def has_z(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.has_z
 
 
 def is_empty(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.is_empty
 
 
 def is_ring(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.is_ring
 
 
 def is_simple(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.is_simple
 
 
 def is_valid(shape):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     return o.is_valid
 
 
@@ -268,8 +268,8 @@ def relate(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.relate(o2)
 
 
@@ -278,8 +278,8 @@ def contains(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.contains(o2)
 
 
@@ -288,8 +288,8 @@ def crosses(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.crosses(o2)
 
 
@@ -298,8 +298,8 @@ def disjoint(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.disjoint(o2)
 
 
@@ -308,8 +308,8 @@ def equals(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.equals(o2)
 
 
@@ -318,8 +318,8 @@ def intersects(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.intersects(o2)
 
 
@@ -328,8 +328,8 @@ def overlaps(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.overlaps(o2)
 
 
@@ -338,8 +338,8 @@ def touches(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.touches(o2)
 
 
@@ -348,8 +348,8 @@ def within(shape, other):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.within(o2)
 
 
@@ -358,8 +358,8 @@ def equals_exact(shape, other, tolerance):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.equals_exact(o2, tolerance)
 
 
@@ -368,8 +368,8 @@ def almost_equals(shape, other, decimal=6):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.almost_equals(o2, decimal)
 
 
@@ -380,15 +380,15 @@ def project(shape, other, normalized=False):
         raise TypeError(SHAPE_TYPE_ERR % shape)
     if not hasattr(other, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
-    o2 = geom.asShape(other)
+    o = geom.shape(shape)
+    o2 = geom.shape(other)
     return o.project(o2, normalized)
 
 
 def interpolate(shape, distance, normalized=False):
     if not hasattr(shape, GEO_INTERFACE_ATTR):
         raise TypeError(SHAPE_TYPE_ERR % shape)
-    o = geom.asShape(shape)
+    o = geom.shape(shape)
     res = o.interpolate(distance, normalized)
     return asShape(res)
 

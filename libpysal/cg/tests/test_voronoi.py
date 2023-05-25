@@ -1,6 +1,17 @@
+import unittest
+
+import numpy as np
+
 from ..voronoi import voronoi, voronoi_frames
 from ..shapes import Polygon, asShape
-import unittest
+
+import pytest
+
+try:
+    import shapely
+    HAS_SHAPELY = True
+except ImportError:
+    HAS_SHAPELY = False
 
 
 class Voronoi(unittest.TestCase):
@@ -24,8 +35,9 @@ class Voronoi(unittest.TestCase):
         regions, vertices = voronoi(self.points)
         self.assertEqual(regions, [[1, 3, 2], [4, 5, 1, 0], [0, 1, 7, 6], [9, 0, 8]])
 
-        self.assertTrue(vertices.tolist() == self.vertices)
+        np.testing.assert_array_almost_equal(vertices, self.vertices)
 
+    @pytest.mark.skipif(not HAS_SHAPELY, reason="shapely needed")
     def test_voronoi_frames(self):
         r_df, p_df = voronoi_frames(self.points)
         region = r_df.iloc[0]["geometry"]

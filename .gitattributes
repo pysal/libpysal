@@ -1,0 +1,2 @@
+*.ipynb linguist-language=Python
+libpysal/_version.py export-subst

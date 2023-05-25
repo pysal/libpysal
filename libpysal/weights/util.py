@@ -13,14 +13,21 @@ import numbers
 from collections import defaultdict
 from itertools import tee
 from ..common import requires
-from distutils.version import LooseVersion
+from packaging.version import Version
 
 try:
     import geopandas as gpd
 
-    GPD_08 = str(gpd.__version__) >= LooseVersion("0.8.0")
+    GPD_08 = Version(gpd.__version__) >= Version("0.8.0")
 except ImportError:
     warn("geopandas not available. Some functionality will be disabled.")
+
+try:
+    from shapely.geometry.base import BaseGeometry
+
+    HAS_SHAPELY = True
+except ImportError:
+    HAS_SHAPELY = False
 
 __all__ = [
     "lat2W",
@@ -528,17 +535,17 @@ def higher_order_sp(
         )
 
     if lower_order:
-        wk = sum(map(lambda x: w ** x, range(2, k + 1)))
+        wk = sum(map(lambda x: w**x, range(2, k + 1)))
         shortest_path = False
     else:
-        wk = w ** k
+        wk = w**k
 
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck))
 
     if shortest_path:
         for j in range(1, k):
-            wj = w ** j
+            wj = w**j
             rj, cj = wj.nonzero()
             sj = set(zip(rj, cj))
             sk.difference_update(sj)
@@ -820,14 +827,12 @@ def WSP2W(wsp, **kwargs):
 
 
     """
-    wsp.sparse
-    indices = wsp.sparse.indices
     data = wsp.sparse.data
     indptr = wsp.sparse.indptr
     id_order = wsp.id_order
     if id_order:
         # replace indices with user IDs
-        indices = [id_order[i] for i in indices]
+        indices = [id_order[i] for i in wsp.sparse.indices]
     else:
         id_order = list(range(wsp.n))
     neighbors, weights = {}, {}
@@ -1070,7 +1075,17 @@ def get_points_array(iterable):
     """
     first_choice, backup = tee(iterable)
     try:
-        data = np.vstack([np.array(shape.centroid) for shape in first_choice])
+        if HAS_SHAPELY:
+            data = np.vstack(
+                [
+                    np.array(shape.centroid.coords)[0]
+                    if isinstance(shape, BaseGeometry)
+                    else np.array(shape.centroid)
+                    for shape in first_choice
+                ]
+            )
+        else:
+            data = np.vstack([np.array(shape.centroid) for shape in first_choice])
     except AttributeError:
         data = np.vstack([shape for shape in backup])
     return data
@@ -1241,6 +1256,8 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     m = m + m.T
     if row_st:
         m = sparse.spdiags(1.0 / m.sum(1).T, 0, *m.shape) * m
+    m = m.tocsc()
+    m.eliminate_zeros()
     return m
 
 
@@ -1510,8 +1527,17 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     w.non_planar_joins = fixes
     return w
 
-@requires('geopandas')
-def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=None, predicate='intersects', **kwargs):
+
+@requires("geopandas")
+def fuzzy_contiguity(
+    gdf,
+    tolerance=0.005,
+    buffering=False,
+    drop=True,
+    buffer=None,
+    predicate="intersects",
+    **kwargs,
+):
     """
     Fuzzy contiguity spatial weights
 
@@ -1625,7 +1651,7 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
         new_geometry = gdf.geometry.buffer(buffer)
         gdf["_buffer"] = new_geometry
         old_geometry_name = gdf.geometry.name
-        gdf.set_geometry('_buffer', inplace=True)
+        gdf.set_geometry("_buffer", inplace=True)
 
     neighbors = {}
     if GPD_08:
@@ -1641,8 +1667,8 @@ def fuzzy_contiguity(gdf, tolerance=0.005, buffering=False, drop=True, buffer=No
             ids = gdf.index[res[inp == i]].tolist()
             neighbors[ix] = ids
     else:
-        if predicate != 'intersects':
-            raise ValueError(f'Predicate `{predicate}` requires geopandas >= 0.8.0.')
+        if predicate != "intersects":
+            raise ValueError(f"Predicate `{predicate}` requires geopandas >= 0.8.0.")
         tree = gdf.sindex
         for i, (ix, geom) in enumerate(gdf.geometry.iteritems()):
             hits = list(tree.intersection(geom.bounds))

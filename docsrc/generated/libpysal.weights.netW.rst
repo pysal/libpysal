@@ -1,6 +1,0 @@
-libpysal.weights.netW
-=====================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: netW

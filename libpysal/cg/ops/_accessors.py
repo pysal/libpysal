@@ -27,8 +27,8 @@ def get_attr(df, geom_col="geometry", inplace=False, attr=None):
 _doc_template = """
 Tabular accessor to grab a geometric object's {n} attribute.
 
-Arguments
----------
+Parameters
+----------
 df : pandas.DataFrame
     A pandas.Dataframe with a geometry column.
 geom_col : str

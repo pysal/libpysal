@@ -1,6 +1,0 @@
-libpysal.cg.get\_segment\_point\_dist
-=====================================
-
-.. currentmodule:: libpysal.cg
-
-.. autofunction:: get_segment_point_dist

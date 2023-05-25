@@ -1,6 +1,0 @@
-libpysal.weights.lat2SW
-=======================
-
-.. currentmodule:: libpysal.weights
-
-.. autofunction:: lat2SW

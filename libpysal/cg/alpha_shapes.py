@@ -6,10 +6,12 @@ by Tim Kittel (@timkittel) available at:
 
 Author(s):
     Dani Arribas-Bel daniel.arribas.bel@gmail.com
+    Levi John Wolf levi.john.wolf@gmail.com
 """
 
 import numpy as np
 import scipy.spatial as spat
+from scipy import sparse
 
 from ..common import requires, jit, HAS_JIT
 
@@ -21,11 +23,14 @@ if not HAS_JIT:
     )
 
 try:
-    import pygeos
+    import shapely
+    from packaging.version import Version
 
-    HAS_PYGEOS = True
-except ModuleNotFoundError:
-    HAS_PYGEOS = False
+    assert Version(shapely.__version__) >= Version("2")
+
+    HAS_SHAPELY = True
+except (ModuleNotFoundError, AssertionError):
+    HAS_SHAPELY = False
 
 
 EPS = np.finfo(float).eps
@@ -257,7 +262,7 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
 
 @jit
 def nb_mask_faces(mask, faces):
-    """ Run over each row in `faces`, if the face in the following row is the
+    """Run over each row in `faces`, if the face in the following row is the
     same, then mark both as False on `mask`
 
     Parameters
@@ -354,7 +359,7 @@ def get_single_faces(triangles_is):
 
 
 @requires("geopandas", "shapely")
-def alpha_geoms(alpha, triangles, radii, xys):
+def _alpha_geoms(alpha, triangles, radii, xys):
     """Generate alpha-shape polygon(s) from `alpha` value, vertices of
     `triangles`, the `radii` for all points, and the points themselves
 
@@ -378,9 +383,9 @@ def alpha_geoms(alpha, triangles, radii, xys):
     -------
 
     geoms : GeoSeries
-        Polygon(s) resulting from the alpha shape algorithm. The GeoSeries
-        object remains so even if only a single polygon is returned. There is
-        no CRS included in the object.
+        Polygon(s) resulting from the alpha shape algorithm, in a GeoSeries.
+        The output is a GeoSeries even if only a single polygon is returned. There is
+        no CRS included in the returned GeoSeries.
 
     Examples
     --------
@@ -443,7 +448,8 @@ def alpha_shape(xys, alpha):
     shapes : GeoSeries
          Polygon(s) resulting from the alpha shape algorithm. The GeoSeries
          object remains so even if only a single polygon is returned. There is
-         no CRS included in the object.
+         no CRS included in the object. Note that the returned shape(s) may
+         have holes, as per the definition of the shape in Edselbrunner et al. (1983)
 
     Examples
     --------
@@ -472,7 +478,7 @@ def alpha_shape(xys, alpha):
     if xys.shape[0] < 4:
         from shapely import ops, geometry as geom
 
-        return ops.cascaded_union([geom.Point(xy) for xy in xys]).convex_hull.buffer(0)
+        return ops.unary_union([geom.Point(xy) for xy in xys]).convex_hull.buffer(0)
     triangulation = spat.Delaunay(xys)
     triangles = xys[triangulation.simplices]
     a_pts = triangles[:, 0, :]
@@ -480,7 +486,8 @@ def alpha_shape(xys, alpha):
     c_pts = triangles[:, 2, :]
     radii = r_circumcircle_triangle(a_pts, b_pts, c_pts)
     del triangles, a_pts, b_pts, c_pts
-    geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
+    geoms = _alpha_geoms(alpha, triangulation.simplices, radii, xys)
+    geoms = _filter_holes(geoms, xys)
     return geoms
 
 
@@ -509,8 +516,8 @@ def _valid_hull(geoms, points):
     if geoms.shape[0] != 1:
         return False
     # if any (xys) points do not intersect the polygon
-    if HAS_PYGEOS:
-        return pygeos.intersects(pygeos.from_shapely(geoms[0]), points).all()
+    if HAS_SHAPELY:
+        return shapely.intersects(geoms[0], points).all()
     else:
         for point in points:
             if not point.intersects(geoms[0]):
@@ -526,12 +533,12 @@ def alpha_shape_auto(
 
     This method uses the algorithm proposed by  Edelsbrunner, Kirkpatrick &
     Seidel (1983) to return the tightest polygon that contains all points in
-    `xys`. The algorithm ranks every point based on its radious and iterates
+    `xys`. The algorithm ranks every point based on its radius and iterates
     over each point, checking whether the maximum alpha that would keep the
     point and all the other ones in the set with smaller radii results in a
     single polygon. If that is the case, it moves to the next point;
     otherwise, it retains the previous alpha value and returns the polygon
-    as `shapely` geometry.
+    as `shapely` geometry. Note that this geometry may have holes.
 
     Parameters
     ----------
@@ -616,9 +623,9 @@ def alpha_shape_auto(
     radii_sorted_i = radii.argsort()
     triangles = triangulation.simplices[radii_sorted_i][::-1]
     radii = radii[radii_sorted_i][::-1]
-    geoms_prev = alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
-    if HAS_PYGEOS:
-        points = pygeos.points(xys)
+    geoms_prev = _alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
+    if HAS_SHAPELY:
+        points = shapely.points(xys)
     else:
         points = [geom.Point(pnt) for pnt in xys]
     if verbose:
@@ -628,7 +635,7 @@ def alpha_shape_auto(
         alpha = (1 / radi) - EPS
         if verbose:
             print("%.2f%% | Trying a = %f" % ((i + 1) / radii.shape[0], alpha))
-        geoms = alpha_geoms(alpha, triangles, radii, xys)
+        geoms = _alpha_geoms(alpha, triangles, radii, xys)
         if _valid_hull(geoms, points):
             geoms_prev = geoms
             radi_prev = radi
@@ -649,8 +656,8 @@ def construct_bounding_circles(alpha_shape, radius):
     """Construct the bounding circles for an alpha shape, given the radius
     computed from the `alpha_shape_auto` method.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     alpha_shape : shapely.Polygon
         An alpha-hull with the input radius.
 
@@ -704,8 +711,37 @@ def _construct_centers(a, b, radius):
         return down_x, down_y
 
 
-if __name__ == "__main__":
+def _filter_holes(geoms, points):
+    """
+    Filter hole polygons using a computational geometry solution
+    """
+    if (geoms.interiors.apply(len) > 0).any():
+        from shapely.geometry import Polygon
 
+        # Extract the "shell", or outer ring of the polygon.
+        shells = geoms.exterior.apply(Polygon)
+        # Compute which original geometries are within each shell, self-inclusive
+        inside, outside = shells.sindex.query_bulk(geoms, predicate="within")
+        # Now, create the sparse matrix relating the inner geom (rows)
+        # to the outer shell (cols) and take the sum.
+        # A z-order of 1 means the polygon is only inside if its own exterior. This means it's not a hole.
+        # A z-order of 2 means the polygon is inside of exactly one other exterior. Because
+        #   the hull generation method is restricted to be planar, this means the polygon is a hole.
+        # In general, an even z-order means that the polygon is always exactly matched to one exterior,
+        #   plus some number of intermediate exterior-hole pairs. Therefore, the polygon is a hole.
+        # In general, an odd z-order means that there is an uneven number of exteriors.
+        #   This means the polygon is not a hole.
+        zorder = sparse.csc_matrix((np.ones_like(inside), (inside, outside))).sum(
+            axis=1
+        )
+        zorder = np.asarray(zorder).flatten()
+        # Keep only the odd z-orders
+        to_include = (zorder % 2).astype(bool)
+        geoms = geoms[to_include]
+    return geoms
+
+
+if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import time
     import geopandas as gpd

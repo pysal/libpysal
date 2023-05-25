@@ -9,6 +9,7 @@ from ...io import geotable as pdio
 from ... import examples as pysal_examples
 import unittest as ut
 import numpy as np
+import pytest
 
 PANDAS_EXTINCT = pandas is None
 try:
@@ -17,6 +18,13 @@ try:
     GEOPANDAS_EXTINCT = False
 except ImportError:
     GEOPANDAS_EXTINCT = True
+
+try:
+    import shapely
+
+    HAS_SHAPELY = True
+except ImportError:
+    HAS_SHAPELY = False
 
 
 class Contiguity_Mixin(object):
@@ -102,21 +110,35 @@ class Contiguity_Mixin(object):
         w = self.cls.from_dataframe(df, geom_col="the_geom")
         self.assertEqual(w[self.known_wi], self.known_w)
 
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe(self):
+        df = pdio.read_files(self.polygon_path)
         # named active geometry
+        df.rename(columns={"geometry": "the_geom"}, inplace=True)
         df = df.set_geometry("the_geom")
         w = self.cls.from_dataframe(df)
         self.assertEqual(w[self.known_wi], self.known_w)
 
         # named geometry + named obs
-        w = self.cls.from_dataframe(df, geom_col="the_geom", idVariable=self.idVariable)
+        w = self.cls.from_dataframe(df, geom_col="the_geom", ids=self.idVariable)
         self.assertEqual(w[self.known_name], self.known_namedw)
+
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas")
+    def test_from_geodataframe_order(self):
+        import geopandas
+
+        south = geopandas.read_file(pysal_examples.get_path("south.shp"))
+        expected = south.FIPS.iloc[:5].tolist()
+        for ids_ in ("FIPS", south.FIPS):
+            w = self.cls.from_dataframe(south, ids=ids_)
+            self.assertEqual(w.id_order[:5], expected)
 
     def test_from_xarray(self):
         w = self.cls.from_xarray(self.da, sparse=False, n_jobs=-1)
         self.assertEqual(w[self.known_wi_da], self.known_w_da)
         ws = self.cls.from_xarray(self.da)
         srowvec = ws.sparse[self.known_wspi_da].todense().tolist()[0]
-        this_w = {i:k for i,k in enumerate(srowvec) if k>0}
+        this_w = {i: k for i, k in enumerate(srowvec) if k > 0}
         self.assertEqual(this_w, self.known_wsp_da)
 
 
@@ -138,7 +160,7 @@ class Test_Queen(ut.TestCase, Contiguity_Mixin):
         self.cls = c.Queen
         self.idVariable = "POLYID"
         self.known_name = 5
-        self.known_namedw = {k+1:v for k,v in list(self.known_w.items())}
+        self.known_namedw = {k + 1: v for k, v in list(self.known_w.items())}
         self.known_wspi_da = 1
         self.known_wsp_da = {0: 1, 2: 1, 4: 1, 5: 1, 6: 1}
         self.known_wi_da = (1, -30.0, -60.0)
@@ -148,10 +170,10 @@ class Test_Queen(ut.TestCase, Contiguity_Mixin):
             (1, -90.0, 60.0): 1,
             (1, -30.0, -180.0): 1,
             (1, -30.0, 60.0): 1,
-            (1, 30.0, -180.0): 1, 
+            (1, 30.0, -180.0): 1,
             (1, 30.0, -60.0): 1,
-            (1, 30.0, 60.0): 1
-            }
+            (1, 30.0, 60.0): 1,
+        }
 
     @ut.skipIf(GEOPANDAS_EXTINCT, "Missing Geopandas")
     def test_linestrings(self):
@@ -184,14 +206,19 @@ class Test_Rook(ut.TestCase, Contiguity_Mixin):
         self.cls = c.Rook
         self.idVariable = "POLYID"
         self.known_name = 5
-        self.known_namedw = {k+1:v for k,v in list(self.known_w.items())}
+        self.known_namedw = {k + 1: v for k, v in list(self.known_w.items())}
         self.known_wspi_da = 1
         self.known_wsp_da = {0: 1, 2: 1, 5: 1}
         self.known_wi_da = (1, -30.0, -180.0)
-        self.known_w_da = {(1, 30.0, -180.0): 1, (1, -30.0, -60.0): 1, (1, -90.0, -180.0): 1}
+        self.known_w_da = {
+            (1, 30.0, -180.0): 1,
+            (1, -30.0, -60.0): 1,
+            (1, -90.0, -180.0): 1,
+        }
 
 
 class Test_Voronoi(ut.TestCase):
+    @pytest.mark.skipif(not HAS_SHAPELY, reason="shapely needed")
     def test_voronoiW(self):
         np.random.seed(12345)
         points = np.random.random((5, 2)) * 10 + 10
