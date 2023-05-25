@@ -1,5 +1,9 @@
-import shapely, numpy, pandas
 from collections import defaultdict
+
+import numpy
+import pandas
+import shapely
+
 from .base import W
 
 
@@ -19,11 +23,11 @@ def vertex_set_intersection(geoms, by_edge=False, ids=None):
     graph = defaultdict(set)
 
     # get all of the vertices for the input
-    assert (
-        coordinates.geom_type.unique().str.endswith("Point")
+    assert not (
+        geoms.geom_type.str.endswith("Point")
     ).any(), "this graph type is only well-defined for line and polygon geometries."
     geoms = geoms.explode()
-    multipolygon_ixs = geoms.get_level_values(0)
+    multipolygon_ixs = geoms.index.get_level_values(0)
     ids = ids[multipolygon_ixs]
     geoms = geoms.geometry
     vertices, offsets = shapely.get_coordinates(geoms, return_index=True)
@@ -62,8 +66,7 @@ def queen(geoms, ids=None):
         except:
             ids = numpy.arange(len(geoms))
     head, tail = shapely.STRtree(geoms).query(geoms, predicate="touches")
-    return head, tail, numpy.ones_like(head)
-    return W.from_index(pandas.MultiIndex.from_arrays((head, tail)))
+    return W.from_arrays(head, tail, numpy.ones_like(head))
 
 
 def rook(geoms, ids=None):
@@ -75,5 +78,4 @@ def rook(geoms, ids=None):
     head, tail = shapely.STRtree(geoms).query(geoms)
     geoms = numpy.asarray(geoms)
     mask = shapely.relate_pattern(geoms[head], geoms[tail], "F***1****")
-    return head[mask], tail[mask], numpy.ones_like(head)
-    return W.from_index(pandas.MultiIndexgeoms.from_arrays((head[mask], tail[mask])))
+    return W.from_arrays(head[mask], tail[mask], numpy.ones_like(head))

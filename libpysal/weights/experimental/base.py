@@ -67,6 +67,33 @@ class W:
             )
         )
 
+    @classmethod
+    def from_arrays(cls, focal_index, neighbor_index, weight):
+        """Generate W from arrays of indices and weights of the same length
+
+        Parameters
+        ----------
+        focal_index : array-like
+            focal indices
+        neighbor_index : array-like
+            neighbor indices
+        weight : array-like
+            weights
+
+        Returns
+        -------
+        W
+            libpysal.weights.experimental.W
+        """
+        return cls(
+            pd.Series(
+                index=pd.MultiIndex.from_arrays(
+                    [focal_index, neighbor_index], names=["focal", "neighbor"]
+                ),
+                data=weight,
+            )
+        )
+
     @property
     def neighbors(self):
         """Get neighbors dictionary
