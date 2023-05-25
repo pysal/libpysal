@@ -135,8 +135,10 @@ class W:
         idxs = pd.Series(neighbors).explode()
         if weights is not None:
             data_array = pd.Series(weights).explode().values
+            if not pd.api.types.is_numeric_dtype(data_array):
+                data_array = pd.to_numeric(data_array)
         else:
-            data_array = np.ones(idxs.shape[0])
+            data_array = np.ones(idxs.shape[0], dtype=int)
 
         return cls(
             pd.Series(
