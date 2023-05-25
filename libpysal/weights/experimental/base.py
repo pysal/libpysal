@@ -2,6 +2,8 @@ from scipy import sparse
 import numpy as np
 import pandas as pd
 
+from functools import cached_property
+
 
 class W:
     _cache: dict = {}
@@ -17,7 +19,7 @@ class W:
         self._adjacency = adjacency
         self.transformation = transformation
 
-    @property
+    @cached_property
     def adjacency(self):
         """Return a copy of the adjacency list
 
@@ -99,7 +101,7 @@ class W:
         Parameters
         ----------
         weights_dict : dictionary of dictionaries
-            weights dictionary with the `{focal: {neighbor: weight}}` structure.
+            weights dictionary with the ``{focal: {neighbor: weight}}`` structure.
 
         Returns
         -------
@@ -110,8 +112,28 @@ class W:
         data = {
             f: [k for k in neighbors.values()] for f, neighbors in weights_dict.items()
         }
-        idxs = pd.Series(idx).explode()
-        data_array = pd.Series(data).explode()
+        return cls.from_dicts(idx, data)
+
+    @classmethod
+    def from_dicts(cls, neighbors, weights):
+        """Generate W from dictionaries of neighbors and weights
+
+        Parameters
+        ----------
+        neighbors : dict
+            dictionary of neighbors with the ``{focal: [neighbor1, neighbor2]}``
+            structure
+        weights : dict
+            dictionary of neighbors with the ``{focal: [weight1, weight2]}``
+            structure
+
+        Returns
+        -------
+        W
+            libpysal.weights.experimental.W
+        """
+        idxs = pd.Series(neighbors).explode()
+        data_array = pd.Series(weights).explode()
         return cls(
             pd.Series(
                 index=pd.MultiIndex.from_arrays(
@@ -121,7 +143,7 @@ class W:
             )
         )
 
-    @property
+    @cached_property
     def neighbors(self):
         """Get neighbors dictionary
 
@@ -137,7 +159,7 @@ class W:
             .to_dict()
         )
 
-    @property
+    @cached_property
     def weights(self):
         """Get weights dictionary
 
@@ -178,7 +200,7 @@ class W:
         """
         return self._adjacency[ix].values
 
-    @property
+    @cached_property
     def sparse(self):
         """Return a scipy.sparse array (COO)
 
@@ -249,7 +271,7 @@ class W:
 
         return W(standardized, transformation)
 
-    @property
+    @cached_property
     def n_components(self):
         """Get a number of connected components
 
@@ -265,7 +287,7 @@ class W:
             ) = sparse.csgraph.connected_components(self.sparse)
         return self._cache["n_components"]
 
-    @property
+    @cached_property
     def component_labels(self):
         """Get component labels per observation
 
@@ -281,7 +303,7 @@ class W:
             ) = sparse.csgraph.connected_components(self.sparse)
         return self._cache["component_labels"]
 
-    @property
+    @cached_property
     def cardinalities(self):
         """Number of neighbors for each observation
 
@@ -291,6 +313,48 @@ class W:
             Series with a number of neighbors per each observation
         """
         return self.adjacency.groupby(level=0).count()
+
+    @property
+    def n(self):
+        """Number of units."""
+        n = self._adjacency.shape[0]
+        return n
+
+    @cached_property
+    def pct_nonzero(self):
+        """Percentage of nonzero weights."""
+        p = 100.0 * self.sparse.nnz / (1.0 * self.n**2)
+        return p
+
+    @cached_property
+    def max_neighbors(self):
+        """Largest number of neighbors."""
+        m = self.cardinalities.max()
+        return m
+
+    @cached_property
+    def mean_neighbors(self):
+        """Average number of neighbors."""
+        m = self.cardinalities.mean()
+        return m
+
+    @cached_property
+    def min_neighbors(self):
+        """Minimum number of neighbors."""
+        m = self.cardinalities.min()
+        return m
+
+    @cached_property
+    def nonzero(self):
+        """Number of nonzero weights."""
+        nnz = self.sparse.nnz
+        return nnz
+
+    @cached_property
+    def sd(self):
+        """Standard deviation of number of neighbors."""
+        sd = self.cardinalities.std(ddof=0)
+        return sd
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order K.
