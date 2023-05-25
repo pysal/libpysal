@@ -7,10 +7,12 @@ Next Steps
 ----------
 
 0. Converter to the different representations 
-    - xarray-backed pydata.sparse
-    - adjacency table-based on "dataframe"
+    - ~xarray-backed pydata.sparse~
+    - adjacency table-based on "dataframe" is our target
 3. Functionality
-    4. "things we should implement"
+    - `.to_sparse()`
+    - `.table`
+    - stats shim for spreg? 
 5. Workbench: Test Suite (speed & correctness)
     - spreg mathematics (eigenvectors, inversion/hat matrix matmul `@`)
     - spopt algorithms
@@ -20,4 +22,4 @@ Next Steps
     - higher order (n, <=n)
     - daskable?
 4. Builders
-    2. Target different representations
+    2. Target dataframe representation 
