@@ -1,4 +1,4 @@
-import shapely, numpy
+import shapely, numpy, pandas
 from collections import defaultdict
 from .base import W
 
@@ -13,12 +13,19 @@ def vertex_set_intersection(geoms, by_edge=False, ids=None):
 
     """
     if ids is None:
-        ids = getattr(geoms, "index", numpy.arange(len(geoms)))
+        ids = getattr(geoms, "index", pandas.RangeIndex(len(geoms)))
 
     # initialise the target map
     graph = defaultdict(set)
 
     # get all of the vertices for the input
+    assert (
+        coordinates.geom_type.unique().str.endswith("Point")
+    ).any(), "this graph type is only well-defined for line and polygon geometries."
+    geoms = geoms.explode()
+    multipolygon_ixs = geoms.get_level_values(0)
+    ids = ids[multipolygon_ixs]
+    geoms = geoms.geometry
     vertices, offsets = shapely.get_coordinates(geoms, return_index=True)
     # initialise the hashmap we want to invert
     vert_to_geom = defaultdict(set)
