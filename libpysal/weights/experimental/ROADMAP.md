@@ -11,7 +11,7 @@ Next Steps
     - adjacency table-based on "dataframe" is our target
 3. Functionality
     - `.to_sparse()`
-    - `.table`
+    - `.adjacency`
     - stats shim for spreg? 
 5. Workbench: Test Suite (speed & correctness)
     - spreg mathematics (eigenvectors, inversion/hat matrix matmul `@`)
