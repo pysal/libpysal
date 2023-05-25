@@ -2,7 +2,7 @@ from scipy import sparse
 import numpy as np
 import pandas as pd
 
-from scipy.sparse.csgraph import connected_components
+# TODO: take care of islands
 
 
 class W:
@@ -16,8 +16,19 @@ class W:
         adjacency : pandas.Series
             pandas.Series with a MultiIndex with two levels ("focal", "neighbor")
         """
-        self.adjacency = adjacency
+        self._adjacency = adjacency
         self.transformation = transformation
+
+    @property
+    def adjacency(self):
+        """Return a copy of the adjacency list
+
+        Returns
+        -------
+        pandas.Series
+            Underlying adjacency list
+        """
+        return self._adjacency.copy()
 
     @classmethod
     def from_old_w(cls, w):
@@ -44,7 +55,7 @@ class W:
             dict of tuples representing neighbors
         """
         return (
-            self.adjacency.reset_index(level=-1)
+            self._adjacency.reset_index(level=-1)
             .neighbor.groupby(level=0)
             .agg(tuple)
             .to_dict()
@@ -59,7 +70,7 @@ class W:
         dict
             dict of tuples representing weights
         """
-        return self.adjacency.groupby(level=0).agg(tuple).to_dict()
+        return self._adjacency.groupby(level=0).agg(tuple).to_dict()
 
     def get_neighbors(self, ix):
         """Get neighbors for a set focal object
@@ -74,7 +85,7 @@ class W:
         array
             array of indices of neighbor objects
         """
-        return self.adjacency[ix].index.values
+        return self._adjacency[ix].index.values
 
     def get_weights(self, ix):
         """Get weights for a set focal object
@@ -89,7 +100,7 @@ class W:
         array
             array of weights of neighbor object
         """
-        return self.adjacency[ix].values
+        return self._adjacency[ix].values
 
     @property
     def sparse(self):
@@ -103,13 +114,13 @@ class W:
         scipy.sparse.COO
             sparse representation of the adjacency
         """
-        focal_int, self.focal_label = self.adjacency.index.get_level_values(
+        focal_int, self.focal_label = self._adjacency.index.get_level_values(
             "focal"
         ).factorize()
-        neighbor_int, self.neighbor_label = self.adjacency.index.get_level_values(
+        neighbor_int, self.neighbor_label = self._adjacency.index.get_level_values(
             "neighbor"
         ).factorize()
-        return sparse.coo_array((self.adjacency.values, (focal_int, neighbor_int)))
+        return sparse.coo_array((self._adjacency.values, (focal_int, neighbor_int)))
 
     def transform(self, transformation):
         """Transformation of weights
@@ -141,19 +152,21 @@ class W:
             return self
 
         if transformation == "R":
-            standardized = self.adjacency / self.adjacency.groupby(level=0).sum()
+            standardized = self._adjacency / self._adjacency.groupby(level=0).sum()
 
         elif transformation == "D":
-            standardized = self.adjacency / self.adjacency.sum()
+            standardized = self._adjacency / self._adjacency.sum()
 
         elif transformation == "B":
             standardized = pd.Series(
-                index=self.adjacency.index,
-                data=np.ones(self.adjacency.shape, dtype=int),
+                index=self._adjacency.index,
+                data=np.ones(self._adjacency.shape, dtype=int),
             )
 
         elif transformation == "V":
-            standardized = self.adjacency / self.adjacency.groupby(level=0).sum().sqrt()
+            standardized = (
+                self._adjacency / self._adjacency.groupby(level=0).sum().sqrt()
+            )
 
         else:
             raise ValueError(f"Transformation '{transformation}' is not supported.")
@@ -191,3 +204,70 @@ class W:
                 self._cache["component_labels"],
             ) = sparse.csgraph.connected_components(self.sparse)
         return self._cache["component_labels"]
+
+    def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
+        """Contiguity weights object of order K.
+
+        TODO: This currently does not work as scipy.sparse array does not
+        yet implement matrix_power. We need to reimplement it temporarily and
+        switch once that is released.
+
+        Parameters
+        ----------
+        k : int, optional
+            order of contiguity, by default 2
+        shortest_path : bool, optional
+            True: i,j and k-order neighbors if the
+            shortest path for i,j is k.
+            False: i,j are k-order neighbors if there
+            is a path from i,j of length k.
+            By default True
+        diagonal : bool, optional
+            True:  keep k-order (i,j) joins when i==j
+            False: remove k-order (i,j) joins when i==j
+            By default False
+        lower_order : bool, optional
+            True: include lower order contiguities
+            False: return only weights of order k
+            By default False
+
+        Returns
+        -------
+        W
+            higher order weights
+        """
+        binary = self.transform("B")
+        sparse = binary.sparse
+
+        if lower_order:
+            wk = sum(map(lambda x: sparse**x, range(2, k + 1)))
+            shortest_path = False
+        else:
+            wk = sparse**k
+
+        rk, ck = wk.nonzero()
+        sk = set(zip(rk, ck))
+
+        if shortest_path:
+            for j in range(1, k):
+                wj = sparse**j
+                rj, cj = wj.nonzero()
+                sj = set(zip(rj, cj))
+                sk.difference_update(sj)
+        if not diagonal:
+            sk = set([(i, j) for i, j in sk if i != j])
+
+        ix = pd.MultiIndex.from_tuples(sk, names=["focal", "neighbor"])
+        new_index = pd.MultiIndex.from_arrays(
+            (
+                binary.focal_label.take(ix.get_level_values("focal")),
+                binary.neighbor_label.take(ix.get_level_values("neighbor")),
+            ),
+            names=["focal", "neighbor"],
+        )
+        return W(
+            pd.Series(
+                index=new_index,
+                data=np.ones(len(ix), dtype=int),
+            )
+        )
