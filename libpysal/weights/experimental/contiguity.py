@@ -5,6 +5,7 @@ import pandas
 import shapely
 
 from .base import W
+import pandas
 
 
 def vertex_set_intersection(geoms, by_edge=False, ids=None):
@@ -18,18 +19,25 @@ def vertex_set_intersection(geoms, by_edge=False, ids=None):
     """
     if ids is None:
         ids = getattr(geoms, "index", pandas.RangeIndex(len(geoms)))
+    ids = numpy.asarray(ids)
 
     # initialise the target map
     graph = defaultdict(set)
 
     # get all of the vertices for the input
-    assert not (
-        geoms.geom_type.str.endswith("Point")
+    assert (
+        ~geoms.geom_type.str.endswith("Point")
     ).any(), "this graph type is only well-defined for line and polygon geometries."
-    geoms = geoms.explode()
-    multipolygon_ixs = geoms.index.get_level_values(0)
-    ids = ids[multipolygon_ixs]
-    geoms = geoms.geometry
+    ## TODO: this induces a "fake" edge between the closing and opening point
+    ##       of two multipolygon parts. This should never enter into calculations,
+    ##       *unless* two multipolygons share opening and closing points in the
+    ##       same order and part order. Still, this should be fixed by ensuring that
+    ##       only adjacent points of the same part of the same polygon are used.
+    ##       this bug also exists in the existing contiguity builder.
+    # geoms = geoms.explode()
+    # multipolygon_ixs = geoms.get_level_values(0)
+    # ids = ids[multipolygon_ixs]
+    # geoms = geoms.geometry
     vertices, offsets = shapely.get_coordinates(geoms, return_index=True)
     # initialise the hashmap we want to invert
     vert_to_geom = defaultdict(set)
@@ -48,9 +56,10 @@ def vertex_set_intersection(geoms, by_edge=False, ids=None):
             vert_to_geom[tuple(vertex)].add(offsets[i])
 
     # invert vert_to_geom
-    for nexus in vert_to_geom:
+    for nexus in vert_to_geom.values():
         if len(nexus) < 2:
             continue
+        print(nexus)
         nexus_names = {ids[ix] for ix in nexus}
         for geom_ix in nexus:
             graph[ids[geom_ix]] |= nexus_names
@@ -78,4 +87,4 @@ def rook(geoms, ids=None):
     head, tail = shapely.STRtree(geoms).query(geoms)
     geoms = numpy.asarray(geoms)
     mask = shapely.relate_pattern(geoms[head], geoms[tail], "F***1****")
-    return W.from_arrays(head[mask], tail[mask], numpy.ones_like(head))
+    return W.from_arrays(head[mask], tail[mask], numpy.ones_like(head[mask]))
