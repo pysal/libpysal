@@ -5,7 +5,6 @@ import pandas
 import shapely
 
 from .base import W
-import pandas
 
 
 def vertex_set_intersection(geoms, by_edge=False, ids=None):
@@ -28,12 +27,14 @@ def vertex_set_intersection(geoms, by_edge=False, ids=None):
     assert (
         ~geoms.geom_type.str.endswith("Point")
     ).any(), "this graph type is only well-defined for line and polygon geometries."
+
     ## TODO: this induces a "fake" edge between the closing and opening point
     ##       of two multipolygon parts. This should never enter into calculations,
     ##       *unless* two multipolygons share opening and closing points in the
     ##       same order and part order. Still, this should be fixed by ensuring that
     ##       only adjacent points of the same part of the same polygon are used.
     ##       this bug also exists in the existing contiguity builder.
+
     # geoms = geoms.explode()
     # multipolygon_ixs = geoms.get_level_values(0)
     # ids = ids[multipolygon_ixs]
@@ -59,13 +60,12 @@ def vertex_set_intersection(geoms, by_edge=False, ids=None):
     for nexus in vert_to_geom.values():
         if len(nexus) < 2:
             continue
-        print(nexus)
         nexus_names = {ids[ix] for ix in nexus}
         for geom_ix in nexus:
-            graph[ids[geom_ix]] |= nexus_names
-    return graph
-    return W.from_dict(graph)
-    # pandas.MultiIndex.from_arrays(pandas.Series(newr).explode().reset_index().values)
+            gid = ids[geom_ix]
+            graph[gid] |= nexus_names
+            graph[gid].remove(gid)
+    return W.from_dicts(graph)
 
 
 def queen(geoms, ids=None):
@@ -75,7 +75,7 @@ def queen(geoms, ids=None):
         except:
             ids = numpy.arange(len(geoms))
     head, tail = shapely.STRtree(geoms).query(geoms, predicate="touches")
-    return W.from_arrays(head, tail, numpy.ones_like(head))
+    return W.from_arrays(ids[head], ids[tail], numpy.ones_like(head))
 
 
 def rook(geoms, ids=None):
@@ -87,4 +87,4 @@ def rook(geoms, ids=None):
     head, tail = shapely.STRtree(geoms).query(geoms)
     geoms = numpy.asarray(geoms)
     mask = shapely.relate_pattern(geoms[head], geoms[tail], "F***1****")
-    return W.from_arrays(head[mask], tail[mask], numpy.ones_like(head[mask]))
+    return W.from_arrays(ids[head[mask]], ids[tail[mask]], numpy.ones_like(head[mask]))

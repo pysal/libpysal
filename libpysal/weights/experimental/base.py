@@ -115,7 +115,7 @@ class W:
         return cls.from_dicts(idx, data)
 
     @classmethod
-    def from_dicts(cls, neighbors, weights):
+    def from_dicts(cls, neighbors, weights=None):
         """Generate W from dictionaries of neighbors and weights
 
         Parameters
@@ -123,9 +123,9 @@ class W:
         neighbors : dict
             dictionary of neighbors with the ``{focal: [neighbor1, neighbor2]}``
             structure
-        weights : dict
+        weights : dict, optional
             dictionary of neighbors with the ``{focal: [weight1, weight2]}``
-            structure
+            structure. If None, assumes binary weights.
 
         Returns
         -------
@@ -133,13 +133,17 @@ class W:
             libpysal.weights.experimental.W
         """
         idxs = pd.Series(neighbors).explode()
-        data_array = pd.Series(weights).explode()
+        if weights is not None:
+            data_array = pd.Series(weights).explode().values
+        else:
+            data_array = np.ones(idxs.shape[0])
+
         return cls(
             pd.Series(
                 index=pd.MultiIndex.from_arrays(
                     [idxs.index, idxs.values], names=["focal", "neighbor"]
                 ),
-                data=data_array.values,
+                data=data_array,
             )
         )
 
