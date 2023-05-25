@@ -2,8 +2,6 @@ from scipy import sparse
 import numpy as np
 import pandas as pd
 
-# TODO: take care of islands
-
 
 class W:
     _cache: dict = {}
@@ -91,6 +89,35 @@ class W:
                     [focal_index, neighbor_index], names=["focal", "neighbor"]
                 ),
                 data=weight,
+            )
+        )
+
+    @classmethod
+    def from_weights_dict(cls, weights_dict):
+        """Generate W from a dict of dicts
+
+        Parameters
+        ----------
+        weights_dict : dictionary of dictionaries
+            weights dictionary with the `{focal: {neighbor: weight}}` structure.
+
+        Returns
+        -------
+        W
+            libpysal.weights.experimental.W
+        """
+        idx = {f: [k for k in neighbors] for f, neighbors in weights_dict.items()}
+        data = {
+            f: [k for k in neighbors.values()] for f, neighbors in weights_dict.items()
+        }
+        idxs = pd.Series(idx).explode()
+        data_array = pd.Series(data).explode()
+        return cls(
+            pd.Series(
+                index=pd.MultiIndex.from_arrays(
+                    [idxs.index, idxs.values], names=["focal", "neighbor"]
+                ),
+                data=data_array.values,
             )
         )
 
