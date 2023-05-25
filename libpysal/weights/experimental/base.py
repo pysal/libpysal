@@ -46,7 +46,7 @@ class W:
         return cls(w.to_adjlist().set_index(["focal", "neighbor"]).weight)
 
     @classmethod
-    def from_sparse(cls, sparse):
+    def from_sparse(cls, sparse, focal_ids=None, neighbor_ids=None):
         """Convert a ``scipy.sparse`` array to a PySAL ``W`` object.
 
         Parameters
@@ -58,17 +58,17 @@ class W:
         W
             libpysal.weights.experimental.W
         """
-        return cls(
-            pd.Series(
-                index=pd.MultiIndex.from_arrays(
-                    sparse.nonzero(), names=["focal", "neighbor"]
-                ),
-                data=sparse.data,
-            )
-        )
+        if focal_ids is not None and neighbor_ids is not None:
+            f, n = sparse.nonzero()
+            focal_ids = focal_ids[f]
+            neighbor_ids = neighbor_ids[n]
+        else:
+            focal_ids, neighbor_ids = sparse.nonzero()
+
+        return cls.from_arrays(focal_ids, neighbor_ids, weight=sparse.data)
 
     @classmethod
-    def from_arrays(cls, focal_index, neighbor_index, weight):
+    def from_arrays(cls, focal_ids, neighbor_ids, weight):
         """Generate W from arrays of indices and weights of the same length
 
         Parameters
@@ -88,7 +88,7 @@ class W:
         return cls(
             pd.Series(
                 index=pd.MultiIndex.from_arrays(
-                    [focal_index, neighbor_index], names=["focal", "neighbor"]
+                    [focal_ids, neighbor_ids], names=["focal", "neighbor"]
                 ),
                 data=weight,
             )
