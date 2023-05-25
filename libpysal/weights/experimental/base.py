@@ -2,8 +2,12 @@ from scipy import sparse
 import numpy as np
 import pandas as pd
 
+from scipy.sparse.csgraph import connected_components
+
 
 class W:
+    _cache: dict = {}
+
     def __init__(self, adjacency, transformation="O"):
         """Weights base class based on adjacency list
 
@@ -30,7 +34,34 @@ class W:
         """
         return cls(w.to_adjlist().set_index(["focal", "neighbor"]).weight)
 
-    def neighbors(self, ix):
+    @property
+    def neighbors(self):
+        """Get neighbors dictionary
+
+        Returns
+        -------
+        dict
+            dict of tuples representing neighbors
+        """
+        return (
+            self.adjacency.reset_index(level=-1)
+            .neighbor.groupby(level=0)
+            .agg(tuple)
+            .to_dict()
+        )
+
+    @property
+    def weights(self):
+        """Get weights dictionary
+
+        Returns
+        -------
+        dict
+            dict of tuples representing weights
+        """
+        return self.adjacency.groupby(level=0).agg(tuple).to_dict()
+
+    def get_neighbors(self, ix):
         """Get neighbors for a set focal object
 
         Parameters
@@ -45,7 +76,7 @@ class W:
         """
         return self.adjacency[ix].index.values
 
-    def weights(self, ix):
+    def get_weights(self, ix):
         """Get weights for a set focal object
 
         Parameters
@@ -128,3 +159,35 @@ class W:
             raise ValueError(f"Transformation '{transformation}' is not supported.")
 
         return W(standardized, transformation)
+
+    @property
+    def n_components(self):
+        """Get a number of connected components
+
+        Returns
+        -------
+        int
+            number of components
+        """
+        if "n_components" not in self._cache:
+            (
+                self._cache["n_components"],
+                self._cache["component_labels"],
+            ) = sparse.csgraph.connected_components(self.sparse)
+        return self._cache["n_components"]
+
+    @property
+    def component_labels(self):
+        """Get component labels per observation
+
+        Returns
+        -------
+        numpy.array
+            Array of component labels
+        """
+        if "component_labels" not in self._cache:
+            (
+                self._cache["n_components"],
+                self._cache["component_labels"],
+            ) = sparse.csgraph.connected_components(self.sparse)
+        return self._cache["component_labels"]
