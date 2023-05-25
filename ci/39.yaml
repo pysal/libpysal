@@ -6,8 +6,8 @@ dependencies:
   - platformdirs
   - beautifulsoup4
   - jinja2
-  - pandas>=1.0
-  - scipy>=1.0
+  - pandas
+  - scipy
   - xarray
   # testing
   - codecov
@@ -16,10 +16,9 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
-  - geopandas>=0.7.0
+  - geopandas
   - joblib
   - networkx
   - numba
   - packaging
-  - xarray
   - zstd
