@@ -16,13 +16,48 @@ class W:
         self.transformation = transformation
 
     @classmethod
-    def from_w(cls, w):
+    def from_old_w(cls, w):
+        """Create an experimental W from libpysal.weights.W object
+
+        Parameters
+        ----------
+        w : libpysal.weights.W
+
+        Returns
+        -------
+        W
+            libpysal.weights.experimentat.W
+        """
         return cls(w.to_adjlist().set_index(["focal", "neighbor"]).weight)
 
     def neighbors(self, ix):
+        """Get neighbors for a set focal object
+
+        Parameters
+        ----------
+        ix : hashable
+            index of focal object
+
+        Returns
+        -------
+        array
+            array of indices of neighbor objects
+        """
         return self.adjacency[ix].index.values
 
     def weights(self, ix):
+        """Get weights for a set focal object
+
+        Parameters
+        ----------
+        ix : hashable
+            index of focal object
+
+        Returns
+        -------
+        array
+            array of weights of neighbor object
+        """
         return self.adjacency[ix].values
 
     @property
