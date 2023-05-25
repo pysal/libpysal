@@ -41,9 +41,31 @@ class W:
         Returns
         -------
         W
-            libpysal.weights.experimentat.W
+            libpysal.weights.experimental.W
         """
         return cls(w.to_adjlist().set_index(["focal", "neighbor"]).weight)
+
+    @classmethod
+    def from_sparse(cls, sparse):
+        """Convert a ``scipy.sparse`` array to a PySAL ``W`` object.
+
+        Parameters
+        ----------
+        sparse : scipy.sparse array
+
+        Returns
+        -------
+        W
+            libpysal.weights.experimental.W
+        """
+        return cls(
+            pd.Series(
+                index=pd.MultiIndex.from_arrays(
+                    sparse.nonzero(), names=["focal", "neighbor"]
+                ),
+                data=sparse.data,
+            )
+        )
 
     @property
     def neighbors(self):
@@ -204,6 +226,17 @@ class W:
                 self._cache["component_labels"],
             ) = sparse.csgraph.connected_components(self.sparse)
         return self._cache["component_labels"]
+
+    @property
+    def cardinalities(self):
+        """Number of neighbors for each observation
+
+        Returns
+        -------
+        pandas.Series
+            Series with a number of neighbors per each observation
+        """
+        return self.adjacency.groupby(level=0).count()
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order K.
