@@ -273,7 +273,7 @@ class W:
         return W(standardized_adjacency, transformation)
 
     @cached_property
-    def component_labelsn_components(self):
+    def n_components(self):
         """Get a number of connected components
 
         Returns
