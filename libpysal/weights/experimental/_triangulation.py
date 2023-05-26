@@ -2,7 +2,7 @@ from scipy.spatial import Delaunay as _Delaunay
 from scipy import sparse
 import pandas, numpy, warnings
 from .base import W
-from .contiguity import vertex_set_intersection
+from ._contiguity import vertex_set_intersection
 
 try:
     from numba import njit
@@ -61,7 +61,9 @@ def delaunay(coordinates, ids=None):
     if hasattr(coordinates, "geometry"):
         if ids is None:
             ids = coordinates.index
-        assert (coordinates.geom_type.unique == "Point").all(), "this graph type is only well-defined for point geometries."
+        assert (
+            coordinates.geom_type.unique == "Point"
+        ).all(), "this graph type is only well-defined for point geometries."
         coordinates = shapely.get_coordinates(coordinates)
     else:
         if ids is None:
@@ -105,34 +107,35 @@ def gabriel(Delaunay):
     **kwargs    :   keyword argument list
         keyword arguments passed directly to weights.W
     """
-
-        try:
-            from numba import njit
-        except ModuleNotFoundError:
-            warnings.warn(
-                "The numba package is used extensively in this module"
-                " to accelerate the computation of graphs. Without numba,"
-                " these computations may become unduly slow on large data."
-            )
-        if hasattr(coordinates, "geometry"):
-            if ids is None:
-                ids = coordinates.index
-            assert (coordinates.geom_type.unique == "Point").all(), "this graph type is only well-defined for point geometries."
-            coordinates = shapely.get_coordinates(coordinates)
-        else:
-            if ids is None:
-                ids = pandas.RangeIndex(n_samples)
-
-        edges, dt = self._voronoi_edges(coordinates)
-        droplist = _filter_gabriel(
-            edges,
-            dt.points,
+    try:
+        from numba import njit
+    except ModuleNotFoundError:
+        warnings.warn(
+            "The numba package is used extensively in this module"
+            " to accelerate the computation of graphs. Without numba,"
+            " these computations may become unduly slow on large data."
         )
-        output = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist))))
-        ids = numpy.asarray(ids)
-        head, tail = ids[output[:, 0]], ids[output[:, 1]]
+    if hasattr(coordinates, "geometry"):
+        if ids is None:
+            ids = coordinates.index
+        assert (
+            coordinates.geom_type.unique == "Point"
+        ).all(), "this graph type is only well-defined for point geometries."
+        coordinates = shapely.get_coordinates(coordinates)
+    else:
+        if ids is None:
+            ids = pandas.RangeIndex(n_samples)
 
-        return W.from_index(pandas.MultiIndex.from_arrays((head, tail)))
+    edges, dt = self._voronoi_edges(coordinates)
+    droplist = _filter_gabriel(
+        edges,
+        dt.points,
+    )
+    output = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist))))
+    ids = numpy.asarray(ids)
+    head, tail = ids[output[:, 0]], ids[output[:, 1]]
+
+    return W.from_index(pandas.MultiIndex.from_arrays((head, tail)))
 
 
 def relative_neighborhood(coordinates, binary=True, ids=None):
@@ -156,7 +159,6 @@ def relative_neighborhood(coordinates, binary=True, ids=None):
     **kwargs    :   keyword argument list
         keyword arguments passed directly to weights.W
     """
-
     try:
         from numba import njit
     except ModuleNotFoundError:
@@ -168,7 +170,9 @@ def relative_neighborhood(coordinates, binary=True, ids=None):
     if hasattr(coordinates, "geometry"):
         if ids is None:
             ids = coordinates.index
-        assert (coordinates.geom_type.unique == "Point").all(), "this graph type is only well-defined for point geometries."
+        assert (
+            coordinates.geom_type.unique == "Point"
+        ).all(), "this graph type is only well-defined for point geometries."
         coordinates = shapely.get_coordinates(coordinates)
     else:
         if ids is None:
@@ -182,11 +186,14 @@ def relative_neighborhood(coordinates, binary=True, ids=None):
 
     return W.from_index(pandas.MultiIndex.from_arrays((row, col)), weights=data)
 
-def voronoi(coordinates, ids=None, clip='bbox'):
+
+def voronoi(coordinates, ids=None, clip="bbox"):
     if hasattr(coordinates, "geometry"):
         if ids is None:
             ids = coordinates.index
-        assert (coordinates.geom_type.unique == "Point").all(), "this graph type is only well-defined for point geometries."
+        assert (
+            coordinates.geom_type.unique == "Point"
+        ).all(), "this graph type is only well-defined for point geometries."
         coordinates = shapely.get_coordinates(coordinates)
     else:
         if ids is None:
@@ -195,8 +202,8 @@ def voronoi(coordinates, ids=None, clip='bbox'):
     return vertex_set_intersection(cells, ids=ids)
 
 
-
 #### utilities
+
 
 @njit
 def _edges_from_simplices(simplices):

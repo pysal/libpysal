@@ -30,7 +30,8 @@ def _cosine(distances, bandwidth):
 
 
 def _boxcar(distances, bandwidth):
-    return (distances > bandwidth).astype(distances.dtype)
+    r = (distances < bandwidth).astype(int)
+    return r
 
 
 _kernel_functions = dict(
@@ -48,16 +49,16 @@ def kernel(
     coordinates,
     bandwidth=None,
     metric="euclidean",
-    kernel="triangular",
+    function="triangular",
     k=None,
     ids=None,
-    **kwargs,
+    p=2,
 ):
     if hasattr(coordinates, "geometry"):
         if ids is None:
             ids = coordinates.index
         assert (
-            coordinates.geom_type.unique == "Point"
+            coordinates.geom_type.unique() == "Point"
         ).all(), "this graph type is only well-defined for point geometries."
         coordinates = shapely.get_coordinates(coordinates)
     else:
@@ -68,12 +69,13 @@ def kernel(
             coordinates.shape[0] == coordinates.shape[1]
         ), "coordinates should represent a distance matrix if metric='precomputed'"
 
+    n_samples, _ = coordinates.shape
+
     if k is not None:
         if metric != "precomputed":
-            p = kwargs.get("p", 2)
             if metric == "haversine":
                 # sklearn haversine works with (lat,lng) in radians...
-                coordinates = numpy.fliplr(coordinates.deg2rad())
+                coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
             query = _prepare_tree_query(coordinates, metric, p=p)
             D_linear, ixs = query(coordinates, k=k + 1)
             self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
@@ -84,7 +86,8 @@ def kernel(
             if metric == "haversine":
                 D_linear_flat * 6371  # express haversine distances in kilometers
             D = scipy.sparse.csc_array(
-                (D_linear_flat, (self_ix_flat, neighbor_ix_flat))
+                (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
+                shape=(n_samples, n_samples),
             )
         else:
             D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
@@ -98,19 +101,45 @@ def kernel(
         bandwidth = numpy.percentile(D.data, 25)
     elif bandwidth == "opt":
         bandwidth = _optimize_bandwidth(D, kernel)
-    K = D.copy()
-    if callable(kernel):
-        K.data = kernel(D.data, bandwidth)
+    if callable(function):
+        smooth = function(D.data, bandwidth)
     else:
-        K.data = _kernel_functions[kernel](D.data, bandwidth)
-    return K
-    return W.from_sparse(K, ids=ids)
+        smooth = _kernel_functions[function](D.data, bandwidth)
+    return scipy.sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
+
+
+def knn(
+    coordinates,
+    metric="euclidean",
+    k=2,
+    ids=None,
+    p=2,
+    function="boxcar",
+    bandwidth=numpy.inf,
+):
+    """
+    Compute a K-nearest neighbor weight. Uses kernel() with a boxcar kernel
+    and infinite bandwidth by default.
+    """
+    return kernel(
+        coordinates,
+        metric=metric,
+        k=k,
+        ids=ids,
+        p=p,
+        function=function,
+        bandwidth=bandwidth,
+    )
 
 
 def _prepare_tree_query(coordinates, metric, p=2):
     try:
-        from sklearn.neighbors import BallTree as tree
+        from sklearn.neighbors import BallTree, KDTree, VALID_METRICS
 
+        if metric in VALID_METRICS["kd_tree"]:
+            tree = KDTree
+        else:
+            tree = BallTree
         return tree(coordinates, metric=metric).query
     except ImportError:
         if metric in ("euclidean", "manhattan", "cityblock", "minkowski"):
@@ -133,9 +162,6 @@ def _from_dataframe(df, **kwargs):
     coordinates = get_points_array(df.geometry)
     indices = df.index
     return kernel(coordinates, indices=indices, **kwargs)
-
-
-# kernel.from_dataframe = _from_dataframe
 
 
 def _optimize_bandwidth(D, kernel):
