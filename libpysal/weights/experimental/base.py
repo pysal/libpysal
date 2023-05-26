@@ -207,6 +207,7 @@ class W:
         dict
             dict of tuples representing neighbors
         """
+        # TODO: ensure the dict remains unsorted
         return self._adjacency.neighbor.groupby(level=0).agg(tuple).to_dict()
 
     @cached_property
@@ -218,6 +219,7 @@ class W:
         dict
             dict of tuples representing weights
         """
+        # TODO: ensure the dict remains unsorted
         return self._adjacency.weight.groupby(level=0).agg(tuple).to_dict()
 
     def get_neighbors(self, ix):
