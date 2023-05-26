@@ -163,7 +163,7 @@ class W:
         dict
             dict of tuples representing weights
         """
-        return self._adjacency.groupby(level=0).agg(tuple).to_dict()
+        return self._adjacency.weight.groupby(level=0).agg(tuple).to_dict()
 
     def get_neighbors(self, ix):
         """Get neighbors for a set focal object
@@ -207,9 +207,12 @@ class W:
         scipy.sparse.COO
             sparse representation of the adjacency
         """
-        focal_int, self.focal_label = self._adjacency.index.factorize()
-        neighbor_int, self.neighbor_label = self._adjacency.neighbor.factorize()
-        return sparse.coo_matrix(
+        # .factorize(sort=True) ensures the order is unchanged (weirdly enough)
+        focal_int, self.focal_label = self._adjacency.index.factorize(sort=True)
+        neighbor_int, self.neighbor_label = self._adjacency.neighbor.factorize(
+            sort=True
+        )
+        return sparse.coo_array(
             (self._adjacency.weight.values, (focal_int, neighbor_int))
         )
 
@@ -243,29 +246,34 @@ class W:
             return self
 
         if transformation == "R":
-            standardized = self._adjacency / self._adjacency.groupby(level=0).sum()
+            standardized = (
+                self._adjacency.weight
+                / self._adjacency.weight.groupby(level=0).transform("sum")
+            ).values
 
         elif transformation == "D":
-            standardized = self._adjacency / self._adjacency.sum()
+            standardized = (
+                self._adjacency.weight / self._adjacency.weight.sum()
+            ).values
 
         elif transformation == "B":
-            standardized = pd.Series(
-                index=self._adjacency.index,
-                data=np.ones(self._adjacency.shape, dtype=int),
-            )
+            standardized = np.ones(self._adjacency.shape[0], dtype=int)
 
         elif transformation == "V":
             standardized = (
-                self._adjacency / self._adjacency.groupby(level=0).sum().sqrt()
-            )
+                self._adjacency.weight
+                / np.sqrt(self._adjacency.weight.groupby(level=0).transform("sum"))
+            ).values
 
         else:
             raise ValueError(f"Transformation '{transformation}' is not supported.")
 
-        return W(standardized, transformation)
+        standardized_adjacency = self._adjacency.copy()
+        standardized_adjacency["weight"] = standardized
+        return W(standardized_adjacency, transformation)
 
     @cached_property
-    def n_components(self):
+    def component_labelsn_components(self):
         """Get a number of connected components
 
         Returns
@@ -305,12 +313,14 @@ class W:
         pandas.Series
             Series with a number of neighbors per each observation
         """
-        return self.adjacency.groupby(level=0).count()
+        return self.adjacency.neighbor.groupby(level=0).count()
 
     @property
     def n(self):
         """Number of units."""
-        n = self._adjacency.shape[0]
+        n = np.unique(
+            np.concatenate([self._adjacency.index, self._adjacency.neighbor])
+        ).shape[0]
         return n
 
     @cached_property
@@ -320,34 +330,10 @@ class W:
         return p
 
     @cached_property
-    def max_neighbors(self):
-        """Largest number of neighbors."""
-        m = self.cardinalities.max()
-        return m
-
-    @cached_property
-    def mean_neighbors(self):
-        """Average number of neighbors."""
-        m = self.cardinalities.mean()
-        return m
-
-    @cached_property
-    def min_neighbors(self):
-        """Minimum number of neighbors."""
-        m = self.cardinalities.min()
-        return m
-
-    @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
         nnz = self.sparse.nnz
         return nnz
-
-    @cached_property
-    def sd(self):
-        """Standard deviation of number of neighbors."""
-        sd = self.cardinalities.std(ddof=0)
-        return sd
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order K.
