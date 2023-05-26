@@ -43,7 +43,7 @@ class W:
         W
             libpysal.weights.experimental.W
         """
-        return cls(w.to_adjlist().set_index(["focal", "neighbor"]).weight)
+        return cls.from_weights_dict(dict(w))
 
     @classmethod
     def from_sparse(cls, sparse, focal_ids=None, neighbor_ids=None):
@@ -85,14 +85,15 @@ class W:
         W
             libpysal.weights.experimental.W
         """
-        return cls(
-            pd.Series(
-                index=pd.MultiIndex.from_arrays(
-                    [focal_ids, neighbor_ids], names=["focal", "neighbor"]
-                ),
-                data=weight,
+
+        w = cls(
+            pd.DataFrame(
+                index=pd.Index(focal_ids, name="focal"),
+                data={"neighbor": neighbor_ids, "weight": weight},
             )
         )
+
+        return w
 
     @classmethod
     def from_weights_dict(cls, weights_dict):
@@ -140,14 +141,7 @@ class W:
         else:
             data_array = np.ones(idxs.shape[0], dtype=int)
 
-        return cls(
-            pd.Series(
-                index=pd.MultiIndex.from_arrays(
-                    [idxs.index, idxs.values], names=["focal", "neighbor"]
-                ),
-                data=data_array,
-            )
-        )
+        return cls.from_arrays(idxs.index.values, idxs.values, data_array)
 
     @cached_property
     def neighbors(self):
@@ -158,12 +152,7 @@ class W:
         dict
             dict of tuples representing neighbors
         """
-        return (
-            self._adjacency.reset_index(level=-1)
-            .neighbor.groupby(level=0)
-            .agg(tuple)
-            .to_dict()
-        )
+        return self._adjacency.neighbor.groupby(level=0).agg(tuple).to_dict()
 
     @cached_property
     def weights(self):
@@ -218,13 +207,11 @@ class W:
         scipy.sparse.COO
             sparse representation of the adjacency
         """
-        focal_int, self.focal_label = self._adjacency.index.get_level_values(
-            "focal"
-        ).factorize()
-        neighbor_int, self.neighbor_label = self._adjacency.index.get_level_values(
-            "neighbor"
-        ).factorize()
-        return sparse.coo_array((self._adjacency.values, (focal_int, neighbor_int)))
+        focal_int, self.focal_label = self._adjacency.index.factorize()
+        neighbor_int, self.neighbor_label = self._adjacency.neighbor.factorize()
+        return sparse.coo_matrix(
+            (self._adjacency.weight.values, (focal_int, neighbor_int))
+        )
 
     def transform(self, transformation):
         """Transformation of weights
