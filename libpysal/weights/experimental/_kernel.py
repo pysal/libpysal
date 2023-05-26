@@ -1,8 +1,7 @@
-import numpy, pandas, scipy, shapely
+import numpy, pandas, scipy, shapely, geopandas
 from .base import W
 
-coordinates = numpy.random.normal(0, 1, size=(100, 2))
-
+_VALID_GEOMETRY_TYPES = ("Point")
 
 def _triangular(distances, bandwidth):
     u = numpy.clip(distances / bandwidth, 0, 1)
@@ -33,6 +32,8 @@ def _boxcar(distances, bandwidth):
     r = (distances < bandwidth).astype(int)
     return r
 
+def _identity(distances, bandwidth):
+    return distances
 
 _kernel_functions = dict(
     triangular=_triangular,
@@ -42,28 +43,20 @@ _kernel_functions = dict(
     cosine=_cosine,
     boxcar=_boxcar,
     discrete=_boxcar,
+    identity=_identity,
+    None = _identity
 )
-
 
 def kernel(
     coordinates,
     bandwidth=None,
     metric="euclidean",
-    function="triangular",
+    kernel="triangular",
     k=None,
     ids=None,
     p=2,
 ):
-    if hasattr(coordinates, "geometry"):
-        if ids is None:
-            ids = coordinates.index
-        assert (
-            coordinates.geom_type.unique() == "Point"
-        ).all(), "this graph type is only well-defined for point geometries."
-        coordinates = shapely.get_coordinates(coordinates)
-    else:
-        if ids is None:
-            ids = pandas.RangeIndex(n_samples)
+    coordinates, ids, geoms = _validate_geom_input(coordinates, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
     if metric == "precomputed":
         assert (
             coordinates.shape[0] == coordinates.shape[1]
@@ -156,12 +149,6 @@ def _prepare_tree_query(coordinates, metric, p=2):
             raise ValueError(
                 f"metric {metric} is not supported by scipy, and scikit-learn is not able to be imported"
             )
-
-
-def _from_dataframe(df, **kwargs):
-    coordinates = get_points_array(df.geometry)
-    indices = df.index
-    return kernel(coordinates, indices=indices, **kwargs)
 
 
 def _optimize_bandwidth(D, kernel):

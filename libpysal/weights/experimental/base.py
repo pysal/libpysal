@@ -60,8 +60,10 @@ class W:
             f, n = sparse.nonzero()
             focal_ids = focal_ids[f]
             neighbor_ids = neighbor_ids[n]
-        else:
+        elif (focal_ids is None) and (neighbor_ids is None):
             focal_ids, neighbor_ids = sparse.nonzero()
+        else:
+            raise ValueError('Either both focal_ids and neighbor_ids are provided, or neither may be provided.')
 
         return cls.from_arrays(focal_ids, neighbor_ids, weight=sparse.data)
 
@@ -113,6 +115,17 @@ class W:
         }
         return cls.from_dicts(idx, data)
 
+    @staticmethod
+    def _neighbor_dict_to_edges(neighbors, weights=None):
+        idxs = pd.Series(neighbors).explode()
+        if weights is not None:
+            data_array = pd.Series(weights).explode().values
+            if not pd.api.types.is_numeric_dtype(data_array):
+                data_array = pd.to_numeric(data_array)
+        else:
+            data_array = np.ones(idxs.shape[0], dtype=int)
+        return idxs.index.values, idxs.values, data_array
+
     @classmethod
     def from_dicts(cls, neighbors, weights=None):
         """Generate W from dictionaries of neighbors and weights
@@ -131,15 +144,8 @@ class W:
         W
             libpysal.weights.experimental.W
         """
-        idxs = pd.Series(neighbors).explode()
-        if weights is not None:
-            data_array = pd.Series(weights).explode().values
-            if not pd.api.types.is_numeric_dtype(data_array):
-                data_array = pd.to_numeric(data_array)
-        else:
-            data_array = np.ones(idxs.shape[0], dtype=int)
-
-        return cls.from_arrays(idxs.index.values, idxs.values, data_array)
+        head, tail, weight = cls._neighbor_dict_to_edges(neighbors, weights=weights)
+        return cls.from_arrays(head, tail, weight)
 
     @cached_property
     def neighbors(self):
@@ -434,3 +440,28 @@ class W:
                 data=np.ones(len(ix), dtype=int),
             )
         )
+
+def _validate_geometry_input(geoms, ids=None, valid_geom_types=None):
+    if isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
+        geoms = geoms.geometry
+        if ids is None:
+            ids = geoms.index
+        ids = numpy.asarray(ids)
+        geom_types = set(geoms.geom_type)
+        if valid_geom_types is not None:
+            if isinstance(valid_geom_types, str):
+                valid_geom_types = (valid_geom_types,)
+            valid_geom_types = set(valid_geom_types)
+            if not geom_types <= valid_geom_types :
+                raise ValueError(f"this W type is only well-defined for geom_types: {valid_geom_types}.")
+        coordinates = shapely.get_coordinates(geoms)
+        geoms = geoms.copy()
+        geoms.index = ids
+        return coordinates, ids, geoms
+    elif isinstance(geoms.dtype, geopandas.array.GeometryDtype):
+        return _validate_geom_input(geopandas.GeoSeries(geoms), ids=ids)
+    else:
+        if (geoms.ndim == 2) and (geoms.shape[1] == 2):
+            return _validateg_geom_input(geopandas.points_from_xy(*geoms.T), ids=ids)
+    raise ValueError("input geometry type is not supported. Input must either be a geopandas.GeoSeries, geopandas.GeoDataFrame, a numpy array with a geometry dtype, or an array of coordinates.")
+

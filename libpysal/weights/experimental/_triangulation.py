@@ -1,23 +1,23 @@
 from scipy.spatial import Delaunay as _Delaunay
 from scipy import sparse
 import pandas, numpy, warnings
-from .base import W
-from ._contiguity import vertex_set_intersection
+from .base import W, _validate_geometry_input
+from ._contiguity import vertex_set_intersection, queen, rook
+from ._kernel import _kernel_functions
 
 try:
     from numba import njit
 except ModuleNotFoundError:
     from libpysal.common import jit as njit
 
+_VALID_GEOMETRY_TYPES = ("Point")
+
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
 Martin Fleischmann (martin@martinfleischmann.net)
 """
 
-#### Classes
-
-
-def delaunay(coordinates, ids=None):
+def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     """
     Constructor of the Delaunay graph of a set of input points.
     Relies on scipy.spatial.Delaunay and numba to quickly construct
@@ -58,16 +58,7 @@ def delaunay(coordinates, ids=None):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    if hasattr(coordinates, "geometry"):
-        if ids is None:
-            ids = coordinates.index
-        assert (
-            coordinates.geom_type.unique == "Point"
-        ).all(), "this graph type is only well-defined for point geometries."
-        coordinates = shapely.get_coordinates(coordinates)
-    else:
-        if ids is None:
-            ids = pandas.RangeIndex(n_samples)
+    coordinates, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
 
     dt = _Delaunay(coordinates)
     edges = _edges_from_simplices(dt.simplices)
@@ -81,10 +72,14 @@ def delaunay(coordinates, ids=None):
     ids = numpy.asarray(ids)
     head, tail = ids[edges[:, 0]], ids[edges[:, 1]]
 
-    return W.from_index(pandas.MultiIndex.from_arrays((head, tail)))
+    distances = ((coordinates[head] - coordinates[tail]) ** 2).sum(
+        axis=1
+    ).squeeze() ** 0.5
+    weights = _kernel_functions[kernel](distances, bandwidth)
+    return W.from_arrays(head, tail, weights)
 
 
-def gabriel(Delaunay):
+def gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     """
     Constructs the Gabriel graph of a set of points. This graph is a subset of
     the Delaunay triangulation where only "short" links are retained. This
@@ -115,16 +110,8 @@ def gabriel(Delaunay):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    if hasattr(coordinates, "geometry"):
-        if ids is None:
-            ids = coordinates.index
-        assert (
-            coordinates.geom_type.unique == "Point"
-        ).all(), "this graph type is only well-defined for point geometries."
-        coordinates = shapely.get_coordinates(coordinates)
-    else:
-        if ids is None:
-            ids = pandas.RangeIndex(n_samples)
+    coordinates, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
+
 
     edges, dt = self._voronoi_edges(coordinates)
     droplist = _filter_gabriel(
@@ -135,10 +122,14 @@ def gabriel(Delaunay):
     ids = numpy.asarray(ids)
     head, tail = ids[output[:, 0]], ids[output[:, 1]]
 
-    return W.from_index(pandas.MultiIndex.from_arrays((head, tail)))
+    distances = ((coordinates[head] - coordinates[tail]) ** 2).sum(
+        axis=1
+    ).squeeze() ** 0.5
+    weights = _kernel_functions[kernel](distances, bandwidth)
+    return W.from_arrays(head, tail, weights)
 
 
-def relative_neighborhood(coordinates, binary=True, ids=None):
+def relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     """
     Constructs the Relative Neighborhood graph from a set of points.
     This graph is a subset of the Delaunay triangulation, where only
@@ -167,39 +158,44 @@ def relative_neighborhood(coordinates, binary=True, ids=None):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    if hasattr(coordinates, "geometry"):
-        if ids is None:
-            ids = coordinates.index
-        assert (
-            coordinates.geom_type.unique == "Point"
-        ).all(), "this graph type is only well-defined for point geometries."
-        coordinates = shapely.get_coordinates(coordinates)
-    else:
-        if ids is None:
-            ids = pandas.RangeIndex(n_samples)
+    coordinates, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
+
     edges, dt = self._voronoi_edges(coordinates)
     output, dkmax = _filter_relativehood(edges, dt.points, return_dkmax=False)
-    row, col, data = zip(*output)
-    if binary:
-        data = numpy.ones_like(col, dtype=float)
-    sp = sparse.csc_matrix((data, (row, col)))  # TODO: faster way than this?
 
-    return W.from_index(pandas.MultiIndex.from_arrays((row, col)), weights=data)
+    head, tail, distance = zip(*output)
+    weight = _kernel_functions[kernel](distance, bandwidth)
+    return W.from_arrays(head, tail, weight)
 
 
-def voronoi(coordinates, ids=None, clip="bbox"):
-    if hasattr(coordinates, "geometry"):
-        if ids is None:
-            ids = coordinates.index
-        assert (
-            coordinates.geom_type.unique == "Point"
-        ).all(), "this graph type is only well-defined for point geometries."
-        coordinates = shapely.get_coordinates(coordinates)
-    else:
-        if ids is None:
-            ids = pandas.RangeIndex(n_samples)
+def voronoi(
+    coordinates,
+    ids=None,
+    clip="bbox",
+    contiguity_type="v",
+    bandwidth=numpy.inf,
+    kernel="boxcar",
+):
+    coordinates, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
+
     cells, generators = voronoi_frames(coordinates, clip=clip)
-    return vertex_set_intersection(cells, ids=ids)
+    if contiguity_type == "vertex":
+        w = vertex_set_intersection(cells, ids=ids)
+    elif contiguity_type == "queen":
+        w = queen(cells, ids=ids)
+    elif contiguity_type == "rook":
+        w = rook(cells, ids=ids)
+    else:
+        raise ValueError(
+            f"Contiguity type {contiguity_type} not understood. Supported options are 'vertex', 'queen', and 'rook'"
+        )
+
+    head = w._adjacency.index
+    tail = w._adjacency.neighbor.values
+
+    head, tail, distance = zip(*output)
+    weight = _kernel_functions[kernel](distance, bandwidth)
+    return W.from_arrays(head, tail, weight)
 
 
 #### utilities
