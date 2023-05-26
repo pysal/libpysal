@@ -327,6 +327,47 @@ class W:
         nnz = self.sparse.nnz
         return nnz
 
+    def asymmetry(self, intrinsic=True):
+        """Asymmetry check.
+
+        Parameters
+        ----------
+        intrinsic : bool, optional
+            Default is ``True``. Intrinsic symmetry is defined as
+
+            .. math::
+
+                w_{i,j} == w_{j,i}
+
+            If ``intrinsic`` is ``False`` symmetry is defined as
+
+            .. math::
+
+                i \in N_j \ \& \ j \in N_i
+
+            where :math:`N_j` is the set of neighbors for :math:`j`.
+
+        Returns
+        -------
+        list
+            ``list`` of ``(i,j)`` tuples of asymmetries
+        """
+        if intrinsic:
+            wd = self.sparse.transpose() - self.sparse
+        else:
+            transformed = self.transform("b")
+            wd = transformed.sparse.transpose() - transformed.sparse
+
+        ids = np.nonzero(wd)
+        if len(ids[0]) == 0:
+            return []
+        else:
+            focal = self.focal_label[ids[0]]
+            neighbor = self.neighbor_label[ids[1]]
+            ijs = list(zip(focal, neighbor))
+            ijs.sort()
+            return ijs
+
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order K.
 
