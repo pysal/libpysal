@@ -22,6 +22,7 @@ dependencies:
   - packaging
   - zstd
   - Cython
+  - geodatasets
   - pip
   - pip:
     # dev versions of packages
