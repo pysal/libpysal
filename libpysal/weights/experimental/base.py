@@ -63,7 +63,9 @@ class W:
         elif (focal_ids is None) and (neighbor_ids is None):
             focal_ids, neighbor_ids = sparse.nonzero()
         else:
-            raise ValueError('Either both focal_ids and neighbor_ids are provided, or neither may be provided.')
+            raise ValueError(
+                "Either both focal_ids and neighbor_ids are provided, or neither may be provided."
+            )
 
         return cls.from_arrays(focal_ids, neighbor_ids, weight=sparse.data)
 
@@ -355,8 +357,8 @@ class W:
 
         Returns
         -------
-        list
-            ``list`` of ``(i,j)`` tuples of asymmetries
+        pandas.Series
+            ``Series`` of ``(i,j)`` pairs of asymmetries
         """
         if intrinsic:
             wd = self.sparse.transpose() - self.sparse
@@ -370,8 +372,9 @@ class W:
         else:
             focal = self.focal_label[ids[0]]
             neighbor = self.neighbor_label[ids[1]]
-            ijs = list(zip(focal, neighbor))
-            ijs.sort()
+            ijs = pd.Series(
+                neighbor, index=pd.Index(focal, name="focal"), name="neighbor"
+            ).sort_index()
             return ijs
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
@@ -441,6 +444,7 @@ class W:
             )
         )
 
+
 def _validate_geometry_input(geoms, ids=None, valid_geom_types=None):
     if isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
         geoms = geoms.geometry
@@ -452,8 +456,10 @@ def _validate_geometry_input(geoms, ids=None, valid_geom_types=None):
             if isinstance(valid_geom_types, str):
                 valid_geom_types = (valid_geom_types,)
             valid_geom_types = set(valid_geom_types)
-            if not geom_types <= valid_geom_types :
-                raise ValueError(f"this W type is only well-defined for geom_types: {valid_geom_types}.")
+            if not geom_types <= valid_geom_types:
+                raise ValueError(
+                    f"this W type is only well-defined for geom_types: {valid_geom_types}."
+                )
         coordinates = shapely.get_coordinates(geoms)
         geoms = geoms.copy()
         geoms.index = ids
@@ -463,5 +469,6 @@ def _validate_geometry_input(geoms, ids=None, valid_geom_types=None):
     else:
         if (geoms.ndim == 2) and (geoms.shape[1] == 2):
             return _validateg_geom_input(geopandas.points_from_xy(*geoms.T), ids=ids)
-    raise ValueError("input geometry type is not supported. Input must either be a geopandas.GeoSeries, geopandas.GeoDataFrame, a numpy array with a geometry dtype, or an array of coordinates.")
-
+    raise ValueError(
+        "input geometry type is not supported. Input must either be a geopandas.GeoSeries, geopandas.GeoDataFrame, a numpy array with a geometry dtype, or an array of coordinates."
+    )
