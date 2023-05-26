@@ -1,6 +1,7 @@
 from scipy import sparse
 import numpy as np
 import pandas as pd
+import geopandas, shapely
 
 from functools import cached_property
 from ._contiguity import _queen, _rook, _vertex_set_intersection
