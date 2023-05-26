@@ -95,7 +95,7 @@ def kernel(
     elif bandwidth == "opt":
         bandwidth = _optimize_bandwidth(D, kernel)
     if callable(function):
-        smooth = function(D.data, bandwidth)
+        smooth = kernel(D.data, bandwidth)
     else:
         smooth = _kernel_functions[function](D.data, bandwidth)
     return scipy.sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
