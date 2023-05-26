@@ -189,11 +189,11 @@ def voronoi(
 
     cells, generators = voronoi_frames(coordinates, clip=clip)
     if contiguity_type == "vertex":
-        w = vertex_set_intersection(cells, ids=ids)
+        w = _vertex_set_intersection(cells, ids=ids)
     elif contiguity_type == "queen":
-        w = queen(cells, ids=ids)
+        w = _queen(cells, ids=ids)
     elif contiguity_type == "rook":
-        w = rook(cells, ids=ids)
+        w = _rook(cells, ids=ids)
     else:
         raise ValueError(
             f"Contiguity type {contiguity_type} not understood. Supported options are 'vertex', 'queen', and 'rook'"
