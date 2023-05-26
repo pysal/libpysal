@@ -1,7 +1,7 @@
 import numpy, pandas, scipy, shapely, geopandas
 from .base import W
 
-_VALID_GEOMETRY_TYPES = ("Point")
+_VALID_GEOMETRY_TYPES = ("Point", )
 
 def _triangular(distances, bandwidth):
     u = numpy.clip(distances / bandwidth, 0, 1)
@@ -56,7 +56,7 @@ def kernel(
     ids=None,
     p=2,
 ):
-    coordinates, ids, geoms = _validate_geom_input(coordinates, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
+    coordinates, ids, geoms = _validate_geometry_input(coordinates, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
     if metric == "precomputed":
         assert (
             coordinates.shape[0] == coordinates.shape[1]

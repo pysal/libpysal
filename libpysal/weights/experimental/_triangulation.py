@@ -11,7 +11,7 @@ try:
 except ModuleNotFoundError:
     from libpysal.common import jit as njit
 
-_VALID_GEOMETRY_TYPES = "Point"
+_VALID_GEOMETRY_TYPES = ("Point", )
 
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
