@@ -9,7 +9,7 @@ from .base import W, _validate_geometry_input
 _VALID_GEOMETRY_TYPES = ("Polygon", "MultiPolygon", "LineString", "MultiLineString")
 
 
-def vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
+def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
     """
     Use a hash map inversion to construct a graph
 
@@ -18,7 +18,9 @@ def vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
     ...
 
     """
-    _, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOM_TYPES)
+    _, ids, geoms = _validate_geometry_input(
+        geoms, ids=ids, valid_geom_types=_VALID_GEOM_TYPES
+    )
 
     # initialise the target map
     graph = defaultdict(set)
@@ -73,7 +75,7 @@ def vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
     return W.from_arrays(head, tail, weight)
 
 
-def queen(geoms, ids=None, by_perimeter=False):
+def _queen(geoms, ids=None, by_perimeter=False):
     _, ids, geoms = _validate_geometry_input(
         geoms, ids=ids, valid_geom_types=_VALID_GEOM_TYPES
     )
@@ -84,7 +86,7 @@ def queen(geoms, ids=None, by_perimeter=False):
     return W.from_arrays(head, tail, weight)
 
 
-def rook(geoms, ids=None, by_perimeter=False):
+def _rook(geoms, ids=None, by_perimeter=False):
     _, ids, geoms = _validate_geometry_input(
         geoms, ids=ids, valid_geom_types=_VALID_GEOM_TYPES
     )
