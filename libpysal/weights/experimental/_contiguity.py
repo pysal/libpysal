@@ -4,7 +4,7 @@ import numpy
 import pandas
 import shapely
 
-from .base import W, _validate_geometry_input
+from ._utils import _neighbor_dict_to_edges, _validate_geometry_input
 
 _VALID_GEOMETRY_TYPES = ("Polygon", "MultiPolygon", "LineString", "MultiLineString")
 
@@ -19,7 +19,7 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
 
     """
     _, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOM_TYPES
+        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
     )
 
     # initialise the target map
@@ -67,28 +67,28 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
             gid = ids[geom_ix]
             graph[gid] |= nexus_names
             graph[gid].remove(gid)
-    head, tail, weight = W._neigbor_dict_to_edges(graph)
+    head, tail, weight = _neighbor_dict_to_edges(graph)
 
     if by_perimeter:
         weight = _perimeter_weight(geoms, head, tail)
 
-    return W.from_arrays(head, tail, weight)
+    return head, tail, weight
 
 
 def _queen(geoms, ids=None, by_perimeter=False):
     _, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOM_TYPES
+        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
     )
     head_ix, tail_ix = shapely.STRtree(geoms).query(geoms, predicate="touches")
-    head, tail, weight = ids[head], ids[tail], numpy.ones_like(head)
+    head, tail, weight = ids[head_ix], ids[tail_ix], numpy.ones_like(head_ix)
     if by_perimeter:
         weight = _perimeter_weight(geoms, head, tail)
-    return W.from_arrays(head, tail, weight)
+    return head, tail, weight
 
 
 def _rook(geoms, ids=None, by_perimeter=False):
     _, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOM_TYPES
+        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
     )
     head, tail = shapely.STRtree(geoms).query(geoms)
     geoms = numpy.asarray(geoms)
@@ -96,7 +96,7 @@ def _rook(geoms, ids=None, by_perimeter=False):
     head, tail, weight = ids[head[mask]], ids[tail[mask]], numpy.ones_like(head[mask])
     if by_perimeter:
         weight = _perimeter_weight(geoms, head, tail)
-    return W.from_arrays(head, tail, weight)
+    return head, tail, weight
 
 
 def _perimeter_weight(geoms, heads, tails):

@@ -1,21 +1,23 @@
 from scipy.spatial import Delaunay as _Delaunay
 from scipy import sparse
 import pandas, numpy, warnings
-from .base import W, _validate_geometry_input
-from ._contiguity import vertex_set_intersection, queen, rook
+from .base import W
+from ._contiguity import _vertex_set_intersection, _queen, _rook
 from ._kernel import _kernel_functions
+from ._utils import _validate_geometry_input
 
 try:
     from numba import njit
 except ModuleNotFoundError:
     from libpysal.common import jit as njit
 
-_VALID_GEOMETRY_TYPES = ("Point")
+_VALID_GEOMETRY_TYPES = "Point"
 
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
 Martin Fleischmann (martin@martinfleischmann.net)
 """
+
 
 def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     """
@@ -58,7 +60,9 @@ def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
+    coordinates, ids, geoms = _validate_geometry_input(
+        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+    )
 
     dt = _Delaunay(coordinates)
     edges = _edges_from_simplices(dt.simplices)
@@ -110,8 +114,9 @@ def gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
-
+    coordinates, ids, geoms = _validate_geometry_input(
+        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+    )
 
     edges, dt = self._voronoi_edges(coordinates)
     droplist = _filter_gabriel(
@@ -158,7 +163,9 @@ def relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="bo
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
+    coordinates, ids, geoms = _validate_geometry_input(
+        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+    )
 
     edges, dt = self._voronoi_edges(coordinates)
     output, dkmax = _filter_relativehood(edges, dt.points, return_dkmax=False)
@@ -176,7 +183,9 @@ def voronoi(
     bandwidth=numpy.inf,
     kernel="boxcar",
 ):
-    coordinates, ids, geoms = _validate_geometry_input(geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
+    coordinates, ids, geoms = _validate_geometry_input(
+        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+    )
 
     cells, generators = voronoi_frames(coordinates, clip=clip)
     if contiguity_type == "vertex":

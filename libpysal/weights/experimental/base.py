@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 
 from functools import cached_property
+from ._contiguity import _queen, _rook, _vertex_set_intersection
+from ._utils import _neighbor_dict_to_edges
 
 
 class W:
@@ -117,17 +119,6 @@ class W:
         }
         return cls.from_dicts(idx, data)
 
-    @staticmethod
-    def _neighbor_dict_to_edges(neighbors, weights=None):
-        idxs = pd.Series(neighbors).explode()
-        if weights is not None:
-            data_array = pd.Series(weights).explode().values
-            if not pd.api.types.is_numeric_dtype(data_array):
-                data_array = pd.to_numeric(data_array)
-        else:
-            data_array = np.ones(idxs.shape[0], dtype=int)
-        return idxs.index.values, idxs.values, data_array
-
     @classmethod
     def from_dicts(cls, neighbors, weights=None):
         """Generate W from dictionaries of neighbors and weights
@@ -146,8 +137,64 @@ class W:
         W
             libpysal.weights.experimental.W
         """
-        head, tail, weight = cls._neighbor_dict_to_edges(neighbors, weights=weights)
+        head, tail, weight = _neighbor_dict_to_edges(neighbors, weights=weights)
         return cls.from_arrays(head, tail, weight)
+
+    @classmethod
+    def from_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
+        """Generate W from geometry based on the contiguity
+
+        Parameters
+        ----------
+        geometry : array-like of shapely.Geometry objects
+            Could be geopandas.GeoSeries or geopandas.GeoDataFrame, in which case the
+            resulting W is indexed by the original index. If an array of
+            shapely.Geometry objects is passed, W will assume a RangeIndex.
+        rook : bool, optional
+            Contiguity method. If True, two geometries are considered neighbours if they
+            share at least one edge. If False, two geometries are considered neighbours
+            if they share at least one vertex. By default True
+        by_perimeter : bool, optional
+            TODO, by default False
+        strict : bool, optional
+            Use the strict topological method. If False, the contiguity is determined
+            based on shared coordinates or coordinate sequences representing edges. This
+            assumes geometry coverage that is topologically correct. This method is
+            faster but can miss some relations. If True, the contiguity is determined
+            based on geometric relations that do not require precise topology. This
+            method is slower but will result in correct contiguity even if the topology
+            of geometries is not optimal. By default False
+
+        Returns
+        -------
+        W
+            libpysal.weights.experimental.W
+        """
+        if hasattr(geometry, "index"):
+            ids = geometry.index
+        else:
+            ids = pd.RangeIndex(0, len(geometry))
+
+        if hasattr(geometry, "geometry"):
+            # potentially cast GeoDataFrame to GeoSeries
+            geometry = geometry.geometry
+
+        if strict:
+            # use shapely-based constructors
+            if rook:
+                return cls.from_arrays(
+                    *_rook(geometry, ids=ids, by_perimeter=by_perimeter)
+                )
+            return cls.from_arrays(
+                *_queen(geometry, ids=ids, by_perimeter=by_perimeter)
+            )
+
+        # use vertex-based constructor
+        return cls.from_arrays(
+            *_vertex_set_intersection(
+                geometry, rook=rook, ids=ids, by_perimeter=by_perimeter
+            )
+        )
 
     @cached_property
     def neighbors(self):
@@ -443,32 +490,3 @@ class W:
                 data=np.ones(len(ix), dtype=int),
             )
         )
-
-
-def _validate_geometry_input(geoms, ids=None, valid_geom_types=None):
-    if isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
-        geoms = geoms.geometry
-        if ids is None:
-            ids = geoms.index
-        ids = numpy.asarray(ids)
-        geom_types = set(geoms.geom_type)
-        if valid_geom_types is not None:
-            if isinstance(valid_geom_types, str):
-                valid_geom_types = (valid_geom_types,)
-            valid_geom_types = set(valid_geom_types)
-            if not geom_types <= valid_geom_types:
-                raise ValueError(
-                    f"this W type is only well-defined for geom_types: {valid_geom_types}."
-                )
-        coordinates = shapely.get_coordinates(geoms)
-        geoms = geoms.copy()
-        geoms.index = ids
-        return coordinates, ids, geoms
-    elif isinstance(geoms.dtype, geopandas.array.GeometryDtype):
-        return _validate_geom_input(geopandas.GeoSeries(geoms), ids=ids)
-    else:
-        if (geoms.ndim == 2) and (geoms.shape[1] == 2):
-            return _validateg_geom_input(geopandas.points_from_xy(*geoms.T), ids=ids)
-    raise ValueError(
-        "input geometry type is not supported. Input must either be a geopandas.GeoSeries, geopandas.GeoDataFrame, a numpy array with a geometry dtype, or an array of coordinates."
-    )
