@@ -66,7 +66,8 @@ class W:
             focal_ids, neighbor_ids = sparse.nonzero()
         else:
             raise ValueError(
-                "Either both focal_ids and neighbor_ids are provided, or neither may be provided."
+                "Either both focal_ids and neighbor_ids are provided,"
+                " or neither may be provided."
             )
 
         return cls.from_arrays(focal_ids, neighbor_ids, weight=sparse.data)
@@ -170,6 +171,7 @@ class W:
         W
             libpysal.weights.experimental.W
         """
+        # TODO: deal with islands, those are now dropped
         if hasattr(geometry, "index"):
             ids = geometry.index
         else:
@@ -309,6 +311,7 @@ class W:
                 self._adjacency.weight / self._adjacency.weight.sum()
             ).values
 
+        # TODO: deal with islands once we have W.islands specified
         elif transformation == "B":
             standardized = np.ones(self._adjacency.shape[0], dtype=int)
 
