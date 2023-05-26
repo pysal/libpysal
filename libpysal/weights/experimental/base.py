@@ -207,7 +207,7 @@ class W:
         scipy.sparse.COO
             sparse representation of the adjacency
         """
-        # .factorize(sort=True) ensures the order is unchanged (weirdly enough)
+        # factorize(sort=True) ensures the order is unchanged (weirdly enough)
         focal_int, self.focal_label = self._adjacency.index.factorize(sort=True)
         neighbor_int, self.neighbor_label = self._adjacency.neighbor.factorize(
             sort=True
