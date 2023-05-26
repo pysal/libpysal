@@ -6,8 +6,6 @@ from functools import cached_property
 
 
 class W:
-    _cache: dict = {}
-
     def __init__(self, adjacency, transformation="O"):
         """Weights base class based on adjacency list
 
@@ -273,6 +271,10 @@ class W:
         return W(standardized_adjacency, transformation)
 
     @cached_property
+    def _components(self):
+        return sparse.csgraph.connected_components(self.sparse)
+
+    @cached_property
     def n_components(self):
         """Get a number of connected components
 
@@ -281,12 +283,7 @@ class W:
         int
             number of components
         """
-        if "n_components" not in self._cache:
-            (
-                self._cache["n_components"],
-                self._cache["component_labels"],
-            ) = sparse.csgraph.connected_components(self.sparse)
-        return self._cache["n_components"]
+        return self._components()[0]
 
     @cached_property
     def component_labels(self):
@@ -297,12 +294,7 @@ class W:
         numpy.array
             Array of component labels
         """
-        if "component_labels" not in self._cache:
-            (
-                self._cache["n_components"],
-                self._cache["component_labels"],
-            ) = sparse.csgraph.connected_components(self.sparse)
-        return self._cache["component_labels"]
+        return self._components()[1]
 
     @cached_property
     def cardinalities(self):
