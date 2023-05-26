@@ -35,17 +35,17 @@ def _boxcar(distances, bandwidth):
 def _identity(distances, bandwidth):
     return distances
 
-_kernel_functions = dict(
-    triangular=_triangular,
-    parabolic=_parabolic,
-    gaussian=_gaussian,
-    bisquare=_bisquare,
-    cosine=_cosine,
-    boxcar=_boxcar,
-    discrete=_boxcar,
-    identity=_identity,
-    None = _identity
-)
+_kernel_functions = {
+    "triangular" : _triangular,
+    "parabolic" : _parabolic,
+    "gaussian" : _gaussian,
+    "bisquare" : _bisquare,
+    "cosine" : _cosine,
+    "boxcar" : _boxcar,
+    "discrete" : _boxcar,
+    "identity" : _identity,
+    None : _identity
+}
 
 def kernel(
     coordinates,
