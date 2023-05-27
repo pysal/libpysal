@@ -153,7 +153,7 @@ def _rook(geoms, ids=None, by_perimeter=False):
 
     return _resolve_islands(heads, tails, ids, weights)
 
-_rook.__doc__ = _queen.__doc__.replace("queen", "rook").replace("Queen", "Rook")
+_rook.__doc__ = _queen.__doc__.replace("queen", "rook").replace("Queen", "Rook").replace("exactly at a point", "over at least one edge")
 
 def _perimeter_weights(geoms, heads, tails):
     """
