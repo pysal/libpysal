@@ -33,22 +33,19 @@ parametrize_perim = pytest.mark.parametrize(
     "by_perimeter", [False, True], ids=["binary", "perimeter"]
 )
 parametrize_rook = pytest.mark.parametrize("rook", [True, False], ids=["rook", "queen"])
+parametrize_pointset = pytest.mark.parametrize(
+    "pointset", [True, False], ids=["pointset", "vertex intersection"]
+)
 
-
-@parametrize_ids
-def test_user_vertex_set_intersection_rivers(ids, data=rivers):
-    ...
-
-
+@parametrize_pointset
 @parametrize_rook
 @parametrize_ids
-def test_user_rivers(ids, rook, data=rivers):
+def test_user_rivers(ids, rook, pointset, data=rivers):
     data = data.reset_index(drop=False, names='original_index')
     ids = 'original_index' if ids is None else ids
     data = data.set_index(ids, drop=False)
     ids = data.index.values
     # implement known_heads, known_tails
-
 
     if rook:
         known_heads = known_tails = ids[numpy.arange(len(data))]
@@ -68,9 +65,11 @@ def test_user_rivers(ids, rook, data=rivers):
 
         known_weights = numpy.ones_like(known_heads)
         known_weights[known_heads == known_tails] = 0
-
-    f = _rook if rook else _queen
-    derived = f(data, ids=ids)
+    if pointset:
+        f = _rook if rook else _queen
+        derived = f(data, ids=ids)
+    else:
+        derived = _vertex_set_intersection(data, ids=ids, rook=rook)
 
     assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
 
@@ -131,9 +130,7 @@ def test_user_pointset_nybb(ids, by_perimeter, rook, data=nybb):
     assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
 
 
-@pytest.mark.parametrize(
-    "pointset", [True, False], ids=["pointset", "vertex intersection"]
-)
+@parametrize_pointset
 def test_correctness_rook_queen_distinct(pointset):
     """
     Check that queen and rook generate different contiguities in the case of a
