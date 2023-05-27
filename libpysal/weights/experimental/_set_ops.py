@@ -74,13 +74,22 @@ def issuperset(left, right):
     raise NotImplementedError()
     ...
 
+## TODO: Check that each of these statements is true
+# identical is the same as checking whether list of edge tuples...
+# label_equal is the same as checking whether set of edge tuples...s
 
-def strictly_equal(left, right):
+def identical(left, right):
     """
-    Check that two graphs are strictly equal. This reqiures them to have
-    1. the same edge/node labels
+    Check that two graphs are identical. This reqiures them to have
+    1. the same edge labels and node labels
     2. in the same order
     3. with the same weights
+
+    This is implemented by comparing the underlying adjacency dataframes.
+
+    This is equivalent to checking whether the list of edge tuples
+    (focal, neighbor, weight) for the two graphs are the same.
+
     """
     try:
         pandas.testing.assert_frame_equal(left.adjacency, right.adjacency)
@@ -89,14 +98,17 @@ def strictly_equal(left, right):
     return False
 
 
-def equal(left, right):
+def label_equal(left, right):
     """
-    Check that two graphs are equal. This reqiures them to have
-    1. the same edge/node labels
+    Check that two graphs have the same labels. This reqiures them to have
+    1. the same edge labels and node labels
     2. with the same weights
 
-    This is equivalent to checking whether the set of edge tuples
-    for the two graphs are the same.
+    This is implemented by comparing the underlying adjacency dataframes
+    without respect to ordering. 
+
+    This is equivalent to checking whether the set of edge tuples 
+    (focal, neighbor, weight) for the two graphs are the same.
     """
     try:
         pandas.testing.assert_frame_equal(
