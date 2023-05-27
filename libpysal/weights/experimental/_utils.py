@@ -6,6 +6,7 @@ import shapely
 def _neighbor_dict_to_edges(neighbors, weights=None):
     idxs = pd.Series(neighbors).explode()
     heads, tails = idxs.index.values, idxs.values
+    tails = tails.astype(heads.dtype)
     if weights is not None:
         data_array = pd.Series(weights).explode().values
         if not pd.api.types.is_numeric_dtype(data_array):

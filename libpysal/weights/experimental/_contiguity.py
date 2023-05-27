@@ -75,6 +75,7 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
     if by_perimeter:
         weights = _perimeter_weights(geoms, heads, tails)
         weights[heads == tails] = 0
+    
     return heads, tails, weights
 
 
