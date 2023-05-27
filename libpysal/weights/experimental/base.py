@@ -146,6 +146,9 @@ class W:
     def from_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
         """Generate W from geometry based on the contiguity
 
+        TODO: specify the planarity constraint of the defitnion of queen and rook (e.g
+        that there could not be an overlap).
+
         Parameters
         ----------
         geometry : array-like of shapely.Geometry objects
