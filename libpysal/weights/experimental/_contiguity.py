@@ -19,11 +19,13 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
 
     """
     _, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+        geoms, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
 
     # initialise the target map
-    graph = defaultdict(set)
+    graph = dict()
+    for idx in ids:
+        graph[idx] = set([idx])
 
     # get all of the vertices for the input
     assert (
@@ -67,37 +69,48 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
             gid = ids[geom_ix]
             graph[gid] |= nexus_names
             graph[gid].remove(gid)
-    head, tail, weight = _neighbor_dict_to_edges(graph)
+
+    heads, tails, weights = _neighbor_dict_to_edges(graph)
 
     if by_perimeter:
-        weight = _perimeter_weight(geoms, head, tail)
-
-    return head, tail, weight
+        weights = _perimeter_weights(geoms, heads, tails)
+        weights[heads == tails] = 0
+    return heads, tails, weights
 
 
 def _queen(geoms, ids=None, by_perimeter=False):
     _, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+        geoms, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
-    head_ix, tail_ix = shapely.STRtree(geoms).query(geoms, predicate="touches")
-    head, tail, weight = ids[head_ix], ids[tail_ix], numpy.ones_like(head_ix)
+    heads_ix, tails_ix = shapely.STRtree(geoms).query(geoms, predicate="touches")
+    heads, tails, weights = ids[heads_ix], ids[tails_ix], numpy.ones_like(heads_ix)
     if by_perimeter:
-        weight = _perimeter_weight(geoms, head, tail)
-    return head, tail, weight
+        weights = _perimeter_weights(geoms, heads, tails)
+    return _resolve_islands(heads, tails, ids, weights=weights)
 
 
 def _rook(geoms, ids=None, by_perimeter=False):
     _, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+        geoms, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
-    head, tail = shapely.STRtree(geoms).query(geoms)
+    heads_ix, tails_ix = shapely.STRtree(geoms).query(geoms)
     geoms = numpy.asarray(geoms)
-    mask = shapely.relate_pattern(geoms[head], geoms[tail], "F***1****")
-    head, tail, weight = ids[head[mask]], ids[tail[mask]], numpy.ones_like(head[mask])
+    mask = shapely.relate_pattern(geoms[heads_ix], geoms[tails_ix], "F***1****")
+    heads, tails, weights = ids[heads_ix[mask]], ids[tails_ix[mask]], numpy.ones_like(heads_ix[mask])
     if by_perimeter:
-        weight = _perimeter_weight(geoms, head, tail)
-    return head, tail, weight
+        weights = _perimeter_weights(geoms, heads, tails)
+    return _resolve_islands(heads, tails, ids, weights)
 
 
-def _perimeter_weight(geoms, heads, tails):
-    return shapely.intersection(geoms[head].values, geoms[tails]).area
+def _perimeter_weights(geoms, heads, tails):
+    lengths = shapely.intersection(geoms[heads].values, geoms[tails]).length
+    return lengths.values
+
+def _resolve_islands(heads, tails, ids, weights):
+    islands = numpy.setdiff1d(ids, heads)
+    if islands.shape != (0,):
+        heads = numpy.hstack(heads, islands)
+        tails = numpy.hstack(tails, islands)
+        weights = numpy.hstack(weights, numpy.zeros_like(islands))
+    return heads, tails, weights
+
