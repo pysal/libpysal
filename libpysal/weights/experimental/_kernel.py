@@ -51,11 +51,55 @@ def kernel(
     coordinates,
     bandwidth=None,
     metric="euclidean",
-    kernel="triangular",
+    kernel="gaussian",
     k=None,
     ids=None,
     p=2,
 ):
+    """
+    Compute a kernel function over a distance matrix. 
+    
+    Paramters
+    ---------
+    coordinates : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+        geometries over which to compute a kernel. If a geopandas.Geo* object
+        is provided, the .geometry attribute is used. If a numpy.ndarray with 
+        a geometry dtype is used, then the coordinates are extracted and used.
+    bandwidth : float (default: None)
+        distance to use in the kernel computation. Should be on the same scale as
+        the input coordinates. 
+    metric : string or callable (default: 'euclidean')
+        distance function to apply over the input coordinates. Supported options
+        depend on whether or not scikit-learn is installed. If so, then any 
+        distance function supported by scikit-learn is supported here. Otherwise,
+        only euclidean, minkowski, and manhattan/cityblock distances are admitted. 
+    kernel : string or callable (default: 'gaussian')
+        kernel function to apply over the distance matrix computed by `metric`. 
+        The following kernels are supported: 
+            - triangular: 
+            - parabolic: 
+            - gaussian: 
+            - bisquare: 
+            - cosine: 
+            - boxcar/discrete: all distances less than `bandwidth` are 1, and all
+                other distances are 0
+            - identity/None : do nothing, weight similarity based on raw distance
+            - callable : a user-defined function that takes the distance vector and
+                the bandwidth and returns the kernel: kernel(distances, bandwidth)
+    k : int (default: None)
+        number of nearest neighbors used to truncate the kernel. This is assumed
+        to be constant across samples. If None, no truncation is conduted.  
+    ids : numpy.narray (default: None)
+        ids to use for each sample in coordinates. Generally, construction functions
+        that are accessed via W.from_kernel() will set this automatically from 
+        the index of the input. Do not use this argument directly unless you intend
+        to set the indices separately from your input data. Otherwise, use
+        data.set_index(ids) to ensure ordering is respected. If None, then the index
+        from the input coordinates will be used. 
+    p : int (default: 2)
+        parameter for minkowski metric, ignored if metric != "minkowski". 
+
+    """
     coordinates, ids, geoms = _validate_geometry_input(coordinates, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES)
     if metric == "precomputed":
         assert (
@@ -111,8 +155,9 @@ def knn(
     bandwidth=numpy.inf,
 ):
     """
-    Compute a K-nearest neighbor weight. Uses kernel() with a boxcar kernel
-    and infinite bandwidth by default.
+    Compute a K-nearest neighbor weight. Uses kernel() with a kernel="boxcar"
+    and bandwidth=numpy.inf by default. Consult kernel() for further argument
+    specifications. 
     """
     return kernel(
         coordinates,
@@ -126,6 +171,10 @@ def knn(
 
 
 def _prepare_tree_query(coordinates, metric, p=2):
+    """
+    Construct a tree query function relevant to the input metric. 
+    Prefer scikit-learn trees if they are available. 
+    """
     try:
         from sklearn.neighbors import BallTree, KDTree, VALID_METRICS
 
@@ -152,6 +201,14 @@ def _prepare_tree_query(coordinates, metric, p=2):
 
 
 def _optimize_bandwidth(D, kernel):
+    """
+    Optimize the bandwidth as a function of entropy for a given kernel function. 
+
+    This ensures that the entropy of the kernel is maximized for a given
+    distance matrix. This will result in the smoothing that provide the most 
+    uniform distribution of kernel values, which is a good proxy for a
+    "moderate" level of smoothing. 
+    """
     kernel_function = _kernel_functions[kernel]
 
     def _loss(bandwidth, D=D, kernel_function=kernel_function):

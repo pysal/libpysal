@@ -31,8 +31,19 @@ def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     coordinates :   array of points, (N,2)
         numpy array of coordinates containing locations to compute the
         delaunay triangulation
-    **kwargs    :   keyword argument list
-        keyword arguments passed directly to weights.W
+    ids : numpy.narray (default: None)
+        ids to use for each sample in coordinates. Generally, construction functions
+        that are accessed via W.from_kernel() will set this automatically from 
+        the index of the input. Do not use this argument directly unless you intend
+        to set the indices separately from your input data. Otherwise, use
+        data.set_index(ids) to ensure ordering is respected. If None, then the index
+        from the input coordinates will be used.
+    bandwidth : float (default: None)
+        distance to use in the kernel computation. Should be on the same scale as
+        the input coordinates. 
+    kernel : string or callable
+        kernel function to use in order to weight the output graph. See the kernel() 
+        function for more details.
 
     Notes
     -----
@@ -103,8 +114,19 @@ def gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     coordinates :   array of points, (N,2)
         numpy array of coordinates containing locations to compute the
         delaunay triangulation
-    **kwargs    :   keyword argument list
-        keyword arguments passed directly to weights.W
+    ids : numpy.narray (default: None)
+        ids to use for each sample in coordinates. Generally, construction functions
+        that are accessed via W.from_kernel() will set this automatically from 
+        the index of the input. Do not use this argument directly unless you intend
+        to set the indices separately from your input data. Otherwise, use
+        data.set_index(ids) to ensure ordering is respected. If None, then the index
+        from the input coordinates will be used.
+    bandwidth : float (default: None)
+        distance to use in the kernel computation. Should be on the same scale as
+        the input coordinates. 
+    kernel : string or callable
+        kernel function to use in order to weight the output graph. See the kernel() 
+        function for more details.
     """
     try:
         from numba import njit
@@ -152,8 +174,19 @@ def relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="bo
     coordinates :   array of points, (N,2)
         numpy array of coordinates containing locations to compute the
         delaunay triangulation
-    **kwargs    :   keyword argument list
-        keyword arguments passed directly to weights.W
+    ids : numpy.narray (default: None)
+        ids to use for each sample in coordinates. Generally, construction functions
+        that are accessed via W.from_kernel() will set this automatically from 
+        the index of the input. Do not use this argument directly unless you intend
+        to set the indices separately from your input data. Otherwise, use
+        data.set_index(ids) to ensure ordering is respected. If None, then the index
+        from the input coordinates will be used.
+    bandwidth : float (default: None)
+        distance to use in the kernel computation. Should be on the same scale as
+        the input coordinates. 
+    kernel : string or callable
+        kernel function to use in order to weight the output graph. See the kernel() 
+        function for more details.
     """
     try:
         from numba import njit

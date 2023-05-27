@@ -13,9 +13,25 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
     """
     Use a hash map inversion to construct a graph
 
-    Arguments
+    Parameters
     ---------
-    ...
+    geoms : geopandas.GeoDataFrame, geopandas.GeoSeries, numpy.array
+        The container for the geometries to compute contiguity. Regardless of
+        the containing type, the geometries within the container must be Polygons
+        or MultiPolygons. 
+    rook : bool (default: True)
+        whether to compute vertex set intersection contiguity by edge or by point. 
+        By default, vertex set contiguity is computed by edge. This means that at least
+        two adjacent vertices on the polygon boundary must be shared. 
+    ids : numpy.ndarray (default: None)
+        names to use for indexing the graph constructed from geoms. If None (default), 
+        an index is extracted from `geoms`. If `geoms` has no index, a pandas.RangeIndex
+        is constructed. 
+    by_perimeter : bool (default: False)
+        whether to compute perimeter-weighted contiguity. By default, this returns
+        the raw length of perimeter overlap betwen contiguous polygons or lines. 
+        In the case of LineString/MultiLineString input geoms, this is likely to 
+        result in empty weights, where all observations are isolates. 
 
     """
     _, ids, geoms = _validate_geometry_input(

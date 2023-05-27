@@ -45,6 +45,9 @@ parametrize_external_ids = pytest.mark.parametrize(
 @parametrize_idtypes
 @parametrize_input_type
 def test_validate_input_geoms(geoms, ids, shuffle, external_ids, input_type):
+    """
+    Test that all combinations of geometries and ids get aligned correctly
+    """
     if ids is not None:
         geoms = geoms.set_index(ids)
     if external_ids:
@@ -86,6 +89,9 @@ def test_validate_input_geoms(geoms, ids, shuffle, external_ids, input_type):
 @parametrize_shuffle
 @parametrize_idtypes
 def test_validate_input_coords(shuffle, ids):
+    """
+    Test that input coordinate arrays get validated correctly
+    """
     if shuffle:
         data = columbus.sample(frac=1, replace=False)
     else:
