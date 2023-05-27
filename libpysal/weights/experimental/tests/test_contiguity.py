@@ -46,7 +46,7 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
     """
     data = data.reset_index(drop=False, names='original_index')
     ids = 'original_index' if ids is None else ids
-    data = data.set_index(ids, drop=False)
+    data.index = data[ids].values
     ids = data.index.values
     # implement known_heads, known_tails
 
@@ -71,10 +71,13 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
     if pointset:
         f = _rook if rook else _queen
         derived = f(data, ids=ids)
+        derived_by_index = f(data, ids=None)
     else:
         derived = _vertex_set_intersection(data, ids=ids, rook=rook)
+        derived_by_index = _vertex_set_intersection(data, rook=rook, ids=None)
 
     assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
+    assert set(zip(*derived_by_index)) == set(zip(known_heads, known_tails, known_weights))
 
 
 @parametrize_rook
@@ -86,8 +89,9 @@ def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, data=nybb):
     for nybb
     """
     if ids is not None:
-        data = data.set_index(ids, drop=False)
+        data.index = data[ids].values
     ids = data.index.values
+
     # implement known_heads, known_tails
     known_heads = numpy.array([1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 0])
     known_tails = numpy.array([2, 3, 4, 1, 3, 2, 1, 4, 1, 3, 0])
@@ -105,8 +109,10 @@ def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, data=nybb):
 
     f = _rook if rook else _queen
     derived = f(data, by_perimeter=by_perimeter, ids=ids)
+    derived_by_index = f(data, by_perimeter=by_perimeter, ids=None)
 
     assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
+    assert set(zip(*derived_by_index)) == set(zip(known_heads, known_tails, known_weights))
 
 
 @parametrize_rook
@@ -118,8 +124,9 @@ def test_user_pointset_nybb(ids, by_perimeter, rook, data=nybb):
     for nybb
     """
     if ids is not None:
-        data = data.set_index(ids, drop=False)
+        data.index = data[ids].values
     ids = data.index.values
+
     # implement known_heads, known_tails
     known_heads = numpy.array([1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 0])
     known_tails = numpy.array([2, 3, 4, 1, 3, 2, 1, 4, 1, 3, 0])
@@ -137,8 +144,10 @@ def test_user_pointset_nybb(ids, by_perimeter, rook, data=nybb):
 
     f = _rook if rook else _queen
     derived = f(data, by_perimeter=by_perimeter, ids=ids)
+    derived_by_index = f(data, by_perimeter=by_perimeter, ids=None)
 
     assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
+    assert set(zip(*derived_by_index)) == set(zip(known_heads, known_tails, known_weights))
 
 
 @parametrize_pointset
