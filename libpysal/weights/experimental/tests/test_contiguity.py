@@ -41,6 +41,9 @@ parametrize_pointset = pytest.mark.parametrize(
 @parametrize_rook
 @parametrize_ids
 def test_user_rivers(ids, rook, pointset, data=rivers):
+    """
+    Check wiether contiguity is constructed correctly for rivers in europe
+    """
     data = data.reset_index(drop=False, names='original_index')
     ids = 'original_index' if ids is None else ids
     data = data.set_index(ids, drop=False)
@@ -78,6 +81,10 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
 @parametrize_perim
 @parametrize_ids
 def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, data=nybb):
+    """
+    check whether vertexset contiguity is constructed correctly
+    for nybb
+    """
     if ids is not None:
         data = data.set_index(ids, drop=False)
     ids = data.index.values
@@ -106,6 +113,10 @@ def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, data=nybb):
 @parametrize_perim
 @parametrize_ids
 def test_user_pointset_nybb(ids, by_perimeter, rook, data=nybb):
+    """
+    check whether pointset weights are constructed correctly 
+    for nybb
+    """
     if ids is not None:
         data = data.set_index(ids, drop=False)
     ids = data.index.values

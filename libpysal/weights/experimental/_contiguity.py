@@ -80,6 +80,35 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
 
 
 def _queen(geoms, ids=None, by_perimeter=False):
+    """
+    Construct queen contiguity using point-set relations. 
+
+    Queen contiguity occurs when two polygons touch at exactly a point. 
+    Overlapping polygons will not be considered as neighboring
+    under this rule, since contiguity is strictly planar. 
+
+    Parameters
+    ----------
+    geoms : geopandas.GeoDataFrame, geopandas.GeoSeries, numpy.array
+        The container for the geometries to compute contiguity. Regardless of
+        the containing type, the geometries within the container must be Polygons
+        or MultiPolygons. 
+    ids : numpy.ndarray (default: None)
+        names to use for indexing the graph constructed from geoms. If None (default), 
+        an index is extracted from `geoms`. If `geoms` has no index, a pandas.RangeIndex
+        is constructed. 
+    by_perimeter : bool (default: False)
+        whether to compute perimeter-weighted contiguity. By default, this returns
+        the raw length of perimeter overlap betwen contiguous polygons or lines. 
+        In the case of LineString/MultiLineString input geoms, this is likely to 
+        result in empty weights, where all observations are isolates. 
+
+    Returns
+    -------
+    (heads, tails, weights) : three vectors describing the links in the
+        queen contiguity graph, with islands represented as a self-loop with
+        zero weight. 
+    """
     _, ids, geoms = _validate_geometry_input(
         geoms, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
@@ -108,8 +137,21 @@ def _rook(geoms, ids=None, by_perimeter=False):
 
     return _resolve_islands(heads, tails, ids, weights)
 
+_rook.__doc__ = _queen.__doc__.replace("queen", "rook").replace("Queen", "Rook")
 
 def _perimeter_weights(geoms, heads, tails):
+    """
+    Compute the perimeter of neighbor pairs for edges describing a contiguity graph. 
+
+    Note that this result will be incorrect if the head and tail polygon overlap. 
+    If they do overlap, it is an "invalid" contiguity, so the length of the
+    perimeter of the intersection may not express the correct value for relatedness
+    in the contiguity graph. 
+    
+    The check to ensure that the intersection(head,tail) is 1 dimensional is
+    expensive, so is omitted. This is a private method, so strict conditions
+    on input data are expected.
+    """
     lengths = shapely.length(
         shapely.intersection(geoms.values[heads], geoms.values[tails])
     )
@@ -117,6 +159,10 @@ def _perimeter_weights(geoms, heads, tails):
 
 
 def _resolve_islands(heads, tails, ids, weights):
+    """
+    Induce self-loops for a collection of ids and links describing a 
+    contiguity graph. Induced self-loops will have zero weight. 
+    """
     islands = numpy.setdiff1d(ids, heads)
     if islands.shape != (0,):
         heads = numpy.hstack((heads, islands))

@@ -4,6 +4,10 @@ import geopandas # this is geopandas base
 import shapely
 
 def _neighbor_dict_to_edges(neighbors, weights=None):
+    """
+    Convert a neighbor dict to a set of (head, tail, weight) edges, assuming
+    that the any self-loops have a weight of zero. 
+    """
     idxs = pd.Series(neighbors).explode()
     heads, tails = idxs.index.values, idxs.values
     tails = tails.astype(heads.dtype)
@@ -19,6 +23,16 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
 
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
+    """
+    Ensure that input geometries are always aligned to (and refer back to)
+    inputted geometries. Geoms can be a GeoSeries, GeoDataFrame, numpy.array 
+    with a geometry dtype, or a point array. 
+
+    is will always align to geoms. 
+
+    the returned coordinates will always pertain to geoms, but may be
+    longer than geoms (such as when geoms represents polygons). 
+    """
     if isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
         geoms = geoms.geometry
         if ids is None:
