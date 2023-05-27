@@ -6,9 +6,9 @@ import geopandas, shapely
 from functools import cached_property
 from ._contiguity import _queen, _rook, _vertex_set_intersection
 from ._utils import _neighbor_dict_to_edges
+from ._set_ops import _Set_Mixin
 
-
-class W:
+class W(_Set_Mixin):
     def __init__(self, adjacency, transformation="O"):
         """Weights base class based on adjacency list
 
