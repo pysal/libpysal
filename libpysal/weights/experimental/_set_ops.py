@@ -4,22 +4,22 @@ class _Set_Mixin:
     """
 
     def __le__(self, other):
-        return issubset(self, other)
+        return issubgraph(self, other)
 
     def __ge__(self, other):
-        return issubset(other, self)
+        return issubgraph(self, other)
 
     def __lt__(self, other):
-        return issubset(self, other) & (len(self) < len(other))
+        return issubgraph(self, other) & (len(self) < len(other))
 
     def __gt__(self, other):
-        return issubset(other, self) & (len(self) > len(other))
+        return issubgraph(self, other) & (len(self) > len(other))
 
     def __eq__(self, other):
-        return equals(self, other)
+        return label_equals(self, other)
 
     def __ne__(self, other):
-        return not equals(self, other)
+        return not label_equals(self, other)
 
     def __and__(self, other):
         return intersection(self, other)
@@ -30,49 +30,93 @@ class _Set_Mixin:
     def __xor__(self, other):
         return symmetric_difference(self, other)
 
-    def __hash__(self, other):
-        raise NotImplementedError()
-
     def __iand__(self, other):
         raise TypeError("weights are immutable")
 
     def __ior__(self, other):
         raise TypeError("weights are immutable")
 
+# TODO: performance test the pandas implementation
+def intersects(left, right):
+    """
+    A full table join is unnecessary here, but I'm not sure if 
+    it would be faster? pandas joins are very fast, even for big tables, 
+    but this can do early termination at the first intersection.
+
+    Maybe we use a heuristic to pick the fastest code path? It's also
+    very easy to do early termination in cython/numba using the row,col array. 
+    """
+    for left_focal, left_neighbors in left.neighbors.keys():
+        right_neighbors = right.neighbors.get(left_focal)
+        if right_neighbors is not None:
+            if set(right_neighbors).intersects(set(left_neighbors)):
+                return True
+    return False
+    return (not left.adjacency.join(right.adjacency, on=("focal", "neighbor"), how="inner").empty)
+
 
 def intersection(left, right):
-    raise NotImplementedError()
-    ...
-
-
-def intersects(left, right):
-    raise NotImplementedError()
-    ...
-
+    """
+    Keep only links that are in both left and right W objects.
+    """
+    from ._base import W
+    new_table = left.adjacency.join(right.adjacency, on=("focal", "neighbor"), how='inner')
+    return W(new_table)
 
 def symmetric_difference(left, right):
-    raise NotImplementedError()
-    ...
+    """
+    Filter out links that are in both left and right W objects. 
+    """
+    from ._base import W
+    join = left.adjacency.merge(right.adjacency, on=("focal", "neighbor"), how='outer', indicator=True)
+    return W(join[join._merge.str.endswith("only")].drop("_merge", axis=1))
 
 
 def union(left, right):
-    raise NotImplementedError()
-    ...
+    """
+    Provide the union of two W objects, collecing all links that are in either graph. 
+    """
+    from ._base import W
+    return W(left.adjacency.merge(right.adjacency, on=("focal", "neighbor"), how='outer'))
 
+def difference(left, right):
+    """
+    Provide the set difference between the graph on the left and the graph on the right. 
+    This returns all links in the left graph that are not in the right graph. 
+    """
+    from ._base import W
+    join = left.adjacency.merge(right.adjacency, on=("focal", "neighbor"), how='outer', indicator=True)
+    return W(join[join._merge == "left_only"].drop("_merge", axis=1))
+
+
+# TODO: profile the "not intersects(left, right)" vs. the empty join test:
 
 def isdisjoint(left, right):
-    raise NotImplementedError()
-    ...
+    """
+    Return True if there are no links in the left W that also occur in the right W. If any link
+    in the left W occurs in the right W, the two are not disjoint. 
+    """
+    return not intersects(left, right)
+    join = left.adjacency.join(right.adjacency, on=("focal", "neighbor"), how='inner')
+    return join.empty()
 
 
 def issubset(left, right):
-    raise NotImplementedError()
-    ...
+    """
+    Return True if every link in the left W also occurs in the right W. This requires
+    both W are label_equal.
+    """
+    join = left.adjacency.merge(right.adjacency, on=("focal", "neighbor"), how='outer', indicator=True)
+    return not (join._merge == "left_only").any()
 
 
 def issuperset(left, right):
-    raise NotImplementedError()
-    ...
+    """
+    Return True if every link in the left W also occurs in the right W. This requires
+    both W are label_equal.
+    """
+    join = left.adjacency.merge(right.adjacency, on=("focal", "neighbor"), how='outer', indicator=True)
+    return not (join._merge == "right_only").any()
 
 ## TODO: Check that each of these statements is true
 # identical is the same as checking whether list of edge tuples...
