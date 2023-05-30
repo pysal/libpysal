@@ -101,7 +101,7 @@ def isdisjoint(left, right):
     return join.empty()
 
 
-def issubset(left, right):
+def issubgraph(left, right):
     """
     Return True if every link in the left W also occurs in the right W. This requires
     both W are label_equal.
@@ -110,7 +110,7 @@ def issubset(left, right):
     return not (join._merge == "left_only").any()
 
 
-def issuperset(left, right):
+def issupergraph(left, right):
     """
     Return True if every link in the left W also occurs in the right W. This requires
     both W are label_equal.
@@ -122,7 +122,7 @@ def issuperset(left, right):
 # identical is the same as checking whether list of edge tuples...
 # label_equal is the same as checking whether set of edge tuples...s
 
-def identical(left, right):
+def _identical(left, right):
     """
     Check that two graphs are identical. This reqiures them to have
     1. the same edge labels and node labels
@@ -134,6 +134,10 @@ def identical(left, right):
     This is equivalent to checking whether the list of edge tuples
     (focal, neighbor, weight) for the two graphs are the same.
 
+    This should generally *NOT BE USED*. Label equality and isomorphism 
+    should be the two "levels" of equality that are commonly-encountered
+    by users. Hence, this is a private function, only for developers to
+    check serialisation/deserialisation issues as necessary. 
     """
     try:
         pandas.testing.assert_frame_equal(left.adjacency, right.adjacency)
@@ -153,6 +157,10 @@ def label_equal(left, right):
 
     This is equivalent to checking whether the set of edge tuples 
     (focal, neighbor, weight) for the two graphs are the same.
+
+    See Also
+    --------
+    isomorphic(left, right) to check if ids in left can be re-labelled to be label_equal to right
     """
     try:
         pandas.testing.assert_frame_equal(
