@@ -1,5 +1,6 @@
-import geopandas, geodatasets, pytest, shapely, numpy
-
+import geodatasets
+import geopandas
+import pytest
 
 columbus = geopandas.read_file(geodatasets.get_path("geoda columbus"))
 columbus["intID"] = columbus.POLYID.values

@@ -1,13 +1,16 @@
-import geopandas, geodatasets, pytest, shapely, numpy
-from libpysal.weights.experimental._contiguity import (
-    _VALID_GEOMETRY_TYPES as contiguity_types,
-)
-from libpysal.weights.experimental._kernel import _VALID_GEOMETRY_TYPES as kernel_types
-from libpysal.weights.experimental._triangulation import (
-    _VALID_GEOMETRY_TYPES as triang_types,
-)
-from libpysal.weights.experimental._utils import _validate_geometry_input
+import geodatasets
+import geopandas
+import numpy
+import pytest
+import shapely
 
+from libpysal.weights.experimental._contiguity import \
+    _VALID_GEOMETRY_TYPES as contiguity_types
+from libpysal.weights.experimental._kernel import \
+    _VALID_GEOMETRY_TYPES as kernel_types
+from libpysal.weights.experimental._triangulation import \
+    _VALID_GEOMETRY_TYPES as triang_types
+from libpysal.weights.experimental._utils import _validate_geometry_input
 
 columbus = geopandas.read_file(geodatasets.get_path("geoda columbus"))
 columbus["intID"] = columbus.POLYID.values
@@ -51,9 +54,9 @@ def test_validate_input_geoms(geoms, ids, shuffle, external_ids, input_type):
     if ids is not None:
         geoms = geoms.set_index(ids)
     if external_ids:
-    	input_ids = geoms.index
+        input_ids = geoms.index
     else:
-    	input_ids = None
+        input_ids = None
     if shuffle:
         geoms = geoms.sample(frac=1, replace=False)
     if input_type == "gdf":
@@ -80,9 +83,9 @@ def test_validate_input_geoms(geoms, ids, shuffle, external_ids, input_type):
             ids
         ), "Point inputs should be cast to coordinates, but the output coordinates and output ids are not equal length"
         if hasattr(geoms, "geometry"):
-        	coords = shapely.get_coordinates(geoms.geometry)
+            coords = shapely.get_coordinates(geoms.geometry)
         else:
-        	coords = shapely.get_coordinates(geoms)
+            coords = shapely.get_coordinates(geoms)
         numpy.testing.assert_array_equal(coordinates, coords)
 
 

@@ -1,12 +1,13 @@
-from scipy import sparse
+from functools import cached_property
+
 import numpy as np
 import pandas as pd
-import geopandas, shapely
+from scipy import sparse
 
-from functools import cached_property
 from ._contiguity import _queen, _rook, _vertex_set_intersection
-from ._utils import _neighbor_dict_to_edges
 from ._set_ops import _Set_Mixin
+from ._utils import _neighbor_dict_to_edges
+
 
 class W(_Set_Mixin):
     def __init__(self, adjacency, transformation="O"):
@@ -211,7 +212,6 @@ class W(_Set_Mixin):
         dict
             dict of tuples representing neighbors
         """
-        # TODO: ensure the dict remains unsorted
         return self._adjacency.neighbor.groupby(level=0).agg(tuple).to_dict()
 
     @cached_property
@@ -223,7 +223,6 @@ class W(_Set_Mixin):
         dict
             dict of tuples representing weights
         """
-        # TODO: ensure the dict remains unsorted
         return self._adjacency.weight.groupby(level=0).agg(tuple).to_dict()
 
     def get_neighbors(self, ix):

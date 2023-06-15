@@ -1,17 +1,20 @@
+import warnings
+
+import numpy
+import pandas
 from scipy.spatial import Delaunay as _Delaunay
-from scipy import sparse
-import pandas, numpy, warnings
-from .base import W
-from ._contiguity import _vertex_set_intersection, _queen, _rook
+
+from ._contiguity import _queen, _rook, _vertex_set_intersection
 from ._kernel import _kernel_functions
 from ._utils import _validate_geometry_input
+from .base import W
 
 try:
     from numba import njit
 except ModuleNotFoundError:
     from libpysal.common import jit as njit
 
-_VALID_GEOMETRY_TYPES = ("Point", )
+_VALID_GEOMETRY_TYPES = ("Point",)
 
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
@@ -33,16 +36,16 @@ def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
         delaunay triangulation
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via W.from_kernel() will set this automatically from 
+        that are accessed via W.from_kernel() will set this automatically from
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index
         from the input coordinates will be used.
     bandwidth : float (default: None)
         distance to use in the kernel computation. Should be on the same scale as
-        the input coordinates. 
+        the input coordinates.
     kernel : string or callable
-        kernel function to use in order to weight the output graph. See the kernel() 
+        kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
 
     Notes
@@ -116,16 +119,16 @@ def gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
         delaunay triangulation
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via W.from_kernel() will set this automatically from 
+        that are accessed via W.from_kernel() will set this automatically from
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index
         from the input coordinates will be used.
     bandwidth : float (default: None)
         distance to use in the kernel computation. Should be on the same scale as
-        the input coordinates. 
+        the input coordinates.
     kernel : string or callable
-        kernel function to use in order to weight the output graph. See the kernel() 
+        kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
     """
     try:
@@ -176,16 +179,16 @@ def relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="bo
         delaunay triangulation
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via W.from_kernel() will set this automatically from 
+        that are accessed via W.from_kernel() will set this automatically from
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index
         from the input coordinates will be used.
     bandwidth : float (default: None)
         distance to use in the kernel computation. Should be on the same scale as
-        the input coordinates. 
+        the input coordinates.
     kernel : string or callable
-        kernel function to use in order to weight the output graph. See the kernel() 
+        kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
     """
     try:
@@ -229,7 +232,8 @@ def voronoi(
         w = _rook(cells, ids=ids)
     else:
         raise ValueError(
-            f"Contiguity type {contiguity_type} not understood. Supported options are 'vertex', 'queen', and 'rook'"
+            f"Contiguity type {contiguity_type} not understood. Supported options "
+            "are 'vertex', 'queen', and 'rook'"
         )
 
     head = w._adjacency.index
@@ -283,7 +287,7 @@ def _filter_gabriel(edges, coordinates):
     in order to construct the Gabriel graph.
     """
     edge_pointer = 0
-    n = edges.max()
+    edges.max()
     n_edges = len(edges)
     to_drop = []
     while edge_pointer < n_edges:
@@ -323,9 +327,8 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     3. for each edge of the delaunay (i,j), prune
        if any dkmax is greater than d(i,j)
     """
-    edge_pointer = 0
     n = edges.max()
-    n_edges = len(edges)
+    len(edges)
     out = []
     r = []
     for edge in edges:

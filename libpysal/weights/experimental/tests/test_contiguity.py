@@ -9,12 +9,14 @@ For completeness, we need to test a shuffled dataframe
 - dataset with islands
 """
 
-import pandas, geopandas, geodatasets, pytest, shapely, numpy
+import geodatasets
+import geopandas
+import numpy
+import pytest
+import shapely
+
 from libpysal.weights.experimental._contiguity import (
-    _vertex_set_intersection,
-    _rook,
-    _queen,
-)
+    _queen, _rook, _vertex_set_intersection)
 
 numpy.random.seed(111211)
 rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers")).sample(

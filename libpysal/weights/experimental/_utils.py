@@ -1,12 +1,13 @@
-import pandas as pd
+import geopandas
 import numpy as np
-import geopandas # this is geopandas base
+import pandas as pd
 import shapely
+
 
 def _neighbor_dict_to_edges(neighbors, weights=None):
     """
     Convert a neighbor dict to a set of (head, tail, weight) edges, assuming
-    that the any self-loops have a weight of zero. 
+    that the any self-loops have a weight of zero.
     """
     idxs = pd.Series(neighbors).explode()
     heads, tails = idxs.index.values, idxs.values
@@ -21,17 +22,16 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
     return heads, tails, data_array
 
 
-
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     """
     Ensure that input geometries are always aligned to (and refer back to)
-    inputted geometries. Geoms can be a GeoSeries, GeoDataFrame, numpy.array 
-    with a geometry dtype, or a point array. 
+    inputted geometries. Geoms can be a GeoSeries, GeoDataFrame, numpy.array
+    with a geometry dtype, or a point array.
 
-    is will always align to geoms. 
+    is will always align to geoms.
 
     the returned coordinates will always pertain to geoms, but may be
-    longer than geoms (such as when geoms represents polygons). 
+    longer than geoms (such as when geoms represents polygons).
     """
     if isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
         geoms = geoms.geometry
@@ -45,20 +45,32 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
             valid_geometry_types = set(valid_geometry_types)
             if not geom_types <= valid_geometry_types:
                 raise ValueError(
-                    f"this W type is only well-defined for geom_types: {valid_geometry_types}."
+                    "this W type is only well-defined for "
+                    f"geom_types: {valid_geometry_types}."
                 )
         coordinates = shapely.get_coordinates(geoms)
         geoms = geoms.copy()
         geoms.index = ids
         return coordinates, ids, geoms
     elif isinstance(geoms.dtype, geopandas.array.GeometryDtype):
-        return _validate_geometry_input(geopandas.GeoSeries(geoms), ids=ids, valid_geometry_types=valid_geometry_types)
+        return _validate_geometry_input(
+            geopandas.GeoSeries(geoms),
+            ids=ids,
+            valid_geometry_types=valid_geometry_types,
+        )
     else:
         if (geoms.ndim == 2) and (geoms.shape[1] == 2):
-            return _validate_geometry_input(geopandas.points_from_xy(*geoms.T), ids=ids, valid_geometry_types=valid_geometry_types)
+            return _validate_geometry_input(
+                geopandas.points_from_xy(*geoms.T),
+                ids=ids,
+                valid_geometry_types=valid_geometry_types,
+            )
     raise ValueError(
-        "input geometry type is not supported. Input must either be a geopandas.GeoSeries, geopandas.GeoDataFrame, a numpy array with a geometry dtype, or an array of coordinates."
+        "input geometry type is not supported. Input must either be a "
+        "geopandas.GeoSeries, geopandas.GeoDataFrame, a numpy array with a geometry "
+        "dtype, or an array of coordinates."
     )
+
 
 def lat2W(nrows=5, ncols=5, rook=True, id_type="int"):
     """
@@ -90,7 +102,8 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int"):
     Notes
     -----
 
-    Observations are row ordered: first k observations are in row 0, next k in row 1, and so on.
+    Observations are row ordered: first k observations are in row 0, next k in row 1,
+    and so on.
 
     Examples
     --------
@@ -136,7 +149,6 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int"):
                 w[i] = w.get(i, []) + [r]
                 w[r] = w.get(r, []) + [i]
 
-    neighbors = {}
     weights = {}
     for key in w:
         weights[key] = [1.0] * len(w[key])
