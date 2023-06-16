@@ -214,11 +214,60 @@ def relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="bo
 def voronoi(
     coordinates,
     ids=None,
-    clip="bbox",
+    clip="extent",
     contiguity_type="v",
     bandwidth=numpy.inf,
     kernel="boxcar",
 ):
+    """
+    Compute contiguity weights according to a clipped
+    Voronoi diagram.
+
+    Parameters
+    ---------
+    coordinates :   array of points, (N,2)
+        numpy array of coordinates containing locations to compute the
+        delaunay triangulation
+    ids : numpy.narray (default: None)
+        ids to use for each sample in coordinates. Generally, construction functions
+        that are accessed via W.from_kernel() will set this automatically from
+        the index of the input. Do not use this argument directly unless you intend
+        to set the indices separately from your input data. Otherwise, use
+        data.set_index(ids) to ensure ordering is respected. If None, then the index
+    clip : str (default: 'bbox')
+        An overloaded option about how to clip the voronoi cells passed to cg.voronoi_frames()
+        Default is ``'extent'``. Options are as follows.
+        
+        * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.
+        * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the bounding box of the input points.
+        * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of the input points.
+        * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using ``libpysal.cg.alpha_shape_auto``).
+        * Polygon -- Clip to an arbitrary Polygon.
+    contiguity_type : str (default: 'v')
+        What kind of contiguity to apply to the voronoi diagram. There are three
+        recognized options: 
+        1. "v" (Default): use vertex_set_contiguity()
+        2. "r": use rook() contiguity
+        3. "q": use queen() contiguity (not recommended)
+    bandwidth : float (default: None)
+        distance to use in the kernel computation. Should be on the same scale as
+        the input coordinates.
+    kernel : string or callable
+        kernel function to use in order to weight the output graph. See the kernel()
+        function for more details.
+
+    Notes
+    -----
+    In theory, the rook contiguity graph for a Voronoi diagram
+    is the delaunay triangulation of the generators of the
+    voronoi diagram. Yet, this is *not* the case when voronoi 
+    cells are clipped to an arbitrary shape, including the 
+    original bounding box of the input points or anything tighter.
+    This can arbitrarily delete links present in the delaunay.
+    However, clipped voronoi weights make sense over pure
+    delaunay triangulations in many applied contexts and
+    generally will remove "long" links in the delaunay graph.
+    """
     coordinates, ids, geoms = _validate_geometry_input(
         geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
     )
