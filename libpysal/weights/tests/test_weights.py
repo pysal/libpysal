@@ -364,15 +364,15 @@ class TestW(unittest.TestCase):
         np.testing.assert_array_equal(sparse.row, [0, 1, 1, 2, 3])
         np.testing.assert_array_equal(sparse.col, [1, 0, 2, 1, 3])
         sparse = self.w_islands.to_sparse("bsr")
-        self.assertIsInstance(sparse, scipy.sparse._arrays.bsr_array)
+        self.assertIsInstance(sparse, scipy.sparse.bsr_array)
         sparse = self.w_islands.to_sparse("csr")
-        self.assertIsInstance(sparse, scipy.sparse._arrays.csr_array)
+        self.assertIsInstance(sparse, scipy.sparse.csr_array)
         sparse = self.w_islands.to_sparse("coo")
-        self.assertIsInstance(sparse, scipy.sparse._arrays.coo_array)
+        self.assertIsInstance(sparse, scipy.sparse.coo_array)
         sparse = self.w_islands.to_sparse("csc")
-        self.assertIsInstance(sparse, scipy.sparse._arrays.csc_array)
+        self.assertIsInstance(sparse, scipy.sparse.csc_array)
         sparse = self.w_islands.to_sparse()
-        self.assertIsInstance(sparse, scipy.sparse._arrays.coo_array)
+        self.assertIsInstance(sparse, scipy.sparse.coo_array)
 
     def test_sparse_fmt(self):
         with pytest.raises(ValueError) as exc_info:
