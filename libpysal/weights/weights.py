@@ -1473,7 +1473,7 @@ class W(object):
         else:
             edge_kws = dict(color=color)
 
-        for idx, neighbors in self:
+        for idx, neighbors in self.neighbors.items():
             if idx in self.islands:
                 continue
             if indexed_on is not None:
