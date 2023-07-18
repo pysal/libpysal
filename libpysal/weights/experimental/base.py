@@ -306,30 +306,36 @@ class W(_Set_Mixin):
 
         if transformation == "R":
             standardized = (
-                self._adjacency.weight
-                / self._adjacency.weight.groupby(level=0).transform("sum")
-            ).values
+                (
+                    self._adjacency.weight
+                    / self._adjacency.weight.groupby(level=0).transform("sum")
+                )
+                .fillna(0)
+                .values
+            )  # island comes as NaN -> 0
 
         elif transformation == "D":
             standardized = (
                 self._adjacency.weight / self._adjacency.weight.sum()
             ).values
 
-        # TODO: deal with islands once we have W.islands specified
         elif transformation == "B":
-            standardized = np.ones(self._adjacency.shape[0], dtype=int)
+            standardized = self._adjacency.weight.astype(bool).astype(int)
 
         elif transformation == "V":
             standardized = (
-                self._adjacency.weight
-                / np.sqrt(self._adjacency.weight.groupby(level=0).transform("sum"))
-            ).values
+                (
+                    self._adjacency.weight
+                    / np.sqrt(self._adjacency.weight.groupby(level=0).transform("sum"))
+                )
+                .fillna(0)
+                .values
+            )  # island comes as NaN -> 0
 
         else:
             raise ValueError(f"Transformation '{transformation}' is not supported.")
 
-        standardized_adjacency = self._adjacency.copy()
-        standardized_adjacency["weight"] = standardized
+        standardized_adjacency = self._adjacency.assign(weight=standardized)
         return W(standardized_adjacency, transformation)
 
     @cached_property
@@ -367,7 +373,24 @@ class W(_Set_Mixin):
         pandas.Series
             Series with a number of neighbors per each observation
         """
-        return self.adjacency.neighbor.groupby(level=0).count()
+        cardinalities = self.transform("B")._adjacency.weight.groupby(level=0).sum()
+        cardinalities.name = "cardinalities"
+        return cardinalities
+
+    @cached_property
+    def islands(self):
+        """Index of observations with no neighbors
+
+        Islands are encoded as a self-loop with the weight == 0 in the adjacency table.
+
+        Returns
+        -------
+        pandas.Index
+            Index with a subset of observations that do not have any neighbor
+        """
+        nulls = self._adjacency[self._adjacency.weight == 0]
+        # since not all zeros are necessarily islands, do the focal == neighbor check
+        return nulls[nulls.index == nulls.neighbor].index.unique()
 
     @property
     def n(self):
