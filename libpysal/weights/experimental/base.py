@@ -206,23 +206,41 @@ class W(_Set_Mixin):
     def neighbors(self):
         """Get neighbors dictionary
 
+        Notes
+        -----
+        It is recommended to work directly with :meth:`W.adjacency` rather than
+        using the :meth:`W.neighbors`.
+
         Returns
         -------
         dict
             dict of tuples representing neighbors
         """
-        return self._adjacency.neighbor.groupby(level=0).agg(tuple).to_dict()
+        return (
+            self._adjacency.neighbor.groupby(level=0)
+            .agg(lambda group: tuple(group[group.index != group]))
+            .to_dict()
+        )
 
     @cached_property
     def weights(self):
         """Get weights dictionary
+
+        Notes
+        -----
+        It is recommended to work directly with :meth:`W.adjacency` rather than
+        using the :meth:`W.weights`.
 
         Returns
         -------
         dict
             dict of tuples representing weights
         """
-        return self._adjacency.weight.groupby(level=0).agg(tuple).to_dict()
+        return (
+            self._adjacency.groupby(level=0)
+            .apply(lambda group: tuple(group[group.index != group.neighbor].weight))
+            .to_dict()
+        )
 
     def get_neighbors(self, ix):
         """Get neighbors for a set focal object
@@ -237,7 +255,10 @@ class W(_Set_Mixin):
         array
             array of indices of neighbor objects
         """
-        return self._adjacency[ix].index.values
+        if ix in self.islands:
+            return np.array([], dtype=self._adjacency.neighbor.dtype)
+
+        return self._adjacency.neighbor[self._adjacency.index == ix].values
 
     def get_weights(self, ix):
         """Get weights for a set focal object
@@ -252,7 +273,10 @@ class W(_Set_Mixin):
         array
             array of weights of neighbor object
         """
-        return self._adjacency[ix].values
+        if ix in self.islands:
+            return np.array([], dtype=self._adjacency.weight.dtype)
+
+        return self._adjacency.weight.loc[ix].values
 
     @cached_property
     def sparse(self):
@@ -340,7 +364,11 @@ class W(_Set_Mixin):
 
     @cached_property
     def _components(self):
-        return sparse.csgraph.connected_components(self.sparse)
+        # TODO: scipy.sparse.csgraph does not yet support sparse arrays, only matrices
+        # TODO: we need this to be implemented in scipy first. Then the code below shall
+        # TODO: work as expected (here and in n_components and component_labels).
+        return NotImplementedError
+        # return sparse.csgraph.connected_components(self.sparse)
 
     @cached_property
     def n_components(self):
@@ -351,7 +379,8 @@ class W(_Set_Mixin):
         int
             number of components
         """
-        return self._components()[0]
+        return NotImplementedError
+        # return self._components[0]
 
     @cached_property
     def component_labels(self):
@@ -362,7 +391,8 @@ class W(_Set_Mixin):
         numpy.array
             Array of component labels
         """
-        return self._components()[1]
+        return NotImplementedError
+        # return self._components[1]
 
     @cached_property
     def cardinalities(self):
@@ -394,11 +424,8 @@ class W(_Set_Mixin):
 
     @property
     def n(self):
-        """Number of units."""
-        n = np.unique(
-            np.concatenate([self._adjacency.index, self._adjacency.neighbor])
-        ).shape[0]
-        return n
+        """Number of observations."""
+        return self._adjacency.index.nunique()
 
     @cached_property
     def pct_nonzero(self):
@@ -439,16 +466,24 @@ class W(_Set_Mixin):
         """
         if intrinsic:
             wd = self.sparse.transpose() - self.sparse
+            focal_labels = self.focal_label
+            neighbor_labels = self.neighbor_label
         else:
             transformed = self.transform("b")
             wd = transformed.sparse.transpose() - transformed.sparse
+            focal_labels = transformed.focal_label
+            neighbor_labels = transformed.neighbor_label
 
         ids = np.nonzero(wd)
         if len(ids[0]) == 0:
-            return []
+            return pd.Series(
+                index=pd.Index([], name="focal"),
+                name="neighbor",
+                dtype=self._adjacency.neighbor.dtype,
+            )
         else:
-            focal = self.focal_label[ids[0]]
-            neighbor = self.neighbor_label[ids[1]]
+            focal = focal_labels[ids[0]]
+            neighbor = neighbor_labels[ids[1]]
             ijs = pd.Series(
                 neighbor, index=pd.Index(focal, name="focal"), name="neighbor"
             ).sort_index()
