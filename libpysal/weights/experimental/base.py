@@ -176,7 +176,6 @@ class W(_Set_Mixin):
         W
             libpysal.weights.experimental.W
         """
-        # TODO: deal with islands, those are now dropped
         if hasattr(geometry, "index"):
             ids = geometry.index
         else:

@@ -131,7 +131,7 @@ def _queen(geoms, ids=None, by_perimeter=False):
     if by_perimeter:
         weights = _perimeter_weights(geoms, heads_ix, tails_ix)
     else:
-        weights = numpy.ones_like(heads_ix)
+        weights = numpy.ones_like(heads_ix, dtype=int)
     heads, tails = ids[heads_ix], ids[tails_ix]
     return _resolve_islands(heads, tails, ids, weights=weights)
 
@@ -148,7 +148,7 @@ def _rook(geoms, ids=None, by_perimeter=False):
         weights = _perimeter_weights(geoms, heads_ix[mask], tails_ix[mask])
     heads, tails = ids[heads_ix][mask], ids[tails_ix][mask]
     if not by_perimeter:
-        weights = numpy.ones_like(heads)
+        weights = numpy.ones_like(heads, dtype=int)
 
     return _resolve_islands(heads, tails, ids, weights)
 
@@ -188,5 +188,5 @@ def _resolve_islands(heads, tails, ids, weights):
     if islands.shape != (0,):
         heads = numpy.hstack((heads, islands))
         tails = numpy.hstack((tails, islands))
-        weights = numpy.hstack((weights, numpy.zeros_like(islands)))
+        weights = numpy.hstack((weights, numpy.zeros_like(islands, dtype=int)))
     return heads, tails, weights
