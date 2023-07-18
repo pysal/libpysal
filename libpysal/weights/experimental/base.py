@@ -494,7 +494,7 @@ class W(_Set_Mixin):
 
         TODO: This currently does not work as scipy.sparse array does not
         yet implement matrix_power. We need to reimplement it temporarily and
-        switch once that is released.
+        switch once that is released. [https://github.com/scipy/scipy/pull/18544]
 
         Parameters
         ----------
@@ -520,38 +520,39 @@ class W(_Set_Mixin):
         W
             higher order weights
         """
-        binary = self.transform("B")
-        sparse = binary.sparse
+        return NotImplementedError
+        # binary = self.transform("B")
+        # sparse = binary.sparse
 
-        if lower_order:
-            wk = sum(map(lambda x: sparse**x, range(2, k + 1)))
-            shortest_path = False
-        else:
-            wk = sparse**k
+        # if lower_order:
+        #     wk = sum(map(lambda x: sparse**x, range(2, k + 1)))
+        #     shortest_path = False
+        # else:
+        #     wk = sparse**k
 
-        rk, ck = wk.nonzero()
-        sk = set(zip(rk, ck))
+        # rk, ck = wk.nonzero()
+        # sk = set(zip(rk, ck))
 
-        if shortest_path:
-            for j in range(1, k):
-                wj = sparse**j
-                rj, cj = wj.nonzero()
-                sj = set(zip(rj, cj))
-                sk.difference_update(sj)
-        if not diagonal:
-            sk = set([(i, j) for i, j in sk if i != j])
+        # if shortest_path:
+        #     for j in range(1, k):
+        #         wj = sparse**j
+        #         rj, cj = wj.nonzero()
+        #         sj = set(zip(rj, cj))
+        #         sk.difference_update(sj)
+        # if not diagonal:
+        #     sk = set([(i, j) for i, j in sk if i != j])
 
-        ix = pd.MultiIndex.from_tuples(sk, names=["focal", "neighbor"])
-        new_index = pd.MultiIndex.from_arrays(
-            (
-                binary.focal_label.take(ix.get_level_values("focal")),
-                binary.neighbor_label.take(ix.get_level_values("neighbor")),
-            ),
-            names=["focal", "neighbor"],
-        )
-        return W(
-            pd.Series(
-                index=new_index,
-                data=np.ones(len(ix), dtype=int),
-            )
-        )
+        # ix = pd.MultiIndex.from_tuples(sk, names=["focal", "neighbor"])
+        # new_index = pd.MultiIndex.from_arrays(
+        #     (
+        #         binary.focal_label.take(ix.get_level_values("focal")),
+        #         binary.neighbor_label.take(ix.get_level_values("neighbor")),
+        #     ),
+        #     names=["focal", "neighbor"],
+        # )
+        # return W(
+        #     pd.Series(
+        #         index=new_index,
+        #         data=np.ones(len(ix), dtype=int),
+        #     )
+        # )
