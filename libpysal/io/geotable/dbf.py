@@ -19,7 +19,7 @@ def check_dups(li):
     -------
     dups : list
         The duplicate IDs.
-        
+
     """
 
     dups = list(set([x for x in li if li.count(x) > 1]))
@@ -30,7 +30,7 @@ def check_dups(li):
 def dbfdups(dbfpath, idvar):
     """Checks duplicates in a ``.dBase`` file ID variable must be specified correctly.
     Author(s) -- Luc Anselin <anselin@uchicago.edu>
-    
+
     Parameters
     ----------
     dbfpath : str
@@ -42,7 +42,7 @@ def dbfdups(dbfpath, idvar):
     -------
     dups : list
         The duplicate IDs.
-        
+
     """
     db = ps_open(dbfpath, "r")
     li = db.by_col(idvar)
@@ -77,13 +77,13 @@ def df2dbf(df, dbf_path, my_specs=None):
     -------
     dbf_path : str
         Path to the output ``.dbf``
-    
+
     Notes
     -----
-    
+
     Use of ``dtypes.name`` may not be fully robust, but preferred
     approach of using ``isinstance`` seems too clumsy.
-    
+
     """
     if my_specs:
         specs = my_specs
@@ -138,7 +138,7 @@ def dbf2df(dbf_path, index=None, cols=False, incl_index=False):
     -------
     df : pandas.DataFrame
         The resultant ``pandas.DataFrame`` object.
-    
+
     """
 
     db = ps_open(dbf_path)
@@ -187,7 +187,7 @@ def dbfjoin(dbf1_path, dbf2_path, out_path, joinkey1, joinkey2):
     -------
     dp : str
         Path to output file.
-    
+
     """
 
     df1 = dbf2df(dbf1_path, index=joinkey1)
@@ -215,7 +215,7 @@ def dta2dbf(dta_path, dbf_path):
     -------
     dp : str
         path to output file
-    
+
     """
 
     db = pd.read_stata(dta_path)

@@ -16,7 +16,7 @@ from ... import examples as pysal_examples
 
 class TestContiguityWeights(unittest.TestCase):
     def setUp(self):
-        """ Setup the binning contiguity weights"""
+        """Setup the binning contiguity weights."""
         shpObj = ps_open(pysal_examples.get_path("virginia.shp"), "r")
         self.binningW = ContiguityWeightsLists(shpObj, QUEEN)
         shpObj.close()
@@ -36,7 +36,7 @@ class TestContiguityWeights(unittest.TestCase):
         self.assertEqual(len(self.binningW.w), 136)
 
     def test_nested_polygons(self):
-        # load queen gal file created using Open Geoda.
+        # load queen gal file created using Open Geoda
         geodaW = ps_open(pysal_examples.get_path("virginia.gal"), "r").read()
         # build matching W with pysal
         pysalWb = self.build_W(
@@ -51,12 +51,11 @@ class TestContiguityWeights(unittest.TestCase):
             self.assertEqual(geoda_neighbors, pysalb_neighbors)
 
     def test_true_rook(self):
-        # load queen gal file created using Open Geoda.
+        # load queen gal file created using Open Geoda
         geodaW = ps_open(pysal_examples.get_path("rook31.gal"), "r").read()
         # build matching W with pysal
-        # pysalW = pysal.rook_from_shapefile(pysal_examples.get_path('rook31.shp'),','POLY_ID')
         pysalWb = self.build_W(pysal_examples.get_path("rook31.shp"), ROOK, "POLY_ID")
-        # compare output.
+        # compare output
         for key in geodaW.neighbors:
             geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
@@ -65,14 +64,13 @@ class TestContiguityWeights(unittest.TestCase):
             self.assertEqual(geoda_neighbors, pysalb_neighbors)
 
     def test_true_rook2(self):
-        # load queen gal file created using Open Geoda.
-
+        # load queen gal file created using Open Geoda
         stl = pysal_examples.load_example("stl")
         gal_file = test_file = stl.get_path("stl_hom_rook.gal")
         geodaW = ps_open(gal_file, "r").read()
         # build matching W with pysal
         pysalWb = self.build_W(stl.get_path("stl_hom.shp"), ROOK, "POLY_ID_OG")
-        # compare output.
+        # compare output
         for key in geodaW.neighbors:
             geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
@@ -81,11 +79,11 @@ class TestContiguityWeights(unittest.TestCase):
             self.assertEqual(geoda_neighbors, pysalb_neighbors)
 
     def test_true_rook3(self):
-        # load queen gal file created using Open Geoda.
+        # load queen gal file created using Open Geoda
         geodaW = ps_open(pysal_examples.get_path("virginia_rook.gal"), "r").read()
         # build matching W with pysal
         pysalWb = self.build_W(pysal_examples.get_path("virginia.shp"), ROOK, "POLY_ID")
-        # compare output.
+        # compare output
         for key in geodaW.neighbors:
             geoda_neighbors = list(map(int, geodaW.neighbors[key]))
             pysalb_neighbors = pysalWb.neighbors[int(key)]
@@ -108,7 +106,11 @@ class TestContiguityWeights(unittest.TestCase):
         self.assertEqual(pysalneighbs.w, shplyneighbs.w)
 
     def build_W(self, shapefile, type, idVariable=None):
-        """ Building 2 W's the hard way.  We need to do this so we can test both rtree and binning """
+        """
+        Building 2 W's the hard way.
+        We need to do this so we can test both rtree and binning.
+        """
+
         dbname = os.path.splitext(shapefile)[0] + ".dbf"
         db = ps_open(dbname)
         shpObj = ps_open(shapefile)
@@ -132,9 +134,5 @@ class TestContiguityWeights(unittest.TestCase):
         return binningW
 
 
-# suite = unittest.TestLoader().loadTestsFromTestCase(_TestContiguityWeights)
-
 if __name__ == "__main__":
-    # runner = unittest.TextTestRunner()
-    # runner.run(suite)
     unittest.main()

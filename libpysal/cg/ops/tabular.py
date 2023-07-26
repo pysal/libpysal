@@ -53,13 +53,13 @@ def spatial_join(
         the suffix to apply to overlapping column names from ``df1``.;
         and (4) ``'rsuffix'`` defaults to ``right'``),
         the suffix to apply to overlapping column names from ``df2``.
-    
+
     Returns
     -------
     df : pandas.DataFrame
         A pandas.DataFrame with a new set of polygons
         and attributes resulting from the overlay.
-    
+
     """
 
     import geopandas as gpd
@@ -103,13 +103,13 @@ def spatial_overlay(
         Default is ``'geometry'``.
     **kwargs : dict
         Optional keyword arguments passed in ``geopandas.tools.overlay``.
-    
+
     Returns
     -------
     df : pandas.DataFrame
         A pandas.DataFrame with a new set of polygons
         and attributes resulting from the overlay.
-    
+
     """
 
     import geopandas as gpd

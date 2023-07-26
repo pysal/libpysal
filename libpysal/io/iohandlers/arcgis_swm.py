@@ -13,7 +13,7 @@ class ArcGISSwmIO(fileio.FileIO):
     Spatial weights objects in the ArcGIS ``.swm`` format are used in ArcGIS
     Spatial Statistics tools. Particularly, this format can be directly used
     with the tools under the category of Mapping Clusters.
-    
+
     The values for``ORG_i`` and ``DST_i`` should be integers, as ArcGIS Spatial
     Statistics tools support only unique integer IDs. For the case where a
     weights object uses non-integer IDs, `ArcGISSwmIO` allows users to use
@@ -22,19 +22,19 @@ class ArcGISSwmIO(fileio.FileIO):
 
     .. table:: ArcGIS SWM Components
     ============ ============ ==================================== ================================
-        Part      Data type           Description                               Length             
+        Part      Data type           Description                               Length
     ============ ============ ==================================== ================================
-     ID_VAR_NAME  ASCII TEXT  ID variable name                     Flexible (Up to the 1st ;)      
+     ID_VAR_NAME  ASCII TEXT  ID variable name                     Flexible (Up to the 1st ;)
      ESRI_SRS     ASCII TEXT  ESRI spatial reference system        Flexible (Btw the 1st ; and \\n)
-     NO_OBS       l.e. int    Number of observations               4                               
-     ROW_STD      l.e. int    Whether or not row-standardized      4                               
-     WGT_i                                                                                         
-     ORG_i        l.e. int    ID of observaiton i                  4                               
-     NO_NGH_i     l.e. int    Number of neighbors for obs. i (m)   4                               
-     NGHS_i                                                                                        
-     DSTS_i       l.e. int    IDs of all neighbors of obs. i       4*m                             
-     WS_i         l.e. float  Weights for obs. i and its neighbors 8*m                             
-     W_SUM_i      l.e. float  Sum of weights for "                 8                               
+     NO_OBS       l.e. int    Number of observations               4
+     ROW_STD      l.e. int    Whether or not row-standardized      4
+     WGT_i
+     ORG_i        l.e. int    ID of observaiton i                  4
+     NO_NGH_i     l.e. int    Number of neighbors for obs. i (m)   4
+     NGHS_i
+     DSTS_i       l.e. int    IDs of all neighbors of obs. i       4*m
+     WS_i         l.e. float  Weights for obs. i and its neighbors 8*m
+     W_SUM_i      l.e. float  Sum of weights for "                 8
     ============ ============ ==================================== ================================
 
     """
@@ -77,17 +77,17 @@ class ArcGISSwmIO(fileio.FileIO):
 
     def _read(self):
         """Read an ArcGIS ``.swm`` file.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -131,17 +131,17 @@ class ArcGISSwmIO(fileio.FileIO):
 
     def read_old_version(self, header):
         """Read the old version of ArcGIS(<10.1) ``.swm`` file.
-        
+
         Parameters
         ----------
         header : str
             The first line of the ``.swm`` file.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         id_var, srs = header[:-1].split(";")
@@ -175,19 +175,19 @@ class ArcGISSwmIO(fileio.FileIO):
     def read_new_version(self, header_line):
         """Read the new version of ArcGIS(<10.1) ``.swm`` file, which contains
         more parameters and records weights in two ways, fixed or variable.
-        
+
         Parameters
         ----------
         header_line : str
             The first line of the ``.swm`` file, which contains a lot of
             parameters. The parameters are divided by semicolons (';') and
             the key-value of each parameter is divided by at marks ('@').
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         headerDict = {}
@@ -250,7 +250,7 @@ class ArcGISSwmIO(fileio.FileIO):
             Raised when the input ``obj`` is not a PySAL `W`.
         TypeError
             Raised when the IDs in input ``obj`` are not integers.
-        
+
         Examples
         --------
 
@@ -296,7 +296,7 @@ class ArcGISSwmIO(fileio.FileIO):
         Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
-        
+
         """
 
         self._complain_ifclosed(self.closed)

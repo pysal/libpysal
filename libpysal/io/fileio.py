@@ -29,12 +29,12 @@ class FileIO_MetaCls(type):
     subclasses of `FileIO` also inherit this meta class, which registers
     their abilities with the FileIO registry. Subclasses must contain
     ``FORMATS`` and ``MODES`` (both are ``type(list)``).
-    
+
     Raises
     ------
     TypeError
         FileIO subclasses must have ``FORMATS`` and ``MODES`` defined.
-    
+
     """
 
     def __new__(mcs, name, bases, dict):
@@ -58,9 +58,9 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     """Metaclass for supporting spatial data file read and write.
 
     How this works:
-    
+
     ``FileIO.open(\\*args) == FileIO(\\*args)``
-    
+
     When creating a new instance of `FileIO` the ``.__new__`` method intercepts.
     ``.__new__`` parses the filename to determine the ``fileType``. Next,
     ``.__registry`` and checked for that type. Each type supports one or more modes
@@ -70,10 +70,10 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     forced to conform to the prescribed API. The metaclass takes care of the
     registration by parsing the class definition. It doesn't make much sense to
     treat weights in the same way as shapefiles and dbfs, so...
-    
+
     * ... for now we'll just return an instance of `W` on ``mode='r'``.
     * ... on ``mode='w'``, ``.write`` will expect an instance of `W`.
-    
+
     """
 
     __registry = {}  # {'shp':{'r':[OGRshpReader,pysalShpReader]}}
@@ -207,12 +207,12 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         """Property method for ``.ids``. Takes a list of ids and maps then
         to a 0-based index. Need to provide a method to set ID's based on
         a ``fieldName`` preferably without reading the whole file.
-        
+
         Raises
         ------
         AssertionError
             Raised when IDs are not unique.
-        
+
         """
 
         if isinstance(ids, list):
@@ -249,26 +249,26 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     @staticmethod
     def _complain_ifclosed(closed):
         """From `StringIO`.
-        
+
         Raises
         ------
         ValueError
             Raised when a file is already closed.
-        
+
         """
         if closed:
             raise ValueError("I/O operation on closed file.")
 
     def cast(self, key, typ):
         """Cast ``key`` as ``typ``.
-        
+
         Raises
         ------
         TypeError
             Raised when a cast object in not callable.
         KeyError
             Raised when a key is not present.
-        
+
         """
         if key in self.header:
             if not self._spec:
@@ -286,12 +286,12 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
 
     def _cast(self, row) -> list:
         """
-        
+
         Raises
         ------
         ValueError
             Raised when a value could not be cast a particular type.
-        
+
         """
         if self._spec and row:
             try:
@@ -316,12 +316,12 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
 
     def __next__(self) -> list:
         """A `FileIO` object is its own iterator, see `StringIO`.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-            
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -369,12 +369,12 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         """Read at most ``n`` objects, less if read hits EOF.
         If size is negative or omitted read all objects until EOF.
         Returns ``None`` if EOF is reached before any objects.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -401,12 +401,12 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
 
     def __read(self) -> list:
         """Gets one row from the file handler, and if necessary casts it's objects.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         """
 
         row = self._read()
@@ -419,11 +419,11 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
     def _read(self):
         """Must be implemented by subclasses that support 'r' subclasses.
         Should increment ``.pos`` and redefine this doc string.
-        
+
         Raises
         ------
         NotImplementedError
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -431,11 +431,11 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
 
     def truncate(self, size=None):
         """Should be implemented by subclasses and redefine this doc string.
-        
+
         Raises
         ------
         NotImplementedError
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -445,11 +445,11 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
         """Must be implemented by subclasses that support 'w' subclasses
         Should increment ``.pos``. Subclasses should also check if ``obj``
         is an instance of type(list) and redefine this doc string.
-        
+
         Raises
         ------
         NotImplementedError
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -458,11 +458,11 @@ class FileIO(object, metaclass=FileIO_MetaCls):  # should be a type?
 
     def flush(self):
         """
-        
+
         Raises
         ------
         NotImplementedError
-        
+
         """
 
         self._complain_ifclosed(self.closed)

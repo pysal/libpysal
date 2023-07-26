@@ -12,7 +12,7 @@ class csvWrapper(tables.DataTable):
 
     Examples
     --------
-    
+
     >>> import libpysal
     >>> stl = libpysal.examples.load_example('stl')
     >>> file_name = stl.get_path('stl_hom.csv')
@@ -41,7 +41,7 @@ class csvWrapper(tables.DataTable):
      'RDAC80',
      'RDAC85',
      'RDAC90']
-    
+
     >>> f._spec
     [str,
      str,
@@ -65,7 +65,7 @@ class csvWrapper(tables.DataTable):
      float,
      float,
      float]
-    
+
     """
 
     __doc__ = tables.DataTable.__doc__

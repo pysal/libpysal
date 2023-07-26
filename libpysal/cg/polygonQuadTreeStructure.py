@@ -130,7 +130,7 @@ class Cell(object):
 
     @property
     def rings(self):
-        """ the list of rings which are formed by the intersection of this cell and the arcs pass them
+        """the list of rings which are formed by the intersection of this cell and the arcs pass them
 
         Returns
         -------

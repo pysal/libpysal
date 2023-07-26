@@ -255,7 +255,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(polyids5, polyids[:5])
 
     @unittest.skipIf(
-        not HAS_GEOPANDAS, "Missing geopandas, cannot test get_ids with gdf"
+        not HAS_GEOPANDAS, "Missing geopandas; cannot test get_ids() with gdf."
     )
     def test_get_ids_gdf(self):
         gdf = gpd.read_file(examples.get_path("columbus.shp"))
@@ -293,7 +293,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(w_attach[w.islands[0]], {166: 1.0})
 
     @unittest.skipIf(
-        not HAS_GEOPANDAS, "Missing geopandas, cannot test nonplanar neighbors"
+        not HAS_GEOPANDAS, "Missing geopandas; cannot test nonplanar neighbors."
     )
     def test_nonplanar_neighbors(self):
         df = gpd.read_file(examples.get_path("map_RS_BR.shp"))
@@ -339,7 +339,7 @@ class Testutil(unittest.TestCase):
         self.assertEqual(wnp.neighbors[23], [0, 45, 59, 107, 152, 185, 246])
 
     @unittest.skipIf(
-        not HAS_GEOPANDAS, "Missing geopandas, cannot test fuzzy_contiguity"
+        not HAS_GEOPANDAS, "Missing geopandas; cannot test fuzzy contiguity."
     )
     def test_fuzzy_contiguity(self):
         rs = examples.get_path("map_RS_BR.shp")
@@ -362,6 +362,7 @@ class Testutil(unittest.TestCase):
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Testutil)
+
 
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()

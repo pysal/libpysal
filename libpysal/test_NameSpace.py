@@ -5,9 +5,9 @@ import unittest
 @unittest.skip("Skipping unittest for namespace")
 class TestNameSpace(unittest.TestCase):
     """
-        This test makes sure we don't remove anything from the pysal NameSpace that
-        1.0 users might expect to be there.  1.0 Namespace was taken from the 1.1
-        Code sprint wave, with special names removes (__all__, etc)
+    This test makes sure we don't remove anything from the pysal NameSpace that
+    1.0 users might expect to be there.  1.0 Namespace was taken from the 1.1
+    Code sprint wave, with special names removes (__all__, etc).
     """
 
     def test_contents(self):

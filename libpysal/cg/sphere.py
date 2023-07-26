@@ -67,13 +67,13 @@ def arcdist(pt0, pt1, radius=RADIUS_EARTH_KM):
 
     Examples
     --------
-    
+
     >>> pt0 = (0, 0)
     >>> pt1 = (180, 0)
     >>> d = arcdist(pt0, pt1, RADIUS_EARTH_MILES)
     >>> d == math.pi * RADIUS_EARTH_MILES
     True
-    
+
     """
 
     dist = linear2arcdist(euclidean(toXYZ(pt0), toXYZ(pt1)), radius)
@@ -84,7 +84,7 @@ def arcdist(pt0, pt1, radius=RADIUS_EARTH_KM):
 def arcdist2linear(arc_dist, radius=RADIUS_EARTH_KM):
     """Convert an arc distance (spherical earth)
     to a linear distance (R3) in the unit sphere.
-    
+
     Parameters
     ----------
     arc_dist : float
@@ -95,24 +95,24 @@ def arcdist2linear(arc_dist, radius=RADIUS_EARTH_KM):
         radius in miles, ``RADIUS_EARTH_MILES`` (``3958.76``)
         is also an option.
         Source: http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
-    
+
     Returns
     -------
     linear_dist : float
         The linear distance conversion of ``arc_dist``.
-    
+
     Examples
     --------
-    
+
     >>> pt0 = (0, 0)
     >>> pt1 = (180, 0)
     >>> d = arcdist(pt0, pt1, RADIUS_EARTH_MILES)
     >>> d == math.pi * RADIUS_EARTH_MILES
     True
-    
+
     >>> arcdist2linear(d, RADIUS_EARTH_MILES)
     2.0
-    
+
     """
 
     circumference = 2 * math.pi * radius
@@ -126,7 +126,7 @@ def arcdist2linear(arc_dist, radius=RADIUS_EARTH_KM):
 def linear2arcdist(linear_dist, radius=RADIUS_EARTH_KM):
     """Convert a linear distance in the unit sphere
     (R3) to an arc distance based on supplied radius.
-    
+
     Parameters
     ----------
     linear_dist : float
@@ -137,26 +137,26 @@ def linear2arcdist(linear_dist, radius=RADIUS_EARTH_KM):
         radius in miles, ``RADIUS_EARTH_MILES`` (``3958.76``)
         is also an option.
         Source: http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
-    
+
     Returns
     -------
     arc_dist : float
         The arc distance conversion of ``linear_dist``.
-    
+
     Raises
     ------
     ValueError
         Raised when ``linear_dist`` exceeds the diameter of the unit sphere.
-    
+
     Examples
     --------
-    
+
     >>> pt0 = (0, 0)
     >>> pt1 = (180, 0)
     >>> d = arcdist(pt0, pt1, RADIUS_EARTH_MILES)
     >>> d == linear2arcdist(2.0, radius=RADIUS_EARTH_MILES)
     True
-    
+
     """
 
     if linear_dist == float("inf"):
@@ -175,7 +175,7 @@ def linear2arcdist(linear_dist, radius=RADIUS_EARTH_KM):
 
 def toXYZ(pt):
     """Convert a point's latitude and longitude to x,y,z.
-    
+
     Parameters
     ----------
     pt : tuple
@@ -185,7 +185,7 @@ def toXYZ(pt):
     -------
     x, y, z : tuple
         A point in form (x, y, z).
-    
+
     """
 
     phi, theta = list(map(math.radians, pt))
@@ -199,17 +199,17 @@ def toXYZ(pt):
 
 def toLngLat(xyz):
     """Convert a point's x,y,z to latitude and longitude.
-    
+
     Parameters
     ----------
     xyz : tuple
         A point assumed to be in form (x,y,z).
-    
+
     Returns
     -------
     phi, theta : tuple
         A point in form (phi, theta) [y,x].
-    
+
     """
 
     x, y, z = xyz
@@ -228,7 +228,7 @@ def toLngLat(xyz):
 
 def brute_knn(pts, k, mode="arc", radius=RADIUS_EARTH_KM):
     """Computes a brute-force :math:`k` nearest neighbors.
-    
+
     Parameters
     ----------
     pts : list
@@ -244,12 +244,12 @@ def brute_knn(pts, k, mode="arc", radius=RADIUS_EARTH_KM):
         radius in miles, ``RADIUS_EARTH_MILES`` (``3958.76``)
         is also an option.
         Source: http://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
-    
+
     Returns
     -------
     w : dict
         A neighbor ID lookup.
-    
+
     """
 
     n = len(pts)
@@ -372,7 +372,7 @@ def lonlat(pointslist):
 
     Examples
     --------
-    
+
     >>> points = [
     ...     (41.981417, -87.893517), (41.980396, -87.776787), (41.980906, -87.696450)
     ... ]
@@ -402,7 +402,7 @@ def haversine(x):
 
     Examples
     --------
-    
+
     >>> haversine(math.pi) # is 180 in radians, hence sin of 90 = 1
     1.0
 
@@ -441,7 +441,7 @@ def radangle(p0, p1):
 
     Examples
     --------
-    
+
     >>> p0 = (-87.893517, 41.981417)
     >>> p1 = (-87.519295, 41.657498)
     >>> radangle(p0, p1)
@@ -449,7 +449,7 @@ def radangle(p0, p1):
 
     Notes
     -----
-    
+
     Uses haversine formula, function haversine and degree to radian
     conversion lambda function ``d2r``.
 
@@ -491,18 +491,18 @@ def harcdist(p0, p1, lonx=True, radius=RADIUS_EARTH_KM):
 
     Examples
     --------
-    
+
     >>> p0 = (-87.893517, 41.981417)
     >>> p1 = (-87.519295, 41.657498)
     >>> harcdist(p0, p1)
     47.52873002976876
-    
+
     >>> harcdist(p0, p1, radius=None)
     0.007460167953189258
 
     Notes
     -----
-    
+
     Uses the ``radangle`` function to compute radian angle.
 
     """
@@ -546,12 +546,12 @@ def geointerpolate(p0, p1, t, lonx=True):
 
     Examples
     --------
-    
+
     >>> p0 = (-87.893517, 41.981417)
     >>> p1 = (-87.519295, 41.657498)
     >>> geointerpolate(p0, p1, 0.1)             # using lon-lat
     (-87.85592403438788, 41.949079912574796)
-    
+
     >>> p3 = (41.981417, -87.893517)
     >>> p4 = (41.657498, -87.519295)
     >>> geointerpolate(p3, p4, 0.1, lonx=False) # using lat-lon
@@ -612,7 +612,7 @@ def geogrid(pup, pdown, k, lonx=True):
 
     Examples
     --------
-    
+
     >>> pup = (42.023768, -87.946389)       # Arlington Heights, IL
     >>> pdown = (41.644415, -87.524102)     # Hammond, IN
     >>> geogrid(pup,pdown, 3, lonx=False)

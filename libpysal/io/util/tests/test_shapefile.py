@@ -28,8 +28,7 @@ import os
 
 
 def bufferIO(buf):
-    """Temp stringIO function to force compat.
-    """
+    """Temp stringIO function to force compat."""
     return io.BytesIO(buf)
 
 

@@ -28,6 +28,7 @@ except ImportError:
 
 
 class Contiguity_Mixin(object):
+
     polygon_path = pysal_examples.get_path("columbus.shp")
     point_path = pysal_examples.get_path("baltim.shp")
     da = raster.testDataArray((1, 4, 4), missing_vals=False)
@@ -98,7 +99,7 @@ class Contiguity_Mixin(object):
         # test named, sparse from point array
         pass
 
-    @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
+    @ut.skipIf(PANDAS_EXTINCT, "Missing pandas.")
     def test_from_dataframe(self):
         # basic
         df = pdio.read_files(self.polygon_path)
@@ -136,6 +137,7 @@ class Contiguity_Mixin(object):
     def test_from_xarray(self):
         w = self.cls.from_xarray(self.da, sparse=False, n_jobs=-1)
         self.assertEqual(w[self.known_wi_da], self.known_w_da)
+
         ws = self.cls.from_xarray(self.da)
         srowvec = ws.sparse[self.known_wspi_da].todense().tolist()[0]
         this_w = {i: k for i, k in enumerate(srowvec) if k > 0}
@@ -175,7 +177,7 @@ class Test_Queen(ut.TestCase, Contiguity_Mixin):
             (1, 30.0, 60.0): 1,
         }
 
-    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing Geopandas")
+    @ut.skipIf(GEOPANDAS_EXTINCT, "Missing geopandas.")
     def test_linestrings(self):
         import geopandas
 

@@ -31,15 +31,15 @@ def voronoi(points, radius=None):
         the list contains the sequence of the indices of Voronoi vertices
         composing a Voronoi polygon (region), whereas the array contains
         the Voronoi vertex coordinates.
-    
+
     Examples
     --------
-    
+
     >>> points = [(10.2, 5.1), (4.7, 2.2), (5.3, 5.7), (2.7, 5.3)]
     >>> regions, coordinates = voronoi(points)
     >>> regions
     [[1, 3, 2], [4, 5, 1, 0], [0, 1, 7, 6], [9, 0, 8]]
-    
+
     >>> coordinates
     array([[  4.21783296,   4.08408578],
            [  7.51956025,   3.51807539],
@@ -51,7 +51,7 @@ def voronoi(points, radius=None):
            [  9.4642193 ,  19.3994576 ],
            [  1.78491801,  19.89803294],
            [ -9.22691341,  -4.58994414]])
-    
+
     """
 
     vor = voronoi_regions(Voronoi(points), radius=radius)
@@ -68,13 +68,13 @@ def voronoi_regions(vor, radius=None):
         A planar Voronoi diagram.
     radius : float (optional)
         Distance to 'points at infinity'. Default is ``None.``
-    
+
     Returns
     -------
     regions_vertices : tuple
         A two-element tuple consisting of a list of finite voronoi regions
         and an array Voronoi vertex coordinates.
-    
+
     """
 
     new_regions = []
@@ -148,14 +148,14 @@ def as_dataframes(regions, vertices, points):
         Finite Voronoi polygons as geometries.
     points_df : geopandas.GeoDataFrame
         Originator points as geometries.
-    
+
     Raises
     ------
     ImportError
         Raised when ``geopandas`` is not available.
     ImportError
         Raised when ``shapely`` is not available.
-    
+
     """
 
     try:
@@ -201,7 +201,7 @@ def voronoi_frames(points, radius=None, clip="extent"):
     clip : {str, shapely.geometry.Polygon}
         An overloaded option about how to clip the voronoi cells.
         Default is ``'extent'``. Options are as follows.
-        
+
         * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.
         * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the bounding box of the input points.
         * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of the input points.
@@ -212,7 +212,7 @@ def voronoi_frames(points, radius=None, clip="extent"):
     -------
     reg_vtx : tuple
         Two ``geopandas.GeoDataFrame`` (or ``pandas.DataFrame`` if ``geopandas``
-        is unavailable) objects--``(region_df, points_df)``--of finite 
+        is unavailable) objects--``(region_df, points_df)``--of finite
         Voronoi polygons and the originator points as geometries.
 
     Notes
@@ -226,12 +226,12 @@ def voronoi_frames(points, radius=None, clip="extent"):
 
     Examples
     --------
-    
+
     >>> points = [(10.2, 5.1), (4.7, 2.2), (5.3, 5.7), (2.7, 5.3)]
     >>> regions_df, points_df = voronoi_frames(points)
     >>> regions_df.shape
     (4, 1)
-    
+
     >>> regions_df.shape == points_df.shape
     True
 
@@ -249,7 +249,7 @@ def voronoi_frames(points, radius=None, clip="extent"):
 def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
     """Generate a geopandas.GeoDataFrame of Voronoi cells clipped to
     a specified extent.
-    
+
     Parameters
     ----------
     regions : geopandas.GeoDataFrame
@@ -271,12 +271,12 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
             contains all points (e.g. the smallest alphashape,
             using ``libpysal.cg.alpha_shape_auto``).
           - Polygon: Clip to an arbitrary Polygon.
-    
+
     Returns
     -------
     clipped_regions : geopandas.GeoDataFrame
         A ``geopandas.GeoDataFrame`` of clipped voronoi regions.
-    
+
     Raises
     ------
     ImportError
@@ -285,7 +285,7 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
         Raised when ``geopandas`` is not available.
     ValueError
         Raised when in invalid value for ``clip`` is passed in.
-    
+
     """
     try:
         from shapely.geometry import Polygon

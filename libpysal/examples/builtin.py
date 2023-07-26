@@ -68,30 +68,40 @@ class LocalExample:
 
     def get_file_list(self) -> list:
         """Return a list of file names."""
+
         return get_list_of_files(self.dirname)
 
     def get_path(self, file_name: str, verbose=True) -> str:
         """Get path for local file."""
+
         file_list = self.get_file_list()
+
         for file_path in file_list:
             base_name = os.path.basename(file_path)
             if file_name == base_name:
                 return file_path
+
         if verbose:
             print("{} is not a file in this example".format(file_name))
+
         return None
 
     def explain(self):
         """Provide a printed description of the example."""
+
         description = [f for f in self.get_file_list() if "README.md" in f][0]
+
         with open(description, "r", encoding="utf8") as f:
             print(f.read())
 
     def get_description(self) -> str:
         """Dataset description."""
+
         description = [f for f in self.get_file_list() if "README.md" in f][0]
+
         with open(description, "r", encoding="utf8") as f:
             lines = f.readlines()
+
         return lines[3].strip()
 
 

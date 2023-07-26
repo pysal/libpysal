@@ -8,7 +8,7 @@ __all__ = ["Wk1IO"]
 
 class Wk1IO(fileio.FileIO):
     """MATLAB ``wk1read.m`` and ``wk1write.m`` that were written by
-    Brian M. Bourgault in 10/22/93. Opens, reads, and writes weights 
+    Brian M. Bourgault in 10/22/93. Opens, reads, and writes weights
     ile objects in Lotus Wk1 format. Lotus Wk1 files are used in Dr.
     LeSage's MATLAB Econometrics library.
 
@@ -20,12 +20,12 @@ class Wk1IO(fileio.FileIO):
     is a blank or has a number.
 
     The internal structure of a `Wk1` file written by PySAL is as follows:
-    
+
     ```
     [BOF][DIM][CPI][CAL][CMODE][CORD][SPLIT][SYNC][CURS][WIN]
     [HCOL][MRG][LBL][CELL_1]...[CELL_m][EOF]
     ```
-    
+
     where ``[CELL_k]`` equals to ``[DTYPE][DLEN][DFORMAT][CINDEX][CVALUE]``.
     The parts between ``[BOF]`` and ``[CELL_1]`` are variable according to
     the software program used to write a ``.wk1`` file. While reading a
@@ -153,17 +153,17 @@ class Wk1IO(fileio.FileIO):
 
     def read(self, n=-1):
         """
-        
+
         Parameters
         ----------
         n : int
             Read at most ``n`` objects. Default is ``-1``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -181,14 +181,14 @@ class Wk1IO(fileio.FileIO):
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
         ValueError
             Raised when the header of the file is invalid.
-        
+
         Examples
         --------
 
@@ -261,14 +261,14 @@ class Wk1IO(fileio.FileIO):
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         ValueError
             Raised when the `WK1` file has more than 256 observations.
         TypeError
             Raised when the input ``obj`` is not a PySAL `W`.
-        
+
         Examples
         --------
 

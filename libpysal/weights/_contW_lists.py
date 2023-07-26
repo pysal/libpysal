@@ -15,12 +15,12 @@ def _get_verts(shape):
         return _get_boundary_points(shape)
 
 
-def _get_boundary_points(shape):
+def _get_boundary_points(shape) -> list:
+    """Recursively handle polygons vs. multipolygons
+    to extract the boundary point set from each.
     """
-    Recursively handle polygons vs. multipolygons to
-    extract the boundary point set from each.
-    """
-    if shape.geom_type.lower() == "polygon":
+
+    if shape.type.lower() == "polygon":
         shape = shape.boundary
         return _get_boundary_points(shape)
     elif shape.geom_type.lower() == "linestring":
@@ -39,27 +39,27 @@ def _get_boundary_points(shape):
 
 
 class ContiguityWeightsLists:
-    """
-    Contiguity for a collection of polygons using high performance
-    list, set, and dict containers
+    """Contiguity for a collection of polygons using high
+    performance ``list``, ``set``, and ``dict`` containers.
+
+    Parameters
+    ----------
+    collection: PySAL PolygonCollection
+        A collection of polygons.
+    wttype: int
+        Set to ``1`` for Queen contiguity or set to ``2`` for Rook contiguity.
+        Default is ``1``.
+
     """
 
     def __init__(self, collection, wttype=1):
-        """
-        Parameters
-        ----------
 
-        collection: PySAL PolygonCollection
-
-        wttype: int
-                1: Queen
-                2: Rook
-        """
         self.collection = list(collection)
         self.wttype = wttype
         self.jcontiguity()
 
     def jcontiguity(self):
+
         numPoly = len(self.collection)
 
         w = {}
@@ -120,4 +120,5 @@ class ContiguityWeightsLists:
                         pass
         else:
             raise Exception(f"Weight type {self.wttype} Not Understood!")
+
         self.w = w

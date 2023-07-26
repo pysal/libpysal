@@ -29,7 +29,7 @@ class ArcGISDbfIO(fileio.FileIO):
     record numbers, instead of original ids.
 
     An exemplary structure of an ArcGIS dbf file is as follows:
-    
+
     ```
     [Line 1]    Field1    RECORD_ID    NID    WEIGHT
     [Line 2]    0         72           76     1
@@ -41,7 +41,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
     References
     ----------
-    
+
     http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=Convert_Spatial_Weights_Matrix_to_Table_(Spatial_Statistics)
 
     """
@@ -74,12 +74,12 @@ class ArcGISDbfIO(fileio.FileIO):
 
     def _read(self):
         """Reads ArcGIS dbf file
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A ``libpysal.weights.W`` object.
-        
+
         Raises
         ------
         StopIteration
@@ -88,7 +88,7 @@ class ArcGISDbfIO(fileio.FileIO):
             Raised when the weights data structure is incorrect.
         TypeError
             Raised when the IDs are not integers.
-        
+
         Examples
         --------
 

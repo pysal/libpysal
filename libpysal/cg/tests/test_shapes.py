@@ -316,7 +316,7 @@ class test_Chain(unittest.TestCase):
     def test_len1(self):
         """Test correctness with multiple parts and
         zero-length point-to-point distances.
-        
+
         """
 
         vertices = [

@@ -35,14 +35,14 @@ class WeightConverter(object):
     def _setW(self):
         """Reads a weights file and sets a
         ``pysal.weights.W`` object as an attribute.
-        
+
         Raises
         ------
         IOError
             Raised when there is a problem reading in the file.
         RuntimeError
             Raised when there is a problem creating the weights object.
-        
+
         Examples
         --------
 
@@ -89,7 +89,7 @@ class WeightConverter(object):
 
     def write(self, outputPath, dataFormat=None, useIdIndex=True, matrix_form=True):
         """
-        
+
         Parameters
         ----------
         outputPath : str
@@ -115,7 +115,7 @@ class WeightConverter(object):
 
         Examples
         --------
-        
+
         >>> import tempfile, os, libpysal
 
         Create a `WeightConverter` object.
@@ -226,7 +226,7 @@ def weight_convert(
 
     Examples
     --------
-    
+
     >>> import tempfile, os, libpysal
 
     Create a temporary file for this example.

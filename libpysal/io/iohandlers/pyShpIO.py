@@ -37,7 +37,7 @@ class PurePyShpWrapper(fileio.FileIO):
 
     Notes
     -----
-    
+
     This class wraps ``_pyShpIO``'s ``shp_file`` class with the PySAL `FileIO` API.
     shp_file can be used without PySAL.
 
@@ -48,25 +48,25 @@ class PurePyShpWrapper(fileio.FileIO):
     >>> f = tempfile.NamedTemporaryFile(suffix='.shp')
     >>> fname = f.name
     >>> f.close()
-    
+
     >>> import libpysal
     >>> i = libpysal.io.open(libpysal.examples.get_path('10740.shp'),'r')
     >>> o = libpysal.io.open(fname,'w')
-    
+
     >>> for shp in i:
     ...     o.write(shp)
     >>> o.close()
-    
+
     >>> one = libpysal.io.open(libpysal.examples.get_path('10740.shp'),'rb').read()
     >>> two = libpysal.io.open(fname,'rb').read()
     >>> one[0].centroid == two[0].centroid
     True
-    
+
     >>> one = libpysal.io.open(libpysal.examples.get_path('10740.shx'),'rb').read()
     >>> two = libpysal.io.open(fname[:-1]+'x','rb').read()
     >>> one[0].centroid == two[0].centroid
     True
-    
+
     >>> import os
     >>> os.remove(fname); os.remove(fname.replace('.shp','.shx'))
 

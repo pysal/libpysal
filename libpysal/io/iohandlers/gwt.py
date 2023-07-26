@@ -15,11 +15,11 @@ class unique_filter(object):
 
     Examples
     --------
-    
+
     >>> l = ['a', 'a', 'b', 'a', 'c', 'v', 'd', 'a', 'v', 'd']
     >>> list(filter(unique_filter(),l))
     ['a', 'b', 'c', 'v', 'd']
-    
+
     """
 
     def __init__(self):
@@ -64,17 +64,17 @@ class GwtIO(FileIO.FileIO):
 
     def read(self, n=-1):
         """
-        
+
         Parameters
         ----------
         n : int
             Read at most ``n`` objects. Default is ``-1``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -94,14 +94,14 @@ class GwtIO(FileIO.FileIO):
         many weight file formats. Header lines, however, are different from
         format to format. So, for code reusability, this part is separated out
         from the ``_read()`` function by Myunghwa Hwang.
-        
+
         Parameters
         ----------
         id_type : type
             Cast IDs as this type.
         ret_ids : bool
             Return IDs (``True``). Default is ``False``.
-        
+
         Returns
         -------
         weights : dict
@@ -110,7 +110,7 @@ class GwtIO(FileIO.FileIO):
             Dictionary of neighbor ID values.
         ids : list
             List of ID values.
-        
+
         """
 
         data = [row.strip().split() for row in self.file.readlines()]
@@ -139,17 +139,17 @@ class GwtIO(FileIO.FileIO):
 
     def _read(self):
         """Reads ``.gwt`` file.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -236,12 +236,12 @@ class GwtIO(FileIO.FileIO):
         repeatedly used for many weight file formats. Header lines, however,
         are different from format to format. So, for code reusability, this
         part is separated out from write function by Myunghwa Hwang.
-        
+
         Parameters
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         for id in obj.id_order:
@@ -260,7 +260,7 @@ class GwtIO(FileIO.FileIO):
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         TypeError
@@ -306,7 +306,7 @@ class GwtIO(FileIO.FileIO):
         Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
-        
+
         """
 
         self._complain_ifclosed(self.closed)

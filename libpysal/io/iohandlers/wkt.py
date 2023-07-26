@@ -16,7 +16,7 @@ class WKTReader(fileio.FileIO):
 
     Examples
     --------
-    
+
     Read in WKT-formatted file.
 
     >>> import libpysal

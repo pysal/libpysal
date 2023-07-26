@@ -8,19 +8,19 @@ from .dbf import dbf2df, df2dbf
 
 def read_files(filepath, **kwargs):
     """Reads a ``.dbf``/``.shp`` pair, squashing geometries into a 'geometry' column.
-    
+
     Parameters
     ----------
     filepath : str
         The file path.
     **kwargs : dict
         Optional keyword arguments for ``dbf2df()``.
-    
+
     Returns
     -------
     df : pandas.DataFrame
         The results dataframe returned from ``dbf2df()``.
-    
+
     """
 
     # keyword arguments wrapper will strip all around dbf2df's required arguments
@@ -52,7 +52,7 @@ def read_files(filepath, **kwargs):
 
 def write_files(df, filepath, **kwargs):
     """Writes dataframes with potential geometric components out to files.
-    
+
     Parameters
     ----------
     df : pandas.DataFrame
@@ -61,14 +61,14 @@ def write_files(df, filepath, **kwargs):
         The file path.
     **kwargs : dict
         Optional keyword arguments for ``df2dbf()``.
-    
+
     Returns
     -------
     dbf_path : str
         Path to the output ``.dbf``
     paths : tuple
         The file paths for ``dbf_out``, ``shp_out``, ``W_path``.
-    
+
     """
 
     geomcol = kwargs.pop("geomcol", "geometry")
@@ -97,8 +97,8 @@ def write_files(df, filepath, **kwargs):
 
 def _pairpath(filepath: str) -> tuple:
     """Return ``.dbf``/``.shp`` paths for any ``.shp``,
-    ``.dbf``, or basepath passed to function. 
-    
+    ``.dbf``, or basepath passed to function.
+
     """
 
     base = os.path.splitext(filepath)[0]

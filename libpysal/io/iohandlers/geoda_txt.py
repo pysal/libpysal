@@ -8,24 +8,24 @@ from typing import Union
 
 class GeoDaTxtReader(tables.DataTable):
     """GeoDa Text File Export Format.
-    
+
     Examples
     --------
-    
+
     >>> import libpysal
     >>> f = libpysal.io.open(libpysal.examples.get_path('stl_hom.txt'),'r')
     >>> f.header
     ['FIPSNO', 'HR8488', 'HR8893', 'HC8488']
-    
+
     >>> len(f)
     78
-    
+
     >>> f.dat[0]
     ['17107', '1.290722', '1.624458', '2']
-    
+
     >>> f.dat[-1]
     ['29223', '0', '8.451537', '0']
-    
+
     >>> f._spec
     [int, float, float, int]
 
@@ -46,12 +46,12 @@ class GeoDaTxtReader(tables.DataTable):
 
     def _open(self):
         """
-        
+
         Raises
         ------
         TypeError
             Raised when the input 'geoda_txt' is not valid.
-        
+
         """
 
         if self.mode == "r":

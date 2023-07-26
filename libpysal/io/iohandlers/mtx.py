@@ -19,7 +19,7 @@ class MtxIO(fileio.FileIO):
 
     With the above assumptions, the structure of a MTX file containing a spatial
     weights matrix can be defined as follows:
-    
+
     ```
     %%MatrixMarket matrix coordinate real general <--- header 1 (constant)
     % Comments starts                             <---
@@ -30,7 +30,7 @@ class MtxIO(fileio.FileIO):
     ...                                              | L entry lines
     IL   JL   A(IL,JL)                            <---
     ```
-    
+
     In the MTX format, the index for rows or columns starts with 1.
 
     PySAL uses ``mtx`` tools in
@@ -40,7 +40,7 @@ class MtxIO(fileio.FileIO):
 
     References
     ----------
-    
+
     `MTX format specification <http://math.nist.gov/MatrixMarket/formats.html>`_
 
     `Matrix Market files
@@ -58,7 +58,7 @@ class MtxIO(fileio.FileIO):
 
     def read(self, n=-1, sparse=False):
         """
-        
+
         Parameters
         ----------
         n : int
@@ -66,12 +66,12 @@ class MtxIO(fileio.FileIO):
         sparse : bool
             Flag for returning a sparse weights matrix (``True``).
             Default is ``False``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         self._sparse = sparse
@@ -85,17 +85,17 @@ class MtxIO(fileio.FileIO):
 
     def _read(self):
         """Reads MatrixMarket ``.mtx`` file.
-        
+
         Returns
         -------
         w : {libpysal.weights.W, libpysal.weights.WSP}
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -143,7 +143,7 @@ class MtxIO(fileio.FileIO):
           0.     0.     0.     0.     0.     0.     0.     0.     0.     0.
           0.     0.     0.     0.     0.     0.     0.     0.     0.     0.
           0.     0.     0.     0.     0.     0.     0.     0.     0.    ]]
-        
+
         """
 
         if self.pos > 0:
@@ -169,7 +169,7 @@ class MtxIO(fileio.FileIO):
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         TypeError

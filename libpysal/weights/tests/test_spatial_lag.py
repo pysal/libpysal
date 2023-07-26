@@ -61,6 +61,7 @@ class Test_spatial_lag(unittest.TestCase):
 
 suite = unittest.TestLoader().loadTestsFromTestCase(Test_spatial_lag)
 
+
 if __name__ == "__main__":
     runner = unittest.TextTestRunner()
     runner.run(suite)

@@ -19,7 +19,6 @@ from ..io import open as ps_open
 from typing import Union
 
 
-
 def get_data_home():
     """Return the path of the ``libpysal`` data directory. This folder is platform specific.
     If the folder does not already exist, it is automatically created.
@@ -52,11 +51,6 @@ def get_list_of_files(dir_name):
     all_files : list
         All file and directory paths.
 
-    Raises
-    ------
-    FileNotFoundError
-        If the file or directory is not found.
-
     """
 
     # names in the given directory
@@ -87,7 +81,7 @@ def type_of_script() -> str:
             return "jupyter"
         if "terminal" in ipy_str:
             return "ipython"
-    except:
+    except NameError:
         return "terminal"
 
 
@@ -112,7 +106,7 @@ class Example:
     Attributes
     ----------
     root : str
-        The ``name`` parameter with filled spaces (_).
+        The ``name`` parameter with filled underscores (``'_`'`).
     installed : bool
         ``True`` if the example is installed, otherwise ``False``.
     zipfile : zipfile.ZipFile
@@ -120,8 +114,7 @@ class Example:
 
     """
 
-    def __init__(self, name, description, n, k, download_url,
-                 explain_url):
+    def __init__(self, name, description, n, k, download_url, explain_url):
         """Initialze Example."""
         self.name = name
         self.description = description
@@ -139,12 +132,14 @@ class Example:
     def get_path(self, file_name, verbose=True) -> Union[str, None]:
         """Get the path for local file."""
         file_list = self.get_file_list()
+
         for file_path in file_list:
             base_name = os.path.basename(file_path)
             if file_name == base_name:
                 return file_path
+
         if verbose:
-            print(f'{file_name} is not a file in this example.')
+            print(f"{file_name} is not a file in this example.")
         return None
 
     def downloaded(self) -> bool:
@@ -153,20 +148,24 @@ class Example:
         if os.path.isdir(path):
             self.installed = True
             return True
+
         return False
 
     def explain(self) -> None:
         """Provide a description of the example."""
 
         file_name = self.explain_url.split("/")[-1]
+
         if file_name == "README.md":
             explain_page = requests.get(self.explain_url)
             crawled = BeautifulSoup(explain_page.text, "html.parser")
             print(crawled.text)
             return None
+
         if type_of_script() == "terminal":
             webbrowser.open(self.explain_url)
             return None
+
         from IPython.display import IFrame
 
         return IFrame(self.explain_url, width=700, height=350)
@@ -183,30 +182,36 @@ class Example:
                 archive.extractall(path=target)
                 self.zipfile = archive
                 self.installed = True
-            except requests.exceptions.RequestException as e:  
+            except requests.exceptions.RequestException as e:
                 raise SystemExit(e)
-            
 
     def get_file_list(self) -> Union[list, None]:
         """Get the list of local files for the example."""
+
         path = self.get_local_path()
+
         if os.path.isdir(path):
             return get_list_of_files(path)
+
         return None
 
     def json_dict(self) -> dict:
         """Container for example meta data."""
+
         meta = {}
         meta["name"] = self.name
         meta["description"] = self.description
         meta["download_url"] = self.download_url
         meta["explain_url"] = self.explain_url
         meta["root"] = self.root
+
         return meta
 
     def load(self, file_name) -> io.FileIO:
         """Dispatch to libpysal.io to open file."""
+
         pth = self.get_path(file_name)
+
         if pth:
             return ps_open(pth)
 
@@ -233,31 +238,37 @@ class Examples:
         names = list(datasets.keys())
         names.sort()
         rows = []
+
         for name in names:
             description = datasets[name].description
             installed = datasets[name].installed
             rows.append([name, description, installed])
+
         datasets = pandas.DataFrame(
             data=rows, columns=["Name", "Description", "Installed"]
         )
+
         datasets.style.set_properties(subset=["text"], **{"width": "300px"})
         return datasets
 
     def load(self, example_name: str) -> Example:
         """Load example dataset, download if not locally available."""
+
         if example_name in self.datasets:
             example = self.datasets[example_name]
+
             if example.installed:
                 return example
             else:
                 example.download()
                 return example
         else:
-            print(f'Example not available: {example_name}')
+            print(f"Example not available: {example_name}")
             return None
 
     def download_remotes(self):
         """Download all remotes."""
+
         names = list(self.remotes.keys())
         names.sort()
 
@@ -267,22 +278,23 @@ class Examples:
             try:
                 example.download()
             except:
-                print(f'Example not downloaded: {name}.')
+                print(f"Example not downloaded: {name}.")
 
     def get_installed_names(self) -> list:
         """Return names of all currently installed datasets."""
+
         ds = self.datasets
+
         return [name for name in ds if ds[name].installed]
 
     def get_remote_url(self, name):
-        if name in self.datasets: 
+        if name in self.datasets:
             try:
                 return self.datasets[name].download_url
             except:
-                print(f'{name} is a built-in dataset, no url.')
+                print(f"{name} is a built-in dataset, no url.")
         else:
-            print(f'{name} is not an available dataset.')
-                
+            print(f"{name} is not an available dataset.")
 
     def summary(self):
         """Report on datasets."""
@@ -290,7 +302,7 @@ class Examples:
         n = available.shape[0]
         n_installed = available.Installed.sum()
         n_remote = n - n_installed
-        print(f'{n} datasets available, {n_installed} installed, {n_remote} remote.')
+        print(f"{n} datasets available, {n_installed} installed, {n_remote} remote.")
 
 
 example_manager = Examples()

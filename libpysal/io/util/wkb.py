@@ -81,17 +81,17 @@ def loads(s: str):
             WKBMultiPolygon                 mpolygon;
         }
     };
-    
+
     Returns
     -------
     geom : {None, libpysal.cg.{Point, Chain, Polygon}}
         The geometric object or ``None``.
-    
+
     Raises
     ------
     TypeError
         Raised when an unsupported shape type is passed in.
-    
+
     """
 
     # To allow recursive calls, read only the bytes we need.

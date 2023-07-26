@@ -17,8 +17,15 @@ from typing import Union
 available_datasets = builtin_datasets.copy()
 available_datasets.update(remote_datasets.datasets)
 
-__all__ = ["get_path", "available", "explain", "fetch_all",
-           "get_url", "load_example", "summary"]
+__all__ = [
+    "get_path",
+    "available",
+    "explain",
+    "fetch_all",
+    "get_url",
+    "load_example",
+    "summary",
+]
 
 example_manager.add_examples(available_datasets)
 

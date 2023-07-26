@@ -25,8 +25,7 @@ except ImportError:
 
 
 class SQLConnection(fileio.FileIO):
-    """Reads an SQL mappable.
-    """
+    """Reads an SQL mappable."""
 
     FORMATS = ["sqlite", "db"]
     MODES = ["r"]
@@ -85,12 +84,12 @@ class SQLConnection(fileio.FileIO):
     @property
     def session(self):
         """Create an ``sqlalchemy.orm.Session`` instance.
-        
+
         Returns
         -------
         self._session : sqlalchemy.orm.Session
             An ``sqlalchemy.orm.Session`` instance.
-            
+
         """
 
         # What happens if the session is externally closed?  Check for None?

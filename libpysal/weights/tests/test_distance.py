@@ -52,30 +52,23 @@ class Distance_Mixin(object):
                 if not k.startswith("_")
             }
         )
+        self.test_msg = "You need to implement this test before this module will pass."
 
     def test_init(self):
         # test vanilla, named
-        raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
-        )
+        raise NotImplementedError(self.test_msg)
 
     def test_from_shapefile(self):
         # test vanilla, named, sparse
-        raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
-        )
+        raise NotImplementedError(self.test_msg)
 
     def test_from_array(self):
         # test named, sparse
-        raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
-        )
+        raise NotImplementedError(self.test_msg)
 
     def test_from_dataframe(self):
-        # test named, columnar, defau
-        raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
-        )
+        # test named, columnar, default
+        raise NotImplementedError(self.test_msg)
 
 
 class Test_KNN(ut.TestCase, Distance_Mixin):
@@ -222,9 +215,8 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     # Function/User tests    #
     ##########################
     def test_integers(self):
-        """
-        see issue #126
-        """
+        """See issue #126."""
+
         grid_integers = [tuple(map(int, poly.vertices[0])) for poly in self.grid_f]
         self.grid_f.seek(0)
         grid_dbw = d.DistanceBand(grid_integers, 1)
@@ -408,6 +400,8 @@ knn = ut.TestLoader().loadTestsFromTestCase(Test_KNN)
 kern = ut.TestLoader().loadTestsFromTestCase(Test_Kernel)
 db = ut.TestLoader().loadTestsFromTestCase(Test_DistanceBand)
 suite = ut.TestSuite([knn, kern, db])
+
+
 if __name__ == "__main__":
     runner = ut.TextTestRunner()
     runner.run(suite)

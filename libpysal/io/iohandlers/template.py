@@ -35,18 +35,18 @@ class TemplateWriter(FileIO.FileIO):
 
     # Writers must subclass ``.write()``
     def write(self, obj):
-        """ ``.write`` method of the 'foobar' template
-        
+        """``.write`` method of the 'foobar' template
+
         Parameters
         ----------
         obj : str
             Some string.
-        
+
         Raises
         ------
         TypeError
             Raised when a ``str`` is expected, but got another type.
-        
+
         """
 
         # GOOD TO HAVE, this will prevent invalid operations on closed files.
@@ -111,17 +111,17 @@ class TemplateReaderWriter(FileIO.FileIO):
 
     def _read(self):
         """The ``_read`` method should return only ONE object.
-        
+
         Returns
         -------
         obj_plus_break : str
             only ONE object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         """
 
         line = self.fileObj.readline()
@@ -138,17 +138,17 @@ class TemplateReaderWriter(FileIO.FileIO):
 
     def write(self, obj):
         """The ``.write`` method of the 'foobar' template, receives an ``obj``.
-        
+
         Paramters
         ---------
         obj : str
             Some string.
-        
+
         Raises
         ------
         TypeError
             Raised when a ``str`` is expected, but got another type.
-        
+
         """
         self._complain_ifclosed(self.closed)
         if issubclass(type(obj), str):

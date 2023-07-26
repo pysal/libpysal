@@ -123,21 +123,20 @@ class Test_Shapely(ut.TestCase):
     def test_is_empty(self):
         """
         PySAL doesn't really support empty shapes. Like, the following errors out:
-        
+
         ```
         ps.cg.Polygon([[]])
         ```
-        
+
         and you can make it work by:
-        
+
         ```
         ps.cg.Polygon([[()]])
         ```
 
         but that won't convert over to shapely.
-
         So, we're only testing the negative here.
-        
+
         """
         for df in self.dframes:
             self.compare("is_empty", df)

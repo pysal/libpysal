@@ -7,9 +7,8 @@ import unittest
 
 class test_MultiPloygon(unittest.TestCase):
     def test___init__1(self):
-        """Tests conversion of polygons with multiple shells to
-        geoJSON multipolygons and back.
-        
+        """Tests conversion of polygons with multiple
+        shells to geoJSON multipolygons and back.
         """
 
         ncovr = pysal_examples.load_example("NCOVR")

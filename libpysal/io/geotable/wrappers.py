@@ -8,19 +8,19 @@ import pandas as pd
 @requires("geopandas")
 def geopandas(filename, **kw):
     """Wrapper for ``geopandas.read_file()``.
-    
+
     Parameters
     ----------
     filename : str
         Path to the file.
     **kw : dict
         Optional keyword arguments for ``geopandas.read_file()``.
-        
+
     Returns
     -------
     gdf : geopandas.GeoDataFrame
         The shapefile read in as a ``geopandas.GeoDataFrame``.
-    
+
     """
 
     import geopandas
@@ -33,7 +33,7 @@ def geopandas(filename, **kw):
 @requires("fiona")
 def fiona(filename, geom_type="shapely", **kw):
     """Open a file with ``fiona`` and convert to a ``pandas.DataFrame``.
-    
+
     Parameters
     ----------
     filename : str
@@ -42,7 +42,7 @@ def fiona(filename, geom_type="shapely", **kw):
         Package/method to use from creating geometries. Default is ``'shapely'``.
     **kw : dict
         Optional keyword arguments for ``fiona.open()``.
-    
+
     Returns
     -------
     df : pandas.DataFrame

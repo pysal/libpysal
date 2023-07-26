@@ -1,10 +1,13 @@
 """Segment Locator Unittest."""
+
 from ..shapes import *
 from ..segmentLocator import *
 import unittest
 
 
 class SegmentGrid_Tester(unittest.TestCase):
+    """Setup class for unit tests."""
+
     def setUp(self):
         # 10x10 grid with four line segments, one for each edge of the grid.
         self.grid = SegmentGrid(Rectangle(0, 0, 10, 10), 1)

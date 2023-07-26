@@ -17,7 +17,7 @@ except ImportError:
     PANDAS_MISSING = True
 
 
-@ut.skipIf(PANDAS_MISSING, "Pandas is gone")
+@ut.skipIf(PANDAS_MISSING, "Pandas is missing")
 class Test_Adjlist(ut.TestCase):
     def setUp(self):
         self.knownW = io.open(examples.get_path("columbus.gal")).read()
@@ -73,9 +73,9 @@ class Test_Adjlist(ut.TestCase):
         tuples = set([tuple(t) for t in alist[["focal", "neighbor"]].values])
         full_alist = grid.to_adjlist(drop_islands=True)
         all_possible = set([tuple(t) for t in full_alist[["focal", "neighbor"]].values])
-        assert tuples.issubset(all_possible), (
-            "the de-duped adjlist has links " "not in the duplicated adjlist."
-        )
+        assert tuples.issubset(
+            all_possible
+        ), "the de-duplicated adjlist has links not in the duplicated adjlist."
         complements = all_possible.difference(tuples)
         reversed_complements = set([t[::-1] for t in complements])
         assert reversed_complements == tuples, (

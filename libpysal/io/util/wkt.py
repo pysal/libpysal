@@ -13,7 +13,7 @@ class WKTParser:
 
     Examples
     --------
-    
+
     >>> import libpysal
 
     Create some Well-Known Text objects.
@@ -31,10 +31,10 @@ class WKTParser:
     >>> parser(p).parts
     [[(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0, 1.0), (1.0, 1.0)],
      [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0), (2.0, 2.0)]]
-    
+
     >>> parser(p).centroid
     (2.9705882352941178, 2.9705882352941178)
-    
+
     >>> parser(p).area
     17.0
 
@@ -47,7 +47,7 @@ class WKTParser:
 
     >>> parser(l).len
     73.45538453219989
-    
+
     >>> parser(l).parts
     [[(3.0, 4.0), (10.0, 50.0), (20.0, 25.0)]]
 
@@ -56,7 +56,7 @@ class WKTParser:
     >>> f = libpysal.io.open(libpysal.examples.get_path('stl_hom.wkt'))
     >>> f.mode
     'r'
-    
+
     >>> f.header
     []
 
@@ -100,12 +100,12 @@ class WKTParser:
 
     def fromWKT(self, wkt):
         """Returns geometric representation from WKT or ``None``.
-        
+
         Raises
         ------
         NotImplementedError
             Raised when a unknown/unsupported format is passed in.
-        
+
         """
 
         matches = self.regExes["typeStr"].match(wkt)

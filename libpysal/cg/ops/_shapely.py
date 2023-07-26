@@ -123,10 +123,10 @@ def cascaded_union(df, geom_col="geometry", **groupby_kws):
 
     See Also
     --------
-    
+
     pysal.shapely_ext.cascaded_union
     pandas.DataFrame.groupby
-    
+
     """
 
     by = groupby_kws.pop("by", None)
@@ -159,10 +159,10 @@ def unary_union(df, geom_col="geometry", **groupby_kws):
 
     See Also
     --------
-    
+
     pysal.shapely_ext.unary_union
     pandas.DataFrame.groupby
-    
+
     """
 
     by = groupby_kws.pop("by", None)
@@ -208,10 +208,10 @@ def cascaded_intersection(df, geom_col="geometry", **groupby_kws):
 
     See Also
     --------
-    
+
     pysal.shapely_ext.cascaded_intersection
     pandas.DataFrame.groupby
-    
+
     """
 
     by = groupby_kws.pop("by", None)
