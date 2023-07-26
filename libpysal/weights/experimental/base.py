@@ -202,6 +202,129 @@ class W(_Set_Mixin):
             )
         )
 
+    @classmethod
+    def from_kernel(
+        cls,
+        data,
+        bandwidth=None,
+        metric="euclidean",
+        kernel="gaussian",
+        k=None,
+        p=2,
+    ):
+        """_summary_
+
+        Parameters
+        ----------
+        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries over which to compute a kernel. If a geopandas object with Point
+            geoemtry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geoemtry is used, then the coordinates are extracted and used.
+            If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
+            coordinates. If metric="precomputed", data is assumed to contain a
+            precomputed distance metric.
+        bandwidth : float (default: None)
+            distance to use in the kernel computation. Should be on the same scale as
+            the input coordinates.
+        metric : string or callable (default: 'euclidean')
+            distance function to apply over the input coordinates. Supported options
+            depend on whether or not scikit-learn is installed. If so, then any
+            distance function supported by scikit-learn is supported here. Otherwise,
+            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
+        kernel : string or callable (default: 'gaussian')
+            kernel function to apply over the distance matrix computed by `metric`.
+            The following kernels are supported:
+                - triangular:
+                - parabolic:
+                - gaussian:
+                - bisquare:
+                - cosine:
+                - boxcar/discrete: all distances less than `bandwidth` are 1, and all
+                    other distances are 0
+                - identity/None : do nothing, weight similarity based on raw distance
+                - callable : a user-defined function that takes the distance vector and
+                    the bandwidth and returns the kernel: kernel(distances, bandwidth)
+        k : int (default: None)
+            number of nearest neighbors used to truncate the kernel. This is assumed
+            to be constant across samples. If None, no truncation is conduted.
+        ids : numpy.narray (default: None)
+            ids to use for each sample in coordinates. Generally, construction functions
+            that are accessed via W.from_kernel() will set this automatically from
+            the index of the input. Do not use this argument directly unless you intend
+            to set the indices separately from your input data. Otherwise, use
+            data.set_index(ids) to ensure ordering is respected. If None, then the index
+            from the input coordinates will be used.
+        p : int (default: 2)
+            parameter for minkowski metric, ignored if metric != "minkowski".
+
+        Returns
+        -------
+        W
+            libpysal.weights.experimental.W
+        """
+        return NotImplementedError
+
+    @classmethod
+    def from_triangulation(
+        cls,
+        data,
+        method="delaunay",
+        bandwidth=np.inf,
+        kernel="boxcar",
+        clip="extent",
+        contiguity_type="rook",
+    ):
+        """_summary_
+
+        Parameters
+        ----------
+        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries containing locations to compute the
+            delaunay triangulation. If a geopandas object with Point
+            geoemtry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geoemtry is used, then the coordinates are extracted and used.
+            If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
+            coordinates.
+        method : str, (default "delaunay")
+            method of extracting the weights from triangulation. Supports:
+                - delaunay
+                - gabriel
+                - relative_neighborhood
+                - voronoi
+        bandwidth : _type_, optional
+            distance to use in the kernel computation. Should be on the same scale as
+            the input coordinates, by default numpy.inf
+        kernel : str, optional
+            kernel function to use in order to weight the output graph. See
+            :meth:`W.from_kernel` for details. By default "boxcar"
+        clip :str (default: 'bbox')
+            An overloaded option about how to clip the voronoi cells passed to
+            cg.voronoi_frames() when method="voronoi. Ignored otherwise.
+            Default is ``'extent'``. Options are as follows.
+
+            * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be
+                arbitrarily larger that the source map. Note that this may lead to
+                cells that are many orders of magnitude larger in extent than the
+                original map. Not recommended.
+            * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to
+                the bounding box of the input points.
+            * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull
+                of the input points.
+            * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull
+                that contains all points (e.g. the smallest alphashape, using
+                ``libpysal.cg.alpha_shape_auto``).
+            * Polygon -- Clip to an arbitrary Polygon.
+        contiguity_type : str, optional
+            What kind of contiguity to apply to the voronoi diagram when ethod="voronoi.
+            Ignored otherwise. Supports "rook" and "queen", by default "rook".
+
+        Returns
+        -------
+        W
+            libpysal.weights.experimental.W
+        """
+        return NotImplementedError
+
     @cached_property
     def neighbors(self):
         """Get neighbors dictionary
