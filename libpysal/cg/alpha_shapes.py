@@ -38,7 +38,7 @@ EPS = np.finfo(float).eps
 __all__ = ["alpha_shape", "alpha_shape_auto"]
 
 
-@jit
+@jit(nopython=False)
 def nb_dist(x, y):
     """numba implementation of distance between points `x` and `y`
 
@@ -164,7 +164,7 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
     return r2
 
 
-@jit
+@jit(nopython=False)
 def get_faces(triangle):
     """Extract faces from a single triangle
 
@@ -198,7 +198,7 @@ def get_faces(triangle):
     return faces
 
 
-@jit
+@jit(nopython=False)
 def build_faces(faces, triangles_is, num_triangles, num_faces_single):
     """Build facing triangles
 
@@ -260,7 +260,7 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
     return faces
 
 
-@jit
+@jit(nopython=False)
 def nb_mask_faces(mask, faces):
     """Run over each row in `faces`, if the face in the following row is the
     same, then mark both as False on `mask`
