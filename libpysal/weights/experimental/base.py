@@ -144,7 +144,7 @@ class W(_Set_Mixin):
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
-    def from_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
+    def build_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
         """Generate W from geometry based on the contiguity
 
         TODO: specify the planarity constraint of the defitnion of queen and rook (e.g
@@ -203,7 +203,7 @@ class W(_Set_Mixin):
         )
 
     @classmethod
-    def from_kernel(
+    def build_kernel(
         cls,
         data,
         bandwidth=None,
@@ -265,7 +265,7 @@ class W(_Set_Mixin):
         return NotImplementedError
 
     @classmethod
-    def from_triangulation(
+    def build_triangulation(
         cls,
         data,
         method="delaunay",
