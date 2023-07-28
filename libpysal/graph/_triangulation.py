@@ -42,7 +42,7 @@ def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
         used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via Graph.from_kernel() will set this automatically from
+        that are accessed via Graph.build_kernel() will set this automatically from
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index
@@ -133,7 +133,7 @@ def gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
         used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via Graph.from_kernel() will set this automatically from
+        that are accessed via Graph.build_kernel() will set this automatically from
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index
@@ -196,7 +196,7 @@ def relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="bo
         used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via Graph.from_kernel() will set this automatically from
+        that are accessed via Graph.build_kernel() will set this automatically from
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index
@@ -249,7 +249,7 @@ def voronoi(
         used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via Graph.from_kernel() will set this automatically from
+        that are accessed via Graph.build_kernel() will set this automatically from
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index
