@@ -9,7 +9,7 @@ For completeness, we need to test a shuffled dataframe
 - numba/nonumba
 """
 import pandas, geopandas, geodatasets, pytest, shapely, numpy
-from libpysal.weights.experimental._triangulation import (
+from libpysal.graph._triangulation import (
     delaunay,
     gabriel,
     relative_neighborhood,

@@ -63,35 +63,35 @@ def intersects(left, right):
 
 def intersection(left, right):
     """
-    Keep only links that are in both left and right W objects.
+    Keep only links that are in both left and right Graph objects.
     """
-    from .base import W
+    from .base import Graph
 
     new_table = left.adjacency.join(
         right.adjacency, on=("focal", "neighbor"), how="inner"
     )
-    return W(new_table)
+    return Graph(new_table)
 
 
 def symmetric_difference(left, right):
     """
-    Filter out links that are in both left and right W objects.
+    Filter out links that are in both left and right Graph objects.
     """
-    from .base import W
+    from .base import Graph
 
     join = left.adjacency.merge(
         right.adjacency, on=("focal", "neighbor"), how="outer", indicator=True
     )
-    return W(join[join._merge.str.endswith("only")].drop("_merge", axis=1))
+    return Graph(join[join._merge.str.endswith("only")].drop("_merge", axis=1))
 
 
 def union(left, right):
     """
-    Provide the union of two W objects, collecing all links that are in either graph.
+    Provide the union of two Graph objects, collecing all links that are in either graph.
     """
-    from .base import W
+    from .base import Graph
 
-    return W(
+    return Graph(
         left.adjacency.merge(right.adjacency, on=("focal", "neighbor"), how="outer")
     )
 
@@ -101,12 +101,12 @@ def difference(left, right):
     Provide the set difference between the graph on the left and the graph on the right.
     This returns all links in the left graph that are not in the right graph.
     """
-    from .base import W
+    from .base import Graph
 
     join = left.adjacency.merge(
         right.adjacency, on=("focal", "neighbor"), how="outer", indicator=True
     )
-    return W(join[join._merge == "left_only"].drop("_merge", axis=1))
+    return Graph(join[join._merge == "left_only"].drop("_merge", axis=1))
 
 
 # TODO: profile the "not intersects(left, right)" vs. the empty join test:
@@ -114,8 +114,8 @@ def difference(left, right):
 
 def isdisjoint(left, right):
     """
-    Return True if there are no links in the left W that also occur in the right W. If
-    any link in the left W occurs in the right W, the two are not disjoint.
+    Return True if there are no links in the left Graph that also occur in the right Graph. If
+    any link in the left Graph occurs in the right Graph, the two are not disjoint.
     """
     return not intersects(left, right)
     join = left.adjacency.join(right.adjacency, on=("focal", "neighbor"), how="inner")
@@ -124,8 +124,8 @@ def isdisjoint(left, right):
 
 def issubgraph(left, right):
     """
-    Return True if every link in the left W also occurs in the right W. This requires
-    both W are label_equal.
+    Return True if every link in the left Graph also occurs in the right Graph. This requires
+    both Graph are label_equal.
     """
     join = left.adjacency.merge(
         right.adjacency, on=("focal", "neighbor"), how="outer", indicator=True
@@ -135,8 +135,8 @@ def issubgraph(left, right):
 
 def issupergraph(left, right):
     """
-    Return True if every link in the left W also occurs in the right W. This requires
-    both W are label_equal.
+    Return True if every link in the left Graph also occurs in the right Graph. This requires
+    both Graph are label_equal.
     """
     join = left.adjacency.merge(
         right.adjacency, on=("focal", "neighbor"), how="outer", indicator=True

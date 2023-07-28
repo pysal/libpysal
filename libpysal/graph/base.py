@@ -9,7 +9,7 @@ from ._set_ops import _Set_Mixin
 from ._utils import _neighbor_dict_to_edges
 
 
-class W(_Set_Mixin):
+class Graph(_Set_Mixin):
     def __init__(self, adjacency, transformation="O"):
         """Weights base class based on adjacency list
 
@@ -34,7 +34,7 @@ class W(_Set_Mixin):
 
     @classmethod
     def from_old_w(cls, w):
-        """Create an experimental W from libpysal.weights.W object
+        """Create an experimental Graph from libpysal.weights.W object
 
         Parameters
         ----------
@@ -42,14 +42,14 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
-            libpysal.weights.experimental.W
+        Graph
+            libpysal.graph.Graph
         """
         return cls.from_weights_dict(dict(w))
 
     @classmethod
     def from_sparse(cls, sparse, focal_ids=None, neighbor_ids=None):
-        """Convert a ``scipy.sparse`` array to a PySAL ``W`` object.
+        """Convert a ``scipy.sparse`` array to a PySAL ``Graph`` object.
 
         Parameters
         ----------
@@ -57,8 +57,8 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
-            libpysal.weights.experimental.W
+        Graph
+            libpysal.graph.Graph
         """
         if focal_ids is not None and neighbor_ids is not None:
             f, n = sparse.nonzero()
@@ -76,7 +76,7 @@ class W(_Set_Mixin):
 
     @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight):
-        """Generate W from arrays of indices and weights of the same length
+        """Generate Graph from arrays of indices and weights of the same length
 
         Parameters
         ----------
@@ -89,8 +89,8 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
-            libpysal.weights.experimental.W
+        Graph
+            libpysal.graph.Graph
         """
 
         w = cls(
@@ -104,7 +104,7 @@ class W(_Set_Mixin):
 
     @classmethod
     def from_weights_dict(cls, weights_dict):
-        """Generate W from a dict of dicts
+        """Generate Graph from a dict of dicts
 
         Parameters
         ----------
@@ -113,8 +113,8 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
-            libpysal.weights.experimental.W
+        Graph
+            libpysal.graph.Graph
         """
         idx = {f: [k for k in neighbors] for f, neighbors in weights_dict.items()}
         data = {
@@ -124,7 +124,7 @@ class W(_Set_Mixin):
 
     @classmethod
     def from_dicts(cls, neighbors, weights=None):
-        """Generate W from dictionaries of neighbors and weights
+        """Generate Graph from dictionaries of neighbors and weights
 
         Parameters
         ----------
@@ -137,15 +137,15 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
-            libpysal.weights.experimental.W
+        Graph
+            libpysal.graph.Graph
         """
         head, tail, weight = _neighbor_dict_to_edges(neighbors, weights=weights)
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
-        """Generate W from geometry based on the contiguity
+        """Generate Graph from geometry based on the contiguity
 
         TODO: specify the planarity constraint of the defitnion of queen and rook (e.g
         that there could not be an overlap).
@@ -154,8 +154,8 @@ class W(_Set_Mixin):
         ----------
         geometry : array-like of shapely.Geometry objects
             Could be geopandas.GeoSeries or geopandas.GeoDataFrame, in which case the
-            resulting W is indexed by the original index. If an array of
-            shapely.Geometry objects is passed, W will assume a RangeIndex.
+            resulting Graph is indexed by the original index. If an array of
+            shapely.Geometry objects is passed, Graph will assume a RangeIndex.
         rook : bool, optional
             Contiguity method. If True, two geometries are considered neighbours if they
             share at least one edge. If False, two geometries are considered neighbours
@@ -173,8 +173,8 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
-            libpysal.weights.experimental.W
+        Graph
+            libpysal.graph.Graph
         """
         if hasattr(geometry, "index"):
             ids = geometry.index
@@ -249,7 +249,7 @@ class W(_Set_Mixin):
             to be constant across samples. If None, no truncation is conduted.
         ids : numpy.narray (default: None)
             ids to use for each sample in coordinates. Generally, construction functions
-            that are accessed via W.from_kernel() will set this automatically from
+            that are accessed via Graph.build_kernel() will set this automatically from
             the index of the input. Do not use this argument directly unless you intend
             to set the indices separately from your input data. Otherwise, use
             data.set_index(ids) to ensure ordering is respected. If None, then the index
@@ -259,8 +259,8 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
-            libpysal.weights.experimental.W
+        Graph
+            libpysal.graph.Graph
         """
         return NotImplementedError
 
@@ -296,7 +296,7 @@ class W(_Set_Mixin):
             the input coordinates, by default numpy.inf
         kernel : str, optional
             kernel function to use in order to weight the output graph. See
-            :meth:`W.from_kernel` for details. By default "boxcar"
+            :meth:`Graph.build_kernel` for details. By default "boxcar"
         clip :str (default: 'bbox')
             An overloaded option about how to clip the voronoi cells passed to
             cg.voronoi_frames() when method="voronoi. Ignored otherwise.
@@ -315,13 +315,14 @@ class W(_Set_Mixin):
                 ``libpysal.cg.alpha_shape_auto``).
             * Polygon -- Clip to an arbitrary Polygon.
         contiguity_type : str, optional
-            What kind of contiguity to apply to the voronoi diagram when ethod="voronoi.
-            Ignored otherwise. Supports "rook" and "queen", by default "rook".
+            What kind of contiguity to apply to the voronoi diagram when
+            method="voronoi. Ignored otherwise. Supports "rook" and "queen",
+            by default "rook".
 
         Returns
         -------
-        W
-            libpysal.weights.experimental.W
+        Graph
+            libpysal.graph.Graph
         """
         return NotImplementedError
 
@@ -331,8 +332,8 @@ class W(_Set_Mixin):
 
         Notes
         -----
-        It is recommended to work directly with :meth:`W.adjacency` rather than
-        using the :meth:`W.neighbors`.
+        It is recommended to work directly with :meth:`Graph.adjacency` rather than
+        using the :meth:`Graph.neighbors`.
 
         Returns
         -------
@@ -351,8 +352,8 @@ class W(_Set_Mixin):
 
         Notes
         -----
-        It is recommended to work directly with :meth:`W.adjacency` rather than
-        using the :meth:`W.weights`.
+        It is recommended to work directly with :meth:`Graph.adjacency` rather than
+        using the :meth:`Graph.weights`.
 
         Returns
         -------
@@ -438,7 +439,7 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
+        Graph
             transformed weights
 
         Raises
@@ -483,7 +484,7 @@ class W(_Set_Mixin):
             raise ValueError(f"Transformation '{transformation}' is not supported.")
 
         standardized_adjacency = self._adjacency.assign(weight=standardized)
-        return W(standardized_adjacency, transformation)
+        return Graph(standardized_adjacency, transformation)
 
     @cached_property
     def _components(self):
@@ -640,7 +641,7 @@ class W(_Set_Mixin):
 
         Returns
         -------
-        W
+        Graph
             higher order weights
         """
         return NotImplementedError
@@ -673,7 +674,7 @@ class W(_Set_Mixin):
         #     ),
         #     names=["focal", "neighbor"],
         # )
-        # return W(
+        # return Graph(
         #     pd.Series(
         #         index=new_index,
         #         data=np.ones(len(ix), dtype=int),

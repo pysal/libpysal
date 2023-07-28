@@ -1,4 +1,4 @@
-def lag_spatial(w, y):
+def lag_spatial(graph, y):
     """Spatial lag operator
 
     If w is row standardized, returns the average of each observation's neighbors;
@@ -6,8 +6,8 @@ def lag_spatial(w, y):
 
     Parameters
     ----------
-    w : W
-        libpysal.weights.experimental.W
+    graph : Graph
+        libpysal.graph.Graph
     y : array
         numpy array with dimensionality conforming to w
 
@@ -16,4 +16,4 @@ def lag_spatial(w, y):
     numpy.array
         array of numeric values for the spatial lag
     """
-    return w.sparse @ y
+    return graph.sparse @ y

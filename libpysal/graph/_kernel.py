@@ -97,7 +97,7 @@ def kernel(
         to be constant across samples. If None, no truncation is conduted.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via W.from_kernel() will set this automatically from
+        that are accessed via Graph.build_kernel() will set this automatically from
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index

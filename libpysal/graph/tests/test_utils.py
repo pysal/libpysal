@@ -4,13 +4,13 @@ import numpy
 import pytest
 import shapely
 
-from libpysal.weights.experimental._contiguity import \
+from libpysal.graph._contiguity import \
     _VALID_GEOMETRY_TYPES as contiguity_types
-from libpysal.weights.experimental._kernel import \
+from libpysal.graph._kernel import \
     _VALID_GEOMETRY_TYPES as kernel_types
-from libpysal.weights.experimental._triangulation import \
+from libpysal.graph._triangulation import \
     _VALID_GEOMETRY_TYPES as triang_types
-from libpysal.weights.experimental._utils import _validate_geometry_input
+from libpysal.graph._utils import _validate_geometry_input
 
 columbus = geopandas.read_file(geodatasets.get_path("geoda columbus"))
 columbus["intID"] = columbus.POLYID.values

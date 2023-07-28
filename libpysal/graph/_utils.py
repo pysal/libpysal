@@ -45,7 +45,7 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
             valid_geometry_types = set(valid_geometry_types)
             if not geom_types <= valid_geometry_types:
                 raise ValueError(
-                    "this W type is only well-defined for "
+                    "this Graph type is only well-defined for "
                     f"geom_types: {valid_geometry_types}."
                 )
         coordinates = shapely.get_coordinates(geoms)
@@ -72,9 +72,9 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     )
 
 
-def lat2W(nrows=5, ncols=5, rook=True, id_type="int"):
+def lat2Graph(nrows=5, ncols=5, rook=True, id_type="int"):
     """
-    Create a W object for a regular lattice.
+    Create a Graph object for a regular lattice.
 
     Parameters
     ----------
@@ -86,18 +86,15 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int"):
     rook       : boolean
                  type of contiguity. Default is rook. For queen, rook =False
     id_type    : string
-                 string defining the type of IDs to use in the final W object;
+                 string defining the type of IDs to use in the final Graph object;
                  options are 'int' (0, 1, 2 ...; default), 'float' (0.0,
                  1.0, 2.0, ...) and 'string' ('id0', 'id1', 'id2', ...)
-    **kwargs   : keyword arguments
-                 optional arguments for :class:`pysal.weights.W`
-
 
     Returns
     -------
 
-    w : W
-        instance of spatial weights class W
+    Graph
+        libpysal.graph.Graph
 
     Notes
     -----
@@ -108,8 +105,8 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int"):
     Examples
     --------
 
-    >>> from libpysal.weights import lat2W
-    >>> w9 = lat2W(3,3)
+    >>> from libpysal.weights import lat2Graph
+    >>> w9 = lat2Graph(3,3)
     >>> "%.3f"%w9.pct_nonzero
     '29.630'
     >>> w9[0] == {1: 1.0, 3: 1.0}
@@ -117,7 +114,8 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int"):
     >>> w9[3] == {0: 1.0, 4: 1.0, 6: 1.0}
     True
     """
-    from .base import W
+    # TODO: this seems to be broken now
+    from .base import Graph
 
     n = nrows * ncols
     r1 = nrows - 1
@@ -169,4 +167,4 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int"):
         w = alt_w
         weights = alt_weights
 
-    return W.from_dicts(weights)
+    return Graph.from_dicts(weights)

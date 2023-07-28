@@ -15,7 +15,7 @@ import numpy
 import pytest
 import shapely
 
-from libpysal.weights.experimental._contiguity import (
+from libpysal.graph._contiguity import (
     _queen, _rook, _vertex_set_intersection)
 
 numpy.random.seed(111211)
@@ -122,7 +122,7 @@ def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, data=nybb):
 @parametrize_ids
 def test_user_pointset_nybb(ids, by_perimeter, rook, data=nybb):
     """
-    check whether pointset weights are constructed correctly 
+    check whether pointset weights are constructed correctly
     for nybb
     """
     if ids is not None:
