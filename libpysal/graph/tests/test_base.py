@@ -117,3 +117,7 @@ def test_adjacency(graph_int_binary, adjacency_int_binary):
     adjacency.iloc[0, 0] = 100
     pd.testing.assert_frame_equal(graph_int_binary._adjacency, adjacency_int_binary)
 
+
+# TODO: test additional attributes
+# TODO: test additional methods
+# TODO: it may be useful to get lat2Graph working for that
