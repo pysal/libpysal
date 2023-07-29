@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from scipy import sparse
 
+from libpysal.weights import W
 from ._contiguity import _queen, _rook, _vertex_set_intersection
 from ._set_ops import _Set_Mixin
 from ._utils import _neighbor_dict_to_edges
@@ -33,7 +34,7 @@ class Graph(_Set_Mixin):
         return self._adjacency.copy()
 
     @classmethod
-    def from_old_w(cls, w):
+    def from_W(cls, w):
         """Create an experimental Graph from libpysal.weights.W object
 
         Parameters
@@ -46,6 +47,26 @@ class Graph(_Set_Mixin):
             libpysal.graph.Graph
         """
         return cls.from_weights_dict(dict(w))
+
+    def to_W(self):
+        """Convert Graph to a libpysal.weights.W object
+
+        Returns
+        -------
+        libpysal.weights.W
+            representation of graph as a weights.W object
+        """
+        neighbors = (
+            self._adjacency.neighbor.groupby(level=0)
+            .agg(lambda group: list(group[group.index != group]))
+            .to_dict()
+        )
+        weights = (
+            self._adjacency.groupby(level=0)
+            .apply(lambda group: list(group[group.index != group.neighbor].weight))
+            .to_dict()
+        )
+        return W(neighbors, weights)
 
     @classmethod
     def from_sparse(cls, sparse, focal_ids=None, neighbor_ids=None):
