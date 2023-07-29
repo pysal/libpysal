@@ -57,13 +57,25 @@ class Graph(_Set_Mixin):
             representation of graph as a weights.W object
         """
         neighbors = (
-            self._adjacency.neighbor.groupby(level=0)
-            .agg(lambda group: list(group[group.index != group]))
+            self._adjacency.groupby(level=0)
+            .apply(
+                lambda group: list(
+                    group[
+                        ~((group.index == group.neighbor) & (group.weight == 0))
+                    ].neighbor
+                )
+            )
             .to_dict()
         )
         weights = (
             self._adjacency.groupby(level=0)
-            .apply(lambda group: list(group[group.index != group.neighbor].weight))
+            .apply(
+                lambda group: list(
+                    group[
+                        ~((group.index == group.neighbor) & (group.weight == 0))
+                    ].weight
+                )
+            )
             .to_dict()
         )
         return W(neighbors, weights)
@@ -362,8 +374,14 @@ class Graph(_Set_Mixin):
             dict of tuples representing neighbors
         """
         return (
-            self._adjacency.neighbor.groupby(level=0)
-            .agg(lambda group: tuple(group[group.index != group]))
+            self._adjacency.groupby(level=0)
+            .apply(
+                lambda group: tuple(
+                    group[
+                        ~((group.index == group.neighbor) & (group.weight == 0))
+                    ].neighbor
+                )
+            )
             .to_dict()
         )
 
@@ -383,7 +401,13 @@ class Graph(_Set_Mixin):
         """
         return (
             self._adjacency.groupby(level=0)
-            .apply(lambda group: tuple(group[group.index != group.neighbor].weight))
+            .apply(
+                lambda group: tuple(
+                    group[
+                        ~((group.index == group.neighbor) & (group.weight == 0))
+                    ].weight
+                )
+            )
             .to_dict()
         )
 

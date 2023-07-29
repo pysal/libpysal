@@ -10,10 +10,11 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
     that the any self-loops have a weight of zero.
     """
     idxs = pd.Series(neighbors).explode()
+    idxs = idxs.fillna(pd.Series(idxs.index, index=idxs.index))  # self-loops
     heads, tails = idxs.index.values, idxs.values
     tails = tails.astype(heads.dtype)
     if weights is not None:
-        data_array = pd.Series(weights).explode().values
+        data_array = pd.Series(weights).explode().fillna(0).values
         if not pd.api.types.is_numeric_dtype(data_array):
             data_array = pd.to_numeric(data_array)
     else:

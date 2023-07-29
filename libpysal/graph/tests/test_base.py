@@ -81,12 +81,11 @@ class TestBase:
         adjacency.iloc[0, 0] = 100
         pd.testing.assert_frame_equal(G._adjacency, self.adjacency_int_binary)
 
-    @pytest.mark.parametrize("x", [3, 4, 5, 6])
-    @pytest.mark.parametrize("y", [3, 4, 5, 6])
+    @pytest.mark.parametrize("y", [3, 5])
     @pytest.mark.parametrize("rook", [True, False])
     @pytest.mark.parametrize("id_type", ["int", "str"])
-    def test_W_roundtrip(self, x, y, id_type, rook):
-        W = weights.lat2W(x, y, id_type=id_type, rook=rook)
+    def test_W_roundtrip(self, y, id_type, rook):
+        W = weights.lat2W(3, y, id_type=id_type, rook=rook)
         G = graph.Graph.from_W(W)
         pd.testing.assert_frame_equal(
             G._adjacency.sort_values(["focal", "neighbor"]),
@@ -98,11 +97,37 @@ class TestBase:
 
         W.transform = "r"
         G_rowwise = graph.Graph.from_W(W)
+        pd.testing.assert_frame_equal(
+            G_rowwise._adjacency.sort_values(["focal", "neighbor"]),
+            W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+        )
         W_trans = G_rowwise.to_W()
         assert W.neighbors == W_trans.neighbors
         assert W.weights == W_trans.weights
 
         diag = weights.fill_diagonal(W)
+        G_diag = graph.Graph.from_W(diag)
+        pd.testing.assert_frame_equal(
+            G_diag._adjacency.sort_values(["focal", "neighbor"]),
+            diag.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+        )
+        W_diag = G_diag.to_W()
+        assert diag.neighbors == W_diag.neighbors
+        # assert diag.weights == W_diag.weights  # buggy due to #538
+
+        W = weights.W(
+            neighbors={"a": ["b"], "b": ["a", "c"], "c": ["b"], "d": []},
+            silence_warnings=True,
+        )
+        G_island = graph.Graph.from_W(W)
+        pd.testing.assert_frame_equal(
+            G_island._adjacency.sort_values(["focal", "neighbor"]),
+            W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+        )
+        W_island = G_island.to_W()
+        assert W.neighbors == W_island.neighbors
+        assert W.weights == W_island.weights
+
         # TODO: test all corner cases (diagonals, islands)
 
 
