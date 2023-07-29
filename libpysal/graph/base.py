@@ -87,6 +87,13 @@ class Graph(_Set_Mixin):
         Parameters
         ----------
         sparse : scipy.sparse array
+            sparse representation of a graph
+        focal_ids : list-like, default None
+            list-like of ids for focal geometries that is mappable to
+            positions from sparse. If None, the positions are used as labels.
+        neighbor_ids : list-like, default None
+            list-like of ids for focal geometries that is mappable to
+            positions from sparse. If None, the positions are used as labels.
 
         Returns
         -------
@@ -94,6 +101,8 @@ class Graph(_Set_Mixin):
             libpysal.graph.Graph
         """
         if focal_ids is not None and neighbor_ids is not None:
+            focal_ids = np.asarray(focal_ids)
+            neighbor_ids = np.asarray(neighbor_ids)
             f, n = sparse.nonzero()
             focal_ids = focal_ids[f]
             neighbor_ids = neighbor_ids[n]

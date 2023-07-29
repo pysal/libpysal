@@ -1,5 +1,7 @@
 import pandas as pd
+import numpy as np
 import pytest
+from scipy import sparse
 
 from libpysal import graph
 from libpysal import weights
@@ -128,7 +130,49 @@ class TestBase:
         assert W.neighbors == W_island.neighbors
         assert W.weights == W_island.weights
 
+    def test_sparse_roundtrip(self):
+        G = graph.Graph(self.adjacency_int_binary)
+        sp = G.sparse
+        G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
+        pd.testing.assert_frame_equal(G._adjacency, G_sp._adjacency)
+
+        G = graph.Graph(self.adjacency_str_binary)
+        sp = G.sparse
+        G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
+        pd.testing.assert_frame_equal(G._adjacency, G_sp._adjacency)
+
+    def test_from_sparse(self):
+        row = np.array([0, 3, 1, 0])
+        col = np.array([1, 0, 1, 2])
+        data = np.array([0.1, 0.5, 1, 0.9])
+        sp = sparse.coo_array((data, (row, col)), shape=(4, 4))
+        G = graph.Graph.from_sparse(sp)
+        expected = pd.DataFrame(
+            {"focal": row, "neighbor": col, "weight": data}
+        ).set_index("focal")
+        pd.testing.assert_frame_equal(G._adjacency, expected)
+
+        G_named = graph.Graph.from_sparse(
+            sp,
+            focal_ids=["zero", "one", "two", "three"],
+            neighbor_ids=["zero", "one", "two", "three"],
+        )
+        expected = pd.DataFrame(
+            {
+                "focal": ["zero", "three", "one", "zero"],
+                "neighbor": ["one", "zero", "one", "two"],
+                "weight": data,
+            }
+        ).set_index("focal")
+        pd.testing.assert_frame_equal(G_named._adjacency, expected)
+
+        with pytest.raises(ValueError, match="Either both"):
+            graph.Graph.from_sparse(
+                sp,
+                focal_ids=["zero", "one", "two", "three"],
+                neighbor_ids=None,
+            )
+
 
 # TODO: test additional attributes
 # TODO: test additional methods
-# TODO: it may be useful to get lat2Graph working for that
