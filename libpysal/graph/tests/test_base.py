@@ -128,8 +128,6 @@ class TestBase:
         assert W.neighbors == W_island.neighbors
         assert W.weights == W_island.weights
 
-        # TODO: test all corner cases (diagonals, islands)
-
 
 # TODO: test additional attributes
 # TODO: test additional methods
