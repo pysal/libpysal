@@ -481,7 +481,7 @@ class Graph(_Set_Mixin):
         array
             array of indices of neighbor objects
         """
-        if ix in self.islands:
+        if ix in self.isolates:
             return np.array([], dtype=self._adjacency.neighbor.dtype)
 
         return self._adjacency.neighbor[self._adjacency.index == ix].values
@@ -499,7 +499,7 @@ class Graph(_Set_Mixin):
         array
             array of weights of neighbor object
         """
-        if ix in self.islands:
+        if ix in self.isolates:
             return np.array([], dtype=self._adjacency.weight.dtype)
 
         return self._adjacency.weight.loc[ix].values
@@ -637,10 +637,10 @@ class Graph(_Set_Mixin):
         return cardinalities
 
     @cached_property
-    def islands(self):
+    def isolates(self):
         """Index of observations with no neighbors
 
-        Islands are encoded as a self-loop with the weight == 0 in the adjacency table.
+        Isolates are encoded as a self-loop with the weight == 0 in the adjacency table.
 
         Returns
         -------
@@ -648,7 +648,7 @@ class Graph(_Set_Mixin):
             Index with a subset of observations that do not have any neighbor
         """
         nulls = self._adjacency[self._adjacency.weight == 0]
-        # since not all zeros are necessarily islands, do the focal == neighbor check
+        # since not all zeros are necessarily isolates, do the focal == neighbor check
         return nulls[nulls.index == nulls.neighbor].index.unique()
 
     @property
