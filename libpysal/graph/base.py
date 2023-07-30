@@ -70,6 +70,23 @@ class Graph(_Set_Mixin):
         self._adjacency = adjacency
         self.transformation = transformation
 
+    def copy(self, deep=True):
+        """Make a copy of this Graph's adjacency table and transformation
+
+        Parameters
+        ----------
+        deep : bool, optional
+            Make a deep copy of the adjacency table, by default True
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph
+        """
+        return Graph(
+            self._adjacency.copy(deep=deep), transformation=self.transformation
+        )
+
     @cached_property
     def adjacency(self):
         """Return a copy of the adjacency list
@@ -148,14 +165,17 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph
         """
+        sparse = sparse.tocoo(copy=False)
         if focal_ids is not None and neighbor_ids is not None:
             focal_ids = np.asarray(focal_ids)
             neighbor_ids = np.asarray(neighbor_ids)
-            f, n = sparse.nonzero()
+            f = sparse.row
+            n = sparse.col
             focal_ids = focal_ids[f]
             neighbor_ids = neighbor_ids[n]
         elif (focal_ids is None) and (neighbor_ids is None):
-            focal_ids, neighbor_ids = sparse.nonzero()
+            focal_ids = sparse.row
+            neighbor_ids = sparse.col
         else:
             raise ValueError(
                 "Either both focal_ids and neighbor_ids are provided,"

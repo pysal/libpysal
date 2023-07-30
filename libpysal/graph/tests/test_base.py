@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import pytest
 from scipy import sparse
+from zmq import has
 
 from libpysal import graph
 from libpysal import weights
@@ -141,7 +142,7 @@ class TestBase:
             .sort_values(["focal", "neighbor"]),
         )
         G_roundtripped = graph.Graph.from_W(W)
-        pd.testing.assert_frame_equal(self.G_int._adjacency, G_roundtripped._adjacency)
+        assert self.G_int == G_roundtripped
 
         W = self.G_str.to_W()
         pd.testing.assert_frame_equal(
@@ -151,7 +152,7 @@ class TestBase:
             .sort_values(["focal", "neighbor"]),
         )
         G_roundtripped = graph.Graph.from_W(W)
-        pd.testing.assert_frame_equal(self.G_str._adjacency, G_roundtripped._adjacency)
+        assert self.G_str == G_roundtripped
 
         W = weights.lat2W(3, 3)
         G = graph.Graph.from_W(W)
@@ -196,41 +197,47 @@ class TestBase:
         assert W.neighbors == W_isolate.neighbors
         assert W.weights == W_isolate.weights
 
-    def test_sparse_roundtrip(self):
-        G = graph.Graph(self.adjacency_int_binary)
-        sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
-        pd.testing.assert_frame_equal(G._adjacency, G_sp._adjacency)
-
-        G = graph.Graph(self.adjacency_str_binary)
-        sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
-        pd.testing.assert_frame_equal(G._adjacency, G_sp._adjacency)
-
     def test_from_sparse(self):
         row = np.array([0, 3, 1, 0])
         col = np.array([1, 0, 1, 2])
         data = np.array([0.1, 0.5, 1, 0.9])
         sp = sparse.coo_array((data, (row, col)), shape=(4, 4))
         G = graph.Graph.from_sparse(sp)
-        expected = pd.DataFrame(
-            {"focal": row, "neighbor": col, "weight": data}
-        ).set_index("focal")
-        pd.testing.assert_frame_equal(G._adjacency, expected)
+        expected = graph.Graph.from_arrays(row, col, data)
+        assert G == expected
+
+        G = graph.Graph.from_sparse(sp.tocsr())
+        assert G == expected
+
+        G = graph.Graph.from_sparse(sp.tocsc())
+        assert G == expected
+
+        ids = ["zero", "one", "two", "three"]
 
         G_named = graph.Graph.from_sparse(
             sp,
-            focal_ids=["zero", "one", "two", "three"],
-            neighbor_ids=["zero", "one", "two", "three"],
+            focal_ids=ids,
+            neighbor_ids=ids,
         )
-        expected = pd.DataFrame(
-            {
-                "focal": ["zero", "three", "one", "zero"],
-                "neighbor": ["one", "zero", "one", "two"],
-                "weight": data,
-            }
-        ).set_index("focal")
-        pd.testing.assert_frame_equal(G_named._adjacency, expected)
+
+        expected = graph.Graph.from_arrays(
+            ["zero", "three", "one", "zero"], ["one", "zero", "one", "two"], data
+        )
+        G_named == expected
+
+        G = graph.Graph.from_sparse(
+            sp.tocsr(),
+            focal_ids=ids,
+            neighbor_ids=ids,
+        )
+        assert G == expected
+
+        G = graph.Graph.from_sparse(
+            sp.tocsc(),
+            focal_ids=ids,
+            neighbor_ids=ids,
+        )
+        assert G == expected
 
         with pytest.raises(ValueError, match="Either both"):
             graph.Graph.from_sparse(
@@ -290,12 +297,10 @@ class TestBase:
             0.5,
             0.5,
         ]
-        expected = pd.DataFrame(
-            {"neighbor": exp_neighbor, "weight": exp_weight},
-            index=exp_focal,
-        )
+        expected = graph.Graph.from_arrays(exp_focal, exp_neighbor, exp_weight)
+
         G = graph.Graph.from_weights_dict(weights_dict)
-        pd.testing.assert_frame_equal(G._adjacency, expected)
+        assert G == expected
 
     def test_from_dicts(self):
         G = graph.Graph.from_dicts(self.neighbor_dict_int)
@@ -419,6 +424,61 @@ class TestBase:
                 self.G_str.get_weights(i), np.asarray(list(self.W_dict_str[i].values()))
             )
 
+    def test_sparse(self):
+        assert not hasattr(self.G_int, "focal_label")
+        assert not hasattr(self.G_int, "neighbor_label")
+        sp = self.G_int.sparse
+        expected = np.array(
+            [
+                [1.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [0.3, 0.0, 0.3, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0],
+                [0.0, 0.5, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0],
+                [0.3, 0.0, 0.0, 0.0, 0.3, 0.0, 0.3, 0.0, 0.0, 0.0],
+                [0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0],
+                [0.0, 0.0, 0.3, 0.0, 0.3, 0.0, 0.0, 0.0, 0.3, 0.0],
+                [0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 0.3, 0.0, 0.3, 0.0, 0.3, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            ]
+        )
+        np.testing.assert_array_equal(sp.todense(), expected)
+        pd.testing.assert_index_equal(
+            self.G_int.focal_label,
+            pd.Index([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype="int64"),
+        )
+        pd.testing.assert_index_equal(
+            self.G_int.neighbor_label,
+            pd.Index([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype="int64"),
+        )
+
+        assert not hasattr(self.G_str, "focal_label")
+        assert not hasattr(self.G_str, "neighbor_label")
+        sp = self.G_str.sparse
+        np.testing.assert_array_equal(sp.todense(), expected)
+        pd.testing.assert_index_equal(
+            self.G_str.focal_label,
+            pd.Index(
+                ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"], dtype="object"
+            ),
+        )
+        pd.testing.assert_index_equal(
+            self.G_str.neighbor_label,
+            pd.Index(
+                ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"], dtype="object"
+            ),
+        )
+
+    def test_sparse_roundtrip(self):
+        G = graph.Graph(self.adjacency_int_binary)
+        sp = G.sparse
+        G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
+        assert G == G_sp
+
+        G = graph.Graph(self.adjacency_str_binary)
+        sp = G.sparse
+        G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
+        assert G == G_sp
 
 
 # TODO: test additional attributes
