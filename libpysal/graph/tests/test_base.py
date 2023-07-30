@@ -1,3 +1,5 @@
+import string
+
 import pandas as pd
 import numpy as np
 import pytest
@@ -27,39 +29,14 @@ class TestBase:
             name="focal",
         )
         self.neighbor_dict_str = {
-            "a": "b",
-            "b": "c",
-            "c": "f",
-            "d": "e",
-            "e": "f",
-            "f": "i",
-            "g": "h",
-            "h": "i",
-            "i": "h",
+            string.ascii_letters[k]: string.ascii_letters[v]
+            for k, v in self.neighbor_dict_int.items()
         }
         self.weight_dict_str_binary = {
-            "a": 1,
-            "b": 1,
-            "c": 1,
-            "d": 1,
-            "e": 1,
-            "f": 1,
-            "g": 1,
-            "h": 1,
-            "i": 1,
+            string.ascii_letters[k]: v for k, v in self.weight_dict_int_binary.items()
         }
         self.index_str = pd.Index(
-            [
-                "a",
-                "b",
-                "c",
-                "d",
-                "e",
-                "f",
-                "g",
-                "h",
-                "i",
-            ],
+            [string.ascii_letters[k] for k in self.index_int],
             dtype="object",
             name="focal",
         )
@@ -77,6 +54,28 @@ class TestBase:
             },
             index=self.index_str,
         )
+
+        # one isolate, one self-link
+        self.W_dict_int = {
+            0: {0: 1, 3: 0.5, 1: 0.5},
+            1: {0: 0.3, 4: 0.3, 2: 0.3},
+            2: {1: 0.5, 5: 0.5},
+            3: {0: 0.3, 6: 0.3, 4: 0.3},
+            4: {1: 0.25, 3: 0.25, 7: 0.25, 5: 0.25},
+            5: {2: 0.3, 4: 0.3, 8: 0.3},
+            6: {3: 0.5, 7: 0.5},
+            7: {4: 0.3, 6: 0.3, 8: 0.3},
+            8: {5: 0.5, 7: 0.5},
+            9: {},
+        }
+        self.W_dict_str = {
+            string.ascii_letters[k]: {
+                string.ascii_letters[k_]: v_ for k_, v_ in v.items()
+            }
+            for k, v in self.W_dict_int.items()
+        }
+        self.G_int = graph.Graph.from_weights_dict(self.W_dict_int)
+        self.G_str = graph.Graph.from_weights_dict(self.W_dict_str)
 
     def test_init(self):
         G = graph.Graph(self.adjacency_int_binary)
@@ -133,11 +132,28 @@ class TestBase:
         adjacency.iloc[0, 0] = 100
         pd.testing.assert_frame_equal(G._adjacency, self.adjacency_int_binary)
 
-    @pytest.mark.parametrize("y", [3, 5])
-    @pytest.mark.parametrize("rook", [True, False])
-    @pytest.mark.parametrize("id_type", ["int", "str"])
-    def test_W_roundtrip(self, y, id_type, rook):
-        W = weights.lat2W(3, y, id_type=id_type, rook=rook)
+    def test_W_roundtrip(self):
+        W = self.G_int.to_W()
+        pd.testing.assert_frame_equal(
+            self.G_int._adjacency.sort_values(["focal", "neighbor"]),
+            W.to_adjlist(drop_islands=False)
+            .set_index("focal")
+            .sort_values(["focal", "neighbor"]),
+        )
+        G_roundtripped = graph.Graph.from_W(W)
+        pd.testing.assert_frame_equal(self.G_int._adjacency, G_roundtripped._adjacency)
+
+        W = self.G_str.to_W()
+        pd.testing.assert_frame_equal(
+            self.G_str._adjacency.sort_values(["focal", "neighbor"]),
+            W.to_adjlist(drop_islands=False)
+            .set_index("focal")
+            .sort_values(["focal", "neighbor"]),
+        )
+        G_roundtripped = graph.Graph.from_W(W)
+        pd.testing.assert_frame_equal(self.G_str._adjacency, G_roundtripped._adjacency)
+
+        W = weights.lat2W(3, 3)
         G = graph.Graph.from_W(W)
         pd.testing.assert_frame_equal(
             G._adjacency.sort_values(["focal", "neighbor"]),
@@ -288,7 +304,6 @@ class TestBase:
         G = graph.Graph.from_dicts(self.neighbor_dict_str)
         pd.testing.assert_frame_equal(G._adjacency, self.adjacency_str_binary)
 
-
     @pytest.mark.parametrize("y", [3, 5])
     @pytest.mark.parametrize("rook", [True, False])
     @pytest.mark.parametrize("id_type", ["int", "str"])
@@ -323,6 +338,88 @@ class TestBase:
             G_isolate._adjacency.sort_values(["focal", "neighbor"]),
             W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
         )
+
+    def test_neighbors(self):
+        expected = {
+            0: (0, 3, 1),
+            1: (0, 4, 2),
+            2: (1, 5),
+            3: (0, 6, 4),
+            4: (1, 3, 7, 5),
+            5: (2, 4, 8),
+            6: (3, 7),
+            7: (4, 6, 8),
+            8: (5, 7),
+            9: (),
+        }
+        assert self.G_int.neighbors == expected
+
+        expected = {
+            "a": ("a", "d", "b"),
+            "b": ("a", "e", "c"),
+            "c": ("b", "f"),
+            "d": ("a", "g", "e"),
+            "e": ("b", "d", "h", "f"),
+            "f": ("c", "e", "i"),
+            "g": ("d", "h"),
+            "h": ("e", "g", "i"),
+            "i": ("f", "h"),
+            "j": (),
+        }
+        assert self.G_str.neighbors == expected
+
+    def test_weights(self):
+        expected = {
+            0: (1.0, 0.5, 0.5),
+            1: (0.3, 0.3, 0.3),
+            2: (0.5, 0.5),
+            3: (0.3, 0.3, 0.3),
+            4: (0.25, 0.25, 0.25, 0.25),
+            5: (0.3, 0.3, 0.3),
+            6: (0.5, 0.5),
+            7: (0.3, 0.3, 0.3),
+            8: (0.5, 0.5),
+            9: (),
+        }
+        assert self.G_int.weights == expected
+
+        expected = {
+            "a": (1.0, 0.5, 0.5),
+            "b": (0.3, 0.3, 0.3),
+            "c": (0.5, 0.5),
+            "d": (0.3, 0.3, 0.3),
+            "e": (0.25, 0.25, 0.25, 0.25),
+            "f": (0.3, 0.3, 0.3),
+            "g": (0.5, 0.5),
+            "h": (0.3, 0.3, 0.3),
+            "i": (0.5, 0.5),
+            "j": (),
+        }
+        assert self.G_str.weights == expected
+
+    def test_get_neighbors(self):
+        for i in range(10):
+            np.testing.assert_array_equal(
+                self.G_int.get_neighbors(i), np.asarray(list(self.W_dict_int[i]))
+            )
+        for i in range(10):
+            i = string.ascii_letters[i]
+            np.testing.assert_array_equal(
+                self.G_str.get_neighbors(i), np.asarray(list(self.W_dict_str[i]))
+            )
+
+    def test_get_weights(self):
+        for i in range(10):
+            np.testing.assert_array_equal(
+                self.G_int.get_weights(i), np.asarray(list(self.W_dict_int[i].values()))
+            )
+        for i in range(10):
+            i = string.ascii_letters[i]
+            np.testing.assert_array_equal(
+                self.G_str.get_weights(i), np.asarray(list(self.W_dict_str[i].values()))
+            )
+
+
 
 # TODO: test additional attributes
 # TODO: test additional methods
