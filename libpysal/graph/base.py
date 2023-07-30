@@ -1,4 +1,5 @@
 from functools import cached_property
+import math
 
 import numpy as np
 import pandas as pd
@@ -572,7 +573,7 @@ class Graph(_Set_Mixin):
         transformation = transformation.upper()
 
         if self.transformation == transformation:
-            return self
+            return self.copy()
 
         if transformation == "R":
             standardized = (
@@ -593,19 +594,16 @@ class Graph(_Set_Mixin):
             standardized = self._adjacency.weight.astype(bool).astype(int)
 
         elif transformation == "V":
-            standardized = (
-                (
-                    self._adjacency.weight
-                    / np.sqrt(self._adjacency.weight.groupby(level=0).transform("sum"))
-                )
-                .fillna(0)
-                .values
-            )  # isolate comes as NaN -> 0
+            s = self._adjacency.weight.groupby(level=0).transform(
+                lambda group: group / math.sqrt((group**2).sum())
+            )
+            nQ = self.n / s.sum()
+            standardized = (s * nQ).fillna(0).values  # isolate comes as NaN -> 0
 
         else:
             raise ValueError(
                 f"Transformation '{transformation}' is not supported. "
-                f"Use one of {ALLOWED_TRANSFORMATIONS}"
+                f"Use one of {ALLOWED_TRANSFORMATIONS[1:]}"
             )
 
         standardized_adjacency = self._adjacency.assign(weight=standardized)

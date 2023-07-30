@@ -519,6 +519,172 @@ class TestBase:
         assert self.G_int.nonzero == 26
         assert graph.Graph(self.adjacency_int_binary).nonzero == 9
 
+    def test_transform_r(self):
+        expected_w = [
+            0.5,
+            0.25,
+            0.25,
+            0.33333333,
+            0.33333333,
+            0.33333333,
+            0.5,
+            0.5,
+            0.33333333,
+            0.33333333,
+            0.33333333,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.33333333,
+            0.33333333,
+            0.33333333,
+            0.5,
+            0.5,
+            0.33333333,
+            0.33333333,
+            0.33333333,
+            0.5,
+            0.5,
+            0.0,
+        ]
+        expected = graph.Graph(self.G_int.adjacency.assign(weight=expected_w))
+        assert self.G_int.transform("r") == expected
+        assert self.G_int.transform("r").transformation == "R"
+        assert self.G_int.transform("R") == expected
 
-# TODO: test transform
+        w = self.G_int.to_W()
+        w.transform = "r"
+        G_from_W = graph.Graph.from_W(w)
+        assert G_from_W == self.G_int.transform("r")
+
+    def test_transform_b(self):
+        expected_w = [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+        ]
+        expected = graph.Graph(self.G_int.adjacency.assign(weight=expected_w))
+        assert self.G_int.transform("b") == expected
+        assert self.G_int.transform("b").transformation == "B"
+        assert self.G_int.transform("B") == expected
+
+        w = self.G_int.to_W()
+        w.transform = "b"
+        G_from_W = graph.Graph.from_W(w)
+        assert G_from_W == self.G_int.transform("b")
+
+    def test_transform_d(self):
+        expected_w = [
+            0.10416667,
+            0.05208333,
+            0.05208333,
+            0.03125,
+            0.03125,
+            0.03125,
+            0.05208333,
+            0.05208333,
+            0.03125,
+            0.03125,
+            0.03125,
+            0.02604167,
+            0.02604167,
+            0.02604167,
+            0.02604167,
+            0.03125,
+            0.03125,
+            0.03125,
+            0.05208333,
+            0.05208333,
+            0.03125,
+            0.03125,
+            0.03125,
+            0.05208333,
+            0.05208333,
+            0.0,
+        ]
+        expected = graph.Graph(self.G_int.adjacency.assign(weight=expected_w))
+        assert self.G_int.transform("d") == expected
+        assert self.G_int.transform("d").transformation == "D"
+        assert self.G_int.transform("D") == expected
+        assert self.G_int.transform("D")._adjacency.weight.sum() == pytest.approx(1)
+
+        w = self.G_int.to_W()
+        w.transform = "d"
+        G_from_W = graph.Graph.from_W(w)
+        assert G_from_W == self.G_int.transform("d")
+
+    def test_transform_v(self):
+        expected_w = [
+            0.55154388,
+            0.27577194,
+            0.27577194,
+            0.39000042,
+            0.39000042,
+            0.39000042,
+            0.47765102,
+            0.47765102,
+            0.39000042,
+            0.39000042,
+            0.39000042,
+            0.33775027,
+            0.33775027,
+            0.33775027,
+            0.33775027,
+            0.39000042,
+            0.39000042,
+            0.39000042,
+            0.47765102,
+            0.47765102,
+            0.39000042,
+            0.39000042,
+            0.39000042,
+            0.47765102,
+            0.47765102,
+            0.0,
+        ]
+
+        expected = graph.Graph(self.G_int.adjacency.assign(weight=expected_w))
+        assert self.G_int.transform("v") == expected
+        assert self.G_int.transform("v").transformation == "V"
+        assert self.G_int.transform("V") == expected
+
+        w = self.G_int.to_W()
+        w.transform = "v"
+        G_from_W = graph.Graph.from_W(w)
+        assert G_from_W == self.G_int.transform("v")
+
+    def test_transform(self):
+        # do not transform if transformation == current transformation
+        binary = self.G_int.transform("b")
+        fast_tracked = binary.transform("b")
+        assert binary == fast_tracked
+
+        with pytest.raises(ValueError, match="Transformation 'X' is not"):
+            self.G_int.transform("x")
+
+
 # TODO: test asymmetry
