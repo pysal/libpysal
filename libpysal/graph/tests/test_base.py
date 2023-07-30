@@ -10,7 +10,17 @@ from libpysal import weights
 class TestBase:
     def setup_method(self):
         self.neighbor_dict_int = {0: 1, 1: 2, 2: 5, 3: 4, 4: 5, 5: 8, 6: 7, 7: 8, 8: 7}
-        self.weight_dict_binary = {0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1}
+        self.weight_dict_int_binary = {
+            0: 1,
+            1: 1,
+            2: 1,
+            3: 1,
+            4: 1,
+            5: 1,
+            6: 1,
+            7: 1,
+            8: 1,
+        }
         self.index_int = pd.Index(
             [0, 1, 2, 3, 4, 5, 6, 7, 8],
             dtype="int64",
@@ -26,6 +36,17 @@ class TestBase:
             "g": "h",
             "h": "i",
             "i": "h",
+        }
+        self.weight_dict_str_binary = {
+            "a": 1,
+            "b": 1,
+            "c": 1,
+            "d": 1,
+            "e": 1,
+            "f": 1,
+            "g": 1,
+            "h": 1,
+            "i": 1,
         }
         self.index_str = pd.Index(
             [
@@ -45,16 +66,16 @@ class TestBase:
         self.adjacency_int_binary = pd.DataFrame(
             {
                 "neighbor": self.neighbor_dict_int,
-                "weight": self.weight_dict_binary,
+                "weight": self.weight_dict_int_binary,
             },
             index=self.index_int,
         )
         self.adjacency_str_binary = pd.DataFrame(
             {
-                "neighbor": self.neighbor_dict_int,
-                "weight": self.weight_dict_binary,
+                "neighbor": self.neighbor_dict_str,
+                "weight": self.weight_dict_str_binary,
             },
-            index=self.index_int,
+            index=self.index_str,
         )
 
     def test_init(self):
@@ -201,6 +222,20 @@ class TestBase:
                 focal_ids=["zero", "one", "two", "three"],
                 neighbor_ids=None,
             )
+
+    def test_from_arrays(self):
+        focal_ids = np.arange(9)
+        neighbor_ids = np.array([1, 2, 5, 4, 5, 8, 7, 8, 7])
+        weight = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+        G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
+        pd.testing.assert_frame_equal(G._adjacency, self.adjacency_int_binary)
+
+        focal_ids = np.asarray(self.neighbor_dict_str.keys())
+        neighbor_ids = np.asarray(self.neighbor_dict_str.values())
+
+        G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
+        pd.testing.assert_frame_equal(G._adjacency, self.adjacency_str_binary)
 
 
 # TODO: test additional attributes
