@@ -9,16 +9,64 @@ from ._contiguity import _queen, _rook, _vertex_set_intersection
 from ._set_ops import _Set_Mixin
 from ._utils import _neighbor_dict_to_edges
 
+ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
+
 
 class Graph(_Set_Mixin):
     def __init__(self, adjacency, transformation="O"):
         """Weights base class based on adjacency list
 
+        It is recommenced to use one of the ``from_*`` or ``build_*`` constructors
+        rather than invoking ``__init__`` directly.
+
         Parameters
         ----------
-        adjacency : pandas.Series
-            pandas.Series with a MultiIndex with two levels ("focal", "neighbor")
+        adjacency : pandas.DataFrame
+            pandas.DataFrame with a an index ``"focal"`` and columns
+            ``["neighbor", "weight]`` encoding the adjacency. By convention,
+            isolates are encoded as self-loops with a weight 0.
+        transformation : str, default "O"
+            weights transformation used to produce the table.
+
+                - **O** -- Original
+                - **B** -- Binary
+                - **R** -- Row-standardization (global sum :math:`=n`)
+                - **D** -- Double-standardization (global sum :math:`=1`)
+                - **V** -- Variance stabilizing
         """
+        if not isinstance(adjacency, pd.DataFrame):
+            raise TypeError("The adjacency table needs to be a pandas.DataFrame.")
+        if not adjacency.shape[1] == 2:
+            raise ValueError(
+                "The shape of the adjacency table needs to be (x, 2). "
+                f"{adjacency.shape} was given instead."
+            )
+        if not adjacency.index.name == "focal":
+            raise ValueError(
+                "The index of the adjacency table needs to be named "
+                f"'focal'. {adjacency.index.name} was given instead."
+            )
+        if not adjacency.columns.equals(
+            pd.Index(["neighbor", "weight"], dtype="object")
+        ):
+            raise ValueError(
+                "The adjacency table needs to contain columns "
+                f"['neighbor', 'weight']. {adjacency.columns.tolist()} were given "
+                "instead."
+            )
+        if not pd.api.types.is_numeric_dtype(adjacency.weight):
+            raise ValueError(
+                "The 'weight' columns needs to be of a numeric dtype. "
+                f"'{adjacency.weight.dtype}' dtype was given instead."
+            )
+        if adjacency.isna().any().any():
+            raise ValueError("The adjacency table cannot contain missing values.")
+        if transformation.upper() not in ALLOWED_TRANSFORMATIONS:
+            raise ValueError(
+                f"'transformation' needs to be one of {ALLOWED_TRANSFORMATIONS}. "
+                f"'{transformation}' was given instead."
+            )
+
         self._adjacency = adjacency
         self.transformation = transformation
 
@@ -535,7 +583,10 @@ class Graph(_Set_Mixin):
             )  # island comes as NaN -> 0
 
         else:
-            raise ValueError(f"Transformation '{transformation}' is not supported.")
+            raise ValueError(
+                f"Transformation '{transformation}' is not supported. "
+                f"Use one of {ALLOWED_TRANSFORMATIONS}"
+            )
 
         standardized_adjacency = self._adjacency.assign(weight=standardized)
         return Graph(standardized_adjacency, transformation)

@@ -74,6 +74,35 @@ class TestBase:
         assert hasattr(G, "transformation")
         assert G.transformation == "O"
 
+        with pytest.raises(TypeError, match="The adjacency table needs to be"):
+            graph.Graph(self.adjacency_int_binary.values)
+
+        with pytest.raises(ValueError, match="The shape of the adjacency table"):
+            graph.Graph(self.adjacency_int_binary.assign(col=0))
+
+        with pytest.raises(ValueError, match="The index of the adjacency table"):
+            adj = self.adjacency_int_binary.copy()
+            adj.index.name = "foo"
+            graph.Graph(adj)
+
+        with pytest.raises(
+            ValueError, match="The adjacency table needs to contain columns"
+        ):
+            graph.Graph(self.adjacency_int_binary.rename(columns={"weight": "foo"}))
+
+        with pytest.raises(ValueError, match="The 'weight' column"):
+            graph.Graph(self.adjacency_int_binary.astype(str))
+
+        with pytest.raises(
+            ValueError, match="The adjacency table cannot contain missing"
+        ):
+            adj = self.adjacency_int_binary.copy()
+            adj.loc[0, "weight"] = pd.NA
+            graph.Graph(adj)
+
+        with pytest.raises(ValueError, match="'transformation' needs to be"):
+            graph.Graph(self.adjacency_int_binary, transformation="foo")
+
     def test_adjacency(self):
         G = graph.Graph(self.adjacency_int_binary)
         adjacency = G.adjacency
