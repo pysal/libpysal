@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import pytest
 from scipy import sparse
-from zmq import has
 
 from libpysal import graph
 from libpysal import weights

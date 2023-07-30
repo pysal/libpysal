@@ -582,7 +582,7 @@ class Graph(_Set_Mixin):
                 )
                 .fillna(0)
                 .values
-            )  # island comes as NaN -> 0
+            )  # isolate comes as NaN -> 0
 
         elif transformation == "D":
             standardized = (
@@ -600,7 +600,7 @@ class Graph(_Set_Mixin):
                 )
                 .fillna(0)
                 .values
-            )  # island comes as NaN -> 0
+            )  # isolate comes as NaN -> 0
 
         else:
             raise ValueError(
