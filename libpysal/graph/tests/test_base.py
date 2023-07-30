@@ -123,6 +123,12 @@ class TestBase:
         with pytest.raises(ValueError, match="'transformation' needs to be"):
             graph.Graph(self.adjacency_int_binary, transformation="foo")
 
+    def test_copy(self):
+        G_copy = self.G_str.copy()
+        assert G_copy == self.G_str
+        G_copy._adjacency.iloc[0, 1] = 2
+        assert G_copy != self.G_str
+
     def test_adjacency(self):
         G = graph.Graph(self.adjacency_int_binary)
         adjacency = G.adjacency
@@ -480,5 +486,4 @@ class TestBase:
         assert G == G_sp
 
 
-# TODO: test additional attributes
-# TODO: test additional methods
+# TODO: test transform

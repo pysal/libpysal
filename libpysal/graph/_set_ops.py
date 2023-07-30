@@ -192,8 +192,8 @@ def label_equals(left, right):
     """
     try:
         pandas.testing.assert_frame_equal(
-            left.adjacency.sort_values(["focal", "neighbor"]),
-            right.adjacency.sort_values(["focal", "neighbor"]),
+            left._adjacency.sort_values(["focal", "neighbor"]),
+            right._adjacency.sort_values(["focal", "neighbor"]),
         )
     except AssertionError:
         return False
