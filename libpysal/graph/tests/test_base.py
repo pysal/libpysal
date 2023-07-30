@@ -171,14 +171,14 @@ class TestBase:
             neighbors={"a": ["b"], "b": ["a", "c"], "c": ["b"], "d": []},
             silence_warnings=True,
         )
-        G_island = graph.Graph.from_W(W)
+        G_isolate = graph.Graph.from_W(W)
         pd.testing.assert_frame_equal(
-            G_island._adjacency.sort_values(["focal", "neighbor"]),
+            G_isolate._adjacency.sort_values(["focal", "neighbor"]),
             W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
         )
-        W_island = G_island.to_W()
-        assert W.neighbors == W_island.neighbors
-        assert W.weights == W_island.weights
+        W_isolate = G_isolate.to_W()
+        assert W.neighbors == W_isolate.neighbors
+        assert W.weights == W_isolate.weights
 
     def test_sparse_roundtrip(self):
         G = graph.Graph(self.adjacency_int_binary)
@@ -237,6 +237,92 @@ class TestBase:
         G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
         pd.testing.assert_frame_equal(G._adjacency, self.adjacency_str_binary)
 
+    def test_from_weights_dict(self):
+        weights_dict = {
+            0: {2: 0.5, 1: 0.5},
+            1: {0: 0.5, 3: 0.5},
+            2: {
+                0: 0.3,
+                4: 0.3,
+                3: 0.3,
+            },
+            3: {
+                1: 0.3,
+                2: 0.3,
+                5: 0.3,
+            },
+            4: {2: 0.5, 5: 0.5},
+            5: {3: 0.5, 4: 0.5},
+        }
+        exp_focal = pd.Index(
+            [0, 0, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5], dtype="int64", name="focal"
+        )
+        exp_neighbor = [2, 1, 0, 3, 0, 4, 3, 1, 2, 5, 2, 5, 3, 4]
+        exp_weight = [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.3,
+            0.3,
+            0.3,
+            0.3,
+            0.3,
+            0.3,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+        ]
+        expected = pd.DataFrame(
+            {"neighbor": exp_neighbor, "weight": exp_weight},
+            index=exp_focal,
+        )
+        G = graph.Graph.from_weights_dict(weights_dict)
+        pd.testing.assert_frame_equal(G._adjacency, expected)
+
+    def test_from_dicts(self):
+        G = graph.Graph.from_dicts(self.neighbor_dict_int)
+        pd.testing.assert_frame_equal(G._adjacency, self.adjacency_int_binary)
+
+        G = graph.Graph.from_dicts(self.neighbor_dict_str)
+        pd.testing.assert_frame_equal(G._adjacency, self.adjacency_str_binary)
+
+
+    @pytest.mark.parametrize("y", [3, 5])
+    @pytest.mark.parametrize("rook", [True, False])
+    @pytest.mark.parametrize("id_type", ["int", "str"])
+    def test_from_dicts_via_W(self, y, id_type, rook):
+        W = weights.lat2W(3, y, id_type=id_type, rook=rook)
+        G = graph.Graph.from_dicts(W.neighbors, W.weights)
+        pd.testing.assert_frame_equal(
+            G._adjacency.sort_values(["focal", "neighbor"]),
+            W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+        )
+
+        W.transform = "r"
+        G_rowwise = graph.Graph.from_dicts(W.neighbors, W.weights)
+        pd.testing.assert_frame_equal(
+            G_rowwise._adjacency.sort_values(["focal", "neighbor"]),
+            W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+        )
+
+        diag = weights.fill_diagonal(W)
+        G_diag = graph.Graph.from_dicts(diag.neighbors, diag.weights)
+        pd.testing.assert_frame_equal(
+            G_diag._adjacency.sort_values(["focal", "neighbor"]),
+            diag.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+        )
+
+        W = weights.W(
+            neighbors={"a": ["b"], "b": ["a", "c"], "c": ["b"], "d": []},
+            silence_warnings=True,
+        )
+        G_isolate = graph.Graph.from_dicts(W.neighbors, W.weights)
+        pd.testing.assert_frame_equal(
+            G_isolate._adjacency.sort_values(["focal", "neighbor"]),
+            W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+        )
 
 # TODO: test additional attributes
 # TODO: test additional methods
