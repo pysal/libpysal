@@ -652,7 +652,7 @@ class Graph(_Set_Mixin):
         pandas.Series
             Series with a number of neighbors per each observation
         """
-        cardinalities = self.transform("B")._adjacency.weight.groupby(level=0).sum()
+        cardinalities = self._adjacency.weight.astype(bool).groupby(level=0).sum()
         cardinalities.name = "cardinalities"
         return cardinalities
 
@@ -671,7 +671,7 @@ class Graph(_Set_Mixin):
         # since not all zeros are necessarily isolates, do the focal == neighbor check
         return nulls[nulls.index == nulls.neighbor].index.unique()
 
-    @property
+    @cached_property
     def n(self):
         """Number of observations."""
         return self._adjacency.index.nunique()

@@ -485,5 +485,40 @@ class TestBase:
         G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
         assert G == G_sp
 
+    def test_cardinalities(self):
+        expected = pd.Series(
+            [3, 3, 2, 3, 4, 3, 2, 3, 2, 0],
+            index=pd.Index(
+                ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"],
+                dtype="object",
+                name="focal",
+            ),
+            name="cardinalities",
+        )
+        pd.testing.assert_series_equal(self.G_str.cardinalities, expected)
+
+    def test_isolates(self):
+        expected = pd.Index(["j"], name="focal")
+        pd.testing.assert_index_equal(self.G_str.isolates, expected)
+
+        self.G_str._adjacency.iloc[1, 1] = 0  # zero weight, no isolate
+        pd.testing.assert_index_equal(self.G_str.isolates, expected)
+
+    def test_n(self):
+        assert self.G_int.n == 10
+        assert self.G_str.n == 10
+        assert graph.Graph(self.adjacency_int_binary).n == 9
+
+    def test_pct_nonzero(self):
+        assert self.G_int.pct_nonzero == 26.0
+        assert graph.Graph(self.adjacency_int_binary).pct_nonzero == pytest.approx(
+            11.1111111111
+        )
+
+    def test_nonzero(self):
+        assert self.G_int.nonzero == 26
+        assert graph.Graph(self.adjacency_int_binary).nonzero == 9
+
 
 # TODO: test transform
+# TODO: test asymmetry
