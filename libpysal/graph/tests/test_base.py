@@ -117,7 +117,7 @@ class TestBase:
             ValueError, match="The adjacency table cannot contain missing"
         ):
             adj = self.adjacency_int_binary.copy()
-            adj.loc[0, "weight"] = pd.NA
+            adj.loc[0, "weight"] = np.nan
             graph.Graph(adj)
 
         with pytest.raises(ValueError, match="'transformation' needs to be"):
