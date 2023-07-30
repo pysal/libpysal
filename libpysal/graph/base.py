@@ -705,6 +705,9 @@ class Graph(_Set_Mixin):
                 i \in N_j \ \& \ j \in N_i
 
             where :math:`N_j` is the set of neighbors for :math:`j`.
+            I.e. ``True`` requires equality of the weight to consider
+            two links equal, ``False`` requires only a presence of a link
+            with a non-zero weight.
 
         Returns
         -------

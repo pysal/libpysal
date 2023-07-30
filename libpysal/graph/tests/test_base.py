@@ -686,5 +686,33 @@ class TestBase:
         with pytest.raises(ValueError, match="Transformation 'X' is not"):
             self.G_int.transform("x")
 
+    def test_asymmetry(self):
+        neighbors = {
+            "a": ["b", "c", "d"],
+            "b": ["b", "c", "d"],
+            "c": ["a", "b"],
+            "d": ["a", "b"],
+        }
+        weights_d = {"a": [1, 0.5, 1], "b": [1, 1, 1], "c": [1, 1], "d": [1, 1]}
+        G = graph.Graph.from_dicts(neighbors, weights_d)
+        intrinsic = pd.Series(
+            ["b", "c", "a", "a"],
+            index=pd.Index(["a", "a", "b", "c"], name="focal"),
+            name="neighbor",
+        )
+        pd.testing.assert_series_equal(intrinsic, G.asymmetry())
 
-# TODO: test asymmetry
+        boolean = pd.Series(
+            ["b", "a"],
+            index=pd.Index(["a", "b"], name="focal"),
+            name="neighbor",
+        )
+        pd.testing.assert_series_equal(boolean, G.asymmetry(intrinsic=False))
+
+        empty = pd.Series(
+            index=pd.Index([], name="focal"),
+            name="neighbor",
+            dtype=int,
+        )
+
+        pd.testing.assert_series_equal(self.G_int.asymmetry(False), empty)
