@@ -259,8 +259,8 @@ class TestBase:
         G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
         pd.testing.assert_frame_equal(G._adjacency, self.adjacency_int_binary)
 
-        focal_ids = np.asarray(self.neighbor_dict_str.keys())
-        neighbor_ids = np.asarray(self.neighbor_dict_str.values())
+        focal_ids = np.asarray(list(self.neighbor_dict_str.keys()))
+        neighbor_ids = np.asarray(list(self.neighbor_dict_str.values()))
 
         G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
         pd.testing.assert_frame_equal(G._adjacency, self.adjacency_str_binary)
