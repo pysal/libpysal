@@ -187,7 +187,7 @@ class TestBase:
         )
         W_diag = G_diag.to_W()
         assert diag.neighbors == W_diag.neighbors
-        # assert diag.weights == W_diag.weights  # buggy due to #538
+        assert diag.weights == W_diag.weights
 
         W = weights.W(
             neighbors={"a": ["b"], "b": ["a", "c"], "c": ["b"], "d": []},
