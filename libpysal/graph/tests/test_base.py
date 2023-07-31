@@ -315,8 +315,8 @@ class TestBase:
         pd.testing.assert_frame_equal(G._adjacency, self.adjacency_str_binary)
 
     @pytest.mark.parametrize("y", [3, 5])
-    @pytest.mark.parametrize("rook", [True, False])
     @pytest.mark.parametrize("id_type", ["int", "str"])
+    @pytest.mark.parametrize("rook", [True, False])
     def test_from_dicts_via_W(self, y, id_type, rook):
         W = weights.lat2W(3, y, id_type=id_type, rook=rook)
         G = graph.Graph.from_dicts(W.neighbors, W.weights)

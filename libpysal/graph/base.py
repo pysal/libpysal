@@ -158,7 +158,7 @@ class Graph(_Set_Mixin):
             list-like of ids for focal geometries that is mappable to
             positions from sparse. If None, the positions are used as labels.
         neighbor_ids : list-like, default None
-            list-like of ids for focal geometries that is mappable to
+            list-like of ids for neighbor geometries that is mappable to
             positions from sparse. If None, the positions are used as labels.
 
         Returns
@@ -704,8 +704,8 @@ class Graph(_Set_Mixin):
 
                 i \in N_j \ \& \ j \in N_i
 
-            where :math:`N_j` is the set of neighbors for :math:`j`.
-            I.e. ``True`` requires equality of the weight to consider
+            where :math:`N_j` is the set of neighbors for :math:`j`,
+            e.g., ``True`` requires equality of the weight to consider
             two links equal, ``False`` requires only a presence of a link
             with a non-zero weight.
 
