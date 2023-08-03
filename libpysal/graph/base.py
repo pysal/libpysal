@@ -1,25 +1,92 @@
 from functools import cached_property
+import math
 
 import numpy as np
 import pandas as pd
 from scipy import sparse
 
+from libpysal.weights import W
 from ._contiguity import _queen, _rook, _vertex_set_intersection
 from ._set_ops import _Set_Mixin
 from ._utils import _neighbor_dict_to_edges
+
+ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
 
 class Graph(_Set_Mixin):
     def __init__(self, adjacency, transformation="O"):
         """Weights base class based on adjacency list
 
+        It is recommenced to use one of the ``from_*`` or ``build_*`` constructors
+        rather than invoking ``__init__`` directly.
+
         Parameters
         ----------
-        adjacency : pandas.Series
-            pandas.Series with a MultiIndex with two levels ("focal", "neighbor")
+        adjacency : pandas.DataFrame
+            pandas.DataFrame with a an index ``"focal"`` and columns
+            ``["neighbor", "weight]`` encoding the adjacency. By convention,
+            isolates are encoded as self-loops with a weight 0.
+        transformation : str, default "O"
+            weights transformation used to produce the table.
+
+                - **O** -- Original
+                - **B** -- Binary
+                - **R** -- Row-standardization (global sum :math:`=n`)
+                - **D** -- Double-standardization (global sum :math:`=1`)
+                - **V** -- Variance stabilizing
         """
+        if not isinstance(adjacency, pd.DataFrame):
+            raise TypeError("The adjacency table needs to be a pandas.DataFrame.")
+        if not adjacency.shape[1] == 2:
+            raise ValueError(
+                "The shape of the adjacency table needs to be (x, 2). "
+                f"{adjacency.shape} was given instead."
+            )
+        if not adjacency.index.name == "focal":
+            raise ValueError(
+                "The index of the adjacency table needs to be named "
+                f"'focal'. {adjacency.index.name} was given instead."
+            )
+        if not adjacency.columns.equals(
+            pd.Index(["neighbor", "weight"], dtype="object")
+        ):
+            raise ValueError(
+                "The adjacency table needs to contain columns "
+                f"['neighbor', 'weight']. {adjacency.columns.tolist()} were given "
+                "instead."
+            )
+        if not pd.api.types.is_numeric_dtype(adjacency.weight):
+            raise ValueError(
+                "The 'weight' columns needs to be of a numeric dtype. "
+                f"'{adjacency.weight.dtype}' dtype was given instead."
+            )
+        if adjacency.isna().any().any():
+            raise ValueError("The adjacency table cannot contain missing values.")
+        if transformation.upper() not in ALLOWED_TRANSFORMATIONS:
+            raise ValueError(
+                f"'transformation' needs to be one of {ALLOWED_TRANSFORMATIONS}. "
+                f"'{transformation}' was given instead."
+            )
+
         self._adjacency = adjacency
         self.transformation = transformation
+
+    def copy(self, deep=True):
+        """Make a copy of this Graph's adjacency table and transformation
+
+        Parameters
+        ----------
+        deep : bool, optional
+            Make a deep copy of the adjacency table, by default True
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph
+        """
+        return Graph(
+            self._adjacency.copy(deep=deep), transformation=self.transformation
+        )
 
     @cached_property
     def adjacency(self):
@@ -33,7 +100,7 @@ class Graph(_Set_Mixin):
         return self._adjacency.copy()
 
     @classmethod
-    def from_old_w(cls, w):
+    def from_W(cls, w):
         """Create an experimental Graph from libpysal.weights.W object
 
         Parameters
@@ -47,6 +114,38 @@ class Graph(_Set_Mixin):
         """
         return cls.from_weights_dict(dict(w))
 
+    def to_W(self):
+        """Convert Graph to a libpysal.weights.W object
+
+        Returns
+        -------
+        libpysal.weights.W
+            representation of graph as a weights.W object
+        """
+        neighbors = (
+            self._adjacency.groupby(level=0)
+            .apply(
+                lambda group: list(
+                    group[
+                        ~((group.index == group.neighbor) & (group.weight == 0))
+                    ].neighbor
+                )
+            )
+            .to_dict()
+        )
+        weights = (
+            self._adjacency.groupby(level=0)
+            .apply(
+                lambda group: list(
+                    group[
+                        ~((group.index == group.neighbor) & (group.weight == 0))
+                    ].weight
+                )
+            )
+            .to_dict()
+        )
+        return W(neighbors, weights)
+
     @classmethod
     def from_sparse(cls, sparse, focal_ids=None, neighbor_ids=None):
         """Convert a ``scipy.sparse`` array to a PySAL ``Graph`` object.
@@ -54,18 +153,30 @@ class Graph(_Set_Mixin):
         Parameters
         ----------
         sparse : scipy.sparse array
+            sparse representation of a graph
+        focal_ids : list-like, default None
+            list-like of ids for focal geometries that is mappable to
+            positions from sparse. If None, the positions are used as labels.
+        neighbor_ids : list-like, default None
+            list-like of ids for neighbor geometries that is mappable to
+            positions from sparse. If None, the positions are used as labels.
 
         Returns
         -------
         Graph
             libpysal.graph.Graph
         """
+        sparse = sparse.tocoo(copy=False)
         if focal_ids is not None and neighbor_ids is not None:
-            f, n = sparse.nonzero()
+            focal_ids = np.asarray(focal_ids)
+            neighbor_ids = np.asarray(neighbor_ids)
+            f = sparse.row
+            n = sparse.col
             focal_ids = focal_ids[f]
             neighbor_ids = neighbor_ids[n]
         elif (focal_ids is None) and (neighbor_ids is None):
-            focal_ids, neighbor_ids = sparse.nonzero()
+            focal_ids = sparse.row
+            neighbor_ids = sparse.col
         else:
             raise ValueError(
                 "Either both focal_ids and neighbor_ids are provided,"
@@ -341,8 +452,14 @@ class Graph(_Set_Mixin):
             dict of tuples representing neighbors
         """
         return (
-            self._adjacency.neighbor.groupby(level=0)
-            .agg(lambda group: tuple(group[group.index != group]))
+            self._adjacency.groupby(level=0)
+            .apply(
+                lambda group: tuple(
+                    group[
+                        ~((group.index == group.neighbor) & (group.weight == 0))
+                    ].neighbor
+                )
+            )
             .to_dict()
         )
 
@@ -362,7 +479,13 @@ class Graph(_Set_Mixin):
         """
         return (
             self._adjacency.groupby(level=0)
-            .apply(lambda group: tuple(group[group.index != group.neighbor].weight))
+            .apply(
+                lambda group: tuple(
+                    group[
+                        ~((group.index == group.neighbor) & (group.weight == 0))
+                    ].weight
+                )
+            )
             .to_dict()
         )
 
@@ -379,7 +502,7 @@ class Graph(_Set_Mixin):
         array
             array of indices of neighbor objects
         """
-        if ix in self.islands:
+        if ix in self.isolates:
             return np.array([], dtype=self._adjacency.neighbor.dtype)
 
         return self._adjacency.neighbor[self._adjacency.index == ix].values
@@ -397,7 +520,7 @@ class Graph(_Set_Mixin):
         array
             array of weights of neighbor object
         """
-        if ix in self.islands:
+        if ix in self.isolates:
             return np.array([], dtype=self._adjacency.weight.dtype)
 
         return self._adjacency.weight.loc[ix].values
@@ -450,7 +573,7 @@ class Graph(_Set_Mixin):
         transformation = transformation.upper()
 
         if self.transformation == transformation:
-            return self
+            return self.copy()
 
         if transformation == "R":
             standardized = (
@@ -460,7 +583,7 @@ class Graph(_Set_Mixin):
                 )
                 .fillna(0)
                 .values
-            )  # island comes as NaN -> 0
+            )  # isolate comes as NaN -> 0
 
         elif transformation == "D":
             standardized = (
@@ -471,17 +594,17 @@ class Graph(_Set_Mixin):
             standardized = self._adjacency.weight.astype(bool).astype(int)
 
         elif transformation == "V":
-            standardized = (
-                (
-                    self._adjacency.weight
-                    / np.sqrt(self._adjacency.weight.groupby(level=0).transform("sum"))
-                )
-                .fillna(0)
-                .values
-            )  # island comes as NaN -> 0
+            s = self._adjacency.weight.groupby(level=0).transform(
+                lambda group: group / math.sqrt((group**2).sum())
+            )
+            nQ = self.n / s.sum()
+            standardized = (s * nQ).fillna(0).values  # isolate comes as NaN -> 0
 
         else:
-            raise ValueError(f"Transformation '{transformation}' is not supported.")
+            raise ValueError(
+                f"Transformation '{transformation}' is not supported. "
+                f"Use one of {ALLOWED_TRANSFORMATIONS[1:]}"
+            )
 
         standardized_adjacency = self._adjacency.assign(weight=standardized)
         return Graph(standardized_adjacency, transformation)
@@ -527,15 +650,15 @@ class Graph(_Set_Mixin):
         pandas.Series
             Series with a number of neighbors per each observation
         """
-        cardinalities = self.transform("B")._adjacency.weight.groupby(level=0).sum()
+        cardinalities = self._adjacency.weight.astype(bool).groupby(level=0).sum()
         cardinalities.name = "cardinalities"
         return cardinalities
 
     @cached_property
-    def islands(self):
+    def isolates(self):
         """Index of observations with no neighbors
 
-        Islands are encoded as a self-loop with the weight == 0 in the adjacency table.
+        Isolates are encoded as a self-loop with the weight == 0 in the adjacency table.
 
         Returns
         -------
@@ -543,10 +666,10 @@ class Graph(_Set_Mixin):
             Index with a subset of observations that do not have any neighbor
         """
         nulls = self._adjacency[self._adjacency.weight == 0]
-        # since not all zeros are necessarily islands, do the focal == neighbor check
+        # since not all zeros are necessarily isolates, do the focal == neighbor check
         return nulls[nulls.index == nulls.neighbor].index.unique()
 
-    @property
+    @cached_property
     def n(self):
         """Number of observations."""
         return self._adjacency.index.nunique()
@@ -581,7 +704,10 @@ class Graph(_Set_Mixin):
 
                 i \in N_j \ \& \ j \in N_i
 
-            where :math:`N_j` is the set of neighbors for :math:`j`.
+            where :math:`N_j` is the set of neighbors for :math:`j`,
+            e.g., ``True`` requires equality of the weight to consider
+            two links equal, ``False`` requires only a presence of a link
+            with a non-zero weight.
 
         Returns
         -------

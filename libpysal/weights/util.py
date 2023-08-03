@@ -787,7 +787,6 @@ def full2W(m, ids=None, **kwargs):
 
 
 def WSP2W(wsp, **kwargs):
-
     """
     Convert a pysal WSP object (thin weights matrix) to a pysal W object.
 
@@ -841,7 +840,7 @@ def WSP2W(wsp, **kwargs):
         oid = id_order[i]
         end = indptr[i + 1]
         neighbors[oid] = indices[start:end]
-        weights[oid] = data[start:end]
+        weights[oid] = data[start:end].tolist()
         start = end
     ids = copy.copy(wsp.id_order)
     w = W(neighbors, weights, ids, **kwargs)
@@ -1686,7 +1685,6 @@ def fuzzy_contiguity(
 
 
 if __name__ == "__main__":
-
     from libpysal.weights import lat2W
 
     assert (lat2W(5, 5).sparse.todense() == lat2SW(5, 5).todense()).all()
