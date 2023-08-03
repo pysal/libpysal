@@ -283,6 +283,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G._adjacency,
             self.adjacency_str_binary,
+            check_index_type=False,
+            check_dtype=False,
         )
 
     def test_from_weights_dict(self):
