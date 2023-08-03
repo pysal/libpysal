@@ -334,7 +334,6 @@ class TestBase:
             self.adjacency_int_binary,
             check_dtype=False,
             check_index_type=False,
-            check_dtype=False,
         )
 
         G = graph.Graph.from_dicts(self.neighbor_dict_str)
