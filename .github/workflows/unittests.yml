@@ -14,7 +14,7 @@
      runs-on: ${{ matrix.os }}
      env:
        FETCH_EXAMPLES: python -c 'import libpysal; libpysal.examples.fetch_all()'
-       RUN_TEST: pytest -v -n auto libpysal --cov libpysal --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
+       RUN_TEST: pytest -v libpysal --cov libpysal --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
      #timeout-minutes: 25
      strategy:
        matrix:
