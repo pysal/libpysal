@@ -15,8 +15,7 @@ import numpy
 import pytest
 import shapely
 
-from libpysal.graph._contiguity import (
-    _queen, _rook, _vertex_set_intersection)
+from libpysal.graph._contiguity import _queen, _rook, _vertex_set_intersection
 
 numpy.random.seed(111211)
 rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers")).sample(
@@ -39,6 +38,7 @@ parametrize_pointset = pytest.mark.parametrize(
     "pointset", [True, False], ids=["pointset", "vertex intersection"]
 )
 
+
 @parametrize_pointset
 @parametrize_rook
 @parametrize_ids
@@ -46,8 +46,8 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
     """
     Check wiether contiguity is constructed correctly for rivers in europe
     """
-    data = data.reset_index(drop=False, names='original_index')
-    ids = 'original_index' if ids is None else ids
+    data = data.reset_index(drop=False).rename(columns={"index": "original_index"})
+    ids = "original_index" if ids is None else ids
     data.index = data[ids].values
     ids = data.index.values
     # implement known_heads, known_tails
@@ -60,7 +60,11 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
         known_tails = numpy.array(["Danube", "Sava", "Danube", "Tisa"])
         isolates = data[~data.strID.isin(known_heads)].index.values
 
-        tmp_ = data.reset_index(names="tmp_index").set_index("strID")
+        tmp_ = (
+            data.reset_index(drop=False)
+            .rename(columns={"index": "tmp_index"})
+            .set_index("strID")
+        )
 
         known_heads = tmp_.loc[known_heads, "tmp_index"].values
         known_tails = tmp_.loc[known_tails, "tmp_index"].values
@@ -79,7 +83,9 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
         derived_by_index = _vertex_set_intersection(data, rook=rook, ids=None)
 
     assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
-    assert set(zip(*derived_by_index)) == set(zip(known_heads, known_tails, known_weights))
+    assert set(zip(*derived_by_index)) == set(
+        zip(known_heads, known_tails, known_weights)
+    )
 
 
 @parametrize_rook
@@ -114,7 +120,9 @@ def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, data=nybb):
     derived_by_index = f(data, by_perimeter=by_perimeter, ids=None)
 
     assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
-    assert set(zip(*derived_by_index)) == set(zip(known_heads, known_tails, known_weights))
+    assert set(zip(*derived_by_index)) == set(
+        zip(known_heads, known_tails, known_weights)
+    )
 
 
 @parametrize_rook
@@ -149,7 +157,9 @@ def test_user_pointset_nybb(ids, by_perimeter, rook, data=nybb):
     derived_by_index = f(data, by_perimeter=by_perimeter, ids=None)
 
     assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
-    assert set(zip(*derived_by_index)) == set(zip(known_heads, known_tails, known_weights))
+    assert set(zip(*derived_by_index)) == set(
+        zip(known_heads, known_tails, known_weights)
+    )
 
 
 @parametrize_pointset
