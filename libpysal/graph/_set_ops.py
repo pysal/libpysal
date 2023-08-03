@@ -192,11 +192,13 @@ def label_equals(left, right):
     """
     try:
         pandas.testing.assert_frame_equal(
-            left.adjacency, right.adjacency, check_like=True, check_dtype=False
+            left._adjacency.sort_values(["focal", "neighbor"]),
+            right._adjacency.sort_values(["focal", "neighbor"]),
+            check_dtype=False,
         )
     except AssertionError:
-        return True
-    return False
+        return False
+    return True
 
 
 def isomorphic(left, right):
