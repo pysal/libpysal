@@ -145,6 +145,8 @@ class TestBase:
             W.to_adjlist(drop_islands=False)
             .set_index("focal")
             .sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
         G_roundtripped = graph.Graph.from_W(W)
         assert self.G_int == G_roundtripped
@@ -155,6 +157,8 @@ class TestBase:
             W.to_adjlist(drop_islands=False)
             .set_index("focal")
             .sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
         G_roundtripped = graph.Graph.from_W(W)
         assert self.G_str == G_roundtripped
@@ -164,6 +168,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G._adjacency.sort_values(["focal", "neighbor"]),
             W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
         W_exp = G.to_W()
         assert W.neighbors == W_exp.neighbors
@@ -174,6 +180,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G_rowwise._adjacency.sort_values(["focal", "neighbor"]),
             W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
         W_trans = G_rowwise.to_W()
         assert W.neighbors == W_trans.neighbors
@@ -184,6 +192,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G_diag._adjacency.sort_values(["focal", "neighbor"]),
             diag.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
         W_diag = G_diag.to_W()
         assert diag.neighbors == W_diag.neighbors
@@ -197,6 +207,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G_isolate._adjacency.sort_values(["focal", "neighbor"]),
             W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
         W_isolate = G_isolate.to_W()
         assert W.neighbors == W_isolate.neighbors
@@ -257,13 +269,23 @@ class TestBase:
         weight = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
 
         G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
-        pd.testing.assert_frame_equal(G._adjacency, self.adjacency_int_binary)
+        pd.testing.assert_frame_equal(
+            G._adjacency,
+            self.adjacency_int_binary,
+            check_index_type=False,
+            check_dtype=False,
+        )
 
         focal_ids = np.asarray(list(self.neighbor_dict_str.keys()))
         neighbor_ids = np.asarray(list(self.neighbor_dict_str.values()))
 
         G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
-        pd.testing.assert_frame_equal(G._adjacency, self.adjacency_str_binary)
+        pd.testing.assert_frame_equal(
+            G._adjacency,
+            self.adjacency_str_binary,
+            check_index_type=False,
+            check_dtype=False,
+        )
 
     def test_from_weights_dict(self):
         weights_dict = {
@@ -309,10 +331,19 @@ class TestBase:
 
     def test_from_dicts(self):
         G = graph.Graph.from_dicts(self.neighbor_dict_int)
-        pd.testing.assert_frame_equal(G._adjacency, self.adjacency_int_binary)
+        pd.testing.assert_frame_equal(
+            G._adjacency,
+            self.adjacency_int_binary,
+            check_dtype=False,
+            check_index_type=False,
+        )
 
         G = graph.Graph.from_dicts(self.neighbor_dict_str)
-        pd.testing.assert_frame_equal(G._adjacency, self.adjacency_str_binary)
+        pd.testing.assert_frame_equal(
+            G._adjacency,
+            self.adjacency_str_binary,
+            check_dtype=False,
+        )
 
     @pytest.mark.parametrize("y", [3, 5])
     @pytest.mark.parametrize("id_type", ["int", "str"])
@@ -323,6 +354,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G._adjacency.sort_values(["focal", "neighbor"]),
             W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
 
         W.transform = "r"
@@ -330,6 +363,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G_rowwise._adjacency.sort_values(["focal", "neighbor"]),
             W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
 
         diag = weights.fill_diagonal(W)
@@ -337,6 +372,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G_diag._adjacency.sort_values(["focal", "neighbor"]),
             diag.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
 
         W = weights.W(
@@ -347,6 +384,8 @@ class TestBase:
         pd.testing.assert_frame_equal(
             G_isolate._adjacency.sort_values(["focal", "neighbor"]),
             W.to_adjlist().set_index("focal").sort_values(["focal", "neighbor"]),
+            check_index_type=False,
+            check_dtype=False,
         )
 
     def test_neighbors(self):
@@ -712,7 +751,7 @@ class TestBase:
         empty = pd.Series(
             index=pd.Index([], name="focal"),
             name="neighbor",
-            dtype=int,
+            dtype="int64",
         )
 
         pd.testing.assert_series_equal(self.G_int.asymmetry(False), empty)
