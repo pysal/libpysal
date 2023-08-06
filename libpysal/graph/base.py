@@ -454,7 +454,7 @@ class Graph(_Set_Mixin):
                 data, ids=ids, bandwidth=bandwidth, kernel=kernel
             )
         elif method == "voronoi":
-            head, tail, weights = _relative_neighborhood(
+            head, tail, weights = _voronoi(
                 data, ids=ids, clip=clip, rook=rook
             )
         else:

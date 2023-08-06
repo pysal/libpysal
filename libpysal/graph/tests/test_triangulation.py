@@ -10,10 +10,10 @@ For completeness, we need to test a shuffled dataframe
 """
 import pandas, geopandas, geodatasets, pytest, shapely, numpy
 from libpysal.graph._triangulation import (
-    delaunay,
-    gabriel,
-    relative_neighborhood,
-    voronoi,
+    _delaunay,
+    _gabriel,
+    _relative_neighborhood,
+    _voronoi,
 )
 
 # ### TODO: is there any way to remove this duplication

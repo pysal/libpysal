@@ -15,7 +15,7 @@ try:
 except ModuleNotFoundError:
     from libpysal.common import jit as njit
 
-_VALID_GEOMETRY_TYPES = ("Point")
+_VALID_GEOMETRY_TYPES = ["Point"]
 
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
@@ -79,28 +79,24 @@ def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    # undefined: geoms, changing to coordinates (SR)
     coordinates, ids, _ = _validate_geometry_input(
         coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
 
-    dt = spatial.Delaunay(coordinates)
-    edges = _edges_from_simplices(dt.simplices)
-    edges = (
-        pandas.DataFrame(numpy.asarray(list(edges)))
-        .sort_values([0, 1])
-        .drop_duplicates()
-        .values
-    )
+    edges, _ = _voronoi_edges(coordinates)
 
     ids = numpy.asarray(ids)
     head, tail = ids[edges[:, 0]], ids[edges[:, 1]]
 
-    distances = ((coordinates[head] - coordinates[tail]) ** 2).sum(
-        axis=1
-    ).squeeze() ** 0.5
-    weights = _kernel_functions[kernel](distances, bandwidth)
-    # check for coincident points which result in
+    if bandwidth is numpy.inf and kernel == "boxcar":
+        weights = numpy.ones(head.shape, dtype=numpy.int8)
+    else:
+        distances = ((coordinates[edges[:, 0]] - coordinates[edges[:, 1]]) ** 2).sum(
+            axis=1
+        ).squeeze() ** 0.5
+        weights = _kernel_functions[kernel](distances, bandwidth)
+
+    # TODO: check for coincident points which result in
     # dropped points from the triangulation and the
     # misalignment of the weights and the attribute array
 
@@ -165,10 +161,18 @@ def _gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     ids = numpy.asarray(ids)
     head, tail = ids[output[:, 0]], ids[output[:, 1]]
 
-    distances = ((coordinates[head] - coordinates[tail]) ** 2).sum(
-        axis=1
-    ).squeeze() ** 0.5
-    weights = _kernel_functions[kernel](distances, bandwidth)
+    if bandwidth is numpy.inf and kernel == "boxcar":
+        weights = numpy.ones(head.shape, dtype=numpy.int8)
+    else:
+        distances = ((coordinates[output[:, 0]] - coordinates[output[:, 1]]) ** 2).sum(
+            axis=1
+        ).squeeze() ** 0.5
+        weights = _kernel_functions[kernel](distances, bandwidth)
+
+    # TODO: check for coincident points which result in
+    # dropped points from the triangulation and the
+    # misalignment of the weights and the attribute array
+
     return head, tail, weights
 
 
@@ -222,19 +226,19 @@ def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="b
     edges, dt = _voronoi_edges(coordinates)
     output, _ = _filter_relativehood(edges, dt.points, return_dkmax=False)
 
-    head, tail, distance = zip(*output)
+    head_ix, tail_ix, distance = zip(*output)
 
-    weight = _kernel_functions[kernel](numpy.array(distance), bandwidth)
+    head, tail = ids[numpy.asarray(head_ix)], ids[numpy.asarray(tail_ix)]
 
-    return head, tail, weight
+    if bandwidth is numpy.inf and kernel == "boxcar":
+        weights = numpy.ones(head.shape, dtype=numpy.int8)
+    else:
+        weights = _kernel_functions[kernel](numpy.array(distance), bandwidth)
+
+    return head, tail, weights
 
 
-def _voronoi(
-    coordinates,
-    ids=None,
-    clip="extent",
-    rook=True
-):
+def _voronoi(coordinates, ids=None, clip="extent", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -292,7 +296,6 @@ def _voronoi(
 
     cells, _ = voronoi_frames(coordinates, clip=clip)
     return _vertex_set_intersection(cells, rook=rook, ids=ids)
-
 
 
 #### utilities
@@ -412,10 +415,9 @@ def _voronoi_edges(coordinates):
     dt = spatial.Delaunay(coordinates)
     edges = _edges_from_simplices(dt.simplices)
     edges = (
-                    pandas.DataFrame(numpy.asarray(list(edges)))
-                    .sort_values([0, 1])
-                    .drop_duplicates()
-                    .values
-
+        pandas.DataFrame(numpy.asarray(list(edges)))
+        .sort_values([0, 1])
+        .drop_duplicates()
+        .values
     )
     return edges, dt
