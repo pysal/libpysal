@@ -251,7 +251,7 @@ class Graph(_Set_Mixin):
 
     @classmethod
     def build_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
-        """Generate Graph from geometry based on the contiguity
+        """Generate Graph from geometry based on contiguity
 
         TODO: specify the planarity constraint of the defitnion of queen and rook (e.g
         that there could not be an overlap).
@@ -315,7 +315,7 @@ class Graph(_Set_Mixin):
         metric="euclidean",
         p=2,
     ):
-        """_summary_
+        """Generate Graph from geometry data based on a kernel function
 
         Parameters
         ----------
@@ -373,7 +373,32 @@ class Graph(_Set_Mixin):
         return cls.from_sparse(sp, ids)
 
     @classmethod
-    def build_knn(cls, data, k, p=2, metric="euclidean"):
+    def build_knn(cls, data, k, metric="euclidean", p=2):
+        """Generate Graph from geometry data based on k-nearest neighbors search
+
+        Parameters
+        ----------
+        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries over which to compute a kernel. If a geopandas object with Point
+            geoemtry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geoemtry is used, then the coordinates are extracted and used.
+            If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
+            coordinates.
+        k : int
+            number of nearest neighbors.
+        metric : string or callable (default: 'euclidean')
+            distance function to apply over the input coordinates. Supported options
+            depend on whether or not scikit-learn is installed. If so, then any
+            distance function supported by scikit-learn is supported here. Otherwise,
+            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
+        p : int (default: 2)
+            parameter for minkowski metric, ignored if metric != "minkowski".
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph
+        """
         ids = _evaluate_index(data)
 
         sp, ids = _kernel(
@@ -398,7 +423,7 @@ class Graph(_Set_Mixin):
         clip="extent",
         rook=True,
     ):
-        """_summary_
+        """Generate Graph from geometry based on triangulation
 
         Parameters
         ----------
