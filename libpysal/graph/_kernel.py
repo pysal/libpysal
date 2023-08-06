@@ -151,8 +151,9 @@ def _kernel(
     else:
         smooth = _kernel_functions[kernel](D.data, bandwidth)
 
-    sp = sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype).tocoo()
-    return ids[sp.row], ids[sp.col], smooth
+    sp = sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
+
+    return sp, ids
 
 
 def _prepare_tree_query(coordinates, metric, p=2):

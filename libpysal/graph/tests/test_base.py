@@ -255,6 +255,49 @@ class TestBase:
         )
         assert G == expected
 
+        dense = np.array(
+            [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 1, 0],
+            ]
+        )
+        sp = sparse.csr_array(dense)
+        G = graph.Graph.from_sparse(
+            sp, ids=["staten_island", "queens", "brooklyn", "manhattan", "bronx"]
+        )
+        expected = graph.Graph.from_arrays(
+            [
+                "staten_island",
+                "staten_island",
+                "queens",
+                "queens",
+                "brooklyn",
+                "brooklyn",
+                "manhattan",
+                "manhattan",
+                "bronx",
+                "bronx",
+            ],
+            [
+                "brooklyn",
+                "manhattan",
+                "brooklyn",
+                "manhattan",
+                "queens",
+                "manhattan",
+                "queens",
+                "bronx",
+                "queens",
+                "manhattan",
+            ],
+            np.ones(10),
+        )
+        assert G == expected
+        np.testing.assert_array_equal(G.sparse.todense(), sp.todense())
+
     def test_from_arrays(self):
         focal_ids = np.arange(9)
         neighbor_ids = np.array([1, 2, 5, 4, 5, 8, 7, 8, 7])

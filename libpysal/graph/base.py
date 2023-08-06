@@ -168,15 +168,17 @@ class Graph(_Set_Mixin):
         sparse = sparse.tocoo(copy=False)
         if ids is not None:
             ids = np.asarray(ids)
-            f = sparse.row
-            n = sparse.col
-            focal_ids = ids[f]
-            neighbor_ids = ids[n]
+            sorter = sparse.row.argsort()
+            head = ids[sparse.row][sorter]
+            tail = ids[sparse.col][sorter]
+            data = sparse.data[sorter]
         else:
-            focal_ids = sparse.row
-            neighbor_ids = sparse.col
+            sorter = sparse.row.argsort()
+            head = sparse.row[sorter]
+            tail = sparse.col[sorter]
+            data = sparse.data[sorter]
 
-        return cls.from_arrays(focal_ids, neighbor_ids, weight=sparse.data)
+        return cls.from_arrays(head, tail, weight=data)
 
     @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight):
@@ -364,17 +366,17 @@ class Graph(_Set_Mixin):
         else:
             ids = pd.RangeIndex(0, len(data))
 
-        return cls.from_arrays(
-            *_kernel(
-                data,
-                bandwidth=bandwidth,
-                metric=metric,
-                kernel=kernel,
-                k=k,
-                p=p,
-                ids=ids,
-            )
+        sp, ids = _kernel(
+            data,
+            bandwidth=bandwidth,
+            metric=metric,
+            kernel=kernel,
+            k=k,
+            p=p,
+            ids=ids,
         )
+
+        return cls.from_sparse(sp, ids)
 
     @classmethod
     def build_knn(cls, data, k, p=2, metric="euclidean"):
@@ -383,17 +385,17 @@ class Graph(_Set_Mixin):
         else:
             ids = pd.RangeIndex(0, len(data))
 
-        return cls.from_arrays(
-            *_kernel(
-                data,
-                bandwidth=np.inf,
-                metric=metric,
-                kernel="boxcar",
-                k=k,
-                p=p,
-                ids=ids,
-            )
+        sp, ids = _kernel(
+            data,
+            bandwidth=np.inf,
+            metric=metric,
+            kernel="boxcar",
+            k=k,
+            p=p,
+            ids=ids,
         )
+
+        return cls.from_sparse(sp, ids)
 
     @classmethod
     def build_triangulation(
