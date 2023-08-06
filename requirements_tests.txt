@@ -3,3 +3,4 @@ matplotlib
 pytest
 pytest-cov
 pytest-xdist
+geodatasets
