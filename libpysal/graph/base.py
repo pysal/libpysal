@@ -148,18 +148,15 @@ class Graph(_Set_Mixin):
         return W(neighbors, weights)
 
     @classmethod
-    def from_sparse(cls, sparse, focal_ids=None, neighbor_ids=None):
+    def from_sparse(cls, sparse, ids=None):
         """Convert a ``scipy.sparse`` array to a PySAL ``Graph`` object.
 
         Parameters
         ----------
         sparse : scipy.sparse array
             sparse representation of a graph
-        focal_ids : list-like, default None
-            list-like of ids for focal geometries that is mappable to
-            positions from sparse. If None, the positions are used as labels.
-        neighbor_ids : list-like, default None
-            list-like of ids for neighbor geometries that is mappable to
+        ids : list-like, default None
+            list-like of ids for geometries that is mappable to
             positions from sparse. If None, the positions are used as labels.
 
         Returns
@@ -168,21 +165,15 @@ class Graph(_Set_Mixin):
             libpysal.graph.Graph
         """
         sparse = sparse.tocoo(copy=False)
-        if focal_ids is not None and neighbor_ids is not None:
-            focal_ids = np.asarray(focal_ids)
-            neighbor_ids = np.asarray(neighbor_ids)
+        if ids is not None:
+            ids = np.asarray(ids)
             f = sparse.row
             n = sparse.col
-            focal_ids = focal_ids[f]
-            neighbor_ids = neighbor_ids[n]
-        elif (focal_ids is None) and (neighbor_ids is None):
+            focal_ids = ids[f]
+            neighbor_ids = ids[n]
+        else:
             focal_ids = sparse.row
             neighbor_ids = sparse.col
-        else:
-            raise ValueError(
-                "Either both focal_ids and neighbor_ids are provided,"
-                " or neither may be provided."
-            )
 
         return cls.from_arrays(focal_ids, neighbor_ids, weight=sparse.data)
 
@@ -454,9 +445,7 @@ class Graph(_Set_Mixin):
                 data, ids=ids, bandwidth=bandwidth, kernel=kernel
             )
         elif method == "voronoi":
-            head, tail, weights = _voronoi(
-                data, ids=ids, clip=clip, rook=rook
-            )
+            head, tail, weights = _voronoi(data, ids=ids, clip=clip, rook=rook)
         else:
             raise ValueError(
                 f"Method '{method}' is not supported. Use one of ['delaunay', "
@@ -557,22 +546,27 @@ class Graph(_Set_Mixin):
     def sparse(self):
         """Return a scipy.sparse array (COO)
 
-        Also saves self.focal_label and self.neighbor_label capturing
-        the original index labels related to their integer representation.
-
         Returns
         -------
         scipy.sparse.COO
             sparse representation of the adjacency
         """
-        # factorize(sort=True) ensures the order is unchanged (weirdly enough)
-        focal_int, self.focal_label = self._adjacency.index.factorize(sort=True)
-        neighbor_int, self.neighbor_label = self._adjacency.neighbor.factorize(
-            sort=True
-        )
         return sparse.coo_array(
-            (self._adjacency.weight.values, (focal_int, neighbor_int))
+            (
+                self._adjacency.weight.values,
+                (
+                    self._adjacency.index.map(self.id2i),
+                    self._adjacency.neighbor.map(self.id2i),
+                ),
+            ),
+            shape=(self.n, self.n),
         )
+
+    @cached_property
+    def id2i(self):
+        ix = np.arange(self.unique_ids.shape[0])
+        return dict(zip(self.unique_ids, ix))
+        # TODO: test
 
     def transform(self, transformation):
         """Transformation of weights
@@ -698,9 +692,15 @@ class Graph(_Set_Mixin):
         return nulls[nulls.index == nulls.neighbor].index.unique()
 
     @cached_property
+    def unique_ids(self):
+        return np.unique(
+            np.concatenate([self._adjacency.index, self._adjacency.neighbor])
+        )
+
+    @cached_property
     def n(self):
         """Number of observations."""
-        return self._adjacency.index.nunique()
+        return self.unique_ids.shape[0]
 
     @cached_property
     def pct_nonzero(self):
@@ -744,13 +744,9 @@ class Graph(_Set_Mixin):
         """
         if intrinsic:
             wd = self.sparse.transpose() - self.sparse
-            focal_labels = self.focal_label
-            neighbor_labels = self.neighbor_label
         else:
             transformed = self.transform("b")
             wd = transformed.sparse.transpose() - transformed.sparse
-            focal_labels = transformed.focal_label
-            neighbor_labels = transformed.neighbor_label
 
         ids = np.nonzero(wd)
         if len(ids[0]) == 0:
@@ -760,8 +756,13 @@ class Graph(_Set_Mixin):
                 dtype=self._adjacency.neighbor.dtype,
             )
         else:
-            focal = focal_labels[ids[0]]
-            neighbor = neighbor_labels[ids[1]]
+            i2id = {v: k for k, v in self.id2i.items()}
+            focal, neighbor = np.nonzero(wd)
+            focal = focal.astype(self._adjacency.index.dtype)
+            neighbor = neighbor.astype(self._adjacency.neighbor.dtype)
+            for i in i2id:
+                focal[focal == i] = i2id[i]
+                neighbor[neighbor == i] = i2id[i]
             ijs = pd.Series(
                 neighbor, index=pd.Index(focal, name="focal"), name="neighbor"
             ).sort_index()

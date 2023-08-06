@@ -233,8 +233,7 @@ class TestBase:
 
         G_named = graph.Graph.from_sparse(
             sp,
-            focal_ids=ids,
-            neighbor_ids=ids,
+            ids=ids,
         )
 
         expected = graph.Graph.from_arrays(
@@ -244,24 +243,15 @@ class TestBase:
 
         G = graph.Graph.from_sparse(
             sp.tocsr(),
-            focal_ids=ids,
-            neighbor_ids=ids,
+            ids=ids,
         )
         assert G == expected
 
         G = graph.Graph.from_sparse(
             sp.tocsc(),
-            focal_ids=ids,
-            neighbor_ids=ids,
+            ids=ids,
         )
         assert G == expected
-
-        with pytest.raises(ValueError, match="Either both"):
-            graph.Graph.from_sparse(
-                sp,
-                focal_ids=["zero", "one", "two", "three"],
-                neighbor_ids=None,
-            )
 
     def test_from_arrays(self):
         focal_ids = np.arange(9)
@@ -469,8 +459,6 @@ class TestBase:
             )
 
     def test_sparse(self):
-        assert not hasattr(self.G_int, "focal_label")
-        assert not hasattr(self.G_int, "neighbor_label")
         sp = self.G_int.sparse
         expected = np.array(
             [
@@ -487,41 +475,25 @@ class TestBase:
             ]
         )
         np.testing.assert_array_equal(sp.todense(), expected)
-        pd.testing.assert_index_equal(
-            self.G_int.focal_label,
-            pd.Index([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype="int64"),
-        )
-        pd.testing.assert_index_equal(
-            self.G_int.neighbor_label,
-            pd.Index([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], dtype="int64"),
-        )
 
-        assert not hasattr(self.G_str, "focal_label")
-        assert not hasattr(self.G_str, "neighbor_label")
         sp = self.G_str.sparse
         np.testing.assert_array_equal(sp.todense(), expected)
-        pd.testing.assert_index_equal(
-            self.G_str.focal_label,
-            pd.Index(
-                ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"], dtype="object"
-            ),
-        )
-        pd.testing.assert_index_equal(
-            self.G_str.neighbor_label,
-            pd.Index(
-                ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"], dtype="object"
-            ),
-        )
+
+        sp_old = self.G_int.to_W().sparse.todense()
+        np.testing.assert_array_equal(sp.todense(), sp_old)
+
+        sp_old = self.G_str.to_W().sparse.todense()
+        np.testing.assert_array_equal(sp.todense(), sp_old)
 
     def test_sparse_roundtrip(self):
         G = graph.Graph(self.adjacency_int_binary)
         sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
+        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G.id2i.keys())))
         assert G == G_sp
 
         G = graph.Graph(self.adjacency_str_binary)
         sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, G.focal_label, G.neighbor_label)
+        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G.id2i.keys())))
         assert G == G_sp
 
     def test_cardinalities(self):
