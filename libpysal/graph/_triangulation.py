@@ -9,16 +9,19 @@ from ._kernel import _kernel_functions
 from ._utils import _validate_geometry_input
 from .base import Graph
 
+from libpysal.cg import voronoi_frames
+
 try:
     from numba import njit
 except ModuleNotFoundError:
     from libpysal.common import jit as njit
 
-_VALID_GEOMETRY_TYPES = ("Point",)
+_VALID_GEOMETRY_TYPES = ("Point")
 
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
 Martin Fleischmann (martin@martinfleischmann.net)
+Serge Rey (sjsrey@gmail.com)
 """
 
 
@@ -31,9 +34,12 @@ def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
 
     Parameters
     ----------
-    coordinates :   array of points, (N,2)
-        numpy array of coordinates containing locations to compute the
-        delaunay triangulation
+    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+        geometries containing locations to compute the delaunay triangulation.  If
+        a geopandas object with Point geoemtry is provided, the .geometry attribute
+        is used. If a numpy.ndarray with shapely geoemtry is used, then the
+        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
+        used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
         that are accessed via Graph.build_kernel() will set this automatically from
@@ -74,8 +80,9 @@ def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
+    # undefined: geoms, changing to coordinates (SR)
     coordinates, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
 
     dt = _Delaunay(coordinates)
@@ -94,6 +101,10 @@ def delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
         axis=1
     ).squeeze() ** 0.5
     weights = _kernel_functions[kernel](distances, bandwidth)
+    # check for coincident points which result in
+    # dropped points from the triangulation and the
+    # misalignment of the weights and the attribute array
+
     return Graph.from_arrays(head, tail, weights)
 
 
@@ -114,9 +125,12 @@ def gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
 
     Parameters
     ----------
-    coordinates :   array of points, (N,2)
-        numpy array of coordinates containing locations to compute the
-        delaunay triangulation
+    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+        geometries containing locations to compute the delaunay triangulation.  If
+        a geopandas object with Point geoemtry is provided, the .geometry attribute
+        is used. If a numpy.ndarray with shapely geoemtry is used, then the
+        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
+        used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
         that are accessed via Graph.build_kernel() will set this automatically from
@@ -140,10 +154,10 @@ def gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " these computations may become unduly slow on large data."
         )
     coordinates, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
 
-    edges, dt = self._voronoi_edges(coordinates)
+    edges, dt = _voronoi_edges(coordinates)
     droplist = _filter_gabriel(
         edges,
         dt.points,
@@ -174,9 +188,12 @@ def relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="bo
 
     Parameters
     ----------
-    coordinates :   array of points, (N,2)
-        numpy array of coordinates containing locations to compute the
-        delaunay triangulation
+    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+        geometries containing locations to compute the delaunay triangulation.  If
+        a geopandas object with Point geoemtry is provided, the .geometry attribute
+        is used. If a numpy.ndarray with shapely geoemtry is used, then the
+        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
+        used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
         that are accessed via Graph.build_kernel() will set this automatically from
@@ -200,14 +217,15 @@ def relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="bo
             " these computations may become unduly slow on large data."
         )
     coordinates, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
 
-    edges, dt = self._voronoi_edges(coordinates)
+    edges, dt = _voronoi_edges(coordinates)
     output, dkmax = _filter_relativehood(edges, dt.points, return_dkmax=False)
 
     head, tail, distance = zip(*output)
-    weight = _kernel_functions[kernel](distance, bandwidth)
+
+    weight = _kernel_functions[kernel](numpy.array(distance), bandwidth)
     return Graph.from_arrays(head, tail, weight)
 
 
@@ -215,9 +233,7 @@ def voronoi(
     coordinates,
     ids=None,
     clip="extent",
-    contiguity_type="v",
-    bandwidth=numpy.inf,
-    kernel="boxcar",
+    contiguity_type="v"
 ):
     """
     Compute contiguity weights according to a clipped
@@ -225,9 +241,12 @@ def voronoi(
 
     Parameters
     ---------
-    coordinates :   array of points, (N,2)
-        numpy array of coordinates containing locations to compute the
-        delaunay triangulation
+    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+        geometries containing locations to compute the delaunay triangulation.  If
+        a geopandas object with Point geoemtry is provided, the .geometry attribute
+        is used. If a numpy.ndarray with shapely geoemtry is used, then the
+        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
+        used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
         that are accessed via Graph.build_kernel() will set this automatically from
@@ -249,12 +268,6 @@ def voronoi(
         1. "v" (Default): use vertex_set_contiguity()
         2. "r": use rook() contiguity
         3. "q": use queen() contiguity (not recommended)
-    bandwidth : float (default: None)
-        distance to use in the kernel computation. Should be on the same scale as
-        the input coordinates.
-    kernel : string or callable
-        kernel function to use in order to weight the output graph. See the kernel()
-        function for more details.
 
     Notes
     -----
@@ -269,27 +282,25 @@ def voronoi(
     generally will remove "long" links in the delaunay graph.
     """
     coordinates, ids, geoms = _validate_geometry_input(
-        geoms, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
 
     cells, generators = voronoi_frames(coordinates, clip=clip)
-    if contiguity_type == "vertex":
+    if contiguity_type == "v":
         w = _vertex_set_intersection(cells, ids=ids)
-    elif contiguity_type == "queen":
+    elif contiguity_type == "q":
         w = _queen(cells, ids=ids)
-    elif contiguity_type == "rook":
+    elif contiguity_type == "r":
         w = _rook(cells, ids=ids)
     else:
         raise ValueError(
             f"Contiguity type {contiguity_type} not understood. Supported options "
-            "are 'vertex', 'queen', and 'rook'"
+            "are 'v', 'q', and 'r'"
         )
 
-    head = w._adjacency.index
-    tail = w._adjacency.neighbor.values
-
-    head, tail, distance = zip(*output)
-    weight = _kernel_functions[kernel](distance, bandwidth)
+    head = w[0]
+    tail = w[1]
+    weight = w[2]
     return Graph.from_arrays(head, tail, weight)
 
 
@@ -305,6 +316,8 @@ def _edges_from_simplices(simplices):
     that are then converted into the six non-directed edges for
     each simplex.
     """
+    dupes = {}
+
     edges = []
     for simplex in simplices:
         edges.append((simplex[0], simplex[1]))
@@ -313,6 +326,7 @@ def _edges_from_simplices(simplices):
         edges.append((simplex[2], simplex[1]))
         edges.append((simplex[2], simplex[0]))
         edges.append((simplex[0], simplex[2]))
+
     return numpy.asarray(edges)
 
 
@@ -403,3 +417,16 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
             r.append(dkmax)
 
     return out, r
+
+
+def _voronoi_edges(coordinates):
+    dt = _Delaunay(coordinates)
+    edges = _edges_from_simplices(dt.simplices)
+    edges = (
+                    pandas.DataFrame(numpy.asarray(list(edges)))
+                    .sort_values([0, 1])
+                    .drop_duplicates()
+                    .values
+
+    )
+    return edges, dt
