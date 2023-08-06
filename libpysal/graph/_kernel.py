@@ -53,7 +53,7 @@ _kernel_functions = {
 }
 
 
-def kernel(
+def _kernel(
     coordinates,
     bandwidth=None,
     metric="euclidean",
@@ -107,7 +107,7 @@ def kernel(
 
     """
     coordinates, ids, geoms = _validate_geometry_input(
-        coordinates, ids=ids, valid_geom_types=_VALID_GEOMETRY_TYPES
+        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
     if metric == "precomputed":
         assert (
@@ -150,32 +150,9 @@ def kernel(
         smooth = kernel(D.data, bandwidth)
     else:
         smooth = _kernel_functions[kernel](D.data, bandwidth)
-    return sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
 
-
-def knn(
-    coordinates,
-    metric="euclidean",
-    k=2,
-    ids=None,
-    p=2,
-    function="boxcar",
-    bandwidth=numpy.inf,
-):
-    """
-    Compute a K-nearest neighbor weight. Uses kernel() with a kernel="boxcar"
-    and bandwidth=numpy.inf by default. Consult kernel() for further argument
-    specifications.
-    """
-    return kernel(
-        coordinates,
-        metric=metric,
-        k=k,
-        ids=ids,
-        p=p,
-        function=function,
-        bandwidth=bandwidth,
-    )
+    sp = sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype).tocoo()
+    return ids[sp.row], ids[sp.col], smooth
 
 
 def _prepare_tree_query(coordinates, metric, p=2):

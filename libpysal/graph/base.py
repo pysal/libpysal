@@ -7,6 +7,7 @@ from scipy import sparse
 
 from libpysal.weights import W
 from ._contiguity import _queen, _rook, _vertex_set_intersection
+from ._kernel import _kernel
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
 from ._utils import _neighbor_dict_to_edges
@@ -309,10 +310,10 @@ class Graph(_Set_Mixin):
     def build_kernel(
         cls,
         data,
-        bandwidth=None,
-        metric="euclidean",
         kernel="gaussian",
         k=None,
+        bandwidth=None,
+        metric="euclidean",
         p=2,
     ):
         """_summary_
@@ -326,14 +327,6 @@ class Graph(_Set_Mixin):
             If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
             coordinates. If metric="precomputed", data is assumed to contain a
             precomputed distance metric.
-        bandwidth : float (default: None)
-            distance to use in the kernel computation. Should be on the same scale as
-            the input coordinates.
-        metric : string or callable (default: 'euclidean')
-            distance function to apply over the input coordinates. Supported options
-            depend on whether or not scikit-learn is installed. If so, then any
-            distance function supported by scikit-learn is supported here. Otherwise,
-            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         kernel : string or callable (default: 'gaussian')
             kernel function to apply over the distance matrix computed by `metric`.
             The following kernels are supported:
@@ -350,13 +343,14 @@ class Graph(_Set_Mixin):
         k : int (default: None)
             number of nearest neighbors used to truncate the kernel. This is assumed
             to be constant across samples. If None, no truncation is conduted.
-        ids : numpy.narray (default: None)
-            ids to use for each sample in coordinates. Generally, construction functions
-            that are accessed via Graph.build_kernel() will set this automatically from
-            the index of the input. Do not use this argument directly unless you intend
-            to set the indices separately from your input data. Otherwise, use
-            data.set_index(ids) to ensure ordering is respected. If None, then the index
-            from the input coordinates will be used.
+        bandwidth : float (default: None)
+            distance to use in the kernel computation. Should be on the same scale as
+            the input coordinates.
+        metric : string or callable (default: 'euclidean')
+            distance function to apply over the input coordinates. Supported options
+            depend on whether or not scikit-learn is installed. If so, then any
+            distance function supported by scikit-learn is supported here. Otherwise,
+            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         p : int (default: 2)
             parameter for minkowski metric, ignored if metric != "minkowski".
 
@@ -365,7 +359,41 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph
         """
-        return NotImplementedError
+        if hasattr(data, "index"):
+            ids = data.index
+        else:
+            ids = pd.RangeIndex(0, len(data))
+
+        return cls.from_arrays(
+            *_kernel(
+                data,
+                bandwidth=bandwidth,
+                metric=metric,
+                kernel=kernel,
+                k=k,
+                p=p,
+                ids=ids,
+            )
+        )
+
+    @classmethod
+    def build_knn(cls, data, k, p=2, metric="euclidean"):
+        if hasattr(data, "index"):
+            ids = data.index
+        else:
+            ids = pd.RangeIndex(0, len(data))
+
+        return cls.from_arrays(
+            *_kernel(
+                data,
+                bandwidth=np.inf,
+                metric=metric,
+                kernel="boxcar",
+                k=k,
+                p=p,
+                ids=ids,
+            )
+        )
 
     @classmethod
     def build_triangulation(
@@ -452,7 +480,7 @@ class Graph(_Set_Mixin):
                 "'gabriel', 'relative_neighborhood', 'voronoi']."
             )
 
-        return Graph.from_arrays(head, tail, weights)
+        return cls.from_arrays(head, tail, weights)
 
     @cached_property
     def neighbors(self):
