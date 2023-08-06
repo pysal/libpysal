@@ -276,7 +276,7 @@ def _voronoi(coordinates, ids=None, clip="extent", rook=True):
     rook : bool, optional
         Contiguity method. If True, two geometries are considered neighbours if they
         share at least one edge. If False, two geometries are considered neighbours
-        if they share at least one vertex. By default True
+        if they share at least one vertex. By default True.
 
     Notes
     -----

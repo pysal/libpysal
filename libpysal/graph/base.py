@@ -10,7 +10,7 @@ from ._contiguity import _queen, _rook, _vertex_set_intersection
 from ._kernel import _kernel
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
-from ._utils import _neighbor_dict_to_edges
+from ._utils import _neighbor_dict_to_edges, _evaluate_index
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
@@ -282,10 +282,7 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph
         """
-        if hasattr(geometry, "index"):
-            ids = geometry.index
-        else:
-            ids = pd.RangeIndex(0, len(geometry))
+        ids = _evaluate_index(geometry)
 
         if hasattr(geometry, "geometry"):
             # potentially cast GeoDataFrame to GeoSeries
@@ -361,10 +358,7 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph
         """
-        if hasattr(data, "index"):
-            ids = data.index
-        else:
-            ids = pd.RangeIndex(0, len(data))
+        ids = _evaluate_index(data)
 
         sp, ids = _kernel(
             data,
@@ -380,10 +374,7 @@ class Graph(_Set_Mixin):
 
     @classmethod
     def build_knn(cls, data, k, p=2, metric="euclidean"):
-        if hasattr(data, "index"):
-            ids = data.index
-        else:
-            ids = pd.RangeIndex(0, len(data))
+        ids = _evaluate_index(data)
 
         sp, ids = _kernel(
             data,
@@ -457,10 +448,7 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph
         """
-        if hasattr(data, "index"):
-            ids = data.index
-        else:
-            ids = pd.RangeIndex(0, len(data))
+        ids = _evaluate_index(data)
 
         if method == "delaunay":
             head, tail, weights = _delaunay(

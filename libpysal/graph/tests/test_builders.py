@@ -103,6 +103,12 @@ class TestTriangulation:
         assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)
         assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
 
+    def test_invalid_method(self):
+        with pytest.raises(ValueError, match="Method 'invalid' is not supported"):
+            graph.Graph.build_triangulation(
+                self.gdf, method="invalid", kernel="parabolic", bandwidth=7500
+            )
+
 
 class TestKernel:
     def setup_method(self):
