@@ -7,6 +7,7 @@ from scipy import sparse
 
 from libpysal.weights import W
 from ._contiguity import _queen, _rook, _vertex_set_intersection
+from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
 from ._utils import _neighbor_dict_to_edges
 
@@ -383,7 +384,7 @@ class Graph(_Set_Mixin):
         bandwidth=np.inf,
         kernel="boxcar",
         clip="extent",
-        contiguity_type="rook",
+        rook=True,
     ):
         """_summary_
 
@@ -398,19 +399,18 @@ class Graph(_Set_Mixin):
             coordinates.
         method : str, (default "delaunay")
             method of extracting the weights from triangulation. Supports:
-                - delaunay
-                - gabriel
-                - relative_neighborhood
-                - voronoi
+                - "delaunay"
+                - "gabriel"
+                - "relative_neighborhood"
+                - "voronoi"
         bandwidth : _type_, optional
             distance to use in the kernel computation. Should be on the same scale as
             the input coordinates, by default numpy.inf
         kernel : str, optional
             kernel function to use in order to weight the output graph. See
             :meth:`Graph.build_kernel` for details. By default "boxcar"
-        clip :str (default: 'bbox')
-            An overloaded option about how to clip the voronoi cells passed to
-            cg.voronoi_frames() when method="voronoi. Ignored otherwise.
+        clip : str (default: 'bbox')
+            Clipping method when ``method="voronoi"``. Ignored otherwise.
             Default is ``'extent'``. Options are as follows.
 
             * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be
@@ -425,17 +425,45 @@ class Graph(_Set_Mixin):
                 that contains all points (e.g. the smallest alphashape, using
                 ``libpysal.cg.alpha_shape_auto``).
             * Polygon -- Clip to an arbitrary Polygon.
-        contiguity_type : str, optional
-            What kind of contiguity to apply to the voronoi diagram when
-            method="voronoi. Ignored otherwise. Supports "rook" and "queen",
-            by default "rook".
+        rook : bool, optional
+            Contiguity method when ``method="voronoi"``. Ignored otherwise.
+            If True, two geometries are considered neighbours if they
+            share at least one edge. If False, two geometries are considered neighbours
+            if they share at least one vertex. By default True
 
         Returns
         -------
         Graph
             libpysal.graph.Graph
         """
-        return NotImplementedError
+        if hasattr(data, "index"):
+            ids = data.index
+        else:
+            ids = pd.RangeIndex(0, len(data))
+
+        if method == "delaunay":
+            head, tail, weights = _delaunay(
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+            )
+        elif method == "gabriel":
+            head, tail, weights = _gabriel(
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+            )
+        elif method == "relative_neighborhood":
+            head, tail, weights = _relative_neighborhood(
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+            )
+        elif method == "voronoi":
+            head, tail, weights = _relative_neighborhood(
+                data, ids=ids, clip=clip, rook=rook
+            )
+        else:
+            raise ValueError(
+                f"Method '{method}' is not supported. Use one of ['delaunay', "
+                "'gabriel', 'relative_neighborhood', 'voronoi']."
+            )
+
+        return Graph.from_arrays(head, tail, weights)
 
     @cached_property
     def neighbors(self):
