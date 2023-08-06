@@ -1,6 +1,8 @@
 import string
 
 import pandas as pd
+import geopandas as gpd
+import geodatasets
 import numpy as np
 import pytest
 from scipy import sparse
@@ -484,6 +486,21 @@ class TestBase:
 
         sp_old = self.G_str.to_W().sparse.todense()
         np.testing.assert_array_equal(sp.todense(), sp_old)
+
+        # check proper sorting
+        nybb = graph.Graph.build_contiguity(
+            gpd.read_file(geodatasets.get_path("nybb")).set_index("BoroName")
+        )
+        nybb_expected = np.array(
+            [
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 1, 0, 1, 0],
+                [0, 1, 1, 0, 1],
+                [0, 1, 0, 1, 0],
+            ]
+        )
+        np.testing.assert_array_equal(nybb.sparse.todense(), nybb_expected)
 
     def test_sparse_roundtrip(self):
         G = graph.Graph(self.adjacency_int_binary)

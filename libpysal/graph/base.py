@@ -693,9 +693,9 @@ class Graph(_Set_Mixin):
 
     @cached_property
     def unique_ids(self):
-        return np.unique(
-            np.concatenate([self._adjacency.index, self._adjacency.neighbor])
-        )
+        return pd.concat(
+            [self._adjacency.index.to_series(), self._adjacency.neighbor]
+        ).unique()
 
     @cached_property
     def n(self):
