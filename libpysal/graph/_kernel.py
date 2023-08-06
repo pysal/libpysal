@@ -3,7 +3,7 @@ from scipy import sparse, optimize, spatial, stats
 
 from ._utils import _validate_geometry_input
 
-_VALID_GEOMETRY_TYPES = ("Point",)
+_VALID_GEOMETRY_TYPES = ["Point"]
 
 
 def _triangular(distances, bandwidth):
@@ -152,6 +152,7 @@ def _kernel(
         smooth = _kernel_functions[kernel](D.data, bandwidth)
 
     sp = sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
+    sp.eliminate_zeros()
 
     return sp, ids
 
