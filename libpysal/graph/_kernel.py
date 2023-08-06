@@ -1,5 +1,5 @@
 import numpy
-import scipy
+from scipy import sparse, optimize, spatial, stats
 
 from ._utils import _validate_geometry_input
 
@@ -130,7 +130,7 @@ def kernel(
             D_linear_flat = D_linear.flatten()
             if metric == "haversine":
                 D_linear_flat * 6371  # express haversine distances in kilometers
-            D = scipy.sparse.csc_array(
+            D = sparse.csc_array(
                 (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
                 shape=(n_samples, n_samples),
             )
@@ -138,10 +138,10 @@ def kernel(
             D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
         if metric != "precomputed":
-            D = scipy.spatial.distance.pdist(coordinates, metric=metric)
-            D = scipy.sparse.csc_array(scipy.spatial.distance.squareform(D))
+            D = spatial.distance.pdist(coordinates, metric=metric)
+            D = sparse.csc_array(spatial.distance.squareform(D))
         else:
-            D = scipy.sparse.csc_array(coordinates)
+            D = sparse.csc_array(coordinates)
     if bandwidth is None:
         bandwidth = numpy.percentile(D.data, 25)
     elif bandwidth == "opt":
@@ -150,7 +150,7 @@ def kernel(
         smooth = kernel(D.data, bandwidth)
     else:
         smooth = _kernel_functions[kernel](D.data, bandwidth)
-    return scipy.sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
+    return sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
 
 
 def knn(
@@ -223,7 +223,9 @@ def _optimize_bandwidth(D, kernel):
     def _loss(bandwidth, D=D, kernel_function=kernel_function):
         Ku = kernel_function(D.data, bandwidth)
         bins, _ = numpy.histogram(Ku, bins=int(D.shape[0] ** 0.5), range=(0, 1))
-        return -scipy.stats.entropy(bins / bins.sum())
+        return -stats.entropy(bins / bins.sum())
 
-    xopt = minimize_scalar(_loss, bounds=(0, D.data.max() * 2), method="bounded")
+    xopt = optimize.minimize_scalar(
+        _loss, bounds=(0, D.data.max() * 2), method="bounded"
+    )
     return xopt.x
