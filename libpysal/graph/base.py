@@ -7,8 +7,10 @@ from scipy import sparse
 
 from libpysal.weights import W
 from ._contiguity import _queen, _rook, _vertex_set_intersection
+from ._kernel import _kernel
+from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
-from ._utils import _neighbor_dict_to_edges
+from ._utils import _neighbor_dict_to_edges, _evaluate_index
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
@@ -147,18 +149,15 @@ class Graph(_Set_Mixin):
         return W(neighbors, weights)
 
     @classmethod
-    def from_sparse(cls, sparse, focal_ids=None, neighbor_ids=None):
+    def from_sparse(cls, sparse, ids=None):
         """Convert a ``scipy.sparse`` array to a PySAL ``Graph`` object.
 
         Parameters
         ----------
         sparse : scipy.sparse array
             sparse representation of a graph
-        focal_ids : list-like, default None
-            list-like of ids for focal geometries that is mappable to
-            positions from sparse. If None, the positions are used as labels.
-        neighbor_ids : list-like, default None
-            list-like of ids for neighbor geometries that is mappable to
+        ids : list-like, default None
+            list-like of ids for geometries that is mappable to
             positions from sparse. If None, the positions are used as labels.
 
         Returns
@@ -167,23 +166,19 @@ class Graph(_Set_Mixin):
             libpysal.graph.Graph
         """
         sparse = sparse.tocoo(copy=False)
-        if focal_ids is not None and neighbor_ids is not None:
-            focal_ids = np.asarray(focal_ids)
-            neighbor_ids = np.asarray(neighbor_ids)
-            f = sparse.row
-            n = sparse.col
-            focal_ids = focal_ids[f]
-            neighbor_ids = neighbor_ids[n]
-        elif (focal_ids is None) and (neighbor_ids is None):
-            focal_ids = sparse.row
-            neighbor_ids = sparse.col
+        if ids is not None:
+            ids = np.asarray(ids)
+            sorter = sparse.row.argsort()
+            head = ids[sparse.row][sorter]
+            tail = ids[sparse.col][sorter]
+            data = sparse.data[sorter]
         else:
-            raise ValueError(
-                "Either both focal_ids and neighbor_ids are provided,"
-                " or neither may be provided."
-            )
+            sorter = sparse.row.argsort()
+            head = sparse.row[sorter]
+            tail = sparse.col[sorter]
+            data = sparse.data[sorter]
 
-        return cls.from_arrays(focal_ids, neighbor_ids, weight=sparse.data)
+        return cls.from_arrays(head, tail, weight=data)
 
     @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight):
@@ -256,7 +251,7 @@ class Graph(_Set_Mixin):
 
     @classmethod
     def build_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
-        """Generate Graph from geometry based on the contiguity
+        """Generate Graph from geometry based on contiguity
 
         TODO: specify the planarity constraint of the defitnion of queen and rook (e.g
         that there could not be an overlap).
@@ -287,10 +282,7 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph
         """
-        if hasattr(geometry, "index"):
-            ids = geometry.index
-        else:
-            ids = pd.RangeIndex(0, len(geometry))
+        ids = _evaluate_index(geometry)
 
         if hasattr(geometry, "geometry"):
             # potentially cast GeoDataFrame to GeoSeries
@@ -317,13 +309,13 @@ class Graph(_Set_Mixin):
     def build_kernel(
         cls,
         data,
-        bandwidth=None,
-        metric="euclidean",
         kernel="gaussian",
         k=None,
+        bandwidth=None,
+        metric="euclidean",
         p=2,
     ):
-        """_summary_
+        """Generate Graph from geometry data based on a kernel function
 
         Parameters
         ----------
@@ -334,14 +326,6 @@ class Graph(_Set_Mixin):
             If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
             coordinates. If metric="precomputed", data is assumed to contain a
             precomputed distance metric.
-        bandwidth : float (default: None)
-            distance to use in the kernel computation. Should be on the same scale as
-            the input coordinates.
-        metric : string or callable (default: 'euclidean')
-            distance function to apply over the input coordinates. Supported options
-            depend on whether or not scikit-learn is installed. If so, then any
-            distance function supported by scikit-learn is supported here. Otherwise,
-            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         kernel : string or callable (default: 'gaussian')
             kernel function to apply over the distance matrix computed by `metric`.
             The following kernels are supported:
@@ -358,13 +342,14 @@ class Graph(_Set_Mixin):
         k : int (default: None)
             number of nearest neighbors used to truncate the kernel. This is assumed
             to be constant across samples. If None, no truncation is conduted.
-        ids : numpy.narray (default: None)
-            ids to use for each sample in coordinates. Generally, construction functions
-            that are accessed via Graph.build_kernel() will set this automatically from
-            the index of the input. Do not use this argument directly unless you intend
-            to set the indices separately from your input data. Otherwise, use
-            data.set_index(ids) to ensure ordering is respected. If None, then the index
-            from the input coordinates will be used.
+        bandwidth : float (default: None)
+            distance to use in the kernel computation. Should be on the same scale as
+            the input coordinates.
+        metric : string or callable (default: 'euclidean')
+            distance function to apply over the input coordinates. Supported options
+            depend on whether or not scikit-learn is installed. If so, then any
+            distance function supported by scikit-learn is supported here. Otherwise,
+            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         p : int (default: 2)
             parameter for minkowski metric, ignored if metric != "minkowski".
 
@@ -373,7 +358,60 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph
         """
-        return NotImplementedError
+        ids = _evaluate_index(data)
+
+        sp, ids = _kernel(
+            data,
+            bandwidth=bandwidth,
+            metric=metric,
+            kernel=kernel,
+            k=k,
+            p=p,
+            ids=ids,
+        )
+
+        return cls.from_sparse(sp, ids)
+
+    @classmethod
+    def build_knn(cls, data, k, metric="euclidean", p=2):
+        """Generate Graph from geometry data based on k-nearest neighbors search
+
+        Parameters
+        ----------
+        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries over which to compute a kernel. If a geopandas object with Point
+            geoemtry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geoemtry is used, then the coordinates are extracted and used.
+            If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
+            coordinates.
+        k : int
+            number of nearest neighbors.
+        metric : string or callable (default: 'euclidean')
+            distance function to apply over the input coordinates. Supported options
+            depend on whether or not scikit-learn is installed. If so, then any
+            distance function supported by scikit-learn is supported here. Otherwise,
+            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
+        p : int (default: 2)
+            parameter for minkowski metric, ignored if metric != "minkowski".
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph
+        """
+        ids = _evaluate_index(data)
+
+        sp, ids = _kernel(
+            data,
+            bandwidth=np.inf,
+            metric=metric,
+            kernel="boxcar",
+            k=k,
+            p=p,
+            ids=ids,
+        )
+
+        return cls.from_sparse(sp, ids)
 
     @classmethod
     def build_triangulation(
@@ -383,9 +421,9 @@ class Graph(_Set_Mixin):
         bandwidth=np.inf,
         kernel="boxcar",
         clip="extent",
-        contiguity_type="rook",
+        rook=True,
     ):
-        """_summary_
+        """Generate Graph from geometry based on triangulation
 
         Parameters
         ----------
@@ -398,19 +436,18 @@ class Graph(_Set_Mixin):
             coordinates.
         method : str, (default "delaunay")
             method of extracting the weights from triangulation. Supports:
-                - delaunay
-                - gabriel
-                - relative_neighborhood
-                - voronoi
+                - "delaunay"
+                - "gabriel"
+                - "relative_neighborhood"
+                - "voronoi"
         bandwidth : _type_, optional
             distance to use in the kernel computation. Should be on the same scale as
             the input coordinates, by default numpy.inf
         kernel : str, optional
             kernel function to use in order to weight the output graph. See
             :meth:`Graph.build_kernel` for details. By default "boxcar"
-        clip :str (default: 'bbox')
-            An overloaded option about how to clip the voronoi cells passed to
-            cg.voronoi_frames() when method="voronoi. Ignored otherwise.
+        clip : str (default: 'bbox')
+            Clipping method when ``method="voronoi"``. Ignored otherwise.
             Default is ``'extent'``. Options are as follows.
 
             * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be
@@ -425,17 +462,40 @@ class Graph(_Set_Mixin):
                 that contains all points (e.g. the smallest alphashape, using
                 ``libpysal.cg.alpha_shape_auto``).
             * Polygon -- Clip to an arbitrary Polygon.
-        contiguity_type : str, optional
-            What kind of contiguity to apply to the voronoi diagram when
-            method="voronoi. Ignored otherwise. Supports "rook" and "queen",
-            by default "rook".
+        rook : bool, optional
+            Contiguity method when ``method="voronoi"``. Ignored otherwise.
+            If True, two geometries are considered neighbours if they
+            share at least one edge. If False, two geometries are considered neighbours
+            if they share at least one vertex. By default True
 
         Returns
         -------
         Graph
             libpysal.graph.Graph
         """
-        return NotImplementedError
+        ids = _evaluate_index(data)
+
+        if method == "delaunay":
+            head, tail, weights = _delaunay(
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+            )
+        elif method == "gabriel":
+            head, tail, weights = _gabriel(
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+            )
+        elif method == "relative_neighborhood":
+            head, tail, weights = _relative_neighborhood(
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+            )
+        elif method == "voronoi":
+            head, tail, weights = _voronoi(data, ids=ids, clip=clip, rook=rook)
+        else:
+            raise ValueError(
+                f"Method '{method}' is not supported. Use one of ['delaunay', "
+                "'gabriel', 'relative_neighborhood', 'voronoi']."
+            )
+
+        return cls.from_arrays(head, tail, weights)
 
     @cached_property
     def neighbors(self):
@@ -529,22 +589,27 @@ class Graph(_Set_Mixin):
     def sparse(self):
         """Return a scipy.sparse array (COO)
 
-        Also saves self.focal_label and self.neighbor_label capturing
-        the original index labels related to their integer representation.
-
         Returns
         -------
         scipy.sparse.COO
             sparse representation of the adjacency
         """
-        # factorize(sort=True) ensures the order is unchanged (weirdly enough)
-        focal_int, self.focal_label = self._adjacency.index.factorize(sort=True)
-        neighbor_int, self.neighbor_label = self._adjacency.neighbor.factorize(
-            sort=True
-        )
         return sparse.coo_array(
-            (self._adjacency.weight.values, (focal_int, neighbor_int))
+            (
+                self._adjacency.weight.values,
+                (
+                    self._adjacency.index.map(self.id2i),
+                    self._adjacency.neighbor.map(self.id2i),
+                ),
+            ),
+            shape=(self.n, self.n),
         )
+
+    @cached_property
+    def id2i(self):
+        ix = np.arange(self.unique_ids.shape[0])
+        return dict(zip(self.unique_ids, ix))
+        # TODO: test
 
     def transform(self, transformation):
         """Transformation of weights
@@ -670,9 +735,15 @@ class Graph(_Set_Mixin):
         return nulls[nulls.index == nulls.neighbor].index.unique()
 
     @cached_property
+    def unique_ids(self):
+        return pd.concat(
+            [self._adjacency.index.to_series(), self._adjacency.neighbor]
+        ).unique()
+
+    @cached_property
     def n(self):
         """Number of observations."""
-        return self._adjacency.index.nunique()
+        return self.unique_ids.shape[0]
 
     @cached_property
     def pct_nonzero(self):
@@ -716,13 +787,9 @@ class Graph(_Set_Mixin):
         """
         if intrinsic:
             wd = self.sparse.transpose() - self.sparse
-            focal_labels = self.focal_label
-            neighbor_labels = self.neighbor_label
         else:
             transformed = self.transform("b")
             wd = transformed.sparse.transpose() - transformed.sparse
-            focal_labels = transformed.focal_label
-            neighbor_labels = transformed.neighbor_label
 
         ids = np.nonzero(wd)
         if len(ids[0]) == 0:
@@ -732,8 +799,13 @@ class Graph(_Set_Mixin):
                 dtype=self._adjacency.neighbor.dtype,
             )
         else:
-            focal = focal_labels[ids[0]]
-            neighbor = neighbor_labels[ids[1]]
+            i2id = {v: k for k, v in self.id2i.items()}
+            focal, neighbor = np.nonzero(wd)
+            focal = focal.astype(self._adjacency.index.dtype)
+            neighbor = neighbor.astype(self._adjacency.neighbor.dtype)
+            for i in i2id:
+                focal[focal == i] = i2id[i]
+                neighbor[neighbor == i] = i2id[i]
             ijs = pd.Series(
                 neighbor, index=pd.Index(focal, name="focal"), name="neighbor"
             ).sort_index()

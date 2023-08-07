@@ -5,7 +5,7 @@ import shapely
 
 from ._utils import _neighbor_dict_to_edges, _validate_geometry_input
 
-_VALID_GEOMETRY_TYPES = ("Polygon", "MultiPolygon", "LineString", "MultiLineString")
+_VALID_GEOMETRY_TYPES = ["Polygon", "MultiPolygon", "LineString", "MultiLineString"]
 
 
 def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):

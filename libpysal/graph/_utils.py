@@ -169,3 +169,11 @@ def lat2Graph(nrows=5, ncols=5, rook=True, id_type="int"):
         weights = alt_weights
 
     return Graph.from_dicts(weights)
+
+
+def _evaluate_index(data):
+    """Helper to get ids from any input."""
+    return (
+        data.index if hasattr(data, "index")
+        else pd.RangeIndex(0, len(data))
+    )
