@@ -7,11 +7,10 @@ from scipy import sparse
 
 from libpysal.weights import W
 from ._contiguity import _queen, _rook, _vertex_set_intersection
-from ._distance import _distance_band
-from ._kernel import _kernel
+from ._kernel import _kernel, _distance_band
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
-from ._utils import _neighbor_dict_to_edges, _evaluate_index
+from ._utils import _neighbor_dict_to_edges, _evaluate_index, _validate_geometry_input
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
@@ -500,7 +499,9 @@ class Graph(_Set_Mixin):
         return cls.from_arrays(head, tail, weights)
 
     @classmethod
-    def build_distance_band(cls, data, threshold, binary=True, alpha=-1.0):
+    def build_distance_band(
+        cls, data, threshold, binary=True, alpha=-1.0, kernel=None, bandwidth=None
+    ):
         """Generate Graph from geometry based on a distance band
 
         Parameters
@@ -520,8 +521,13 @@ class Graph(_Set_Mixin):
         alpha : float, optional
             distance decay parameter for weight (default -1.0)
             if alpha is positive the weights will not decline with
-            distance. If binary is True, alpha is ignored
-        ids : array-like, optional
+            distance. Ignored if ``binary=True`` or ``kernel`` is not None.
+        kernel : str, optional
+            kernel function to use in order to weight the output graph. See
+            :meth:`Graph.build_kernel` for details. Ignored if ``binary=True``.
+        bandwidth : float (default: None)
+            distance to use in the kernel computation. Should be on the same scale as
+            the input coordinates. Ignored if ``binary=True`` or ``kernel=None``.
 
         Returns
         -------
@@ -530,15 +536,48 @@ class Graph(_Set_Mixin):
         """
         ids = _evaluate_index(data)
 
-        return cls(
-            _distance_band(
-                coordinates=data,
-                threshold=threshold,
-                binary=binary,
-                alpha=alpha,
+        dist = _distance_band(data, threshold)
+
+        if binary:
+            sp, ids = _kernel(
+                dist,
+                kernel="boxcar",
+                metric="precomputed",
                 ids=ids,
+                bandwidth=np.inf,
             )
-        )
+        elif kernel is not None:
+            sp, ids = _kernel(
+                dist,
+                kernel=kernel,
+                metric="precomputed",
+                ids=ids,
+                bandwidth=bandwidth,
+            )
+        else:
+            sp, ids = _kernel(
+                dist,
+                kernel=lambda distances, alpha: np.power(distances, alpha),
+                metric="precomputed",
+                ids=ids,
+                bandwidth=alpha,
+            )
+
+        adjacency = cls.from_sparse(sp, ids)._adjacency
+        adjacency["weight"] = (
+            adjacency["weight"].fillna(0).replace([np.inf, -np.inf], 0)
+        )  # handle isolates
+
+        # drop diagnoal
+        counts = adjacency.index.value_counts()
+        no_isolates = counts[counts > 1]
+        adjacency = adjacency[
+            ~(
+                adjacency.index.isin(no_isolates.index)
+                & (adjacency.index == adjacency.neighbor)
+            )
+        ]
+        return cls(adjacency)
 
     @cached_property
     def neighbors(self):

@@ -104,36 +104,19 @@ def _kernel(
         from the input coordinates will be used.
     p : int (default: 2)
         parameter for minkowski metric, ignored if metric != "minkowski".
-
     """
-    coordinates, ids, geoms = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
-    if metric == "precomputed":
+    if metric != "precomputed":
+        coordinates, ids, _ = _validate_geometry_input(
+            coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
+        )
+    else:
         assert (
             coordinates.shape[0] == coordinates.shape[1]
         ), "coordinates should represent a distance matrix if metric='precomputed'"
 
-    n_samples, _ = coordinates.shape
-
     if k is not None:
         if metric != "precomputed":
-            if metric == "haversine":
-                # sklearn haversine works with (lat,lng) in radians...
-                coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
-            query = _prepare_tree_query(coordinates, metric, p=p)
-            D_linear, ixs = query(coordinates, k=k + 1)
-            self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
-            D_linear = D_linear[:, 1:]
-            self_ix_flat = numpy.repeat(self_ix, k)
-            neighbor_ix_flat = neighbor_ix.flatten()
-            D_linear_flat = D_linear.flatten()
-            if metric == "haversine":
-                D_linear_flat * 6371  # express haversine distances in kilometers
-            D = sparse.csc_array(
-                (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
-                shape=(n_samples, n_samples),
-            )
+            D = _knn(coordinates, k=k, metric=metric, p=p)
         else:
             D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
@@ -155,6 +138,44 @@ def _kernel(
     sp.eliminate_zeros()
 
     return sp, ids
+
+
+def _knn(
+    coordinates,
+    metric="euclidean",
+    k=None,
+    p=2,
+):
+    n_samples, _ = coordinates.shape
+
+    if metric == "haversine":
+        # sklearn haversine works with (lat,lng) in radians...
+        coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
+    query = _prepare_tree_query(coordinates, metric, p=p)
+    D_linear, ixs = query(coordinates, k=k + 1)
+    self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
+    D_linear = D_linear[:, 1:]
+    self_ix_flat = numpy.repeat(self_ix, k)
+    neighbor_ix_flat = neighbor_ix.flatten()
+    D_linear_flat = D_linear.flatten()
+    if metric == "haversine":
+        D_linear_flat * 6371  # express haversine distances in kilometers
+    D = sparse.csc_array(
+        (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
+        shape=(n_samples, n_samples),
+    )
+    return D
+
+
+def _distance_band(coordinates, threshold, ids=None):
+    coordinates, ids, _ = _validate_geometry_input(
+        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
+    )
+    tree = spatial.KDTree(coordinates)
+    dist = tree.sparse_distance_matrix(tree, threshold, output_type="ndarray")
+    return sparse.csr_array((dist["v"], (dist["i"], dist["j"])))
+
+    # TODO: handle co-located points
 
 
 def _prepare_tree_query(coordinates, metric, p=2):
