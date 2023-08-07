@@ -169,11 +169,16 @@ def as_dataframes(regions, vertices, points):
         from .shapes import Polygon, Point
 
     if gpd is not None:
-        region_df = gpd.GeoDataFrame()
-        region_df["geometry"] = [Polygon(vertices[region]) for region in regions]
-
-        point_df = gpd.GeoDataFrame()
-        point_df["geometry"] = gpd.GeoSeries(Point(pnt) for pnt in points)
+        region_df = gpd.GeoDataFrame(
+            geometry = gpd.GeoSeries(
+                Polygon(vertices[region]) for region in regions
+                )
+            )
+        point_df = gpd.GeoDataFrame(
+            geometry = gpd.GeoSeries(
+                Point(pnt) for pnt in points
+                )
+            )
     else:
         import pandas as pd
 
