@@ -107,6 +107,56 @@ class TestW(unittest.TestCase):
         w.transform = "r"
         self.assertFalse(w.asymmetry() == [])
 
+    def test_asymmetry_string_index(self):
+        neighbors = {
+            "a": ["b", "c", "d"],
+            "b": ["b", "c", "d"],
+            "c": ["a", "b"],
+            "d": ["a", "b"],
+        }
+        weights_d = {"a": [1, 1, 1], "b": [1, 1, 1], "c": [1, 1], "d": [1, 1]}
+        w = W(neighbors, weights_d)
+        assert w.asymmetry() == [("a", "b"), ("b", "a")]
+
+        w.transform = "r"
+        assert w.asymmetry() == [
+            ("a", "b"),
+            ("a", "c"),
+            ("a", "d"),
+            ("b", "a"),
+            ("b", "c"),
+            ("b", "d"),
+            ("c", "a"),
+            ("c", "b"),
+            ("d", "a"),
+            ("d", "b"),
+        ]
+
+    def test_asymmetry_mixed_index(self):
+        neighbors = {
+            3000: [45, 99.99, "-"],
+            45: [45, 99.99, "-"],
+            99.99: [3000, 45],
+            "-": [3000, 45],
+        }
+        weights_d = {3000: [1, 1, 1], 45: [1, 1, 1], 99.99: [1, 1], "-": [1, 1]}
+        w = W(neighbors, weights_d, id_order=list(neighbors.keys()))
+        assert w.asymmetry() == [(3000, 45), (45, 3000)]
+
+        w.transform = "r"
+        assert w.asymmetry() == [
+            (3000, 45),
+            (3000, 99.99),
+            (3000, "-"),
+            (45, 3000),
+            (45, 99.99),
+            (45, "-"),
+            (99.99, 3000),
+            (99.99, 45),
+            ("-", 3000),
+            ("-", 45),
+        ]
+
     def test_cardinalities(self):
         w = lat2W(3, 3)
         self.assertEqual(

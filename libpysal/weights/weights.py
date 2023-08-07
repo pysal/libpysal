@@ -1278,11 +1278,16 @@ class W(object):
             self.transform = transform
 
         ids = np.nonzero(wd)
+
         if len(ids[0]) == 0:
             return []
         else:
             ijs = list(zip(ids[0], ids[1]))
             ijs.sort()
+
+            i2id = {v: k for k, v in self.id2i.items()}
+            ijs = [(i2id[i], i2id[j]) for i, j in ijs]
+
             return ijs
 
     def symmetrize(self, inplace=False):
