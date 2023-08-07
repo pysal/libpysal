@@ -7,6 +7,7 @@ from scipy import sparse
 
 from libpysal.weights import W
 from ._contiguity import _queen, _rook, _vertex_set_intersection
+from ._distance import _distance_band
 from ._kernel import _kernel
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
@@ -497,6 +498,47 @@ class Graph(_Set_Mixin):
             )
 
         return cls.from_arrays(head, tail, weights)
+
+    @classmethod
+    def build_distance_band(cls, data, threshold, binary=True, alpha=-1.0):
+        """Generate Graph from geometry based on a distance band
+
+        Parameters
+        ----------
+        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries containing locations to compute the
+            delaunay triangulation. If a geopandas object with Point
+            geoemtry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geoemtry is used, then the coordinates are extracted and used.
+            If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
+            coordinates.
+        threshold : float
+            distance band
+        binary : bool, optional
+            If True w_{ij}=1 if d_{i,j}<=threshold, otherwise w_{i,j}=0
+            If False wij=dij^{alpha}, by default True.
+        alpha : float, optional
+            distance decay parameter for weight (default -1.0)
+            if alpha is positive the weights will not decline with
+            distance. If binary is True, alpha is ignored
+        ids : array-like, optional
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph
+        """
+        ids = _evaluate_index(data)
+
+        return cls(
+            _distance_band(
+                coordinates=data,
+                threshold=threshold,
+                binary=binary,
+                alpha=alpha,
+                ids=ids,
+            )
+        )
 
     @cached_property
     def neighbors(self):
