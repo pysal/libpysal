@@ -562,11 +562,9 @@ class Graph(_Set_Mixin):
                 ids=ids,
                 bandwidth=alpha,
             )
+        sp.setdiag(0)
 
         adjacency = cls.from_sparse(sp, ids)._adjacency
-        adjacency["weight"] = (
-            adjacency["weight"].fillna(0).replace([np.inf, -np.inf], 0)
-        )  # handle isolates
 
         # drop diagnoal
         counts = adjacency.index.value_counts()
