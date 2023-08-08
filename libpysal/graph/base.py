@@ -762,14 +762,15 @@ class Graph(_Set_Mixin):
 
         Parameters
         ----------
+
         intrinsic : bool, optional
-            Default is ``True``. Intrinsic symmetry is defined as
+            Default is ``True``. Intrinsic symmetry is defined as:
 
             .. math::
 
                 w_{i,j} == w_{j,i}
 
-            If ``intrinsic`` is ``False`` symmetry is defined as
+            If ``intrinsic`` is ``False`` symmetry is defined as:
 
             .. math::
 
@@ -782,8 +783,13 @@ class Graph(_Set_Mixin):
 
         Returns
         -------
+
         pandas.Series
-            ``Series`` of ``(i,j)`` pairs of asymmetries
+            A ``Series`` of ``(i,j)`` pairs of asymmetries sorted
+            ascending by the focal observation (index value),
+            where ``i`` is the focal and ``j`` is the neighbor.
+            An empty ``Series`` is returned if no asymmetries are found.
+
         """
         if intrinsic:
             wd = self.sparse.transpose() - self.sparse
