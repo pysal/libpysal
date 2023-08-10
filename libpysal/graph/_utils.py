@@ -3,6 +3,47 @@ import numpy as np
 import pandas as pd
 import shapely
 
+def _jitter_geoms(*args,**kwargs):
+    raise NotImplementedError()
+
+def _induce_cliques(graph, clique_to_members, fill_value=1):
+    """
+    HERE BE DRAGONS! the "members" array must be in the same order as
+    the intended output graph. 
+    """
+    across_clique = graph.adjacency.merge(
+        clique_to_members['index'], left_index=True, right_index=True
+    ).explode('index').rename(
+        columns=dict(index='subclique_focal')
+    ).merge(
+        clique_to_members['index'], left_on='neighbor', right_index=True
+    ).explode('index').rename(
+        columns=dict(index='subclique_neighbor')
+    ).reset_index().drop(
+        ['index','neighbor'], axis=1
+    ).rename(
+        columns=dict(subclique_focal="focal", subclique_neighbor='neighbor')
+    )
+    is_clique = lut['index'].str.len()>1
+    within_clique = lut[
+        is_clique
+    ]['index'].apply(
+        lambda x: list(combinations(x, 2))
+    ).explode().apply(
+        pandas.Series
+    ).rename(columns={0:"focal", 1:"neighbor"}).assign(weight=fill_value)
+
+    new_adj = pandas.concat((across_clique, within_clique), ignore_index=True, axis=0).reset_index(drop=True)
+
+    return new_adj
+
+    
+
+    # try building on top of earlier blockweights code for cliques
+    # then use index tricks iterating over cliques
+
+
+
 
 def _neighbor_dict_to_edges(neighbors, weights=None):
     """
@@ -22,6 +63,24 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
         data_array[heads == tails] = 0
     return heads, tails, data_array
 
+def _validate_coincident(geoms):
+    """
+    Identify coincident points and create a look-up table for the coincident geometries. 
+    """
+    valid_coincident_geom_types = set(("Point",))
+    if not set(geoms.geom_type) <= valid_coincident_geom_types:
+        raise ValueError(
+            f"coindicence checks are only well-defined for geom_types: {valid_coincident_geom_types}"
+            )
+    wkb = geoms.to_frame('geometry').assign(hash = geoms.apply(lambda x: x.wkb)).reset_index(names='index')
+    if len(wkb) > len(wkb.hash.unique()): 
+        grouper = wkb.groupby("hash")
+        ids = grouper['index'].agg(list)
+        max_coincident = ids.str.len().max()
+        unique_locs = grouper['geometry'].agg("first")
+        return max_coincident, geopandas.GeoDataFrame(ids.to_frame("index"), geometry=unique_locs)
+    else:
+        return 0, wkb
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     """
