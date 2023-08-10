@@ -1,4 +1,3 @@
-from math import exp
 import string
 import os
 import tempfile
@@ -811,6 +810,11 @@ class TestBase:
             row_read = graph.read_parquet(path)
             assert row_wise == row_read
             assert row_read.transformation == "R"
+
+            path = os.path.join(tmpdir, "pandas.parquet")
+            self.G_str._adjacency.to_parquet(path)
+            G_pandas = graph.read_parquet(path)
+            assert self.G_str == G_pandas
 
     def test_getitem(self):
         expected = pd.Series(
