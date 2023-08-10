@@ -6,7 +6,7 @@ import pandas as pd
 from scipy import sparse
 
 from libpysal.weights import W, block_weights
-from ._contiguity import _queen, _rook, _vertex_set_intersection
+from ._contiguity import _queen, _rook, _vertex_set_intersection, _block_contiguity
 from ._kernel import _kernel, _distance_band
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
@@ -76,7 +76,18 @@ class Graph(_Set_Mixin):
         self.transformation = transformation
 
     def __getitem__(self, item):
-        """Easy lookup based on focal index"""
+        """Easy lookup based on focal index
+
+        Parameters
+        ----------
+        item : hashable
+            hashable represting an index value
+
+        Returns
+        -------
+        pandas.Series
+            subset of the adjacency table for `item`
+        """
         return self._adjacency.loc[item].set_index("neighbor").weight
 
     def copy(self, deep=True):
@@ -90,7 +101,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph as a copy of the original
         """
         return Graph(
             self._adjacency.copy(deep=deep), transformation=self.transformation
@@ -118,7 +129,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph from W
         """
         return cls.from_weights_dict(dict(w))
 
@@ -169,7 +180,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph based on sparse
         """
         sparse = sparse.tocoo(copy=False)
         if ids is not None:
@@ -202,7 +213,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph based on arrays
         """
 
         w = cls(
@@ -226,7 +237,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph based on weights dictionary of dictionaries
         """
         idx = {f: [k for k in neighbors] for f, neighbors in weights_dict.items()}
         data = {
@@ -250,7 +261,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph based on dictionaries
         """
         head, tail, weight = _neighbor_dict_to_edges(neighbors, weights=weights)
         return cls.from_arrays(head, tail, weight)
@@ -286,7 +297,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding contiguity weights
         """
         ids = _evaluate_index(geometry)
 
@@ -362,7 +373,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding kernel weights
         """
         ids = _evaluate_index(data)
 
@@ -403,7 +414,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding KNN weights
         """
         ids = _evaluate_index(data)
 
@@ -477,7 +488,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding triangulation weights
         """
         ids = _evaluate_index(data)
 
@@ -537,7 +548,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding distance band weights
         """
         ids = _evaluate_index(data)
 
@@ -583,9 +594,28 @@ class Graph(_Set_Mixin):
         return cls(adjacency)
 
     @classmethod
-    def build_block(cls, regimes):
+    def build_block_contiguity(cls, regimes):
+        """Generate Graph from block contiguity (regime neighbors)
+
+        Block contiguity structures are relevant when defining neighbor relations
+        based on membership in a regime. For example, all counties belonging to
+        the same state could be defined as neighbors, in an analysis of all
+        counties in the US.
+
+        Parameters
+        ----------
+        regimes : list-like
+            list-like of regimes. If pandas.Series, its index is used to encode Graph.
+            Otherwise a default RangeIndex is used.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding block contiguity
+        """
         ids = _evaluate_index(regimes)
-        return cls.from_W(block_weights(regimes, ids=ids, silence_warnings=True))
+
+        return cls.from_dicts(_block_contiguity(regimes, ids=ids))
 
     @cached_property
     def neighbors(self):

@@ -2,6 +2,7 @@ from collections import defaultdict
 
 import numpy
 import shapely
+import pandas
 
 from ._utils import _neighbor_dict_to_edges, _validate_geometry_input
 
@@ -190,3 +191,33 @@ def _resolve_islands(heads, tails, ids, weights):
         tails = numpy.hstack((tails, islands))
         weights = numpy.hstack((weights, numpy.zeros_like(islands, dtype=int)))
     return heads, tails, weights
+
+def _block_contiguity(regimes, ids=None):
+    """Construct spatial weights for regime neighbors.
+
+    Block contiguity structures are relevant when defining neighbor relations
+    based on membership in a regime. For example, all counties belonging to
+    the same state could be defined as neighbors, in an analysis of all
+    counties in the US.
+
+    Parameters
+    ----------
+    regimes : list-like
+        list-like of regimes. If pandas.Series, its index is used to encode Graph
+    ids : list-like, optional
+        ordered sequence of IDs for the observations to be used as an index, by default
+        None. If ``regimes`` is not a pandas.Series and ids=None, range index is used.
+
+    Returns
+    -------
+    dict
+        dictionary of neighbors
+    """
+    regimes = pandas.Series(regimes, index=ids)
+    rids = regimes.unique()
+    neighbors = {}
+    for rid in rids:
+        members = regimes.index[regimes == rid].values
+        for member in members:
+            neighbors[member] = members[members != member]
+    return neighbors
