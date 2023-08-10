@@ -5,12 +5,14 @@ import numpy as np
 import pandas as pd
 from scipy import sparse
 
-from libpysal.weights import W
+from libpysal.weights import W, block_weights
 from ._contiguity import _queen, _rook, _vertex_set_intersection
 from ._kernel import _kernel, _distance_band
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
-from ._utils import _neighbor_dict_to_edges, _evaluate_index, _validate_geometry_input
+from ._utils import _neighbor_dict_to_edges, _evaluate_index
+from ._parquet import _read_parquet, _to_parquet
+from ._spatial_lag import _lag_spatial
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
@@ -72,6 +74,9 @@ class Graph(_Set_Mixin):
 
         self._adjacency = adjacency
         self.transformation = transformation
+
+    def __getitem__(self, item):
+        return self._adjacency.loc[item].set_index("neighbor").weight
 
     def copy(self, deep=True):
         """Make a copy of this Graph's adjacency table and transformation
@@ -576,6 +581,11 @@ class Graph(_Set_Mixin):
         ]
         return cls(adjacency)
 
+    @classmethod
+    def build_block(cls, regimes):
+        ids = _evaluate_index(regimes)
+        return cls.from_W(block_weights(regimes, ids=ids, silence_warnings=True))
+
     @cached_property
     def neighbors(self):
         """Get neighbors dictionary
@@ -957,3 +967,33 @@ class Graph(_Set_Mixin):
         #         data=np.ones(len(ix), dtype=int),
         #     )
         # )
+
+    def lag(self, y):
+        return _lag_spatial(self, y)
+
+    def to_parquet(self, path):
+        """_summary_
+
+        Parameters
+        ----------
+        path : _type_
+            _description_
+        """
+        _to_parquet(self, path)
+
+
+def read_parquet(path):
+    """_summary_
+
+    Parameters
+    ----------
+    path : _type_
+        _description_
+
+    Returns
+    -------
+    _type_
+        _description_
+    """
+    adjacency, transformation = _read_parquet(path)
+    return Graph(adjacency, transformation)
