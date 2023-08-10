@@ -532,8 +532,8 @@ class Graph(_Set_Mixin):
         data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
             geometries containing locations to compute the
             delaunay triangulation. If a geopandas object with Point
-            geoemtry is provided, the .geometry attribute is used. If a numpy.ndarray
-            with shapely geoemtry is used, then the coordinates are extracted and used.
+            geometry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geometry is used, then the coordinates are extracted and used.
             If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
             coordinates.
         threshold : float
@@ -589,7 +589,7 @@ class Graph(_Set_Mixin):
 
         adjacency = cls.from_sparse(sp, ids)._adjacency
 
-        # drop diagnoal
+        # drop diagonal
         counts = adjacency.index.value_counts()
         no_isolates = counts[counts > 1]
         adjacency = adjacency[
