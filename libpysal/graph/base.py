@@ -88,7 +88,13 @@ class Graph(_Set_Mixin):
         pandas.Series
             subset of the adjacency table for `item`
         """
-        return self._adjacency.loc[item].set_index("neighbor").weight
+        if item in self.isolates:
+            return pd.Series(
+                [],
+                index=pd.Index([], name="neighbor"),
+                name="weight",
+            )
+        return self._adjacency.loc[[item]].set_index("neighbor").weight
 
     def copy(self, deep=True):
         """Make a copy of this Graph's adjacency table and transformation
@@ -1019,7 +1025,7 @@ class Graph(_Set_Mixin):
         """
         return _lag_spatial(self, y)
 
-    def to_parquet(self, path):
+    def to_parquet(self, path, **kwargs):
         """Save Graph to a Apache Parquet
 
         Graph is serialized to the Apache Parquet using the underlying adjacency
@@ -1031,15 +1037,17 @@ class Graph(_Set_Mixin):
         ----------
         path : str | pyarrow.NativeFile
             path or any stream supported by pyarrow
+        **kwargs
+            additional keyword arguments passed to pyarrow.parquet.write_table
 
         See also
         --------
         read_parquet
         """
-        _to_parquet(self, path)
+        _to_parquet(self, path, **kwargs)
 
 
-def read_parquet(path):
+def read_parquet(path, **kwargs):
     """Read Graph from a Apache Parquet
 
     Read Graph serialized using `Graph.to_parquet()` back into the `Graph` object. The
@@ -1050,11 +1058,13 @@ def read_parquet(path):
     ----------
     path : str | pyarrow.NativeFile | file-like object
         path or any stream supported by pyarrow
+    **kwargs
+        additional keyword arguments passed to pyarrow.parquet.read_table
 
     Returns
     -------
     Graph
         deserialized Graph
     """
-    adjacency, transformation = _read_parquet(path)
+    adjacency, transformation = _read_parquet(path, **kwargs)
     return Graph(adjacency, transformation)

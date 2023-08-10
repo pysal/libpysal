@@ -2,7 +2,7 @@ import libpysal
 import json
 
 
-def _to_parquet(G, destination):
+def _to_parquet(G, destination, **kwargs):
     """Save adjacency as a Parquet table and add custom metadata
 
     Metadata contain transformation and the libpysal version used to save the file.
@@ -15,6 +15,8 @@ def _to_parquet(G, destination):
         Graph to be saved
     destination : str | pyarrow.NativeFile
         path or any stream supported by pyarrow
+     **kwargs
+        additional keyword arguments passed to pyarrow.parquet.write_table
     """
     try:
         import pyarrow as pa
@@ -28,16 +30,18 @@ def _to_parquet(G, destination):
     meta[b"libpysal"] = json.dumps(d).encode("utf-8")
     schema = table.schema.with_metadata(meta)
 
-    pq.write_table(table.cast(schema), destination)
+    pq.write_table(table.cast(schema), destination, **kwargs)
 
 
-def _read_parquet(source):
+def _read_parquet(source, **kwargs):
     """Read libpysal-saved Graph object from Parquet
 
     Parameters
     ----------
     source : str | pyarrow.NativeFile
         path or any stream supported by pyarrow
+    **kwargs
+        additional keyword arguments passed to pyarrow.parquet.read_table
 
     Returns
     -------
@@ -49,7 +53,7 @@ def _read_parquet(source):
     except (ImportError, ModuleNotFoundError):
         raise ImportError("pyarrow is required for `read_parquet`.")
 
-    table = pq.read_table(source)
+    table = pq.read_table(source, **kwargs)
     if b"libpysal" in table.schema.metadata.keys():
         meta = json.loads(table.schema.metadata[b"libpysal"])
         transformation = meta["transformation"]
