@@ -548,12 +548,12 @@ class TestBase:
     def test_sparse_roundtrip(self):
         G = graph.Graph(self.adjacency_int_binary)
         sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G.id2i.keys())))
+        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G._id2i.keys())))
         assert G == G_sp
 
         G = graph.Graph(self.adjacency_str_binary)
         sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G.id2i.keys())))
+        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G._id2i.keys())))
         assert G == G_sp
 
     def test_cardinalities(self):
