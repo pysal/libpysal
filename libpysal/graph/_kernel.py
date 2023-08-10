@@ -139,6 +139,9 @@ def _kernel(
 
     return sp, ids
 
+    # TODO: ensure isloates are properly handled
+    # TODO: handle co-located points
+
 
 def _knn(
     coordinates,
@@ -166,6 +169,9 @@ def _knn(
     )
     return D
 
+    # TODO: ensure isloates are properly handled
+    # TODO: handle co-located points
+
 
 def _distance_band(coordinates, threshold, ids=None):
     coordinates, ids, _ = _validate_geometry_input(
@@ -176,6 +182,7 @@ def _distance_band(coordinates, threshold, ids=None):
     return sparse.csr_array((dist["v"], (dist["i"], dist["j"])))
 
     # TODO: handle co-located points
+    # TODO: ensure isloates are properly handled
 
 
 def _prepare_tree_query(coordinates, metric, p=2):
