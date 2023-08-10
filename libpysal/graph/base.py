@@ -76,6 +76,7 @@ class Graph(_Set_Mixin):
         self.transformation = transformation
 
     def __getitem__(self, item):
+        """Easy lookup based on focal index"""
         return self._adjacency.loc[item].set_index("neighbor").weight
 
     def copy(self, deep=True):
@@ -687,15 +688,16 @@ class Graph(_Set_Mixin):
             (
                 self._adjacency.weight.values,
                 (
-                    self._adjacency.index.map(self.id2i),
-                    self._adjacency.neighbor.map(self.id2i),
+                    self._adjacency.index.map(self._id2i),
+                    self._adjacency.neighbor.map(self._id2i),
                 ),
             ),
             shape=(self.n, self.n),
         )
 
     @cached_property
-    def id2i(self):
+    def _id2i(self):
+        """Mapping of index to integer position in sparse"""
         ix = np.arange(self.unique_ids.shape[0])
         return dict(zip(self.unique_ids, ix))
         # TODO: test
@@ -888,7 +890,7 @@ class Graph(_Set_Mixin):
                 dtype=self._adjacency.neighbor.dtype,
             )
         else:
-            i2id = {v: k for k, v in self.id2i.items()}
+            i2id = {v: k for k, v in self._id2i.items()}
             focal, neighbor = np.nonzero(wd)
             focal = focal.astype(self._adjacency.index.dtype)
             neighbor = neighbor.astype(self._adjacency.neighbor.dtype)
@@ -969,31 +971,60 @@ class Graph(_Set_Mixin):
         # )
 
     def lag(self, y):
-        return _lag_spatial(self, y)
+        """Spatial lag operator
 
-    def to_parquet(self, path):
-        """_summary_
+        If weights are row standardized, returns the mean of each observation's neighbors;
+        if not, returns the weighted sum of each observation's neighbors.
+
 
         Parameters
         ----------
-        path : _type_
-            _description_
+        y : array-like
+            array-like (N,) shape where N is equal to number of observations in self.
+
+        Returns
+        -------
+        numpy.ndarray
+            array of numeric values for the spatial lag
+        """
+        return _lag_spatial(self, y)
+
+    def to_parquet(self, path):
+        """Save Graph to a Apache Parquet
+
+        Graph is serialized to the Apache Parquet using the underlying adjacency
+        object stored as a Parquet table and custom metadata containing transformation.
+
+        Requires pyarrow package.
+
+        Parameters
+        ----------
+        path : str | pyarrow.NativeFile
+            path or any stream supported by pyarrow
+
+        See also
+        --------
+        read_parquet
         """
         _to_parquet(self, path)
 
 
 def read_parquet(path):
-    """_summary_
+    """Read Graph from a Apache Parquet
+
+    Read Graph serialized using `Graph.to_parquet()` back into the `Graph` object. The
+    Parquet file needs to contain adjacency table with a structure required by the `Graph`
+    constructor and optional metadata with the type of transformation.
 
     Parameters
     ----------
-    path : _type_
-        _description_
+    path : str | pyarrow.NativeFile | file-like object
+        path or any stream supported by pyarrow
 
     Returns
     -------
-    _type_
-        _description_
+    Graph
+        deserialized Graph
     """
     adjacency, transformation = _read_parquet(path)
     return Graph(adjacency, transformation)
