@@ -12,10 +12,16 @@ For completeness, we need to test a shuffled dataframe
 import geodatasets
 import geopandas
 import numpy
+import pandas
 import pytest
 import shapely
 
-from libpysal.graph._contiguity import _queen, _rook, _vertex_set_intersection
+from libpysal.graph._contiguity import (
+    _block_contiguity,
+    _queen,
+    _rook,
+    _vertex_set_intersection,
+)
 
 numpy.random.seed(111211)
 rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers")).sample(
@@ -202,3 +208,36 @@ def test_correctness_vertex_set_contiguity_distinct():
 
     with pytest.raises(AssertionError):
         assert set(zip(*vs_queen)) == set(zip(*queen))
+
+
+@pytest.mark.parametrize(
+    "regimes",
+    [
+        ["n", "n", "s", "s", "e", "e", "w", "w", "e", "j"],
+        [0, 0, 2, 2, 3, 3, 4, 4, 3, 1],
+    ],
+)
+def test_block_contiguity(regimes):
+    neighbors = _block_contiguity(regimes)
+    wn = {
+        0: [1],
+        1: [0],
+        2: [3],
+        3: [2],
+        4: [5, 8],
+        5: [4, 8],
+        6: [7],
+        7: [6],
+        8: [4, 5],
+        9: [],
+    }
+    assert {f: n.tolist() for f, n, in neighbors.items()} == wn
+
+    ids = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+    neighbors = _block_contiguity(regimes, ids=ids)
+    wn_str = {ids[f]: [ids[o] for o in n] for f, n in wn.items()}
+    assert {f: n.tolist() for f, n, in neighbors.items()} == wn_str
+
+    regimes = pandas.Series(regimes, index=ids)
+    neighbors = _block_contiguity(regimes)
+    assert {f: n.tolist() for f, n, in neighbors.items()} == wn_str
