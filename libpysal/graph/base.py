@@ -737,7 +737,6 @@ class Graph(_Set_Mixin):
         """Mapping of index to integer position in sparse"""
         ix = np.arange(self.unique_ids.shape[0])
         return dict(zip(self.unique_ids, ix))
-        # TODO: test
 
     def transform(self, transformation):
         """Transformation of weights
