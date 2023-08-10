@@ -250,6 +250,7 @@ def lat2Graph(nrows=5, ncols=5, rook=True, id_type="int"):
 def _evaluate_index(data):
     """Helper to get ids from any input."""
     return (
-        data.index if hasattr(data, "index")
+        data.index
+        if isinstance(data, (pd.Series, pd.DataFrame))
         else pd.RangeIndex(0, len(data))
     )
