@@ -277,7 +277,7 @@ def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="b
     return head, tail, weights
 
 @_validate_coincident
-def _voronoi(coordinates, ids=None, clip="extent", rook=True):
+def _voronoi(coordinates, ids=None, kernel='boxcar', bandwidth=np.inf, clip="extent", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -331,7 +331,17 @@ def _voronoi(coordinates, ids=None, clip="extent", rook=True):
     """
     cells, _ = voronoi_frames(coordinates, clip=clip)
     graph = _vertex_set_intersection(cells, rook=rook, ids=ids)
-    return graph
+    if (kernel == 'boxcar') and numpy.isinf(bandwidth): # return contiguity by default
+        return graph
+    
+    # avoid computing the distances between generators if it can be avoided
+    # TODO: also might need to implement "edge-weighted" option? 
+    heads, tails, weights = graph
+    distances = spatial.cdist(coordinates[heads], coordinates[tails])
+    weights = _kernel_functions[kernel](distances, bandwidth)
+    
+    return heads, tails, weights
+
 
 
 #### utilities
