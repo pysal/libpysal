@@ -171,6 +171,9 @@ def _knn(
 
     # TODO: ensure isloates are properly handled
     # TODO: handle co-located points
+    # TODO: haversine requires lat lan coords so we need to check if the gdf is in the
+    # correct CRS (or None) and if an array is given, that it is bounded by -180,180 and -90,90
+    # and explanation that the result is in kilometres
 
 
 def _distance_band(coordinates, threshold, ids=None):
