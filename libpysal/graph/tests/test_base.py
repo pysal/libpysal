@@ -223,13 +223,13 @@ class TestBase:
         sp = sparse.coo_array((data, (row, col)), shape=(4, 4))
         G = graph.Graph.from_sparse(sp)
         expected = graph.Graph.from_arrays(row, col, data)
-        assert G == expected
+        assert G == expected, "sparse constructor does not match arrays constructor"
 
         G = graph.Graph.from_sparse(sp.tocsr())
-        assert G == expected
+        assert G == expected, "csc input does not match coo input"
 
         G = graph.Graph.from_sparse(sp.tocsc())
-        assert G == expected
+        assert G == expected, "csr input does not match coo input"
 
         ids = ["zero", "one", "two", "three"]
 
@@ -247,13 +247,13 @@ class TestBase:
             sp.tocsr(),
             ids=ids,
         )
-        assert G == expected
+        assert G == expected, "sparse csr with ids does not match arrays constructor"
 
         G = graph.Graph.from_sparse(
             sp.tocsc(),
             ids=ids,
         )
-        assert G == expected
+        assert G == expected, "sparse csr with ids does not match arrays constructor"
 
         dense = np.array(
             [
@@ -295,7 +295,7 @@ class TestBase:
             ],
             np.ones(10),
         )
-        assert G == expected
+        assert G == expected, "sparse csr nybb with ids does not match arrays constructor"
         np.testing.assert_array_equal(G.sparse.todense(), sp.todense())
 
     def test_from_arrays(self):
