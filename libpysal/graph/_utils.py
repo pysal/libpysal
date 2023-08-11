@@ -4,8 +4,33 @@ import pandas as pd
 import shapely
 from itertools import permutations
 
-def _jitter_geoms(*args,**kwargs):
-    raise NotImplementedError()
+def _jitter_geoms(coordinates, geoms, seed=None):
+    """
+    Jitter geometries based on the smallest required movements to induce 
+    uniqueness. For each point, this samples a radius and angle uniformly 
+    at random from the unit circle and displaces the point. For a 
+    non-euclidean geometry, like latitude longitude coordinates,
+    this will distort according to a plateé carree prjection, jittering 
+    slightly more in the x direction than the y direction. 
+    """
+    rng = np.random.default_rng(seed=seed)
+    dtype = coordinates.dtype
+    if dtype not in (np.float32, np.float64):
+        # jittering requires us to cast ints to float
+        # and the rng.random generator only works with float32 and float64
+        dtype = np.float32
+    # the resolultion is the approximate difference between two floats
+    # that can be resolved at the given dtype.
+    resolution = np.finfo(dtype).resolution
+    r = rng.random(size=coordinates.shape[0], dtype=dtype)**.5 * resolution
+    theta = rng.random(size=coordinates.shape[0], dtype=dtype) * np.pi * 2
+    # converting from polar to cartesian
+    dx = r + np.sin(theta)
+    dy = r + np.cos(theta)
+    # then adding the displacements
+    coordinates = coordinates + np.column_stack((dx,dy))
+    geoms = geopandas.GeoSeries(geopandas.points_from_xy(*coordinates.T, crs=geoms.crs))
+    return coordinates, geoms
 
 def _induce_cliques(adjtable, clique_to_members, fill_value=1):
     """

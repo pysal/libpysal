@@ -6,7 +6,7 @@ from scipy import spatial
 
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel_functions
-from ._utils import _validate_geometry_input, _build_coincidence_lookup, _induce_cliques
+from ._utils import _validate_geometry_input, _build_coincidence_lookup, _induce_cliques, _jitter_geoms
 from libpysal.cg import voronoi_frames
 from functools import wraps
 
