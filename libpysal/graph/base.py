@@ -422,6 +422,7 @@ class Graph(_Set_Mixin):
         kernel="boxcar",
         clip="extent",
         rook=True,
+        coincident='raise'
     ):
         """Generate Graph from geometry based on triangulation
 
@@ -477,18 +478,18 @@ class Graph(_Set_Mixin):
 
         if method == "delaunay":
             head, tail, weights = _delaunay(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
             )
         elif method == "gabriel":
             head, tail, weights = _gabriel(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
             )
         elif method == "relative_neighborhood":
             head, tail, weights = _relative_neighborhood(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
             )
         elif method == "voronoi":
-            head, tail, weights = _voronoi(data, ids=ids, clip=clip, rook=rook)
+            head, tail, weights = _voronoi(data, ids=ids, clip=clip, rook=rook, coincident=coincident)
         else:
             raise ValueError(
                 f"Method '{method}' is not supported. Use one of ['delaunay', "
