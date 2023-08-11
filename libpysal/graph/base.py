@@ -5,12 +5,14 @@ import numpy as np
 import pandas as pd
 from scipy import sparse
 
-from libpysal.weights import W
-from ._contiguity import _queen, _rook, _vertex_set_intersection
-from ._kernel import _kernel
+from libpysal.weights import W, block_weights
+from ._contiguity import _queen, _rook, _vertex_set_intersection, _block_contiguity
+from ._kernel import _kernel, _distance_band
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._set_ops import _Set_Mixin
 from ._utils import _neighbor_dict_to_edges, _evaluate_index
+from ._parquet import _read_parquet, _to_parquet
+from ._spatial_lag import _lag_spatial
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
@@ -73,6 +75,27 @@ class Graph(_Set_Mixin):
         self._adjacency = adjacency
         self.transformation = transformation
 
+    def __getitem__(self, item):
+        """Easy lookup based on focal index
+
+        Parameters
+        ----------
+        item : hashable
+            hashable represting an index value
+
+        Returns
+        -------
+        pandas.Series
+            subset of the adjacency table for `item`
+        """
+        if item in self.isolates:
+            return pd.Series(
+                [],
+                index=pd.Index([], name="neighbor"),
+                name="weight",
+            )
+        return self._adjacency.loc[[item]].set_index("neighbor").weight
+
     def copy(self, deep=True):
         """Make a copy of this Graph's adjacency table and transformation
 
@@ -84,7 +107,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph as a copy of the original
         """
         return Graph(
             self._adjacency.copy(deep=deep), transformation=self.transformation
@@ -112,7 +135,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph from W
         """
         return cls.from_weights_dict(dict(w))
 
@@ -163,7 +186,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph based on sparse
         """
         sparse = sparse.tocoo(copy=False)
         if ids is not None:
@@ -196,7 +219,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph based on arrays
         """
 
         w = cls(
@@ -220,7 +243,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph based on weights dictionary of dictionaries
         """
         idx = {f: [k for k in neighbors] for f, neighbors in weights_dict.items()}
         data = {
@@ -244,7 +267,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph based on dictionaries
         """
         head, tail, weight = _neighbor_dict_to_edges(neighbors, weights=weights)
         return cls.from_arrays(head, tail, weight)
@@ -280,7 +303,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding contiguity weights
         """
         ids = _evaluate_index(geometry)
 
@@ -356,7 +379,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding kernel weights
         """
         ids = _evaluate_index(data)
 
@@ -397,7 +420,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding KNN weights
         """
         ids = _evaluate_index(data)
 
@@ -471,7 +494,7 @@ class Graph(_Set_Mixin):
         Returns
         -------
         Graph
-            libpysal.graph.Graph
+            libpysal.graph.Graph encoding triangulation weights
         """
         ids = _evaluate_index(data)
 
@@ -496,6 +519,111 @@ class Graph(_Set_Mixin):
             )
 
         return cls.from_arrays(head, tail, weights)
+
+    @classmethod
+    def build_distance_band(
+        cls, data, threshold, binary=True, alpha=-1.0, kernel=None, bandwidth=None
+    ):
+        """Generate Graph from geometry based on a distance band
+
+        Parameters
+        ----------
+        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries containing locations to compute the
+            delaunay triangulation. If a geopandas object with Point
+            geometry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geometry is used, then the coordinates are extracted and used.
+            If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
+            coordinates.
+        threshold : float
+            distance band
+        binary : bool, optional
+            If True w_{ij}=1 if d_{i,j}<=threshold, otherwise w_{i,j}=0
+            If False wij=dij^{alpha}, by default True.
+        alpha : float, optional
+            distance decay parameter for weight (default -1.0)
+            if alpha is positive the weights will not decline with
+            distance. Ignored if ``binary=True`` or ``kernel`` is not None.
+        kernel : str, optional
+            kernel function to use in order to weight the output graph. See
+            :meth:`Graph.build_kernel` for details. Ignored if ``binary=True``.
+        bandwidth : float (default: None)
+            distance to use in the kernel computation. Should be on the same scale as
+            the input coordinates. Ignored if ``binary=True`` or ``kernel=None``.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding distance band weights
+        """
+        ids = _evaluate_index(data)
+
+        dist = _distance_band(data, threshold)
+
+        if binary:
+            sp, ids = _kernel(
+                dist,
+                kernel="boxcar",
+                metric="precomputed",
+                ids=ids,
+                bandwidth=np.inf,
+            )
+        elif kernel is not None:
+            sp, ids = _kernel(
+                dist,
+                kernel=kernel,
+                metric="precomputed",
+                ids=ids,
+                bandwidth=bandwidth,
+            )
+        else:
+            sp, ids = _kernel(
+                dist,
+                kernel=lambda distances, alpha: np.power(distances, alpha),
+                metric="precomputed",
+                ids=ids,
+                bandwidth=alpha,
+            )
+        sp.setdiag(0)
+        # TODO: @ljwolf This is not necessarily valid, but I can understand why this is here. Many kernel weights require self-weighting. It would be good to provide a way to control this.
+        # TODO: @martinfleis reconsider this once isolate handling is resolved on the kernel side
+
+        adjacency = cls.from_sparse(sp, ids)._adjacency
+
+        # drop diagonal
+        counts = adjacency.index.value_counts()
+        no_isolates = counts[counts > 1]
+        adjacency = adjacency[
+            ~(
+                adjacency.index.isin(no_isolates.index)
+                & (adjacency.index == adjacency.neighbor)
+            )
+        ]
+        return cls(adjacency)
+
+    @classmethod
+    def build_block_contiguity(cls, regimes):
+        """Generate Graph from block contiguity (regime neighbors)
+
+        Block contiguity structures are relevant when defining neighbor relations
+        based on membership in a regime. For example, all counties belonging to
+        the same state could be defined as neighbors, in an analysis of all
+        counties in the US.
+
+        Parameters
+        ----------
+        regimes : list-like
+            list-like of regimes. If pandas.Series, its index is used to encode Graph.
+            Otherwise a default RangeIndex is used.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding block contiguity
+        """
+        ids = _evaluate_index(regimes)
+
+        return cls.from_dicts(_block_contiguity(regimes, ids=ids))
 
     @cached_property
     def neighbors(self):
@@ -598,18 +726,18 @@ class Graph(_Set_Mixin):
             (
                 self._adjacency.weight.values,
                 (
-                    self._adjacency.index.map(self.id2i),
-                    self._adjacency.neighbor.map(self.id2i),
+                    self._adjacency.index.map(self._id2i),
+                    self._adjacency.neighbor.map(self._id2i),
                 ),
             ),
             shape=(self.n, self.n),
         )
 
     @cached_property
-    def id2i(self):
+    def _id2i(self):
+        """Mapping of index to integer position in sparse"""
         ix = np.arange(self.unique_ids.shape[0])
         return dict(zip(self.unique_ids, ix))
-        # TODO: test
 
     def transform(self, transformation):
         """Transformation of weights
@@ -805,7 +933,7 @@ class Graph(_Set_Mixin):
                 dtype=self._adjacency.neighbor.dtype,
             )
         else:
-            i2id = {v: k for k, v in self.id2i.items()}
+            i2id = {v: k for k, v in self._id2i.items()}
             focal, neighbor = np.nonzero(wd)
             focal = focal.astype(self._adjacency.index.dtype)
             neighbor = neighbor.astype(self._adjacency.neighbor.dtype)
@@ -884,3 +1012,66 @@ class Graph(_Set_Mixin):
         #         data=np.ones(len(ix), dtype=int),
         #     )
         # )
+
+    def lag(self, y):
+        """Spatial lag operator
+
+        If weights are row standardized, returns the mean of each observation's neighbors;
+        if not, returns the weighted sum of each observation's neighbors.
+
+
+        Parameters
+        ----------
+        y : array-like
+            array-like (N,) shape where N is equal to number of observations in self.
+
+        Returns
+        -------
+        numpy.ndarray
+            array of numeric values for the spatial lag
+        """
+        return _lag_spatial(self, y)
+
+    def to_parquet(self, path, **kwargs):
+        """Save Graph to a Apache Parquet
+
+        Graph is serialized to the Apache Parquet using the underlying adjacency
+        object stored as a Parquet table and custom metadata containing transformation.
+
+        Requires pyarrow package.
+
+        Parameters
+        ----------
+        path : str | pyarrow.NativeFile
+            path or any stream supported by pyarrow
+        **kwargs
+            additional keyword arguments passed to pyarrow.parquet.write_table
+
+        See also
+        --------
+        read_parquet
+        """
+        _to_parquet(self, path, **kwargs)
+
+
+def read_parquet(path, **kwargs):
+    """Read Graph from a Apache Parquet
+
+    Read Graph serialized using `Graph.to_parquet()` back into the `Graph` object. The
+    Parquet file needs to contain adjacency table with a structure required by the `Graph`
+    constructor and optional metadata with the type of transformation.
+
+    Parameters
+    ----------
+    path : str | pyarrow.NativeFile | file-like object
+        path or any stream supported by pyarrow
+    **kwargs
+        additional keyword arguments passed to pyarrow.parquet.read_table
+
+    Returns
+    -------
+    Graph
+        deserialized Graph
+    """
+    adjacency, transformation = _read_parquet(path, **kwargs)
+    return Graph(adjacency, transformation)

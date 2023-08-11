@@ -24,3 +24,4 @@ dependencies:
   - xarray
   - zstd
   - geodatasets
+  - pyarrow

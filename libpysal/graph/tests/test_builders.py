@@ -60,6 +60,22 @@ class TestContiguity:
         assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)
         assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
 
+    def test_block_contiguity(self):
+        regimes = ["n", "n", "s", "s", "e", "e", "w", "w", "e", "l"]
+        G = graph.Graph.build_block_contiguity(regimes)
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+        regimes = pd.Series(
+            regimes, index=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+        )
+        G = graph.Graph.build_block_contiguity(regimes)
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
 
 class TestTriangulation:
     def setup_method(self):
@@ -140,6 +156,59 @@ class TestKernel:
 
     def test_knn_strids(self):
         G = graph.Graph.build_kernel(self.gdf_str, k=3)
+
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+
+class TestDistanceBand:
+    def setup_method(self):
+        df = gpd.read_file(geodatasets.get_path("nybb"))
+        self.gdf = df.set_geometry(df.centroid)
+        self.gdf_str = self.gdf.set_index("BoroName")
+
+    def test_distance_band_intids(self):
+        G = graph.Graph.build_distance_band(self.gdf, 50000)
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+    def test_distance_band_strids(self):
+        G = graph.Graph.build_distance_band(self.gdf_str, 50000)
+
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+    def test_distance_band_intids_weighted(self):
+        G = graph.Graph.build_distance_band(self.gdf, 50000, binary=False)
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+    def test_distance_band_strids_weighted(self):
+        G = graph.Graph.build_distance_band(self.gdf_str, 50000, binary=False)
+
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+    def test_distance_band_intids_kernel(self):
+        G = graph.Graph.build_distance_band(
+            self.gdf, 50000, binary=False, kernel="gaussian"
+        )
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+    def test_distance_band_strids_kernel(self):
+        G = graph.Graph.build_distance_band(
+            self.gdf_str, 50000, binary=False, kernel="gaussian"
+        )
 
         assert pd.api.types.is_string_dtype(G._adjacency.index.dtype)
         assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)

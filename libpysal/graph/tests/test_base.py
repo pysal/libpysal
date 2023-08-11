@@ -1,4 +1,6 @@
 import string
+import os
+import tempfile
 
 import pandas as pd
 import geopandas as gpd
@@ -548,12 +550,12 @@ class TestBase:
     def test_sparse_roundtrip(self):
         G = graph.Graph(self.adjacency_int_binary)
         sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G.id2i.keys())))
+        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G._id2i.keys())))
         assert G == G_sp
 
         G = graph.Graph(self.adjacency_str_binary)
         sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G.id2i.keys())))
+        G_sp = graph.Graph.from_sparse(sp, np.asarray(list(G._id2i.keys())))
         assert G == G_sp
 
     def test_cardinalities(self):
@@ -787,3 +789,76 @@ class TestBase:
         )
 
         pd.testing.assert_series_equal(self.G_int.asymmetry(False), empty)
+
+    def test_parquet(self):
+        pytest.importorskip("pyarrow")
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "g_int.parquet")
+            self.G_int.to_parquet(path)
+            G_int = graph.read_parquet(path)
+            assert self.G_int == G_int
+
+            path = os.path.join(tmpdir, "g_str.parquet")
+            self.G_str.to_parquet(path)
+            G_str = graph.read_parquet(path)
+            assert self.G_str == G_str
+
+            row_wise = self.G_str.transform("r")
+            path = os.path.join(tmpdir, "row.parquet")
+            row_wise.to_parquet(path)
+            row_read = graph.read_parquet(path)
+            assert row_wise == row_read
+            assert row_read.transformation == "R"
+
+            path = os.path.join(tmpdir, "pandas.parquet")
+            self.G_str._adjacency.to_parquet(path)
+            G_pandas = graph.read_parquet(path)
+            assert self.G_str == G_pandas
+
+    def test_getitem(self):
+        expected = pd.Series(
+            [1, 0.5, 0.5],
+            index=pd.Index(["a", "d", "b"], name="neighbor"),
+            name="weight",
+        )
+        pd.testing.assert_series_equal(expected, self.G_str["a"])
+
+        expected = pd.Series(
+            [1, 0.5, 0.5],
+            index=pd.Index([0, 3, 1], name="neighbor"),
+            name="weight",
+        )
+        pd.testing.assert_series_equal(expected, self.G_int[0])
+
+        # isolate
+        expected = pd.Series(
+            [],
+            index=pd.Index([], name="neighbor"),
+            name="weight",
+        )
+        pd.testing.assert_series_equal(expected, self.G_str["j"])
+
+    def test_lag(self):
+        expected = np.array([4.0, 2.7, 4.0, 3.9, 5.0, 5.1, 6.0, 6.3, 7.0, 0.0])
+        lag = self.G_str.lag(list(range(1, 11)))
+
+        np.testing.assert_array_equal(expected, lag)
+
+        with pytest.raises(ValueError, match="The length of `y`"):
+            self.G_str.lag(list(range(1, 15)))
+
+    def test__id2i(self):
+        expected = {
+            "a": 0,
+            "b": 1,
+            "c": 2,
+            "d": 3,
+            "e": 4,
+            "f": 5,
+            "g": 6,
+            "h": 7,
+            "i": 8,
+            "j": 9,
+        }
+        assert expected == self.G_str._id2i

@@ -23,6 +23,7 @@ dependencies:
   - zstd
   - Cython
   - geodatasets
+  - pyarrow
   - pip
   - pip:
     # dev versions of packages

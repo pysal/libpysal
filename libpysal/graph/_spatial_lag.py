@@ -1,4 +1,4 @@
-def lag_spatial(graph, y):
+def _lag_spatial(graph, y):
     """Spatial lag operator
 
     If w is row standardized, returns the average of each observation's neighbors;
@@ -16,4 +16,8 @@ def lag_spatial(graph, y):
     numpy.array
         array of numeric values for the spatial lag
     """
+    sp = graph.sparse
+    if len(y) != sp.shape[0]:
+        raise ValueError("The length of `y` needs to match the number of observations "
+                         f"in Graph. Expected {sp.shape[0]}, got {len(y)}.")
     return graph.sparse @ y
