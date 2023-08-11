@@ -71,7 +71,7 @@ def _validate_coincident(func):
 
 
 @_validate_coincident
-def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
+def _delaunay(coordinates, ids=None, bandwidth=None, kernel=None):
     """
     Constructor of the Delaunay graph of a set of input points.
     Relies on scipy.spatial.Delaunay and numba to quickly construct
@@ -132,12 +132,12 @@ def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     ids = numpy.asarray(ids)
     head, tail = ids[edges[:, 0]], ids[edges[:, 1]]
 
-    if bandwidth is numpy.inf and kernel == "boxcar":
+    if (bandwidth is None) and (kernel is None):
         weights = numpy.ones(head.shape, dtype=numpy.int8)
     else:
-        distances = ((coordinates[edges[:, 0]] - coordinates[edges[:, 1]]) ** 2).sum(
-            axis=1
-        ).squeeze() ** 0.5
+        bandwidth = 1 if bandwidth is None else bandwidth
+        kernel = 'gaussian' if kernel is None else kernel
+        distances = spatial.cdist(coordinates[head], coordinates[tail]).squeeze()
         weights = _kernel_functions[kernel](distances, bandwidth)
 
     # TODO: check for coincident points which result in
@@ -147,7 +147,7 @@ def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     return head, tail, weights
 
 @_validate_coincident
-def _gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
+def _gabriel(coordinates, ids=None, bandwidth=None, kernel=None):
     """
     Constructs the Gabriel graph of a set of points. This graph is a subset of
     the Delaunay triangulation where only "short" links are retained. This
@@ -202,12 +202,12 @@ def _gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     ids = numpy.asarray(ids)
     head, tail = ids[output[:, 0]], ids[output[:, 1]]
 
-    if bandwidth is numpy.inf and kernel == "boxcar":
+    if (bandwidth is None) and (kernel is None):
         weights = numpy.ones(head.shape, dtype=numpy.int8)
     else:
-        distances = ((coordinates[output[:, 0]] - coordinates[output[:, 1]]) ** 2).sum(
-            axis=1
-        ).squeeze() ** 0.5
+        bandwidth = 1 if bandwidth is None else bandwidth
+        kernel = 'gaussian' if kernel is None else kernel
+        distances = spatial.cdist(coordinates[head], coordinates[tail]).squeeze()
         weights = _kernel_functions[kernel](distances, bandwidth)
 
     # TODO: check for coincident points which result in
@@ -269,15 +269,18 @@ def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="b
 
     head, tail = ids[numpy.asarray(head_ix)], ids[numpy.asarray(tail_ix)]
 
-    if bandwidth is numpy.inf and kernel == "boxcar":
+    if (bandwidth is None) and (kernel is None):
         weights = numpy.ones(head.shape, dtype=numpy.int8)
     else:
-        weights = _kernel_functions[kernel](numpy.array(distance), bandwidth)
+        bandwidth = 1 if bandwidth is None else bandwidth
+        kernel = 'gaussian' if kernel is None else kernel
+        distances = spatial.cdist(coordinates[head], coordinates[tail]).squeeze()
+        weights = _kernel_functions[kernel](distances, bandwidth)
 
     return head, tail, weights
 
 @_validate_coincident
-def _voronoi(coordinates, ids=None, kernel='boxcar', bandwidth=np.inf, clip="extent", rook=True):
+def _voronoi(coordinates, ids=None, kernel=None, bandwidth=None, clip="extent", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -330,15 +333,16 @@ def _voronoi(coordinates, ids=None, kernel='boxcar', bandwidth=np.inf, clip="ext
     generally will remove "long" links in the delaunay graph.
     """
     cells, _ = voronoi_frames(coordinates, clip=clip)
-    graph = _vertex_set_intersection(cells, rook=rook, ids=ids)
-    if (kernel == 'boxcar') and numpy.isinf(bandwidth): # return contiguity by default
-        return graph
-    
-    # avoid computing the distances between generators if it can be avoided
-    # TODO: also might need to implement "edge-weighted" option? 
-    heads, tails, weights = graph
-    distances = spatial.cdist(coordinates[heads], coordinates[tails])
-    weights = _kernel_functions[kernel](distances, bandwidth)
+    heads, tails, weights = _vertex_set_intersection(cells, rook=rook, ids=ids)
+
+    #TODO: maybe implement shared perimeter weighting? 
+    if (bandwidth is None) and (kernel is None):
+        pass # weights is built by _vertex_set_intersection
+    else:
+        bandwidth = 1 if bandwidth is None else bandwidth
+        kernel = 'gaussian' if kernel is None else kernel
+        distances = spatial.cdist(coordinates[head], coordinates[tail]).squeeze()
+        weights = _kernel_functions[kernel](distances, bandwidth)
     
     return heads, tails, weights
 
