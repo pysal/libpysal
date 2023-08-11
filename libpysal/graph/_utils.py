@@ -8,10 +8,11 @@ def _jitter_geoms(coordinates, geoms, seed=None):
     """
     Jitter geometries based on the smallest required movements to induce 
     uniqueness. For each point, this samples a radius and angle uniformly 
-    at random from the unit circle and displaces the point. For a 
-    non-euclidean geometry, like latitude longitude coordinates,
-    this will distort according to a plateé carree prjection, jittering 
-    slightly more in the x direction than the y direction. 
+    at random from the unit circle, rescales it to a circle of values that
+    are extremely small relative to the precision of the input, and
+    then and displaces the point. For a non-euclidean geometry, like latitude
+    longitude coordinates, this will distort according to a plateé carree
+    prjection, jittering slightly more in the x direction than the y direction. 
     """
     rng = np.random.default_rng(seed=seed)
     dtype = coordinates.dtype
@@ -34,7 +35,11 @@ def _jitter_geoms(coordinates, geoms, seed=None):
 
 def _induce_cliques(adjtable, clique_to_members, fill_value=1):
     """
-    induce cliques into the input graph. This connects the 
+    induce cliques into the input graph. This connects everything within a 
+    clique together, as well as connecting all things outside of the clique
+    to all members of the clique. 
+
+    This does not guarantee/understand ordering of the *output* adjacency table.
     """
     adj_across_clique = adjtable.merge(
         clique_to_members['input_index'], left_index=True, right_index=True
