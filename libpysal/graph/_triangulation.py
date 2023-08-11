@@ -6,9 +6,9 @@ from scipy import spatial
 
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel_functions
-from ._utils import _validate_geometry_input
-
+from ._utils import _validate_geometry_input, _build_coincidence_lookup, _induce_cliques
 from libpysal.cg import voronoi_frames
+from functools import wraps
 
 try:
     from numba import njit  # noqa E401
@@ -23,7 +23,54 @@ Martin Fleischmann (martin@martinfleischmann.net)
 Serge Rey (sjsrey@gmail.com)
 """
 
+# This is in the module, rather than in `utils`, to ensure that it
+# can access `_VALID_GEOMETRY_TYPES` without defining a nested decorator. 
+def _validate_coincident(func):
+    """This is a decorator that validates input for coincident points"""
+    @wraps(func)
+    def wrapper(coordinates, ids=None, coincident='raise', **kwargs):
+        coordinates, ids, geoms = _validate_geometry_input(
+            coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
+        )
+        n_coincident, coincident_lut = _build_coincidence_lookup(geoms)
+        if n_coincident > 0:
+            if coincident == "raise":
+                raise ValueError(
+                    f"There are {len(coincident_lut)} "
+                    f"unique locations in the dataset, but {len(geoms)} observations."
+                    "This means there are multiple points in the same location, which"
+                    " is undefined for this graph type. To address this issue, consider setting "
+                    " `coincident='clique' or consult the documentation about coincident points."
+                )
+            elif coincident == "jitter":
+                coordinates, geoms = _jitter_geoms(coordinates, geoms)
+            elif coincident == "clique":
+                input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
+                coordinates, ids, geoms = _validate_geometry_input(
+                    coincident_lut.geometry, ids=coincident_lut.index, valid_geometry_types=_VALID_GEOMETRY_TYPES
+                )
+            else:
+                raise ValueError(
+                    f"Recieved option `coincident='{coincident}', but only options 'raise','clique','jitter' are suppported."
+                )
+        heads, tails, weights = func(coordinates, ids=ids, **kwargs)
+        adjtable = pandas.DataFrame.from_dict(dict(focal=heads, neighbor=tails, weight=weights))
 
+        if (n_coincident > 0) & (coincident == "clique"):
+            bandwidth = kwargs.get("bandwidth", numpy.inf)
+            kernel = kwargs.get("kernel", "boxcar")
+            # note that the kernel is only used to compute a fill value for the clique. 
+            # in the case of the voronoi weights. Using boxcar with an infinite bandwidht
+            # also gives us the correct fill value for the voronoi weight: 1. 
+            fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
+            adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
+            # from here, how to ensure ordering?
+        return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
+    return wrapper
+
+
+
+@_validate_coincident
 def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     """
     Constructor of the Delaunay graph of a set of input points.
@@ -79,31 +126,6 @@ def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
-
-    n_coincident, coincident_lut = _validate_coincident(geoms)
-    if n_coincident > 0:
-        if coincident == "raise":
-            raise ValueError(
-                f"There are {(coincident_lut[geoms.index.name].str.len()>1).sum()}"
-                f"unique locations in the dataset, but {len(geoms)} observations."
-                "This means there are multiple points in the same location, which"
-                " is undefined for this graph type. To address this issue, consider setting "
-                " `coincident='clique' or consult the documentation about coincident points."
-            )
-        elif coincident == "jitter":
-            coordinates, geoms = _jitter_geoms(coordinates, geoms)
-        elif coincident == "clique":
-            input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
-            coordinates, ids, geoms = _validate_geometry_input(
-                coincident_lut.geometry, ids=coincident_lut.index, valid_geometry_types=_VALID_GEOMETRY_TYPES
-            )
-        else:
-            raise ValueError(
-                f"Recieved option `coincident='{coincident}', but only options 'raise','clique','jitter' are suppported."
-            )
 
     edges, _ = _voronoi_edges(coordinates)
 
@@ -122,12 +144,9 @@ def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     # dropped points from the triangulation and the
     # misalignment of the weights and the attribute array
 
-    if (n_coincident > 0) & (coincident == "clique"):
-       graph = _induce_cliques(graph, coincident_lut, fill_value=1)
-
     return head, tail, weights
 
-
+@_validate_coincident
 def _gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     """
     Constructs the Gabriel graph of a set of points. This graph is a subset of
@@ -173,30 +192,6 @@ def _gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
-    n_coincident, coincident_lut = _validate_coincident(geoms)
-    if n_coincident > 0:
-        if coincident == "raise":
-            raise ValueError(
-                f"There are {(coincident_lut[geoms.index.name].str.len()>1).sum()}"
-                f"unique locations in the dataset, but {len(geoms)} observations."
-                "This means there are multiple points in the same location, which"
-                " is undefined for this graph type. To address this issue, consider setting "
-                " `coincident='clique' or consult the documentation about coincident points."
-            )
-        elif coincident == "jitter":
-            coordinates, geoms = _jitter_geoms(coordinates, geoms)
-        elif coincident == "clique":
-            input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
-            coordinates, ids, geoms = _validate_geometry_input(
-                coincident_lut.geometry, ids=coincident_lut.index, valid_geometry_types=_VALID_GEOMETRY_TYPES
-            )
-        else:
-            raise ValueError(
-                f"Recieved option `coincident='{coincident}', but only options 'raise','clique','jitter' are suppported."
-            )
 
     edges, dt = _voronoi_edges(coordinates)
     droplist = _filter_gabriel(
@@ -221,7 +216,7 @@ def _gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
 
     return head, tail, weights
 
-
+@_validate_coincident
 def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
     """
     Constructs the Relative Neighborhood graph from a set of points.
@@ -265,30 +260,7 @@ def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="b
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
-    n_coincident, coincident_lut = _validate_coincident(geoms)
-    if n_coincident > 0:
-        if coincident == "raise":
-            raise ValueError(
-                f"There are {(coincident_lut[geoms.index.name].str.len()>1).sum()}"
-                f"unique locations in the dataset, but {len(geoms)} observations."
-                "This means there are multiple points in the same location, which"
-                " is undefined for this graph type. To address this issue, consider setting "
-                " `coincident='clique' or consult the documentation about coincident points."
-            )
-        elif coincident == "jitter":
-            coordinates, geoms = _jitter_geoms(coordinates, geoms)
-        elif coincident == "clique":
-            input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
-            coordinates, ids, geoms = _validate_geometry_input(
-                coincident_lut.geometry, ids=coincident_lut.index, valid_geometry_types=_VALID_GEOMETRY_TYPES
-            )
-        else:
-            raise ValueError(
-                f"Recieved option `coincident='{coincident}', but only options 'raise','clique','jitter' are suppported."
-            )
+
 
     edges, dt = _voronoi_edges(coordinates)
     output, _ = _filter_relativehood(edges, dt.points, return_dkmax=False)
@@ -304,7 +276,7 @@ def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="b
 
     return head, tail, weights
 
-
+@_validate_coincident
 def _voronoi(coordinates, ids=None, clip="extent", rook=True):
     """
     Compute contiguity weights according to a clipped
@@ -357,38 +329,8 @@ def _voronoi(coordinates, ids=None, clip="extent", rook=True):
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
-    n_coincident, coincident_lut = _validate_coincident(geoms)
-    if n_coincident > 0:
-        if coincident == "raise":
-            raise ValueError(
-                f"There are {(coincident_lut[geoms.index.name].str.len()>1).sum()}"
-                f"unique locations in the dataset, but {len(geoms)} observations."
-                "This means there are multiple points in the same location, which"
-                " is undefined for this graph type. To address this issue, consider setting "
-                " `coincident='clique' or consult the documentation about coincident points."
-            )
-        elif coincident == "jitter":
-            coordinates, geoms = _jitter_geoms(coordinates, geoms)
-        elif coincident == "clique":
-            input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
-            coordinates, ids, geoms = _validate_geometry_input(
-                coincident_lut.geometry, ids=coincident_lut.index, valid_geometry_types=_VALID_GEOMETRY_TYPES
-            )
-        else:
-            raise ValueError(
-                f"Recieved option `coincident='{coincident}', but only options 'raise','clique','jitter' are suppported."
-            )
-
     cells, _ = voronoi_frames(coordinates, clip=clip)
     graph = _vertex_set_intersection(cells, rook=rook, ids=ids)
-
-    if (n_coincident > 0) & (coincident == "clique"):
-        fill_value = _kernel_functions[kernel](0, bandwidth)
-        new_adjtable = _induce_cliques(graph, coincident_lut, fill_value=fill_value)
-        # from here, how to ensure ordering?
     return graph
 
 
