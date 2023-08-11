@@ -49,7 +49,6 @@ _kernel_functions = {
     "boxcar": _boxcar,
     "discrete": _boxcar,
     "identity": _identity,
-    None: _identity,
 }
 
 
@@ -61,6 +60,7 @@ def _kernel(
     k=None,
     ids=None,
     p=2,
+    taper=False,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -127,15 +127,20 @@ def _kernel(
             D = sparse.csc_array(coordinates)
     if bandwidth is None:
         bandwidth = numpy.percentile(D.data, 25)
-    elif bandwidth == "opt":
-        bandwidth = _optimize_bandwidth(D, kernel)
+    elif bandwidth == "auto":
+        if (kernel == 'identity') or (kernel is None):
+            bandwidth = numpy.nan # ignored by identity
+        else:
+            bandwidth = _optimize_bandwidth(D, kernel)
     if callable(kernel):
         smooth = kernel(D.data, bandwidth)
     else:
         smooth = _kernel_functions[kernel](D.data, bandwidth)
 
     sp = sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
-    sp.eliminate_zeros()
+    
+    if taper:
+        sp.eliminate_zeros()
 
     return sp, ids
 
@@ -228,7 +233,10 @@ def _optimize_bandwidth(D, kernel):
     uniform distribution of kernel values, which is a good proxy for a
     "moderate" level of smoothing.
     """
-    kernel_function = _kernel_functions[kernel]
+    kernel_function = _kernel_functions.get(kernel, kernel)
+    assert callable(kernel_function), (
+        f"kernel {kernel} was not in supported kernel types {_kernel_functions.keys()} or callable"
+    )
 
     def _loss(bandwidth, D=D, kernel_function=kernel_function):
         Ku = kernel_function(D.data, bandwidth)

@@ -19,15 +19,7 @@ from libpysal.graph._triangulation import (
 from libpysal.graph._kernel import _kernel_functions
 from libpysal.graph.base import Graph
 
-### TODO: is there any way to remove this duplication
-### btw. test_triangulation and test_kernel using the
-### conftests.py? We need the same data/kernel combos
-### and also need to parameterize on numba existing,
-### and also have to test coincident points.
-
-stores = geopandas.read_file(
-    geodatasets.get_path("geoda liquor_stores")
-).explode(index_parts=False)[['id', 'placeid', 'geometry']]
+stores = geopandas.read_file(geodatasets.get_path("geoda liquor_stores")).explode(index_parts=False)
 stores_unique = stores.drop_duplicates(subset='geometry')
 
 kernel_functions = [None] + list(_kernel_functions.keys())
@@ -40,7 +32,7 @@ def my_kernel(distances, bandwidth):
 kernel_functions.append(my_kernel)
 
 # optimal, small, and larger than largest distance.
-bandwidths = [None, 'optimal', .5]
+bandwidths = [None, 'auto', .5]
 
 numpy.random.seed(6301)
 # create a 2-d laplace distribution as a "degenerate"
@@ -51,16 +43,8 @@ lap_coords = numpy.random.laplace(size=(5,2))
 # spatial outlier-y distribution
 cau_coords = numpy.random.standard_cauchy(size=(5,2))
 
-data = (
-    stores,
-    lap_coords
-    )
-
 parametrize_ids = pytest.mark.parametrize("ids", [None, "id", "placeid"], ids = ["no id", "id", "placeid"])
-parametrize_data = pytest.mark.parametrize("data", 
-    [stores, lap_coords], 
-    ids = ["coords: 2d-laplacian", "coords: 2d-cauchy"]
-    )
+
 parametrize_kernelfunctions = pytest.mark.parametrize(
     "kernel",
     kernel_functions,
@@ -69,7 +53,7 @@ parametrize_kernelfunctions = pytest.mark.parametrize(
 parametrize_bw = pytest.mark.parametrize(
     "bandwidth",
     bandwidths,
-    ids = ["no bandwidth", 'optimal', 'fixed']
+    ids = ["no bandwidth", 'auto', 'fixed']
     )
 parametrize_constructors = pytest.mark.parametrize(
     "constructor", 
@@ -94,18 +78,22 @@ def test_option_combinations(constructor, ids, kernel, bandwidth):
         )
     assert heads.dtype == tails.dtype
     assert heads.dtype == stores_unique.get(ids, stores_unique.index).dtype, 'ids failed to propagate'
-    if kernel is None:
+    if kernel is None and bandwidth is None:
         numpy.testing.assert_array_equal(weights, numpy.ones_like(heads))
     assert set(zip(heads, tails)) == set(zip(tails, heads)), "all triangulations should be symmetric, this is not"
 
 
-@pytest.mark.parametrize('kernel', [None, "gaussian"], ids=['no kernel', 'gaussian kernel'])
-def test_voronoi(kernel):
-    extent = _voronoi(lap_coords, clip='extent', rook=True, kernel=kernel)
-    alpha = _voronoi(lap_coords, clip='ashape', rook=True, kernel=kernel)
+def test_correctness_voronoi_clipping():
+    noclip = _voronoi(lap_coords, clip=None, rook=True)
+    extent = _voronoi(lap_coords, clip='extent', rook=True)
+    alpha = _voronoi(lap_coords, clip='ashape', rook=True)
+    
+    G_noclip = Graph.from_arrays(*noclip)
     G_extent = Graph.from_arrays(*extent)
     G_alpha = Graph.from_arrays(*alpha)
+
     assert G_alpha < G_extent
+    assert G_extent <= G_noclip
 
     D = spatial.distance.squareform(spatial.distance.pdist(lap_coords))
 
@@ -117,48 +105,58 @@ def test_voronoi(kernel):
         numpy.array([0,0,0,1,2,2,3,3,4,4]),
         numpy.array([2,3,4,4,0,3,0,2,0,1])
     ]
-    if kernel is not None:
-        extent_known.append(
-            _kernel_functions[kernel](D[extent_known[0], extent_known[1]], 1)
-            )
-        alpha_known.append(
-            _kernel_functions[kernel](D[alpha_known[0], alpha_known[1]], 1)
-            )
-    else:
-        extent_known.append(numpy.ones_like(extent_known[0]))
-        alpha_known.append(numpy.ones_like(alpha_known[0]))
 
-    G_extent_known = Graph.from_arrays(
-        *extent_known
-        )
-    G_alpha_known = Graph.from_arrays(
-        *alpha_known
-        )
-    assert G_extent_known == G_extent
-    assert G_alpha_known == G_alpha
+    numpy.testing.assert_array_equal(G_extent.adjacency.index, extent_known[0])
+    numpy.testing.assert_array_equal(G_extent.adjacency.neighbor, extent_known[1])
 
-"""
-@parametrize_ids
-@parametrize_data
-@parametrize_kernelfunctions
-@paramterize_bw
-def test_delaunay(data, ids, kernel, bandwidth):
-    raise NotImplementedError()
+    numpy.testing.assert_array_equal(G_alpha.adjacency.index, alpha_known[0])
+    numpy.testing.assert_array_equal(G_alpha.adjacency.neighbor, alpha_known[1])
 
-@parametrize_ids
-@parametrize_data
-@parametrize_kernelfunctions
-@paramterize_bw
-def test_gabriel(data, ids, kernel, bandwidth):
-    raise NotImplementedError()
+def test_correctness_delaunay_family():
+    for i, data in enumerate((cau_coords, lap_coords)):
+        voronoi = _voronoi(data, clip=False)
+        delaunay = _delaunay(data)
+        gabriel = _gabriel(data)
+        relneigh = _relative_neighborhood(data)
+        G_voronoi = Graph.from_arrays(*voronoi)
+        G_delaunay = Graph.from_arrays(*delaunay)
+        G_gabriel = Graph.from_arrays(*gabriel)
+        G_relneigh = Graph.from_arrays(*relneigh)
 
-@parametrize_ids
-@parametrize_data
-@parametrize_kernelfunctions
-@paramterize_bw
-def test_relative_neighborhood(data, ids, kernel, bandwidth):
-    raise NotImplementedError()
+        if i:
+            known_delaunay = [
+                (0,0,0,1,1,1,2,2,2,2,3,3,3,4,4,4),
+                (1,2,4,0,2,3,0,1,3,4,1,2,4,0,2,3)
+            ]
+            known_gabriel = [
+                (4,0,0,2,1,3,2,0,3,4),
+                (0,4,3,0,4,0,3,2,2,1)
+            ]
+            known_relneigh = [
+                (0,0,0,0,1,1,2,2,3,3,4,4),
+                (1,2,3,4,0,4,0,3,0,2,0,1)
+            ]
+        else:
+            known_delaunay = [
+                (0,0,0,0,1,1,1,2,2,2,3,3,3,4,4,4),
+                (1,2,3,4,0,3,4,0,3,4,0,1,2,0,1,2)
+            ]
+            known_gabriel = [
+                (4,0,0,2,1,3,2,0,3,4),
+                (0,4,3,0,4,0,3,2,2,1)
+            ]
+            known_relneigh = [
+                (0,0,0,0,1,1,2,2,3,3,4,4),
+                (1,2,3,4,0,4,0,3,0,2,0,1)
+            ]
 
-@paramterize_graphs
-def test_collinear()
-"""
+        assert G_voronoi == G_delaunay
+        assert G_gabriel <= G_delaunay
+        assert G_relneigh <= G_delaunay
+        for i,name in enumerate(['delaunay', 'gabriel', 'relneigh']):
+            G_known = (known_delaunay, known_gabriel, known_relneigh)[i]
+            G_computed = (delaunay, voronoi, gabriel)[i]
+            assert G_known == G_computed, (
+                f"computed {name} not equivalent to stored {name} for "
+                f"{('cauchy', 'laplacian')[i]} coordinates!"
+                )
