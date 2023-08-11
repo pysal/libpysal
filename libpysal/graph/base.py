@@ -585,6 +585,8 @@ class Graph(_Set_Mixin):
                 bandwidth=alpha,
             )
         sp.setdiag(0)
+        # TODO: @ljwolf This is not necessarily valid, but I can understand why this is here. Many kernel weights require self-weighting. It would be good to provide a way to control this.
+        # TODO: @martinfleis reconsider this once isolate handling is resolved on the kernel side
 
         adjacency = cls.from_sparse(sp, ids)._adjacency
 
