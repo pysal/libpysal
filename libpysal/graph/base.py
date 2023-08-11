@@ -875,6 +875,16 @@ class Graph(_Set_Mixin):
         return self.unique_ids.shape[0]
 
     @cached_property
+    def n_nodes(self):
+        """Number of observations."""
+        return self.unique_ids.shape[0]
+
+    @cached_property
+    def n_edges(self):
+        """Number of observations."""
+        return self.adjacency.shape[0]
+
+    @cached_property
     def pct_nonzero(self):
         """Percentage of nonzero weights."""
         p = 100.0 * self.sparse.nnz / (1.0 * self.n**2)
@@ -883,8 +893,7 @@ class Graph(_Set_Mixin):
     @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
-        nnz = self.sparse.nnz
-        return nnz
+        return n_edges - len(self.isolates)
 
     def asymmetry(self, intrinsic=True):
         """Asymmetry check.

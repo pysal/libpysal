@@ -1,3 +1,4 @@
+"""
 import geodatasets
 import geopandas
 import pytest
@@ -30,3 +31,4 @@ parametrize_input_type = pytest.mark.parametrize(
 parametrize_external_ids = pytest.mark.parametrize(
     "external_ids", external_ids, ids=["use set_index", "use id vector"]
 )
+"""

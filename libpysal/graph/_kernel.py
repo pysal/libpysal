@@ -35,7 +35,6 @@ def _boxcar(distances, bandwidth):
     r = (distances < bandwidth).astype(int)
     return r
 
-
 def _identity(distances, bandwidth):
     return distances
 
@@ -51,6 +50,16 @@ _kernel_functions = {
     "identity": _identity,
     None: _identity,
 }
+
+def _get_kernel(kernel):
+    """
+    Simple function to handle the kernel getting logic in order to deal 
+    with user-defined kernel callables.
+    """
+    if callable(kernel):
+        return kernel
+    else:
+        return _kernel_functions[kernel]
 
 
 def _kernel(
@@ -104,19 +113,38 @@ def _kernel(
         from the input coordinates will be used.
     p : int (default: 2)
         parameter for minkowski metric, ignored if metric != "minkowski".
+
     """
-    if metric != "precomputed":
-        coordinates, ids, _ = _validate_geometry_input(
-            coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-        )
-    else:
+    if metric == "precomputed":
         assert (
             coordinates.shape[0] == coordinates.shape[1]
         ), "coordinates should represent a distance matrix if metric='precomputed'"
+        ids = numpy.arange(coordinates.shape[0]) if ids is None else ids
+        assert len(ids) == coordinates.shape[0], "ids must be same length as input"
+    else:
+        coordinates, ids, geoms = _validate_geometry_input(
+        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
+    )
+    n_samples, _ = coordinates.shape
 
     if k is not None:
         if metric != "precomputed":
-            D = _knn(coordinates, k=k, metric=metric, p=p)
+            if metric == "haversine":
+                # sklearn haversine works with (lat,lng) in radians...
+                coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
+            query = _prepare_tree_query(coordinates, metric, p=p)
+            D_linear, ixs = query(coordinates, k=k + 1)
+            self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
+            D_linear = D_linear[:, 1:]
+            self_ix_flat = numpy.repeat(self_ix, k)
+            neighbor_ix_flat = neighbor_ix.flatten()
+            D_linear_flat = D_linear.flatten()
+            if metric == "haversine":
+                D_linear_flat * 6371  # express haversine distances in kilometers
+            D = sparse.csc_array(
+                (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
+                shape=(n_samples, n_samples),
+            )
         else:
             D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
@@ -127,65 +155,16 @@ def _kernel(
             D = sparse.csc_array(coordinates)
     if bandwidth is None:
         bandwidth = numpy.percentile(D.data, 25)
-    elif bandwidth == "opt":
+    elif bandwidth == "auto":
         bandwidth = _optimize_bandwidth(D, kernel)
-    if callable(kernel):
-        smooth = kernel(D.data, bandwidth)
-    else:
-        smooth = _kernel_functions[kernel](D.data, bandwidth)
+    
+    kernel_function = _get_kernel(kernel)
+    smooth = kernel_function(D.data, bandwidth)
 
     sp = sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
     sp.eliminate_zeros()
 
     return sp, ids
-
-    # TODO: ensure isloates are properly handled
-    # TODO: handle co-located points
-
-
-def _knn(
-    coordinates,
-    metric="euclidean",
-    k=None,
-    p=2,
-):
-    n_samples, _ = coordinates.shape
-
-    if metric == "haversine":
-        # sklearn haversine works with (lat,lng) in radians...
-        coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
-    query = _prepare_tree_query(coordinates, metric, p=p)
-    D_linear, ixs = query(coordinates, k=k + 1)
-    self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
-    D_linear = D_linear[:, 1:]
-    self_ix_flat = numpy.repeat(self_ix, k)
-    neighbor_ix_flat = neighbor_ix.flatten()
-    D_linear_flat = D_linear.flatten()
-    if metric == "haversine":
-        D_linear_flat * 6371  # express haversine distances in kilometers
-    D = sparse.csc_array(
-        (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
-        shape=(n_samples, n_samples),
-    )
-    return D
-
-    # TODO: ensure isloates are properly handled
-    # TODO: handle co-located points
-    # TODO: haversine requires lat lan coords so we need to check if the gdf is in the
-    # correct CRS (or None) and if an array is given, that it is bounded by -180,180 and -90,90
-    # and explanation that the result is in kilometres
-
-
-def _distance_band(coordinates, threshold, ids=None):
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
-    tree = spatial.KDTree(coordinates)
-    dist = tree.sparse_distance_matrix(tree, threshold, output_type="ndarray")
-    return sparse.csr_array((dist["v"], (dist["i"], dist["j"])))
-
-    # TODO: handle co-located points
-    # TODO: ensure isloates are properly handled
 
 
 def _prepare_tree_query(coordinates, metric, p=2):

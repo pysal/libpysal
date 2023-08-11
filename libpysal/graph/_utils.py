@@ -247,6 +247,13 @@ def lat2Graph(nrows=5, ncols=5, rook=True, id_type="int"):
     return Graph.from_dicts(weights)
 
 
+def _vec_euclidean_distances(X,Y):
+    """
+    compute the euclidean distances along corresponding rows of two arrays
+    """
+    return ((X-Y)**2).sum(axis=1)**.5
+
+
 def _evaluate_index(data):
     """Helper to get ids from any input."""
     return (

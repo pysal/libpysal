@@ -2,11 +2,17 @@ import warnings
 
 import numpy
 import pandas
-from scipy import spatial
+from scipy import spatial, sparse
 
 from ._contiguity import _vertex_set_intersection
-from ._kernel import _kernel_functions
-from ._utils import _validate_geometry_input, _build_coincidence_lookup, _induce_cliques, _jitter_geoms
+from ._kernel import _kernel
+from ._utils import (
+    _validate_geometry_input, 
+    _build_coincidence_lookup, 
+    _induce_cliques, 
+    _jitter_geoms, 
+    _vec_euclidean_distances
+    )
 from libpysal.cg import voronoi_frames
 from functools import wraps
 
@@ -28,7 +34,7 @@ Serge Rey (sjsrey@gmail.com)
 def _validate_coincident(func):
     """This is a decorator that validates input for coincident points"""
     @wraps(func)
-    def wrapper(coordinates, ids=None, coincident='raise', **kwargs):
+    def func_with_validation(coordinates, ids=None, coincident='raise', **kwargs):
         coordinates, ids, geoms = _validate_geometry_input(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
@@ -57,16 +63,16 @@ def _validate_coincident(func):
         adjtable = pandas.DataFrame.from_dict(dict(focal=heads, neighbor=tails, weight=weights))
 
         if (n_coincident > 0) & (coincident == "clique"):
-            bandwidth = kwargs.get("bandwidth", numpy.inf)
+            bandwidth = kwargs.get("bandwidth", 1)
             kernel = kwargs.get("kernel", "boxcar")
             # note that the kernel is only used to compute a fill value for the clique. 
             # in the case of the voronoi weights. Using boxcar with an infinite bandwidht
             # also gives us the correct fill value for the voronoi weight: 1. 
-            fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
+            fill_value = _get_kernel(kernel)(numpy.array([0]), bandwidth).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
             # from here, how to ensure ordering?
         return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
-    return wrapper
+    return func_with_validation
 
 
 
@@ -128,23 +134,22 @@ def _delaunay(coordinates, ids=None, bandwidth=None, kernel=None):
         )
 
     edges, _ = _voronoi_edges(coordinates)
+    heads_ix, tails_ix = edges.T
 
-    ids = numpy.asarray(ids)
-    head, tail = ids[edges[:, 0]], ids[edges[:, 1]]
+    # ids is always intercepted by validate, so can indexed as an array
+    heads, tails = ids[edges[:, 0]], ids[edges[:, 1]]
 
     if (bandwidth is None) and (kernel is None):
-        weights = numpy.ones(head.shape, dtype=numpy.int8)
+        weights = numpy.ones(heads.shape, dtype=numpy.int8)
     else:
-        bandwidth = 1 if bandwidth is None else bandwidth
-        kernel = 'gaussian' if kernel is None else kernel
-        distances = spatial.cdist(coordinates[head], coordinates[tail]).squeeze()
-        weights = _kernel_functions[kernel](distances, bandwidth)
-
+        distances = _vec_euclidean_distances(coordinates[heads_ix], coordinates[tails_ix]).squeeze()
+        sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+        weights = _kernel(sparse_D, metric='precomputed', kernel=kernel, bandwidth=bandwidth)[0].data
     # TODO: check for coincident points which result in
     # dropped points from the triangulation and the
     # misalignment of the weights and the attribute array
 
-    return head, tail, weights
+    return heads, tails, weights
 
 @_validate_coincident
 def _gabriel(coordinates, ids=None, bandwidth=None, kernel=None):
@@ -198,23 +203,28 @@ def _gabriel(coordinates, ids=None, bandwidth=None, kernel=None):
         edges,
         dt.points,
     )
-    output = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist))))
-    ids = numpy.asarray(ids)
-    head, tail = ids[output[:, 0]], ids[output[:, 1]]
+    heads_ix, tails_ix = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist)))).T
+    # ids is always intercepted by validate, so can indexed as an array
+    heads, tails = ids[heads_ix], ids[tails_ix]
 
     if (bandwidth is None) and (kernel is None):
-        weights = numpy.ones(head.shape, dtype=numpy.int8)
+        weights = numpy.ones(heads.shape, dtype=numpy.int8)
     else:
-        bandwidth = 1 if bandwidth is None else bandwidth
-        kernel = 'gaussian' if kernel is None else kernel
-        distances = spatial.cdist(coordinates[head], coordinates[tail]).squeeze()
-        weights = _kernel_functions[kernel](distances, bandwidth)
+        distances = _vec_euclidean_distances(coordinates[heads_ix], coordinates[tails_ix]).squeeze()
+        sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+        weights = _kernel(sparse_D, metric='precomputed', kernel=kernel, bandwidth=bandwidth)[0].data
+        
+        kernel_function = _get_kernel(kernel)
+        if bandwidth == 'optimal':
+            sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+            bandwidth = _optimize_bandwidth(sparse_D, kernel_function)
+        weights = _get_kernel(kernel)(distances, bandwidth)
 
     # TODO: check for coincident points which result in
     # dropped points from the triangulation and the
     # misalignment of the weights and the attribute array
 
-    return head, tail, weights
+    return heads, tails, weights
 
 @_validate_coincident
 def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
@@ -265,22 +275,29 @@ def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="b
     edges, dt = _voronoi_edges(coordinates)
     output, _ = _filter_relativehood(edges, dt.points, return_dkmax=False)
 
-    head_ix, tail_ix, distance = zip(*output)
-
-    head, tail = ids[numpy.asarray(head_ix)], ids[numpy.asarray(tail_ix)]
+    heads_ix, tails_ix, distance = zip(*output)
+    heads_ix, tails_ix = numpy.asarray(heads_ix), numpy.asarray(tails_ix)
+    
+    # ids is always intercepted by validate, so can indexed as an array
+    heads, tails = ids[heads_ix], ids[tails_ix]
 
     if (bandwidth is None) and (kernel is None):
-        weights = numpy.ones(head.shape, dtype=numpy.int8)
+        weights = numpy.ones(heads.shape, dtype=numpy.int8)
     else:
-        bandwidth = 1 if bandwidth is None else bandwidth
-        kernel = 'gaussian' if kernel is None else kernel
-        distances = spatial.cdist(coordinates[head], coordinates[tail]).squeeze()
-        weights = _kernel_functions[kernel](distances, bandwidth)
+        distances = _vec_euclidean_distances(coordinates[heads_ix], coordinates[tails_ix]).squeeze()
+        sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+        weights = _kernel(sparse_D, metric='precomputed', kernel=kernel, bandwidth=bandwidth)[0].data
+        
+        kernel_function = _get_kernel(kernel)
+        if bandwidth == 'optimal':
+            sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+            bandwidth = _optimize_bandwidth(sparse_D, kernel_function)
+        weights = _get_kernel(kernel)(distances, bandwidth)
 
-    return head, tail, weights
+    return heads, tails, weights
 
 @_validate_coincident
-def _voronoi(coordinates, ids=None, kernel=None, bandwidth=None, clip="extent", rook=True):
+def _voronoi(coordinates, ids=None, bandwidth=None, kernel=None, clip="extent", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -333,20 +350,26 @@ def _voronoi(coordinates, ids=None, kernel=None, bandwidth=None, clip="extent", 
     generally will remove "long" links in the delaunay graph.
     """
     cells, _ = voronoi_frames(coordinates, clip=clip)
-    heads, tails, weights = _vertex_set_intersection(cells, rook=rook, ids=ids)
+    heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook, ids=None)
+
+    # ids is always intercepted by validate, so can indexed as an array
+    heads, tails = ids[heads_ix], ids[tails_ix]
 
     #TODO: maybe implement shared perimeter weighting? 
     if (bandwidth is None) and (kernel is None):
         pass # weights is built by _vertex_set_intersection
     else:
-        bandwidth = 1 if bandwidth is None else bandwidth
-        kernel = 'gaussian' if kernel is None else kernel
-        distances = spatial.cdist(coordinates[head], coordinates[tail]).squeeze()
-        weights = _kernel_functions[kernel](distances, bandwidth)
+        distances = _vec_euclidean_distances(coordinates[heads_ix], coordinates[tails_ix]).squeeze()
+        sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+        weights = _kernel(sparse_D, metric='precomputed', kernel=kernel, bandwidth=bandwidth)[0].data
+        
+        kernel_function = _get_kernel(kernel)
+        if bandwidth == 'optimal':
+            sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+            bandwidth = _optimize_bandwidth(sparse_D, kernel_function)
+        weights = _get_kernel(kernel)(distances, bandwidth)
     
     return heads, tails, weights
-
-
 
 #### utilities
 
