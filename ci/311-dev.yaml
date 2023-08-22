@@ -6,9 +6,6 @@ dependencies:
   - platformdirs
   - beautifulsoup4
   - jinja2
-  - pandas
-  - scipy
-  - xarray
   # testing
   - codecov
   - matplotlib
@@ -16,7 +13,9 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
-  - geopandas
+  - geos
+  - pyproj
+  - fiona
   - joblib
   - networkx
   - packaging

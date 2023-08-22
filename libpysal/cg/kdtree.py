@@ -6,7 +6,7 @@ Adds support for Arc Distance to scipy.spatial.KDTree.
 import math
 import scipy.spatial
 import numpy
-from scipy import inf
+from numpy import inf
 from . import sphere
 from .sphere import RADIUS_EARTH_KM
 
