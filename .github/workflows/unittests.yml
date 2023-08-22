@@ -16,6 +16,9 @@
        FETCH_EXAMPLES: python -c 'import libpysal; libpysal.examples.fetch_all()'
        RUN_TEST: pytest -v -n auto libpysal --cov libpysal --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
      #timeout-minutes: 25
+     defaults:
+      run:
+        shell: bash -l {0}
      strategy:
        matrix:
          os: ['ubuntu-latest']
@@ -43,19 +46,10 @@
            environment-file: ${{ matrix.environment-file }}
            micromamba-version: 'latest'
 
-       - name: run tests - bash
-         shell: bash -l {0}
+       - name: run tests
          run: |
            ${{ env.FETCH_EXAMPLES }}
            ${{ env.RUN_TEST }}
-         if: matrix.os != 'windows-latest'
-
-       - name: run tests - powershell
-         shell: powershell
-         run: |
-           ${{ env.FETCH_EXAMPLES }}
-           ${{ env.RUN_TEST }}
-         if: matrix.os == 'windows-latest'
 
        - name: codecov
          uses: codecov/codecov-action@v3
