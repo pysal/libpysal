@@ -80,6 +80,14 @@ class TestBase:
         }
         self.G_int = graph.Graph.from_weights_dict(self.W_dict_int)
         self.G_str = graph.Graph.from_weights_dict(self.W_dict_str)
+        rng = np.random.default_rng(seed=0)
+        self.letters = np.asarray(list(string.ascii_letters[:26]))
+        rng.shuffle(self.letters)
+        self.W_dict_str_unordered = {
+            self.letters[k]: {self.letters[k_]: v_ for k_, v_ in v.items()}
+            for k, v in self.W_dict_int.items()
+        }
+        self.G_str_unodered = graph.Graph.from_weights_dict(self.W_dict_str_unordered)
 
     def test_init(self):
         G = graph.Graph(self.adjacency_int_binary)
@@ -217,6 +225,10 @@ class TestBase:
         W_isolate = G_isolate.to_W()
         assert W.neighbors == W_isolate.neighbors
         assert W.weights == W_isolate.weights
+
+        W = self.G_str_unodered.to_W()
+        assert W.id_order_set
+        np.testing.assert_array_equal(W.id_order, self.letters[:10])
 
     def test_from_sparse(self):
         row = np.array([0, 3, 1, 0])

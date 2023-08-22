@@ -147,29 +147,20 @@ class Graph(_Set_Mixin):
         libpysal.weights.W
             representation of graph as a weights.W object
         """
-        neighbors = (
-            self._adjacency.groupby(level=0)
-            .apply(
-                lambda group: list(
-                    group[
-                        ~((group.index == group.neighbor) & (group.weight == 0))
-                    ].neighbor
-                )
+        ids, labels = pd.factorize(self._adjacency.index, sort=False)
+        neighbors = self._adjacency.groupby(ids).apply(
+            lambda group: list(
+                group[~((group.index == group.neighbor) & (group.weight == 0))].neighbor
             )
-            .to_dict()
         )
-        weights = (
-            self._adjacency.groupby(level=0)
-            .apply(
-                lambda group: list(
-                    group[
-                        ~((group.index == group.neighbor) & (group.weight == 0))
-                    ].weight
-                )
+        neighbors.index = labels[neighbors.index]
+        weights = self._adjacency.groupby(ids).apply(
+            lambda group: list(
+                group[~((group.index == group.neighbor) & (group.weight == 0))].weight
             )
-            .to_dict()
         )
-        return W(neighbors, weights)
+        weights.index = labels[weights.index]
+        return W(neighbors.to_dict(), weights.to_dict(), id_order=labels)
 
     @classmethod
     def from_sparse(cls, sparse, ids=None):
