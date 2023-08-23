@@ -160,7 +160,7 @@ class Graph(_Set_Mixin):
             )
         )
         weights.index = labels[weights.index]
-        return W(neighbors.to_dict(), weights.to_dict(), id_order=labels)
+        return W(neighbors.to_dict(), weights.to_dict(), id_order=labels.tolist())
 
     @classmethod
     def from_sparse(cls, sparse, ids=None):
