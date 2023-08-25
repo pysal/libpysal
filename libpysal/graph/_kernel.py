@@ -62,7 +62,7 @@ def _kernel(
     k=None,
     ids=None,
     p=2,
-    taper=False,
+    taper=True,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -203,7 +203,7 @@ def _knn(
                 )
         if coincident == "jitter":
             # force re-jittering over and over again until the coincidence is broken
-            return _knn(_jitter_geoms(geoms), metric=metric, k=k, p=p, coincident='jitter')
+            return _knn(_jitter_geoms(coordinates, geoms)[-1], metric=metric, k=k, p=p, coincident='jitter')
         # implicit coincident == "clique"
         heads, tails, weights = _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident='raise')
         adjtable = pandas.DataFrame.from_dict(
