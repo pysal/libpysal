@@ -419,7 +419,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     3. for each edge of the delaunay (i,j), prune
        if any dkmax is greater than d(i,j)
     """
-    n_edges = len(edges)
+    n = edges.max()
     out = []
     r = []
     for edge in edges:
@@ -429,7 +429,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
         dkmax = 0
         dij = ((pi - pj) ** 2).sum() ** 0.5
         prune = False
-        for k in range(n_edges):
+        for k in range(n):
             pk = coordinates[k]
             dik = ((pi - pk) ** 2).sum() ** 0.5
             djk = ((pj - pk) ** 2).sum() ** 0.5

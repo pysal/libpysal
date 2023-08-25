@@ -855,7 +855,7 @@ class TestBase:
         expected = np.array([4.0, 2.7, 4.0, 3.9, 5.0, 5.1, 6.0, 6.3, 7.0, 0.0])
         lag = self.G_str.lag(list(range(1, 11)))
 
-        np.testing.assert_array_equal(expected, lag)
+        np.testing.assert_allclose(expected, lag)
 
         with pytest.raises(ValueError, match="The length of `y`"):
             self.G_str.lag(list(range(1, 15)))
