@@ -491,6 +491,11 @@ class Graph(_Set_Mixin):
             If True, two geometries are considered neighbours if they
             share at least one edge. If False, two geometries are considered neighbours
             if they share at least one vertex. By default True
+        coincident: str, optional (default "raise")
+            Method for handling coincident points. Options include
+            ``'raise'`` (raising an exception when coincident points are present),
+            ``'jitter'`` (randomly displace coincident points to produce uniqueness), and
+            ``'clique'`` (induce fully-connected sub cliques for coincident points).
 
         Returns
         -------
