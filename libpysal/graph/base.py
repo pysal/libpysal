@@ -374,7 +374,7 @@ class Graph(_Set_Mixin):
         """
         ids = _evaluate_index(data)
 
-        sp, ids = _kernel(
+        head, tail, weight = _kernel(
             data,
             bandwidth=bandwidth,
             metric=metric,
@@ -383,8 +383,10 @@ class Graph(_Set_Mixin):
             p=p,
             ids=ids,
         )
+        # TODO: ensure sorting
 
-        return cls.from_sparse(sp, ids)
+        return cls.from_arrays(head, tail, weight)
+
 
     @classmethod
     def build_knn(cls, data, k, metric="euclidean", p=2):
@@ -415,7 +417,7 @@ class Graph(_Set_Mixin):
         """
         ids = _evaluate_index(data)
 
-        sp, ids = _kernel(
+        head, tail, weight = _kernel(
             data,
             bandwidth=np.inf,
             metric=metric,
@@ -425,7 +427,9 @@ class Graph(_Set_Mixin):
             ids=ids,
         )
 
-        return cls.from_sparse(sp, ids)
+        # TODO: ensure sorting
+
+        return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_triangulation(
@@ -436,7 +440,7 @@ class Graph(_Set_Mixin):
         kernel="boxcar",
         clip="extent",
         rook=True,
-        coincident='raise'
+        coincident="raise",
     ):
         """Generate Graph from geometry based on triangulation
 
@@ -508,7 +512,9 @@ class Graph(_Set_Mixin):
                 data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
             )
         elif method == "voronoi":
-            head, tail, weights = _voronoi(data, ids=ids, clip=clip, rook=rook, coincident=coincident)
+            head, tail, weights = _voronoi(
+                data, ids=ids, clip=clip, rook=rook, coincident=coincident
+            )
         else:
             raise ValueError(
                 f"Method '{method}' is not supported. Use one of ['delaunay', "
@@ -558,7 +564,7 @@ class Graph(_Set_Mixin):
         dist = _distance_band(data, threshold)
 
         if binary:
-            sp, ids = _kernel(
+            head, tail, weight = _kernel(
                 dist,
                 kernel="boxcar",
                 metric="precomputed",
@@ -566,7 +572,7 @@ class Graph(_Set_Mixin):
                 bandwidth=np.inf,
             )
         elif kernel is not None:
-            sp, ids = _kernel(
+            head, tail, weight = _kernel(
                 dist,
                 kernel=kernel,
                 metric="precomputed",
@@ -574,18 +580,17 @@ class Graph(_Set_Mixin):
                 bandwidth=bandwidth,
             )
         else:
-            sp, ids = _kernel(
+            head, tail, weight = _kernel(
                 dist,
                 kernel=lambda distances, alpha: np.power(distances, alpha),
                 metric="precomputed",
                 ids=ids,
                 bandwidth=alpha,
             )
-        sp.setdiag(0)
-        # TODO: @ljwolf This is not necessarily valid, but I can understand why this is here. Many kernel weights require self-weighting. It would be good to provide a way to control this.
-        # TODO: @martinfleis reconsider this once isolate handling is resolved on the kernel side
 
-        adjacency = cls.from_sparse(sp, ids)._adjacency
+        adjacency = pd.DataFrame.from_dict(
+            {"focal": head, "neighbor": tail, "weight": weight}
+        ).set_index("focal")
 
         # drop diagonal
         counts = adjacency.index.value_counts()
@@ -596,6 +601,11 @@ class Graph(_Set_Mixin):
                 & (adjacency.index == adjacency.neighbor)
             )
         ]
+        # set isolates to 0 - distance band should never contain self-weight
+        adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
+
+        # TODO ensure sorting
+
         return cls(adjacency)
 
     @classmethod
@@ -889,7 +899,7 @@ class Graph(_Set_Mixin):
     @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
-        return n_edges - len(self.isolates)
+        return self.n_edges - len(self.isolates)
 
     def asymmetry(self, intrinsic=True):
         """Asymmetry check.
@@ -1059,26 +1069,32 @@ class Graph(_Set_Mixin):
         """
         _to_parquet(self, path, **kwargs)
 
+
 def _arrange_arrays(heads, tails, weights, ids=None):
     """
     Rearrange input arrays so that observation indices
-    are well-ordered with respect to the input ids. That is, 
+    are well-ordered with respect to the input ids. That is,
     an "early" identifier should always preceed a "later" identifier
     in the heads, but the tails should be sorted with respect
-    to heads *first*, then sorted within the tails. 
+    to heads *first*, then sorted within the tails.
     """
     if ids is None:
         ids = numpy.unique(numpy.hstack((heads, tails)))
     lookup = list(ids).index
-    input_df = pandas.DataFrame.from_dict(dict(focal=heads, neighbor=tails, weight=weights))
-    return input_df.set_index(['focal', 'neighbor']).assign(
-        focal_loc = input_df.focal.apply(lookup).values,
-        neighbor_loc = input_df.neighbor.apply(lookup).values
-    ).sort_values(
-        ['focal_loc', 'neighbor_loc']
-    ).reset_index().drop(
-        ['focal_loc', 'neighbor_loc'], axis=1
-    ).values.T
+    input_df = pandas.DataFrame.from_dict(
+        dict(focal=heads, neighbor=tails, weight=weights)
+    )
+    return (
+        input_df.set_index(["focal", "neighbor"])
+        .assign(
+            focal_loc=input_df.focal.apply(lookup).values,
+            neighbor_loc=input_df.neighbor.apply(lookup).values,
+        )
+        .sort_values(["focal_loc", "neighbor_loc"])
+        .reset_index()
+        .drop(["focal_loc", "neighbor_loc"], axis=1)
+        .values.T
+    )
 
 
 def read_parquet(path, **kwargs):

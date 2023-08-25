@@ -2,7 +2,13 @@ import numpy
 import pandas
 from scipy import sparse, optimize, spatial, stats
 
-from ._utils import _validate_geometry_input, _build_coincidence_lookup, _induce_cliques, _jitter_geoms, _sparse_to_arrays
+from ._utils import (
+    _validate_geometry_input,
+    _build_coincidence_lookup,
+    _induce_cliques,
+    _jitter_geoms,
+    _sparse_to_arrays,
+)
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
@@ -50,7 +56,7 @@ _kernel_functions = {
     "boxcar": _boxcar,
     "discrete": _boxcar,
     "identity": _identity,
-    None: _identity
+    None: _identity,
 }
 
 
@@ -130,8 +136,8 @@ def _kernel(
     if bandwidth is None:
         bandwidth = numpy.percentile(D.data, 25)
     elif bandwidth == "auto":
-        if (kernel == 'identity') or (kernel is None):
-            bandwidth = numpy.nan # ignored by identity
+        if (kernel == "identity") or (kernel is None):
+            bandwidth = numpy.nan  # ignored by identity
         else:
             bandwidth = _optimize_bandwidth(D, kernel)
     if callable(kernel):
@@ -140,24 +146,17 @@ def _kernel(
         smooth = _kernel_functions[kernel](D.data, bandwidth)
 
     sp = sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
-    
+
     if taper:
         sp.eliminate_zeros()
 
-    return _sparse_to_arrays(sp)
+    return _sparse_to_arrays(sp, ids=ids)
 
     # TODO: ensure isloates are properly handled
     # TODO: handle co-located points
 
 
-def _knn(
-    coordinates,
-    metric="euclidean",
-    k=1,
-    p=2,
-    coincident="raise"
-):
-
+def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
     coordinates, ids, geoms = _validate_geometry_input(
         coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
@@ -166,7 +165,6 @@ def _knn(
     n_samples, _ = coordinates.shape
 
     if max_at_one_site <= k:
-        
         if metric == "haversine":
             # sklearn haversine works with (lat,lng) in radians...
             coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
@@ -179,11 +177,11 @@ def _knn(
         D_linear_flat = D_linear.flatten()
         if metric == "haversine":
             D_linear_flat * 6371  # express haversine distances in kilometers
-        D = sparse.csc_array(
+        D = sparse.csr_array(
             (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
             shape=(n_samples, n_samples),
         )
-        return _sparse_to_arrays(D)
+        return D
 
         # TODO: ensure isloates are properly handled
         # TODO: handle co-located points
@@ -200,19 +198,29 @@ def _knn(
                 " in the same location, which makes this graph type undefined. To address "
                 " this issue, consider setting `coincident='clique' or consult the "
                 "documentation about coincident points."
-                )
+            )
         if coincident == "jitter":
             # force re-jittering over and over again until the coincidence is broken
-            return _knn(_jitter_geoms(coordinates, geoms)[-1], metric=metric, k=k, p=p, coincident='jitter')
-        # implicit coincident == "clique"
-        heads, tails, weights = _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident='raise')
-        adjtable = pandas.DataFrame.from_dict(
-            dict(
-                focal = heads, neighbor = tails, weight = weights
+            return _knn(
+                _jitter_geoms(coordinates, geoms)[-1],
+                metric=metric,
+                k=k,
+                p=p,
+                coincident="jitter",
             )
+        # implicit coincident == "clique"
+        heads, tails, weights = _sparse_to_arrays(
+            _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise")
+        )
+        adjtable = pandas.DataFrame.from_dict(
+            dict(focal=heads, neighbor=tails, weight=weights)
         )
         adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=0)
-        return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
+        return sparse.csr_array(
+            adjtable.weight.values,
+            (adjtable.focal.values, adjtable.neighbor.values),
+            shape=(n_samples, n_samples),
+        )
 
 
 def _distance_band(coordinates, threshold, ids=None):
@@ -221,7 +229,9 @@ def _distance_band(coordinates, threshold, ids=None):
     )
     tree = spatial.KDTree(coordinates)
     dist = tree.sparse_distance_matrix(tree, threshold, output_type="ndarray")
-    return dist['i'], dist['j'], dist["v"]
+    sp = sparse.csr_array((dist["v"], (dist["i"], dist["j"])))
+    sp.eliminate_zeros()
+    return sp
 
     # TODO: handle co-located points
     # TODO: ensure isloates are properly handled
@@ -268,9 +278,9 @@ def _optimize_bandwidth(D, kernel):
     "moderate" level of smoothing.
     """
     kernel_function = _kernel_functions.get(kernel, kernel)
-    assert callable(kernel_function), (
-        f"kernel {kernel} was not in supported kernel types {_kernel_functions.keys()} or callable"
-    )
+    assert callable(
+        kernel_function
+    ), f"kernel {kernel} was not in supported kernel types {_kernel_functions.keys()} or callable"
 
     def _loss(bandwidth, D=D, kernel_function=kernel_function):
         Ku = kernel_function(D.data, bandwidth)
