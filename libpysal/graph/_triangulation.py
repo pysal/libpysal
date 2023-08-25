@@ -39,18 +39,24 @@ def _validate_coincident(triangulator):
     def tri_with_validation(
         coordinates, ids=None, coincident="raise", kernel=None, bandwidth=None, **kwargs
     ):
+        # validate geometry input
         coordinates, ids, geoms = _validate_geometry_input(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
+
+        # check for coincident points
         n_coincident, coincident_lut = _build_coincidence_lookup(geoms)
+
+        # resolve coincident points prior triangulation
         if n_coincident > 0:
             if coincident == "raise":
                 raise ValueError(
                     f"There are {len(coincident_lut)} "
-                    f"unique locations in the dataset, but {len(geoms)} observations."
-                    "This means there are multiple points in the same location, which"
-                    " is undefined for this graph type. To address this issue, consider setting "
-                    " `coincident='clique' or consult the documentation about coincident points."
+                    f"unique locations in the dataset, but {len(geoms)} observations. "
+                    "This means there are multiple points in the same location, which "
+                    "is undefined for this graph type. To address this issue, consider "
+                    "setting `coincident='clique' or consult the documentation about "
+                    "coincident points."
                 )
             elif coincident == "jitter":
                 coordinates, geoms = _jitter_geoms(coordinates, geoms)
@@ -63,12 +69,17 @@ def _validate_coincident(triangulator):
                 )
             else:
                 raise ValueError(
-                    f"Recieved option `coincident='{coincident}', but only options 'raise','clique','jitter' are suppported."
+                    f"Recieved option `coincident='{coincident}', but only options "
+                    "'raise','clique','jitter' are suppported."
                 )
+
+        # generate triangulation (triangulator is the wrapped function)
         heads_ix, tails_ix = triangulator(coordinates, **kwargs)
 
+        # map ids
         heads, tails = ids[heads_ix], ids[tails_ix]
 
+        # process weights
         if kernel is None:
             weights = numpy.ones(heads_ix.shape, dtype=numpy.int8)
         else:
@@ -85,17 +96,23 @@ def _validate_coincident(triangulator):
                 bandwidth=bandwidth,
                 taper=False,
             )
+
+        # create adjacency
         adjtable = pandas.DataFrame.from_dict(
             dict(focal=heads, neighbor=tails, weight=weights)
         )
 
+        # reinsert points resolved via clique
         if (n_coincident > 0) & (coincident == "clique"):
             # note that the kernel is only used to compute a fill value for the clique.
             # in the case of the voronoi weights. Using boxcar with an infinite bandwidth
             # also gives us the correct fill value for the voronoi weight: 1.
             fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
-            # from here, how to ensure ordering?
+
+        # TODO: ensure proper ordering
+
+        # return data for Graph.from_arrays
         return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
 
     return tri_with_validation
