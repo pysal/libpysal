@@ -2,6 +2,80 @@ import geopandas
 import numpy as np
 import pandas as pd
 import shapely
+from itertools import permutations
+
+def _sparse_to_arrays(sparray, ids=None):
+    if ids is None:
+        maxdim = np.maximum(*sparray.shape)
+        ids = np.arange(maxdim)
+    head_ix, tail_ix = sparray.nonzero()
+    return ids[head_ix], ids[tail_ix], sparray.data
+
+def _jitter_geoms(coordinates, geoms, seed=None):
+    """
+    Jitter geometries based on the smallest required movements to induce 
+    uniqueness. For each point, this samples a radius and angle uniformly 
+    at random from the unit circle, rescales it to a circle of values that
+    are extremely small relative to the precision of the input, and
+    then displaces the point. For a non-euclidean geometry, like latitude
+    longitude coordinates, this will distort according to a plateé carree
+    projection, jittering slightly more in the x direction than the y direction. 
+    """
+    rng = np.random.default_rng(seed=seed)
+    dtype = coordinates.dtype
+    if dtype not in (np.float32, np.float64):
+        # jittering requires us to cast ints to float
+        # and the rng.random generator only works with float32 and float64
+        dtype = np.float32
+    # the resolution is the approximate difference between two floats
+    # that can be resolved at the given dtype.
+    resolution = np.finfo(dtype).resolution
+    r = rng.random(size=coordinates.shape[0], dtype=dtype)**.5 * resolution
+    theta = rng.random(size=coordinates.shape[0], dtype=dtype) * np.pi * 2
+    # converting from polar to cartesian
+    dx = r + np.sin(theta)
+    dy = r + np.cos(theta)
+    # then adding the displacements
+    coordinates = coordinates + np.column_stack((dx,dy))
+    geoms = geopandas.GeoSeries(geopandas.points_from_xy(*coordinates.T, crs=geoms.crs))
+    return coordinates, geoms
+
+def _induce_cliques(adjtable, clique_to_members, fill_value=1):
+    """
+    induce cliques into the input graph. This connects everything within a 
+    clique together, as well as connecting all things outside of the clique
+    to all members of the clique. 
+
+    This does not guarantee/understand ordering of the *output* adjacency table.
+    """
+    adj_across_clique = adjtable.merge(
+        clique_to_members['input_index'], left_index=True, right_index=True
+    ).explode('input_index').rename(
+        columns=dict(input_index='subclique_focal')
+    ).merge(
+        clique_to_members['input_index'], left_on='neighbor', right_index=True
+    ).explode('input_index').rename(
+        columns=dict(input_index='subclique_neighbor')
+    ).reset_index().drop(
+        ['focal','neighbor', 'index'], axis=1
+    ).rename(
+        columns=dict(subclique_focal="focal", subclique_neighbor='neighbor')
+    )
+    is_multimember_clique = clique_to_members['input_index'].str.len()>1
+    adj_within_clique = clique_to_members[
+        is_multimember_clique
+    ]['input_index'].apply(
+        lambda x: list(permutations(x, 2))
+    ).explode().apply(
+        pd.Series
+    ).rename(columns={0:"focal", 1:"neighbor"}).assign(weight=fill_value)
+
+    new_adj = pd.concat(
+        (adj_across_clique, adj_within_clique),
+        ignore_index=True, axis=0
+    ).reset_index(drop=True)
+
+    return new_adj
 
 
 def _neighbor_dict_to_edges(neighbors, weights=None):
@@ -22,6 +96,20 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
         data_array[heads == tails] = 0
     return heads, tails, data_array
 
+
+def _build_coincidence_lookup(geoms):
+    """
+    Identify coincident points and create a look-up table for the coincident geometries. 
+    """
+    valid_coincident_geom_types = set(("Point",))
+    if not set(geoms.geom_type) <= valid_coincident_geom_types:
+        raise ValueError(
+            f"coindicence checks are only well-defined for geom_types: {valid_coincident_geom_types}"
+            )
+    max_coincident = geoms.geometry.duplicated().sum()
+    lut = geoms.to_frame("geometry").reset_index().groupby("geometry")['index'].agg(list).reset_index()
+    lut = geopandas.GeoDataFrame(lut)
+    return max_coincident, lut.rename(columns=dict(index='input_index'))
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     """
@@ -169,6 +257,13 @@ def lat2Graph(nrows=5, ncols=5, rook=True, id_type="int"):
         weights = alt_weights
 
     return Graph.from_dicts(weights)
+
+
+def _vec_euclidean_distances(X,Y):
+    """
+    compute the euclidean distances along corresponding rows of two arrays
+    """
+    return ((X-Y)**2).sum(axis=1)**.5
 
 
 def _evaluate_index(data):

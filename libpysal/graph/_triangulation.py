@@ -2,13 +2,19 @@ import warnings
 
 import numpy
 import pandas
-from scipy import spatial
+from scipy import spatial, sparse
 
 from ._contiguity import _vertex_set_intersection
-from ._kernel import _kernel_functions
-from ._utils import _validate_geometry_input
-
+from ._kernel import _kernel, _optimize_bandwidth, _kernel_functions
+from ._utils import (
+    _validate_geometry_input, 
+    _build_coincidence_lookup, 
+    _induce_cliques, 
+    _jitter_geoms, 
+    _vec_euclidean_distances
+    )
 from libpysal.cg import voronoi_frames
+from functools import wraps
 
 try:
     from numba import njit  # noqa E401
@@ -23,8 +29,75 @@ Martin Fleischmann (martin@martinfleischmann.net)
 Serge Rey (sjsrey@gmail.com)
 """
 
+# This is in the module, rather than in `utils`, to ensure that it
+# can access `_VALID_GEOMETRY_TYPES` without defining a nested decorator. 
+def _validate_coincident(triangulator):
+    """This is a decorator that validates input for coincident points"""
+    @wraps(triangulator)
+    def tri_with_validation(coordinates, ids=None, coincident='raise', kernel=None, bandwidth=None, **kwargs):
+        coordinates, ids, geoms = _validate_geometry_input(
+            coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
+        )
+        n_coincident, coincident_lut = _build_coincidence_lookup(geoms)
+        if n_coincident > 0:
+            if coincident == "raise":
+                raise ValueError(
+                    f"There are {len(coincident_lut)} "
+                    f"unique locations in the dataset, but {len(geoms)} observations."
+                    "This means there are multiple points in the same location, which"
+                    " is undefined for this graph type. To address this issue, consider setting "
+                    " `coincident='clique' or consult the documentation about coincident points."
+                )
+            elif coincident == "jitter":
+                coordinates, geoms = _jitter_geoms(coordinates, geoms)
+            elif coincident == "clique":
+                input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
+                coordinates, ids, geoms = _validate_geometry_input(
+                    coincident_lut.geometry, ids=coincident_lut.index, valid_geometry_types=_VALID_GEOMETRY_TYPES
+                )
+            else:
+                raise ValueError(
+                    f"Recieved option `coincident='{coincident}', but only options 'raise','clique','jitter' are suppported."
+                )
+        heads_ix, tails_ix = triangulator(coordinates, **kwargs)
+        
+        heads, tails = ids[heads_ix], ids[tails_ix]
 
-def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
+        if kernel is None:
+            weights = numpy.ones(heads_ix.shape, dtype=numpy.int8)
+        else:
+            distances = _vec_euclidean_distances(coordinates[heads_ix], coordinates[tails_ix]).squeeze()
+            sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+            if bandwidth == "auto":
+                bandwidth = _optimize_bandwidth(sparse_D, kernel)
+            _k = _kernel(
+                sparse_D, 
+                metric='precomputed', 
+                kernel=kernel, 
+                bandwidth=bandwidth, 
+                taper=False
+            )[0]
+            weights = _k.data
+        adjtable = pandas.DataFrame.from_dict(
+            dict(
+                focal = heads, neighbor = tails, weight = weights
+            )
+        )
+
+        if (n_coincident > 0) & (coincident == "clique"):
+            # note that the kernel is only used to compute a fill value for the clique. 
+            # in the case of the voronoi weights. Using boxcar with an infinite bandwidth
+            # also gives us the correct fill value for the voronoi weight: 1. 
+            fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
+            adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
+            # from here, how to ensure ordering?
+        return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
+    return tri_with_validation
+
+
+
+@_validate_coincident
+def _delaunay(coordinates):
     """
     Constructor of the Delaunay graph of a set of input points.
     Relies on scipy.spatial.Delaunay and numba to quickly construct
@@ -79,31 +152,14 @@ def _delaunay(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
 
     edges, _ = _voronoi_edges(coordinates)
+    heads_ix, tails_ix = edges.T
 
-    ids = numpy.asarray(ids)
-    head, tail = ids[edges[:, 0]], ids[edges[:, 1]]
+    return heads_ix, tails_ix
 
-    if bandwidth is numpy.inf and kernel == "boxcar":
-        weights = numpy.ones(head.shape, dtype=numpy.int8)
-    else:
-        distances = ((coordinates[edges[:, 0]] - coordinates[edges[:, 1]]) ** 2).sum(
-            axis=1
-        ).squeeze() ** 0.5
-        weights = _kernel_functions[kernel](distances, bandwidth)
-
-    # TODO: check for coincident points which result in
-    # dropped points from the triangulation and the
-    # misalignment of the weights and the attribute array
-
-    return head, tail, weights
-
-
-def _gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
+@_validate_coincident
+def _gabriel(coordinates):
     """
     Constructs the Gabriel graph of a set of points. This graph is a subset of
     the Delaunay triangulation where only "short" links are retained. This
@@ -148,35 +204,19 @@ def _gabriel(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
 
     edges, dt = _voronoi_edges(coordinates)
     droplist = _filter_gabriel(
         edges,
         dt.points,
     )
-    output = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist))))
-    ids = numpy.asarray(ids)
-    head, tail = ids[output[:, 0]], ids[output[:, 1]]
-
-    if bandwidth is numpy.inf and kernel == "boxcar":
-        weights = numpy.ones(head.shape, dtype=numpy.int8)
-    else:
-        distances = ((coordinates[output[:, 0]] - coordinates[output[:, 1]]) ** 2).sum(
-            axis=1
-        ).squeeze() ** 0.5
-        weights = _kernel_functions[kernel](distances, bandwidth)
-
-    # TODO: check for coincident points which result in
-    # dropped points from the triangulation and the
-    # misalignment of the weights and the attribute array
-
-    return head, tail, weights
+    heads_ix, tails_ix = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist)))).T
 
 
-def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="boxcar"):
+    return heads_ix, tails_ix
+
+@_validate_coincident
+def _relative_neighborhood(coordinates):
     """
     Constructs the Relative Neighborhood graph from a set of points.
     This graph is a subset of the Delaunay triangulation, where only
@@ -219,26 +259,18 @@ def _relative_neighborhood(coordinates, ids=None, bandwidth=numpy.inf, kernel="b
             " to accelerate the computation of graphs. Without numba,"
             " these computations may become unduly slow on large data."
         )
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
+
 
     edges, dt = _voronoi_edges(coordinates)
     output, _ = _filter_relativehood(edges, dt.points, return_dkmax=False)
 
-    head_ix, tail_ix, distance = zip(*output)
+    heads_ix, tails_ix, distance = zip(*output)
+    heads_ix, tails_ix = numpy.asarray(heads_ix), numpy.asarray(tails_ix)
 
-    head, tail = ids[numpy.asarray(head_ix)], ids[numpy.asarray(tail_ix)]
+    return heads_ix, tails_ix
 
-    if bandwidth is numpy.inf and kernel == "boxcar":
-        weights = numpy.ones(head.shape, dtype=numpy.int8)
-    else:
-        weights = _kernel_functions[kernel](numpy.array(distance), bandwidth)
-
-    return head, tail, weights
-
-
-def _voronoi(coordinates, ids=None, clip="extent", rook=True):
+@_validate_coincident
+def _voronoi(coordinates, clip="extent", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -290,13 +322,10 @@ def _voronoi(coordinates, ids=None, clip="extent", rook=True):
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
-    coordinates, ids, _ = _validate_geometry_input(
-        coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
-    )
-
     cells, _ = voronoi_frames(coordinates, clip=clip)
-    return _vertex_set_intersection(cells, rook=rook, ids=ids)
+    heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
 
+    return heads_ix, tails_ix
 
 #### utilities
 
@@ -342,7 +371,6 @@ def _filter_gabriel(edges, coordinates):
     in order to construct the Gabriel graph.
     """
     edge_pointer = 0
-    edges.max()
     n_edges = len(edges)
     to_drop = []
     while edge_pointer < n_edges:
@@ -382,8 +410,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     3. for each edge of the delaunay (i,j), prune
        if any dkmax is greater than d(i,j)
     """
-    n = edges.max()
-    len(edges)
+    n_edges = len(edges)
     out = []
     r = []
     for edge in edges:
@@ -393,7 +420,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
         dkmax = 0
         dij = ((pi - pj) ** 2).sum() ** 0.5
         prune = False
-        for k in range(n):
+        for k in range(n_edges):
             pk = coordinates[k]
             dik = ((pi - pk) ** 2).sum() ** 0.5
             djk = ((pj - pk) ** 2).sum() ** 0.5

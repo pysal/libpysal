@@ -79,9 +79,10 @@ class TestContiguity:
 
 class TestTriangulation:
     def setup_method(self):
-        self.gdf = gpd.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
+        gdf = gpd.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
             ignore_index=True
         )
+        self.gdf = gdf[~gdf.geometry.duplicated()]
         self.gdf_str = self.gdf.set_index("placeid")
 
     @pytest.mark.parametrize("method", TRIANGULATIONS)

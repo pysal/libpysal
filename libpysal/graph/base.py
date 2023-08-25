@@ -436,6 +436,7 @@ class Graph(_Set_Mixin):
         kernel="boxcar",
         clip="extent",
         rook=True,
+        coincident='raise'
     ):
         """Generate Graph from geometry based on triangulation
 
@@ -481,6 +482,11 @@ class Graph(_Set_Mixin):
             If True, two geometries are considered neighbours if they
             share at least one edge. If False, two geometries are considered neighbours
             if they share at least one vertex. By default True
+        coincident: str, optional (default "raise")
+            Method for handling coincident points. Options include
+            ``'raise'`` (raising an exception when coincident points are present),
+            ``'jitter'`` (randomly displace coincident points to produce uniqueness), and
+            ``'clique'`` (induce fully-connected sub cliques for coincident points).
 
         Returns
         -------
@@ -491,18 +497,18 @@ class Graph(_Set_Mixin):
 
         if method == "delaunay":
             head, tail, weights = _delaunay(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
             )
         elif method == "gabriel":
             head, tail, weights = _gabriel(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
             )
         elif method == "relative_neighborhood":
             head, tail, weights = _relative_neighborhood(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
             )
         elif method == "voronoi":
-            head, tail, weights = _voronoi(data, ids=ids, clip=clip, rook=rook)
+            head, tail, weights = _voronoi(data, ids=ids, clip=clip, rook=rook, coincident=coincident)
         else:
             raise ValueError(
                 f"Method '{method}' is not supported. Use one of ['delaunay', "
@@ -865,6 +871,16 @@ class Graph(_Set_Mixin):
         return self.unique_ids.shape[0]
 
     @cached_property
+    def n_nodes(self):
+        """Number of observations."""
+        return self.unique_ids.shape[0]
+
+    @cached_property
+    def n_edges(self):
+        """Number of observations."""
+        return self.adjacency.shape[0]
+
+    @cached_property
     def pct_nonzero(self):
         """Percentage of nonzero weights."""
         p = 100.0 * self.sparse.nnz / (1.0 * self.n**2)
@@ -873,8 +889,7 @@ class Graph(_Set_Mixin):
     @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
-        nnz = self.sparse.nnz
-        return nnz
+        return n_edges - len(self.isolates)
 
     def asymmetry(self, intrinsic=True):
         """Asymmetry check.
@@ -1043,6 +1058,27 @@ class Graph(_Set_Mixin):
         read_parquet
         """
         _to_parquet(self, path, **kwargs)
+
+def _arrange_arrays(heads, tails, weights, ids=None):
+    """
+    Rearrange input arrays so that observation indices
+    are well-ordered with respect to the input ids. That is, 
+    an "early" identifier should always preceed a "later" identifier
+    in the heads, but the tails should be sorted with respect
+    to heads *first*, then sorted within the tails. 
+    """
+    if ids is None:
+        ids = numpy.unique(numpy.hstack((heads, tails)))
+    lookup = list(ids).index
+    input_df = pandas.DataFrame.from_dict(dict(focal=heads, neighbor=tails, weight=weights))
+    return input_df.set_index(['focal', 'neighbor']).assign(
+        focal_loc = input_df.focal.apply(lookup).values,
+        neighbor_loc = input_df.neighbor.apply(lookup).values
+    ).sort_values(
+        ['focal_loc', 'neighbor_loc']
+    ).reset_index().drop(
+        ['focal_loc', 'neighbor_loc'], axis=1
+    ).values.T
 
 
 def read_parquet(path, **kwargs):

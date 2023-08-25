@@ -39,6 +39,9 @@ class _Set_Mixin:
     def __ior__(self, other):
         raise TypeError("weights are immutable")
 
+    def __len__(self):
+        return self.n_edges
+
 
 # TODO: performance test the pandas implementation
 def intersects(left, right):
