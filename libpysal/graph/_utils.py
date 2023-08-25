@@ -4,6 +4,13 @@ import pandas as pd
 import shapely
 from itertools import permutations
 
+def _sparse_to_arrays(sparray, ids=None):
+    if ids is None:
+        maxdim = np.maximum(*sparray.shape)
+        ids = np.arange(maxdim)
+    head_ix, tail_ix = sparray.nonzero()
+    return ids[head_ix], ids[tail_ix], sparray.data
+
 def _jitter_geoms(coordinates, geoms, seed=None):
     """
     Jitter geometries based on the smallest required movements to induce 

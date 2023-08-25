@@ -1,7 +1,8 @@
 import numpy
+import pandas
 from scipy import sparse, optimize, spatial, stats
 
-from ._utils import _validate_geometry_input
+from ._utils import _validate_geometry_input, _build_coincidence_lookup, _induce_cliques, _jitter_geoms, _sparse_to_arrays
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
@@ -49,6 +50,7 @@ _kernel_functions = {
     "boxcar": _boxcar,
     "discrete": _boxcar,
     "identity": _identity,
+    None: _identity
 }
 
 
@@ -142,7 +144,7 @@ def _kernel(
     if taper:
         sp.eliminate_zeros()
 
-    return sp, ids
+    return _sparse_to_arrays(sp)
 
     # TODO: ensure isloates are properly handled
     # TODO: handle co-located points
@@ -151,34 +153,66 @@ def _kernel(
 def _knn(
     coordinates,
     metric="euclidean",
-    k=None,
+    k=1,
     p=2,
+    coincident="raise"
 ):
+
+    coordinates, ids, geoms = _validate_geometry_input(
+        coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
+    )
+    n_coincident, coincident_lut = _build_coincidence_lookup(geoms)
+    max_at_one_site = coincident_lut.input_index.str.len().max()
     n_samples, _ = coordinates.shape
 
-    if metric == "haversine":
-        # sklearn haversine works with (lat,lng) in radians...
-        coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
-    query = _prepare_tree_query(coordinates, metric, p=p)
-    D_linear, ixs = query(coordinates, k=k + 1)
-    self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
-    D_linear = D_linear[:, 1:]
-    self_ix_flat = numpy.repeat(self_ix, k)
-    neighbor_ix_flat = neighbor_ix.flatten()
-    D_linear_flat = D_linear.flatten()
-    if metric == "haversine":
-        D_linear_flat * 6371  # express haversine distances in kilometers
-    D = sparse.csc_array(
-        (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
-        shape=(n_samples, n_samples),
-    )
-    return D
+    if max_at_one_site <= k:
+        
+        if metric == "haversine":
+            # sklearn haversine works with (lat,lng) in radians...
+            coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
+        query = _prepare_tree_query(coordinates, metric, p=p)
+        D_linear, ixs = query(coordinates, k=k + 1)
+        self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
+        D_linear = D_linear[:, 1:]
+        self_ix_flat = numpy.repeat(self_ix, k)
+        neighbor_ix_flat = neighbor_ix.flatten()
+        D_linear_flat = D_linear.flatten()
+        if metric == "haversine":
+            D_linear_flat * 6371  # express haversine distances in kilometers
+        D = sparse.csc_array(
+            (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
+            shape=(n_samples, n_samples),
+        )
+        return _sparse_to_arrays(D)
 
-    # TODO: ensure isloates are properly handled
-    # TODO: handle co-located points
-    # TODO: haversine requires lat lan coords so we need to check if the gdf is in the
-    # correct CRS (or None) and if an array is given, that it is bounded by -180,180 and -90,90
-    # and explanation that the result is in kilometres
+        # TODO: ensure isloates are properly handled
+        # TODO: handle co-located points
+        # TODO: haversine requires lat lan coords so we need to check if the gdf is in the
+        # correct CRS (or None) and if an array is given, that it is bounded by -180,180 and -90,90
+        # and explanation that the result is in kilometres
+    else:
+        if coincident == "raise":
+            raise ValueError(
+                f"There are {len(coincident_lut)} "
+                f"unique locations in the dataset, but {len(geoms)} observations."
+                f"At least one of these sites has {max_at_one_site} points, more than the"
+                f" {k} nearest neighbors requested. This means there are more than {k} points"
+                " in the same location, which makes this graph type undefined. To address "
+                " this issue, consider setting `coincident='clique' or consult the "
+                "documentation about coincident points."
+                )
+        if coincident == "jitter":
+            # force re-jittering over and over again until the coincidence is broken
+            return _knn(_jitter_geoms(geoms), metric=metric, k=k, p=p, coincident='jitter')
+        # implicit coincident == "clique"
+        heads, tails, weights = _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident='raise')
+        adjtable = pandas.DataFrame.from_dict(
+            dict(
+                focal = heads, neighbor = tails, weight = weights
+            )
+        )
+        adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=0)
+        return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
 
 
 def _distance_band(coordinates, threshold, ids=None):
@@ -187,7 +221,7 @@ def _distance_band(coordinates, threshold, ids=None):
     )
     tree = spatial.KDTree(coordinates)
     dist = tree.sparse_distance_matrix(tree, threshold, output_type="ndarray")
-    return sparse.csr_array((dist["v"], (dist["i"], dist["j"])))
+    return dist['i'], dist['j'], dist["v"]
 
     # TODO: handle co-located points
     # TODO: ensure isloates are properly handled
