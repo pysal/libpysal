@@ -1076,6 +1076,8 @@ def _arrange_arrays(heads, tails, weights, ids=None):
     in the heads, but the tails should be sorted with respect
     to heads *first*, then sorted within the tails. 
     """
+    if ids is None:
+        ids = numpy.unique(numpy.hstack((heads, tails)))
     lookup = list(ids).index
     input_df = pandas.DataFrame.from_dict(dict(focal=heads, neighbor=tails, weight=weights))
     return input_df.set_index(['focal', 'neighbor']).assign(
