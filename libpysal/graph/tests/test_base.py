@@ -601,7 +601,7 @@ class TestBase:
         )
 
     def test_nonzero(self):
-        assert self.G_int.nonzero == 26
+        assert self.G_int.nonzero == 25
         assert graph.Graph(self.adjacency_int_binary).nonzero == 9
 
     def test_transform_r(self):

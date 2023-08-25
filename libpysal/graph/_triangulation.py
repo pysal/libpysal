@@ -7,12 +7,12 @@ from scipy import spatial, sparse
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel, _optimize_bandwidth, _kernel_functions
 from ._utils import (
-    _validate_geometry_input, 
-    _build_coincidence_lookup, 
-    _induce_cliques, 
-    _jitter_geoms, 
-    _vec_euclidean_distances
-    )
+    _validate_geometry_input,
+    _build_coincidence_lookup,
+    _induce_cliques,
+    _jitter_geoms,
+    _vec_euclidean_distances,
+)
 from libpysal.cg import voronoi_frames
 from functools import wraps
 
@@ -29,12 +29,16 @@ Martin Fleischmann (martin@martinfleischmann.net)
 Serge Rey (sjsrey@gmail.com)
 """
 
+
 # This is in the module, rather than in `utils`, to ensure that it
-# can access `_VALID_GEOMETRY_TYPES` without defining a nested decorator. 
+# can access `_VALID_GEOMETRY_TYPES` without defining a nested decorator.
 def _validate_coincident(triangulator):
     """This is a decorator that validates input for coincident points"""
+
     @wraps(triangulator)
-    def tri_with_validation(coordinates, ids=None, coincident='raise', kernel=None, bandwidth=None, **kwargs):
+    def tri_with_validation(
+        coordinates, ids=None, coincident="raise", kernel=None, bandwidth=None, **kwargs
+    ):
         coordinates, ids, geoms = _validate_geometry_input(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
@@ -53,47 +57,48 @@ def _validate_coincident(triangulator):
             elif coincident == "clique":
                 input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
                 coordinates, ids, geoms = _validate_geometry_input(
-                    coincident_lut.geometry, ids=coincident_lut.index, valid_geometry_types=_VALID_GEOMETRY_TYPES
+                    coincident_lut.geometry,
+                    ids=coincident_lut.index,
+                    valid_geometry_types=_VALID_GEOMETRY_TYPES,
                 )
             else:
                 raise ValueError(
                     f"Recieved option `coincident='{coincident}', but only options 'raise','clique','jitter' are suppported."
                 )
         heads_ix, tails_ix = triangulator(coordinates, **kwargs)
-        
+
         heads, tails = ids[heads_ix], ids[tails_ix]
 
         if kernel is None:
             weights = numpy.ones(heads_ix.shape, dtype=numpy.int8)
         else:
-            distances = _vec_euclidean_distances(coordinates[heads_ix], coordinates[tails_ix]).squeeze()
+            distances = _vec_euclidean_distances(
+                coordinates[heads_ix], coordinates[tails_ix]
+            ).squeeze()
             sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
             if bandwidth == "auto":
                 bandwidth = _optimize_bandwidth(sparse_D, kernel)
-            _k = _kernel(
-                sparse_D, 
-                metric='precomputed', 
-                kernel=kernel, 
-                bandwidth=bandwidth, 
-                taper=False
-            )[0]
-            weights = _k.data
-        adjtable = pandas.DataFrame.from_dict(
-            dict(
-                focal = heads, neighbor = tails, weight = weights
+            _, _, weights = _kernel(
+                sparse_D,
+                metric="precomputed",
+                kernel=kernel,
+                bandwidth=bandwidth,
+                taper=False,
             )
+        adjtable = pandas.DataFrame.from_dict(
+            dict(focal=heads, neighbor=tails, weight=weights)
         )
 
         if (n_coincident > 0) & (coincident == "clique"):
-            # note that the kernel is only used to compute a fill value for the clique. 
+            # note that the kernel is only used to compute a fill value for the clique.
             # in the case of the voronoi weights. Using boxcar with an infinite bandwidth
-            # also gives us the correct fill value for the voronoi weight: 1. 
+            # also gives us the correct fill value for the voronoi weight: 1.
             fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
             # from here, how to ensure ordering?
         return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
-    return tri_with_validation
 
+    return tri_with_validation
 
 
 @_validate_coincident
@@ -158,6 +163,7 @@ def _delaunay(coordinates):
 
     return heads_ix, tails_ix
 
+
 @_validate_coincident
 def _gabriel(coordinates):
     """
@@ -210,10 +216,12 @@ def _gabriel(coordinates):
         edges,
         dt.points,
     )
-    heads_ix, tails_ix = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist)))).T
-
+    heads_ix, tails_ix = numpy.row_stack(
+        list(set(map(tuple, edges)).difference(set(droplist)))
+    ).T
 
     return heads_ix, tails_ix
+
 
 @_validate_coincident
 def _relative_neighborhood(coordinates):
@@ -260,7 +268,6 @@ def _relative_neighborhood(coordinates):
             " these computations may become unduly slow on large data."
         )
 
-
     edges, dt = _voronoi_edges(coordinates)
     output, _ = _filter_relativehood(edges, dt.points, return_dkmax=False)
 
@@ -268,6 +275,7 @@ def _relative_neighborhood(coordinates):
     heads_ix, tails_ix = numpy.asarray(heads_ix), numpy.asarray(tails_ix)
 
     return heads_ix, tails_ix
+
 
 @_validate_coincident
 def _voronoi(coordinates, clip="extent", rook=True):
@@ -326,6 +334,7 @@ def _voronoi(coordinates, clip="extent", rook=True):
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
 
     return heads_ix, tails_ix
+
 
 #### utilities
 
