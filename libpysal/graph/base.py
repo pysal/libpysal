@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from scipy import sparse
 
-from libpysal.weights import W, block_weights
+from libpysal.weights import W
 from ._contiguity import _queen, _rook, _vertex_set_intersection, _block_contiguity
 from ._kernel import _kernel, _distance_band
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
