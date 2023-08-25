@@ -1068,6 +1068,25 @@ class Graph(_Set_Mixin):
         """
         _to_parquet(self, path, **kwargs)
 
+def _arrange_arrays(heads, tails, weights, ids=None):
+    """
+    Rearrange input arrays so that observation indices
+    are well-ordered with respect to the input ids. That is, 
+    an "early" identifier should always preceed a "later" identifier
+    in the heads, but the tails should be sorted with respect
+    to heads *first*, then sorted within the tails. 
+    """
+    lookup = list(ids).index
+    input_df = pandas.DataFrame.from_dict(dict(focal=heads, neighbor=tails, weight=weights))
+    return input_df.set_index(['focal', 'neighbor']).assign(
+        focal_loc = input_df.focal.apply(lookup).values,
+        neighbor_loc = input_df.neighbor.apply(lookup).values
+    ).sort_values(
+        ['focal_loc', 'neighbor_loc']
+    ).reset_index().drop(
+        ['focal_loc', 'neighbor_loc'], axis=1
+    ).values.T
+
 
 def read_parquet(path, **kwargs):
     """Read Graph from a Apache Parquet
