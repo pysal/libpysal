@@ -27,7 +27,7 @@ def _jitter_geoms(coordinates, geoms, seed=None):
         # jittering requires us to cast ints to float
         # and the rng.random generator only works with float32 and float64
         dtype = np.float32
-    # the resolultion is the approximate difference between two floats
+    # the resolution is the approximate difference between two floats
     # that can be resolved at the given dtype.
     resolution = np.finfo(dtype).resolution
     r = rng.random(size=coordinates.shape[0], dtype=dtype)**.5 * resolution
