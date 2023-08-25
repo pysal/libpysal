@@ -17,7 +17,7 @@ def _jitter_geoms(coordinates, geoms, seed=None):
     uniqueness. For each point, this samples a radius and angle uniformly 
     at random from the unit circle, rescales it to a circle of values that
     are extremely small relative to the precision of the input, and
-    then and displaces the point. For a non-euclidean geometry, like latitude
+    then displaces the point. For a non-euclidean geometry, like latitude
     longitude coordinates, this will distort according to a plateé carree
     projection, jittering slightly more in the x direction than the y direction. 
     """
