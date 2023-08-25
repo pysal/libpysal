@@ -19,7 +19,7 @@ def _jitter_geoms(coordinates, geoms, seed=None):
     are extremely small relative to the precision of the input, and
     then and displaces the point. For a non-euclidean geometry, like latitude
     longitude coordinates, this will distort according to a plateé carree
-    prjection, jittering slightly more in the x direction than the y direction. 
+    projection, jittering slightly more in the x direction than the y direction. 
     """
     rng = np.random.default_rng(seed=seed)
     dtype = coordinates.dtype
