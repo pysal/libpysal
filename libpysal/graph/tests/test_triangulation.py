@@ -56,7 +56,7 @@ parametrize_bw = pytest.mark.parametrize(
     ids = ["no bandwidth", 'auto', 'fixed']
     )
 parametrize_constructors = pytest.mark.parametrize(
-    "constructor", 
+    "constructor",
     [_delaunay, _gabriel, _relative_neighborhood, _voronoi],
     ids = ['delaunay', 'gabriel', 'relhood', 'voronoi']
     )
@@ -68,12 +68,12 @@ parametrize_constructors = pytest.mark.parametrize(
 def test_option_combinations(constructor, ids, kernel, bandwidth):
     """
     NOTE: This does not check for the *validity* of the output, just
-    the structure of the output. 
+    the structure of the output.
     """
     heads, tails, weights = constructor(
-        stores_unique, 
-        ids=stores_unique[ids] if ids is not None else None, 
-        kernel=kernel, 
+        stores_unique,
+        ids=stores_unique[ids] if ids is not None else None,
+        kernel=kernel,
         bandwidth=bandwidth
         )
     assert heads.dtype == tails.dtype
@@ -87,7 +87,7 @@ def test_correctness_voronoi_clipping():
     noclip = _voronoi(lap_coords, clip=None, rook=True)
     extent = _voronoi(lap_coords, clip='extent', rook=True)
     alpha = _voronoi(lap_coords, clip='ashape', rook=True)
-    
+
     G_noclip = Graph.from_arrays(*noclip)
     G_extent = Graph.from_arrays(*extent)
     G_alpha = Graph.from_arrays(*alpha)
@@ -160,3 +160,21 @@ def test_correctness_delaunay_family():
                 f"computed {name} not equivalent to stored {name} for "
                 f"{('cauchy', 'laplacian')[i]} coordinates!"
                 )
+
+
+def test_coincident_raise_voronoi():
+    with pytest.raises(ValueError) as excinfo:
+        G_voronoi_cp = _voronoi(stores, clip=False)
+    assert 'There are' in str(excinfo.value)
+
+
+def test_coincident_jitter_voronoi():
+    G_voronoi_cp = _voronoi(stores, clip=False, coincident='jitter')
+    G_voronoi_unique = _voronoi(stores_unique, clip=False)
+    assert G_voronoi_cp != G_voronoi_unique
+
+
+def test_coincident_clique_voronoi():
+    G_voronoi_cp = _voronoi(stores, clip=False, coincident='clique')
+    G_voronoi_unique = _voronoi(stores_unique, clip=False)
+    assert G_voronoi_cp != G_voronoi_unique
