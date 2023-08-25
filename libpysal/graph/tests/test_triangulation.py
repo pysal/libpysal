@@ -168,7 +168,7 @@ def test_correctness_delaunay_family():
 
 def test_coincident_raise_voronoi():
     with pytest.raises(ValueError) as excinfo:
-        G_voronoi_cp = _voronoi(stores, clip=False)
+        _voronoi(stores, clip=False)
     assert 'There are' in str(excinfo.value)
 
 
