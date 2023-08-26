@@ -16,6 +16,13 @@ from ._spatial_lag import _lag_spatial
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
+__author__ = """"
+Levi John Wolf (levi.john.wolf@gmail.com)
+Martin Fleischmann (martin@martinfleischmann.net)
+Serge Rey (sjsrey@gmail.com)
+Eli Knaap (ek@knaaptime.com)
+"""
+
 
 class Graph(_Set_Mixin):
     def __init__(self, adjacency, transformation="O"):
