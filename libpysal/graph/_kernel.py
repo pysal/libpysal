@@ -230,7 +230,6 @@ def _distance_band(coordinates, threshold, ids=None):
     tree = spatial.KDTree(coordinates)
     dist = tree.sparse_distance_matrix(tree, threshold, output_type="ndarray")
     sp = sparse.csr_array((dist["v"], (dist["i"], dist["j"])))
-    sp.eliminate_zeros()
     return sp
 
     # TODO: handle co-located points
