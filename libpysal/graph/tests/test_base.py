@@ -309,8 +309,13 @@ class TestBase:
             ],
             np.ones(10),
         )
-        assert G == expected, "sparse csr nybb with ids does not match arrays constructor"
+        assert (
+            G == expected
+        ), "sparse csr nybb with ids does not match arrays constructor"
         np.testing.assert_array_equal(G.sparse.todense(), sp.todense())
+
+        with pytest.raises(ValueError, match="The length of ids "):
+            graph.Graph.from_sparse(sp, ids=["staten_island", "queens"])
 
     def test_from_arrays(self):
         focal_ids = np.arange(9)

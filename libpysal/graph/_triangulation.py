@@ -37,7 +37,13 @@ def _validate_coincident(triangulator):
 
     @wraps(triangulator)
     def tri_with_validation(
-        coordinates, ids=None, coincident="raise", kernel=None, bandwidth=None, **kwargs
+        coordinates,
+        ids=None,
+        coincident="raise",
+        kernel=None,
+        bandwidth=None,
+        seed=None,
+        **kwargs,
     ):
         # validate geometry input
         coordinates, ids, geoms = _validate_geometry_input(
@@ -59,14 +65,9 @@ def _validate_coincident(triangulator):
                     "coincident points."
                 )
             elif coincident == "jitter":
-                coordinates, geoms = _jitter_geoms(coordinates, geoms)
+                coordinates, geoms = _jitter_geoms(coordinates, geoms, seed=seed)
             elif coincident == "clique":
-                input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
-                coordinates, ids, geoms = _validate_geometry_input(
-                    coincident_lut.geometry,
-                    ids=coincident_lut.index,
-                    valid_geometry_types=_VALID_GEOMETRY_TYPES,
-                )
+                pass
             else:
                 raise ValueError(
                     f"Recieved option `coincident='{coincident}', but only options "
@@ -96,7 +97,6 @@ def _validate_coincident(triangulator):
                 bandwidth=bandwidth,
                 taper=False,
             )
-
         # create adjacency
         adjtable = pandas.DataFrame.from_dict(
             dict(focal=heads, neighbor=tails, weight=weights)
@@ -110,10 +110,12 @@ def _validate_coincident(triangulator):
             fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
 
-        # TODO: ensure proper ordering
+        # ensure proper sorting
+        mapping = dict(zip(ids, range(len(ids))))
+        sorted_index = adjtable.focal.map(mapping).sort_values().index
 
         # return data for Graph.from_arrays
-        return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
+        return heads[sorted_index], tails[sorted_index], weights[sorted_index]
 
     return tri_with_validation
 

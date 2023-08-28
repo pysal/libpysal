@@ -12,6 +12,7 @@ import geodatasets
 import geopandas
 import numpy
 import pytest
+import shapely
 from scipy import spatial
 
 from libpysal.graph._kernel import _kernel_functions
@@ -199,3 +200,246 @@ def test_coincident_clique_voronoi():
     assert not numpy.array_equal(G_voronoi_cp_heads, G_voronoi_unique_heads)
     assert not numpy.array_equal(G_voronoi_cp_tails, G_voronoi_unique_tails)
     assert not numpy.array_equal(cp_w, unique_w)
+
+
+class Test_Coincident:
+    def setup_method(self):
+        self.geom = [
+            shapely.Point(0, 0),
+            shapely.Point(1, 1),
+            shapely.Point(2, 0),
+            shapely.Point(3, 1),
+            shapely.Point(0, 0),  # coincident point
+            shapely.Point(0, 5),
+        ]
+        self.df_int = geopandas.GeoDataFrame(
+            geometry=self.geom,
+        )
+        self.df_string = geopandas.GeoDataFrame(
+            geometry=self.geom, index=["zero", "one", "two", "three", "four", "five"]
+        )
+        self.mapping = {0: "zero", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+
+    def test_delaunay_error(self):
+        with pytest.raises(
+            ValueError,
+            match="There are 5 unique locations in the dataset, but 6 observations",
+        ):
+            _delaunay(self.df_int)
+
+    def test_delaunay_jitter(self):
+        heads, tails, weights = _delaunay(self.df_int, coincident="jitter", seed=0)
+
+        exp_heads = numpy.array(
+            [0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5]
+        )
+        exp_tails = numpy.array(
+            [1, 2, 4, 0, 2, 3, 4, 5, 3, 1, 0, 1, 2, 5, 0, 1, 5, 1, 3, 4]
+        )
+        exp_w = numpy.ones(exp_heads.shape, dtype="int8")
+
+        numpy.testing.assert_array_equal(heads, exp_heads)
+        numpy.testing.assert_array_equal(tails, exp_tails)
+
+        heads, tails, weights = _delaunay(self.df_string, coincident="jitter", seed=0)
+
+        numpy.testing.assert_array_equal(
+            heads, numpy.vectorize(self.mapping.get)(exp_heads)
+        )
+        numpy.testing.assert_array_equal(
+            tails, numpy.vectorize(self.mapping.get)(exp_tails)
+        )
+        numpy.testing.assert_array_equal(weights, exp_w)
+
+    @pytest.mark.xfail
+    def test_delaunay_clique(self):
+        # TODO: fix the implemntation to make this pass
+        heads, tails, weights = _delaunay(self.df_int, coincident="clique", seed=0)
+
+        exp_heads = numpy.array(
+            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
+        )
+        # the order may be different in the end but observations not
+        exp_tails = numpy.array(
+            [1, 2, 5, 4, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
+        )
+        exp_w = numpy.ones(exp_heads.shape, dtype="int8")
+
+        numpy.testing.assert_array_equal(heads, exp_heads)
+        numpy.testing.assert_array_equal(tails, exp_tails)
+
+        heads, tails, weights = _delaunay(self.df_string, coincident="clique", seed=0)
+
+        numpy.testing.assert_array_equal(
+            heads, numpy.vectorize(self.mapping.get)(exp_heads)
+        )
+        numpy.testing.assert_array_equal(
+            tails, numpy.vectorize(self.mapping.get)(exp_tails)
+        )
+        numpy.testing.assert_array_equal(weights, exp_w)
+
+    def test_gabriel_error(self):
+        with pytest.raises(
+            ValueError,
+            match="There are 5 unique locations in the dataset, but 6 observations",
+        ):
+            _gabriel(self.df_int)
+
+    def test_gabriel_jitter(self):
+        heads, tails, weights = _gabriel(self.df_int, coincident="jitter", seed=0)
+
+        exp_heads = numpy.array([0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5])
+        exp_tails = numpy.array([4, 2, 2, 5, 3, 4, 1, 0, 3, 1, 2, 5, 0, 1, 1, 3])
+        exp_w = numpy.ones(exp_heads.shape, dtype="int8")
+
+        numpy.testing.assert_array_equal(heads, exp_heads)
+        numpy.testing.assert_array_equal(tails, exp_tails)
+
+        heads, tails, weights = _gabriel(self.df_string, coincident="jitter", seed=0)
+
+        numpy.testing.assert_array_equal(
+            heads, numpy.vectorize(self.mapping.get)(exp_heads)
+        )
+        numpy.testing.assert_array_equal(
+            tails, numpy.vectorize(self.mapping.get)(exp_tails)
+        )
+        numpy.testing.assert_array_equal(weights, exp_w)
+
+    @pytest.mark.xfail
+    def test_gabriel_clique(self):
+        # TODO: fix the implemntation to make this pass
+        heads, tails, weights = _gabriel(self.df_int, coincident="clique", seed=0)
+
+        exp_heads = numpy.array(
+            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
+        )
+        # the order may be different in the end but observations not
+        exp_tails = numpy.array(
+            [1, 2, 5, 4, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
+        )
+        exp_w = numpy.ones(exp_heads.shape, dtype="int8")
+
+        numpy.testing.assert_array_equal(heads, exp_heads)
+        numpy.testing.assert_array_equal(tails, exp_tails)
+
+        heads, tails, weights = _gabriel(self.df_string, coincident="clique", seed=0)
+
+        numpy.testing.assert_array_equal(
+            heads, numpy.vectorize(self.mapping.get)(exp_heads)
+        )
+        numpy.testing.assert_array_equal(
+            tails, numpy.vectorize(self.mapping.get)(exp_tails)
+        )
+        numpy.testing.assert_array_equal(weights, exp_w)
+
+    def test_relative_neighborhood_error(self):
+        with pytest.raises(
+            ValueError,
+            match="There are 5 unique locations in the dataset, but 6 observations",
+        ):
+            _relative_neighborhood(self.df_int)
+
+    def test_relative_neighborhood_jitter(self):
+        heads, tails, weights = _relative_neighborhood(
+            self.df_int, coincident="jitter", seed=0
+        )
+
+        exp_heads = numpy.array([0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5])
+        exp_tails = numpy.array([1, 2, 4, 0, 3, 4, 5, 3, 0, 1, 2, 5, 0, 1, 5, 3, 1, 4])
+        exp_w = numpy.ones(exp_heads.shape, dtype="int8")
+
+        numpy.testing.assert_array_equal(heads, exp_heads)
+        numpy.testing.assert_array_equal(tails, exp_tails)
+
+        heads, tails, weights = _relative_neighborhood(
+            self.df_string, coincident="jitter", seed=0
+        )
+
+        numpy.testing.assert_array_equal(
+            heads, numpy.vectorize(self.mapping.get)(exp_heads)
+        )
+        numpy.testing.assert_array_equal(
+            tails, numpy.vectorize(self.mapping.get)(exp_tails)
+        )
+        numpy.testing.assert_array_equal(weights, exp_w)
+
+    @pytest.mark.xfail
+    def test_relative_neighborhood_clique(self):
+        # TODO: fix the implemntation to make this pass
+        heads, tails, weights = _relative_neighborhood(
+            self.df_int, coincident="clique", seed=0
+        )
+
+        exp_heads = numpy.array(
+            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
+        )
+        # the order may be different in the end but observations not
+        exp_tails = numpy.array(
+            [1, 2, 5, 4, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
+        )
+        exp_w = numpy.ones(exp_heads.shape, dtype="int8")
+
+        numpy.testing.assert_array_equal(heads, exp_heads)
+        numpy.testing.assert_array_equal(tails, exp_tails)
+
+        heads, tails, weights = _relative_neighborhood(
+            self.df_string, coincident="clique", seed=0
+        )
+
+        numpy.testing.assert_array_equal(
+            heads, numpy.vectorize(self.mapping.get)(exp_heads)
+        )
+        numpy.testing.assert_array_equal(
+            tails, numpy.vectorize(self.mapping.get)(exp_tails)
+        )
+        numpy.testing.assert_array_equal(weights, exp_w)
+
+    def test_voronoi_error(self):
+        with pytest.raises(
+            ValueError,
+            match="There are 5 unique locations in the dataset, but 6 observations",
+        ):
+            _voronoi(self.df_int)
+
+    def test_voronoi_jitter(self):
+        heads, tails, weights = _voronoi(self.df_int, coincident="jitter", seed=0)
+
+        exp_heads = numpy.array([0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5])
+        exp_tails = numpy.array([1, 2, 4, 0, 2, 3, 4, 5, 3, 0, 1, 1, 2, 5, 0, 1, 1, 3])
+        exp_w = numpy.ones(exp_heads.shape, dtype="int8")
+
+        numpy.testing.assert_array_equal(heads, exp_heads)
+        numpy.testing.assert_array_equal(tails, exp_tails)
+
+        heads, tails, weights = _voronoi(self.df_string, coincident="jitter", seed=0)
+
+        numpy.testing.assert_array_equal(
+            heads, numpy.vectorize(self.mapping.get)(exp_heads)
+        )
+        numpy.testing.assert_array_equal(
+            tails, numpy.vectorize(self.mapping.get)(exp_tails)
+        )
+        numpy.testing.assert_array_equal(weights, exp_w)
+
+    @pytest.mark.xfail
+    def test_voronoi_clique(self):
+        # TODO: fix the implemntation to make this pass
+        heads, tails, weights = _voronoi(self.df_int, coincident="clique", seed=0)
+
+        exp_heads = numpy.array([0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5])
+        # the order may be different in the end but observations not
+        exp_tails = numpy.array([1, 4, 0, 2, 3, 5, 1, 3, 1, 2, 5, 0, 1, 1, 3])
+        exp_w = numpy.ones(exp_heads.shape, dtype="int8")
+
+        numpy.testing.assert_array_equal(heads, exp_heads)
+        numpy.testing.assert_array_equal(tails, exp_tails)
+
+        heads, tails, weights = _voronoi(self.df_string, coincident="clique", seed=0)
+
+        numpy.testing.assert_array_equal(
+            heads, numpy.vectorize(self.mapping.get)(exp_heads)
+        )
+        numpy.testing.assert_array_equal(
+            tails, numpy.vectorize(self.mapping.get)(exp_tails)
+        )
+        numpy.testing.assert_array_equal(weights, exp_w)

@@ -1,5 +1,6 @@
 from functools import cached_property
 import math
+from multiprocessing import Value
 
 import numpy as np
 import pandas as pd
@@ -30,6 +31,9 @@ class Graph(_Set_Mixin):
 
         It is recommenced to use one of the ``from_*`` or ``build_*`` constructors
         rather than invoking ``__init__`` directly.
+
+        Each observation needs to be present in the focal, at least as a self-loop with
+        a weight 0.
 
         Parameters
         ----------
@@ -189,6 +193,12 @@ class Graph(_Set_Mixin):
         sparse = sparse.tocoo(copy=False)
         if ids is not None:
             ids = np.asarray(ids)
+            if sparse.shape[0] != ids.shape[0]:
+                raise ValueError(
+                    f"The length of ids ({ids.shape[0]}) does not match "
+                    f"the shape of sparse {sparse.shape}."
+                )
+
             sorter = sparse.row.argsort()
             head = ids[sparse.row][sorter]
             tail = ids[sparse.col][sorter]
@@ -204,6 +214,9 @@ class Graph(_Set_Mixin):
     @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight):
         """Generate Graph from arrays of indices and weights of the same length
+
+        The arrays needs to be sorted in a way ensuring that focal_ids.unique() is
+        equal to the index of original observations from which the Graph is being built
 
         Parameters
         ----------
@@ -393,7 +406,6 @@ class Graph(_Set_Mixin):
         # TODO: ensure sorting
 
         return cls.from_arrays(head, tail, weight)
-
 
     @classmethod
     def build_knn(cls, data, k, metric="euclidean", p=2):
@@ -878,9 +890,7 @@ class Graph(_Set_Mixin):
 
     @cached_property
     def unique_ids(self):
-        return pd.concat(
-            [self._adjacency.index.to_series(), self._adjacency.neighbor]
-        ).unique()
+        return self._adjacency.index.to_series().unique()
 
     @cached_property
     def n(self):
