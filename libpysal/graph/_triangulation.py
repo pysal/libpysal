@@ -111,8 +111,12 @@ def _validate_coincident(triangulator):
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
 
         # ensure proper sorting
-        mapping = dict(zip(ids, range(len(ids))))
-        sorted_index = adjtable.focal.map(mapping).sort_values().index
+        sorted_index = (
+            adjtable[["focal", "neighbor"]]
+            .applymap(list(ids).index)
+            .sort_values(["focal", "neighbor"])
+            .index
+        )
 
         # return data for Graph.from_arrays
         return heads[sorted_index], tails[sorted_index], weights[sorted_index]

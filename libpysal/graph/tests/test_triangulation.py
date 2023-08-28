@@ -234,7 +234,7 @@ class Test_Coincident:
             [0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5]
         )
         exp_tails = numpy.array(
-            [1, 2, 4, 0, 2, 3, 4, 5, 3, 1, 0, 1, 2, 5, 0, 1, 5, 1, 3, 4]
+            [1, 2, 4, 0, 2, 3, 4, 5, 0, 1, 3, 1, 2, 5, 0, 1, 5, 1, 3, 4]
         )
         exp_w = numpy.ones(exp_heads.shape, dtype="int8")
 
@@ -259,9 +259,8 @@ class Test_Coincident:
         exp_heads = numpy.array(
             [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
         )
-        # the order may be different in the end but observations not
         exp_tails = numpy.array(
-            [1, 2, 5, 4, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
+            [1, 2, 4, 5, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
         )
         exp_w = numpy.ones(exp_heads.shape, dtype="int8")
 
@@ -289,7 +288,7 @@ class Test_Coincident:
         heads, tails, weights = _gabriel(self.df_int, coincident="jitter", seed=0)
 
         exp_heads = numpy.array([0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5])
-        exp_tails = numpy.array([4, 2, 2, 5, 3, 4, 1, 0, 3, 1, 2, 5, 0, 1, 1, 3])
+        exp_tails = numpy.array([2, 4, 2, 3, 4, 5, 0, 1, 3, 1, 2, 5, 0, 1, 1, 3])
         exp_w = numpy.ones(exp_heads.shape, dtype="int8")
 
         numpy.testing.assert_array_equal(heads, exp_heads)
@@ -313,9 +312,8 @@ class Test_Coincident:
         exp_heads = numpy.array(
             [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
         )
-        # the order may be different in the end but observations not
         exp_tails = numpy.array(
-            [1, 2, 5, 4, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
+            [1, 2, 4, 5, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
         )
         exp_w = numpy.ones(exp_heads.shape, dtype="int8")
 
@@ -345,7 +343,7 @@ class Test_Coincident:
         )
 
         exp_heads = numpy.array([0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5])
-        exp_tails = numpy.array([1, 2, 4, 0, 3, 4, 5, 3, 0, 1, 2, 5, 0, 1, 5, 3, 1, 4])
+        exp_tails = numpy.array([1, 2, 4, 0, 3, 4, 5, 0, 3, 1, 2, 5, 0, 1, 5, 1, 3, 4])
         exp_w = numpy.ones(exp_heads.shape, dtype="int8")
 
         numpy.testing.assert_array_equal(heads, exp_heads)
@@ -373,9 +371,8 @@ class Test_Coincident:
         exp_heads = numpy.array(
             [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
         )
-        # the order may be different in the end but observations not
         exp_tails = numpy.array(
-            [1, 2, 5, 4, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
+            [1, 2, 4, 5, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
         )
         exp_w = numpy.ones(exp_heads.shape, dtype="int8")
 
@@ -405,7 +402,7 @@ class Test_Coincident:
         heads, tails, weights = _voronoi(self.df_int, coincident="jitter", seed=0)
 
         exp_heads = numpy.array([0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5])
-        exp_tails = numpy.array([1, 2, 4, 0, 2, 3, 4, 5, 3, 0, 1, 1, 2, 5, 0, 1, 1, 3])
+        exp_tails = numpy.array([1, 2, 4, 0, 2, 3, 4, 5, 0, 1, 3, 1, 2, 5, 0, 1, 1, 3])
         exp_w = numpy.ones(exp_heads.shape, dtype="int8")
 
         numpy.testing.assert_array_equal(heads, exp_heads)
@@ -427,7 +424,6 @@ class Test_Coincident:
         heads, tails, weights = _voronoi(self.df_int, coincident="clique", seed=0)
 
         exp_heads = numpy.array([0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5])
-        # the order may be different in the end but observations not
         exp_tails = numpy.array([1, 4, 0, 2, 3, 5, 1, 3, 1, 2, 5, 0, 1, 1, 3])
         exp_w = numpy.ones(exp_heads.shape, dtype="int8")
 
