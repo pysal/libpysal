@@ -797,7 +797,7 @@ class Graph(_Set_Mixin):
             .reindex(ids, level=1)
         )
         # pivot to COO sparse matrix and cast to array
-        return sparse.coo_array(adj.sparse.to_coo()[0])
+        return sparse.coo_array(adj.sparse.to_coo(sort_labels=True)[0])
 
     @cached_property
     def _id2i(self):
