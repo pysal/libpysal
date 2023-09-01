@@ -183,14 +183,16 @@ class Graph(_Set_Mixin):
 
     @classmethod
     def from_adjacency(
-        cls, adjacency, focal="focal", neighbor="neighbor", weight="weight"
+        cls, adjacency, focal_col="focal", neighbor_col="neighbor", weight_col="weight"
     ):
         """Create a Graph from a pandas DataFrame formatted as an adjacency list
 
         Parameters
         ----------
         dataframe : pandas.DataFrame
-            _description_
+            a dataframe formatted as an ajacency list. Should have columns
+            "focal", "neighbor", and "weight", or columns that can be mapped
+            to these (e.g. origin, destination, cost)
         focal : str, optional
             name of column holding focal/origin index, by default 'focal'
         neighbor : str, optional
@@ -203,7 +205,17 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph
         """
-        mapping = {focal: "focal", neighbor: "neighbor", weight: "weight"}
+        cols = dict(
+            zip(
+                [focal_col, neighbor_col, weight_col],["focal", "neighbor", "weight"]
+            )
+        )
+        for col in cols.keys():
+            assert col in adjacency.columns.tolist(), (
+                f"{col} was provided as the column for {cols[col]} but it is not in the "
+                f"available columns: {adjacency.columns.tolist()}."
+            )
+        mapping = {focal_col: "focal", neighbor_col: "neighbor", weight_col: "weight"}
         adjacency = adjacency.rename(columns=mapping).set_index("focal")
         return cls(adjacency)
 
