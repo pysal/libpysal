@@ -82,8 +82,16 @@ class Graph(_Set_Mixin):
                 f"'transformation' needs to be one of {ALLOWED_TRANSFORMATIONS}. "
                 f"'{transformation}' was given instead."
             )
-
-        self._adjacency = adjacency
+        # adjacency always ordered i-->j on both levels
+        ids = adjacency.index.unique().values
+        adjacency = (
+            adjacency.reset_index()
+            .set_index(["focal", "neighbor"])
+            .reindex(ids, level=0)
+            .reindex(ids, level=1)
+            .reset_index()
+        )
+        self._adjacency = adjacency.set_index("focal")
         self.transformation = transformation
 
     def __getitem__(self, item):
@@ -172,6 +180,32 @@ class Graph(_Set_Mixin):
         )
         weights.index = labels[weights.index]
         return W(neighbors.to_dict(), weights.to_dict(), id_order=labels.tolist())
+
+    @classmethod
+    def from_adjacency(
+        cls, adjacency, focal="focal", neighbor="neighbor", weight="weight"
+    ):
+        """Create a Graph from a pandas DataFrame formatted as an adjacency list
+
+        Parameters
+        ----------
+        dataframe : pandas.DataFrame
+            _description_
+        focal : str, optional
+            name of column holding focal/origin index, by default 'focal'
+        neighbor : str, optional
+            name of column holding neighbor/destination index, by default 'neighbor'
+        weight : str, optional
+            name of column holding weight values, by default 'weight'
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph
+        """
+        mapping = {focal: "focal", neighbor: "neighbor", weight: "weight"}
+        adjacency = adjacency.rename(columns=mapping).set_index("focal")
+        return cls(adjacency)
 
     @classmethod
     def from_sparse(cls, sparse, ids=None):
@@ -622,8 +656,7 @@ class Graph(_Set_Mixin):
         ]
         # set isolates to 0 - distance band should never contain self-weight
         adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
-
-        # TODO ensure sorting
+        # re-sort using canonical order
 
         return cls(adjacency)
 
@@ -1096,11 +1129,9 @@ def _arrange_arrays(heads, tails, weights, ids=None):
     to heads *first*, then sorted within the tails.
     """
     if ids is None:
-        ids = numpy.unique(numpy.hstack((heads, tails)))
+        ids = np.unique(np.hstack((heads, tails)))
     lookup = list(ids).index
-    input_df = pandas.DataFrame.from_dict(
-        dict(focal=heads, neighbor=tails, weight=weights)
-    )
+    input_df = pd.DataFrame.from_dict(dict(focal=heads, neighbor=tails, weight=weights))
     return (
         input_df.set_index(["focal", "neighbor"])
         .assign(
