@@ -189,7 +189,7 @@ class Graph(_Set_Mixin):
 
         Parameters
         ----------
-        dataframe : pandas.DataFrame
+        adjacency : pandas.DataFrame
             a dataframe formatted as an ajacency list. Should have columns
             "focal", "neighbor", and "weight", or columns that can be mapped
             to these (e.g. origin, destination, cost)
@@ -207,13 +207,14 @@ class Graph(_Set_Mixin):
         """
         cols = dict(
             zip(
-                [focal_col, neighbor_col, weight_col],["focal", "neighbor", "weight"]
+                [focal_col, neighbor_col, weight_col],
+                ["focal_col", "neighbor_col", "weight_col"],
             )
         )
         for col in cols.keys():
             assert col in adjacency.columns.tolist(), (
-                f"{col} was provided as the column for {cols[col]} but it is not in the "
-                f"available columns: {adjacency.columns.tolist()}."
+                f'"{col}" was given for `{cols[col]}`, but the '
+                f"columns available in `adjacency` are:  {adjacency.columns.tolist()}."
             )
         mapping = {focal_col: "focal", neighbor_col: "neighbor", weight_col: "weight"}
         adjacency = adjacency.rename(columns=mapping).set_index("focal")
