@@ -657,8 +657,14 @@ class Graph(_Set_Mixin):
         # set isolates to 0 - distance band should never contain self-weight
         adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
         # re-sort using canonical order
-
-        return cls(adjacency)
+        adjacency = (
+            adjacency.reset_index()
+            .set_index(["focal", "neighbor"])
+            .reindex(ids, level=0)
+            .reindex(ids, level=1)
+            .reset_index()
+        )
+        return cls(adjacency.set_index("focal"))
 
     @classmethod
     def build_block_contiguity(cls, regimes):
@@ -781,16 +787,17 @@ class Graph(_Set_Mixin):
         scipy.sparse.COO
             sparse representation of the adjacency
         """
-        return sparse.coo_array(
-            (
-                self._adjacency.weight.values,
-                (
-                    self._adjacency.index.map(self._id2i),
-                    self._adjacency.neighbor.map(self._id2i),
-                ),
-            ),
-            shape=(self.n, self.n),
+        ids = list(self._id2i.keys())
+        # convert to multiindex series with sparse dtype
+        adj = (
+            self.adjacency.reset_index()
+            .set_index(["focal", "neighbor"])["weight"]
+            .astype("Sparse[float]")
+            .reindex(ids, level=0)
+            .reindex(ids, level=1)
         )
+        # pivot to COO sparse matrix and cast to array
+        return sparse.coo_array(adj.sparse.to_coo()[0])
 
     @cached_property
     def _id2i(self):
