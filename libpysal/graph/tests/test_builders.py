@@ -214,3 +214,137 @@ class TestDistanceBand:
         assert pd.api.types.is_string_dtype(G._adjacency.index.dtype)
         assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)
         assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+
+class TestAdjacency:
+    def setup_method(self):
+        self.gdf = gpd.read_file(geodatasets.get_path("nybb"))
+        self.gdf_str = self.gdf.set_index("BoroName")
+        self.expected_adjacency_intid = pd.DataFrame(
+            {
+                "focal": {
+                    0: 0,
+                    1: 1,
+                    2: 1,
+                    3: 1,
+                    4: 2,
+                    5: 2,
+                    6: 3,
+                    7: 3,
+                    8: 3,
+                    9: 4,
+                    10: 4,
+                },
+                "neighbor": {
+                    0: 0,
+                    1: 2,
+                    2: 3,
+                    3: 4,
+                    4: 1,
+                    5: 3,
+                    6: 1,
+                    7: 2,
+                    8: 4,
+                    9: 1,
+                    10: 3,
+                },
+                "weight": {
+                    0: 0,
+                    1: 1,
+                    2: 1,
+                    3: 1,
+                    4: 1,
+                    5: 1,
+                    6: 1,
+                    7: 1,
+                    8: 1,
+                    9: 1,
+                    10: 1,
+                },
+            }
+        )
+        self.expected_adjacency_strid = pd.DataFrame(
+            {
+                "focal": {
+                    0: "Staten Island",
+                    1: "Queens",
+                    2: "Queens",
+                    3: "Queens",
+                    4: "Brooklyn",
+                    5: "Brooklyn",
+                    6: "Manhattan",
+                    7: "Manhattan",
+                    8: "Manhattan",
+                    9: "Bronx",
+                    10: "Bronx",
+                },
+                "neighbor": {
+                    0: "Staten Island",
+                    1: "Brooklyn",
+                    2: "Manhattan",
+                    3: "Bronx",
+                    4: "Queens",
+                    5: "Manhattan",
+                    6: "Queens",
+                    7: "Brooklyn",
+                    8: "Bronx",
+                    9: "Queens",
+                    10: "Manhattan",
+                },
+                "weight": {
+                    0: 0,
+                    1: 1,
+                    2: 1,
+                    3: 1,
+                    4: 1,
+                    5: 1,
+                    6: 1,
+                    7: 1,
+                    8: 1,
+                    9: 1,
+                    10: 1,
+                },
+            }
+        )
+
+    def test_adjacency_intids(self):
+        G = graph.Graph.from_adjacency(
+            self.expected_adjacency_intid,
+        )
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+    def test_adjacency_strids(self):
+        G = graph.Graph.from_adjacency(
+            self.expected_adjacency_strid,
+        )
+
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtype)
+        assert pd.api.types.is_string_dtype(G._adjacency.neighbor.dtype)
+        assert pd.api.types.is_numeric_dtype(G._adjacency.weight.dtype)
+
+    def test_adjacency_rename(self):
+        adj = self.expected_adjacency_intid
+        adj.columns = ["focal", "neighbor", "cost"]  # no longer named weight
+        G = graph.Graph.from_adjacency(adj, weight_col="cost")
+
+    def test_adjacency_wrong(self):
+        adj = self.expected_adjacency_intid
+        adj.columns = ["focal", "neighbor", "cost"]  # no longer named weight
+        try:
+            G = graph.Graph.from_adjacency(
+                adj,
+            )
+        except AssertionError as e:
+            pass
+
+    def test_adjacency_match_contiguity(self):
+        contiguity_adj = graph.Graph.build_contiguity(self.gdf).adjacency
+        built_adj = graph.Graph.from_adjacency(self.expected_adjacency_intid)
+        assert contiguity_adj.equals(built_adj)
+
+        contiguity_adj_str = graph.Graph.build_contiguity(self.gdf_str).adjacency
+        built_adj_str = graph.Graph.from_adjacency(self.contiguity_adj_str)
+        assert contiguity_adj_str.equals(built_adj_str)
