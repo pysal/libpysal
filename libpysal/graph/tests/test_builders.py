@@ -342,9 +342,11 @@ class TestAdjacency:
 
     def test_adjacency_match_contiguity(self):
         contiguity_adj = graph.Graph.build_contiguity(self.gdf).adjacency
-        built_adj = graph.Graph.from_adjacency(self.expected_adjacency_intid)
+        built_adj = graph.Graph.from_adjacency(self.expected_adjacency_intid).adjacency
         assert contiguity_adj.equals(built_adj)
 
         contiguity_adj_str = graph.Graph.build_contiguity(self.gdf_str).adjacency
-        built_adj_str = graph.Graph.from_adjacency(self.contiguity_adj_str)
+        built_adj_str = graph.Graph.from_adjacency(
+            self.expected_adjacency_strid
+        ).adjacency
         assert contiguity_adj_str.equals(built_adj_str)
