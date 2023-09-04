@@ -1,27 +1,28 @@
-from functools import cached_property
 import math
-from multiprocessing import Value
+from functools import cached_property
 
 import numpy as np
 import pandas as pd
 from scipy import sparse
 
 from libpysal.weights import W
-from ._contiguity import _queen, _rook, _vertex_set_intersection, _block_contiguity
-from ._kernel import _kernel, _distance_band
-from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
-from ._set_ops import _Set_Mixin
-from ._utils import _neighbor_dict_to_edges, _evaluate_index
+
+from ._contiguity import _block_contiguity, _queen, _rook, _vertex_set_intersection
+from ._kernel import _distance_band, _kernel
 from ._parquet import _read_parquet, _to_parquet
+from ._set_ops import _Set_Mixin
 from ._spatial_lag import _lag_spatial
+from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
+from ._utils import _evaluate_index, _neighbor_dict_to_edges
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
+# listed alphabetically
 __author__ = """"
-Levi John Wolf (levi.john.wolf@gmail.com)
 Martin Fleischmann (martin@martinfleischmann.net)
-Serge Rey (sjsrey@gmail.com)
 Eli Knaap (ek@knaaptime.com)
+Serge Rey (sjsrey@gmail.com)
+Levi John Wolf (levi.john.wolf@gmail.com)
 """
 
 
@@ -450,7 +451,6 @@ class Graph(_Set_Mixin):
             p=p,
             ids=ids,
         )
-        # TODO: ensure sorting
 
         return cls.from_arrays(head, tail, weight)
 
@@ -492,8 +492,6 @@ class Graph(_Set_Mixin):
             p=p,
             ids=ids,
         )
-
-        # TODO: ensure sorting
 
         return cls.from_arrays(head, tail, weight)
 
@@ -669,15 +667,8 @@ class Graph(_Set_Mixin):
         ]
         # set isolates to 0 - distance band should never contain self-weight
         adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
-        # re-sort using canonical order
-        adjacency = (
-            adjacency.reset_index()
-            .set_index(["focal", "neighbor"])
-            .reindex(ids, level=0)
-            .reindex(ids, level=1)
-            .reset_index()
-        )
-        return cls(adjacency.set_index("focal"))
+
+        return cls(adjacency)
 
     @classmethod
     def build_block_contiguity(cls, regimes):
