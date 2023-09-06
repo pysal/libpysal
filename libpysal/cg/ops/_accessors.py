@@ -1,17 +1,6 @@
 import functools as _f
 
-__all__ = [
-    "area",
-    "bbox",
-    "bounding_box",
-    "centroid",
-    "holes",
-    "len",
-    "parts",
-    "perimeter",
-    "segments",
-    "vertices",
-]
+__all__ = []
 
 
 def get_attr(df, geom_col="geometry", inplace=False, attr=None):
