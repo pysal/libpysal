@@ -130,8 +130,11 @@ def issubgraph(left, right):
     Return True if every link in the left Graph also occurs in the right Graph. This requires
     both Graph are label_equal.
     """
-    join = left.adjacency.merge(
-        right.adjacency, on=("focal", "neighbor"), how="outer", indicator=True
+    join = left.adjacency.reset_index(level=1).merge(
+        right.adjacency.reset_index(level=1),
+        on=("focal", "neighbor"),
+        how="outer",
+        indicator=True,
     )
     return not (join._merge == "left_only").any()
 
@@ -141,8 +144,11 @@ def issupergraph(left, right):
     Return True if every link in the left Graph also occurs in the right Graph. This requires
     both Graph are label_equal.
     """
-    join = left.adjacency.merge(
-        right.adjacency, on=("focal", "neighbor"), how="outer", indicator=True
+    join = left.adjacency.reset_index(level=1).merge(
+        right.adjacency.reset_index(level=1),
+        on=("focal", "neighbor"),
+        how="outer",
+        indicator=True,
     )
     return not (join._merge == "right_only").any()
 
@@ -194,9 +200,9 @@ def label_equals(left, right):
     label_equal to right
     """
     try:
-        pandas.testing.assert_frame_equal(
-            left._adjacency.sort_values(["focal", "neighbor"]),
-            right._adjacency.sort_values(["focal", "neighbor"]),
+        pandas.testing.assert_series_equal(
+            left._adjacency.sort_index(),
+            right._adjacency.sort_index(),
             check_dtype=False,
         )
     except AssertionError:

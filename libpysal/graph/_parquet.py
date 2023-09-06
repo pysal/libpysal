@@ -23,7 +23,7 @@ def _to_parquet(G, destination, **kwargs):
         import pyarrow.parquet as pq
     except (ImportError, ModuleNotFoundError):
         raise ImportError("pyarrow is required for `to_parquet`.")
-    table = pa.Table.from_pandas(G._adjacency)
+    table = pa.Table.from_pandas(G._adjacency.to_frame())
 
     meta = table.schema.metadata
     d = {"transformation": G.transformation, "version": libpysal.__version__}
@@ -60,4 +60,4 @@ def _read_parquet(source, **kwargs):
     else:
         transformation = "O"
 
-    return table.to_pandas(), transformation
+    return table.to_pandas()["weight"], transformation

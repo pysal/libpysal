@@ -113,11 +113,11 @@ def test_correctness_voronoi_clipping():
         numpy.array([2, 3, 4, 4, 0, 3, 0, 2, 0, 1]),
     ]
 
-    numpy.testing.assert_array_equal(G_extent.adjacency.index, extent_known[0])
-    numpy.testing.assert_array_equal(G_extent.adjacency.neighbor, extent_known[1])
+    numpy.testing.assert_array_equal(G_extent.adjacency.index.get_level_values(0), extent_known[0])
+    numpy.testing.assert_array_equal(G_extent.adjacency.index.get_level_values(1), extent_known[1])
 
-    numpy.testing.assert_array_equal(G_alpha.adjacency.index, alpha_known[0])
-    numpy.testing.assert_array_equal(G_alpha.adjacency.neighbor, alpha_known[1])
+    numpy.testing.assert_array_equal(G_alpha.adjacency.index.get_level_values(0), alpha_known[0])
+    numpy.testing.assert_array_equal(G_alpha.adjacency.index.get_level_values(1), alpha_known[1])
 
 
 # TODO: this now fails, probably never worked.

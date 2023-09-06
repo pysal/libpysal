@@ -161,6 +161,13 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     )
 
 
+def _validate_sparse_input(sparse, ids=None):
+    assert (
+        sparse.shape[0] == sparse.shape[1]
+    ), "coordinates should represent a distance matrix if metric='precomputed'"
+    return _sparse_to_arrays(sparse, ids)
+
+
 def lat2Graph(nrows=5, ncols=5, rook=True, id_type="int"):
     """
     Create a Graph object for a regular lattice.
