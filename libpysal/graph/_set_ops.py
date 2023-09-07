@@ -34,46 +34,42 @@ class _Set_Mixin:
         return symmetric_difference(self, other)
 
     def __iand__(self, other):
-        raise TypeError("weights are immutable")
+        raise TypeError("Graphs are immutable")
 
     def __ior__(self, other):
-        raise TypeError("weights are immutable")
+        raise TypeError("Graphs are immutable")
 
     def __len__(self):
         return self.n_edges
 
 
-# TODO: performance test the pandas implementation
 def intersects(left, right):
     """
-    A full table join is unnecessary here, but I'm not sure if
-    it would be faster? pandas joins are very fast, even for big tables,
-    but this can do early termination at the first intersection.
-
-    Maybe we use a heuristic to pick the fastest code path? It's also
-    very easy to do early termination in cython/numba using the row,col array.
+    Returns True if left and right share at least one link, irrespective of weights
+    value.
     """
-    for left_focal, left_neighbors in left.neighbors.keys():
-        right_neighbors = right.neighbors.get(left_focal)
-        if right_neighbors is not None:
-            if set(right_neighbors).intersects(set(left_neighbors)):
-                return True
+    if left._adjacency.index.isin(right._adjacency.index).any():
+        return True
     return False
-    return not left.adjacency.join(
-        right.adjacency, on=("focal", "neighbor"), how="inner"
-    ).empty
 
 
 def intersection(left, right):
     """
-    Keep only links that are in both left and right Graph objects.
+    Returns a binary weights object, that includes only those neighbor pairs that exist
+    in both left and right.
     """
     from .base import Graph
 
-    new_table = left.adjacency.join(
-        right.adjacency, on=("focal", "neighbor"), how="inner"
+    intersecting = (
+        left._adjacency[left._adjacency.index.isin(right._adjacency.index)]
+        .astype(bool)
+        .astype(int)
     )
-    return Graph(new_table)
+
+    # TODO: do we need to insert isolates? What if left and right have different indices?
+    # TODO: do we need to check if left and right are compatible? e.g. using same indices with the same shape of sparse?
+
+    return Graph(intersecting, transformation="b")
 
 
 def symmetric_difference(left, right):
