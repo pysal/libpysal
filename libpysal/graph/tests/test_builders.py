@@ -60,6 +60,52 @@ class TestContiguity:
         assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
 
+    def test_vertex_intids_perimeter(self):
+        G = graph.Graph.build_contiguity(self.gdf, by_perimeter=True)
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+
+    def test_vertex_strid_perimeters(self):
+        G = graph.Graph.build_contiguity(self.gdf_str, by_perimeter=True)
+
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+
+    def test_rook_intids_perimeter(self):
+        G = graph.Graph.build_contiguity(self.gdf, strict=True, by_perimeter=True)
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+
+    def test_rook_strid_perimeters(self):
+        G = graph.Graph.build_contiguity(self.gdf_str, strict=True, by_perimeter=True)
+
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+
+    def test_queen_intid_perimeters(self):
+        G = graph.Graph.build_contiguity(
+            self.gdf, rook=False, strict=True, by_perimeter=True
+        )
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+
+    def test_queen_strids_perimeter(self):
+        G = graph.Graph.build_contiguity(
+            self.gdf_str, rook=False, strict=True, by_perimeter=True
+        )
+
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+
     def test_block_contiguity(self):
         regimes = ["n", "n", "s", "s", "e", "e", "w", "w", "e", "l"]
         G = graph.Graph.build_block_contiguity(regimes)
