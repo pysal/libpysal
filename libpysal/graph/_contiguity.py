@@ -257,8 +257,11 @@ def _fuzzy_contiguity(
 
     Parameters
     ----------
-    geoms : geopandas.GeoSeries | geopandas.GeoDataFrame
-        Geometries. The resulting adjacency will be indexed using ``geoms.index``.
+    geoms : array-like of shapely.Geometry objects
+        Could be geopandas.GeoSeries or geopandas.GeoDataFrame, in which case ids need
+        to match geoms.index.
+    ids : array
+        ids to be used index of the adjacency
     tolerance : float, optional
         The percentage of the length of the minimum side of the bounding rectangle
         for the ``geoms`` to use in determining the buffering distance. Either
