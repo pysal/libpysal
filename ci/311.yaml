@@ -23,3 +23,5 @@ dependencies:
   - shapely>=2.0b1
   - xarray
   - zstd
+  - geodatasets
+  - pyarrow

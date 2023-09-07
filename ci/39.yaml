@@ -22,3 +22,5 @@ dependencies:
   - numba
   - packaging
   - zstd
+  - geodatasets
+  - pyarrow

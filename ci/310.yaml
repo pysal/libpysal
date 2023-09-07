@@ -22,6 +22,8 @@ dependencies:
   - numba
   - packaging
   - zstd
+  - geodatasets
+  - pyarrow
   # for docs build action (this env only)
   - nbsphinx
   - numpydoc
