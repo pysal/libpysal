@@ -201,7 +201,17 @@ def _resolve_islands(heads, tails, ids, weights):
         heads = numpy.hstack((heads, islands))
         tails = numpy.hstack((tails, islands))
         weights = numpy.hstack((weights, numpy.zeros_like(islands, dtype=int)))
-    return heads, tails, weights
+
+    # ensure proper order after adding isolates to the end
+    adjacency = pandas.Series(
+        weights, index=pandas.MultiIndex.from_arrays([heads, tails])
+    )
+    adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
+    return (
+        adjacency.index.get_level_values(0),
+        adjacency.index.get_level_values(1),
+        adjacency.values,
+    )
 
 
 def _block_contiguity(regimes, ids=None):
@@ -233,3 +243,59 @@ def _block_contiguity(regimes, ids=None):
         for member in members:
             neighbors[member] = members[members != member]
     return neighbors
+
+
+def _fuzzy_contiguity(
+    geoms,
+    tolerance=None,
+    buffer=None,
+    predicate="intersects",
+):
+    """Fuzzy contiguity builder
+
+    Parameters
+    ----------
+    geoms : geopandas.GeoSeries | geopandas.GeoDataFrame
+        Geometries. The resulting adjacency will be indexed using ``geoms.index``.
+    tolerance : float, optional
+        The percentage of the length of the minimum side of the bounding rectangle
+        for the ``geoms`` to use in determining the buffering distance. Either
+        ``tolerance`` or ``buffer`` may be specified but not both.
+        By default None.
+    buffer : float, optional
+        Exact buffering distance in the units of ``geoms.crs``. Either
+        ``tolerance`` or ``buffer`` may be specified but not both.
+        By default None.
+    predicate : str, optional
+        The predicate to use for determination of neighbors. Default is 'intersects'.
+        If None is passed, neighbours are determined based on the intersection of
+        bounding boxes. See the documentation of ``geopandas.GeoSeries.sindex.query``
+        for allowed predicates.
+
+    Returns
+    -------
+    tuple
+        tuple of ``heads``, ``tails``, ``weights`` arrays
+    """
+    if buffer is not None and tolerance is not None:
+        raise ValueError(
+            "Only one of `tolerance` and `buffer` can be speciifed, not both."
+        )
+
+    if tolerance is not None:
+        minx, miny, maxx, maxy = geoms.total_bounds
+        buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
+
+    if buffer is not None:
+        geoms = geoms.buffer(buffer)
+
+    # query tree based on set predicate
+    head, tail = geoms.sindex.query(geoms.geometry, predicate=predicate)
+    # remove self hits
+    itself = head == tail
+    heads = geoms.index[head[~itself]]
+    tails = geoms.index[tail[~itself]]
+
+    weights = numpy.ones_like(heads, dtype=int)
+
+    return _resolve_islands(heads, tails, geoms.index.values, weights=weights)
