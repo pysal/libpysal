@@ -132,11 +132,13 @@ def _queen(geoms, ids=None, by_perimeter=False):
         geoms, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
     heads_ix, tails_ix = shapely.STRtree(geoms).query(geoms, predicate="touches")
+    heads, tails = ids[heads_ix], ids[tails_ix]
+
     if by_perimeter:
-        weights = _perimeter_weights(geoms, heads_ix, tails_ix)
+        weights = _perimeter_weights(geoms, heads, tails)
     else:
         weights = numpy.ones_like(heads_ix, dtype=int)
-    heads, tails = ids[heads_ix], ids[tails_ix]
+
     return _resolve_islands(heads, tails, ids, weights=weights)
 
 
@@ -148,9 +150,10 @@ def _rook(geoms, ids=None, by_perimeter=False):
     mask = shapely.relate_pattern(
         geoms.values[heads_ix], geoms.values[tails_ix], "F***1****"
     )
-    if by_perimeter:
-        weights = _perimeter_weights(geoms, heads_ix[mask], tails_ix[mask])
     heads, tails = ids[heads_ix][mask], ids[tails_ix][mask]
+    if by_perimeter:
+        weights = _perimeter_weights(geoms, heads, tails)
+
     if not by_perimeter:
         weights = numpy.ones_like(heads, dtype=int)
 
@@ -176,11 +179,7 @@ def _perimeter_weights(geoms, heads, tails):
     This is a private method, so strict conditions
     on input data are expected.
     """
-    geoms_w_precision = shapely.set_precision(geoms, 6)
-    intersection = shapely.intersection(
-        shapely.set_precision(geoms_w_precision[heads].values, 6),
-        geoms_w_precision[tails].values,
-    )
+    intersection = shapely.intersection(geoms[heads].values, geoms[tails].values)
     geom_types = shapely.get_type_id(intersection)
 
     # check if the intersection resulted in (Multi)Polygon
