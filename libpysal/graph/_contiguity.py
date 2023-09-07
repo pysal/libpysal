@@ -176,7 +176,11 @@ def _perimeter_weights(geoms, heads, tails):
     This is a private method, so strict conditions
     on input data are expected.
     """
-    intersection = shapely.intersection(geoms[heads].values, geoms[tails].values)
+    geoms_w_precision = shapely.set_precision(geoms, 6)
+    intersection = shapely.intersection(
+        shapely.set_precision(geoms_w_precision[heads].values, 6),
+        geoms_w_precision[tails].values,
+    )
     geom_types = shapely.get_type_id(intersection)
 
     # check if the intersection resulted in (Multi)Polygon
