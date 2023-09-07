@@ -254,7 +254,7 @@ def _prepare_tree_query(coordinates, metric, p=2):
             from scipy.spatial import KDTree as tree
 
             tree_ = tree(coordinates)
-            p = {"euclidean": 2, "manhattan": 1, "cityblock": 1, "minkowski": p}
+            p = {"euclidean": 2, "manhattan": 1, "cityblock": 1, "minkowski": p}[metric]
 
             def query(target, k):
                 return tree_.query(target, k=k, p=p)
