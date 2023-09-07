@@ -743,8 +743,10 @@ class Graph(_Set_Mixin):
 
         Parameters
         ----------
-        geoms : geopandas.GeoSeries | geopandas.GeoDataFrame
-            Geometries. The resulting adjacency will be indexed using ``geoms.index``.
+        geoms :  array-like of shapely.Geometry objects
+            Could be geopandas.GeoSeries or geopandas.GeoDataFrame, in which case the
+            resulting Graph is indexed by the original index. If an array of
+            shapely.Geometry objects is passed, Graph will assume a RangeIndex.
         tolerance : float, optional
             The percentage of the length of the minimum side of the bounding rectangle
             for the ``geoms`` to use in determining the buffering distance. Either
@@ -765,8 +767,10 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph encoding fuzzy contiguity
         """
+        ids = _evaluate_index(geometry)
+
         heads, tails, weights = _fuzzy_contiguity(
-            geometry, tolerance=tolerance, buffer=buffer, predicate=predicate
+            geometry, ids, tolerance=tolerance, buffer=buffer, predicate=predicate
         )
 
         return cls.from_arrays(heads, tails, weights)

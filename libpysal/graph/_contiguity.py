@@ -3,6 +3,7 @@ from collections import defaultdict
 import numpy
 import shapely
 import pandas
+import geopandas
 
 from ._utils import _neighbor_dict_to_edges, _validate_geometry_input
 
@@ -247,6 +248,7 @@ def _block_contiguity(regimes, ids=None):
 
 def _fuzzy_contiguity(
     geoms,
+    ids,
     tolerance=None,
     buffer=None,
     predicate="intersects",
@@ -282,6 +284,9 @@ def _fuzzy_contiguity(
             "Only one of `tolerance` and `buffer` can be speciifed, not both."
         )
 
+    if not isinstance(geoms, geopandas.base.GeoPandasBase):
+        geoms = geopandas.GeoSeries(geoms, index=ids)
+
     if tolerance is not None:
         minx, miny, maxx, maxy = geoms.total_bounds
         buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
@@ -293,9 +298,9 @@ def _fuzzy_contiguity(
     head, tail = geoms.sindex.query(geoms.geometry, predicate=predicate)
     # remove self hits
     itself = head == tail
-    heads = geoms.index[head[~itself]]
-    tails = geoms.index[tail[~itself]]
+    heads = ids[head[~itself]]
+    tails = ids[tail[~itself]]
 
     weights = numpy.ones_like(heads, dtype=int)
 
-    return _resolve_islands(heads, tails, geoms.index.values, weights=weights)
+    return _resolve_islands(heads, tails, ids.values, weights=weights)
