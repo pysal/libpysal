@@ -13,13 +13,13 @@ def _sparse_to_arrays(sparray, ids=None):
 
 def _jitter_geoms(coordinates, geoms, seed=None):
     """
-    Jitter geometries based on the smallest required movements to induce 
-    uniqueness. For each point, this samples a radius and angle uniformly 
+    Jitter geometries based on the smallest required movements to induce
+    uniqueness. For each point, this samples a radius and angle uniformly
     at random from the unit circle, rescales it to a circle of values that
     are extremely small relative to the precision of the input, and
     then displaces the point. For a non-euclidean geometry, like latitude
     longitude coordinates, this will distort according to a plateé carree
-    projection, jittering slightly more in the x direction than the y direction. 
+    projection, jittering slightly more in the x direction than the y direction.
     """
     rng = np.random.default_rng(seed=seed)
     dtype = coordinates.dtype
@@ -42,9 +42,9 @@ def _jitter_geoms(coordinates, geoms, seed=None):
 
 def _induce_cliques(adjtable, clique_to_members, fill_value=1):
     """
-    induce cliques into the input graph. This connects everything within a 
+    induce cliques into the input graph. This connects everything within a
     clique together, as well as connecting all things outside of the clique
-    to all members of the clique. 
+    to all members of the clique.
 
     This does not guarantee/understand ordering of the *output* adjacency table.
     """
@@ -99,7 +99,7 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
 
 def _build_coincidence_lookup(geoms):
     """
-    Identify coincident points and create a look-up table for the coincident geometries. 
+    Identify coincident points and create a look-up table for the coincident geometries.
     """
     valid_coincident_geom_types = set(("Point",))
     if not set(geoms.geom_type) <= valid_coincident_geom_types:
@@ -166,105 +166,6 @@ def _validate_sparse_input(sparse, ids=None):
         sparse.shape[0] == sparse.shape[1]
     ), "coordinates should represent a distance matrix if metric='precomputed'"
     return _sparse_to_arrays(sparse, ids)
-
-
-def lat2Graph(nrows=5, ncols=5, rook=True, id_type="int"):
-    """
-    Create a Graph object for a regular lattice.
-
-    Parameters
-    ----------
-
-    nrows      : int
-                 number of rows
-    ncols      : int
-                 number of columns
-    rook       : boolean
-                 type of contiguity. Default is rook. For queen, rook =False
-    id_type    : string
-                 string defining the type of IDs to use in the final Graph object;
-                 options are 'int' (0, 1, 2 ...; default), 'float' (0.0,
-                 1.0, 2.0, ...) and 'string' ('id0', 'id1', 'id2', ...)
-
-    Returns
-    -------
-
-    Graph
-        libpysal.graph.Graph
-
-    Notes
-    -----
-
-    Observations are row ordered: first k observations are in row 0, next k in row 1,
-    and so on.
-
-    Examples
-    --------
-
-    >>> from libpysal.weights import lat2Graph
-    >>> w9 = lat2Graph(3,3)
-    >>> "%.3f"%w9.pct_nonzero
-    '29.630'
-    >>> w9[0] == {1: 1.0, 3: 1.0}
-    True
-    >>> w9[3] == {0: 1.0, 4: 1.0, 6: 1.0}
-    True
-    """
-    # TODO: this seems to be broken now
-    from .base import Graph
-
-    n = nrows * ncols
-    r1 = nrows - 1
-    c1 = ncols - 1
-    rid = [i // ncols for i in range(n)]  # must be floor!
-    cid = [i % ncols for i in range(n)]
-    w = {}
-    r = below = 0
-    for i in range(n - 1):
-        if rid[i] < r1:
-            below = rid[i] + 1
-            r = below * ncols + cid[i]
-            w[i] = w.get(i, []) + [r]
-            w[r] = w.get(r, []) + [i]
-        if cid[i] < c1:
-            right = cid[i] + 1
-            c = rid[i] * ncols + right
-            w[i] = w.get(i, []) + [c]
-            w[c] = w.get(c, []) + [i]
-        if not rook:
-            # southeast bishop
-            if cid[i] < c1 and rid[i] < r1:
-                r = (rid[i] + 1) * ncols + 1 + cid[i]
-                w[i] = w.get(i, []) + [r]
-                w[r] = w.get(r, []) + [i]
-            # southwest bishop
-            if cid[i] > 0 and rid[i] < r1:
-                r = (rid[i] + 1) * ncols - 1 + cid[i]
-                w[i] = w.get(i, []) + [r]
-                w[r] = w.get(r, []) + [i]
-
-    weights = {}
-    for key in w:
-        weights[key] = [1.0] * len(w[key])
-    ids = list(range(n))
-    if id_type == "string":
-        ids = ["id" + str(i) for i in ids]
-    elif id_type == "float":
-        ids = [i * 1.0 for i in ids]
-    if id_type == "string" or id_type == "float":
-        id_dict = dict(list(zip(list(range(n)), ids)))
-        alt_w = {}
-        alt_weights = {}
-        for i in w:
-            values = [id_dict[j] for j in w[i]]
-            key = id_dict[i]
-            alt_w[key] = values
-            alt_weights[key] = weights[i]
-        w = alt_w
-        weights = alt_weights
-
-    return Graph.from_dicts(weights)
-
 
 def _vec_euclidean_distances(X,Y):
     """

@@ -356,7 +356,10 @@ class Graph(_Set_Mixin):
             share at least one edge. If False, two geometries are considered neighbours
             if they share at least one vertex. By default True
         by_perimeter : bool, optional
-            TODO, by default False
+            If True, ``weight`` represents the length of the shared boundary between
+            adjacent units, by default False. For row-standardized version of perimeter
+            weights, use
+            ``Graph.build_contiguity(gdf, by_perimeter=True).transform("r")``.
         strict : bool, optional
             Use the strict topological method. If False, the contiguity is determined
             based on shared coordinates or coordinate sequences representing edges. This
