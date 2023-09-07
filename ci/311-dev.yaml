@@ -6,9 +6,6 @@ dependencies:
   - platformdirs
   - beautifulsoup4
   - jinja2
-  - pandas
-  - scipy
-  - xarray
   # testing
   - codecov
   - matplotlib
@@ -16,7 +13,9 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
-  - geopandas
+  - geos
+  - pyproj
+  - fiona
   - joblib
   - networkx
   - packaging
@@ -26,10 +25,10 @@ dependencies:
   - pyarrow
   - pip
   - pip:
-    # dev versions of packages
-    - --pre --extra-index https://pypi.anaconda.org/scipy-wheels-nightly/simple
-    - scipy
-    - pandas
-    - git+https://github.com/shapely/shapely.git@main
-    - git+https://github.com/geopandas/geopandas.git@main
-    - git+https://github.com/pydata/xarray.git@main
+      # dev versions of packages
+      - --pre --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple
+      - scipy
+      - pandas
+      - xarray
+      - git+https://github.com/shapely/shapely.git@main
+      - git+https://github.com/geopandas/geopandas.git@main
