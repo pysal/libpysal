@@ -48,6 +48,7 @@ def intersects(left, right):
     Returns True if left and right share at least one link, irrespective of weights
     value.
     """
+    raise NotImplementedError
     if left._adjacency.index.isin(right._adjacency.index).any():
         return True
     return False
@@ -58,6 +59,7 @@ def intersection(left, right):
     Returns a binary weights object, that includes only those neighbor pairs that exist
     in both left and right.
     """
+    raise NotImplementedError
     from .base import Graph
 
     intersecting = (
@@ -76,6 +78,7 @@ def symmetric_difference(left, right):
     """
     Filter out links that are in both left and right Graph objects.
     """
+    raise NotImplementedError
     from .base import Graph
 
     join = left.adjacency.merge(
@@ -88,6 +91,7 @@ def union(left, right):
     """
     Provide the union of two Graph objects, collecing all links that are in either graph.
     """
+    raise NotImplementedError
     from .base import Graph
 
     return Graph(
@@ -100,6 +104,7 @@ def difference(left, right):
     Provide the set difference between the graph on the left and the graph on the right.
     This returns all links in the left graph that are not in the right graph.
     """
+    raise NotImplementedError
     from .base import Graph
 
     join = left.adjacency.merge(
@@ -116,6 +121,7 @@ def isdisjoint(left, right):
     Return True if there are no links in the left Graph that also occur in the right Graph. If
     any link in the left Graph occurs in the right Graph, the two are not disjoint.
     """
+    raise NotImplementedError
     return not intersects(left, right)
     join = left.adjacency.join(right.adjacency, on=("focal", "neighbor"), how="inner")
     return join.empty()
@@ -126,6 +132,7 @@ def issubgraph(left, right):
     Return True if every link in the left Graph also occurs in the right Graph. This requires
     both Graph are label_equal.
     """
+    raise NotImplementedError
     join = left.adjacency.reset_index(level=1).merge(
         right.adjacency.reset_index(level=1),
         on=("focal", "neighbor"),
@@ -140,6 +147,7 @@ def issupergraph(left, right):
     Return True if every link in the left Graph also occurs in the right Graph. This requires
     both Graph are label_equal.
     """
+    raise NotImplementedError
     join = left.adjacency.reset_index(level=1).merge(
         right.adjacency.reset_index(level=1),
         on=("focal", "neighbor"),
@@ -171,6 +179,7 @@ def _identical(left, right):
     by users. Hence, this is a private function, only for developers to
     check serialisation/deserialisation issues as necessary.
     """
+    raise NotImplementedError
     try:
         pandas.testing.assert_frame_equal(left.adjacency, right.adjacency)
     except AssertionError:
@@ -211,6 +220,7 @@ def isomorphic(left, right):
     Check that two graphs are isomorphic. This requires that a re-labelling
     can be found to convert one graph into the other graph. Requires networkx.
     """
+    raise NotImplementedError
     try:
         from networkx.algorithms import isomorphism as iso
     except ImportError:
