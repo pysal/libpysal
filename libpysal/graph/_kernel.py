@@ -141,16 +141,14 @@ def _kernel(
         else:
             bandwidth = _optimize_bandwidth(D, kernel)
     if callable(kernel):
-        smooth = kernel(D.data, bandwidth)
+        D.data = kernel(D.data, bandwidth)
     else:
-        smooth = _kernel_functions[kernel](D.data, bandwidth)
-
-    sp = sparse.csc_array((smooth, D.indices, D.indptr), dtype=smooth.dtype)
+        D.data = _kernel_functions[kernel](D.data, bandwidth)
 
     if taper:
-        sp.eliminate_zeros()
+        D.eliminate_zeros()
 
-    return _sparse_to_arrays(sp, ids=ids)
+    return _sparse_to_arrays(D, ids=ids)
 
     # TODO: ensure isloates are properly handled
     # TODO: handle co-located points
