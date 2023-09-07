@@ -757,42 +757,6 @@ class Graph(_Set_Mixin):
             .to_dict()
         )
 
-    def get_neighbors(self, ix):
-        """Get neighbors for a set focal object
-
-        Parameters
-        ----------
-        ix : hashable
-            index of focal object
-
-        Returns
-        -------
-        array
-            array of indices of neighbor objects
-        """
-        if ix in self.isolates:
-            return np.array([], dtype=self._adjacency.index.dtypes["neighbor"])
-
-        return self._adjacency.loc[ix].index.get_level_values("neighbor")
-
-    def get_weights(self, ix):
-        """Get weights for a set focal object
-
-        Parameters
-        ----------
-        ix : hashable
-            index of focal object
-
-        Returns
-        -------
-        array
-            array of weights of neighbor object
-        """
-        if ix in self.isolates:
-            return np.array([], dtype=self._adjacency.dtype)
-
-        return self._adjacency.loc[ix].values
-
     @cached_property
     def sparse(self):
         """Return a scipy.sparse array (COO)
@@ -806,12 +770,6 @@ class Graph(_Set_Mixin):
         return sparse.coo_array(
             self._adjacency.astype("Sparse[float]").sparse.to_coo(sort_labels=True)[0]
         )
-
-    @cached_property
-    def _id2i(self):
-        """Mapping of index to integer position in sparse"""
-        ix = np.arange(self.unique_ids.shape[0])
-        return dict(zip(self.unique_ids, ix))
 
     def transform(self, transformation):
         """Transformation of weights
@@ -1008,13 +966,13 @@ class Graph(_Set_Mixin):
             return pd.Series(
                 index=pd.Index([], name="focal"),
                 name="neighbor",
-                dtype=self._adjacency.index.dtypes[0],
+                dtype=self._adjacency.index.dtypes["focal"],
             )
         else:
-            i2id = {v: k for k, v in self._id2i.items()}
+            i2id = dict(zip(np.arange(self.unique_ids.shape[0]), self.unique_ids))
             focal, neighbor = np.nonzero(wd)
-            focal = focal.astype(self._adjacency.index.dtypes[0])
-            neighbor = neighbor.astype(self._adjacency.index.dtypes[0])
+            focal = focal.astype(self._adjacency.index.dtypes["focal"])
+            neighbor = neighbor.astype(self._adjacency.index.dtypes["focal"])
             for i in i2id:
                 focal[focal == i] = i2id[i]
                 neighbor[neighbor == i] = i2id[i]

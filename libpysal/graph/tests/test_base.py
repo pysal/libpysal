@@ -499,30 +499,6 @@ class TestBase:
         }
         assert self.G_str.weights == expected
 
-    def test_get_neighbors(self):
-        for i in range(10):
-            np.testing.assert_array_equal(
-                np.sort(self.G_int.get_neighbors(i)),
-                np.sort(np.asarray(list(self.W_dict_int[i]))),
-            )
-        for i in range(10):
-            i = string.ascii_letters[i]
-            np.testing.assert_array_equal(
-                np.sort(self.G_str.get_neighbors(i)),
-                np.sort(np.asarray(list(self.W_dict_str[i]))),
-            )
-
-    def test_get_weights(self):
-        for i in range(10):
-            np.testing.assert_array_equal(
-                self.G_int.get_weights(i), np.asarray(list(self.W_dict_int[i].values()))
-            )
-        for i in range(10):
-            i = string.ascii_letters[i]
-            np.testing.assert_array_equal(
-                self.G_str.get_weights(i), np.asarray(list(self.W_dict_str[i].values()))
-            )
-
     def test_sparse(self):
         sp = self.G_int.sparse
         expected = np.array(
@@ -872,18 +848,3 @@ class TestBase:
 
         with pytest.raises(ValueError, match="The length of `y`"):
             self.G_str.lag(list(range(1, 15)))
-
-    def test__id2i(self):
-        expected = {
-            "a": 0,
-            "b": 1,
-            "c": 2,
-            "d": 3,
-            "e": 4,
-            "f": 5,
-            "g": 6,
-            "h": 7,
-            "i": 8,
-            "j": 9,
-        }
-        assert expected == self.G_str._id2i
