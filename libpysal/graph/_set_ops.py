@@ -56,7 +56,7 @@ def intersects(left, right):
 
 def intersection(left, right):
     """
-    Returns a binary weights object, that includes only those neighbor pairs that exist
+    Returns a binary Graph, that includes only those neighbor pairs that exist
     in both left and right.
     """
     raise NotImplementedError
@@ -132,7 +132,6 @@ def issubgraph(left, right):
     Return True if every link in the left Graph also occurs in the right Graph. This requires
     both Graph are label_equal.
     """
-    raise NotImplementedError
     join = left.adjacency.reset_index(level=1).merge(
         right.adjacency.reset_index(level=1),
         on=("focal", "neighbor"),
@@ -147,7 +146,6 @@ def issupergraph(left, right):
     Return True if every link in the left Graph also occurs in the right Graph. This requires
     both Graph are label_equal.
     """
-    raise NotImplementedError
     join = left.adjacency.reset_index(level=1).merge(
         right.adjacency.reset_index(level=1),
         on=("focal", "neighbor"),
