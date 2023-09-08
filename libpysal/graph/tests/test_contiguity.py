@@ -98,11 +98,12 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
 @parametrize_rook
 @parametrize_perim
 @parametrize_ids
-def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, data=nybb):
+def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter):
     """
     check whether vertexset contiguity is constructed correctly
     for nybb
     """
+    data = nybb.copy()
     if ids is not None:
         data.index = data[ids].values
     ids = data.index.values
@@ -135,11 +136,12 @@ def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, data=nybb):
 @parametrize_rook
 @parametrize_perim
 @parametrize_ids
-def test_user_pointset_nybb(ids, by_perimeter, rook, data=nybb):
+def test_user_pointset_nybb(ids, by_perimeter, rook):
     """
     check whether pointset weights are constructed correctly
     for nybb
     """
+    data = nybb.copy()
     if ids is not None:
         data.index = data[ids].values
     ids = data.index.values
