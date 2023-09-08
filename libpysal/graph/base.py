@@ -342,8 +342,12 @@ class Graph(_Set_Mixin):
     def build_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
         """Generate Graph from geometry based on contiguity
 
-        TODO: specify the planarity constraint of the defitnion of queen and rook (e.g
-        that there could not be an overlap).
+        Contiguity builder assumes that all geometries are forming a coverage, i.e.
+        a non-overlapping mesh and neighbouring geometries share only points or segments
+        of their exterior boundaries. In practice, ``build_contiguity`` is capable of
+        creating a Graph of partially overlapping geometries when
+        ``strict=False, by_perimeter=False``, but that would not strictly follow the
+        definition of queen or rook contiguity.
 
         Parameters
         ----------

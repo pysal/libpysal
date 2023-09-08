@@ -4,12 +4,14 @@ import pandas as pd
 import shapely
 from itertools import permutations
 
+
 def _sparse_to_arrays(sparray, ids=None):
     if ids is None:
         maxdim = np.maximum(*sparray.shape)
         ids = np.arange(maxdim)
     head_ix, tail_ix = sparray.nonzero()
     return ids[head_ix], ids[tail_ix], sparray.data
+
 
 def _jitter_geoms(coordinates, geoms, seed=None):
     """
@@ -30,15 +32,16 @@ def _jitter_geoms(coordinates, geoms, seed=None):
     # the resolution is the approximate difference between two floats
     # that can be resolved at the given dtype.
     resolution = np.finfo(dtype).resolution
-    r = rng.random(size=coordinates.shape[0], dtype=dtype)**.5 * resolution
+    r = rng.random(size=coordinates.shape[0], dtype=dtype) ** 0.5 * resolution
     theta = rng.random(size=coordinates.shape[0], dtype=dtype) * np.pi * 2
     # converting from polar to cartesian
     dx = r + np.sin(theta)
     dy = r + np.cos(theta)
     # then adding the displacements
-    coordinates = coordinates + np.column_stack((dx,dy))
+    coordinates = coordinates + np.column_stack((dx, dy))
     geoms = geopandas.GeoSeries(geopandas.points_from_xy(*coordinates.T, crs=geoms.crs))
     return coordinates, geoms
+
 
 def _induce_cliques(adjtable, clique_to_members, fill_value=1):
     """
@@ -48,31 +51,31 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
 
     This does not guarantee/understand ordering of the *output* adjacency table.
     """
-    adj_across_clique = adjtable.merge(
-        clique_to_members['input_index'], left_index=True, right_index=True
-    ).explode('input_index').rename(
-        columns=dict(input_index='subclique_focal')
-    ).merge(
-        clique_to_members['input_index'], left_on='neighbor', right_index=True
-    ).explode('input_index').rename(
-        columns=dict(input_index='subclique_neighbor')
-    ).reset_index().drop(
-        ['focal','neighbor', 'index'], axis=1
-    ).rename(
-        columns=dict(subclique_focal="focal", subclique_neighbor='neighbor')
+    adj_across_clique = (
+        adjtable.merge(
+            clique_to_members["input_index"], left_index=True, right_index=True
+        )
+        .explode("input_index")
+        .rename(columns=dict(input_index="subclique_focal"))
+        .merge(clique_to_members["input_index"], left_on="neighbor", right_index=True)
+        .explode("input_index")
+        .rename(columns=dict(input_index="subclique_neighbor"))
+        .reset_index()
+        .drop(["focal", "neighbor", "index"], axis=1)
+        .rename(columns=dict(subclique_focal="focal", subclique_neighbor="neighbor"))
     )
-    is_multimember_clique = clique_to_members['input_index'].str.len()>1
-    adj_within_clique = clique_to_members[
-        is_multimember_clique
-    ]['input_index'].apply(
-        lambda x: list(permutations(x, 2))
-    ).explode().apply(
-        pd.Series
-    ).rename(columns={0:"focal", 1:"neighbor"}).assign(weight=fill_value)
+    is_multimember_clique = clique_to_members["input_index"].str.len() > 1
+    adj_within_clique = (
+        clique_to_members[is_multimember_clique]["input_index"]
+        .apply(lambda x: list(permutations(x, 2)))
+        .explode()
+        .apply(pd.Series)
+        .rename(columns={0: "focal", 1: "neighbor"})
+        .assign(weight=fill_value)
+    )
 
     new_adj = pd.concat(
-        (adj_across_clique, adj_within_clique),
-        ignore_index=True, axis=0
+        (adj_across_clique, adj_within_clique), ignore_index=True, axis=0
     ).reset_index(drop=True)
 
     return new_adj
@@ -104,12 +107,20 @@ def _build_coincidence_lookup(geoms):
     valid_coincident_geom_types = set(("Point",))
     if not set(geoms.geom_type) <= valid_coincident_geom_types:
         raise ValueError(
-            f"coindicence checks are only well-defined for geom_types: {valid_coincident_geom_types}"
-            )
+            "coindicence checks are only well-defined for "
+            f"geom_types: {valid_coincident_geom_types}"
+        )
     max_coincident = geoms.geometry.duplicated().sum()
-    lut = geoms.to_frame("geometry").reset_index().groupby("geometry")['index'].agg(list).reset_index()
+    lut = (
+        geoms.to_frame("geometry")
+        .reset_index()
+        .groupby("geometry")["index"]
+        .agg(list)
+        .reset_index()
+    )
     lut = geopandas.GeoDataFrame(lut)
-    return max_coincident, lut.rename(columns=dict(index='input_index'))
+    return max_coincident, lut.rename(columns=dict(index="input_index"))
+
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     """
@@ -134,7 +145,7 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
             valid_geometry_types = set(valid_geometry_types)
             if not geom_types <= valid_geometry_types:
                 raise ValueError(
-                    "this Graph type is only well-defined for "
+                    "This Graph type is only well-defined for "
                     f"geom_types: {valid_geometry_types}."
                 )
         coordinates = shapely.get_coordinates(geoms)
@@ -167,11 +178,12 @@ def _validate_sparse_input(sparse, ids=None):
     ), "coordinates should represent a distance matrix if metric='precomputed'"
     return _sparse_to_arrays(sparse, ids)
 
-def _vec_euclidean_distances(X,Y):
+
+def _vec_euclidean_distances(X, Y):
     """
     compute the euclidean distances along corresponding rows of two arrays
     """
-    return ((X-Y)**2).sum(axis=1)**.5
+    return ((X - Y) ** 2).sum(axis=1) ** 0.5
 
 
 def _evaluate_index(data):
