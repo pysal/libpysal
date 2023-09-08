@@ -186,8 +186,26 @@ def test_correctness_rook_queen_distinct(pointset):
         rook_ = _vertex_set_intersection(data.geometry, rook=True)
         queen_ = _vertex_set_intersection(data.geometry, rook=False)
 
-    with pytest.raises(AssertionError):
-        assert set(zip(*rook_)) == set(zip(*queen_))
+    assert set(zip(*rook_)) != set(zip(*queen_))
+
+
+def test_geom_type_raise():
+    """
+    Check the error for point geoms
+    """
+    data = geopandas.GeoSeries((shapely.Point(0, 0), shapely.Point(2, 2)))
+    with pytest.raises(ValueError, match="This Graph type is only well-defined"):
+        _vertex_set_intersection(data)
+
+
+def test_overlap_raise():
+    data = nybb.set_index("BoroName").geometry.copy()
+    data.iloc[1] = shapely.union(
+        data.iloc[1], shapely.Point(1021176.479, 181374.797).buffer(10000)
+    )
+
+    with pytest.raises(ValueError, match="Some geometries overlap."):
+        _vertex_set_intersection(data, by_perimeter=True)
 
 
 def test_correctness_vertex_set_contiguity_distinct():
@@ -202,15 +220,13 @@ def test_correctness_vertex_set_contiguity_distinct():
 
     rook = _rook(data)
 
-    with pytest.raises(AssertionError):
-        assert set(zip(*vs_rook)) == set(zip(*rook))
+    assert set(zip(*vs_rook)) != set(zip(*rook))
 
     vs_queen = _vertex_set_intersection(data, rook=False)
 
     queen = _queen(data)
 
-    with pytest.raises(AssertionError):
-        assert set(zip(*vs_queen)) == set(zip(*queen))
+    assert set(zip(*vs_queen)) != set(zip(*queen))
 
 
 @pytest.mark.parametrize(

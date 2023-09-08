@@ -48,29 +48,19 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
         graph[idx] = set([idx])
 
     # get all of the vertices for the input
-    assert (
-        ~geoms.geom_type.str.endswith("Point")
-    ).any(), "this graph type is only well-defined for line and polygon geometries."
-
-    ## TODO: this induces a "fake" edge between the closing and opening point
-    ##       of two multipolygon parts. This should never enter into calculations,
-    ##       *unless* two multipolygons share opening and closing points in the
-    ##       same order and part order. Still, this should be fixed by ensuring that
-    ##       only adjacent points of the same part of the same polygon are used.
-    ##       this bug also exists in the existing contiguity builder.
-
-    # geoms = geoms.explode()
-    # multipolygon_ixs = geoms.get_level_values(0)
-    # ids = ids[multipolygon_ixs]
-    # geoms = geoms.geometry
     vertices, offsets = shapely.get_coordinates(geoms.geometry, return_index=True)
+    # use offsets from exploded geoms to create edges to avoid a phantom edge between
+    # parts of multipolygon
+    _, single_part_offsets = shapely.get_coordinates(
+        geoms.geometry.explode(ignore_index=True), return_index=True
+    )
     # initialise the hashmap we want to invert
     vert_to_geom = defaultdict(set)
 
     # populate the hashmap we intend to invert
     if rook:
         for i, vertex in enumerate(vertices[:-1]):
-            if offsets[i] != offsets[i + 1]:
+            if single_part_offsets[i] != single_part_offsets[i + 1]:
                 continue
             edge = tuple(sorted([tuple(vertex), tuple(vertices[i + 1])]))
             # edge to {polygons, with, this, edge}
@@ -147,6 +137,35 @@ def _queen(geoms, ids=None, by_perimeter=False):
 
 
 def _rook(geoms, ids=None, by_perimeter=False):
+    """
+    Construct rook contiguity using point-set relations.
+
+    Rook contiguity occurs when two polygons touch over at least one edge.
+    Overlapping polygons will not be considered as neighboring
+    under this rule, since contiguity is strictly planar.
+
+    Parameters
+    ----------
+    geoms : geopandas.GeoDataFrame, geopandas.GeoSeries, numpy.array
+        The container for the geometries to compute contiguity. Regardless of
+        the containing type, the geometries within the container must be Polygons
+        or MultiPolygons.
+    ids : numpy.ndarray (default: None)
+        names to use for indexing the graph constructed from geoms. If None (default),
+        an index is extracted from `geoms`. If `geoms` has no index, a pandas.RangeIndex
+        is constructed.
+    by_perimeter : bool (default: False)
+        whether to compute perimeter-weighted contiguity. By default, this returns
+        the raw length of perimeter overlap betwen contiguous polygons or lines.
+        In the case of LineString/MultiLineString input geoms, this is likely to
+        result in empty weights, where all observations are isolates.
+
+    Returns
+    -------
+    (heads, tails, weights) : three vectors describing the links in the
+        rook contiguity graph, with islands represented as a self-loop with
+        zero weight.
+    """
     _, ids, geoms = _validate_geometry_input(
         geoms, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
@@ -164,13 +183,6 @@ def _rook(geoms, ids=None, by_perimeter=False):
     return _resolve_islands(heads, tails, ids, weights)
 
 
-_rook.__doc__ = (
-    _queen.__doc__.replace("queen", "rook")
-    .replace("Queen", "Rook")
-    .replace("exactly at a point", "over at least one edge")
-)
-
-
 def _perimeter_weights(geoms, heads, tails):
     """
     Compute the perimeter of neighbor pairs for edges describing a contiguity graph.
@@ -184,7 +196,7 @@ def _perimeter_weights(geoms, heads, tails):
     on input data are expected.
     """
     intersection = shapely.intersection(geoms[heads].values, geoms[tails].values)
-    geom_types = shapely.get_type_id(intersection)
+    geom_types = shapely.get_type_id(shapely.get_parts(intersection))
 
     # check if the intersection resulted in (Multi)Polygon
     if numpy.isin(geom_types, [3, 6]).any():
