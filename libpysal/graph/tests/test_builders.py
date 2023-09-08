@@ -122,6 +122,20 @@ class TestContiguity:
         assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
 
+    def test_fuzzy_contiguity_intids(self):
+        G = graph.Graph.build_fuzzy_contiguity(self.gdf)
+
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+
+    def test_fuzzy_contiguity_strids(self):
+        G = graph.Graph.build_fuzzy_contiguity(self.gdf_str)
+
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+
 
 class TestTriangulation:
     def setup_method(self):

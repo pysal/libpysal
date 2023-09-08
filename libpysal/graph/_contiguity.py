@@ -4,8 +4,11 @@ import numpy
 import shapely
 import pandas
 import geopandas
+from packaging.version import Version
 
 from ._utils import _neighbor_dict_to_edges, _validate_geometry_input
+
+GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 
 _VALID_GEOMETRY_TYPES = ["Polygon", "MultiPolygon", "LineString", "MultiLineString"]
 
@@ -298,7 +301,10 @@ def _fuzzy_contiguity(
         geoms = geoms.buffer(buffer)
 
     # query tree based on set predicate
-    head, tail = geoms.sindex.query(geoms.geometry, predicate=predicate)
+    if GPD_013:
+        head, tail = geoms.sindex.query(geoms.geometry, predicate=predicate)
+    else:
+        head, tail = geoms.sindex.query_bulk(geoms.geometry, predicate=predicate)
     # remove self hits
     itself = head == tail
     heads = ids[head[~itself]]

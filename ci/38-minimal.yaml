@@ -15,7 +15,7 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
-  - geopandas>=0.10.0
+  - geopandas>=0.10.0,<0.13
   - shapely==2.0.1
   - joblib
   - networkx=2.7

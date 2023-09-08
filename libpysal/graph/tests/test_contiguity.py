@@ -21,6 +21,7 @@ from libpysal.graph._contiguity import (
     _queen,
     _rook,
     _vertex_set_intersection,
+    _fuzzy_contiguity,
 )
 
 numpy.random.seed(111211)
@@ -241,3 +242,100 @@ def test_block_contiguity(regimes):
     regimes = pandas.Series(regimes, index=ids)
     neighbors = _block_contiguity(regimes)
     assert {f: n.tolist() for f, n, in neighbors.items()} == wn_str
+
+
+def test_fuzzy_contiguity():
+    # integer
+    head, tail, weight = _fuzzy_contiguity(nybb.set_index("intID"), nybb["intID"])
+    numpy.testing.assert_array_equal(
+        head,
+        [5, 4, 4, 4, 3, 3, 1, 1, 1, 2, 2],
+    )
+    numpy.testing.assert_array_equal(
+        tail,
+        [5, 3, 1, 2, 4, 1, 4, 3, 2, 4, 1],
+    )
+    numpy.testing.assert_array_equal(weight, [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    # string
+    head, tail, weight = _fuzzy_contiguity(nybb.set_index("strID"), nybb["strID"])
+    numpy.testing.assert_array_equal(
+        head,
+        [
+            "Staten Island",
+            "Queens",
+            "Queens",
+            "Queens",
+            "Brooklyn",
+            "Brooklyn",
+            "Manhattan",
+            "Manhattan",
+            "Manhattan",
+            "Bronx",
+            "Bronx",
+        ],
+    )
+    numpy.testing.assert_array_equal(
+        tail,
+        [
+            "Staten Island",
+            "Brooklyn",
+            "Manhattan",
+            "Bronx",
+            "Queens",
+            "Manhattan",
+            "Queens",
+            "Brooklyn",
+            "Bronx",
+            "Queens",
+            "Manhattan",
+        ],
+    )
+    numpy.testing.assert_array_equal(weight, [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    # tolerance
+    head, tail, weight = _fuzzy_contiguity(
+        nybb.set_index("intID"), nybb["intID"], tolerance=0.05
+    )
+    numpy.testing.assert_array_equal(
+        head,
+        [5, 4, 4, 4, 3, 3, 3, 1, 1, 1, 2, 2],
+    )
+    numpy.testing.assert_array_equal(
+        tail,
+        [3, 3, 1, 2, 5, 4, 1, 4, 3, 2, 4, 1],
+    )
+    numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    # buffer
+    head, tail, weight = _fuzzy_contiguity(
+        nybb.set_index("intID"), nybb["intID"], buffer=5000
+    )
+    numpy.testing.assert_array_equal(
+        head,
+        [5, 4, 4, 4, 3, 3, 3, 1, 1, 1, 2, 2],
+    )
+    numpy.testing.assert_array_equal(
+        tail,
+        [3, 3, 1, 2, 5, 4, 1, 4, 3, 2, 4, 1],
+    )
+    numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    # predicate
+    head, tail, weight = _fuzzy_contiguity(
+        nybb.set_index("intID"), nybb["intID"], predicate="within"
+    )
+    numpy.testing.assert_array_equal(
+        head,
+        [5, 4, 3, 1, 2],
+    )
+    numpy.testing.assert_array_equal(
+        tail,
+        [5, 4, 3, 1, 2],
+    )
+    numpy.testing.assert_array_equal(weight, [0, 0, 0, 0, 0])
+
+    with pytest.raises(ValueError, match="Only one"):
+        _fuzzy_contiguity(
+            nybb.set_index("intID"), nybb["intID"], tolerance=0.05, buffer=5000
+        )
