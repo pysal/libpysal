@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 import shapely
 from itertools import permutations
+from packaging.version import Version
+
+GPD_013 = Version(geopandas.__version__) >= Version("0.13")
+
 
 
 def _sparse_to_arrays(sparray, ids=None):
@@ -111,13 +115,25 @@ def _build_coincidence_lookup(geoms):
             f"geom_types: {valid_coincident_geom_types}"
         )
     max_coincident = geoms.geometry.duplicated().sum()
-    lut = (
-        geoms.to_frame("geometry")
-        .reset_index()
-        .groupby("geometry")["index"]
-        .agg(list)
-        .reset_index()
-    )
+    if GPD_013:
+        lut = (
+            geoms.to_frame("geometry")
+            .reset_index()
+            .groupby("geometry")["index"]
+            .agg(list)
+            .reset_index()
+        )
+    else:
+        lut = (
+            geoms.to_wkb()
+            .to_frame("geometry")
+            .reset_index()
+            .groupby("geometry")["index"]
+            .agg(list)
+            .reset_index()
+        )
+        lut["geometry"] = geopandas.GeoSeries.from_wkb(lut["geometry"])
+
     lut = geopandas.GeoDataFrame(lut)
     return max_coincident, lut.rename(columns=dict(index="input_index"))
 

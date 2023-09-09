@@ -7,7 +7,13 @@ from scipy import sparse
 
 from libpysal.weights import W
 
-from ._contiguity import _block_contiguity, _queen, _rook, _vertex_set_intersection
+from ._contiguity import (
+    _block_contiguity,
+    _queen,
+    _rook,
+    _vertex_set_intersection,
+    _fuzzy_contiguity,
+)
 from ._kernel import _distance_band, _kernel
 from ._parquet import _read_parquet, _to_parquet
 from ._set_ops import _Set_Mixin
@@ -709,6 +715,69 @@ class Graph(_Set_Mixin):
         ids = _evaluate_index(regimes)
 
         return cls.from_dicts(_block_contiguity(regimes, ids=ids))
+
+    @classmethod
+    def build_fuzzy_contiguity(
+        cls,
+        geometry,
+        tolerance=None,
+        buffer=None,
+        predicate="intersects",
+    ):
+        """Generate Graph from fuzzy contiguity
+
+        Fuzzy contiguity relaxes the notion of contiguity neighbors for the case of
+        geometry collections that violate the condition of planar enforcement. It
+        handles three types of conditions present in such collections that would result
+        in missing links when using the regular contiguity methods.
+
+        The first are edges for nearby polygons that should be shared, but are digitized
+        separately for the individual polygons and the resulting edges do not
+        coincide, but instead the edges intersect. This case can also be covered by
+        ``build_contiguty`` with the ``strict=False`` parameter.
+
+        The second case is similar to the first, only the resultant edges do not
+        intersect but are "close". The optional buffering of geometry then closes the
+        gaps between the polygons and a resulting intersection is encoded as a link.
+
+        The final case arises when one polygon is "inside" a second polygon but is not
+        encoded to represent a hole in the containing polygon.
+
+        It is also possible to create a contiguity based on a custom spatial predicate.
+
+        Parameters
+        ----------
+        geoms :  array-like of shapely.Geometry objects
+            Could be geopandas.GeoSeries or geopandas.GeoDataFrame, in which case the
+            resulting Graph is indexed by the original index. If an array of
+            shapely.Geometry objects is passed, Graph will assume a RangeIndex.
+        tolerance : float, optional
+            The percentage of the length of the minimum side of the bounding rectangle
+            for the ``geoms`` to use in determining the buffering distance. Either
+            ``tolerance`` or ``buffer`` may be specified but not both.
+            By default None.
+        buffer : float, optional
+            Exact buffering distance in the units of ``geoms.crs``. Either
+            ``tolerance`` or ``buffer`` may be specified but not both.
+            By default None.
+        predicate : str, optional
+            The predicate to use for determination of neighbors. Default is 'intersects'.
+            If None is passed, neighbours are determined based on the intersection of
+            bounding boxes. See the documentation of ``geopandas.GeoSeries.sindex.query``
+            for allowed predicates.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding fuzzy contiguity
+        """
+        ids = _evaluate_index(geometry)
+
+        heads, tails, weights = _fuzzy_contiguity(
+            geometry, ids, tolerance=tolerance, buffer=buffer, predicate=predicate
+        )
+
+        return cls.from_arrays(heads, tails, weights)
 
     @cached_property
     def neighbors(self):
