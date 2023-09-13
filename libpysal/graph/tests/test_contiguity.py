@@ -51,7 +51,7 @@ parametrize_pointset = pytest.mark.parametrize(
 @parametrize_ids
 def test_user_rivers(ids, rook, pointset, data=rivers):
     """
-    Check wiether contiguity is constructed correctly for rivers in europe
+    Check whether contiguity is constructed correctly for rivers in Europe.
     """
     data = data.reset_index(drop=False).rename(columns={"index": "original_index"})
     ids = "original_index" if ids is None else ids
