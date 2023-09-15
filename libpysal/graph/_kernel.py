@@ -68,7 +68,6 @@ def _kernel(
     k=None,
     ids=None,
     p=2,
-    taper=True,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -144,9 +143,6 @@ def _kernel(
         D.data = kernel(D.data, bandwidth)
     else:
         D.data = _kernel_functions[kernel](D.data, bandwidth)
-
-    if taper:
-        D.eliminate_zeros()
 
     return _sparse_to_arrays(D, ids=ids)
 

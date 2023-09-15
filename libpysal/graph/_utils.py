@@ -8,13 +8,26 @@ from packaging.version import Version
 GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 
 
-
 def _sparse_to_arrays(sparray, ids=None):
-    if ids is None:
-        maxdim = np.maximum(*sparray.shape)
-        ids = np.arange(maxdim)
-    head_ix, tail_ix = sparray.nonzero()
-    return ids[head_ix], ids[tail_ix], sparray.data
+    sparse = sparray.tocoo(copy=False)
+    if ids is not None:
+        ids = np.asarray(ids)
+        if sparse.shape[0] != ids.shape[0]:
+            raise ValueError(
+                f"The length of ids ({ids.shape[0]}) does not match "
+                f"the shape of sparse {sparse.shape}."
+            )
+
+        sorter = sparse.row.argsort()
+        head = ids[sparse.row][sorter]
+        tail = ids[sparse.col][sorter]
+        data = sparse.data[sorter]
+    else:
+        sorter = sparse.row.argsort()
+        head = sparse.row[sorter]
+        tail = sparse.col[sorter]
+        data = sparse.data[sorter]
+    return head, tail, data
 
 
 def _jitter_geoms(coordinates, geoms, seed=None):

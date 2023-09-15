@@ -19,7 +19,7 @@ from ._parquet import _read_parquet, _to_parquet
 from ._set_ops import _Set_Mixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
-from ._utils import _evaluate_index, _neighbor_dict_to_edges
+from ._utils import _evaluate_index, _neighbor_dict_to_edges, _sparse_to_arrays
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
@@ -248,26 +248,8 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph based on sparse
         """
-        sparse = sparse.tocoo(copy=False)
-        if ids is not None:
-            ids = np.asarray(ids)
-            if sparse.shape[0] != ids.shape[0]:
-                raise ValueError(
-                    f"The length of ids ({ids.shape[0]}) does not match "
-                    f"the shape of sparse {sparse.shape}."
-                )
 
-            sorter = sparse.row.argsort()
-            head = ids[sparse.row][sorter]
-            tail = ids[sparse.col][sorter]
-            data = sparse.data[sorter]
-        else:
-            sorter = sparse.row.argsort()
-            head = sparse.row[sorter]
-            tail = sparse.col[sorter]
-            data = sparse.data[sorter]
-
-        return cls.from_arrays(head, tail, weight=data)
+        return cls.from_arrays(*_sparse_to_arrays(sparse, ids))
 
     @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight):
