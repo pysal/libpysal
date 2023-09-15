@@ -9,6 +9,10 @@ For completeness, we need to test a shuffled dataframe
 - check two tree types
 - scikit/no scikit
 """
+
+import numpy as np
+from libpysal.graph._kernel import _kernel
+
 # import pandas, geopandas, geodatasets, pytest, shapely, numpy
 # from libpysal.weights.experimental._kernel import (
 #     kernel,
@@ -98,3 +102,15 @@ For completeness, we need to test a shuffled dataframe
 # @parametrize_data
 # def test_coincident(data):
 #     raise NotImplementedError()
+
+
+def test_shape_preservation():
+    coordinates = np.vstack(
+        [np.repeat(np.arange(10), 10), np.tile(np.arange(10), 10)]
+    ).T
+    head, tail, weight = _kernel(
+        coordinates, k=3, metric="euclidean", p=2, kernel="boxcar", bandwidth=0.5
+    )
+    np.testing.assert_array_equal(head, np.repeat(np.arange(100), 3))
+    assert tail.shape == head.shape, "shapes of head and tail do not match"
+    np.testing.assert_array_equal(weight, np.zeros((300,), dtype=int))
