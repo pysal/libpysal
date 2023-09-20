@@ -68,7 +68,7 @@ def _kernel(
     k=None,
     ids=None,
     p=2,
-    taper=True,
+    taper=False,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -112,6 +112,8 @@ def _kernel(
         from the input coordinates will be used.
     p : int (default: 2)
         parameter for minkowski metric, ignored if metric != "minkowski".
+    taper : bool (default: False)
+        remove links with a weight equal to zero
     """
     if metric != "precomputed":
         coordinates, ids, _ = _validate_geometry_input(
@@ -146,7 +148,7 @@ def _kernel(
         D.data = _kernel_functions[kernel](D.data, bandwidth)
 
     if taper:
-        D.eliminate_zeros()
+        raise NotImplementedError("taper is not yet implemented.")
 
     return _sparse_to_arrays(D, ids=ids)
 
