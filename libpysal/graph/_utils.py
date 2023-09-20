@@ -222,3 +222,24 @@ def _evaluate_index(data):
         if isinstance(data, (pd.Series, pd.DataFrame))
         else pd.RangeIndex(0, len(data))
     )
+
+
+def _resolve_islands(heads, tails, ids, weights):
+    """
+    Induce self-loops for a collection of ids and links describing a
+    contiguity graph. Induced self-loops will have zero weight.
+    """
+    islands = np.setdiff1d(ids, heads)
+    if islands.shape != (0,):
+        heads = np.hstack((heads, islands))
+        tails = np.hstack((tails, islands))
+        weights = np.hstack((weights, np.zeros_like(islands, dtype=int)))
+
+    # ensure proper order after adding isolates to the end
+    adjacency = pd.Series(weights, index=pd.MultiIndex.from_arrays([heads, tails]))
+    adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
+    return (
+        adjacency.index.get_level_values(0),
+        adjacency.index.get_level_values(1),
+        adjacency.values,
+    )

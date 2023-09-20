@@ -95,6 +95,7 @@ def _validate_coincident(triangulator):
                 metric="precomputed",
                 kernel=kernel,
                 bandwidth=bandwidth,
+                taper=False
             )
         # create adjacency
         adjtable = pandas.DataFrame.from_dict(

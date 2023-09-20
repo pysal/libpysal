@@ -8,6 +8,7 @@ from ._utils import (
     _induce_cliques,
     _jitter_geoms,
     _sparse_to_arrays,
+    _resolve_islands,
 )
 
 _VALID_GEOMETRY_TYPES = ["Point"]
@@ -68,7 +69,7 @@ def _kernel(
     k=None,
     ids=None,
     p=2,
-    taper=False,
+    taper=True,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -112,7 +113,7 @@ def _kernel(
         from the input coordinates will be used.
     p : int (default: 2)
         parameter for minkowski metric, ignored if metric != "minkowski".
-    taper : bool (default: False)
+    taper : bool (default: True)
         remove links with a weight equal to zero
     """
     if metric != "precomputed":
@@ -123,7 +124,8 @@ def _kernel(
         assert (
             coordinates.shape[0] == coordinates.shape[1]
         ), "coordinates should represent a distance matrix if metric='precomputed'"
-
+        if ids is None:
+            ids = numpy.arange(coordinates.shape[0])
     if k is not None:
         if metric != "precomputed":
             D = _knn(coordinates, k=k, metric=metric, p=p)
@@ -148,9 +150,11 @@ def _kernel(
         D.data = _kernel_functions[kernel](D.data, bandwidth)
 
     if taper:
-        raise NotImplementedError("taper is not yet implemented.")
+        D.eliminate_zeros()
 
-    return _sparse_to_arrays(D, ids=ids)
+    heads, tails, weights = _sparse_to_arrays(D, ids=ids)
+
+    return _resolve_islands(heads, tails, ids, weights)
 
     # TODO: ensure isloates are properly handled
     # TODO: handle co-located points
@@ -192,11 +196,11 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
         if coincident == "raise":
             raise ValueError(
                 f"There are {len(coincident_lut)} "
-                f"unique locations in the dataset, but {len(geoms)} observations."
-                f"At least one of these sites has {max_at_one_site} points, more than the"
-                f" {k} nearest neighbors requested. This means there are more than {k} points"
-                " in the same location, which makes this graph type undefined. To address "
-                " this issue, consider setting `coincident='clique' or consult the "
+                f"unique locations in the dataset, but {len(geoms)} observations. "
+                f"At least one of these sites has {max_at_one_site} points, more than the "
+                f"{k} nearest neighbors requested. This means there are more than {k} points "
+                "in the same location, which makes this graph type undefined. To address "
+                "this issue, consider setting `coincident='clique' or consult the "
                 "documentation about coincident points."
             )
         if coincident == "jitter":
