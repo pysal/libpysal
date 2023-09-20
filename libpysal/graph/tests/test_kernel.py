@@ -197,8 +197,8 @@ def test_kernels(kernel):
         assert weight.mean() == 0.09084085210598618
         assert weight.max() == 0.9372045972129259
     elif kernel == "cosine":
-        assert weight.mean() == 0.1008306468068958
-        assert weight.max() == 0.7852455006403666
+        assert weight.mean() == pytest.approx(0.1008306468068958)
+        assert weight.max() == pytest.approx(0.7852455006403666)
     elif kernel == "boxcar":
         assert weight.mean() == 0.2499540356683214
         assert weight.max() == 1
@@ -212,8 +212,8 @@ def test_kernels(kernel):
         assert weight.mean() == 39758.007361814016
         assert weight.max() == 127937.75271993055
     else:  # function
-        assert weight.mean() == 0.6880384553732511
-        assert weight.max() == 0.9855481738848647
+        assert weight.mean() == pytest.approx(0.6880384553732511)
+        assert weight.max() == pytest.approx(0.9855481738848647)
 
 
 # def test_precomputed(data, ids):
