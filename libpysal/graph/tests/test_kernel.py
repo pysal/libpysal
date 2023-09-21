@@ -185,38 +185,41 @@ def test_k(data):
 def test_kernels(kernel):
     _, _, weight = _kernel(grocs, kernel=kernel, taper=False)
     if kernel == "triangular":
-        assert weight.mean() == 0.09416822598434019
-        assert weight.max() == 0.9874476868358023
+        assert weight.mean() == pytest.approx(0.09416822598434019)
+        assert weight.max() == pytest.approx(0.9874476868358023)
     elif kernel == "parabolic":
-        assert weight.mean() == 0.10312196315841769
-        assert weight.max() == 0.749881829575671
+        assert weight.mean() == pytest.approx(0.10312196315841769)
+        assert weight.max() == pytest.approx(0.749881829575671)
     elif kernel == "gaussian":
-        assert weight.mean() == 0.1124559308071747
-        assert weight.max() == 0.22507021331712948
+        assert weight.mean() == pytest.approx(0.1124559308071747)
+        assert weight.max() == pytest.approx(0.22507021331712948)
     elif kernel == "bisquare":
-        assert weight.mean() == 0.09084085210598618
-        assert weight.max() == 0.9372045972129259
+        assert weight.mean() == pytest.approx(0.09084085210598618)
+        assert weight.max() == pytest.approx(0.9372045972129259)
     elif kernel == "cosine":
         assert weight.mean() == pytest.approx(0.1008306468068958)
         assert weight.max() == pytest.approx(0.7852455006403666)
     elif kernel == "boxcar":
-        assert weight.mean() == 0.2499540356683214
+        assert weight.mean() == pytest.approx(0.2499540356683214)
         assert weight.max() == 1
     elif kernel == "discrete":
-        assert weight.mean() == 0.2499540356683214
+        assert weight.mean() == pytest.approx(0.2499540356683214)
         assert weight.max() == 1
     elif kernel == "identity":
-        assert weight.mean() == 39758.007361814016
-        assert weight.max() == 127937.75271993055
+        assert weight.mean() == pytest.approx(39758.007361814016)
+        assert weight.max() == pytest.approx(127937.75271993055)
     elif kernel is None:
-        assert weight.mean() == 39758.007361814016
-        assert weight.max() == 127937.75271993055
+        assert weight.mean() == pytest.approx(39758.007361814016)
+        assert weight.max() == pytest.approx(127937.75271993055)
     else:  # function
         assert weight.mean() == pytest.approx(0.6880384553732511)
         assert weight.max() == pytest.approx(0.9855481738848647)
 
 
 # def test_bandwidth():
+#     raise NotImplementedError()
+
+# def test_metric():
 #     raise NotImplementedError()
 
 # def test_precomputed(data, ids):

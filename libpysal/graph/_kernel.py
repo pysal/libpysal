@@ -1,5 +1,4 @@
 import numpy
-import pandas
 from scipy import sparse, optimize, spatial, stats
 
 from ._utils import (
@@ -10,6 +9,13 @@ from ._utils import (
     _sparse_to_arrays,
     _resolve_islands,
 )
+
+try:
+    from sklearn import neighbors, metrics
+
+    HAS_SKLEARN = True
+except ImportError:
+    HAS_SKLEARN = False
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
@@ -127,6 +133,20 @@ def _kernel(
         ), "coordinates should represent a distance matrix if metric='precomputed'"
         if ids is None:
             ids = numpy.arange(coordinates.shape[0])
+
+    if metric == "haversine":
+        if not (
+            (coordinates[:, 0] > -180)
+            & (coordinates[:, 0] < 180)
+            & (coordinates[:, 1] > -90)
+            & (coordinates[:, 1] < 90)
+        ).all():
+            raise ValueError(
+                "'haversine' metric is limited to the range of "
+                "latitude coordinates (-90, 90) and the range of "
+                "longitude coordinates (-180, 180)."
+            )
+
     if k is not None:
         if metric != "precomputed":
             D = _knn(coordinates, k=k, metric=metric, p=p, coincident=coincident)
@@ -134,9 +154,18 @@ def _kernel(
             D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
         if metric != "precomputed":
-            D = spatial.distance.pdist(coordinates, metric=metric)
+            if HAS_SKLEARN:
+                sq = metrics.pairwise_distances(coordinates, coordinates, metric=metric)
+            else:
+                if metric not in ("euclidean", "manhattan", "cityblock", "minkowski"):
+                    raise ValueError(
+                        f"metric {metric} is not supported by scipy, and scikit-learn "
+                        "could not be imported."
+                    )
+                D = spatial.distance.pdist(coordinates, metric=metric)
+                sq = spatial.distance.squareform(D)
+
             # ensure that self-distance is dropped but 0 between co-located pts not
-            sq = spatial.distance.squareform(D)
             # get data and ids for sparse constructor
             data = sq.flatten()
             i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
@@ -168,10 +197,6 @@ def _kernel(
 
     return _resolve_islands(heads, tails, ids, weights)
 
-    # TODO: distance metrics from sklearn are available only if k is not None.
-    # we should either clarify that in the docstring or implement a path
-    # via sklearn above where pdist is as well.
-
 
 def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
     """internal function called only from within _kernel, never directly to build KNN"""
@@ -184,17 +209,6 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
 
     if max_at_one_site <= k:
         if metric == "haversine":
-            if not (
-                (coordinates[:, 0] > -180)
-                & (coordinates[:, 0] < 180)
-                & (coordinates[:, 1] > -90)
-                & (coordinates[:, 1] < 90)
-            ).all():
-                raise ValueError(
-                    "'haversine' metric is limited to the range of "
-                    "latitude coordinates (-90, 90) and the range of "
-                    "longitude coordinates (-180, 180)."
-                )
             # sklearn haversine works with (lat,lng) in radians...
             coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
         query = _prepare_tree_query(coordinates, metric, p=p)
@@ -270,15 +284,13 @@ def _prepare_tree_query(coordinates, metric, p=2):
     Construct a tree query function relevant to the input metric.
     Prefer scikit-learn trees if they are available.
     """
-    try:
-        from sklearn.neighbors import VALID_METRICS, BallTree, KDTree
-
-        if metric in VALID_METRICS["kd_tree"]:
-            tree = KDTree
+    if HAS_SKLEARN:
+        if metric in neighbors.VALID_METRICS["kd_tree"]:
+            tree = neighbors.KDTree
         else:
-            tree = BallTree
+            tree = neighbors.BallTree
         return tree(coordinates, metric=metric).query
-    except ImportError:
+    else:
         if metric in ("euclidean", "manhattan", "cityblock", "minkowski"):
             from scipy.spatial import KDTree as tree
 
@@ -291,8 +303,8 @@ def _prepare_tree_query(coordinates, metric, p=2):
             return query
         else:
             raise ValueError(
-                f"metric {metric} is not supported by scipy, and scikit-learn is "
-                "not able to be imported"
+                f"metric {metric} is not supported by scipy, and scikit-learn could "
+                "not be imported"
             )
 
 
