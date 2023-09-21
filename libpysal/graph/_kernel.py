@@ -168,7 +168,9 @@ def _kernel(
 
     return _resolve_islands(heads, tails, ids, weights)
 
-    # TODO: handle co-located points
+    # TODO: distance metrics from sklearn are available only if k is not None.
+    # we should either clarify that in the docstring or implement a path
+    # via sklearn above where pdist is as well.
 
 
 def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
@@ -182,6 +184,17 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
 
     if max_at_one_site <= k:
         if metric == "haversine":
+            if not (
+                (coordinates[:, 0] > -180)
+                & (coordinates[:, 0] < 180)
+                & (coordinates[:, 1] > -90)
+                & (coordinates[:, 1] < 90)
+            ).all():
+                raise ValueError(
+                    "'haversine' metric is limited to the range of "
+                    "latitude coordinates (-90, 90) and the range of "
+                    "longitude coordinates (-180, 180)."
+                )
             # sklearn haversine works with (lat,lng) in radians...
             coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
         query = _prepare_tree_query(coordinates, metric, p=p)
@@ -199,9 +212,6 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
         )
         return D
 
-        # TODO: haversine requires lat lan coords so we need to check if the gdf is in the
-        # correct CRS (or None) and if an array is given, that it is bounded by -180,180 and -90,90
-        # and explanation that the result is in kilometres
     else:
         if coincident == "raise":
             raise ValueError(
@@ -251,12 +261,8 @@ def _distance_band(coordinates, threshold, ids=None):
         coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
     tree = spatial.KDTree(coordinates)
-    dist = tree.sparse_distance_matrix(tree, threshold, output_type="ndarray")
-    sp = sparse.csr_array((dist["v"], (dist["i"], dist["j"])))
+    sp = sparse.csr_array(tree.sparse_distance_matrix(tree, threshold))
     return sp
-
-    # TODO: handle co-located points
-    # TODO: ensure isloates are properly handled
 
 
 def _prepare_tree_query(coordinates, metric, p=2):

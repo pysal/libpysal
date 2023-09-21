@@ -16,7 +16,7 @@ import numpy as np
 import pytest
 import pandas as pd
 
-from libpysal.graph._kernel import _kernel, _kernel_functions
+from libpysal.graph._kernel import _kernel, _kernel_functions, _distance_band
 
 grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[
     ["OBJECTID", "geometry"]
@@ -222,9 +222,6 @@ def test_kernels(kernel):
 # def test_precomputed(data, ids):
 #     raise NotImplementedError()
 
-# def test_coincident(data):
-#     raise NotImplementedError()
-
 
 def test_coincident():
     grocs_duplicated = pd.concat(
@@ -284,3 +281,38 @@ def test_shape_preservation():
     np.testing.assert_array_equal(head, np.arange(100))
     assert tail.shape == head.shape, "shapes of head and tail do not match"
     np.testing.assert_array_equal(weight, np.zeros((100,), dtype=int))
+
+
+def test_haversine_check():
+    with pytest.raises(ValueError, match="'haversine'"):
+        _kernel(grocs, k=2, metric="haversine")
+
+
+def test_distance_band_colocated():
+    coordinates = np.array([[0, 0], [1, 0], [1, 0], [2, 0], [3, 0]])
+    dist = _distance_band(coordinates, 1)
+    assert dist.shape == (5, 5)
+    np.testing.assert_array_equal(
+        dist.data,
+        np.array(
+            [
+                0.0,
+                1.0,
+                1.0,
+                1.0,
+                0.0,
+                0.0,
+                1.0,
+                1.0,
+                0.0,
+                0.0,
+                1.0,
+                1.0,
+                1.0,
+                0.0,
+                1.0,
+                1.0,
+                0.0,
+            ]
+        ),
+    )
