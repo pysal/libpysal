@@ -50,8 +50,8 @@ class Graph(_Set_Mixin):
         Parameters
         ----------
         adjacency : pandas.Series
-            pandas.Series with a MultiIndex  with ``"focal"`` and ``"neigbor"`` levels
-            weight as values encoding the adjacency. By convention,
+            A MultiIndexed pandas.Series with ``"focal"`` and ``"neigbor"`` levels
+            encoding adjacency, and values encoding weights. By convention,
             isolates are encoded as self-loops with a weight 0.
         transformation : str, default "O"
             weights transformation used to produce the table.
