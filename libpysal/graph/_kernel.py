@@ -167,7 +167,7 @@ def _kernel(
                         f"metric {metric} is not supported by scipy, and scikit-learn "
                         "could not be imported."
                     )
-                D = spatial.distance.pdist(coordinates, metric=metric)
+                D = spatial.distance.pdist(coordinates, metric=metric, p=p)
                 sq = spatial.distance.squareform(D)
 
             # ensure that self-distance is dropped but 0 between co-located pts not
