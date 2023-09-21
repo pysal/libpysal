@@ -216,11 +216,55 @@ def test_kernels(kernel):
         assert weight.max() == pytest.approx(0.9855481738848647)
 
 
-# def test_bandwidth():
-#     raise NotImplementedError()
+@parametrize_data
+@pytest.mark.parametrize("bandwidth", [None, 0.05, 0.4])
+def test_bandwidth(data, bandwidth):
+    head, tail, weight = _kernel(data, bandwidth=bandwidth)
+    assert tail.shape == head.shape
+    assert weight.shape == head.shape
+    if hasattr(data, "index"):
+        np.testing.assert_array_equal(np.unique(head), data.index)
+    else:
+        np.testing.assert_array_equal(np.unique(head), np.arange(len(data)))
 
-# def test_metric():
-#     raise NotImplementedError()
+
+@pytest.mark.parametrize(
+    "metric",
+    [
+        "euclidean",
+        "minkowski",
+        "cityblock",
+        "chebyshev",
+        "haversine",
+    ],
+)
+def test_metric(metric):
+    if metric == "haversine":
+        data = grocs.to_crs(4326)
+    else:
+        data = grocs
+    head, tail, weight = _kernel(data, metric=metric, kernel="identity", p=1.5)
+    assert head.shape[0] == len(data) * (len(data) - 1)
+    assert tail.shape == head.shape
+    assert weight.shape == head.shape
+    np.testing.assert_array_equal(pd.unique(head), data.index)
+
+    if metric == "euclidean":
+        assert weight.mean() == pytest.approx(39758.007362)
+        assert weight.max() == pytest.approx(127937.75272)
+    elif metric == "minkowski":
+        assert weight.mean() == pytest.approx(42288.642129)
+        assert weight.max() == pytest.approx(140674.095752)
+    elif metric == "cityblock":
+        assert weight.mean() == pytest.approx(49424.576155)
+        assert weight.max() == pytest.approx(173379.431622)
+    elif metric == "chebyshev":
+        assert weight.mean() == pytest.approx(36590.352895)
+        assert weight.max() == pytest.approx(123955.14249)
+    else:
+        assert weight.mean() == pytest.approx(0.115835)
+        assert weight.max() == pytest.approx(0.371465)
+
 
 # def test_precomputed(data, ids):
 #     raise NotImplementedError()

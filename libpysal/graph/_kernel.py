@@ -155,7 +155,12 @@ def _kernel(
     else:
         if metric != "precomputed":
             if HAS_SKLEARN:
-                sq = metrics.pairwise_distances(coordinates, coordinates, metric=metric)
+                dist_kwds = {}
+                if metric == "minkowski":
+                    dist_kwds["p"] = p
+                sq = metrics.pairwise_distances(
+                    coordinates, coordinates, metric=metric, **dist_kwds
+                )
             else:
                 if metric not in ("euclidean", "manhattan", "cityblock", "minkowski"):
                     raise ValueError(
