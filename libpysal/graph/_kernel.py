@@ -17,8 +17,6 @@ try:
 except ImportError:
     HAS_SKLEARN = False
 
-HAS_SKLEARN = False
-
 _VALID_GEOMETRY_TYPES = ["Point"]
 
 
