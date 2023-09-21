@@ -290,11 +290,14 @@ def _prepare_tree_query(coordinates, metric, p=2):
     Prefer scikit-learn trees if they are available.
     """
     if HAS_SKLEARN:
+        dist_kwds = {}
+        if metric == "minkowski":
+            dist_kwds["p"] = p
         if metric in neighbors.VALID_METRICS["kd_tree"]:
             tree = neighbors.KDTree
         else:
             tree = neighbors.BallTree
-        return tree(coordinates, metric=metric).query
+        return tree(coordinates, metric=metric, **dist_kwds).query
     else:
         if metric in ("euclidean", "manhattan", "cityblock", "minkowski"):
             from scipy.spatial import KDTree as tree

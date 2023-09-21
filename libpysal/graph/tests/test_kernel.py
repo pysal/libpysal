@@ -273,6 +273,45 @@ def test_metric(metric):
         assert weight.max() == pytest.approx(0.371465)
 
 
+@pytest.mark.parametrize(
+    "metric",
+    [
+        "euclidean",
+        "minkowski",
+        "cityblock",
+        "chebyshev",
+        "haversine",
+    ],
+)
+def test_metric_k(metric):
+    if metric == "haversine":
+        data = grocs.to_crs(4326)
+    else:
+        data = grocs
+    if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
+        pytest.skip("metric not supported by scipy")
+    head, tail, weight = _kernel(data, k=3, metric=metric, kernel="identity", p=1.5)
+    assert head.shape[0] == len(data) * 3
+    assert tail.shape == head.shape
+    assert weight.shape == head.shape
+    np.testing.assert_array_equal(pd.unique(head), data.index)
+
+    if metric == "euclidean":
+        assert weight.mean() == pytest.approx(4577.237441)
+        assert weight.max() == pytest.approx(18791.085051)
+    elif metric == "minkowski":
+        assert weight.mean() == pytest.approx(4884.254721)
+        assert weight.max() == pytest.approx(20681.125211)
+    elif metric == "cityblock":
+        assert weight.mean() == pytest.approx(5665.288523)
+        assert weight.max() == pytest.approx(23980.893147)
+    elif metric == "chebyshev":
+        assert weight.mean() == pytest.approx(4032.283559)
+        assert weight.max() == pytest.approx(16374.141739)
+    else:
+        assert weight.mean() == pytest.approx(0.00021882448)
+        assert weight.max() == pytest.approx(0.000897441)
+
 # def test_precomputed(data, ids):
 #     raise NotImplementedError()
 
