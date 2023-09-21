@@ -16,7 +16,7 @@ import numpy as np
 import pytest
 import pandas as pd
 
-from libpysal.graph._kernel import _kernel, _kernel_functions, _knn, _optimize_bandwidth
+from libpysal.graph._kernel import _kernel, _kernel_functions
 
 grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[
     ["OBJECTID", "geometry"]
@@ -216,11 +216,43 @@ def test_kernels(kernel):
         assert weight.max() == pytest.approx(0.9855481738848647)
 
 
+# def test_bandwidth():
+#     raise NotImplementedError()
+
 # def test_precomputed(data, ids):
 #     raise NotImplementedError()
 
 # def test_coincident(data):
 #     raise NotImplementedError()
+
+
+def test_coincident():
+    grocs_duplicated = pd.concat(
+        [grocs, grocs.iloc[:10], grocs.iloc[:3]], ignore_index=True
+    )
+    # plain kernel
+    head, tail, weight = _kernel(grocs_duplicated)
+    assert head.shape[0] == len(grocs_duplicated) * (len(grocs_duplicated) - 1)
+    assert tail.shape == head.shape
+    assert weight.shape == head.shape
+    np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
+
+    # k, raise
+    with pytest.raises(ValueError, match="There are"):
+        _kernel(grocs_duplicated, k=2)
+
+    # k, jitter
+    head, tail, weight = _kernel(
+        grocs_duplicated, taper=False, k=2, coincident="jitter"
+    )
+    assert head.shape[0] == len(grocs_duplicated) * 2
+    assert tail.shape == head.shape
+    assert weight.shape == head.shape
+    np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
+
+    # k, clique
+    with pytest.raises(NotImplementedError):
+        _kernel(grocs_duplicated, k=2, coincident="clique")
 
 
 def test_shape_preservation():

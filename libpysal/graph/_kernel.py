@@ -70,6 +70,7 @@ def _kernel(
     ids=None,
     p=2,
     taper=True,
+    coincident="raise",
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -128,13 +129,24 @@ def _kernel(
             ids = numpy.arange(coordinates.shape[0])
     if k is not None:
         if metric != "precomputed":
-            D = _knn(coordinates, k=k, metric=metric, p=p)
+            D = _knn(coordinates, k=k, metric=metric, p=p, coincident=coincident)
         else:
             D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
         if metric != "precomputed":
             D = spatial.distance.pdist(coordinates, metric=metric)
-            D = sparse.csc_array(spatial.distance.squareform(D))
+            # ensure that self-distance is dropped but 0 between co-located pts not
+            sq = spatial.distance.squareform(D)
+            # get data and ids for sparse constructor
+            data = sq.flatten()
+            i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
+            j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
+            # remove diagonal
+            data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
+            i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
+            j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
+            # construct sparse
+            D = sparse.csc_array((data, (i, j)))
         else:
             D = sparse.csc_array(coordinates)
     if bandwidth is None:
@@ -156,11 +168,11 @@ def _kernel(
 
     return _resolve_islands(heads, tails, ids, weights)
 
-    # TODO: ensure isloates are properly handled
     # TODO: handle co-located points
 
 
 def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
+    """internal function called only from within _kernel, never directly to build KNN"""
     coordinates, ids, geoms = _validate_geometry_input(
         coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
@@ -187,8 +199,6 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
         )
         return D
 
-        # TODO: ensure isloates are properly handled
-        # TODO: handle co-located points
         # TODO: haversine requires lat lan coords so we need to check if the gdf is in the
         # correct CRS (or None) and if an array is given, that it is bounded by -180,180 and -90,90
         # and explanation that the result is in kilometres
@@ -196,7 +206,7 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
         if coincident == "raise":
             raise ValueError(
                 f"There are {len(coincident_lut)} "
-                f"unique locations in the dataset, but {len(geoms)} observations. "
+                f"unique locations in the dataset, but {len(coordinates)} observations. "
                 f"At least one of these sites has {max_at_one_site} points, more than the "
                 f"{k} nearest neighbors requested. This means there are more than {k} points "
                 "in the same location, which makes this graph type undefined. To address "
@@ -212,18 +222,27 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
                 p=p,
                 coincident="jitter",
             )
-        # implicit coincident == "clique"
-        heads, tails, weights = _sparse_to_arrays(
-            _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise")
-        )
-        adjtable = pandas.DataFrame.from_dict(
-            dict(focal=heads, neighbor=tails, weight=weights)
-        )
-        adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=0)
-        return sparse.csr_array(
-            adjtable.weight.values,
-            (adjtable.focal.values, adjtable.neighbor.values),
-            shape=(n_samples, n_samples),
+
+        if coincident == "clique":
+            raise NotImplementedError(
+                "clique-based resolver of coincident points is not yet implemented."
+            )
+            # # implicit coincident == "clique"
+            # heads, tails, weights = _sparse_to_arrays(
+            #     _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise")
+            # )
+            # adjtable = pandas.DataFrame.from_dict(
+            #     dict(focal=heads, neighbor=tails, weight=weights)
+            # )
+            # adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=0)
+            # return sparse.csr_array(
+            #     adjtable.weight.values,
+            #     (adjtable.focal.values, adjtable.neighbor.values),
+            #     shape=(n_samples, n_samples),
+            # )
+        raise ValueError(
+            f"'{coincident}' is not a valid option. Use one of "
+            "['raise', 'jitter', 'clique']."
         )
 
 
