@@ -248,6 +248,8 @@ def test_metric(metric):
         data = grocs.to_crs(4326)
     else:
         data = grocs
+    if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
+        pytest.skip("metric not supported by scipy")
     head, tail, weight = _kernel(data, metric=metric, kernel="identity", p=1.5)
     assert head.shape[0] == len(data) * (len(data) - 1)
     assert tail.shape == head.shape
@@ -264,13 +266,9 @@ def test_metric(metric):
         assert weight.mean() == pytest.approx(49424.576155)
         assert weight.max() == pytest.approx(173379.431622)
     elif metric == "chebyshev":
-        if not HAS_SKLEARN:
-            pytest.skip("chebyshev not supported by scipy")
         assert weight.mean() == pytest.approx(36590.352895)
         assert weight.max() == pytest.approx(123955.14249)
     else:
-        if not HAS_SKLEARN:
-            pytest.skip("haversine not supported by scipy")
         assert weight.mean() == pytest.approx(0.115835)
         assert weight.max() == pytest.approx(0.371465)
 

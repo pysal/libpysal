@@ -17,6 +17,8 @@ try:
 except ImportError:
     HAS_SKLEARN = False
 
+HAS_SKLEARN = False
+
 _VALID_GEOMETRY_TYPES = ["Point"]
 
 
@@ -154,10 +156,10 @@ def _kernel(
             D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
         if metric != "precomputed":
+            dist_kwds = {}
+            if metric == "minkowski":
+                dist_kwds["p"] = p
             if HAS_SKLEARN:
-                dist_kwds = {}
-                if metric == "minkowski":
-                    dist_kwds["p"] = p
                 sq = metrics.pairwise_distances(
                     coordinates, coordinates, metric=metric, **dist_kwds
                 )
@@ -167,7 +169,7 @@ def _kernel(
                         f"metric {metric} is not supported by scipy, and scikit-learn "
                         "could not be imported."
                     )
-                D = spatial.distance.pdist(coordinates, metric=metric, p=p)
+                D = spatial.distance.pdist(coordinates, metric=metric, **dist_kwds)
                 sq = spatial.distance.squareform(D)
 
             # ensure that self-distance is dropped but 0 between co-located pts not
