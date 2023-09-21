@@ -33,6 +33,11 @@ Levi John Wolf (levi.john.wolf@gmail.com)
 
 
 class Graph(_Set_Mixin):
+    """Graph class encoding spatial weights matrices
+
+    The :class:`Graph` is currently experimental and its API is incomplete and unstable.
+    """
+
     def __init__(self, adjacency, transformation="O"):
         """Weights base class based on adjacency list
 
@@ -44,18 +49,20 @@ class Graph(_Set_Mixin):
 
         Parameters
         ----------
-        adjacency : pandas.DataFrame
-            pandas.DataFrame with a an index ``"focal"`` and columns
-            ``["neighbor", "weight]`` encoding the adjacency. By convention,
+        adjacency : pandas.Series
+            pandas.Series with a MultiIndex  with ``"focal"`` and ``"neigbor"`` levels
+            weight as values encoding the adjacency. By convention,
             isolates are encoded as self-loops with a weight 0.
         transformation : str, default "O"
             weights transformation used to produce the table.
 
-                - **O** -- Original
-                - **B** -- Binary
-                - **R** -- Row-standardization (global sum :math:`=n`)
-                - **D** -- Double-standardization (global sum :math:`=1`)
-                - **V** -- Variance stabilizing
+            - **O** -- Original
+            - **B** -- Binary
+            - **R** -- Row-standardization (global sum :math:`=n`)
+            - **D** -- Double-standardization (global sum :math:`=1`)
+            - **V** -- Variance stabilizing
+
+
         """
         if not isinstance(adjacency, pd.Series):
             raise TypeError(
@@ -413,16 +420,18 @@ class Graph(_Set_Mixin):
         kernel : string or callable (default: 'gaussian')
             kernel function to apply over the distance matrix computed by `metric`.
             The following kernels are supported:
-                - triangular:
-                - parabolic:
-                - gaussian:
-                - bisquare:
-                - cosine:
-                - boxcar/discrete: all distances less than `bandwidth` are 1, and all
-                    other distances are 0
-                - identity/None : do nothing, weight similarity based on raw distance
-                - callable : a user-defined function that takes the distance vector and
-                    the bandwidth and returns the kernel: kernel(distances, bandwidth)
+
+            - ``"triangular"``:
+            - ``"parabolic"``:
+            - ``"gaussian"``:
+            - ``"bisquare"``:
+            - ``"cosine"``:
+            - ``'boxcar'``/discrete: all distances less than `bandwidth` are 1, and all
+              other distances are 0
+            - ``"identity"``/None : do nothing, weight similarity based on raw distance
+            - ``callable`` : a user-defined function that takes the distance vector and
+              the bandwidth and returns the kernel: kernel(distances, bandwidth)
+
         k : int (default: None)
             number of nearest neighbors used to truncate the kernel. This is assumed
             to be constant across samples. If None, no truncation is conduted.
@@ -521,11 +530,13 @@ class Graph(_Set_Mixin):
             coordinates.
         method : str, (default "delaunay")
             method of extracting the weights from triangulation. Supports:
-                - "delaunay"
-                - "gabriel"
-                - "relative_neighborhood"
-                - "voronoi"
-        bandwidth : _type_, optional
+
+            - ``"delaunay"``
+            - ``"gabriel"``
+            - ``"relative_neighborhood"``
+            - ``"voronoi"``
+
+        bandwidth : float, optional
             distance to use in the kernel computation. Should be on the same scale as
             the input coordinates, by default numpy.inf
         kernel : str, optional
@@ -535,18 +546,19 @@ class Graph(_Set_Mixin):
             Clipping method when ``method="voronoi"``. Ignored otherwise.
             Default is ``'extent'``. Options are as follows.
 
-            * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be
-                arbitrarily larger that the source map. Note that this may lead to
-                cells that are many orders of magnitude larger in extent than the
-                original map. Not recommended.
-            * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to
-                the bounding box of the input points.
-            * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull
-                of the input points.
-            * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull
-                that contains all points (e.g. the smallest alphashape, using
-                ``libpysal.cg.alpha_shape_auto``).
-            * Polygon -- Clip to an arbitrary Polygon.
+            - ``'none'``/``None``: No clip is applied. Voronoi cells may be
+              arbitrarily larger that the source map. Note that this may lead to
+              cells that are many orders of magnitude larger in extent than the
+              original map. Not recommended.
+            - ``'bbox'``/``'extent'``/``'bounding box'``: Clip the voronoi cells to
+              the bounding box of the input points.
+            - ``'chull``/``'convex hull'``: Clip the voronoi cells to the convex hull
+              of the input points.
+            - ``'ashape'``/``'ahull'``: Clip the voronoi cells to the tightest hull
+              that contains all points (e.g. the smallest alphashape, using
+              :func:`libpysal.cg.alpha_shape_auto`).
+            - ``shapely.Polygon``: Clip to an arbitrary Polygon.
+
         rook : bool, optional
             Contiguity method when ``method="voronoi"``. Ignored otherwise.
             If True, two geometries are considered neighbours if they
@@ -607,8 +619,9 @@ class Graph(_Set_Mixin):
         threshold : float
             distance band
         binary : bool, optional
-            If True w_{ij}=1 if d_{i,j}<=threshold, otherwise w_{i,j}=0
-            If False wij=dij^{alpha}, by default True.
+            If True :math:`w_{ij}=1` if :math:`d_{i,j}<=threshold`, otherwise
+            :math:`w_{i,j}=0`.
+            If False :math:`wij=dij^{alpha}`, by default True.
         alpha : float, optional
             distance decay parameter for weight (default -1.0)
             if alpha is positive the weights will not decline with
@@ -951,6 +964,7 @@ class Graph(_Set_Mixin):
 
     @cached_property
     def unique_ids(self):
+        """Unique IDs used in the Graph"""
         return self._adjacency.index.get_level_values("focal").unique()
 
     @cached_property
