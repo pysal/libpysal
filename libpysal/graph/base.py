@@ -995,7 +995,7 @@ class Graph(_Set_Mixin):
     @cached_property
     def n_edges(self):
         """Number of observations."""
-        return self.adjacency.shape[0] - self.isolates.shape[0]
+        return self._adjacency.shape[0] - self.isolates.shape[0]
 
     @cached_property
     def pct_nonzero(self):
@@ -1006,7 +1006,7 @@ class Graph(_Set_Mixin):
     @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
-        return self.n_edges - len(self.isolates)
+        return (self._adjacency.drop(self.isolates) > 0).sum()
 
     def asymmetry(self, intrinsic=True):
         """Asymmetry check.

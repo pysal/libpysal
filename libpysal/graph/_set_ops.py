@@ -50,8 +50,8 @@ class _Set_Mixin:
         Returns True if left and right share at least one link, irrespective of weights
         value.
         """
-        intersection = left._adjacncy.index.drop(left.isolates).intersection(
-            right._adjacncy.index.drop(right.isolates)
+        intersection = left._adjacency.index.drop(left.isolates).intersection(
+            right._adjacency.index.drop(right.isolates)
         )
         if len(intersection) > 0:
             return True
@@ -64,8 +64,8 @@ class _Set_Mixin:
         """
         from .base import Graph
 
-        intersection = left._adjacncy.index.drop(left.isolates).intersection(
-            right._adjacncy.index.drop(right.isolates)
+        intersection = left._adjacency.index.drop(left.isolates).intersection(
+            right._adjacency.index.drop(right.isolates)
         )
         return Graph.from_arrays(
             *_resolve_islands(
@@ -87,8 +87,8 @@ class _Set_Mixin:
                 "Cannot do union of Graphs that are based on different sets of unique IDs."
             )
 
-        sym_diff = left._adjacncy.index.drop(left.isolates).symmetric_difference(
-            right._adjacncy.index.drop(right.isolates)
+        sym_diff = left._adjacency.index.drop(left.isolates).symmetric_difference(
+            right._adjacency.index.drop(right.isolates)
         )
         return Graph.from_arrays(
             *_resolve_islands(
@@ -110,8 +110,8 @@ class _Set_Mixin:
                 "Cannot do union of Graphs that are based on different sets of unique IDs."
             )
 
-        union = left._adjacncy.index.drop(left.isolates).union(
-            right._adjacncy.index.drop(right.isolates)
+        union = left._adjacency.index.drop(left.isolates).union(
+            right._adjacency.index.drop(right.isolates)
         )
         return Graph.from_arrays(
             *_resolve_islands(
@@ -129,13 +129,8 @@ class _Set_Mixin:
         """
         from .base import Graph
 
-        if not (left.unique_ids == right.unique_ids).all():
-            raise ValueError(
-                "Cannot do union of Graphs that are based on different sets of unique IDs."
-            )
-
-        diff = left._adjacncy.index.drop(left.isolates).difference(
-            right._adjacncy.index.drop(right.isolates)
+        diff = left._adjacency.index.drop(left.isolates).difference(
+            right._adjacency.index.drop(right.isolates)
         )
         return Graph.from_arrays(
             *_resolve_islands(
@@ -152,10 +147,10 @@ class _Set_Mixin:
         This requires both Graph are label_equal. Isolates are ignored.
         """
         join = (
-            left._adjacncy.drop(left.isolates)
+            left._adjacency.drop(left.isolates)
             .reset_index(level=1)
             .merge(
-                right._adjacncy.drop(right.isolates).reset_index(level=1),
+                right._adjacency.drop(right.isolates).reset_index(level=1),
                 on=("focal", "neighbor"),
                 how="outer",
                 indicator=True,
