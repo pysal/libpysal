@@ -1,5 +1,4 @@
 import numpy
-import pandas
 from scipy import sparse, optimize, spatial, stats
 
 from ._utils import (
@@ -8,7 +7,15 @@ from ._utils import (
     _induce_cliques,
     _jitter_geoms,
     _sparse_to_arrays,
+    _resolve_islands,
 )
+
+try:
+    from sklearn import neighbors, metrics
+
+    HAS_SKLEARN = True
+except ImportError:
+    HAS_SKLEARN = False
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
@@ -68,7 +75,8 @@ def _kernel(
     k=None,
     ids=None,
     p=2,
-    taper=False,
+    taper=True,
+    coincident="raise",
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -112,7 +120,7 @@ def _kernel(
         from the input coordinates will be used.
     p : int (default: 2)
         parameter for minkowski metric, ignored if metric != "minkowski".
-    taper : bool (default: False)
+    taper : bool (default: True)
         remove links with a weight equal to zero
     """
     if metric != "precomputed":
@@ -123,16 +131,56 @@ def _kernel(
         assert (
             coordinates.shape[0] == coordinates.shape[1]
         ), "coordinates should represent a distance matrix if metric='precomputed'"
+        if ids is None:
+            ids = numpy.arange(coordinates.shape[0])
+
+    if metric == "haversine":
+        if not (
+            (coordinates[:, 0] > -180)
+            & (coordinates[:, 0] < 180)
+            & (coordinates[:, 1] > -90)
+            & (coordinates[:, 1] < 90)
+        ).all():
+            raise ValueError(
+                "'haversine' metric is limited to the range of "
+                "latitude coordinates (-90, 90) and the range of "
+                "longitude coordinates (-180, 180)."
+            )
 
     if k is not None:
         if metric != "precomputed":
-            D = _knn(coordinates, k=k, metric=metric, p=p)
+            D = _knn(coordinates, k=k, metric=metric, p=p, coincident=coincident)
         else:
             D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
         if metric != "precomputed":
-            D = spatial.distance.pdist(coordinates, metric=metric)
-            D = sparse.csc_array(spatial.distance.squareform(D))
+            dist_kwds = {}
+            if metric == "minkowski":
+                dist_kwds["p"] = p
+            if HAS_SKLEARN:
+                sq = metrics.pairwise_distances(
+                    coordinates, coordinates, metric=metric, **dist_kwds
+                )
+            else:
+                if metric not in ("euclidean", "manhattan", "cityblock", "minkowski"):
+                    raise ValueError(
+                        f"metric {metric} is not supported by scipy, and scikit-learn "
+                        "could not be imported."
+                    )
+                D = spatial.distance.pdist(coordinates, metric=metric, **dist_kwds)
+                sq = spatial.distance.squareform(D)
+
+            # ensure that self-distance is dropped but 0 between co-located pts not
+            # get data and ids for sparse constructor
+            data = sq.flatten()
+            i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
+            j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
+            # remove diagonal
+            data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
+            i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
+            j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
+            # construct sparse
+            D = sparse.csc_array((data, (i, j)))
         else:
             D = sparse.csc_array(coordinates)
     if bandwidth is None:
@@ -148,15 +196,15 @@ def _kernel(
         D.data = _kernel_functions[kernel](D.data, bandwidth)
 
     if taper:
-        raise NotImplementedError("taper is not yet implemented.")
+        D.eliminate_zeros()
 
-    return _sparse_to_arrays(D, ids=ids)
+    heads, tails, weights = _sparse_to_arrays(D, ids=ids)
 
-    # TODO: ensure isloates are properly handled
-    # TODO: handle co-located points
+    return _resolve_islands(heads, tails, ids, weights)
 
 
 def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
+    """internal function called only from within _kernel, never directly to build KNN"""
     coordinates, ids, geoms = _validate_geometry_input(
         coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
@@ -183,20 +231,15 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
         )
         return D
 
-        # TODO: ensure isloates are properly handled
-        # TODO: handle co-located points
-        # TODO: haversine requires lat lan coords so we need to check if the gdf is in the
-        # correct CRS (or None) and if an array is given, that it is bounded by -180,180 and -90,90
-        # and explanation that the result is in kilometres
     else:
         if coincident == "raise":
             raise ValueError(
                 f"There are {len(coincident_lut)} "
-                f"unique locations in the dataset, but {len(geoms)} observations."
-                f"At least one of these sites has {max_at_one_site} points, more than the"
-                f" {k} nearest neighbors requested. This means there are more than {k} points"
-                " in the same location, which makes this graph type undefined. To address "
-                " this issue, consider setting `coincident='clique' or consult the "
+                f"unique locations in the dataset, but {len(coordinates)} observations. "
+                f"At least one of these sites has {max_at_one_site} points, more than the "
+                f"{k} nearest neighbors requested. This means there are more than {k} points "
+                "in the same location, which makes this graph type undefined. To address "
+                "this issue, consider setting `coincident='clique' or consult the "
                 "documentation about coincident points."
             )
         if coincident == "jitter":
@@ -208,18 +251,27 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
                 p=p,
                 coincident="jitter",
             )
-        # implicit coincident == "clique"
-        heads, tails, weights = _sparse_to_arrays(
-            _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise")
-        )
-        adjtable = pandas.DataFrame.from_dict(
-            dict(focal=heads, neighbor=tails, weight=weights)
-        )
-        adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=0)
-        return sparse.csr_array(
-            adjtable.weight.values,
-            (adjtable.focal.values, adjtable.neighbor.values),
-            shape=(n_samples, n_samples),
+
+        if coincident == "clique":
+            raise NotImplementedError(
+                "clique-based resolver of coincident points is not yet implemented."
+            )
+            # # implicit coincident == "clique"
+            # heads, tails, weights = _sparse_to_arrays(
+            #     _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise")
+            # )
+            # adjtable = pandas.DataFrame.from_dict(
+            #     dict(focal=heads, neighbor=tails, weight=weights)
+            # )
+            # adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=0)
+            # return sparse.csr_array(
+            #     adjtable.weight.values,
+            #     (adjtable.focal.values, adjtable.neighbor.values),
+            #     shape=(n_samples, n_samples),
+            # )
+        raise ValueError(
+            f"'{coincident}' is not a valid option. Use one of "
+            "['raise', 'jitter', 'clique']."
         )
 
 
@@ -228,12 +280,8 @@ def _distance_band(coordinates, threshold, ids=None):
         coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
     tree = spatial.KDTree(coordinates)
-    dist = tree.sparse_distance_matrix(tree, threshold, output_type="ndarray")
-    sp = sparse.csr_array((dist["v"], (dist["i"], dist["j"])))
+    sp = sparse.csr_array(tree.sparse_distance_matrix(tree, threshold))
     return sp
-
-    # TODO: handle co-located points
-    # TODO: ensure isloates are properly handled
 
 
 def _prepare_tree_query(coordinates, metric, p=2):
@@ -241,15 +289,16 @@ def _prepare_tree_query(coordinates, metric, p=2):
     Construct a tree query function relevant to the input metric.
     Prefer scikit-learn trees if they are available.
     """
-    try:
-        from sklearn.neighbors import VALID_METRICS, BallTree, KDTree
-
-        if metric in VALID_METRICS["kd_tree"]:
-            tree = KDTree
+    if HAS_SKLEARN:
+        dist_kwds = {}
+        if metric == "minkowski":
+            dist_kwds["p"] = p
+        if metric in neighbors.VALID_METRICS["kd_tree"]:
+            tree = neighbors.KDTree
         else:
-            tree = BallTree
-        return tree(coordinates, metric=metric).query
-    except ImportError:
+            tree = neighbors.BallTree
+        return tree(coordinates, metric=metric, **dist_kwds).query
+    else:
         if metric in ("euclidean", "manhattan", "cityblock", "minkowski"):
             from scipy.spatial import KDTree as tree
 
@@ -262,8 +311,8 @@ def _prepare_tree_query(coordinates, metric, p=2):
             return query
         else:
             raise ValueError(
-                f"metric {metric} is not supported by scipy, and scikit-learn is "
-                "not able to be imported"
+                f"metric {metric} is not supported by scipy, and scikit-learn could "
+                "not be imported"
             )
 
 

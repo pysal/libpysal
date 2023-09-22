@@ -6,7 +6,7 @@ import pandas
 import geopandas
 from packaging.version import Version
 
-from ._utils import _neighbor_dict_to_edges, _validate_geometry_input
+from ._utils import _neighbor_dict_to_edges, _validate_geometry_input, _resolve_islands
 
 GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 
@@ -205,29 +205,6 @@ def _perimeter_weights(geoms, heads, tails):
         )
 
     return shapely.length(intersection)
-
-
-def _resolve_islands(heads, tails, ids, weights):
-    """
-    Induce self-loops for a collection of ids and links describing a
-    contiguity graph. Induced self-loops will have zero weight.
-    """
-    islands = numpy.setdiff1d(ids, heads)
-    if islands.shape != (0,):
-        heads = numpy.hstack((heads, islands))
-        tails = numpy.hstack((tails, islands))
-        weights = numpy.hstack((weights, numpy.zeros_like(islands, dtype=int)))
-
-    # ensure proper order after adding isolates to the end
-    adjacency = pandas.Series(
-        weights, index=pandas.MultiIndex.from_arrays([heads, tails])
-    )
-    adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
-    return (
-        adjacency.index.get_level_values(0),
-        adjacency.index.get_level_values(1),
-        adjacency.values,
-    )
 
 
 def _block_contiguity(regimes, ids=None):

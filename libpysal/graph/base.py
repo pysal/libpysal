@@ -405,6 +405,7 @@ class Graph(_Set_Mixin):
         bandwidth=None,
         metric="euclidean",
         p=2,
+        coincident="raise",
     ):
         """Generate Graph from geometry data based on a kernel function
 
@@ -445,6 +446,12 @@ class Graph(_Set_Mixin):
             only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         p : int (default: 2)
             parameter for minkowski metric, ignored if metric != "minkowski".
+        coincident: str, optional (default "raise")
+            Method for handling coincident points when ``k`` is not None. Options include
+            ``'raise'`` (raising an exception when coincident points are present),
+            ``'jitter'`` (randomly displace coincident points to produce uniqueness), and
+            ``'clique'`` (induce fully-connected sub cliques for coincident points).
+
 
         Returns
         -------
@@ -461,12 +468,13 @@ class Graph(_Set_Mixin):
             k=k,
             p=p,
             ids=ids,
+            coincident=coincident,
         )
 
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
-    def build_knn(cls, data, k, metric="euclidean", p=2):
+    def build_knn(cls, data, k, metric="euclidean", p=2, coincident="raise"):
         """Generate Graph from geometry data based on k-nearest neighbors search
 
         Parameters
@@ -486,6 +494,12 @@ class Graph(_Set_Mixin):
             only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         p : int (default: 2)
             parameter for minkowski metric, ignored if metric != "minkowski".
+        coincident: str, optional (default "raise")
+            Method for handling coincident points. Options include
+            ``'raise'`` (raising an exception when coincident points are present),
+            ``'jitter'`` (randomly displace coincident points to produce uniqueness), and
+            ``'clique'`` (induce fully-connected sub cliques for coincident points).
+
 
         Returns
         -------
@@ -502,6 +516,7 @@ class Graph(_Set_Mixin):
             k=k,
             p=p,
             ids=ids,
+            coincident=coincident,
         )
 
         return cls.from_arrays(head, tail, weight)
