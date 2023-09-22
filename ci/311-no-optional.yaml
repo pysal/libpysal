@@ -16,5 +16,6 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional used in ci
-  - geopandas-base>=0.12.0
+  - geopandas-base>=0.12.0  # base to avoid pulling sklearn
   - fiona
+  - geodatasets
