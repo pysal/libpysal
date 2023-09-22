@@ -27,6 +27,7 @@
             ci/39.yaml,
             ci/310.yaml,
             ci/311.yaml,
+            ci/311-no-optional.yaml,
             ci/311-dev.yaml
          ]
          include:
