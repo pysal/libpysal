@@ -149,7 +149,7 @@ class _Set_Mixin:
     def issubgraph(self, right):
         """
         Return True if every link in the left Graph also occurs in the right Graph.
-        This requires both Graph are label_equal. Isolates are ignored.
+        This requires both Graphs are labeled equally. Isolates are ignored.
         """
         join = (
             self._adjacency.drop(self.isolates)
