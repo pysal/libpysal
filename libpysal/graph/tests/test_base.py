@@ -91,6 +91,8 @@ class TestBase:
         }
         self.G_str_unodered = graph.Graph.from_weights_dict(self.W_dict_str_unordered)
 
+        self.nybb = gpd.read_file(geodatasets.get_path("nybb")).set_index("BoroName")
+
     def test_init(self):
         G = graph.Graph(self.adjacency_int_binary)
         assert isinstance(G, graph.Graph)
@@ -529,9 +531,7 @@ class TestBase:
         np.testing.assert_array_equal(sp.todense(), sp_old)
 
         # check proper sorting
-        nybb = graph.Graph.build_contiguity(
-            gpd.read_file(geodatasets.get_path("nybb")).set_index("BoroName")
-        )
+        nybb = graph.Graph.build_contiguity(self.nybb)
         nybb_expected = np.array(
             [
                 [0, 0, 0, 0, 0],
@@ -850,3 +850,95 @@ class TestBase:
 
         with pytest.raises(ValueError, match="The length of `y`"):
             self.G_str.lag(list(range(1, 15)))
+
+    def test_higher_order(self):
+        cont = graph.Graph.build_contiguity(self.nybb)
+        k2 = cont.higher_order(2)
+        expected = graph.Graph.from_arrays(
+            self.nybb.index,
+            ["Staten Island", "Queens", "Bronx", "Manhattan", "Brooklyn"],
+            [0, 0, 1, 0, 1],
+        )
+        assert k2 == expected
+
+        diagonal = cont.higher_order(2, diagonal=True)
+        expected = graph.Graph.from_arrays(
+            [
+                "Staten Island",
+                "Queens",
+                "Brooklyn",
+                "Brooklyn",
+                "Manhattan",
+                "Bronx",
+                "Bronx",
+            ],
+            [
+                "Staten Island",
+                "Queens",
+                "Brooklyn",
+                "Bronx",
+                "Manhattan",
+                "Brooklyn",
+                "Bronx",
+            ],
+            [0, 1, 1, 1, 1, 1, 1],
+        )
+        assert diagonal == expected
+
+        shortest_false = cont.higher_order(2, shortest_path=False)
+        expected = graph.Graph.from_arrays(
+            [
+                "Staten Island",
+                "Queens",
+                "Queens",
+                "Queens",
+                "Brooklyn",
+                "Brooklyn",
+                "Brooklyn",
+                "Manhattan",
+                "Manhattan",
+                "Manhattan",
+                "Bronx",
+                "Bronx",
+                "Bronx",
+            ],
+            [
+                "Staten Island",
+                "Brooklyn",
+                "Manhattan",
+                "Bronx",
+                "Queens",
+                "Manhattan",
+                "Bronx",
+                "Queens",
+                "Brooklyn",
+                "Bronx",
+                "Queens",
+                "Brooklyn",
+                "Manhattan",
+            ],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        )
+        assert shortest_false == expected
+
+        lower = cont.higher_order(2, lower_order=True)
+        assert lower == expected
+
+    def test_n_components(self):
+        nybb = graph.Graph.build_contiguity(self.nybb)
+        assert nybb.n_components == 2
+
+        nybb = graph.Graph.build_knn(self.nybb.set_geometry(self.nybb.centroid), k=2)
+        assert nybb.n_components == 1
+
+    def test_component_labels(self):
+        nybb = graph.Graph.build_contiguity(self.nybb)
+        expected = pd.Series(
+            [0, 1, 1, 1, 1],
+            index=pd.Index(self.nybb.index.values, name="focal"),
+            dtype=int,
+            name="component labels",
+        )
+        pd.testing.assert_series_equal(
+            expected, nybb.component_labels, check_dtype=False
+        )

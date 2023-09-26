@@ -9,25 +9,27 @@ GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 
 
 def _sparse_to_arrays(sparray, ids=None):
-    sparse = sparray.tocoo(copy=False)
+    """Convert sparse array to arrays of adjacency"""
+    sparray = sparray.tocoo(copy=False)
     if ids is not None:
         ids = np.asarray(ids)
-        if sparse.shape[0] != ids.shape[0]:
+        if sparray.shape[0] != ids.shape[0]:
             raise ValueError(
                 f"The length of ids ({ids.shape[0]}) does not match "
-                f"the shape of sparse {sparse.shape}."
+                f"the shape of sparse {sparray.shape}."
             )
 
-        sorter = sparse.row.argsort()
-        head = ids[sparse.row][sorter]
-        tail = ids[sparse.col][sorter]
-        data = sparse.data[sorter]
+        sorter = sparray.row.argsort()
+        head = ids[sparray.row][sorter]
+        tail = ids[sparray.col][sorter]
+        data = sparray.data[sorter]
     else:
-        sorter = sparse.row.argsort()
-        head = sparse.row[sorter]
-        tail = sparse.col[sorter]
-        data = sparse.data[sorter]
-    return head, tail, data
+        sorter = sparray.row.argsort()
+        head = sparray.row[sorter]
+        tail = sparray.col[sorter]
+        data = sparray.data[sorter]
+        ids = np.arange(sparray.shape[0], dtype=int)
+    return _resolve_islands(head, tail, ids, data)
 
 
 def _jitter_geoms(coordinates, geoms, seed=None):
