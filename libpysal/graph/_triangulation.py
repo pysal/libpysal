@@ -1,25 +1,33 @@
 import warnings
+from functools import wraps
 
 import numpy
 import pandas
-from scipy import spatial, sparse
+from scipy import sparse, spatial
+from packaging.version import Version
+
+from libpysal.cg import voronoi_frames
 
 from ._contiguity import _vertex_set_intersection
-from ._kernel import _kernel, _optimize_bandwidth, _kernel_functions
+from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
-    _validate_geometry_input,
     _build_coincidence_lookup,
     _induce_cliques,
     _jitter_geoms,
+    _validate_geometry_input,
     _vec_euclidean_distances,
 )
-from libpysal.cg import voronoi_frames
-from functools import wraps
 
 try:
     from numba import njit  # noqa E401
+
+    HAS_NUMBA = True
 except ModuleNotFoundError:
     from libpysal.common import jit as njit
+
+    HAS_NUMBA = False
+
+PANDAS_GE_21 = Version(pandas.__version__) >= Version("2.1.0")
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
@@ -67,10 +75,12 @@ def _validate_coincident(triangulator):
             elif coincident == "jitter":
                 coordinates, geoms = _jitter_geoms(coordinates, geoms, seed=seed)
             elif coincident == "clique":
-                pass
+                raise NotImplementedError(
+                    "clique-based resolver of coincident points is not yet implemented."
+                )
             else:
                 raise ValueError(
-                    f"Recieved option `coincident='{coincident}', but only options "
+                    f"Recieved option coincident='{coincident}', but only options "
                     "'raise','clique','jitter' are suppported."
                 )
 
@@ -95,13 +105,14 @@ def _validate_coincident(triangulator):
                 metric="precomputed",
                 kernel=kernel,
                 bandwidth=bandwidth,
-                taper=False
+                taper=False,
             )
         # create adjacency
         adjtable = pandas.DataFrame.from_dict(
             dict(focal=heads, neighbor=tails, weight=weights)
         )
 
+        # TODO: fix this
         # reinsert points resolved via clique
         if (n_coincident > 0) & (coincident == "clique"):
             # note that the kernel is only used to compute a fill value for the clique.
@@ -110,13 +121,22 @@ def _validate_coincident(triangulator):
             fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
 
-        # ensure proper sorting
-        sorted_index = (
-            adjtable[["focal", "neighbor"]]
-            .applymap(list(ids).index)
-            .sort_values(["focal", "neighbor"])
-            .index
-        )
+        if PANDAS_GE_21:
+            # ensure proper sorting
+            sorted_index = (
+                adjtable[["focal", "neighbor"]]
+                .map(list(ids).index)
+                .sort_values(["focal", "neighbor"])
+                .index
+            )
+        else:
+            # ensure proper sorting
+            sorted_index = (
+                adjtable[["focal", "neighbor"]]
+                .applymap(list(ids).index)
+                .sort_values(["focal", "neighbor"])
+                .index
+            )
 
         # return data for Graph.from_arrays
         return heads[sorted_index], tails[sorted_index], weights[sorted_index]
@@ -172,13 +192,12 @@ def _delaunay(coordinates):
     will compute it much more quickly than Voronoi(coordinates, clip=None).
     """
 
-    try:
-        from numba import njit  # noqa E401
-    except ModuleNotFoundError:
+    if not HAS_NUMBA:
         warnings.warn(
             "The numba package is used extensively in this module"
             " to accelerate the computation of graphs. Without numba,"
-            " these computations may become unduly slow on large data."
+            " these computations may become unduly slow on large data.",
+            stacklevel=3,
         )
 
     edges, _ = _voronoi_edges(coordinates)
@@ -225,13 +244,12 @@ def _gabriel(coordinates):
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
     """
-    try:
-        from numba import njit  # noqa E401
-    except ModuleNotFoundError:
+    if not HAS_NUMBA:
         warnings.warn(
             "The numba package is used extensively in this module"
             " to accelerate the computation of graphs. Without numba,"
-            " these computations may become unduly slow on large data."
+            " these computations may become unduly slow on large data.",
+            stacklevel=3,
         )
 
     edges, dt = _voronoi_edges(coordinates)
@@ -282,13 +300,12 @@ def _relative_neighborhood(coordinates):
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
     """
-    try:
-        from numba import njit  # noqa E401
-    except ModuleNotFoundError:
+    if not HAS_NUMBA:
         warnings.warn(
             "The numba package is used extensively in this module"
             " to accelerate the computation of graphs. Without numba,"
-            " these computations may become unduly slow on large data."
+            " these computations may become unduly slow on large data.",
+            stacklevel=3,
         )
 
     edges, dt = _voronoi_edges(coordinates)
