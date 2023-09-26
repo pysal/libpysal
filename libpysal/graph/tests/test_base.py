@@ -230,9 +230,9 @@ class TestBase:
         np.testing.assert_array_equal(W.id_order, self.letters[:10])
 
     def test_from_sparse(self):
-        row = np.array([0, 3, 1, 0])
-        col = np.array([1, 0, 1, 2])
-        data = np.array([0.1, 0.5, 1, 0.9])
+        row = np.array([0, 0, 1, 2, 3, 3])
+        col = np.array([1, 3, 3, 2, 1, 3])
+        data = np.array([0.1, 0.5, 0.9, 0, 0.3, 0.1])
         sp = sparse.coo_array((data, (row, col)), shape=(4, 4))
         G = graph.Graph.from_sparse(sp)
         expected = graph.Graph.from_arrays(row, col, data)
@@ -252,7 +252,9 @@ class TestBase:
         )
 
         expected = graph.Graph.from_arrays(
-            ["zero", "three", "one", "zero"], ["one", "zero", "one", "two"], data
+            ["zero", "zero", "one", "two", "three", "three"],
+            ["one", "three", "three", "two", "one", "three"],
+            data,
         )
         G_named == expected
 
@@ -266,7 +268,7 @@ class TestBase:
             sp.tocsc(),
             ids=ids,
         )
-        assert G == expected, "sparse csr with ids does not match arrays constructor"
+        assert G == (expected), "sparse csr with ids does not match arrays constructor"
 
         dense = np.array(
             [

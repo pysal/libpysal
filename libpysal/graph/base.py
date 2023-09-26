@@ -995,7 +995,7 @@ class Graph(_Set_Mixin):
     @cached_property
     def n_edges(self):
         """Number of observations."""
-        return self.adjacency.shape[0]
+        return self._adjacency.shape[0] - self.isolates.shape[0]
 
     @cached_property
     def pct_nonzero(self):
@@ -1006,7 +1006,7 @@ class Graph(_Set_Mixin):
     @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
-        return self.n_edges - len(self.isolates)
+        return (self._adjacency.drop(self.isolates) > 0).sum()
 
     def asymmetry(self, intrinsic=True):
         """Asymmetry check.
@@ -1175,6 +1175,34 @@ class Graph(_Set_Mixin):
         read_parquet
         """
         _to_parquet(self, path, **kwargs)
+
+    def to_networkx(self):
+        """Convert Graph to a ``networkx`` graph.
+
+        If Graph is symmetric, returns ``nx.Graph``, otherwise returns a ``nx.DiGraph``.
+
+        Returns
+        -------
+        networkx.Graph | networkx.DiGraph
+            Representation of libpysal Graph as networkx graph
+        """
+        try:
+            import networkx as nx
+        except ImportError:
+            raise ImportError("NetworkX is required.")
+
+        if self.asymmetry().empty:
+            graph_type = nx.Graph
+        else:
+            graph_type = nx.DiGraph
+
+        return nx.from_pandas_edgelist(
+            self._adjacency.reset_index(),
+            source="focal",
+            target="neighbor",
+            edge_attr="weight",
+            create_using=graph_type,
+        )
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
