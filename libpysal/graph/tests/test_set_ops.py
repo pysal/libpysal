@@ -71,6 +71,7 @@ class Test_Set_Ops:
         assert not self.distance2500.equals(self.distance2500.transform("r"))
 
     def test_isomorphic(self):
+        pytest.importorskip("networkx")
         assert self.distance2500.isomorphic(self.distance2500_id)
 
     def test___le__(self):
