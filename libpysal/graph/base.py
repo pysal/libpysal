@@ -1076,19 +1076,19 @@ class Graph(_Set_Mixin):
         Parameters
         ----------
         k : int, optional
-            order of contiguity, by default 2
+            Order of contiguity. By default 2.
         shortest_path : bool, optional
             If True, :math:`i,j` and :math:`k`-order neighbors if the shortest
             path for :math:`i,j` is :math:`k`. If False, :math:`i,j` are
             `k`-order neighbors if there is a path from :math:`i,j` of length
-            :math:`k`. By default True
+            :math:`k`. By default True.
         diagonal : bool, optional
             If True, keep :math:`k`-order (:math:`i,j`) joins when :math:`i==j`.
             If False, remove :math:`k`-order (:math:`i,j`) joins when
-            :math:`i==j` By default False
+            :math:`i==j`. By default False.
         lower_order : bool, optional
             If True, include lower order contiguities. If False return only weights of
-            order :math:`k` By default False
+            order :math:`k`. By default False.
 
         Returns
         -------
