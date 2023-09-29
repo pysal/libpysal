@@ -28,6 +28,7 @@ dependencies = [
     "platformdirs>=2.0.2",
     "beautifulsoup4>=4.10",
     "geopandas>=0.9",
+    "shapely>=2",
     "numpy>=1.20",
     "pandas>=1.4",
     "requests",
