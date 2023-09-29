@@ -919,11 +919,9 @@ class Graph(_Set_Mixin):
 
     @cached_property
     def _components(self):
-        # TODO: scipy.sparse.csgraph does not yet support sparse arrays, only matrices
-        # TODO: we need this to be implemented in scipy first. Then the code below shall
-        # TODO: work as expected (here and in n_components and component_labels).
-        return NotImplementedError
-        # return sparse.csgraph.connected_components(self.sparse)
+        """helper for n_components and component_labels"""
+        # TODO: remove casting to matrix once scipy supports arrays here
+        return sparse.csgraph.connected_components(sparse.coo_matrix(self.sparse))
 
     @cached_property
     def n_components(self):
@@ -934,8 +932,7 @@ class Graph(_Set_Mixin):
         int
             number of components
         """
-        return NotImplementedError
-        # return self._components[0]
+        return self._components[0]
 
     @cached_property
     def component_labels(self):
@@ -946,8 +943,9 @@ class Graph(_Set_Mixin):
         numpy.array
             Array of component labels
         """
-        return NotImplementedError
-        # return self._components[1]
+        return pd.Series(
+            self._components[1], index=self.unique_ids, name="component labels"
+        )
 
     @cached_property
     def cardinalities(self):
@@ -1069,72 +1067,67 @@ class Graph(_Set_Mixin):
             return ijs
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
-        """Contiguity weights object of order K.
+        """Contiguity weights object of order :math:`k`.
 
-        TODO: This currently does not work as scipy.sparse array does not
-        yet implement matrix_power. We need to reimplement it temporarily and
-        switch once that is released. [https://github.com/scipy/scipy/pull/18544]
+        Proper higher order neighbors are returned such that :math:`i` and :math:`j` are
+        :math:`k`-order neighbors if the shortest path from :math:`i-j` is of length
+        :math:`k`.
 
         Parameters
         ----------
         k : int, optional
-            order of contiguity, by default 2
+            Order of contiguity. By default 2.
         shortest_path : bool, optional
-            True: i,j and k-order neighbors if the
-            shortest path for i,j is k.
-            False: i,j are k-order neighbors if there
-            is a path from i,j of length k.
-            By default True
+            If True, :math:`i,j` and :math:`k`-order neighbors if the shortest
+            path for :math:`i,j` is :math:`k`. If False, :math:`i,j` are
+            `k`-order neighbors if there is a path from :math:`i,j` of length
+            :math:`k`. By default True.
         diagonal : bool, optional
-            True:  keep k-order (i,j) joins when i==j
-            False: remove k-order (i,j) joins when i==j
-            By default False
+            If True, keep :math:`k`-order (:math:`i,j`) joins when :math:`i==j`.
+            If False, remove :math:`k`-order (:math:`i,j`) joins when
+            :math:`i==j`. By default False.
         lower_order : bool, optional
-            True: include lower order contiguities
-            False: return only weights of order k
-            By default False
+            If True, include lower order contiguities. If False return only weights of
+            order :math:`k`. By default False.
 
         Returns
         -------
         Graph
             higher order weights
         """
-        return NotImplementedError
-        # binary = self.transform("B")
-        # sparse = binary.sparse
+        # TODO: remove casting to matrix once scipy implements matrix_power on array.
+        # [https://github.com/scipy/scipy/pull/18544]
+        binary = self.transform("B")
+        sp = sparse.csr_matrix(binary.sparse)
 
-        # if lower_order:
-        #     wk = sum(map(lambda x: sparse**x, range(2, k + 1)))
-        #     shortest_path = False
-        # else:
-        #     wk = sparse**k
+        if lower_order:
+            wk = sum(map(lambda x: sp**x, range(2, k + 1)))
+            shortest_path = False
+        else:
+            wk = sp**k
 
-        # rk, ck = wk.nonzero()
-        # sk = set(zip(rk, ck))
+        rk, ck = wk.nonzero()
+        sk = set(zip(rk, ck))
 
-        # if shortest_path:
-        #     for j in range(1, k):
-        #         wj = sparse**j
-        #         rj, cj = wj.nonzero()
-        #         sj = set(zip(rj, cj))
-        #         sk.difference_update(sj)
-        # if not diagonal:
-        #     sk = set([(i, j) for i, j in sk if i != j])
+        if shortest_path:
+            for j in range(1, k):
+                wj = sp**j
+                rj, cj = wj.nonzero()
+                sj = set(zip(rj, cj))
+                sk.difference_update(sj)
+        if not diagonal:
+            sk = set([(i, j) for i, j in sk if i != j])
 
-        # ix = pd.MultiIndex.from_tuples(sk, names=["focal", "neighbor"])
-        # new_index = pd.MultiIndex.from_arrays(
-        #     (
-        #         binary.focal_label.take(ix.get_level_values("focal")),
-        #         binary.neighbor_label.take(ix.get_level_values("neighbor")),
-        #     ),
-        #     names=["focal", "neighbor"],
-        # )
-        # return Graph(
-        #     pd.Series(
-        #         index=new_index,
-        #         data=np.ones(len(ix), dtype=int),
-        #     )
-        # )
+        return Graph.from_sparse(
+            sparse.coo_array(
+                (
+                    np.ones(len(sk), dtype=np.int8),
+                    ([s[0] for s in sk], [s[1] for s in sk]),
+                ),
+                shape=sp.shape,
+            ),
+            ids=self.unique_ids,
+        )
 
     def lag(self, y):
         """Spatial lag operator
