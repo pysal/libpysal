@@ -25,7 +25,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dependencies = [
     "platformdirs>=2.0.2",
     "beautifulsoup4>=4.10",
