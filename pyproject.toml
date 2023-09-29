@@ -8,8 +8,6 @@ build-backend = "setuptools.build_meta"
 name = "libpysal"
 dynamic = ["version"]
 authors = [ # in alphabetical order
-    { name = "Martin Fleischmann", email = "martin@martinfleischmann.net" },
-    { name = "Eli Knaap", email = "ek@knaaptime.com" },
     { name = "Serge Rey", email = "sjsrey@gmail.com" },
     { name = "Levi Wolf", email = "levi.john.wolf@gmail.com" },
 ]
@@ -29,7 +27,7 @@ requires-python = ">=3.8"
 dependencies = [
     "platformdirs>=2.0.2",
     "beautifulsoup4>=4.10",
-    "jinja2>=3.0",
+    "geopandas>=0.9",
     "numpy>=1.20",
     "pandas>=1.4",
     "requests",
