@@ -25,9 +25,9 @@ jobs:
           - ci/311-dev.yaml
           - ci/311-no-optional.yaml
         include:
-          - environment-file: ci/envs/310.yaml
+          - environment-file: ci/310.yaml
             os: macos-latest
-          - environment-file: ci/envs/310.yaml
+          - environment-file: ci/310.yaml
             os: windows-latest
     defaults:
       run:
