@@ -43,7 +43,7 @@ jobs:
           micromamba-version: "latest"
 
       - name: Install libpysal
-        run: pip install .
+        run: pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
 
       - name: Test libpysal
         run: |
