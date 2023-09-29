@@ -16,12 +16,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import sys, os
 import sphinx_bootstrap_theme
-
-
-sys.path.insert(0, os.path.abspath("../"))
-
 import libpysal
 
 
@@ -210,8 +205,8 @@ latex_documents = [
     (
         master_doc,
         "%s.tex" % project,
-        u"%s Documentation" % project,
-        u"pysal developers",
+        "%s Documentation" % project,
+        "pysal developers",
         "manual",
     ),
 ]
@@ -221,7 +216,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, project, u"%s Documentation" % project, [author], 1)]
+man_pages = [(master_doc, project, "%s Documentation" % project, [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -233,7 +228,7 @@ texinfo_documents = [
     (
         master_doc,
         project,
-        u"%s Documentation" % project,
+        "%s Documentation" % project,
         author,
         project,
         "One line description of project.",

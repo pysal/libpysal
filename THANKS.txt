@@ -11,10 +11,13 @@ Pedro Amaral
 Luc Anselin
 Jotham Apaloo
 Daniel Arribas-Bel
+Martin Fleischmann
 David C. Folch
+James Gaboardi
 Forest Gregg
 Myunghwa Hwang
 Wei Kang
+Eli Knaap
 Marynia Kolak
 Julia Koschinsky
 Jason Laura
