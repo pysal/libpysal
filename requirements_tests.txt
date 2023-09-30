@@ -1,7 +1,0 @@
-codecov
-matplotlib
-pytest
-pytest-cov
-pytest-xdist
-geodatasets
-pyarrow

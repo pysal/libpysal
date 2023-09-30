@@ -1,0 +1,108 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[project]
+name = "libpysal"
+dynamic = ["version"]
+authors = [ # in alphabetical order
+    { name = "Serge Rey", email = "sjsrey@gmail.com" },
+    { name = "Levi Wolf", email = "levi.john.wolf@gmail.com" },
+]
+maintainers = [{ name = "PySAL Developers" }]
+license = { text = "BSD 3-Clause" }
+description = "Core components of PySAL - A library of spatial analysis functions"
+keywords = ["spatial statistics", "spatial graphs"]
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "platformdirs>=2.0.2",
+    "beautifulsoup4>=4.10",
+    "geopandas>=0.9",
+    "shapely>=2",
+    "numpy>=1.20",
+    "pandas>=1.4",
+    "requests",
+    "scipy>=1.8",
+    "packaging"
+]
+
+[project.urls]
+Home = "https://github.com/pysal/libpysal/"
+Repository = "https://github.com/pysal/libpysal"
+
+[project.optional-dependencies]
+dev = ["pre-commit"]
+docs = [
+    "nbsphinx",
+    "numpydoc",
+    "pandoc",
+    "sphinx",
+    "sphinxcontrib-bibtex",
+    "sphinx_bootstrap_theme",
+    "mkdocs-jupyter",
+    "myst-parser"
+]
+tests = [
+    "geopandas",
+    "codecov",
+    "coverage",
+    "pytest",
+    "pytest-mpl",
+    "pytest-cov",
+    "watermark",
+    "pyarrow",
+    "pytest-xdist",
+    "matplotlib",
+    "geodatasets",
+    "black"
+]
+
+[tool.setuptools.packages.find]
+include = ["libpysal", "libpysal.*"]
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
+target-version = "py38"
+ignore = [
+    "B006",
+    "B008",
+    "B009",
+    "B010",
+    "C408",
+    "E731",
+    "F401",
+    "F403",
+    "N803",
+    "N806",
+    "N999",
+    "UP007"
+]
+exclude = ["libpysal/tests/*", "docs/*"]
+
+[tool.coverage.run]
+source = ["./libpysal"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if self.debug:",
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "except ModuleNotFoundError:",
+    "except ImportError",
+]
+ignore_errors = true
+omit = ["libpysal/tests/*", "docs/conf.py"]
