@@ -19,4 +19,3 @@ Example Datasets
     :glob:
 
     Example Data <notebooks/examples.ipynb>
-
