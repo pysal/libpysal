@@ -50,7 +50,7 @@ to your local clone and submitting a pull request to `pysal/libpysal`_, you can
 contribute to libpysal development.
 
 
-.. _3.7: https://docs.python.org/3.8/
+.. _3.8: https://docs.python.org/3.8/
 .. _Python Package Index: https://pypi.org/project/libpysal/
 .. _pysal/libpysal: https://github.com/pysal/libpysal
 .. _fork: https://help.github.com/articles/fork-a-repo/
