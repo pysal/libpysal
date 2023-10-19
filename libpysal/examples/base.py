@@ -7,6 +7,7 @@ Base class for managing example datasets.
 
 import io
 import os
+import tempfile
 import webbrowser
 from platformdirs import user_data_dir
 import zipfile
@@ -34,8 +35,15 @@ def get_data_home():
     appname = "pysal"
     appauthor = "pysal"
     data_home = user_data_dir(appname, appauthor)
-    if not os.path.exists(data_home):
+
+    try:
+        if not os.path.exists(data_home):
+            os.makedirs(data_home, exist_ok=True)
+    except OSError:
+        # Try to fall back to a tmp directory
+        data_home = os.path.join(tempfile.gettempdir(), "pysal")
         os.makedirs(data_home, exist_ok=True)
+
     return data_home
 
 
