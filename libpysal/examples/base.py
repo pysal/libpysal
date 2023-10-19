@@ -140,8 +140,9 @@ class Example:
         self.root = name.replace(" ", "_")
         self.installed = self.downloaded()
 
-    def get_local_path(self, path=get_data_home()) -> str:
+    def get_local_path(self, path=None) -> str:
         """Get the local path for example."""
+        path = path or get_data_home()
         return os.path.join(path, self.root)
 
     def get_path(self, file_name, verbose=True) -> Union[str, None]:
@@ -179,8 +180,9 @@ class Example:
 
         return IFrame(self.explain_url, width=700, height=350)
 
-    def download(self, path=get_data_home()):
+    def download(self, path=None):
         """Download the files for the example."""
+        path = path or get_data_home()
 
         if not self.downloaded():
             try:
