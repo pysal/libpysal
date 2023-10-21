@@ -24,7 +24,7 @@ dependencies:
   - geodatasets
   - joblib
   - networkx
-  - numba
+  # - numba # follow up when numba is ready for 3.12
   - pyarrow
   - scikit-learn
   - zstd
