@@ -20,7 +20,7 @@
      strategy:
        matrix:
          os: ['ubuntu-latest']
-         environment-file: [ci/310.yaml]
+         environment-file: [ci/312.yaml]
          experimental: [false]
      defaults:
        run:

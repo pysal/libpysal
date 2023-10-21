@@ -3,10 +3,13 @@ channels:
   - conda-forge
 dependencies:
   - python=3.12
-  - platformdirs
   - beautifulsoup4
+  - fiona
+  - geopandas-base>=0.12.0  # base to avoid pulling sklearn
   - jinja2
   - pandas
+  - platformdirs
+  - requests
   - scipy
   - xarray
   # testing
@@ -14,8 +17,7 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
+  - pytest-mpl
   - pytest-xdist
   # optional used in ci
-  - geopandas-base>=0.12.0  # base to avoid pulling sklearn
-  - fiona
   - geodatasets
