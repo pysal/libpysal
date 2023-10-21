@@ -23,7 +23,7 @@ class Test_sqlite_reader(ut.TestCase):
             pysal_examples.load_example("newHaven")
             path = pysal_examples.get_path("new_haven_merged.dbf")
         df = pdio.read_files(path)
-        df["GEOMETRY"] = df["geometry"].apply(lambda p: wkb.dumps(Point(p)))
+        df["GEOMETRY"] = shapely.to_wkb(shapely.points(df["geometry"]))
         # This is a hack to not have to worry about a custom point type in the DB
         del df["geometry"]
         engine = sqlalchemy.create_engine("sqlite:///test.db")
