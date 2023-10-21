@@ -51,7 +51,6 @@ class DBF(tables.DataTable):
     MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
-
         tables.DataTable.__init__(self, *args, **kwargs)
 
         if self.mode == "r":
@@ -196,7 +195,6 @@ class DBF(tables.DataTable):
         return col
 
     def read_record(self, i: int) -> list:
-
         self.seek(i)
 
         rec = list(struct.unpack(self.record_fmt, self.f.read(self.record_size)))
@@ -326,7 +324,6 @@ class DBF(tables.DataTable):
         self.f.flush()
 
     def close(self):
-
         if self.mode == "w":
             self.flush()
             # End of file
@@ -364,8 +361,8 @@ class DBF(tables.DataTable):
         POS = self.f.tell()
         self.f.seek(0)
         ver = 3
-        now = datetime.datetime.fromtimestamp(
-            int(os.environ.get("SOURCE_DATE_EPOCH", time.time())), datetime.UTC
+        now = datetime.datetime.utcfromtimestamp(
+            int(os.environ.get("SOURCE_DATE_EPOCH", time.time())),
         )
 
         yr, mon, day = now.year - 1900, now.month, now.day
