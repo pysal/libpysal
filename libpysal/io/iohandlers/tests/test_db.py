@@ -4,6 +4,9 @@ from ...fileio import FileIO as psopen
 import unittest as ut
 from .... import examples as pysal_examples
 
+from shapely.geometry import Point
+from shapely import wkb
+
 try:
     import sqlalchemy
 
@@ -11,28 +14,8 @@ try:
 except ImportError:
     missing_sql = True
 
-try:
-    import geomet
 
-    missing_geomet = False
-except ImportError:
-    missing_geomet = True
-
-
-def to_wkb_point(c):
-    """Super quick hack that does not actually belong in here."""
-
-    point = {"type": "Point", "coordinates": [c[0], c[1]]}
-
-    return geomet.wkb.dumps(point)
-
-
-@ut.skipIf(
-    missing_sql or missing_geomet,
-    "Missing dependencies: Geomet ({}) & SQLAlchemy ({}).".format(
-        missing_geomet, missing_sql
-    ),
-)
+@ut.skipIf(missing_sql, f"Missing dependency: SQLAlchemy ({missing_sql}).")
 class Test_sqlite_reader(ut.TestCase):
     def setUp(self):
         path = pysal_examples.get_path("new_haven_merged.dbf")
@@ -40,7 +23,7 @@ class Test_sqlite_reader(ut.TestCase):
             pysal_examples.load_example("newHaven")
             path = pysal_examples.get_path("new_haven_merged.dbf")
         df = pdio.read_files(path)
-        df["GEOMETRY"] = df["geometry"].apply(to_wkb_point)
+        df["GEOMETRY"] = df["geometry"].apply(lambda p: wkb.dumps(Point(p)))
         # This is a hack to not have to worry about a custom point type in the DB
         del df["geometry"]
         engine = sqlalchemy.create_engine("sqlite:///test.db")

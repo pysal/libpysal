@@ -48,6 +48,7 @@ plus = [
     "numba>=0.55",
     "pyarrow>=7.0",
     "scikit-learn>=1.1",
+    "sqlalchemy>=2.0",
     "zstd",
 ]
 dev = [
