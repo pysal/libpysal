@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
-
+import errno
 import os
 import platform
+import tempfile
 import unittest
 import pandas
+from unittest.mock import MagicMock, patch
+
+from platformdirs import user_data_dir
 
 from .. import available, get_url, load_example
 
 from ..base import get_data_home
 
 os_name = platform.system()
+
+original_path_exists = os.path.exists
+original_makedirs = os.makedirs
+
 
 
 class Testexamples(unittest.TestCase):
@@ -39,6 +47,30 @@ class Testexamples(unittest.TestCase):
             self.assertEqual(heads[1], "Users")
             self.assertEqual(heads[-2], "Local")
             self.assertEqual(heads[-3], "AppData")
+
+    @patch("os.makedirs")
+    @patch("os.path.exists")
+    def test_data_home_fallback(self, path_exists_mock, makedirs_mock):
+        data_home = user_data_dir("pysal", "pysal")
+
+        def makedirs_side_effect(path, exist_ok=False):
+            if path == data_home:
+                raise OSError(errno.EROFS)
+
+        def path_exists_side_effect(path):
+            if path == data_home:
+                return False
+            return original_path_exists(path)
+
+        makedirs_mock.side_effect = makedirs_side_effect
+        path_exists_mock.side_effect = path_exists_side_effect
+
+        pth = get_data_home()
+        head, tail = os.path.split(pth)
+
+        self.assertEqual(tail, "pysal")
+        self.assertEqual(head, tempfile.gettempdir())
+
 
     def test_get_url(self):
         self.assertEqual(get_url("10740"), None)
