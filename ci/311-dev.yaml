@@ -13,6 +13,7 @@ dependencies:
   - pytest-cov
   - pytest-xdist
   # optional
+  - sqlalchemy
   - geos
   - pyproj
   - fiona
