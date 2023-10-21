@@ -27,11 +27,11 @@
          shell: bash -l {0}
 
      steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetch all history for all branches and tags.
-
+       - name: Checkout repo
+         uses: actions/checkout@v4
+         with:
+           fetch-depth: 0 # Fetch all history for all branches and tags.
+ 
        - name: Setup micromamba
          uses: mamba-org/setup-micromamba@v1
          with:
