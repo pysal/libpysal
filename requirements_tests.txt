@@ -1,5 +1,0 @@
-codecov
-matplotlib
-pytest
-pytest-cov
-pytest-xdist

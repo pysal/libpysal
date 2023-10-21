@@ -211,7 +211,7 @@ def vecW(
 
 
     Returns
-    ------
+    -------
     W           : DistanceBand W object that uses 4-dimenional distances between
                   vectors origin and destination coordinates.
 

@@ -1,58 +1,72 @@
- on:
-   push:
-     branches:
-     - '*'
-   pull_request:
-     branches:
-     - '*'
-   schedule:
-     - cron: '59 21 * * *'
+name: Tests
 
- jobs:
-   unittests:
-     name: ${{ matrix.os }}, ${{ matrix.environment-file }}
-     runs-on: ${{ matrix.os }}
-     env:
-       FETCH_EXAMPLES: python -c 'import libpysal; libpysal.examples.fetch_all()'
-       RUN_TEST: pytest -v -n auto libpysal --cov libpysal --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
-     #timeout-minutes: 25
-     strategy:
-       matrix:
-         os: ['ubuntu-latest']
-         environment-file: [ci/37-minimal.yaml, ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml]
-         include:
-           - environment-file: ci/310.yaml
-             os: macos-latest
-           - environment-file: ci/310.yaml
-             os: windows-latest
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - "*"
+  schedule:
+    - cron: "0 0 * * 1,4"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Manual Unittest Run
+        default: test
+        required: false
 
-     steps:
-       - name: checkout repo
-         uses: actions/checkout@v3
+jobs:
+  Test:
+    name: ${{ matrix.os }}, ${{ matrix.environment-file }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        environment-file:
+          - ci/310-oldest.yaml
+          - ci/310.yaml
+          - ci/311.yaml
+          - ci/312.yaml
+          - ci/312-dev.yaml
+          - ci/312-no-optional.yaml
+        include:
+          - environment-file: ci/312.yaml
+            os: macos-latest
+          - environment-file: ci/312.yaml
+            os: windows-latest
+    defaults:
+      run:
+        shell: bash -l {0}
 
-       - name: setup micromamba
-         uses: mamba-org/provision-with-micromamba@main
-         with:
-           environment-file: ${{ matrix.environment-file }}
-           micromamba-version: 'latest'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags.
 
-       - name: run tests - bash
-         shell: bash -l {0}
-         run: |
-           ${{ env.FETCH_EXAMPLES }}
-           ${{ env.RUN_TEST }}
-         if: matrix.os != 'windows-latest'
+      - name: Setup micromamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: ${{ matrix.environment-file }}
+          micromamba-version: "latest"
 
-       - name: run tests - powershell
-         shell: powershell
-         run: |
-           ${{ env.FETCH_EXAMPLES }}
-           ${{ env.RUN_TEST }}
-         if: matrix.os == 'windows-latest'
+      - name: Install libpysal
+        run: pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
 
-       - name: codecov
-         uses: codecov/codecov-action@v3
-         with:
-           token: ${{ secrets.CODECOV_TOKEN }}
-           file: ./coverage.xml
-           name: libpysal-codecov
+      - name: Test libpysal
+        run: |
+          pytest -v --color yes --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
+
+      - name: Codecov
+        uses: codecov/codecov-action@v3
+
+      - name: Generate and publish the report
+        if: |
+          failure()
+          && steps.status.outcome == 'failure'
+          && github.event_name == 'schedule'
+          && github.repository_owner == 'pysal'
+        uses: xarray-contrib/issue-from-pytest-log@v1
+        with:
+          log-path: pytest-log.jsonl

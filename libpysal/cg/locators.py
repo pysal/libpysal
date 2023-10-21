@@ -14,7 +14,7 @@ from .shapes import *
 
 __all__ = ["Grid", "BruteForcePointLocator", "PointLocator", "PolygonLocator"]
 
-dep_msg = "is deprecated and will be reoved in libpysal 4.4.0"
+dep_msg = "is deprecated and will be removed in a future version of libpysal"
 
 
 class Grid:
@@ -38,7 +38,7 @@ class Grid:
         TODO: complete this doctest
         >>> g = Grid(Rectangle(0, 0, 10, 10), 1)
         """
-        warnings.warn("Grid " + dep_msg, DeprecationWarning)
+        warnings.warn("Grid " + dep_msg, FutureWarning)
         if resolution == 0:
             raise Exception("Cannot create grid with resolution 0")
         self.res = resolution
@@ -294,7 +294,7 @@ class BruteForcePointLocator:
         --------
         >>> pl = BruteForcePointLocator([Point((0, 0)), Point((5, 0)), Point((0, 10))])
         """
-        warnings.warn("BruteForcePointLocator " + dep_msg, DeprecationWarning)
+        warnings.warn("BruteForcePointLocator " + dep_msg, FutureWarning)
         self._points = points
 
     def nearest(self, query_point):
@@ -388,7 +388,7 @@ class PointLocator:
         >>> points = [Point((0, 0)), Point((1, 6)), Point((5.4, 1.4))]
         >>> pl = PointLocator(points)
         """
-        warnings.warn("PointLocator " + dep_msg, DeprecationWarning)
+        warnings.warn("PointLocator " + dep_msg, FutureWarning)
         self._locator = BruteForcePointLocator(points)
 
     def nearest(self, query_point):
@@ -486,7 +486,7 @@ class PolygonLocator:
         >>> isinstance(pl, PolygonLocator)
         True
         """
-        warnings.warn("PolygonLocator " + dep_msg, DeprecationWarning)
+        warnings.warn("PolygonLocator " + dep_msg, FutureWarning)
         self._locator = polygons
         # create and rtree
         self._rtree = RTree()

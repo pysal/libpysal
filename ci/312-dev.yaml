@@ -1,0 +1,38 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - beautifulsoup4
+  - jinja2
+  - platformdirs
+  - requests
+  # testing
+  - codecov
+  - matplotlib
+  - pytest
+  - pytest-cov
+  - pytest-mpl
+  - pytest-xdist
+  # optional
+  - Cython
+  - fiona
+  - geodatasets
+  - geos
+  - joblib
+  - networkx
+  # - numba # follow up when numba is ready for 3.12
+  - packaging
+  - pyarrow
+  - pyproj
+  - zstd
+  - pip
+  - pip:
+      # dev versions of packages
+      - --pre --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple
+      - pandas
+      - scikit-learn
+      - scipy
+      - xarray
+      - git+https://github.com/geopandas/geopandas.git@main
+      - git+https://github.com/shapely/shapely.git@main

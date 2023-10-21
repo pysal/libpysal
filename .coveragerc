@@ -4,6 +4,7 @@ omit =
     */contrib/*
     */test/*
 include=libpysal/*
+disable_warnings=include-ignored
 [report]
 omit = 
     __init__.py 

@@ -169,11 +169,16 @@ def as_dataframes(regions, vertices, points):
         from .shapes import Polygon, Point
 
     if gpd is not None:
-        region_df = gpd.GeoDataFrame()
-        region_df["geometry"] = [Polygon(vertices[region]) for region in regions]
-
-        point_df = gpd.GeoDataFrame()
-        point_df["geometry"] = gpd.GeoSeries(Point(pnt) for pnt in points)
+        region_df = gpd.GeoDataFrame(
+            geometry = gpd.GeoSeries(
+                Polygon(vertices[region]) for region in regions
+                )
+            )
+        point_df = gpd.GeoDataFrame(
+            geometry = gpd.GeoSeries(
+                Point(pnt) for pnt in points
+                )
+            )
     else:
         import pandas as pd
 
@@ -207,10 +212,6 @@ def voronoi_frames(points, radius=None, clip="extent"):
         * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of the input points.
         * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using ``libpysal.cg.alpha_shape_auto``).
         * Polygon -- Clip to an arbitrary Polygon.
-    
-    tolerance : float
-        The percent of map width to use to buffer the extent of the map,
-        if clipping (default: ``.01``, or 1%).
 
     Returns
     -------

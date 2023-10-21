@@ -3,7 +3,8 @@ import tempfile
 import warnings
 
 import unittest
-from ..weights import W, WSP
+import pytest
+from ..weights import W, WSP, _LabelEncoder
 from .. import util
 from ..util import WSP2W, lat2W
 from ..contiguity import Rook
@@ -11,6 +12,7 @@ from ...io.fileio import FileIO as psopen
 from ... import examples
 from ..distance import KNN
 import numpy as np
+import scipy.sparse
 
 NPTA3E = np.testing.assert_array_almost_equal
 
@@ -59,6 +61,7 @@ class TestW(unittest.TestCase):
         }
 
         self.w3x3 = util.lat2W(3, 3)
+        self.w_islands = W({0: [1], 1: [0, 2], 2: [1], 3: []})
 
     def test_W(self):
         w = W(self.neighbors, self.weights, silence_warnings=True)
@@ -118,6 +121,56 @@ class TestW(unittest.TestCase):
         self.assertEqual(w.asymmetry(), [])
         w.transform = "r"
         self.assertFalse(w.asymmetry() == [])
+
+    def test_asymmetry_string_index(self):
+        neighbors = {
+            "a": ["b", "c", "d"],
+            "b": ["b", "c", "d"],
+            "c": ["a", "b"],
+            "d": ["a", "b"],
+        }
+        weights_d = {"a": [1, 1, 1], "b": [1, 1, 1], "c": [1, 1], "d": [1, 1]}
+        w = W(neighbors, weights_d)
+        assert w.asymmetry() == [("a", "b"), ("b", "a")]
+
+        w.transform = "r"
+        assert w.asymmetry() == [
+            ("a", "b"),
+            ("a", "c"),
+            ("a", "d"),
+            ("b", "a"),
+            ("b", "c"),
+            ("b", "d"),
+            ("c", "a"),
+            ("c", "b"),
+            ("d", "a"),
+            ("d", "b"),
+        ]
+
+    def test_asymmetry_mixed_index(self):
+        neighbors = {
+            3000: [45, 99.99, "-"],
+            45: [45, 99.99, "-"],
+            99.99: [3000, 45],
+            "-": [3000, 45],
+        }
+        weights_d = {3000: [1, 1, 1], 45: [1, 1, 1], 99.99: [1, 1], "-": [1, 1]}
+        w = W(neighbors, weights_d, id_order=list(neighbors.keys()))
+        assert w.asymmetry() == [(3000, 45), (45, 3000)]
+
+        w.transform = "r"
+        assert w.asymmetry() == [
+            (3000, 45),
+            (3000, 99.99),
+            (3000, "-"),
+            (45, 3000),
+            (45, 99.99),
+            (45, "-"),
+            (99.99, 3000),
+            (99.99, 45),
+            ("-", 3000),
+            ("-", 45),
+        ]
 
     def test_cardinalities(self):
         w = lat2W(3, 3)
@@ -376,6 +429,33 @@ class TestW(unittest.TestCase):
         with warnings.catch_warnings(record=True) as record:
             self.w.plot(df)
         assert len(record) == 0
+
+    def test_to_sparse(self):
+        sparse = self.w_islands.to_sparse()
+        np.testing.assert_array_equal(sparse.data, [1, 1, 1, 1, 0])
+        np.testing.assert_array_equal(sparse.row, [0, 1, 1, 2, 3])
+        np.testing.assert_array_equal(sparse.col, [1, 0, 2, 1, 3])
+        sparse = self.w_islands.to_sparse("bsr")
+        self.assertIsInstance(sparse, scipy.sparse.bsr_array)
+        sparse = self.w_islands.to_sparse("csr")
+        self.assertIsInstance(sparse, scipy.sparse.csr_array)
+        sparse = self.w_islands.to_sparse("coo")
+        self.assertIsInstance(sparse, scipy.sparse.coo_array)
+        sparse = self.w_islands.to_sparse("csc")
+        self.assertIsInstance(sparse, scipy.sparse.csc_array)
+        sparse = self.w_islands.to_sparse()
+        self.assertIsInstance(sparse, scipy.sparse.coo_array)
+
+    def test_sparse_fmt(self):
+        with pytest.raises(ValueError) as exc_info:
+            sparse = self.w_islands.to_sparse("dog")
+
+    def test_from_sparse(self):
+        sparse = self.w_islands.to_sparse()
+        w = W.from_sparse(sparse)
+        self.assertEqual(w.n, 4)
+        self.assertEqual(len(w.islands), 0)
+        self.assertEqual(w.neighbors[3], [3])
 
 
 class Test_WSP_Back_To_W(unittest.TestCase):
@@ -710,6 +790,20 @@ class TestWSP(unittest.TestCase):
 
     def test_s0(self):
         self.assertEqual(self.w3x3.s0, 24.0)
+
+    def test_from_WSP(self):
+        w = W.from_WSP(self.wsp)
+        self.assertEqual(w.n, 100)
+        self.assertEqual(w.pct_nonzero, 4.62)
+
+    def test_LabelEncoder(self):
+        le = _LabelEncoder()
+        le.fit(["NY", "CA", "NY", "CA", "TX", "TX"])
+        np.testing.assert_equal(le.classes_, np.array(["CA", "NY", "TX"]))
+        np.testing.assert_equal(
+            le.transform(["NY", "CA", "NY", "CA", "TX", "TX"]),
+            np.array([1, 0, 1, 0, 2, 2]),
+        )
 
 
 if __name__ == "__main__":

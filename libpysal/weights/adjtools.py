@@ -1,7 +1,14 @@
 import numpy as np
 
 
-def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
+def adjlist_apply(
+    X,
+    W=None,
+    alist=None,
+    func=np.subtract,
+    skip_verify=False,
+    to_adjlist_kws=dict(drop_islands=None),
+):
     """
     apply a function to an adajcency list, getting an adjacency list and result.
 
@@ -10,40 +17,47 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     X       :   iterable
                 an (N,P)-length iterable to apply ``func'' to. If (N,1), then `func`
                 must take 2 arguments and return a single reduction. If P>1, then
-                func must take two P-length arrays and return a single 
-                reduction of them. 
+                func must take two P-length arrays and return a single
+                reduction of them.
     W       :   pysal.weights.W object
                 a weights object that provides adjacency information
     alist   :   pandas DataFrame
                 a table containing an adajacency list representation of a W matrix
     func    :   callable
-                a function taking two arguments and returning a single argument. 
-                This will be evaluated for every (focal, neighbor) pair, or each 
+                a function taking two arguments and returning a single argument.
+                This will be evaluated for every (focal, neighbor) pair, or each
                 row of the adjacency list. If `X` has more than one column, this
-                function should take two arrays and provide a single scalar in 
+                function should take two arrays and provide a single scalar in
                 return.
                 Example scalars include: lambda x,y: x < y, np.subtract
                 Example multivariates: lambda (x,y): np.all(x < y)''
                                        lambda (x,y): np.sum((x-y)**2)
                                        sklearn.metrics.euclidean_distance
     skip_verify: bool
-                Whether or not to skip verifying that the W is the same as an adjacency list. 
+                Whether or not to skip verifying that the W is the same as an adjacency list.
                 Do this if you are certain the adjacency list and W agree and would like to
-                avoid re-instantiating a W from the adjacency list. 
+                avoid re-instantiating a W from the adjacency list.
+    to_adjlist_kws : dict
+        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=None)``.
 
     Returns
     -------
-    an adjacency list (or modifies alist inplace) with the function applied to each row. 
+    an adjacency list (or modifies alist inplace) with the function applied to each row.
     """
     try:
         import pandas as pd
     except ImportError:
         raise ImportError("pandas must be installed to use this function")
-    W, alist = _get_W_and_alist(W, alist, skip_verify=skip_verify)
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=skip_verify)
     if len(X.shape) > 1:
         if X.shape[-1] > 1:
             return _adjlist_mvapply(
-                X, W=W, alist=alist, func=func, skip_verify=skip_verify
+                X,
+                W=W,
+                alist=alist,
+                func=func,
+                skip_verify=skip_verify,
+                to_adjlist_kws=to_adjlist_kws,
             )
     else:
         vec = np.asarray(X).flatten()
@@ -66,13 +80,15 @@ def adjlist_apply(X, W=None, alist=None, func=np.subtract, skip_verify=False):
     return alist_atts
 
 
-def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
+def _adjlist_mvapply(
+    X, W=None, alist=None, func=None, skip_verify=False, to_adjlist_kws=dict()
+):
     try:
         import pandas as pd
     except ImportError:
         raise ImportError("pandas must be installed to use this function")
     assert len(X.shape) == 2, "data is not two-dimensional"
-    W, alist = _get_W_and_alist(W=W, alist=alist, skip_verify=skip_verify)
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=skip_verify)
     assert X.shape[0] == W.n, "number of samples in X does not match W"
     try:
         names = X.columns.tolist()
@@ -105,7 +121,7 @@ def _adjlist_mvapply(X, W=None, alist=None, func=None, skip_verify=False):
     return alist_atts
 
 
-def _get_W_and_alist(W, alist, skip_verify=False):
+def _get_W_and_alist(W, alist, to_adjlist_kws, skip_verify=False):
     """
     Either:
     1. compute a W from an alist
@@ -115,11 +131,11 @@ def _get_W_and_alist(W, alist, skip_verify=False):
     If this completes successfully, the W/adjlist will both be returned and are checked for equality.
     """
     if (alist is None) and (W is not None):
-        alist = W.to_adjlist()
+        alist = W.to_adjlist(**to_adjlist_kws)
     elif (W is None) and (alist is not None):
         from .weights import W
 
-        W = W.from_adjlist(alist)
+        W = W.from_adjlist(alist, **to_adjlist_kws)
     elif (W is None) and (alist is None):
         raise ValueError("Either W or Adjacency List must be provided")
     elif (W is not None) and (alist is not None) and (not skip_verify):
@@ -138,6 +154,7 @@ def adjlist_map(
     alist=None,
     focal_col="focal",
     neighbor_col="neighbor",
+    to_adjlist_kws=dict(drop_islands=None),
 ):
     """
     Map a set of functions over a W or adjacency list
@@ -145,28 +162,30 @@ def adjlist_map(
     Parameters
     ----------
     data        :   np.ndarray or pandas dataframe
-                    N x P array of N observations and P covariates. 
+                    N x P array of N observations and P covariates.
     funcs       :   iterable or callable
                     a function to apply to each of the P columns in ``data'', or a list of functions
                     to apply to each column of P. This function must take two arguments, compare them,
                     and return a value. Examples may be ``lambda x,y: x < y'' or ``np.subtract''.
     W           :   pysal.weights.W object
-                    a pysal weights object. If not provided, one is constructed from 
+                    a pysal weights object. If not provided, one is constructed from
                     the given adjacency list.
     alist       :   pandas dataframe
-                    an adjacency list representation of a weights matrix. If not provided, 
-                    one is constructed from the weights object. If both are provided, 
-                    they are validated against one another to ensure they provide identical weights 
-                    matrices. 
+                    an adjacency list representation of a weights matrix. If not provided,
+                    one is constructed from the weights object. If both are provided,
+                    they are validated against one another to ensure they provide identical weights
+                    matrices.
     focal_col   :   string
                     name of column in alist containing the focal observation ids
     neighbor_col:   string
                     name of column in alist containing the neighboring observation ids
+    to_adjlist_kws : dict
+        Keyword arguments for ``W.to_adjlist()``. Default is ``dict(drop_islands=None)``.
 
     Returns
     -------
     returns an adjacency list (or modifies one if provided) with each function applied to the column
-    of the data. 
+    of the data.
     """
     try:
         import pandas as pd
@@ -185,10 +204,12 @@ def adjlist_map(
     assert data.shape[1] == len(
         funcs
     ), "shape of data does not match the number of functions provided"
-    W, alist = _get_W_and_alist(W, alist)
+    W, alist = _get_W_and_alist(W, alist, to_adjlist_kws)
     fnames = set([f.__name__ for f in funcs])
     for i, (column, function) in enumerate(zip(data.T, funcs)):
-        alist = adjlist_apply(X=column, W=W, alist=alist, skip_verify=True)
+        alist = adjlist_apply(
+            column, W=W, alist=alist, skip_verify=True, to_adjlist_kws=to_adjlist_kws
+        )
         alist.drop(["att_focal", "att_neighbor"], axis=1, inplace=True)
         alist = alist.rename(
             columns={function.__name__: "_".join((function.__name__, names[i]))}
@@ -200,8 +221,8 @@ def adjlist_map(
 def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
     """
     This dedupes an adjacency list by examining both (a,b) and (b,a) when (a,b) is enountered.
-    The removal is done in order of the iteration order of the input adjacency list. So, if a 
-    special order of removal is desired, you need to sort the list before this function. 
+    The removal is done in order of the iteration order of the input adjacency list. So, if a
+    special order of removal is desired, you need to sort the list before this function.
 
     Parameters
     ----------
@@ -214,7 +235,7 @@ def filter_adjlist(adjlist, focal_col="focal", neighbor_col="neighbor"):
 
     Returns
     -------
-    an adjacency table with reversible entries removed. 
+    an adjacency table with reversible entries removed.
     """
     edges = adjlist.loc[:, [focal_col, neighbor_col]]
     undirected = set()

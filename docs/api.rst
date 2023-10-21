@@ -123,7 +123,7 @@ Spatial Lag
 
    libpysal.weights.lag_spatial
    libpysal.weights.lag_categorical
-          
+
 
 cg: Computational Geometry
 --------------------------
@@ -230,7 +230,7 @@ kdtree
 
 
 io
--- 
+--
 
 .. autosummary::
    :toctree: generated/
@@ -249,3 +249,17 @@ examples
    libpysal.examples.available
    libpysal.examples.explain
    libpysal.examples.get_path
+
+
+Experimental
+------------
+
+Experimental modules with unstable API.
+
+graph
+-----
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.graph.Graph

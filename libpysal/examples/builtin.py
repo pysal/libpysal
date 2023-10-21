@@ -1,5 +1,4 @@
-"""Handle local builtin datasets.
-"""
+"""Handle local builtin datasets."""
 
 import os
 from .base import get_list_of_files
@@ -38,11 +37,30 @@ dirs = [
 
 
 class LocalExample:
-    """
-    Builtin pysal example dataset
+    """Builtin pysal example dataset.
+
+    Attributes
+    ----------
+    name : str
+        Example name
+    dirname : str
+        Path holding example files
+    installed : boolean
+        If True, example is installed locally, if false it is remote.
+    description : str
+        Summary of the properties of the example
     """
 
     def __init__(self, name, dirname):
+        """Initialize LocalExample with name and dirname.
+
+        Parameters
+        ---------
+        name : str
+            example name
+        dirname: str
+             path to directory holding example files
+        """
         self.name = name
         self.dirname = dirname
         self.installed = True

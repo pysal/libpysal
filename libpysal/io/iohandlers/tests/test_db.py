@@ -35,7 +35,11 @@ def to_wkb_point(c):
 )
 class Test_sqlite_reader(ut.TestCase):
     def setUp(self):
-        df = pdio.read_files(pysal_examples.get_path("new_haven_merged.dbf"))
+        path = pysal_examples.get_path("new_haven_merged.dbf")
+        if path is None:
+            pysal_examples.load_example("newHaven")
+            path = pysal_examples.get_path("new_haven_merged.dbf")
+        df = pdio.read_files(path)
         df["GEOMETRY"] = df["geometry"].apply(to_wkb_point)
         # This is a hack to not have to worry about a custom point type in the DB
         del df["geometry"]

@@ -20,11 +20,11 @@ io
 weights
     Tools for creating and manipulating weights
 """
-from . import cg
-from . import io
-from . import weights
-from . import examples
 
-from . import _version
+import contextlib
+from importlib.metadata import PackageNotFoundError, version
 
-__version__ = _version.get_versions()["version"]
+from . import cg, examples, io, weights
+
+with contextlib.suppress(PackageNotFoundError):
+    __version__ = version("libpysal")

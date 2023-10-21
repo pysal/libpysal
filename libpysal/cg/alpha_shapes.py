@@ -23,11 +23,14 @@ if not HAS_JIT:
     )
 
 try:
-    import pygeos
+    import shapely
+    from packaging.version import Version
 
-    HAS_PYGEOS = True
-except ModuleNotFoundError:
-    HAS_PYGEOS = False
+    assert Version(shapely.__version__) >= Version("2")
+
+    HAS_SHAPELY = True
+except (ModuleNotFoundError, AssertionError):
+    HAS_SHAPELY = False
 
 
 EPS = np.finfo(float).eps
@@ -35,7 +38,7 @@ EPS = np.finfo(float).eps
 __all__ = ["alpha_shape", "alpha_shape_auto"]
 
 
-@jit
+@jit(nopython=True)
 def nb_dist(x, y):
     """numba implementation of distance between points `x` and `y`
 
@@ -161,7 +164,7 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
     return r2
 
 
-@jit
+@jit(nopython=True)
 def get_faces(triangle):
     """Extract faces from a single triangle
 
@@ -195,7 +198,7 @@ def get_faces(triangle):
     return faces
 
 
-@jit
+@jit(nopython=True)
 def build_faces(faces, triangles_is, num_triangles, num_faces_single):
     """Build facing triangles
 
@@ -257,7 +260,7 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
     return faces
 
 
-@jit
+@jit(nopython=True)
 def nb_mask_faces(mask, faces):
     """Run over each row in `faces`, if the face in the following row is the
     same, then mark both as False on `mask`
@@ -513,8 +516,8 @@ def _valid_hull(geoms, points):
     if geoms.shape[0] != 1:
         return False
     # if any (xys) points do not intersect the polygon
-    if HAS_PYGEOS:
-        return pygeos.intersects(pygeos.from_shapely(geoms[0]), points).all()
+    if HAS_SHAPELY:
+        return shapely.intersects(geoms[0], points).all()
     else:
         for point in points:
             if not point.intersects(geoms[0]):
@@ -621,8 +624,8 @@ def alpha_shape_auto(
     triangles = triangulation.simplices[radii_sorted_i][::-1]
     radii = radii[radii_sorted_i][::-1]
     geoms_prev = _alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
-    if HAS_PYGEOS:
-        points = pygeos.points(xys)
+    if HAS_SHAPELY:
+        points = shapely.points(xys)
     else:
         points = [geom.Point(pnt) for pnt in xys]
     if verbose:
@@ -739,7 +742,6 @@ def _filter_holes(geoms, points):
 
 
 if __name__ == "__main__":
-
     import matplotlib.pyplot as plt
     import time
     import geopandas as gpd

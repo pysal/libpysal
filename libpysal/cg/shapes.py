@@ -7,8 +7,9 @@ __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow, Hu Shao
 
 import math
 from .sphere import arcdist
-
 from typing import Union
+import warnings
+
 
 __all__ = [
     "Point",
@@ -22,27 +23,30 @@ __all__ = [
 ]
 
 
+dep_msg = "Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal."
+
+
 def asShape(obj):
     """Returns a PySAL shape object from ``obj``, which
     must support the ``__geo_interface__``.
-    
+
     Parameters
     ----------
     obj : {libpysal.cg.{Point, LineSegment, Line, Ray, Chain, Polygon}
         A geometric representation of an object.
-    
+
     Raises
     ------
     TypeError
         Raised when ``obj`` is not a supported shape.
     NotImplementedError
         Raised when ``geo_type`` is not a supported type.
-    
+
     Returns
     -------
     obj : {libpysal.cg.{Point, LineSegment, Line, Ray, Chain, Polygon}
         A new geometric representation of the object.
-    
+
     """
 
     if isinstance(obj, (Point, LineSegment, Line, Ray, Chain, Polygon)):
@@ -73,7 +77,7 @@ def asShape(obj):
 class Geometry(object):
     """A base class to help implement ``is_geometry``
     and make geometric types extendable.
-    
+
     """
 
     def __init__(self):
@@ -87,16 +91,16 @@ class Point(Geometry):
     ----------
     loc : tuple
         The point's location (number :math:`x`-tuple, :math:`x` > 1).
-    
+
     Examples
     --------
-    
+
     >>> p = Point((1, 3))
-    
+
     """
 
     def __init__(self, loc):
-
+        warnings.warn(dep_msg, FutureWarning)
         self.__loc = tuple(map(float, loc))
 
     @classmethod
@@ -117,13 +121,13 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> Point((0, 1)) < Point((0, 1))
         False
-        
+
         >>> Point((0, 1)) < Point((1, 1))
         True
-        
+
         """
 
         return (self.__loc) < (other.__loc)
@@ -138,13 +142,13 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> Point((0, 1)) <= Point((0, 1))
         True
-        
+
         >>> Point((0, 1)) <= Point((1, 1))
         True
-        
+
         """
 
         return (self.__loc) <= (other.__loc)
@@ -156,16 +160,16 @@ class Point(Geometry):
         ----------
         other : libpysal.cg.Point
             An object to test equality against.
-        
+
         Examples
         --------
-        
+
         >>> Point((0, 1)) == Point((0, 1))
         True
-        
+
         >>> Point((0, 1)) == Point((1, 1))
         False
-        
+
         """
 
         try:
@@ -183,13 +187,13 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> Point((0, 1)) != Point((0, 1))
         False
-        
+
         >>> Point((0, 1)) != Point((1, 1))
         True
-        
+
         """
 
         try:
@@ -207,13 +211,13 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> Point((0, 1)) > Point((0, 1))
         False
-        
+
         >>> Point((0, 1)) > Point((1, 1))
         False
-        
+
         """
 
         return (self.__loc) > (other.__loc)
@@ -228,13 +232,13 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> Point((0, 1)) >= Point((0, 1))
         True
-        
+
         >>> Point((0, 1)) >= Point((1, 1))
         False
-        
+
         """
 
         return (self.__loc) >= (other.__loc)
@@ -244,20 +248,20 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> hash(Point((0, 1))) == hash(Point((0, 1)))
         True
-        
+
         >>> hash(Point((0, 1))) == hash(Point((1, 1)))
         False
-        
+
         """
 
         return hash(self.__loc)
 
     def __getitem__(self, *args) -> Union[int, float]:
         """Return the coordinate for the given dimension.
-        
+
         Parameters
         ----------
         *args : tuple
@@ -266,13 +270,13 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> p = Point((5.5, 4.3))
         >>> p[0] == 5.5
         True
         >>> p[1] == 4.3
         True
-        
+
         """
 
         return self.__loc.__getitem__(*args)
@@ -288,27 +292,27 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> p = Point((3, 6, 2))
         >>> p[:2] == (3, 6)
         True
-        
+
         >>> p[1:2] == (6,)
         True
-        
+
         """
 
         return self.__loc.__getslice__(*args)
 
     def __len__(self) -> int:
-        """ Returns the dimensions of the point.
+        """Returns the dimensions of the point.
 
         Examples
         --------
-        
+
         >>> len(Point((1, 2)))
         2
-        
+
         """
 
         return len(self.__loc)
@@ -318,10 +322,10 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> Point((0, 1))
         (0.0, 1.0)
-        
+
         """
 
         return str(self)
@@ -331,11 +335,11 @@ class Point(Geometry):
 
         Examples
         --------
-        
+
         >>> p = Point((1, 3))
         >>> str(p)
         '(1.0, 3.0)'
-        
+
         """
 
         return str(self.__loc)
@@ -367,13 +371,13 @@ class LineSegment(Geometry):
 
     Examples
     --------
-    
+
     >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
 
     """
 
     def __init__(self, start_pt, end_pt):
-
+        warnings.warn(dep_msg, FutureWarning)
         self._p1 = start_pt
         self._p2 = end_pt
         self._reset_props()
@@ -389,15 +393,15 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> l1 = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> l2 = LineSegment(Point((5, 6)), Point((1, 2)))
         >>> l1 == l2
         True
-        
+
         >>> l2 == l1
         True
-        
+
         """
 
         eq = False
@@ -415,12 +419,12 @@ class LineSegment(Geometry):
     def intersect(self, other) -> bool:
         """Test whether segment intersects with other segment (``True``) or
         not (``False``). Handles endpoints of segments being on other segment.
-        
+
         Parameters
         ----------
         other : libpysal.cg.LineSegment
             Another line segment to check against.
-        
+
         Examples
         --------
 
@@ -428,15 +432,15 @@ class LineSegment(Geometry):
         >>> ls1 = LineSegment(Point((5, 0)), Point((10, 1)))
         >>> ls.intersect(ls1)
         True
-        
+
         >>> ls2 = LineSegment(Point((5, 1)), Point((10, 1)))
         >>> ls.intersect(ls2)
         False
-        
+
         >>> ls2 = LineSegment(Point((7, -1)), Point((7, 2)))
         >>> ls.intersect(ls2)
         True
-        
+
         """
 
         ccw1 = self.sw_ccw(other.p2)
@@ -457,10 +461,10 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> ls._reset_props()
-        
+
         """
 
         self._bounding_box = None
@@ -478,12 +482,12 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> r = ls._get_p1()
         >>> r == Point((1, 2))
         True
-        
+
         """
 
         return self._p1
@@ -491,12 +495,12 @@ class LineSegment(Geometry):
     def _set_p1(self, p1):
         """**HELPER METHOD. DO NOT CALL.**
         Sets the ``p1`` attribute of the line segment.
-        
+
         Parameters
         ----------
         p1 : libpysal.cg.Point
             A point.
-        
+
         Returns
         -------
         self._p1 : libpysal.cg.Point
@@ -504,12 +508,12 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> r = ls._set_p1(Point((3, -1)))
         >>> r == Point((3.0, -1.0))
         True
-        
+
         """
 
         self._p1 = p1
@@ -530,12 +534,12 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> r = ls._get_p2()
         >>> r == Point((5, 6))
         True
-        
+
         """
 
         return self._p2
@@ -548,7 +552,7 @@ class LineSegment(Geometry):
         ----------
         p2 : libpysal.cg.Point
             A point.
-        
+
         Returns
         -------
         self._p2 : libpysal.cg.Point
@@ -556,12 +560,12 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> r = ls._set_p2(Point((3, -1)))
         >>> r == Point((3.0, -1.0))
         True
-        
+
         """
 
         self._p2 = p2
@@ -582,14 +586,14 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((0, 0)), Point((5, 0)))
         >>> ls.is_ccw(Point((2, 2)))
         True
-        
+
         >>> ls.is_ccw(Point((2, -2)))
         False
-        
+
         """
 
         v1 = (self._p2[0] - self._p1[0], self._p2[1] - self._p1[1])
@@ -608,14 +612,14 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((0, 0)), Point((5, 0)))
         >>> ls.is_cw(Point((2, 2)))
         False
-        
+
         >>> ls.is_cw(Point((2, -2)))
         True
-        
+
         """
 
         v1 = (self._p2[0] - self._p1[0], self._p2[1] - self._p1[1])
@@ -669,21 +673,21 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> swap = ls.get_swap()
         >>> swap.p1[0]
         5.0
-        
+
         >>> swap.p1[1]
         6.0
-        
+
         >>> swap.p2[0]
         1.0
-        
+
         >>> swap.p2[1]
         2.0
-        
+
         """
 
         line_seg = LineSegment(self._p2, self._p1)
@@ -693,28 +697,28 @@ class LineSegment(Geometry):
     @property
     def bounding_box(self):
         """Returns the minimum bounding box of a ``LineSegment`` object.
-        
+
         Returns
         -------
         self._bounding_box : libpysal.cg.Rectangle
             The bounding box of the line segment.
-        
+
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
         >>> ls.bounding_box.left
         1.0
-        
+
         >>> ls.bounding_box.lower
         2.0
-        
+
         >>> ls.bounding_box.right
         5.0
-        
+
         >>> ls.bounding_box.upper
         6.0
-        
+
         """
 
         # If LineSegment attributes p1, p2 changed, recompute
@@ -738,11 +742,11 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((2, 2)), Point((5, 2)))
         >>> ls.len
         3.0
-        
+
         """
 
         # If LineSegment attributes p1, p2 changed, recompute
@@ -762,15 +766,15 @@ class LineSegment(Geometry):
 
         Examples
         --------
-        
+
         >>> ls = LineSegment(Point((2, 2)), Point((3, 3)))
         >>> l = ls.line
         >>> l.m
         1.0
-        
+
         >>> l.b
         0.0
-        
+
         """
 
         if self._line == False:
@@ -792,26 +796,26 @@ class LineSegment(Geometry):
 
 class VerticalLine(Geometry):
     """Geometric representation of verticle line objects.
-    
+
     Parameters
     ----------
     x : {int, float}
         The :math:`x`-intercept of the line. ``x`` is also an attribute.
-    
+
     Examples
     --------
-    
+
     >>> ls = VerticalLine(0)
     >>> ls.m
     inf
-    
+
     >>> ls.b
     nan
-    
+
     """
 
     def __init__(self, x):
-
+        warnings.warn(dep_msg, FutureWarning)
         self._x = float(x)
         self.m = float("inf")
         self.b = float("nan")
@@ -826,11 +830,11 @@ class VerticalLine(Geometry):
 
         Examples
         --------
-        
+
         >>> l = VerticalLine(0)
         >>> l.x(0.25)
         0.0
-        
+
         """
 
         return self._x
@@ -845,11 +849,11 @@ class VerticalLine(Geometry):
 
         Examples
         --------
-        
+
         >>> l = VerticalLine(1)
         >>> l.y(1)
         nan
-        
+
         """
 
         return float("nan")
@@ -864,26 +868,26 @@ class Line(Geometry):
         The slope of the line. ``m`` is also an attribute.
     b : {int, float}
         The :math:`y`-intercept of the line. ``b`` is also an attribute.
-    
+
     Raises
     ------
     ArithmeticError
         Raised when infinity is passed in as the slope.
-    
+
     Examples
     --------
-    
+
     >>> ls = Line(1, 0)
     >>> ls.m
     1.0
-    
+
     >>> ls.b
     0.0
-    
+
     """
 
     def __init__(self, m, b):
-
+        warnings.warn(dep_msg, FutureWarning)
         if m == float("inf"):
             raise ArithmeticError("Slope cannot be infinite.")
 
@@ -897,19 +901,19 @@ class Line(Geometry):
         ----------
         y : {int, float}
             The :math:`y`-value at which to compute :math:`x`.
-        
+
         Raises
         ------
         ArithmeticError
             Raised when ``0.`` is passed in as the slope.
-        
+
         Examples
         --------
-        
+
         >>> l = Line(0.5, 0)
         >>> l.x(0.25)
         0.5
-        
+
         """
 
         if self.m == 0:
@@ -927,11 +931,11 @@ class Line(Geometry):
 
         Examples
         --------
-        
+
         >>> l = Line(1, 0)
         >>> l.y(1)
         1.0
-        
+
         """
 
         if self.m == 0:
@@ -957,28 +961,28 @@ class Ray:
     p : libpysal.cg.Point
         The second point on the ray (not the point where the
         ray originates). See ``second_p``.
-    
+
     Examples
     --------
-    
+
     >>> l = Ray(Point((0, 0)), Point((1, 0)))
     >>> str(l.o)
     '(0.0, 0.0)'
-    
+
     >>> str(l.p)
     '(1.0, 0.0)'
-    
+
     """
 
     def __init__(self, origin, second_p):
-
+        warnings.warn(dep_msg, FutureWarning)
         self.o = origin
         self.p = second_p
 
 
 class Chain(Geometry):
     """Geometric representation of a chain, also known as a polyline.
-    
+
     Parameters
     ----------
     vertices : list
@@ -990,16 +994,16 @@ class Chain(Geometry):
         The list of points of the vertices of the chain in order.
     len : float
         The geometric length of the chain.
-    
+
     Examples
     --------
-    
+
     >>> c = Chain([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((2, 1))])
-    
+
     """
 
     def __init__(self, vertices: list):
-
+        warnings.warn(dep_msg, FutureWarning)
         if isinstance(vertices[0], list):
             self._vertices = [part for part in vertices]
         else:
@@ -1041,12 +1045,12 @@ class Chain(Geometry):
 
         Examples
         --------
-        
+
         >>> c = Chain([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((2, 1))])
         >>> verts = c.vertices
         >>> len(verts)
         4
-        
+
         """
 
         return sum([part for part in self._vertices], [])
@@ -1057,7 +1061,7 @@ class Chain(Geometry):
 
         Examples
         --------
-       
+
         >>> c = Chain(
         ...     [
         ...         [Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))],
@@ -1066,7 +1070,7 @@ class Chain(Geometry):
         ... )
         >>> len(c.parts)
         2
-        
+
         """
 
         return [[v for v in part] for part in self._vertices]
@@ -1079,23 +1083,23 @@ class Chain(Geometry):
         -------
         self._bounding_box : libpysal.cg.Rectangle
             The bounding box of the chain.
-        
+
         Examples
         --------
-        
+
         >>> c = Chain([Point((0, 0)), Point((2, 0)), Point((2, 1)), Point((0, 1))])
         >>> c.bounding_box.left
         0.0
-        
+
         >>> c.bounding_box.lower
         0.0
-        
+
         >>> c.bounding_box.right
         2.0
-        
+
         >>> c.bounding_box.upper
         1.0
-        
+
         """
 
         if self._bounding_box is None:
@@ -1115,11 +1119,11 @@ class Chain(Geometry):
 
         Examples
         --------
-        
+
         >>> c = Chain([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((2, 1))])
         >>> c.len
         3.0
-        
+
         >>> c = Chain(
         ...     [
         ...         [Point((0, 0)), Point((1, 0)), Point((1, 1))],
@@ -1128,7 +1132,7 @@ class Chain(Geometry):
         ... )
         >>> c.len
         4.0
-        
+
         """
 
         def dist(v1: tuple, v2: tuple) -> Union[int, float]:
@@ -1146,7 +1150,7 @@ class Chain(Geometry):
     def arclen(self) -> Union[int, float]:
         """Returns the geometric length of the chain
         computed using 'arcdistance' (meters).
-        
+
         """
 
         def part_perimeter(p: list) -> Union[int, float]:
@@ -1197,10 +1201,11 @@ class Ring(Geometry):
     _quad_tree_structure : libpysal.cg.QuadTreeStructureSingleRing
         The quad tree structure for the ring. This structure helps
         test if a point is inside the ring.
-    
+
     """
 
     def __init__(self, vertices):
+        warnings.warn(dep_msg, FutureWarning)
         if vertices[0] != vertices[-1]:
             vertices = vertices[:] + vertices[0:1]
             # msg = "Supplied vertices do not form a closed ring, "
@@ -1245,10 +1250,10 @@ class Ring(Geometry):
         -------
         self._bounding_box : libpysal.cg.Rectangle
             The bounding box of the ring.
-        
+
         Examples
         --------
-        
+
         >>> r = Ring(
         ...     [
         ...         Point((0, 0)),
@@ -1258,19 +1263,19 @@ class Ring(Geometry):
         ...         Point((0, 0))
         ...     ]
         ... )
-        
+
         >>> r.bounding_box.left
         0.0
-        
+
         >>> r.bounding_box.lower
         0.0
-        
+
         >>> r.bounding_box.right
         2.0
-        
+
         >>> r.bounding_box.upper
         1.0
-        
+
         """
 
         if self._bounding_box is None:
@@ -1287,7 +1292,7 @@ class Ring(Geometry):
 
         Examples
         --------
-        
+
         >>> r = Ring(
         ...     [
         ...         Point((0, 0)),
@@ -1299,7 +1304,7 @@ class Ring(Geometry):
         ... )
         >>> r.area
         2.0
-        
+
         """
 
         return abs(self.signed_area)
@@ -1331,13 +1336,13 @@ class Ring(Geometry):
 
         Notes
         -----
-        
+
         The centroid returned by this method is the geometric centroid.
         Also known as the 'center of gravity' or 'center of mass'.
 
         Examples
         --------
-        
+
         >>> r = Ring(
         ...     [
         ...         Point((0, 0)),
@@ -1349,7 +1354,7 @@ class Ring(Geometry):
         ... )
         >>> str(r.centroid)
         '(1.0, 0.5)'
-        
+
         """
 
         if self._centroid is None:
@@ -1374,7 +1379,7 @@ class Ring(Geometry):
         """Build the quad tree structure for this polygon. Once
         the structure is built, speed for testing if a point is
         inside the ring will be increased significantly.
-        
+
         """
 
         self._quad_tree_structure = QuadTreeStructureSingleRing(self)
@@ -1382,17 +1387,17 @@ class Ring(Geometry):
     def contains_point(self, point):
         """Point containment using winding number. The implementation is based on
         `this <http://www.engr.colostate.edu/~dga/dga/papers/point_in_polygon.pdf>`_.
-        
+
         Parameters
         ----------
         point : libpysal.cg.Point
             The point to test for containment.
-        
+
         Returns
         -------
         point_contained : bool
             ``True`` if ``point`` is contained within the polygon, otherwise ``False``.
-        
+
         """
 
         point_contained = False
@@ -1469,22 +1474,22 @@ class Polygon(Geometry):
     bounding_box : libpysal.cg.Rectangle
         The bounding box of the polygon.
     bbox : list
-        A list representation of the bounding box in the 
+        A list representation of the bounding box in the
         form ``[left, lower, right, upper]``.
     area : float
         The area enclosed by the polygon.
     centroid : tuple
         The 'center of gravity', i.e. the mean point of the polygon.
-    
+
     Examples
     --------
-    
+
     >>> p1 = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
-    
+
     """
 
     def __init__(self, vertices, holes=None):
-
+        warnings.warn(dep_msg, FutureWarning)
         self._part_rings = []
         self._hole_rings = []
 
@@ -1518,7 +1523,7 @@ class Polygon(Geometry):
         GEOS, Shapely, and geoJSON do. In GEOS, etc, polygons may only
         have a single exterior ring, all other parts are holes.
         MultiPolygons are simply a list of polygons.
-        
+
         """
 
         geo_type = geo["type"].lower()
@@ -1571,14 +1576,14 @@ class Polygon(Geometry):
 
         Examples
         --------
-        
+
         >>> p1 = Polygon([Point((0, 0)), Point((0, 1)), Point((1, 1)), Point((1, 0))])
         >>> p1.len
         4
-        
+
         >>> len(p1)
         4
-        
+
         """
 
         if self._len is None:
@@ -1591,11 +1596,11 @@ class Polygon(Geometry):
 
         Examples
         --------
-        
+
         >>> p1 = Polygon([Point((0, 0)), Point((0, 1)), Point((1, 1)), Point((1, 0))])
         >>> len(p1.vertices)
         4
-        
+
         """
 
         return sum([part for part in self._vertices], []) + sum(
@@ -1608,14 +1613,14 @@ class Polygon(Geometry):
 
         Examples
         --------
-        
+
         >>> p = Polygon(
         ...     [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
         ...     [Point((1, 2)), Point((2, 2)), Point((2, 1)), Point((1, 1))]
         ... )
         >>> len(p.holes)
         1
-        
+
         """
 
         return [[v for v in part] for part in self._holes]
@@ -1626,7 +1631,7 @@ class Polygon(Geometry):
 
         Examples
         --------
-        
+
         >>> p = Polygon(
         ...     [
         ...         [Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))],
@@ -1635,7 +1640,7 @@ class Polygon(Geometry):
         ... )
         >>> len(p.parts)
         2
-        
+
         """
 
         return [[v for v in part] for part in self._vertices]
@@ -1646,11 +1651,11 @@ class Polygon(Geometry):
 
         Examples
         --------
-        
+
         >>> p = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         >>> p.perimeter
         4.0
-        
+
         """
 
         def dist(v1: Union[int, float], v2: Union[int, float]) -> float:
@@ -1669,17 +1674,17 @@ class Polygon(Geometry):
     @property
     def bbox(self):
         """Returns the bounding box of the polygon as a list.
-        
+
         Returns
         -------
         self._bbox : list
             The bounding box of the polygon as a list.
-        
+
         See Also
         --------
-        
+
         libpysal.cg.bounding_box
-        
+
         """
 
         if self._bbox is None:
@@ -1702,20 +1707,20 @@ class Polygon(Geometry):
 
         Examples
         --------
-        
+
         >>> p = Polygon([Point((0, 0)), Point((2, 0)), Point((2, 1)), Point((0, 1))])
         >>> p.bounding_box.left
         0.0
-        
+
         >>> p.bounding_box.lower
         0.0
-        
+
         >>> p.bounding_box.right
         2.0
-        
+
         >>> p.bounding_box.upper
         1.0
-        
+
         """
 
         if self._bounding_box is None:
@@ -1734,18 +1739,18 @@ class Polygon(Geometry):
 
         Examples
         --------
-        
+
         >>> p = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
         >>> p.area
         1.0
-        
+
         >>> p = Polygon(
         ...     [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
         ...     [Point((2, 1)), Point((2, 2)), Point((1, 2)), Point((1, 1))]
         ... )
         >>> p.area
         99.0
-        
+
         """
 
         def part_area(pv: list) -> float:
@@ -1768,21 +1773,21 @@ class Polygon(Geometry):
 
         Notes
         -----
-        
+
         The centroid returned by this method is the geometric
         centroid and respects multipart polygons with holes.
         Also known as the 'center of gravity' or 'center of mass'.
 
         Examples
         --------
-        
+
         >>> p = Polygon(
         ...     [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
         ...     [Point((1, 1)), Point((1, 2)), Point((2, 2)), Point((2, 1))]
         ... )
         >>> p.centroid
         (5.0353535353535355, 5.0353535353535355)
-        
+
         """
 
         CP = [ring.centroid for ring in self._part_rings]
@@ -1800,7 +1805,7 @@ class Polygon(Geometry):
         """Build the quad tree structure for this polygon. Once
         the structure is built, speed for testing if a point is
         inside the ring will be increased significantly.
-        
+
         """
 
         for ring in self._part_rings:
@@ -1811,35 +1816,35 @@ class Polygon(Geometry):
 
     def contains_point(self, point):
         """Test if a polygon contains a point.
-        
+
         Parameters
         ----------
         point : libpysal.cg.Point
             A point to test for containment.
-        
+
         Returns
         -------
         contains : bool
             ``True`` if the polygon contains ``point`` otherwise ``False``.
-        
+
         Examples
         --------
-        
+
         >>> p = Polygon(
         ...     [Point((0,0)), Point((4,0)), Point((4,5)), Point((2,3)), Point((0,5))]
         ... )
         >>> p.contains_point((3,3))
         1
-        
+
         >>> p.contains_point((0,6))
         0
-        
+
         >>> p.contains_point((2,2.9))
         1
-        
+
         >>> p.contains_point((4,5))
         0
-        
+
         >>> p.contains_point((4,0))
         0
 
@@ -1851,15 +1856,15 @@ class Polygon(Geometry):
         ... )
         >>> p.contains_point((3.0, 3.0))
         False
-        
+
         >>> p.contains_point((1.0, 1.0))
         True
 
         Notes
         -----
-        
+
         Points falling exactly on polygon edges may yield unpredictable results.
-        
+
         """
 
         searching = True
@@ -1895,27 +1900,27 @@ class Rectangle(Geometry):
         Maximum x-value of the rectangle.
     upper : float
         Maximum y-value of the rectangle.
-    
+
     Examples
     --------
-    
+
     >>> r = Rectangle(-4, 3, 10, 17)
     >>> r.left #minx
     -4.0
-    
+
     >>> r.lower #miny
     3.0
-    
+
     >>> r.right #maxx
     10.0
-    
+
     >>> r.upper #maxy
     17.0
-    
+
     """
 
     def __init__(self, left, lower, right, upper):
-
+        warnings.warn(dep_msg, FutureWarning)
         if right < left or upper < lower:
             raise ArithmeticError("Rectangle must have positive area.")
         self.left = float(left)
@@ -1931,15 +1936,15 @@ class Rectangle(Geometry):
 
         Examples
         --------
-        
+
         >>> r = Rectangle(0, 0, 0, 0)
         >>> bool(r)
         False
-        
+
         >>> r = Rectangle(0, 0, 1, 1)
         >>> bool(r)
         True
-        
+
         """
 
         return bool(self.area)
@@ -1962,14 +1967,14 @@ class Rectangle(Geometry):
 
     def __getitem__(self, key):
         """
-        
+
         Examples
         --------
-        
+
         >>> r = Rectangle(-4, 3, 10, 17)
         >>> r[:]
         [-4.0, 3.0, 10.0, 17.0]
-        
+
         """
 
         l = [self.left, self.lower, self.right, self.upper]
@@ -1986,21 +1991,21 @@ class Rectangle(Geometry):
 
         Examples
         --------
-        
+
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.set_centroid(Point((4, 4)))
         >>> r.left
         2.0
-        
+
         >>> r.right
         6.0
-        
+
         >>> r.lower
         2.0
-        
+
         >>> r.upper
         6.0
-        
+
         """
 
         shift = (
@@ -2024,7 +2029,7 @@ class Rectangle(Geometry):
 
         Examples
         --------
-        
+
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.set_scale(2)
         >>> r.left
@@ -2035,7 +2040,7 @@ class Rectangle(Geometry):
         -2.0
         >>> r.upper
         6.0
-        
+
         """
 
         center = ((self.left + self.right) / 2, (self.lower + self.upper) / 2)
@@ -2051,11 +2056,11 @@ class Rectangle(Geometry):
 
         Examples
         --------
-        
+
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.area
         16.0
-        
+
         """
 
         return (self.right - self.left) * (self.upper - self.lower)
@@ -2066,11 +2071,11 @@ class Rectangle(Geometry):
 
         Examples
         --------
-        
+
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.width
         4.0
-        
+
         """
 
         return self.right - self.left
@@ -2081,11 +2086,11 @@ class Rectangle(Geometry):
 
         Examples
         --------
-        
+
         >>> r = Rectangle(0, 0, 4, 4)
         >>> r.height
         4.0
-        
+
         """
 
         return self.upper - self.lower

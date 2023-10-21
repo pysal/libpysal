@@ -8,7 +8,7 @@ import time
 import warnings
 
 
-dep_msg = "is deprecated and will be reoved in libpysal 4.4.0."
+dep_msg = "is deprecated and will be removed in a future version of libpysal"
 
 __all__ = ["SegmentGrid", "SegmentLocator", "Polyline_Shapefile_SegmentLocator"]
 DEBUG = False
@@ -27,7 +27,7 @@ class BruteSegmentLocator(object):
 
 class SegmentLocator(object):
     def __init__(self, segments, nbins=500):
-        warnings.warn("SegmentLocator " + dep_msg, DeprecationWarning)
+        warnings.warn("SegmentLocator " + dep_msg, FutureWarning)
         self.data = segments
         if hasattr(segments, "bounding_box"):
             bbox = segment.bounding_box
@@ -51,9 +51,7 @@ class SegmentLocator(object):
 
 class Polyline_Shapefile_SegmentLocator(object):
     def __init__(self, shpfile, nbins=500):
-        warnings.warn(
-            "Polyline_Shapefile_SegmentLocator " + dep_msg, DeprecationWarning
-        )
+        warnings.warn("Polyline_Shapefile_SegmentLocator " + dep_msg, FutureWarning)
         self.data = shpfile
         bbox = Rectangle(*shpfile.bbox)
         res = max((bbox.right - bbox.left), (bbox.upper - bbox.lower)) / float(nbins)
@@ -101,7 +99,7 @@ class SegmentGrid(object):
         TODO: complete this doctest
         >>> g = SegmentGrid(Rectangle(0, 0, 10, 10), 1)
         """
-        warnings.warn("SegmentGrid " + dep_msg, DeprecationWarning)
+        warnings.warn("SegmentGrid " + dep_msg, FutureWarning)
         if resolution == 0:
             raise Exception("Cannot create grid with resolution 0")
         self.res = resolution

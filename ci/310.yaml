@@ -3,28 +3,28 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - appdirs
   - beautifulsoup4
+  - geopandas
   - jinja2
-  - pandas>=1.0
-  - scipy>=1.0
+  - packaging
+  - pandas
+  - platformdirs
+  - requests
+  - scipy
+  - shapely
   - xarray
   # testing
   - codecov
   - matplotlib
   - pytest
   - pytest-cov
+  - pytest-mpl
   - pytest-xdist
   # optional
-  - geopandas>=0.7.0
+  - geodatasets
   - joblib
+  - networkx
   - numba
-  - packaging
-  - xarray
+  - pyarrow
+  - scikit-learn
   - zstd
-  # for docs build action (this env only)
-  - nbsphinx
-  - numpydoc
-  - sphinx
-  - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
