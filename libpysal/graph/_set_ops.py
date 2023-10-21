@@ -1,6 +1,8 @@
 import numpy as np
 import pandas
 
+from packaging.version import Version
+
 from ._utils import _resolve_islands
 
 
@@ -189,16 +191,19 @@ class _Set_Mixin:
         can be found to convert one graph into the other graph. Requires networkx.
         """
         try:
-            from networkx.algorithms import isomorphism as iso
+            import networkx as nx
         except ImportError:
             raise ImportError("NetworkX is required to check for graph isomorphism")
 
         nxleft = self.to_networkx()
         nxright = right.to_networkx()
 
-        if not iso.faster_could_be_isomorphic(nxleft, nxright):
+        if not nx.faster_could_be_isomorphic(nxleft, nxright):
             return False
-        elif not iso.could_be_isomorphic(nxleft, nxright):
+        elif not nx.could_be_isomorphic(nxleft, nxright):
+            # https://github.com/networkx/networkx/issues/7038
+            if Version(nx.__version__) == Version("3.2"):
+                return nx.is_isomorphic(nxleft, nxright)
             return False
         else:
-            return iso.is_isomorphic(nxleft, nxright)
+            return nx.is_isomorphic(nxleft, nxright)
