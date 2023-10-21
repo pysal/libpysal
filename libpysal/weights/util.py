@@ -18,7 +18,7 @@ from packaging.version import Version
 try:
     import geopandas as gpd
 
-    GPD_08 = Version(gpd.__version__) >= Version("0.8.0")
+    GPD_013= Version(gpd.__version__) >= Version("0.13.0")
 except ImportError:
     warn("geopandas not available. Some functionality will be disabled.")
 
@@ -1653,28 +1653,20 @@ def fuzzy_contiguity(
         gdf.set_geometry("_buffer", inplace=True)
 
     neighbors = {}
-    if GPD_08:
+    if GPD_013:
         # query tree based on set predicate
-        inp, res = gdf.sindex.query_bulk(gdf.geometry, predicate=predicate)
-        # remove self hits
-        itself = inp == res
-        inp = inp[~itself]
-        res = res[~itself]
-
-        # extract index values of neighbors
-        for i, ix in enumerate(gdf.index):
-            ids = gdf.index[res[inp == i]].tolist()
-            neighbors[ix] = ids
+        inp, res = gdf.sindex.query(gdf.geometry, predicate=predicate)
     else:
-        if predicate != "intersects":
-            raise ValueError(f"Predicate `{predicate}` requires geopandas >= 0.8.0.")
-        tree = gdf.sindex
-        for i, (ix, geom) in enumerate(gdf.geometry.iteritems()):
-            hits = list(tree.intersection(geom.bounds))
-            hits.remove(i)
-            possible = gdf.iloc[hits]
-            ids = possible[possible.intersects(geom)].index.tolist()
-            neighbors[ix] = ids
+        inp, res = gdf.sindex.query_bulk(gdf.geometry, predicate=predicate)
+    # remove self hits
+    itself = inp == res
+    inp = inp[~itself]
+    res = res[~itself]
+
+    # extract index values of neighbors
+    for i, ix in enumerate(gdf.index):
+        ids = gdf.index[res[inp == i]].tolist()
+        neighbors[ix] = ids
 
     if buffering:
         gdf.set_geometry(old_geometry_name, inplace=True)
