@@ -2,35 +2,27 @@ name: libpysal
 channels:
   - conda-forge
 dependencies:
+  # core env deps
+  - python
   - jupyterlab
+  # core libpysal deps
   - beautifulsoup4
-  - pandas
-  - requests
+  - geopandas
   - jinja2
-  - numpydoc
-  - nbsphinx
-  - pandoc
-  - sphinx
-  - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
-  - bokeh>=0.11.1
-  - folium>=0.2.1
-  - geojson>=1.3.2
-  - geopandas>=0.2
-  - matplotlib>=1.5.1
-  - mplleaflet>=0.0.5
-  - numba
-  - numexpr
-  - networkx
-  - scikit-learn>=0.17.1
-  - seaborn>=0.7.0
-  - sqlalchemy
-  - statsmodels>=0.6.1
-  - xarray
-  - codecov
-  - joblib
   - packaging
-  - pytest
-  - pytest-cov
-  - pytest-xdist
-  - mapclassify
+  - pandas
+  - platformdirs
+  - requests
+  - scipy
+  - shapely
+  - xarray
+  # optional libpysal deps
+  - geodatasets
+  - joblib
+  - matplotlib
+  - networkx
+  - numba
+  - pyarrow
+  - scikit-learn
+  - sqlalchemy
+  - zstd
