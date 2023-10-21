@@ -27,8 +27,10 @@
          shell: bash -l {0}
 
      steps:
-       - name: Checkout repo
-         uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags.
 
        - name: Setup micromamba
          uses: mamba-org/setup-micromamba@v1
@@ -54,7 +56,7 @@
            # The above command will fail if no changes were present,
            # so we ignore the return code.
 
-       - name: push to gh-pages
+       - name: Push to gh-pages
          uses: ad-m/github-push-action@master
          with:
             branch: gh-pages
