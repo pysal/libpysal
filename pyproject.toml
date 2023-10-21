@@ -27,7 +27,7 @@ requires-python = ">=3.10"
 dependencies = [
     "beautifulsoup4>=4.10",
     "geopandas>=0.10.0",
-    "numpy>=1.23",
+    "numpy>=1.22",
     "packaging>=22",
     "pandas>=1.4",
     "platformdirs>=2.0.2",
@@ -46,9 +46,9 @@ plus = [
     "joblib>=1.2",
     "networkx>=2.7",
     "numba>=0.55",
-    "pyarrow>=7.0"
-    "scikit-learn>=1.1"
-    "zstd"
+    "pyarrow>=7.0",
+    "scikit-learn>=1.1",
+    "zstd",
 ]
 dev = [
     "black",
@@ -57,7 +57,7 @@ dev = [
 ]
 docs = [
     "mkdocs-jupyter",
-    "myst-parser"
+    "myst-parser",
     "nbsphinx",
     "numpydoc",
     "pandoc",
