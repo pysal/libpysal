@@ -201,7 +201,7 @@ class Testutil(unittest.TestCase):
         for i in range(len(a)):
             for j in range(len(a[i])):
                 if i != j:
-                    a[i, j] = np.random.random(1)
+                    a[i, j] = np.random.random(1)[0]
         w = util.full2W(a)
         np.testing.assert_array_equal(w.full()[0], a)
         ids = ["myID0", "myID1", "myID2", "myID3"]
