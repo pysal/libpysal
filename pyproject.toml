@@ -23,7 +23,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "platformdirs>=2.0.2",
     "beautifulsoup4>=4.10",
@@ -76,7 +76,7 @@ line-length = 88
 [tool.ruff]
 line-length = 88
 select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
-target-version = "py38"
+target-version = "py310"
 ignore = [
     "B006",
     "B008",

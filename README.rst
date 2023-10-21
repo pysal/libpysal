@@ -5,7 +5,7 @@ Python Spatial Analysis Library Core
 .. image:: https://github.com/pysal/libpysal/workflows/.github/workflows/unittests.yml/badge.svg
     :target: https://github.com/pysal/libpysal/actions?query=workflow%3A.github%2Fworkflows%2Funittests.yml
    
-.. image:: https://codecov.io/gh/pysal/libpysal/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/pysal/libpysal/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/pysal/libpysal
 
 .. image:: https://badge.fury.io/py/libpysal.svg
@@ -59,7 +59,7 @@ If you have any suggestions, feature requests, or bug reports,
 please open new `issues <https://github.com/pysal/libpysal/issues>`_ on GitHub. 
 To submit patches, please review `PySAL's documentation for developers <https://pysal.org/docs/devs/>`_, 
 the PySAL `development guidelines <https://github.com/pysal/pysal/wiki>`_, 
-the `libpysal contributing guidelines <https://github.com/pysal/libpysal/blob/master/.github/CONTRIBUTING.md>`_
+the `libpysal contributing guidelines <https://github.com/pysal/libpysal/blob/main/.github/CONTRIBUTING.md>`_
 before  opening a `pull request <https://github.com/pysal/libpysal/pulls>`_. 
 Once your changes get merged, you’ll automatically be added to 
 the `Contributors List <https://github.com/pysal/libpysal/graphs/contributors>`_.
@@ -76,6 +76,6 @@ To search for or report bugs, please see `libpysal's issues <https://github.com/
 License information
 *******************
 
-See the `LICENSE <https://github.com/pysal/libpysal/blob/master/LICENSE.txt>`_
+See the `LICENSE <https://github.com/pysal/libpysal/blob/main/LICENSE.txt>`_
 for information on the history of this software, terms & conditions for usage,
 and a DISCLAIMER OF ALL WARRANTIES.
