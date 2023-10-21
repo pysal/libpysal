@@ -6,13 +6,13 @@ dependencies:
   - beautifulsoup4=4.10
   - geopandas=0.10.0
   - jinja2=3.0
-  - numpy=1.20
+  - numpy=1.23
   - packaging=22
   - pandas=1.4
   - requests=2.27
   - scipy=1.8
   - shapely=2.0.1
-  - xarray=0.18
+  - xarray=2022.3
   # testing
   - codecov
   - matplotlib>=3.6
