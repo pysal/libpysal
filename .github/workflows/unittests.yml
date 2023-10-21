@@ -24,25 +24,28 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         environment-file:
-          - ci/38-minimal.yaml
-          - ci/39.yaml
+          - ci/310-oldest.yaml
           - ci/310.yaml
           - ci/311.yaml
-          - ci/311-dev.yaml
-          - ci/311-no-optional.yaml
+          - ci/312.yaml
+          - ci/312-dev.yaml
+          - ci/312-no-optional.yaml
         include:
-          - environment-file: ci/310.yaml
+          - environment-file: ci/312.yaml
             os: macos-latest
-          - environment-file: ci/310.yaml
+          - environment-file: ci/312.yaml
             os: windows-latest
     defaults:
       run:
         shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags.
 
-      - name: setup micromamba
+      - name: Setup micromamba
         uses: mamba-org/setup-micromamba@v1
         with:
           environment-file: ${{ matrix.environment-file }}
@@ -55,7 +58,8 @@ jobs:
         run: |
           pytest -v --color yes --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
 
-      - uses: codecov/codecov-action@v3
+      - name: Codecov
+        uses: codecov/codecov-action@v3
 
       - name: Generate and publish the report
         if: |

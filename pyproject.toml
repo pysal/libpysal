@@ -23,17 +23,18 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
-    "platformdirs>=2.0.2",
     "beautifulsoup4>=4.10",
-    "geopandas>=0.9",
-    "shapely>=2",
-    "numpy>=1.20",
+    "geopandas>=0.10.0",
+    "numpy>=1.22",
+    "packaging>=22",
     "pandas>=1.4",
-    "requests",
+    "platformdirs>=2.0.2",
+    "requests>=2.27",
     "scipy>=1.8",
-    "packaging"
+    "shapely>=2.0.1",
+    "xarray>=2022.3",
 ]
 
 [project.urls]
@@ -41,30 +42,37 @@ Home = "https://github.com/pysal/libpysal/"
 Repository = "https://github.com/pysal/libpysal"
 
 [project.optional-dependencies]
-dev = ["pre-commit"]
+plus = [
+    "joblib>=1.2",
+    "networkx>=2.7",
+    "numba>=0.55",
+    "pyarrow>=7.0",
+    "scikit-learn>=1.1",
+    "zstd",
+]
+dev = [
+    "black",
+    "pre-commit",
+    "watermark",
+]
 docs = [
+    "mkdocs-jupyter",
+    "myst-parser",
     "nbsphinx",
     "numpydoc",
     "pandoc",
     "sphinx",
     "sphinxcontrib-bibtex",
     "sphinx_bootstrap_theme",
-    "mkdocs-jupyter",
-    "myst-parser"
 ]
 tests = [
-    "geopandas",
     "codecov",
-    "coverage",
+    "geodatasets>=2023.3.0",
+    "matplotlib>=3.6",
     "pytest",
     "pytest-mpl",
     "pytest-cov",
-    "watermark",
-    "pyarrow",
     "pytest-xdist",
-    "matplotlib",
-    "geodatasets",
-    "black"
 ]
 
 [tool.setuptools.packages.find]
@@ -76,7 +84,7 @@ line-length = 88
 [tool.ruff]
 line-length = 88
 select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
-target-version = "py38"
+target-version = "py310"
 ignore = [
     "B006",
     "B008",

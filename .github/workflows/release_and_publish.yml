@@ -25,9 +25,12 @@
    build:
      name: Create release & publish to PyPI
      runs-on: ubuntu-latest
+
      steps:
        - name: Checkout repo
          uses: actions/checkout@v4
+         with:
+           fetch-depth: 0 # Fetch all history for all branches and tags.
 
        - name: Set up python
          uses: actions/setup-python@v4
