@@ -5,7 +5,7 @@ import unittest as ut
 from .... import examples as pysal_examples
 
 from shapely.geometry import Point
-from shapely import wkb
+import shapely
 
 try:
     import sqlalchemy
