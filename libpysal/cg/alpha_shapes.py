@@ -12,6 +12,7 @@ Author(s):
 import numpy as np
 import scipy.spatial as spat
 from scipy import sparse
+from packaging.version import Version
 
 from ..common import requires, jit, HAS_JIT
 
@@ -24,7 +25,6 @@ if not HAS_JIT:
 
 try:
     import shapely
-    from packaging.version import Version
 
     assert Version(shapely.__version__) >= Version("2")
 
@@ -715,13 +715,18 @@ def _filter_holes(geoms, points):
     """
     Filter hole polygons using a computational geometry solution
     """
+    import geopandas
     if (geoms.interiors.apply(len) > 0).any():
         from shapely.geometry import Polygon
 
         # Extract the "shell", or outer ring of the polygon.
         shells = geoms.exterior.apply(Polygon)
         # Compute which original geometries are within each shell, self-inclusive
-        inside, outside = shells.sindex.query_bulk(geoms, predicate="within")
+        if Version(geopandas.__version__) >= Version("0.13"):
+            inside, outside = shells.sindex.query(geoms, predicate="within")
+        else:
+            inside, outside = shells.sindex.query_bulk(geoms, predicate="within")
+
         # Now, create the sparse matrix relating the inner geom (rows)
         # to the outer shell (cols) and take the sum.
         # A z-order of 1 means the polygon is only inside if its own exterior. This means it's not a hole.

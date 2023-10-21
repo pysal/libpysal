@@ -14,14 +14,14 @@ __all__ = ["DBF"]
 class DBF(tables.DataTable):
     """PySAL DBF Reader/Writer. This DBF handler implements the PySAL DataTable
     interface and initializes an instance of the PySAL's DBF handler.
-    
+
     Parameters
     -----------
     dataPath : str
         Path to file, including file name and extension.
     mode : str
         Mode for file interaction; either ``'r'`` or ``'w'``.
-    
+
     Attributes
     ----------
     header : list
@@ -41,7 +41,7 @@ class DBF(tables.DataTable):
     >>> dbf = libpysal.io.open(libpysal.examples.get_path('juvenile.dbf'), 'r')
     >>> dbf.header
     ['ID', 'X', 'Y']
-    
+
     >>> dbf.field_spec
     [('N', 9, 0), ('N', 9, 0), ('N', 9, 0)]
 
@@ -51,7 +51,6 @@ class DBF(tables.DataTable):
     MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
-
         tables.DataTable.__init__(self, *args, **kwargs)
 
         if self.mode == "r":
@@ -115,12 +114,12 @@ class DBF(tables.DataTable):
 
     def __len__(self) -> int:
         """
-        
+
         Raises
         ------
         IOError
             Raised when a file is open ``'w'`` mode.
-        
+
         """
 
         if self.mode != "r":
@@ -135,12 +134,12 @@ class DBF(tables.DataTable):
 
     def _get_col(self, key: str) -> list:
         """Return the column vector.
-        
+
         Raises
         ------
         AttributeError
             Raised when a field does not exist in the header.
-        
+
         """
 
         if key not in self._col_index:
@@ -196,7 +195,6 @@ class DBF(tables.DataTable):
         return col
 
     def read_record(self, i: int) -> list:
-
         self.seek(i)
 
         rec = list(struct.unpack(self.record_fmt, self.f.read(self.record_size)))
@@ -246,12 +244,12 @@ class DBF(tables.DataTable):
 
     def _read(self) -> Union[list, None]:
         """
-        
+
         Raises
         ------
         IOError
             Raised when a file is open ``'w'`` mode.
-        
+
         """
 
         if self.mode != "r":
@@ -267,14 +265,14 @@ class DBF(tables.DataTable):
 
     def write(self, obj: list):
         """
-        
+
         Raises
         ------
         IOError
             Raised when a file is open ``'r'`` mode.
         TypeError
             Raised when a row length and header length are not equivalent.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -326,7 +324,6 @@ class DBF(tables.DataTable):
         self.f.flush()
 
     def close(self):
-
         if self.mode == "w":
             self.flush()
             # End of file
@@ -337,14 +334,14 @@ class DBF(tables.DataTable):
 
     def _firstWrite(self):
         """
-        
+
         Raises
         ------
         IOError
             Raised when there is no specified header.
         IOError
             Raised when there is no field specification.
-        
+
         """
 
         if not self.header:
