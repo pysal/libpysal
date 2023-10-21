@@ -18,7 +18,7 @@ from packaging.version import Version
 try:
     import geopandas as gpd
 
-    GPD_013= Version(gpd.__version__) >= Version("0.13.0")
+    GPD_013 = Version(gpd.__version__) >= Version("0.13.0")
 except ImportError:
     warn("geopandas not available. Some functionality will be disabled.")
 
