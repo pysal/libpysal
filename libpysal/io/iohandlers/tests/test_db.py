@@ -4,7 +4,6 @@ from ...fileio import FileIO as psopen
 import unittest as ut
 from .... import examples as pysal_examples
 
-from shapely.geometry import Point
 import shapely
 
 try:
@@ -23,7 +22,7 @@ class Test_sqlite_reader(ut.TestCase):
             pysal_examples.load_example("newHaven")
             path = pysal_examples.get_path("new_haven_merged.dbf")
         df = pdio.read_files(path)
-        df["GEOMETRY"] = shapely.to_wkb(shapely.points(df["geometry"]))
+        df["GEOMETRY"] = shapely.to_wkb(shapely.points(df["geometry"].values.tolist()))
         # This is a hack to not have to worry about a custom point type in the DB
         del df["geometry"]
         engine = sqlalchemy.create_engine("sqlite:///test.db")
