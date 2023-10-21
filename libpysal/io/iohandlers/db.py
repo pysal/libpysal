@@ -33,7 +33,7 @@ class SQLConnection(fileio.FileIO):
         self.dbname = args[0]
         self.Base = automap_base()
         self._engine = create_engine(self.dbname)
-        self.Base.prepare(self._engine, reflect=True)
+        self.Base.prepare(autoload_with=self._engine)
         self.metadata = self.Base.metadata
 
     def read(self, *args, **kwargs):

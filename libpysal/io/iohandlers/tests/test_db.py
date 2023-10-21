@@ -25,11 +25,12 @@ class Test_sqlite_reader(ut.TestCase):
         df["GEOMETRY"] = shapely.to_wkb(shapely.points(df["geometry"].values.tolist()))
         # This is a hack to not have to worry about a custom point type in the DB
         del df["geometry"]
-        engine = sqlalchemy.create_engine("sqlite:///test.db")
-        conn = engine.connect()
+        self.dbf = "iohandlers_test_db.db"
+        engine = sqlalchemy.create_engine(f"sqlite:///{self.dbf}")
+        self.conn = engine.connect()
         df.to_sql(
             "newhaven",
-            conn,
+            self.conn,
             index=True,
             dtype={
                 "date": sqlalchemy.types.UnicodeText,  # Should convert the df date into a true date object, just a hack again
@@ -42,13 +43,15 @@ class Test_sqlite_reader(ut.TestCase):
         )  # This is converted to TEXT as lowest type common sqlite
 
     def test_deserialize(self):
-        db = psopen("sqlite:///test.db")
+        db = psopen(f"sqlite:///{self.dbf}")
         self.assertEqual(db.tables, ["newhaven"])
 
         gj = db._get_gjson("newhaven")
         self.assertEqual(gj["type"], "FeatureCollection")
 
-        os.remove("test.db")
+        self.conn.close()
+
+        os.remove(self.dbf)
 
 
 if __name__ == "__main__":
