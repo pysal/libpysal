@@ -7,6 +7,7 @@ Base class for managing example datasets.
 
 import io
 import os
+import tempfile
 import webbrowser
 from platformdirs import user_data_dir
 import zipfile
@@ -34,8 +35,15 @@ def get_data_home():
     appname = "pysal"
     appauthor = "pysal"
     data_home = user_data_dir(appname, appauthor)
-    if not os.path.exists(data_home):
+
+    try:
+        if not os.path.exists(data_home):
+            os.makedirs(data_home, exist_ok=True)
+    except OSError:
+        # Try to fall back to a tmp directory
+        data_home = os.path.join(tempfile.gettempdir(), "pysal")
         os.makedirs(data_home, exist_ok=True)
+
     return data_home
 
 
@@ -132,8 +140,9 @@ class Example:
         self.root = name.replace(" ", "_")
         self.installed = self.downloaded()
 
-    def get_local_path(self, path=get_data_home()) -> str:
+    def get_local_path(self, path=None) -> str:
         """Get the local path for example."""
+        path = path or get_data_home()
         return os.path.join(path, self.root)
 
     def get_path(self, file_name, verbose=True) -> Union[str, None]:
@@ -171,8 +180,9 @@ class Example:
 
         return IFrame(self.explain_url, width=700, height=350)
 
-    def download(self, path=get_data_home()):
+    def download(self, path=None):
         """Download the files for the example."""
+        path = path or get_data_home()
 
         if not self.downloaded():
             try:
