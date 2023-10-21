@@ -19,7 +19,7 @@ libpysal: Python Spatial Analysis Library Core
         <div class="col-sm-1 col-xs-hidden">
         </div>
         <div class="col-sm-10 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/master/notebooks/weights.ipynb" class="thumbnail">
+            <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/main/notebooks/weights.ipynb" class="thumbnail">
                 <img src="_static/images/npweights.png" class="img-responsive center-block">
                 <div class="caption text-center">
                 <h6>Weights for nonplanar enforced geometries</h6>
@@ -38,10 +38,10 @@ Introduction
 
 **libpysal** offers four modules that form the building blocks in many upstream packages in the `PySAL family <https://pysal.org>`_:
 
-- Spatial Weights: libpysal.weights 
-- Input-and output: libpysal.io 
-- Computational geometry: libpysal.cg  
-- Built-in example datasets libpysal.examples  
+- Spatial Weights: libpysal.weights
+- Input-and output: libpysal.io
+- Computational geometry: libpysal.cg
+- Built-in example datasets libpysal.examples
 
 
 Examples demonstrating some of **libpysal** functionality are available in the `tutorial <tutorial.html>`_.

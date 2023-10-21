@@ -1,0 +1,34 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - beautifulsoup4=4.10
+  - geopandas=0.10.0
+  - jinja2=3.0
+  - numpy=1.22
+  - packaging=22
+  - pandas=1.4
+  - requests=2.27
+  - scipy=1.8
+  - shapely=2.0.1
+  - xarray=2022.3
+  # testing
+  - codecov
+  - matplotlib>=3.6
+  - pytest
+  - pytest-cov
+  - pytest-mpl
+  - pytest-xdist
+  # optional
+  - geodatasets=2023.3.0
+  - joblib>=1.2
+  - networkx=2.7
+  - numba=0.55
+  - pyarrow>=7.0
+  - scikit-learn=1.1
+  - sqlalchemy=2.0
+  - zstd
+  - pip
+  - pip:
+      - platformdirs==2.0.2
