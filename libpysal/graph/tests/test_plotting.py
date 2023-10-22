@@ -2,6 +2,7 @@ import geodatasets
 import geopandas
 import numpy as np
 import pytest
+import shapely
 
 from libpysal import graph
 
@@ -70,7 +71,7 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            self.nybb.centroid.get_coordinates().values,
+            shapely.get_coordinates(self.nybb.centroid),
         )
 
         # edge color
@@ -95,7 +96,7 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            self.nybb.centroid.get_coordinates().values,
+            shapely.get_coordinates(self.nybb.centroid),
         )
 
     def test_misaligned(self):
@@ -110,7 +111,7 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            self.nybb.centroid.get_coordinates().values,
+            shapely.get_coordinates(self.nybb.centroid),
         )
 
     def test_no_nodes(self):
@@ -136,7 +137,7 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            self.nybb.centroid.get_coordinates().values[1:],
+            shapely.get_coordinates(self.nybb.centroid)[1:],
         )
 
     def test_focal_array(self):
@@ -154,7 +155,7 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            self.nybb.centroid.get_coordinates().values[1:],
+            shapely.get_coordinates(self.nybb.centroid)[1:],
         )
 
     def test_color(self):
@@ -199,7 +200,7 @@ class TestPlotting:
         pathcollection = ax.collections[2]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            self.nybb.centroid.get_coordinates().values,
+            shapely.get_coordinates(self.nybb.centroid),
         )
 
     def test_figsize(self):
