@@ -27,6 +27,7 @@ dependencies:
   # - numba # follow up when numba is ready for 3.12
   - pyarrow
   - scikit-learn
+  - sqlalchemy
   - zstd
   # for docs build action (this env only)
   - mkdocs-jupyter

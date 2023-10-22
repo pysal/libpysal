@@ -25,6 +25,7 @@ dependencies:
   - packaging
   - pyarrow
   - pyproj
+  - sqlalchemy
   - zstd
   - pip
   - pip:

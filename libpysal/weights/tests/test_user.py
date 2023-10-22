@@ -17,6 +17,7 @@ class Testuser(unittest.TestCase):
         user.build_lattice_shapefile(20, 20, of)
         w = Rook.from_shapefile(of)
         self.assertEqual(w.n, 400)
+        os.remove("lattice.dbf")
         os.remove("lattice.shp")
         os.remove("lattice.shx")
 

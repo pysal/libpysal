@@ -20,11 +20,12 @@ dependencies:
   - pytest-cov
   - pytest-mpl
   - pytest-xdist
-  # optional
+    # optional
   - geodatasets
   - joblib
   - networkx
   - numba
   - pyarrow
   - scikit-learn
+  - sqlalchemy
   - zstd
