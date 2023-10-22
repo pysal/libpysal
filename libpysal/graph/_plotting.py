@@ -65,12 +65,15 @@ def _plot(
         edge_kws = dict(color=color)
 
     coords = shapely.get_coordinates(gdf.centroid)
-    lines = np.column_stack(
-        [
-            coords[G._adjacency.index.get_level_values("focal")],
-            coords[G._adjacency.index.get_level_values("neighbor")],
-        ]
-    ).reshape(-1, 2, 2)
+
+    focal_ids = G._adjacency.index.get_level_values("focal")
+    neighbor_ids = G._adjacency.index.get_level_values("neighbor")
+
+    # avoid plotting both ij and ji
+    edges = np.unique(
+        np.sort(np.column_stack([focal_ids, neighbor_ids]), axis=1), axis=0
+    )
+    lines = coords[edges].reshape(-1, 2, 2)
 
     ax.add_collection(collections.LineCollection(lines, **edge_kws))
     ax.autoscale_view()
