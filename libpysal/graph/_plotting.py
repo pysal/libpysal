@@ -27,6 +27,10 @@ def _plot(
         Geometries indexed using the same index as Graph. Geometry types other than
         points are converted to centroids encoding start and end point of Graph
         edges.
+    focal : hashable | array-like[hashable] | None, optional
+        ID or an array-like of IDs of focal geometries whose weights shall be
+        plotted. If None, all weights from all focal geometries are plotted.
+        By default None
     nodes : bool, optional
         Plot nodes as points. Nodes are plotted using zorder=2 to show them on top of
         the edges. By default True
@@ -90,7 +94,6 @@ def _plot(
     # avoid plotting both ij and ji
     edges = np.unique(np.sort(np.column_stack([codes]).T, axis=1), axis=0)
     lines = coords[edges]
-    print(lines.shape)
 
     ax.add_collection(collections.LineCollection(lines, **edge_kws))
     ax.autoscale_view()
