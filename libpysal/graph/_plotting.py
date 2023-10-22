@@ -1,9 +1,18 @@
 import numpy as np
+import pandas as pd
 import shapely
 
 
 def _plot(
-    G, gdf, nodes=True, color="k", edge_kws=None, node_kws=None, ax=None, figsize=None
+    G,
+    gdf,
+    focal=None,
+    nodes=True,
+    color="k",
+    edge_kws=None,
+    node_kws=None,
+    ax=None,
+    figsize=None,
 ):
     """Plot edges and nodes of the Graph
 
@@ -66,8 +75,16 @@ def _plot(
 
     coords = shapely.get_coordinates(gdf.centroid)
 
-    focal_ids = G._adjacency.index.get_level_values("focal")
-    neighbor_ids = G._adjacency.index.get_level_values("neighbor")
+    if focal is not None:
+        if not pd.api.types.is_list_like(focal):
+            focal = [focal]
+        subset = G._adjacency[focal]
+        focal_ids = subset.index.get_level_values("focal")
+        neighbor_ids = subset.index.get_level_values("neighbor")
+
+    else:
+        focal_ids = G._adjacency.index.get_level_values("focal")
+        neighbor_ids = G._adjacency.index.get_level_values("neighbor")
 
     # avoid plotting both ij and ji
     edges = np.unique(

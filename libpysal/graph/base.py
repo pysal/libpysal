@@ -1201,6 +1201,7 @@ class Graph(_Set_Mixin):
     def plot(
         self,
         gdf,
+        focal=None,
         nodes=True,
         color="k",
         edge_kws=None,
@@ -1219,6 +1220,10 @@ class Graph(_Set_Mixin):
             Geometries indexed using the same index as Graph. Geomtry types other than
             points are converted to centroids encoding start and end point of Graph
             edges.
+        focal : hashable | array-like[hashable] | None, optional
+            ID or an array-like of IDs of focal geometries whose weights shall be
+            plotted. If None, all weights from all focal geometries are plotted.
+            By default None
         nodes : bool, optional
             Plot nodes as points, by default True
         color : str, optional
@@ -1255,6 +1260,7 @@ class Graph(_Set_Mixin):
         return _plot(
             G=self,
             gdf=gdf,
+            focal=focal,
             nodes=nodes,
             color=color,
             node_kws=node_kws,
