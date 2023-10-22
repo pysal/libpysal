@@ -73,29 +73,33 @@ def _plot(
     else:
         edge_kws = dict(color=color)
 
-    coords = shapely.get_coordinates(gdf.centroid)
+    # get array of coordinates in the order reflecting G._adjacency.index.codes
+    # we need to work on int position to allow fast filtering of duplicated edges and
+    # cannot rely on gdf remaining in the same order between Graph creation and plotting
+    coords = shapely.get_coordinates(gdf.reindex(G.unique_ids).centroid)
 
     if focal is not None:
         if not pd.api.types.is_list_like(focal):
             focal = [focal]
         subset = G._adjacency[focal]
-        focal_ids = subset.index.get_level_values("focal")
-        neighbor_ids = subset.index.get_level_values("neighbor")
+        codes = subset.index.codes
 
     else:
-        focal_ids = G._adjacency.index.get_level_values("focal")
-        neighbor_ids = G._adjacency.index.get_level_values("neighbor")
+        codes = G._adjacency.index.codes
 
     # avoid plotting both ij and ji
-    edges = np.unique(
-        np.sort(np.column_stack([focal_ids, neighbor_ids]), axis=1), axis=0
-    )
-    lines = coords[edges].reshape(-1, 2, 2)
+    edges = np.unique(np.sort(np.column_stack([codes]).T, axis=1), axis=0)
+    lines = coords[edges]
+    print(lines.shape)
 
     ax.add_collection(collections.LineCollection(lines, **edge_kws))
     ax.autoscale_view()
 
     if nodes:
-        ax.scatter(coords[:, 0], coords[:, 1], **node_kws, zorder=2)
+        if focal is not None:
+            used_nodes = coords[np.unique(subset.index.codes)]
+            ax.scatter(used_nodes[:, 0], used_nodes[:, 1], **node_kws, zorder=2)
+        else:
+            ax.scatter(coords[:, 0], coords[:, 1], **node_kws, zorder=2)
 
     return ax
