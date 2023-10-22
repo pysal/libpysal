@@ -1008,7 +1008,7 @@ class Graph(_Set_Mixin):
         return (self._adjacency.drop(self.isolates) > 0).sum()
 
     def asymmetry(self, intrinsic=True):
-        """Asymmetry check.
+        r"""Asymmetry check.
 
         Parameters
         ----------

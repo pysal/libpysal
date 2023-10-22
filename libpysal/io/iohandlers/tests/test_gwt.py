@@ -4,6 +4,7 @@ from ...fileio import FileIO as psopen
 from .... import examples as pysal_examples
 import tempfile
 import os
+import pytest
 import warnings
 
 
@@ -35,20 +36,21 @@ class test_GwtIO(unittest.TestCase):
     # see issue #153.
     # Added back by CRS,
     def test_write(self):
-        w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix=".gwt")
-        fname = f.name
-        f.close()
-        o = psopen(fname, "w")
-        # copy the shapefile and ID variable names from the old gwt.
-        # this is only available after the read() method has been called.
-        # o.shpName = self.obj.shpName
-        # o.varName = self.obj.varName
-        o.write(w)
-        o.close()
-        wnew = psopen(fname, "r").read()
-        self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
-        os.remove(fname)
+        with pytest.warns(RuntimeWarning, match="DBF relating to GWT was not found"):
+            w = self.obj.read()
+            f = tempfile.NamedTemporaryFile(suffix=".gwt")
+            fname = f.name
+            f.close()
+            o = psopen(fname, "w")
+            # copy the shapefile and ID variable names from the old gwt.
+            # this is only available after the read() method has been called.
+            # o.shpName = self.obj.shpName
+            # o.varName = self.obj.varName
+            o.write(w)
+            o.close()
+            wnew = psopen(fname, "r").read()
+            self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
+            os.remove(fname)
 
 
 if __name__ == "__main__":

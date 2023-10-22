@@ -114,3 +114,21 @@ exclude_lines = [
 ]
 ignore_errors = true
 omit = ["libpysal/tests/*", "docs/conf.py"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:The numba package is used",
+    "ignore:numba cannot be imported",
+    "ignore:Numba not imported",
+    "ignore:The weights matrix is not fully connected",
+    "ignore:You are trying to build a full W object from",
+    "ignore:Multiple layers detected. Using first layer as default",
+    "ignore:Geometry is in a geographic CRS",
+    "ignore:`use_index` defaults to False",
+    "ignore:Objects based on the `Geometry` class will deprecated",
+    "ignore:PolygonLocator is deprecated",
+    "ignore:SegmentGrid is deprecated",
+    "ignore:In the next version of libpysal, observations with no neighbors",
+    "ignore:divide by zero encountered",
+    "ignore:invalid value encountered",
+]
