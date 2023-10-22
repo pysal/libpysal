@@ -4,6 +4,7 @@ from ...fileio import FileIO as psopen
 import unittest as ut
 from .... import examples as pysal_examples
 
+import platform
 import shapely
 
 try:
@@ -14,6 +15,10 @@ except ImportError:
     missing_sql = True
 
 
+windows = platform.system() == "Windows"
+
+
+@ut.skipIf(windows, "Skipping Windows due to `PermissionError`.")
 @ut.skipIf(missing_sql, f"Missing dependency: SQLAlchemy ({missing_sql}).")
 class Test_sqlite_reader(ut.TestCase):
     def setUp(self):
