@@ -24,7 +24,7 @@ def _plot(
     G : Graph
         Graph to be plotted
     gdf : geopandas.GeoDataFrame
-        Geometries indexed using the same index as Graph. Geomtry types other than
+        Geometries indexed using the same index as Graph. Geometry types other than
         points are converted to centroids encoding start and end point of Graph
         edges.
     nodes : bool, optional

@@ -1217,7 +1217,7 @@ class Graph(_Set_Mixin):
         Parameters
         ----------
         gdf : geopandas.GeoDataFrame
-            Geometries indexed using the same index as Graph. Geomtry types other than
+            Geometries indexed using the same index as Graph. Geometry types other than
             points are converted to centroids encoding start and end point of Graph
             edges.
         focal : hashable | array-like[hashable] | None, optional
