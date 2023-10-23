@@ -15,7 +15,7 @@ maintainers = [{ name = "PySAL Developers" }]
 license = { text = "BSD 3-Clause" }
 description = "Core components of PySAL - A library of spatial analysis functions"
 keywords = ["spatial statistics", "spatial graphs"]
-readme = "README.rst"
+readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: BSD License",
