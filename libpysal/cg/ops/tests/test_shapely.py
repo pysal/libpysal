@@ -1,4 +1,4 @@
-import unittest as ut
+import pytest
 from .. import _shapely as sht
 from ...shapes import Point, Chain, Polygon
 
@@ -10,9 +10,9 @@ import numpy as np
 from warnings import warn
 
 
-@ut.skip("Skipping shapely during reorg.")
-class Test_Shapely(ut.TestCase):
-    def setUp(self):
+@pytest.mark.skip("Skipping shapely during reorg.")
+class Test_Shapely:
+    def setup_method(self):
         self.polygons = rf(get_path("Polygon.shp"))
         self.points = rf(get_path("Point.shp"))
         self.lines = rf(get_path("Line.shp"))
@@ -36,7 +36,7 @@ class Test_Shapely(ut.TestCase):
                 if comp.is_shape(tabular) and comp.is_shape(shapely):
                     comp.equal(tabular, shapely)
                 else:
-                    self.assertEqual(tabular, shapely)
+                    assert tabular == shapely
         except NotImplementedError as e:
             warn("The shapely/PySAL bridge is not implemented: {}.".format(e))
             return True
@@ -123,13 +123,13 @@ class Test_Shapely(ut.TestCase):
     def test_is_empty(self):
         """
         PySAL doesn't really support empty shapes. Like, the following errors out:
-        
+
         ```
         ps.cg.Polygon([[]])
         ```
-        
+
         and you can make it work by:
-        
+
         ```
         ps.cg.Polygon([[()]])
         ```
@@ -137,7 +137,7 @@ class Test_Shapely(ut.TestCase):
         but that won't convert over to shapely.
 
         So, we're only testing the negative here.
-        
+
         """
         for df in self.dframes:
             self.compare("is_empty", df)
@@ -219,5 +219,5 @@ class Test_Shapely(ut.TestCase):
             if isinstance(df.geometry[0], Chain):
                 self.compare("interpolate", df, distance=np.random.randint(10))
             else:
-                with self.assertRaises(TypeError):
+                with pytest.raises(TypeError):
                     self.compare("interpolate", df, distance=np.random.randint(10))

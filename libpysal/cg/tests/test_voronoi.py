@@ -1,21 +1,11 @@
-import unittest
-
 import numpy as np
 
-from ..voronoi import voronoi, voronoi_frames
 from ..shapes import Polygon, asShape
-
-import pytest
-
-try:
-    import shapely
-    HAS_SHAPELY = True
-except ImportError:
-    HAS_SHAPELY = False
+from ..voronoi import voronoi, voronoi_frames
 
 
-class Voronoi(unittest.TestCase):
-    def setUp(self):
+class TestVoronoi:
+    def setup_method(self):
         self.points = [(10.2, 5.1), (4.7, 2.2), (5.3, 5.7), (2.7, 5.3)]
 
         self.vertices = [
@@ -33,21 +23,11 @@ class Voronoi(unittest.TestCase):
 
     def test_voronoi(self):
         regions, vertices = voronoi(self.points)
-        self.assertEqual(regions, [[1, 3, 2], [4, 5, 1, 0], [0, 1, 7, 6], [9, 0, 8]])
+        assert regions == [[1, 3, 2], [4, 5, 1, 0], [0, 1, 7, 6], [9, 0, 8]]
 
         np.testing.assert_array_almost_equal(vertices, self.vertices)
 
-    @pytest.mark.skipif(not HAS_SHAPELY, reason="shapely needed")
     def test_voronoi_frames(self):
         r_df, p_df = voronoi_frames(self.points)
         region = r_df.iloc[0]["geometry"]
-        try:
-            import geopandas as df
-
-            self.assertTrue(isinstance(asShape(region), Polygon))
-        except ImportError:
-            self.assertTrue(isinstance(region, Polygon))
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert isinstance(asShape(region), Polygon)

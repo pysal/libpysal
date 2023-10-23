@@ -3,7 +3,6 @@ import errno
 import os
 import platform
 import tempfile
-import unittest
 import pandas
 from unittest.mock import MagicMock, patch
 
@@ -19,34 +18,33 @@ original_path_exists = os.path.exists
 original_makedirs = os.makedirs
 
 
-
-class Testexamples(unittest.TestCase):
+class Testexamples:
     def test_available(self):
         examples = available()
-        self.assertEqual(type(examples), pandas.core.frame.DataFrame)
-        self.assertEqual(examples.shape, (98, 3))
+        assert type(examples) == pandas.core.frame.DataFrame
+        assert examples.shape == (98, 3)
 
     def test_data_home(self):
         pth = get_data_home()
         head, tail = os.path.split(pth)
-        self.assertEqual(tail, "pysal")
+        assert tail == "pysal"
         if os_name == "Linux":
             if "XDG_DATA_HOME" in os.environ:
-                self.assertEqual(head, os.environ["XDG_DATA_HOME"])
+                assert head == os.environ["XDG_DATA_HOME"]
             else:
                 heads = head.split("/")
-                self.assertEqual(heads[-1], "share")
-                self.assertEqual(heads[-2], ".local")
+                assert heads[-1] == "share"
+                assert heads[-2] == ".local"
         elif os_name == "Darwin":
             heads = head.split("/")
-            self.assertEqual(heads[1], "Users")
-            self.assertEqual(heads[-1], "Application Support")
-            self.assertEqual(heads[-2], "Library")
+            assert heads[1] == "Users"
+            assert heads[-1] == "Application Support"
+            assert heads[-2] == "Library"
         elif os_name == "Windows":
             heads = head.split("\\")
-            self.assertEqual(heads[1], "Users")
-            self.assertEqual(heads[-2], "Local")
-            self.assertEqual(heads[-3], "AppData")
+            assert heads[1] == "Users"
+            assert heads[-2] == "Local"
+            assert heads[-3] == "AppData"
 
     @patch("os.makedirs")
     @patch("os.path.exists")
@@ -68,23 +66,15 @@ class Testexamples(unittest.TestCase):
         pth = get_data_home()
         head, tail = os.path.split(pth)
 
-        self.assertEqual(tail, "pysal")
-        self.assertEqual(head, tempfile.gettempdir())
-
+        assert tail == "pysal"
+        assert head == tempfile.gettempdir()
 
     def test_get_url(self):
-        self.assertEqual(get_url("10740"), None)
+        assert get_url("10740") == None
         url = "https://geodacenter.github.io/data-and-lab//data/baltimore.zip"
-        self.assertEqual(get_url("Baltimore"), url)
+        assert get_url("Baltimore") == url
 
     def test_load_example(self):
         taz = load_example("taz")
         flist = taz.get_file_list()
-        self.assertEqual(len(flist), 4)
-
-
-suite = unittest.TestLoader().loadTestsFromTestCase(Testexamples)
-
-if __name__ == "__main__":
-    runner = unittest.TextTestRunner()
-    runner.run(suite)
+        assert len(flist) == 4

@@ -1,13 +1,13 @@
+import pytest
 from .. import sphere
 from ...io.fileio import FileIO as psopen
 from ... import examples as pysal_examples
 import math
-import unittest
 import numpy as np
 
 
-class Sphere(unittest.TestCase):
-    def setUp(self):
+class TestSphere:
+    def setup_method(self):
         self.pt0 = (0, 0)
         self.pt1 = (180, 0)
         f = psopen(pysal_examples.get_path("stl_hom.shp"), "r")
@@ -19,34 +19,34 @@ class Sphere(unittest.TestCase):
 
     def test_arcdist(self):
         d = sphere.arcdist(self.pt0, self.pt1, sphere.RADIUS_EARTH_MILES)
-        self.assertEqual(d, math.pi * sphere.RADIUS_EARTH_MILES)
+        assert d == math.pi * sphere.RADIUS_EARTH_MILES
 
     def test_arcdist2linear(self):
         d = sphere.arcdist(self.pt0, self.pt1, sphere.RADIUS_EARTH_MILES)
         ld = sphere.arcdist2linear(d, sphere.RADIUS_EARTH_MILES)
-        self.assertEqual(ld, 2.0)
+        assert ld == 2.0
 
     def test_radangle(self):
         p0 = (-87.893517, 41.981417)
         p1 = (-87.519295, 41.657498)
-        self.assertAlmostEqual(sphere.radangle(p0, p1), 0.007460167953189258)
+        assert sphere.radangle(p0, p1) == pytest.approx(0.007460167953189258)
 
     def test_linear2arcdist(self):
         d = sphere.arcdist(self.pt0, self.pt1, sphere.RADIUS_EARTH_MILES)
         ad = sphere.linear2arcdist(2.0, radius=sphere.RADIUS_EARTH_MILES)
-        self.assertEqual(d, ad)
+        assert d == ad
 
     def test_harcdist(self):
         d1 = sphere.harcdist(self.p0, self.p1, radius=sphere.RADIUS_EARTH_MILES)
-        self.assertAlmostEqual(d1, 29.532983644123796)
+        assert d1 == pytest.approx(29.532983644123796)
         d1 = sphere.harcdist(self.p3, self.p4, radius=sphere.RADIUS_EARTH_MILES)
-        self.assertAlmostEqual(d1, 25.871647470233675)
+        assert d1 == pytest.approx(25.871647470233675)
 
     def test_geointerpolate(self):
         pn1 = sphere.geointerpolate(self.p0, self.p1, 0.1)
-        self.assertAlmostEqual(pn1, (-87.85592403438788, 41.949079912574796))
+        assert pn1 == pytest.approx((-87.85592403438788, 41.949079912574796))
         pn2 = sphere.geointerpolate(self.p3, self.p4, 0.1, lonx=False)
-        self.assertAlmostEqual(pn2, (41.949079912574796, -87.85592403438788))
+        assert pn2 == pytest.approx((41.949079912574796, -87.85592403438788))
 
     def test_geogrid(self):
         grid = [
@@ -76,7 +76,7 @@ class Sphere(unittest.TestCase):
         grid1 = sphere.geogrid(pup, pdown, 3, lonx=False)
         np.testing.assert_array_almost_equal(grid, grid1)
 
-    def test_toXYZ(self):
+    def test_to_xyz(self):
         w2 = {
             0: [2, 5, 6, 10],
             1: [4, 7, 9, 14],
@@ -160,8 +160,4 @@ class Sphere(unittest.TestCase):
 
         pts = [shape.centroid for shape in self.shapes]
         pts = list(map(sphere.toXYZ, pts))
-        self.assertAlmostEqual(sphere.brute_knn(pts, 4, "xyz"), w2)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert sphere.brute_knn(pts, 4, "xyz") == pytest.approx(w2)

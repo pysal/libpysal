@@ -1,53 +1,50 @@
-import unittest
-import sys
+import pytest
 import io
+import os
 
 # import pysal_examples
 from .... import examples as pysal_examples
-
 from ..shapefile import (
+    MultiPatch,
+    MultiPoint,
+    MultiPointM,
+    MultiPointZ,
+    NullShape,
+    Point,
+    PointM,
+    PointZ,
+    PolygonM,
+    PolygonZ,
+    PolyLine,
+    PolyLineM,
+    PolyLineZ,
     noneMax,
     noneMin,
     shp_file,
     shx_file,
-    NullShape,
-    Point,
-    PolyLine,
-    MultiPoint,
-    PointZ,
-    PolyLineZ,
-    PolygonZ,
-    MultiPointZ,
-    PointM,
-    PolyLineM,
-    PolygonM,
-    MultiPointM,
-    MultiPatch,
 )
-import os
 
 
 def bufferIO(buf):
-    """Temp stringIO function to force compat.
-    """
+    """Temp stringIO function to force compat."""
     return io.BytesIO(buf)
 
 
-class TestNoneMax(unittest.TestCase):
+class TestNoneMax:
     def test_none_max(self):
-        self.assertEqual(5, noneMax(5, None))
-        self.assertEqual(1, noneMax(None, 1))
-        self.assertEqual(None, noneMax(None, None))
+        assert 5 == noneMax(5, None)
+        assert 1 == noneMax(None, 1)
+        assert None is noneMax(None, None)
 
 
-class TestNoneMin(unittest.TestCase):
+class TestNoneMin:
     def test_none_min(self):
-        self.assertEqual(5, noneMin(5, None))
-        self.assertEqual(1, noneMin(None, 1))
-        self.assertEqual(None, noneMin(None, None))
+        assert 5 == noneMin(5, None)
+        assert 1 == noneMin(None, 1)
+        assert None is noneMin(None, None)
 
 
-class test_shp_file(unittest.TestCase):
+class test_shp_file:
     def test___init__(self):
         shp = shp_file(pysal_examples.get_path("10740.shp"))
         assert shp.header == {
@@ -104,14 +101,14 @@ class test_shp_file(unittest.TestCase):
         shp.close()
 
         for a, b in zip(points, shp_file("test_point")):
-            self.assertEqual(a, b)
+            assert a == b
         os.remove("test_point.shp")
         os.remove("test_point.shx")
 
     def test_close(self):
         shp = shp_file(pysal_examples.get_path("10740.shp"))
         shp.close()
-        self.assertEqual(shp.fileObj.closed, True)
+        assert shp.fileObj.closed == True
 
     def test_get_shape(self):
         shp = shp_file(pysal_examples.get_path("Line.shp"))
@@ -131,7 +128,7 @@ class test_shp_file(unittest.TestCase):
             "Shape Type": 3,
             "Parts Index": [0],
         }
-        self.assertEqual(expected, shp.get_shape(0))
+        assert expected == shp.get_shape(0)
 
     def test_next(self):
         shp = shp_file(pysal_examples.get_path("Point.shp"))
@@ -141,24 +138,24 @@ class test_shp_file(unittest.TestCase):
             "X": -0.00068176617532103578,
             "Shape Type": 1,
         }
-        self.assertEqual(expected, next(shp))
+        assert expected == next(shp)
         expected = {
             "Y": -0.25630328607387354,
             "X": 0.11697145363360706,
             "Shape Type": 1,
         }
-        self.assertEqual(expected, next(shp))
+        assert expected == next(shp)
 
     def test_type(self):
         shp = shp_file(pysal_examples.get_path("Point.shp"))
-        self.assertEqual("POINT", shp.type())
+        assert "POINT" == shp.type()
         shp = shp_file(pysal_examples.get_path("Polygon.shp"))
-        self.assertEqual("POLYGON", shp.type())
+        assert "POLYGON" == shp.type()
         shp = shp_file(pysal_examples.get_path("Line.shp"))
-        self.assertEqual("ARC", shp.type())
+        assert "ARC" == shp.type()
 
 
-class test_shx_file(unittest.TestCase):
+class test_shx_file:
     def test___init__(self):
         shx = shx_file(pysal_examples.get_path("Point.shx"))
         assert isinstance(shx, shx_file)
@@ -192,34 +189,34 @@ class test_shx_file(unittest.TestCase):
     def test_close(self):
         shx = shx_file(pysal_examples.get_path("Point.shx"))
         shx.close(None)
-        self.assertEqual(shx.fileObj.closed, True)
+        assert shx.fileObj.closed == True
 
 
-class TestNullShape(unittest.TestCase):
+class TestNullShape:
     def test_pack(self):
         null_shape = NullShape()
-        self.assertEqual(b"\x00" * 4, null_shape.pack())
+        assert b"\x00" * 4 == null_shape.pack()
 
     def test_unpack(self):
         null_shape = NullShape()
-        self.assertEqual(None, null_shape.unpack())
+        assert None is null_shape.unpack()
 
 
-class TestPoint(unittest.TestCase):
+class TestPoint:
     def test_pack(self):
         record = {"X": 5, "Y": 5, "Shape Type": 1}
         expected = b"\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x40\x00\x00\x00\x00\x00\x00\x14\x40"
-        self.assertEqual(expected, Point.pack(record))
+        assert expected == Point.pack(record)
 
     def test_unpack(self):
         dat = bufferIO(
             b"\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x40\x00\x00\x00\x00\x00\x00\x14\x40"
         )
         expected = {"X": 5, "Y": 5, "Shape Type": 1}
-        self.assertEqual(expected, Point.unpack(dat))
+        assert expected == Point.unpack(dat)
 
 
-class TestPolyLine(unittest.TestCase):
+class TestPolyLine:
     def test_pack(self):
         record = {
             "BBOX Ymax": -0.25832280562918325,
@@ -245,7 +242,7 @@ class TestPolyLine(unittest.TestCase):
 \xa0\xe5\x8f\xa4\x7e\x3f\x3d\xc1\x65\xce\xc7\
 \x92\xd0\xbf\x00\xc5\xa0\xe5\x8f\xa4\x7e\x3f\
 \x3d\xc1\x65\xce\xc7\x92\xd0\xbf"""
-        self.assertEqual(expected, PolyLine.pack(record))
+        assert expected == PolyLine.pack(record)
 
     def test_unpack(self):
         dat = bufferIO(
@@ -274,34 +271,34 @@ class TestPolyLine(unittest.TestCase):
             "Shape Type": 3,
             "Parts Index": [0],
         }
-        self.assertEqual(expected, PolyLine.unpack(dat))
+        assert expected == PolyLine.unpack(dat)
 
 
-class TestMultiPoint(unittest.TestCase):
+class TestMultiPoint:
     def test___init__(self):
-        self.assertRaises(NotImplementedError, MultiPoint)
+        pytest.raises(NotImplementedError, MultiPoint)
 
 
-class TestPointZ(unittest.TestCase):
+class TestPointZ:
     def test_pack(self):
         record = {"X": 5, "Y": 5, "Z": 5, "M": 5, "Shape Type": 11}
         expected = b"\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14@\x00\x00\x00\x00\x00\x00\x14@\x00\x00\x00\x00\x00\x00\x14@\x00\x00\x00\x00\x00\x00\x14@"
-        self.assertEqual(expected, PointZ.pack(record))
+        assert expected == PointZ.pack(record)
 
     def test_unpack(self):
         dat = bufferIO(
             b"\x0b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14@\x00\x00\x00\x00\x00\x00\x14@\x00\x00\x00\x00\x00\x00\x14@\x00\x00\x00\x00\x00\x00\x14@"
         )
         expected = {"X": 5, "Y": 5, "Z": 5, "M": 5, "Shape Type": 11}
-        self.assertEqual(expected, PointZ.unpack(dat))
+        assert expected == PointZ.unpack(dat)
 
 
-class TestPolyLineZ(unittest.TestCase):
+class TestPolyLineZ:
     def test___init__(self):
-        self.assertRaises(NotImplementedError, PolyLineZ)
+        pytest.raises(NotImplementedError, PolyLineZ)
 
 
-class TestPolyLineZ(unittest.TestCase):
+class TestPolyLineZ:
     def test_pack(self):
         record = {
             "BBOX Ymax": -0.25832280562918325,
@@ -325,7 +322,7 @@ class TestPolyLineZ(unittest.TestCase):
             "Marray": [2, 3, 4],
         }
         expected = b"""\r\x00\x00\x00\xc0FR:\xdd\x8a\x82\xbf=\xc1e\xce\xc7\x92\xd0\xbf\x00\xc5\xa0\xe5\x8f\xa4~?k@\x7f`\\\x88\xd0\xbf\x01\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\xc0FR:\xdd\x8a\x82\xbfk@\x7f`\\\x88\xd0\xbf\x00\xc5\xa0\xe5\x8f\xa4~?=\xc1e\xce\xc7\x92\xd0\xbf\x00\xc5\xa0\xe5\x8f\xa4~?=\xc1e\xce\xc7\x92\xd0\xbf\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14@\x00\x00\x00\x00\x00\x00$@\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x10@\x00\x00\x00\x00\x00\x00\x00@\x00\x00\x00\x00\x00\x00\x08@\x00\x00\x00\x00\x00\x00\x10@"""
-        self.assertEqual(expected, PolyLineZ.pack(record))
+        assert expected == PolyLineZ.pack(record)
 
     def test_unpack(self):
         dat = bufferIO(
@@ -352,10 +349,10 @@ class TestPolyLineZ(unittest.TestCase):
             "Mmax": 4,
             "Marray": [2, 3, 4],
         }
-        self.assertEqual(expected, PolyLineZ.unpack(dat))
+        assert expected == PolyLineZ.unpack(dat)
 
 
-class TestPolygonZ(unittest.TestCase):
+class TestPolygonZ:
     def test_pack(self):
         record = {
             "BBOX Xmin": 0.0,
@@ -375,46 +372,46 @@ class TestPolygonZ(unittest.TestCase):
             "Marray": [2, 4, 2, 2],
         }
         dat = bufferIO(PolygonZ.pack(record))
-        self.assertEqual(record, PolygonZ.unpack(dat))
+        assert record == PolygonZ.unpack(dat)
 
 
-class TestMultiPointZ(unittest.TestCase):
+class TestMultiPointZ:
     def test___init__(self):
-        self.assertRaises(NotImplementedError, MultiPointZ)
+        pytest.raises(NotImplementedError, MultiPointZ)
         # multi_point_z = MultiPointZ()
 
 
-class TestPointM(unittest.TestCase):
+class TestPointM:
     def test___init__(self):
-        self.assertRaises(NotImplementedError, PointM)
+        pytest.raises(NotImplementedError, PointM)
         # point_m = PointM()
 
 
-class TestPolyLineM(unittest.TestCase):
+class TestPolyLineM:
     def test___init__(self):
-        self.assertRaises(NotImplementedError, PolyLineM)
+        pytest.raises(NotImplementedError, PolyLineM)
         # poly_line_m = PolyLineM()
 
 
-class TestPolygonM(unittest.TestCase):
+class TestPolygonM:
     def test___init__(self):
-        self.assertRaises(NotImplementedError, PolygonM)
+        pytest.raises(NotImplementedError, PolygonM)
         # polygon_m = PolygonM()
 
 
-class TestMultiPointM(unittest.TestCase):
+class TestMultiPointM:
     def test___init__(self):
-        self.assertRaises(NotImplementedError, MultiPointM)
+        pytest.raises(NotImplementedError, MultiPointM)
         # multi_point_m = MultiPointM()
 
 
-class TestMultiPatch(unittest.TestCase):
+class TestMultiPatch:
     def test___init__(self):
-        self.assertRaises(NotImplementedError, MultiPatch)
+        pytest.raises(NotImplementedError, MultiPatch)
         # multi_patch = MultiPatch()
 
 
-class _TestPoints(unittest.TestCase):
+class _TestPoints:
     def test1(self):
         """Test creating and reading Point Shape Files."""
         shp = shp_file("test_point", "w", "POINT")
@@ -431,12 +428,12 @@ class _TestPoints(unittest.TestCase):
 
         shp = list(shp_file("test_point"))
         for a, b in zip(points, shp):
-            self.assertEqual(a, b)
+            assert a == b
         os.remove("test_point.shp")
         os.remove("test_point.shx")
 
 
-class _TestPolyLines(unittest.TestCase):
+class _TestPolyLines:
     def test1(self):
         """Test creating and reading PolyLine Shape Files."""
         lines = [[(0, 0), (4, 4)], [(1, 0), (5, 4)], [(2, 0), (6, 4)]]
@@ -461,12 +458,12 @@ class _TestPolyLines(unittest.TestCase):
         shp.close()
         shp = list(shp_file("test_line"))
         for a, b in zip(shapes, shp):
-            self.assertEqual(a, b)
+            assert a == b
         os.remove("test_line.shp")
         os.remove("test_line.shx")
 
 
-class _TestPolygons(unittest.TestCase):
+class _TestPolygons:
     def test1(self):
         """Test creating and reading PolyLine Shape Files."""
         lines = [
@@ -494,10 +491,6 @@ class _TestPolygons(unittest.TestCase):
         shp.close()
         shp = list(shp_file("test_poly"))
         for a, b in zip(shapes, shp):
-            self.assertEqual(a, b)
+            assert a == b
         os.remove("test_poly.shp")
         os.remove("test_poly.shx")
-
-
-if __name__ == "__main__":
-    unittest.main()
