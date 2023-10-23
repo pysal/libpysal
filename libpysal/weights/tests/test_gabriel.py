@@ -1,9 +1,8 @@
-from .. import gabriel
-from ... import examples
+import geopandas
 import numpy
-import pytest
 
-geopandas = pytest.importorskip("geopandas")
+from ... import examples
+from .. import gabriel
 
 path = examples.get_path("columbus.shp")
 df = geopandas.read_file(path)
@@ -32,6 +31,7 @@ def test_gabriel():
         dneighbors = c2[focal]
         assert set(neighbors) <= set(dneighbors)
 
+
 def test_rng():
     e = gabriel.Relative_Neighborhood(coords)
     f = gabriel.Relative_Neighborhood.from_dataframe(df.centroid)
@@ -40,7 +40,7 @@ def test_rng():
     assert e.neighbors == f.neighbors
 
     assert e[1] != dty[1]
-    assert list(e[1].keys()) == [0,3,6,30,38]
+    assert list(e[1].keys()) == [0, 3, 6, 30, 38]
     for focal, neighbors in e.neighbors.items():
         dneighbors = dty[focal]
         assert set(neighbors) <= set(dneighbors)
