@@ -1,17 +1,6 @@
 import copy
-import sys
-import time
 
-# external imports
-import numpy as np
-import numpy.linalg as la
-
-import scipy as sp
-import scipy.stats as stats
-from .cg.kdtree import KDTree
-from scipy.spatial.distance import pdist, cdist
-
-import pandas
+import pandas  #  noqa F401
 
 try:
     from patsy import PatsyError
@@ -34,7 +23,7 @@ try:
 
 except ImportError:
 
-    def jit(function=None, **kwargs):
+    def jit(function=None, **kwargs):  # noqa ARG001
         """Mimic numba.jit() with synthetic wrapper."""
 
         if function is not None:
@@ -69,7 +58,7 @@ def simport(modname):
     ----------
     modname : str
         Module name needed to import.
-    
+
     Returns
     -------
     _simport : tuple
@@ -78,7 +67,7 @@ def simport(modname):
 
     Notes
     -----
-    
+
     Wrapping this function around an iterative context or a with
     context would allow the module to be used without necessarily
     attaching it permanently in the global namespace:
@@ -99,17 +88,16 @@ def simport(modname):
             #do alternative behavior here
 
     The first idiom makes it work kind of a like a with statement.
-    
+
     """
 
     try:
-        exec("import {}".format(modname))
+        exec(f"import {modname}")
         _simport = True, eval(modname)
-    except:
+    except (ImportError, ModuleNotFoundError):
         _simport = False, None
 
     return _simport
-
 
 
 def requires(*args, **kwargs):
@@ -121,14 +109,14 @@ def requires(*args, **kwargs):
         Modules names as strings to import.
     verbose : bool
         Set as ``True`` to print a warning message on import failure.
-    
+
     Returns
     -------
     inner : func
         The original function if all arg in args are importable.
     passer : func
         A function that passes if ``inner`` fails.
-    
+
     """
 
     v = kwargs.pop("verbose", True)
@@ -140,11 +128,11 @@ def requires(*args, **kwargs):
             return function
         else:
 
-            def passer(*args, **kwargs):
+            def passer(*args, **kwargs):  # noqa ARG001
                 if v:
                     missing = [arg for i, arg in enumerate(wanted) if not available[i]]
-                    print(("missing dependencies: {d}".format(d=missing)))
-                    print(("not running {}".format(function.__name__)))
+                    print(f"missing dependencies: {missing}")
+                    print(f"not running {function.__name__}")
                 else:
                     pass
 

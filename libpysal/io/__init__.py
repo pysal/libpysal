@@ -1,6 +1,6 @@
 from . import fileio
-from .tables import *
 from .iohandlers import *
+from .tables import *
 from .util import *
 
-open = fileio.FileIO
+open = fileio.FileIO  # noqa A001
