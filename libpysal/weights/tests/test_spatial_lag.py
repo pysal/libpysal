@@ -1,13 +1,12 @@
-import os
-import unittest
-from ..weights import W
-from ..util import lat2W
-from ..spatial_lag import lag_spatial, lag_categorical
 import numpy as np
 
+from ..spatial_lag import lag_categorical, lag_spatial
+from ..util import lat2W
+from ..weights import W
 
-class Test_spatial_lag(unittest.TestCase):
-    def setUp(self):
+
+class Test_spatial_lag:
+    def setup_method(self):
         self.neighbors = {"c": ["b"], "b": ["c", "a"], "a": ["b"]}
         self.weights = {"c": [1.0], "b": [1.0, 1.0], "a": [1.0]}
         self.id_order = ["a", "b", "c"]
@@ -57,10 +56,3 @@ class Test_spatial_lag(unittest.TestCase):
             ]
         )
         np.testing.assert_array_equal(ym_lag, np.asarray(known))
-
-
-suite = unittest.TestLoader().loadTestsFromTestCase(Test_spatial_lag)
-
-if __name__ == "__main__":
-    runner = unittest.TextTestRunner()
-    runner.run(suite)

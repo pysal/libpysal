@@ -1,4 +1,4 @@
-import unittest
+import pytest
 from ..weight_converter import WeightConverter
 from ..weight_converter import weight_convert
 from ...fileio import FileIO as psopen
@@ -10,9 +10,9 @@ import warnings
 from .... import examples as pysal_examples
 
 
-@unittest.skip("This function is deprecated.")
-class test_WeightConverter(unittest.TestCase):
-    def setUp(self):
+@pytest.mark.skip("This function is deprecated.")
+class Testtest_WeightConverter:
+    def setup_method(self):
         test_files = [
             "arcgis_ohio.dbf",
             "arcgis_txt.txt",
@@ -59,15 +59,15 @@ class test_WeightConverter(unittest.TestCase):
             ("wk1", None),
         ]
 
-    def test__setW(self):
+    def test__set_w(self):
         for f in self.test_files:
             with warnings.catch_warnings(record=True) as warn:
                 # note: we are just suppressing the warnings here; individual warnings
                 #       are tested in their specific readers
                 warnings.simplefilter("always")
                 wc = WeightConverter(f, dataFormat=self.dataformats[f])
-            self.assertEqual(wc.w_set(), True)
-            self.assertEqual(wc.w.n, self.ns[f])
+            assert wc.w_set() == True
+            assert wc.w.n == self.ns[f]
 
     def test_write(self):
         for f in self.test_files:
@@ -112,9 +112,9 @@ class test_WeightConverter(unittest.TestCase):
                     ext in ["dbf", "swm", "dat", "wk1", "gwt"]
                     or dataformat == "arcgis_text"
                 ):
-                    self.assertEqual(wnew.n, wc.w.n - len(wc.w.islands))
+                    assert wnew.n == wc.w.n - len(wc.w.islands)
                 else:
-                    self.assertEqual(wnew.n, wc.w.n)
+                    assert wnew.n == wc.w.n
                 os.remove(temp_fname)
 
     def test_weight_convert(self):
@@ -170,11 +170,7 @@ class test_WeightConverter(unittest.TestCase):
                     ext in ["dbf", "swm", "dat", "wk1", "gwt"]
                     or dataformat == "arcgis_text"
                 ):
-                    self.assertEqual(wnew.n, wold.n - len(wold.islands))
+                    assert wnew.n == wold.n - len(wold.islands)
                 else:
-                    self.assertEqual(wnew.n, wold.n)
+                    assert wnew.n == wold.n
                 os.remove(outFile)
-
-
-if __name__ == "__main__":
-    unittest.main()

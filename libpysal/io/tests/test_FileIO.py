@@ -1,5 +1,5 @@
-from ..fileio import FileIO
 from ...examples import get_path
+from ..fileio import FileIO
 
 
 def test_by_col_exists():

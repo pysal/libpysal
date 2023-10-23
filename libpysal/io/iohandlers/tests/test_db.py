@@ -1,11 +1,12 @@
 import os
+import platform
+
+import pytest
+import shapely
+
+from .... import examples as pysal_examples
 from ... import geotable as pdio
 from ...fileio import FileIO as psopen
-import unittest as ut
-from .... import examples as pysal_examples
-
-import platform
-import shapely
 
 try:
     import sqlalchemy
@@ -18,10 +19,10 @@ except ImportError:
 windows = platform.system() == "Windows"
 
 
-@ut.skipIf(windows, "Skipping Windows due to `PermissionError`.")
-@ut.skipIf(missing_sql, f"Missing dependency: SQLAlchemy ({missing_sql}).")
-class Test_sqlite_reader(ut.TestCase):
-    def setUp(self):
+@pytest.mark.skipif(windows, reason="Skipping Windows due to `PermissionError`.")
+@pytest.mark.skipif(missing_sql, reason="Missing dependency: SQLAlchemy.")
+class TestSqliteReader:
+    def setup_method(self):
         path = pysal_examples.get_path("new_haven_merged.dbf")
         if path is None:
             pysal_examples.load_example("newHaven")
@@ -49,15 +50,11 @@ class Test_sqlite_reader(ut.TestCase):
 
     def test_deserialize(self):
         db = psopen(f"sqlite:///{self.dbf}")
-        self.assertEqual(db.tables, ["newhaven"])
+        assert db.tables == ["newhaven"]
 
         gj = db._get_gjson("newhaven")
-        self.assertEqual(gj["type"], "FeatureCollection")
+        assert gj["type"] == "FeatureCollection"
 
         self.conn.close()
 
         os.remove(self.dbf)
-
-
-if __name__ == "__main__":
-    ut.main()

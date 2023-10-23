@@ -1,10 +1,10 @@
-import unittest
+import pytest
 from ..wkt import WKTParser
 from ....cg.shapes import Point, Chain, Polygon
 
 
-class test_WKTParser(unittest.TestCase):
-    def setUp(self):
+class Testtest_WKTParser:
+    def setup_method(self):
         # Create some Well-Known Text objects
         self.wktPOINT = "POINT(6 10)"
         self.wktLINESTRING = "LINESTRING(3 4,10 50,20 25)"
@@ -20,39 +20,32 @@ class test_WKTParser(unittest.TestCase):
         self.empty = ["POINT EMPTY", "MULTIPOLYGON EMPTY"]
         self.parser = WKTParser()
 
-    def test_Point(self):
+    def test_point(self):
         pt = self.parser(self.wktPOINT)
-        self.assertTrue(issubclass(type(pt), Point))
-        self.assertEqual(pt[:], (6.0, 10.0))
+        assert issubclass(type(pt), Point)
+        assert pt[:] == (6.0, 10.0)
 
-    def test_LineString(self):
+    def test_line_string(self):
         line = self.parser(self.wktLINESTRING)
-        self.assertTrue(issubclass(type(line), Chain))
+        assert issubclass(type(line), Chain)
         parts = [[pt[:] for pt in part] for part in line.parts]
-        self.assertEqual(parts, [[(3.0, 4.0), (10.0, 50.0), (20.0, 25.0)]])
-        self.assertEqual(line.len, 73.455384532199886)
+        assert parts == [[(3.0, 4.0), (10.0, 50.0), (20.0, 25.0)]]
+        assert line.len == 73.455384532199886
 
-    def test_Polygon(self):
+    def test_polygon(self):
         poly = self.parser(self.wktPOLYGON)
-        self.assertTrue(issubclass(type(poly), Polygon))
+        assert issubclass(type(poly), Polygon)
         parts = [[pt[:] for pt in part] for part in poly.parts]
-        self.assertEqual(
-            parts,
-            [
-                [(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0, 1.0), (1.0, 1.0)],
-                [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0), (2.0, 2.0)],
-            ],
-        )
-        self.assertEqual(poly.centroid, (2.9705882352941178, 2.9705882352941178))
-        self.assertEqual(poly.area, 17.0)
+        assert parts == [
+            [(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0, 1.0), (1.0, 1.0)],
+            [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0), (2.0, 2.0)],
+        ]
+        assert poly.centroid == (2.9705882352941178, 2.9705882352941178)
+        assert poly.area == 17.0
 
-    def test_fromWKT(self):
+    def test_from_wkt(self):
         for wkt in self.unsupported:
-            self.assertRaises(NotImplementedError, self.parser.fromWKT, wkt)
+            pytest.raises(NotImplementedError, self.parser.fromWKT, wkt)
         for wkt in self.empty:
-            self.assertEqual(self.parser.fromWKT(wkt), None)
-        self.assertEqual(self.parser.__call__, self.parser.fromWKT)
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert self.parser.fromWKT(wkt) == None
+        assert self.parser.__call__ == self.parser.fromWKT

@@ -1,25 +1,15 @@
-import unittest as ut
+import geopandas
 import numpy as np
+import pytest
+
+from ... import examples, io, weights
+from ...common import ATOL, RTOL
 from .. import adjtools as adj
-from ... import weights
-from ... import io
-from ... import examples
 from ..util import lat2W
-from ...common import RTOL, ATOL
 
 
-try:
-    import pandas
-    import geopandas
-
-    PANDAS_MISSING = False
-except ImportError:
-    PANDAS_MISSING = True
-
-
-@ut.skipIf(PANDAS_MISSING, "Pandas is gone")
-class Test_Adjlist(ut.TestCase):
-    def setUp(self):
+class Test_Adjlist:
+    def setup_method(self):
         self.knownW = io.open(examples.get_path("columbus.gal")).read()
 
     def test_round_trip_drop_islands_true(self):
@@ -44,7 +34,7 @@ class Test_Adjlist(ut.TestCase):
         grid = lat2W(2, 2)
         alist = grid.to_adjlist(remove_symmetric=True, drop_islands=True)
         assert len(alist) == 4
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             # build this manually because of bug libpysal#322
             alist_neighbors = alist.groupby("focal").neighbor.apply(list).to_dict()
             all_ids = set(alist_neighbors.keys()).union(
@@ -60,7 +50,7 @@ class Test_Adjlist(ut.TestCase):
         grid = lat2W(2, 2, id_type="string")
         alist = grid.to_adjlist(remove_symmetric=True, drop_islands=True)
         assert len(alist) == 4
-        with self.assertRaises(AssertionError):
+        with pytest.raises(AssertionError):
             # build this manually because of bug libpysal#322
             alist_neighbors = alist.groupby("focal").neighbor.apply(list).to_dict()
             all_ids = set(alist_neighbors.keys()).union(
@@ -192,4 +182,4 @@ class Test_Adjlist(ut.TestCase):
         w = lat2W(5, 5)
         manual_neighbors = w.to_adjlist().groupby("focal").neighbor.agg(list).to_dict()
         for focal, neighbors in w.neighbors.items():
-            self.assertEqual(set(manual_neighbors[focal]), set(neighbors))
+            assert set(manual_neighbors[focal]) == set(neighbors)

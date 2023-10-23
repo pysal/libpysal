@@ -1,14 +1,13 @@
 """locators Unittest."""
 from ..polygonQuadTreeStructure import QuadTreeStructureSingleRing
 from ..shapes import Ring
-import unittest
 
 
-class TestQuadTreeStructureSingleRing(unittest.TestCase):
-    def test_QuadTreeStructureSingleRing(self):
+class TestQuadTreeStructureSingleRing:
+    def test_quad_tree_structure_single_ring(self):
         """Tests if the class could successfully
         determine if a point is inside of a polygon.
-        
+
         """
 
         ring_texas = Ring(

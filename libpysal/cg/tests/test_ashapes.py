@@ -18,8 +18,8 @@ this_directory = os.path.dirname(__file__)
 
 
 @skipIf(GEOPANDAS_EXTINCT, "Geopandas is missing, so test will not run.")
-class Test_Alpha_Shapes(TestCase):
-    def setUp(self):
+class Test_Alpha_Shapes:
+    def setup_method(self):
         eberly = geopandas.read_file(get_path("eberly_net.shp"))
         eberly_vertices = eberly.geometry.apply(
             lambda x: np.hstack(x.xy).reshape(2, 2).T
