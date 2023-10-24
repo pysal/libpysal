@@ -1,8 +1,12 @@
 import os
+import platform
+
+import pytest
+import shapely
+
+from .... import examples as pysal_examples
 from ... import geotable as pdio
 from ...fileio import FileIO as psopen
-import unittest as ut
-from .... import examples as pysal_examples
 
 try:
     import sqlalchemy
@@ -11,43 +15,28 @@ try:
 except ImportError:
     missing_sql = True
 
-try:
-    import geomet
 
-    missing_geomet = False
-except ImportError:
-    missing_geomet = True
+windows = platform.system() == "Windows"
 
 
-def to_wkb_point(c):
-    """Super quick hack that does not actually belong in here."""
-
-    point = {"type": "Point", "coordinates": [c[0], c[1]]}
-
-    return geomet.wkb.dumps(point)
-
-
-@ut.skipIf(
-    missing_sql or missing_geomet,
-    "Missing dependencies: Geomet ({}) & SQLAlchemy ({}).".format(
-        missing_geomet, missing_sql
-    ),
-)
-class Test_sqlite_reader(ut.TestCase):
-    def setUp(self):
+@pytest.mark.skipif(windows, reason="Skipping Windows due to `PermissionError`.")
+@pytest.mark.skipif(missing_sql, reason="Missing dependency: SQLAlchemy.")
+class TestSqliteReader:
+    def setup_method(self):
         path = pysal_examples.get_path("new_haven_merged.dbf")
         if path is None:
             pysal_examples.load_example("newHaven")
             path = pysal_examples.get_path("new_haven_merged.dbf")
         df = pdio.read_files(path)
-        df["GEOMETRY"] = df["geometry"].apply(to_wkb_point)
+        df["GEOMETRY"] = shapely.to_wkb(shapely.points(df["geometry"].values.tolist()))
         # This is a hack to not have to worry about a custom point type in the DB
         del df["geometry"]
-        engine = sqlalchemy.create_engine("sqlite:///test.db")
-        conn = engine.connect()
+        self.dbf = "iohandlers_test_db.db"
+        engine = sqlalchemy.create_engine(f"sqlite:///{self.dbf}")
+        self.conn = engine.connect()
         df.to_sql(
             "newhaven",
-            conn,
+            self.conn,
             index=True,
             dtype={
                 "date": sqlalchemy.types.UnicodeText,  # Should convert the df date into a true date object, just a hack again
@@ -60,15 +49,12 @@ class Test_sqlite_reader(ut.TestCase):
         )  # This is converted to TEXT as lowest type common sqlite
 
     def test_deserialize(self):
-        db = psopen("sqlite:///test.db")
-        self.assertEqual(db.tables, ["newhaven"])
+        db = psopen(f"sqlite:///{self.dbf}")
+        assert db.tables == ["newhaven"]
 
         gj = db._get_gjson("newhaven")
-        self.assertEqual(gj["type"], "FeatureCollection")
+        assert gj["type"] == "FeatureCollection"
 
-    def tearDown(self):
-        os.remove("test.db")
+        self.conn.close()
 
-
-if __name__ == "__main__":
-    ut.main()
+        os.remove(self.dbf)

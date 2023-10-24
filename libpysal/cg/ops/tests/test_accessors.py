@@ -1,26 +1,23 @@
-from ....io.geotable.file import read_files as rf
-from .. import _accessors as to_test
-from ...shapes import Point, Chain, Polygon, Rectangle, LineSegment
-from ....common import pandas, RTOL, ATOL
-from ....examples import get_path
 import numpy as np
-import unittest as ut
+import pytest
 
-PANDAS_EXTINCT = pandas is None
+from ....common import ATOL, RTOL, pandas
+from ....examples import get_path
+from ....io.geotable.file import read_files as rf
+from ...shapes import Chain, LineSegment, Point, Polygon, Rectangle
+from .. import _accessors as to_test
 
 
-@ut.skipIf(PANDAS_EXTINCT, "Missing pandas.")
-class Test_Accessors(ut.TestCase):
-    def setUp(self):
+class TestAccessors:
+    def setup_method(self):
         self.polygons = rf(get_path("Polygon.shp"))
         self.points = rf(get_path("Point.shp"))
         self.lines = rf(get_path("Line.shp"))
 
     def test_area(self):
-
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.area(self.points)
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.area(self.lines)
 
         areas = to_test.area(self.polygons).values
@@ -28,10 +25,9 @@ class Test_Accessors(ut.TestCase):
         np.testing.assert_allclose(answer, areas, rtol=RTOL, atol=ATOL * 10)
 
     def test_bbox(self):
-
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.bbox(self.points)
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.bbox(self.lines)
 
         answer = [
@@ -60,7 +56,7 @@ class Test_Accessors(ut.TestCase):
             np.testing.assert_allclose(ans, bbox, rtol=RTOL, atol=ATOL)
 
     def test_bounding_box(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.bounding_box(self.points)
 
         line_rects = to_test.bounding_box(self.lines).tolist()
@@ -106,12 +102,12 @@ class Test_Accessors(ut.TestCase):
         for bbox, answer in zip(pgon_bboxes, pgon_answers):
             np.testing.assert_allclose(bbox, answer, atol=ATOL, rtol=RTOL)
         for rectangle in line_rects + pgon_rects:
-            self.assertIsInstance(rectangle, Rectangle)
+            assert isinstance(rectangle, Rectangle)
 
     def test_centroid(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.centroid(self.points)
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.centroid(self.lines)
 
         centroids = to_test.centroid(self.polygons).tolist()
@@ -127,16 +123,16 @@ class Test_Accessors(ut.TestCase):
 
     def test_holes(self):
         holed_polygons = rf(get_path("Polygon_Holes.shp"))
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.centroid(self.points)
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.centroid(self.lines)
 
         no_holes = to_test.holes(self.polygons).tolist()
         holes = to_test.holes(holed_polygons).tolist()
 
         for elist in no_holes:
-            self.assertEqual(elist, [[]])
+            assert elist == [[]]
 
         answers = [
             [
@@ -195,7 +191,7 @@ class Test_Accessors(ut.TestCase):
                 np.testing.assert_allclose(sub_hole, sub_answer, rtol=RTOL, atol=ATOL)
 
     def test_len(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.len(self.points)
 
         line_len = to_test.len(self.lines)
@@ -212,7 +208,7 @@ class Test_Accessors(ut.TestCase):
         np.testing.assert_allclose(pgon_len, pgon_answers, rtol=RTOL, atol=ATOL)
 
     def test_parts(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.parts(self.points)
 
         line_parts = to_test.parts(self.lines)
@@ -318,9 +314,9 @@ class Test_Accessors(ut.TestCase):
                 np.testing.assert_allclose(piece, sub_answer, rtol=RTOL, atol=ATOL)
 
     def test_perimeter(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.perimeter(self.points)
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.perimeter(self.lines)
 
         pgon_perim = to_test.perimeter(self.polygons)
@@ -331,9 +327,9 @@ class Test_Accessors(ut.TestCase):
         )
 
     def test_segments(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.segments(self.points)
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.segments(self.polygons)
 
         line_segments = to_test.segments(self.lines)
@@ -396,12 +392,12 @@ class Test_Accessors(ut.TestCase):
 
         for parts, points in zip(flattened, answers):
             for piece, answer in zip(parts, points):
-                self.assertIsInstance(piece, LineSegment)
+                assert isinstance(piece, LineSegment)
                 p1, p2 = piece.p1, piece.p2
                 np.testing.assert_allclose([p1, p2], answer)
 
     def test_vertices(self):
-        with self.assertRaises(AttributeError):
+        with pytest.raises(AttributeError):
             to_test.vertices(self.points)
 
         line_verts = to_test.vertices(self.lines).tolist()

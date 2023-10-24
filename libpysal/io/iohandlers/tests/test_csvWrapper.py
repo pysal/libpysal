@@ -1,49 +1,47 @@
-import unittest
-from .... import examples as pysal_examples
-from .. import csvWrapper
-from ...util import WKTParser
-import tempfile
-import os
 from sys import version as V
+
+from .... import examples as pysal_examples
+from ...util import WKTParser
+from .. import csvWrapper
 
 PY3 = int(V[0]) > 2
 
 
-class test_csvWrapper(unittest.TestCase):
-    def setUp(self):
+class TesttestCsvWrapper:
+    def setup_method(self):
         stl = pysal_examples.load_example("stl")
         self.test_file = test_file = stl.get_path("stl_hom.csv")
         self.obj = csvWrapper.csvWrapper(test_file, "r")
 
     def test_len(self):
-        self.assertEqual(len(self.obj), 78)
+        assert len(self.obj) == 78
 
     def test_tell(self):
-        self.assertEqual(self.obj.tell(), 0)
+        assert self.obj.tell() == 0
         self.obj.read(1)
-        self.assertEqual(self.obj.tell(), 1)
+        assert self.obj.tell() == 1
         self.obj.read(50)
-        self.assertEqual(self.obj.tell(), 51)
+        assert self.obj.tell() == 51
         self.obj.read()
-        self.assertEqual(self.obj.tell(), 78)
+        assert self.obj.tell() == 78
 
     def test_seek(self):
         self.obj.seek(0)
-        self.assertEqual(self.obj.tell(), 0)
+        assert self.obj.tell() == 0
         self.obj.seek(55)
-        self.assertEqual(self.obj.tell(), 55)
+        assert self.obj.tell() == 55
         self.obj.read(1)
-        self.assertEqual(self.obj.tell(), 56)
+        assert self.obj.tell() == 56
 
     def test_read(self):
         self.obj.seek(0)
         objs = self.obj.read()
-        self.assertEqual(len(objs), 78)
+        assert len(objs) == 78
         self.obj.seek(0)
         objsB = list(self.obj)
-        self.assertEqual(len(objsB), 78)
+        assert len(objsB) == 78
         for rowA, rowB in zip(objs, objsB):
-            self.assertEqual(rowA, rowB)
+            assert rowA == rowB
 
     def test_casting(self):
         self.obj.cast("WKT", WKTParser())
@@ -67,23 +65,19 @@ class test_csvWrapper(unittest.TestCase):
         ]
         if PY3:
             for i, pt in enumerate(self.obj.__next__()[0].vertices):
-                self.assertEqual(pt[:], verts[i])
+                assert pt[:] == verts[i]
         else:
             for i, pt in enumerate(self.obj.next()[0].vertices):
-                self.assertEqual(pt[:], verts[i])
+                assert pt[:] == verts[i]
 
     def test_by_col(self):
         for field in self.obj.header:
-            self.assertEqual(len(self.obj.by_col[field]), 78)
+            assert len(self.obj.by_col[field]) == 78
 
     def test_slicing(self):
         chunk = self.obj[50:55, 1:3]
-        self.assertEqual(chunk[0], ["Jefferson", "Missouri"])
-        self.assertEqual(chunk[1], ["Jefferson", "Illinois"])
-        self.assertEqual(chunk[2], ["Miller", "Missouri"])
-        self.assertEqual(chunk[3], ["Maries", "Missouri"])
-        self.assertEqual(chunk[4], ["White", "Illinois"])
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert chunk[0] == ["Jefferson", "Missouri"]
+        assert chunk[1] == ["Jefferson", "Illinois"]
+        assert chunk[2] == ["Miller", "Missouri"]
+        assert chunk[3] == ["Maries", "Missouri"]
+        assert chunk[4] == ["White", "Illinois"]

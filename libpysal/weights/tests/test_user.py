@@ -1,28 +1,23 @@
 import os
-import unittest
-import numpy as np
-from ..contiguity import Rook, Voronoi
-from .. import user
+
+import pytest
+
 from ... import examples
+from .. import user
+from ..contiguity import Rook, Voronoi
 
 
-class Testuser(unittest.TestCase):
+class Testuser:
     def test_min_threshold_dist_from_shapefile(self):
         f = examples.get_path("columbus.shp")
         min_d = user.min_threshold_dist_from_shapefile(f)
-        self.assertAlmostEqual(min_d, 0.61886415807685413)
+        assert min_d == pytest.approx(0.61886415807685413)
 
     def test_build_lattice_shapefile(self):
         of = "lattice.shp"
         user.build_lattice_shapefile(20, 20, of)
         w = Rook.from_shapefile(of)
-        self.assertEqual(w.n, 400)
+        assert w.n == 400
+        os.remove("lattice.dbf")
         os.remove("lattice.shp")
         os.remove("lattice.shx")
-
-
-suite = unittest.TestLoader().loadTestsFromTestCase(Testuser)
-
-if __name__ == "__main__":
-    runner = unittest.TextTestRunner()
-    runner.run(suite)

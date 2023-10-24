@@ -1,33 +1,33 @@
-import unittest
-from ..gwt import GwtIO
-from ...fileio import FileIO as psopen
-from .... import examples as pysal_examples
-import tempfile
 import os
+import tempfile
+
 import pytest
-import warnings
+
+from .... import examples as pysal_examples
+from ...fileio import FileIO as psopen
+from ..gwt import GwtIO
 
 
-class test_GwtIO(unittest.TestCase):
-    def setUp(self):
+class Testtest_GwtIO:
+    def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("juvenile.gwt")
         self.obj = GwtIO(test_file, "r")
 
     def test_close(self):
         f = self.obj
         f.close()
-        self.assertRaises(ValueError, f.read)
+        pytest.raises(ValueError, f.read)
 
     def test_read(self):
         w = self.obj.read()
-        self.assertEqual(168, w.n)
-        self.assertEqual(16.678571428571427, w.mean_neighbors)
+        assert w.n == 168
+        assert w.mean_neighbors == 16.678571428571427
         w.transform = "B"
-        self.assertEqual([1.0], list(w[1].values()))
+        assert [1.0] == list(w[1].values())
 
     def test_seek(self):
         self.test_read()
-        self.assertRaises(StopIteration, self.obj.read)
+        pytest.raises(StopIteration, self.obj.read)
         self.obj.seek(0)
         self.test_read()
 
@@ -49,9 +49,5 @@ class test_GwtIO(unittest.TestCase):
             o.write(w)
             o.close()
             wnew = psopen(fname, "r").read()
-            self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
+            assert wnew.pct_nonzero == w.pct_nonzero
             os.remove(fname)
-
-
-if __name__ == "__main__":
-    unittest.main()
