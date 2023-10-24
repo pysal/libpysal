@@ -111,8 +111,6 @@ source = ["./libpysal"]
 
 [tool.coverage.report]
 exclude_lines = [
-    "if self.debug:",
-    "pragma: no cover",
     "raise NotImplementedError",
     "except ModuleNotFoundError:",
     "except ImportError",
