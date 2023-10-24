@@ -125,7 +125,7 @@ class TestPlotting:
 
     def test_focal(self):
         ax = self.G_str.plot(self.nybb_str, focal="Queens")
-        assert len(ax.collections) == 2
+        assert len(ax.collections) == 3
 
         linecollection = ax.collections[0]
         paths = linecollection.get_paths()
@@ -137,12 +137,18 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid)[1:],
+            shapely.get_coordinates(self.nybb.centroid)[2:],
+        )
+
+        pathcollection_focal = ax.collections[2]
+        np.testing.assert_array_equal(
+            pathcollection_focal.get_offsets().data,
+            shapely.get_coordinates(self.nybb.centroid)[[1]],
         )
 
     def test_focal_array(self):
         ax = self.G_str.plot(self.nybb_str, focal=["Queens", "Bronx"])
-        assert len(ax.collections) == 2
+        assert len(ax.collections) == 3
 
         linecollection = ax.collections[0]
         paths = linecollection.get_paths()
@@ -156,6 +162,12 @@ class TestPlotting:
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
             shapely.get_coordinates(self.nybb.centroid)[1:],
+        )
+
+        pathcollection_focal = ax.collections[2]
+        np.testing.assert_array_equal(
+            pathcollection_focal.get_offsets().data,
+            shapely.get_coordinates(self.nybb.centroid)[[1, -1]],
         )
 
     def test_color(self):
@@ -216,3 +228,28 @@ class TestPlotting:
         )
         assert ax.get_ylim() == (194475.53543792566, 252579.0488616723)
         assert ax.get_xlim() == (991274.9092650851, 1036640.134079854)
+
+    def test_focal_kws(self):
+        ax = self.G_str.plot(
+            self.nybb_str,
+            focal="Queens",
+            focal_kws=dict(color="blue"),
+            node_kws=dict(edgecolor="pink"),
+        )
+
+        pathcollection = ax.collections[1]
+        np.testing.assert_array_almost_equal(
+            pathcollection.get_edgecolor(),
+            np.array([[1.0, 0.75294118, 0.79607843, 1.0]]),
+        )
+
+        pathcollection_focal = ax.collections[2]
+        # inherit node_kws
+        np.testing.assert_array_almost_equal(
+            pathcollection_focal.get_edgecolor(),
+            np.array([[1.0, 0.75294118, 0.79607843, 1.0]]),
+        )
+        # apply own kws
+        np.testing.assert_array_equal(
+            pathcollection_focal.get_facecolor(), np.array([[0.0, 0.0, 1.0, 1.0]])
+        )

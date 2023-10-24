@@ -1206,6 +1206,7 @@ class Graph(_Set_Mixin):
         color="k",
         edge_kws=None,
         node_kws=None,
+        focal_kws=None,
         ax=None,
         figsize=None,
         limit_extent=False,
@@ -1237,6 +1238,12 @@ class Graph(_Set_Mixin):
             Keyword arguments dictionary to send to ``ax.scatter``,
             which provides fine-grained control over the aesthetics
             of the nodes in the plot. By default None
+        focal_kws : dict, optional
+            Keyword arguments dictionary to send to ``ax.scatter``,
+            which provides fine-grained control over the aesthetics
+            of the focal nodes in the plot on top of generic ``node_kws``.
+            Values of ``node_kws`` are updated from ``focal_kws``.
+            Ignored if ``focal=None``. By default None
         ax : matplotlib.axes.Axes, optional
             Axis on which to plot the weights. If None, a new figure and axis are
             created. By default None
@@ -1269,6 +1276,7 @@ class Graph(_Set_Mixin):
             color=color,
             node_kws=node_kws,
             edge_kws=edge_kws,
+            focal_kws=focal_kws,
             ax=ax,
             figsize=figsize,
             limit_extent=limit_extent,

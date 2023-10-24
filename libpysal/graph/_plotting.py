@@ -11,6 +11,7 @@ def _plot(
     color="k",
     edge_kws=None,
     node_kws=None,
+    focal_kws=None,
     ax=None,
     figsize=None,
     limit_extent=False,
@@ -45,6 +46,12 @@ def _plot(
         Keyword arguments dictionary to send to ``ax.scatter``,
         which provides fine-grained control over the aesthetics
         of the nodes in the plot. By default None
+    focal_kws : dict, optional
+        Keyword arguments dictionary to send to ``ax.scatter``,
+        which provides fine-grained control over the aesthetics
+        of the focal nodes in the plot on top of generic ``node_kws``.
+        Values of ``node_kws`` are updated from ``focal_kws``.
+        Ignored if ``focal=None``. By default None
     ax : matplotlib.axes.Axes, optional
         Axis on which to plot the weights. If None, a new figure and axis are
         created. By default None
@@ -113,8 +120,17 @@ def _plot(
 
     if nodes:
         if focal is not None:
-            used_nodes = coords[np.unique(subset.index.codes)]
-            ax.scatter(used_nodes[:, 0], used_nodes[:, 1], **node_kws, zorder=2)
+            used_focal = coords[np.unique(subset.index.codes[0])]
+            used_neighbor = coords[np.unique(subset.index.codes[1])]
+            ax.scatter(used_neighbor[:, 0], used_neighbor[:, 1], **node_kws, zorder=2)
+            if focal_kws is not None:
+                node_kws.update(focal_kws)
+            ax.scatter(
+                used_focal[:, 0],
+                used_focal[:, 1],
+                **node_kws,
+                zorder=3,
+            )
         else:
             ax.scatter(coords[:, 0], coords[:, 1], **node_kws, zorder=2)
 
