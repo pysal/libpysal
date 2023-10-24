@@ -56,7 +56,7 @@ jobs:
 
       - name: Test libpysal
         run: |
-          pytest -v --color yes --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
+          pytest -v -n auto --color yes --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
 
       - name: Codecov
         uses: codecov/codecov-action@v3
