@@ -123,12 +123,12 @@ def _plot(
             used_focal = coords[np.unique(subset.index.codes[0])]
             used_neighbor = coords[np.unique(subset.index.codes[1])]
             ax.scatter(used_neighbor[:, 0], used_neighbor[:, 1], **node_kws, zorder=2)
-            if focal_kws is not None:
-                node_kws.update(focal_kws)
+            if focal_kws is None:
+                focal_kws = {}
             ax.scatter(
                 used_focal[:, 0],
                 used_focal[:, 1],
-                **node_kws,
+                **dict(node_kws, **focal_kws),
                 zorder=3,
             )
         else:
