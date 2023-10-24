@@ -208,3 +208,11 @@ class TestPlotting:
         np.testing.assert_array_equal(
             ax.figure.get_size_inches(), np.array([12.0, 12.0])
         )
+
+    def test_limit_extent(self):
+        ax = self.G_str.plot(self.nybb_str)
+        self.G_str.plot(
+            self.nybb_str, focal="Bronx", limit_extent=True, ax=ax, color="red"
+        )
+        assert ax.get_ylim() == (194475.53543792566, 252579.0488616723)
+        assert ax.get_xlim() == (991274.9092650851, 1036640.134079854)

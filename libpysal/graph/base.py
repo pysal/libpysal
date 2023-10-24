@@ -1208,6 +1208,7 @@ class Graph(_Set_Mixin):
         node_kws=None,
         ax=None,
         figsize=None,
+        limit_extent=False,
     ):
         """Plot edges and nodes of the Graph
 
@@ -1228,11 +1229,11 @@ class Graph(_Set_Mixin):
             Plot nodes as points, by default True
         color : str, optional
             The color of all objects, by default "k"
-        edge_kws : _type_, optional
+        edge_kws : dict, optional
             Keyword arguments dictionary to send to ``LineCollection``,
             which provides fine-grained control over the aesthetics
             of the edges in the plot. By default None
-        node_kws : _type_, optional
+        node_kws : dict, optional
             Keyword arguments dictionary to send to ``ax.scatter``,
             which provides fine-grained control over the aesthetics
             of the nodes in the plot. By default None
@@ -1241,6 +1242,9 @@ class Graph(_Set_Mixin):
             created. By default None
         figsize : tuple, optional
             figsize used to create a new axis. By default None
+        limit_extent : bool, optional
+            limit the extent of the axis to the extent of the plotted graph, by default
+            False
 
         Returns
         -------
@@ -1267,6 +1271,7 @@ class Graph(_Set_Mixin):
             edge_kws=edge_kws,
             ax=ax,
             figsize=figsize,
+            limit_extent=limit_extent,
         )
 
 

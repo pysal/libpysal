@@ -13,6 +13,7 @@ def _plot(
     node_kws=None,
     ax=None,
     figsize=None,
+    limit_extent=False,
 ):
     """Plot edges and nodes of the Graph
 
@@ -36,11 +37,11 @@ def _plot(
         the edges. By default True
     color : str, optional
         The color of all objects, by default "k"
-    edge_kws : _type_, optional
+    edge_kws : dict, optional
         Keyword arguments dictionary to send to ``LineCollection``,
         which provides fine-grained control over the aesthetics
         of the edges in the plot. By default None
-    node_kws : _type_, optional
+    node_kws : dict, optional
         Keyword arguments dictionary to send to ``ax.scatter``,
         which provides fine-grained control over the aesthetics
         of the nodes in the plot. By default None
@@ -49,6 +50,9 @@ def _plot(
         created. By default None
     figsize : tuple, optional
         figsize used to create a new axis. By default None
+    limit_extent : bool, optional
+        limit the extent of the axis to the extent of the plotted graph, by default
+        False
 
     Returns
     -------
@@ -96,7 +100,16 @@ def _plot(
     lines = coords[edges]
 
     ax.add_collection(collections.LineCollection(lines, **edge_kws))
-    ax.autoscale_view()
+
+    if limit_extent:
+        xm, ym = lines.min(axis=0).min(axis=0)
+        xx, yx = lines.max(axis=0).max(axis=0)
+        x_margin = (xx - xm) * 0.05
+        y_margin = (yx - ym) * 0.05
+        ax.set_xlim(xm - x_margin, xx + x_margin)
+        ax.set_ylim(ym - y_margin, yx + y_margin)
+    else:
+        ax.autoscale_view()
 
     if nodes:
         if focal is not None:
