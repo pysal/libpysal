@@ -3,13 +3,12 @@ import errno
 import os
 import platform
 import tempfile
-import pandas
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
+import pandas
 from platformdirs import user_data_dir
 
 from .. import available, get_url, load_example
-
 from ..base import get_data_home
 
 os_name = platform.system()
@@ -18,7 +17,7 @@ original_path_exists = os.path.exists
 original_makedirs = os.makedirs
 
 
-class Testexamples:
+class TestExamples:
     def test_available(self):
         examples = available()
         assert type(examples) == pandas.core.frame.DataFrame
@@ -51,7 +50,7 @@ class Testexamples:
     def test_data_home_fallback(self, path_exists_mock, makedirs_mock):
         data_home = user_data_dir("pysal", "pysal")
 
-        def makedirs_side_effect(path, exist_ok=False):
+        def makedirs_side_effect(path, exist_ok=False):  # noqa ARG001
             if path == data_home:
                 raise OSError(errno.EROFS)
 
@@ -70,7 +69,7 @@ class Testexamples:
         assert head == tempfile.gettempdir()
 
     def test_get_url(self):
-        assert get_url("10740") == None
+        assert get_url("10740") is None
         url = "https://geodacenter.github.io/data-and-lab//data/baltimore.zip"
         assert get_url("Baltimore") == url
 
