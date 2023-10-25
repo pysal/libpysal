@@ -25,10 +25,8 @@ def get_data_home():
 
     Returns
     -------
-
     data_home : str
         The system path where the data is/will be stored.
-
     """
 
     appname = "pysal"
@@ -51,22 +49,18 @@ def get_list_of_files(dir_name):
 
     Parameters
     ----------
-
     dir_name : str
         The path to the directory or examples.
 
     Returns
     -------
-
     all_files : list
         All file and directory paths.
 
     Raises
     ------
-
     FileNotFoundError
         If the file or directory is not found.
-
     """
 
     # names in the given directory
@@ -106,7 +100,6 @@ class Example:
 
     Parameters
     ----------
-
     name : str
         The example dataset name.
     description : str
@@ -122,14 +115,12 @@ class Example:
 
     Attributes
     ----------
-
     root : str
         The ``name`` parameter with filled spaces (_).
     installed : bool
         ``True`` if the example is installed, otherwise ``False``.
     zipfile : zipfile.ZipFile
         The archived dataset.
-
     """
 
     def __init__(self, name, description, n, k, download_url, explain_url):

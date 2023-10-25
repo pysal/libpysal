@@ -41,7 +41,6 @@ class LocalExample:
 
     Attributes
     ----------
-
     name : str
         Example name.
     dirname : str
@@ -50,7 +49,6 @@ class LocalExample:
         If True, example is installed locally, if false it is remote.
     description : str
         Summary of the properties of the example.
-
     """
 
     def __init__(self, name, dirname):
@@ -58,12 +56,10 @@ class LocalExample:
 
         Parameters
         ---------
-
         name : str
             Example name.
         dirname: str
              Path to directory holding example files.
-
         """
         self.name = name
         self.dirname = dirname

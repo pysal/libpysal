@@ -635,12 +635,10 @@ def _remote_data():
 
     Returns
     -------
-
     datasets : dict
         Remote data sets keyed by the dataset name.
         Values are dictionaries with the following keys
         'download_url', 'explain_url', 'n', 'k', 'description'.
-
     """
 
     url = "https://geodacenter.github.io/data-and-lab//"
@@ -677,10 +675,8 @@ def _build_remotes():
 
     Returns
     -------
-
     datasets : dict
         Example datasets keyed by the dataset name.
-
     """
 
     datasets = {}
