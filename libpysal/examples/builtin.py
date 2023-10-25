@@ -1,8 +1,8 @@
 """Handle local builtin datasets."""
 
 import os
-from .base import get_list_of_files
 
+from .base import get_list_of_files
 
 dirs = [
     "10740",
@@ -42,13 +42,13 @@ class LocalExample:
     Attributes
     ----------
     name : str
-        Example name
+        Example name.
     dirname : str
         Path holding example files
-    installed : boolean
+    installed : bool
         If True, example is installed locally, if false it is remote.
     description : str
-        Summary of the properties of the example
+        Summary of the properties of the example.
     """
 
     def __init__(self, name, dirname):
@@ -57,9 +57,9 @@ class LocalExample:
         Parameters
         ---------
         name : str
-            example name
+            Example name.
         dirname: str
-             path to directory holding example files
+             Path to directory holding example files.
         """
         self.name = name
         self.dirname = dirname
@@ -78,19 +78,19 @@ class LocalExample:
             if file_name == base_name:
                 return file_path
         if verbose:
-            print("{} is not a file in this example".format(file_name))
+            print(f"{file_name} is not a file in this example")
         return None
 
     def explain(self):
         """Provide a printed description of the example."""
         description = [f for f in self.get_file_list() if "README.md" in f][0]
-        with open(description, "r", encoding="utf8") as f:
+        with open(description, encoding="utf8") as f:
             print(f.read())
 
     def get_description(self) -> str:
         """Dataset description."""
         description = [f for f in self.get_file_list() if "README.md" in f][0]
-        with open(description, "r", encoding="utf8") as f:
+        with open(description, encoding="utf8") as f:
             lines = f.readlines()
         return lines[3].strip()
 
@@ -98,7 +98,7 @@ class LocalExample:
 builtin_root = os.path.dirname(__file__)
 
 paths = [os.path.join(builtin_root, local) for local in dirs]
-paths = zip(dirs, paths)
+paths = zip(dirs, paths, strict=True)
 
 datasets = {}
 
