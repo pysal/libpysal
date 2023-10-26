@@ -1,7 +1,11 @@
-from shapely import geometry as geom, ops as shops, __version__ as shapely_version
+from shapely import __version__ as shapely_version
+from shapely import geometry as geom
+from shapely import ops as shops
+
+from .shapes import asShape
 
 _basegeom = geom.base.BaseGeometry
-from .shapes import asShape
+
 
 __all__ = [
     "to_wkb",
@@ -213,7 +217,8 @@ def unary_union(shapes):
     # seems to be the same as cascade_union except that it handles multipart polygons
     if shapely_version < "1.2.16":
         raise Exception(
-            "shapely 1.2.16 or higher needed for unary_union; upgrade shapely or try cascade_union instead"
+            "shapely 1.2.16 or higher needed for unary_union; "
+            "upgrade shapely or try cascade_union instead"
         )
     o = []
     for shape in shapes:

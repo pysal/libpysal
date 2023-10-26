@@ -6,14 +6,18 @@ Helper functions for computational geometry in PySAL.
 __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow"
 __credits__ = "Copyright (c) 2005-2009 Sergio J. Rey"
 
-import doctest
-import math
+# ruff: noqa: F403, F405
+
+
 import copy
+import math
 import random
-from .shapes import *
 from itertools import islice
-import scipy.spatial
+
 import numpy as np
+import scipy.spatial
+
+from .shapes import *
 
 EPSILON_SCALER = 3
 
@@ -51,7 +55,7 @@ def bbcommon(bb, bbother):
         A bounding box.
     bbother : list
         The bounding box to test against.
-    
+
     Returns
     -------
     chflag : int
@@ -59,19 +63,18 @@ def bbcommon(bb, bbother):
 
     Examples
     --------
-
     >>> b0 = [0, 0, 10, 10]
     >>> b1 = [10, 0, 20, 10]
     >>> bbcommon(b0, b1)
     1
-    
     """
 
     chflag = 0
 
-    if not ((bbother[2] < bb[0]) or (bbother[0] > bb[2])):
-        if not ((bbother[3] < bb[1]) or (bbother[1] > bb[3])):
-            chflag = 1
+    if (not ((bbother[2] < bb[0]) or (bbother[0] > bb[2]))) and (
+        not ((bbother[3] < bb[1]) or (bbother[1] > bb[3]))
+    ):
+        chflag = 1
 
     return chflag
 
@@ -91,20 +94,18 @@ def get_bounding_box(items):
 
     Examples
     --------
-    
     >>> bb = get_bounding_box([Point((-1, 5)), Rectangle(0, 6, 11, 12)])
     >>> bb.left
     -1.0
-    
+
     >>> bb.lower
     5.0
-    
+
     >>> bb.right
     11.0
-    
+
     >>> bb.upper
     12.0
-    
     """
 
     def left(o):
@@ -170,26 +171,24 @@ def get_angle_between(ray1, ray2):
         A ray forming the beginning of the angle measured.
     ray2 : libpysal.cg.Ray
         A ray forming the end of the angle measured.
-    
+
     Returns
     -------
     angle : float
         The angle between ``ray1`` and ``ray2``.
-    
+
     Raises
     ------
     ValueError
         Raised when rays do not have the same origin.
-    
+
     Examples
     --------
-    
     >>> get_angle_between(
     ...     Ray(Point((0, 0)), Point((1, 0))),
     ...     Ray(Point((0, 0)), Point((1, 0)))
     ... )
     0.0
-    
     """
 
     if ray1.o != ray2.o:
@@ -233,13 +232,11 @@ def is_collinear(p1, p2, p3):
 
     Examples
     --------
-    
     >>> is_collinear(Point((0, 0)), Point((1, 1)), Point((5, 5)))
     True
-    
+
     >>> is_collinear(Point((0, 0)), Point((1, 1)), Point((5, 0)))
     False
-    
     """
 
     eps = np.finfo(type(p1[0])).eps
@@ -274,19 +271,17 @@ def get_segments_intersect(seg1, seg2):
 
     Examples
     --------
-    
     >>> seg1 = LineSegment(Point((0, 0)), Point((0, 10)))
     >>> seg2 = LineSegment(Point((-5, 5)), Point((5, 5)))
     >>> i = get_segments_intersect(seg1, seg2)
     >>> isinstance(i, Point)
     True
-    
+
     >>> str(i)
     '(0.0, 5.0)'
-    
+
     >>> seg3 = LineSegment(Point((100, 100)), Point((100, 101)))
     >>> i = get_segments_intersect(seg2, seg3)
-    
     """
 
     p1 = seg1.p1
@@ -353,16 +348,14 @@ def get_segment_point_intersect(seg, pt):
 
     Examples
     --------
-    
     >>> seg = LineSegment(Point((0, 0)), Point((0, 10)))
     >>> pt = Point((0, 5))
     >>> i = get_segment_point_intersect(seg, pt)
     >>> str(i)
     '(0.0, 5.0)'
-    
+
     >>> pt2 = Point((5, 5))
     >>> get_segment_point_intersect(seg, pt2)
-    
     """
 
     eps = np.finfo(type(pt[0])).eps
@@ -401,16 +394,14 @@ def get_polygon_point_intersect(poly, pt):
 
     Examples
     --------
-    
     >>> poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
     >>> pt = Point((0.5, 0.5))
     >>> i = get_polygon_point_intersect(poly, pt)
     >>> str(i)
     '(0.5, 0.5)'
-    
+
     >>> pt2 = Point((2, 2))
     >>> get_polygon_point_intersect(poly, pt2)
-    
     """
 
     def pt_lies_on_part_boundary(p, vx):
@@ -424,9 +415,9 @@ def get_polygon_point_intersect(poly, pt):
     if get_rectangle_point_intersect(poly.bounding_box, pt) is None:
         pass
     else:
-        if [vxs for vxs in poly._vertices if pt_lies_on_part_boundary(pt, vxs)] != []:
-            ret = pt
-        elif [vxs for vxs in poly._vertices if _point_in_vertices(pt, vxs)] != []:
+        if [
+            vxs for vxs in poly._vertices if pt_lies_on_part_boundary(pt, vxs)
+        ] != [] or [vxs for vxs in poly._vertices if _point_in_vertices(pt, vxs)] != []:
             ret = pt
         if poly._holes != [[]]:
             if [vxs for vxs in poly.holes if pt_lies_on_part_boundary(pt, vxs)] != []:
@@ -458,16 +449,15 @@ def get_rectangle_point_intersect(rect, pt):
 
     Examples
     --------
-    
+
     >>> rect = Rectangle(0, 0, 5, 5)
     >>> pt = Point((1, 1))
     >>> i = get_rectangle_point_intersect(rect, pt)
     >>> str(i)
     '(1.0, 1.0)'
-    
+
     >>> pt2 = Point((10, 10))
     >>> get_rectangle_point_intersect(rect, pt2)
-    
     """
 
     if rect.left <= pt[0] <= rect.right and rect.lower <= pt[1] <= rect.upper:
@@ -494,28 +484,24 @@ def get_ray_segment_intersect(ray, seg):
         The intersecting point or line between ``ray`` and
         ``seg`` if an intersection exists or ``None`` if
         ``ray`` and ``seg`` do not intersect.
-    
+
     See Also
     --------
-    
     libpysal.cg.get_segments_intersect
-    
-    
+
     Examples
     --------
-    
     >>> ray = Ray(Point((0, 0)), Point((0, 1)))
     >>> seg = LineSegment(Point((-1, 10)), Point((1, 10)))
     >>> i = get_ray_segment_intersect(ray, seg)
     >>> isinstance(i, Point)
     True
-    
+
     >>> str(i)
     '(0.0, 10.0)'
-    
+
     >>> seg2 = LineSegment(Point((10, 10)), Point((10, 11)))
     >>> get_ray_segment_intersect(ray, seg2)
-    
     """
 
     # Upper bound on origin to segment dist (+1)
@@ -554,51 +540,47 @@ def get_rectangle_rectangle_intersection(r0, r1, checkOverlap=True):
     checkOverlap : bool
         Call ``bbcommon(r0, r1)`` prior to complex geometry
         checking. Default is ``True``. Prior to setting as
-        ``False`` see the Notes section. 
-    
+        ``False`` see the Notes section.
+
     Returns
     -------
     intersection : {libpysal.cg.Point, libpysal.cg.LineSegment, libpysal.cg.Rectangle, None}
-        The intersecting point, line, or rectangle between 
-        `r0`` and ``r1`` if an intersection exists or ``None``
+        The intersecting point, line, or rectangle between
+        ``r0`` and ``r1`` if an intersection exists or ``None``
         if ``r0`` and ``r1`` do not intersect.
 
     Notes
     -----
-    
     The algorithm assumes the rectangles overlap. The keyword
     ``checkOverlap=False`` should be used with extreme caution.
 
     Examples
     --------
-    
     >>> r0 = Rectangle(0,4,6,9)
     >>> r1 = Rectangle(4,0,9,7)
     >>> ri = get_rectangle_rectangle_intersection(r0,r1)
     >>> ri[:]
     [4.0, 4.0, 6.0, 7.0]
-    
+
     >>> r0 = Rectangle(0,0,4,4)
     >>> r1 = Rectangle(2,1,6,3)
     >>> ri = get_rectangle_rectangle_intersection(r0,r1)
     >>> ri[:]
     [2.0, 1.0, 4.0, 3.0]
-    
+
     >>> r0 = Rectangle(0,0,4,4)
     >>> r1 = Rectangle(2,1,3,2)
     >>> ri = get_rectangle_rectangle_intersection(r0,r1)
     >>> ri[:] == r1[:]
     True
-    
-    """
+    """  # noqa E501
 
     intersection = None
     common_bb = True
 
-    if checkOverlap:
-        if not bbcommon(r0, r1):
-            # raise ValueError, "Rectangles do not intersect"
-            common_bb = False
+    if checkOverlap and not bbcommon(r0, r1):
+        # raise ValueError, "Rectangles do not intersect"
+        common_bb = False
 
     if common_bb:
         left = max(r0.left, r1.left)
@@ -625,7 +607,7 @@ def get_polygon_point_dist(poly, pt):
     ----------
     poly : libpysal.cg.Polygon
         A polygon to compute distance from.
-    
+
     pt : libpysal.cg.Point
         a point to compute distance from
 
@@ -633,19 +615,17 @@ def get_polygon_point_dist(poly, pt):
     -------
     dist : float
         The distance between ``poly`` and ``point``.
-    
+
     Examples
     --------
-    
     >>> poly = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
     >>> pt = Point((2, 0.5))
     >>> get_polygon_point_dist(poly, pt)
     1.0
-    
+
     >>> pt2 = Point((0.5, 0.5))
     >>> get_polygon_point_dist(poly, pt2)
     0.0
-    
     """
 
     if get_polygon_point_intersect(poly, pt) is not None:
@@ -654,7 +634,7 @@ def get_polygon_point_dist(poly, pt):
         part_prox = []
         for vertices in poly._vertices:
             vx_range = range(-1, len(vertices) - 1)
-            seg = lambda i: LineSegment(vertices[i], vertices[i + 1])
+            seg = lambda i: LineSegment(vertices[i], vertices[i + 1])  # noqa B023
             _min_dist = min([get_segment_point_dist(seg(i), pt)[0] for i in vx_range])
             part_prox.append(_min_dist)
         dist = min(part_prox)
@@ -669,24 +649,22 @@ def get_points_dist(pt1, pt2):
     ----------
     pt1 : libpysal.cg.Point
         A point.
-    
+
     pt2 : libpysal.cg.Point
         The other point.
-    
+
     Returns
     -------
     dist : float
         The distance between ``pt1`` and ``pt2``.
-    
+
     Examples
     --------
-    
     >>> get_points_dist(Point((4, 4)), Point((4, 8)))
     4.0
-    
+
     >>> get_points_dist(Point((0, 0)), Point((0, 0)))
     0.0
-    
     """
 
     dist = math.hypot(pt1[0] - pt2[0], pt1[1] - pt2[1])
@@ -705,7 +683,7 @@ def get_segment_point_dist(seg, pt):
         A line segment to compute distance from.
     pt : libpysal.cg.Point
         A point to compute distance from.
-    
+
     Returns
     -------
     dist : float
@@ -716,16 +694,14 @@ def get_segment_point_dist(seg, pt):
 
     Examples
     --------
-    
     >>> seg = LineSegment(Point((0, 0)), Point((10, 0)))
     >>> pt = Point((5, 5))
     >>> get_segment_point_dist(seg, pt)
     (5.0, 0.5)
-    
+
     >>> pt2 = Point((0, 0))
     >>> get_segment_point_dist(seg, pt2)
     (0.0, 0.0)
-    
     """
 
     src_p = seg.p1
@@ -782,7 +758,7 @@ def get_point_at_angle_and_dist(ray, angle, dist):
         The angle relative to ``ray`` at which ``point`` is located.
     dist : float
         The distance from the origin of ``ray`` at which ``point`` is located.
-    
+
     Returns
     -------
     point : libpysal.cg.Point
@@ -790,18 +766,16 @@ def get_point_at_angle_and_dist(ray, angle, dist):
 
     Examples
     --------
-    
     >>> ray = Ray(Point((0, 0)), Point((1, 0)))
     >>> pt = get_point_at_angle_and_dist(ray, math.pi, 1.0)
     >>> isinstance(pt, Point)
     True
-    
+
     >>> round(pt[0], 8)
     -1.0
-    
+
     >>> round(pt[1], 8)
     0.0
-    
     """
 
     v = (ray.p[0] - ray.o[0], ray.p[1] - ray.o[1])
@@ -817,7 +791,7 @@ def get_point_at_angle_and_dist(ray, angle, dist):
 
 def convex_hull(points):
     """Returns the convex hull of a set of points.
-    
+
     Parameters
     ----------
     points : list
@@ -827,14 +801,12 @@ def convex_hull(points):
     -------
     stack : list
         A list of points representing the convex hull.
-    
+
     Examples
     --------
-    
     >>> points = [Point((0, 0)), Point((4, 4)), Point((4, 0)), Point((3, 1))]
     >>> convex_hull(points)
     [(0.0, 0.0), (4.0, 0.0), (4.0, 4.0)]
-    
     """
 
     def right_turn(p1, p2, p3) -> bool:
@@ -863,7 +835,7 @@ def convex_hull(points):
 def is_clockwise(vertices):
     """Returns whether a list of points describing
     a polygon are clockwise or counterclockwise.
-    
+
     Parameters
     ----------
     vertices : list
@@ -873,21 +845,19 @@ def is_clockwise(vertices):
     -------
     clockwise : bool
         ``True`` if ``vertices`` are clockwise, otherwise ``False``.
-    
+
     See Also
     --------
-    
     libpysal.cg.ccw
-    
+
     Examples
     --------
-    
     >>> is_clockwise([Point((0, 0)), Point((10, 0)), Point((0, 10))])
     False
-    
+
     >>> is_clockwise([Point((0, 0)), Point((0, 10)), Point((10, 0))])
     True
-    
+
     >>> v = [
     ...     (-106.57798, 35.174143999999998),
     ...     (-106.583412, 35.174141999999996),
@@ -950,7 +920,6 @@ def is_clockwise(vertices):
     ... ]
     >>> is_clockwise(v)
     True
-    
     """
 
     clockwise = True
@@ -971,7 +940,7 @@ def is_clockwise(vertices):
 
 def ccw(vertices):
     """Returns whether a list of points is counterclockwise.
-    
+
     Parameters
     ----------
     vertices : list
@@ -981,21 +950,18 @@ def ccw(vertices):
     -------
     counter_clockwise : bool
         ``True`` if ``vertices`` are counter clockwise, otherwise ``False``.
-    
+
     See Also
     --------
-    
     libpysal.cg.is_clockwise
-    
+
     Examples
     --------
-    
     >>> ccw([Point((0, 0)), Point((10, 0)), Point((0, 10))])
     True
-    
+
     >>> ccw([Point((0, 0)), Point((0, 10)), Point((10, 0))])
     False
-    
     """
 
     counter_clockwise = True
@@ -1008,7 +974,7 @@ def ccw(vertices):
 
 def seg_intersect(a, b, c, d):
     """Tests if two segments (a,b) and (c,d) intersect.
-    
+
     Parameters
     ----------
     a : libpysal.cg.Point
@@ -1019,15 +985,14 @@ def seg_intersect(a, b, c, d):
         The first vertex for the second segment.
     d : libpysal.cg.Point
         The second vertex for the second segment.
-    
+
     Returns
     -------
     segments_intersect : bool
         ``True`` if segments ``(a,b)`` and ``(c,d)``, otherwise ``False``.
-    
+
     Examples
     --------
-    
     >>> a = Point((0,1))
     >>> b = Point((0,10))
     >>> c = Point((-2,5))
@@ -1035,10 +1000,9 @@ def seg_intersect(a, b, c, d):
     >>> e = Point((-3,5))
     >>> seg_intersect(a, b, c, d)
     True
-    
+
     >>> seg_intersect(a, b, c, e)
     False
-    
     """
 
     segments_intersect = True
@@ -1063,7 +1027,7 @@ def _point_in_vertices(pt, vertices):
         A point.
     vertices : list
         A list of vertices representing as polygon.
-    
+
     Returns
     -------
     pt_in_poly : bool
@@ -1071,13 +1035,11 @@ def _point_in_vertices(pt, vertices):
 
     Examples
     --------
-    
     >>> _point_in_vertices(
     ...     Point((1, 1)),
     ...     [Point((0, 0)), Point((10, 0)), Point((0, 10))]
     ... )
     True
-    
     """
 
     def neg_ray_intersect(p1, p2, p3) -> bool:
@@ -1099,7 +1061,7 @@ def _point_in_vertices(pt, vertices):
 
         return nr_inters
 
-    vert_y_set = set([v[1] for v in vertices])
+    vert_y_set = {v[1] for v in vertices}
     while pt[1] in vert_y_set:
         # Perturb the location very slightly
         pt = pt[0], pt[1] + -1e-14 + random.random() * 2e-14
@@ -1126,35 +1088,34 @@ def point_touches_rectangle(point, rect):
         A point or point coordinates.
     rect : libpysal.cg.Rectangle
         A rectangle.
-    
+
     Returns
     -------
     chflag : int
         ``1`` if ``point`` is in (or touches
         boundary of) ``rect``, otherwise ``0``.
-    
+
     Examples
     --------
-    
     >>> rect = Rectangle(0, 0, 10, 10)
     >>> a = Point((5, 5))
     >>> b = Point((10, 5))
     >>> c = Point((11, 11))
     >>> point_touches_rectangle(a, rect)
     1
-    
+
     >>> point_touches_rectangle(b, rect)
     1
-    
+
     >>> point_touches_rectangle(c, rect)
     0
-    
     """
 
     chflag = 0
-    if point[0] >= rect.left and point[0] <= rect.right:
-        if point[1] >= rect.lower and point[1] <= rect.upper:
-            chflag = 1
+    if (point[0] >= rect.left and point[0] <= rect.right) and (
+        point[1] >= rect.lower and point[1] <= rect.upper
+    ):
+        chflag = 1
 
     return chflag
 
@@ -1170,7 +1131,7 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
         A Polygon.
     bool_ret : bool
         Return only a ``bool``. Default is ``False``.
-    
+
     Returns
     -------
     common : list
@@ -1181,7 +1142,6 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
 
     Examples
     --------
-    
     >>> from libpysal.cg.shapes import Polygon
     >>> x = [0, 0, 1, 1]
     >>> y = [0, 1, 1, 0]
@@ -1190,7 +1150,6 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
     >>> poly2 = Polygon(list(map(Point, zip(x, y))) )
     >>> get_shared_segments(poly1, poly2, bool_ret=True)
     True
-
     """
 
     # get_rectangle_rectangle_intersection inlined for speed.
@@ -1203,7 +1162,6 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
 
     segmentsA = set()
     common = list()
-    partsA = poly1.parts
 
     for part in poly1.parts + [p for p in poly1.holes if p]:
         if part[0] != part[-1]:  # not closed
@@ -1237,10 +1195,7 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
             if x >= wLeft and x <= wRight and y >= wLower and y <= wUpper:
                 x, y = b
                 if x >= wLeft and x <= wRight and y >= wLower and y <= wUpper:
-                    if a > b:
-                        seg = (b, a)
-                    else:
-                        seg = (a, b)
+                    seg = (b, a) if a > b else (a, b)
                     if seg in segmentsA:
                         common.append(LineSegment(*seg))
                         if bool_ret:
@@ -1257,7 +1212,7 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
 
 
 def distance_matrix(X, p=2.0, threshold=5e7):
-    """Calculate a distance matrix.
+    r"""Calculate a distance matrix.
 
     Parameters
     ----------
@@ -1279,20 +1234,18 @@ def distance_matrix(X, p=2.0, threshold=5e7):
     -------
     D : numpy.ndarray
         An n by :math:`m` :math:`p`-norm distance matrix.
-    
+
     Raises
     ------
     TypeError
         Raised when an invalid dimensional array is passed in.
-    
+
     Notes
     -----
-    
     Needs optimization/integration with other weights in PySAL.
-    
+
     Examples
     --------
-    
     >>> x, y = [r.flatten() for r in np.indices((3, 3))]
     >>> data = np.array([x, y]).T
     >>> d = distance_matrix(data)
@@ -1315,7 +1268,6 @@ def distance_matrix(X, p=2.0, threshold=5e7):
             1.41421356, 1.        , 0.        , 1.        ],
            [2.82842712, 2.23606798, 2.        , 2.23606798, 1.41421356,
             1.        , 2.        , 1.        , 0.        ]])
-    
     """
 
     if X.ndim == 1:
@@ -1327,7 +1279,7 @@ def distance_matrix(X, p=2.0, threshold=5e7):
 
     n, k = X.shape
 
-    if (n ** 2) * 32 > threshold:
+    if (n**2) * 32 > threshold:
         D = scipy.spatial.distance_matrix(X, X, p)
     else:
         M = np.ones((n, n))
@@ -1338,7 +1290,7 @@ def distance_matrix(X, p=2.0, threshold=5e7):
             dx = xM - xM.T
             if p % 2 != 0:
                 dx = np.abs(dx)
-            dx2 = dx ** p
+            dx2 = dx**p
             D += dx2
         D = D ** (1.0 / p)
 
