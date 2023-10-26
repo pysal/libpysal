@@ -15,16 +15,16 @@ __all__ = ["RTree", "Rect", "Rtree"]
 
 
 import array
-import numpy
-import random
 import time
+
+import numpy
 
 MAXCHILDREN = 10
 MAX_KMEANS = 5
 BUFFER = numpy.finfo(float).eps
 
 
-class Rect(object):
+class Rect:
     """A rectangle class that stores an axis aligned rectangle and two flags
     (swapped_x and swapped_y). The flags are stored implicitly via swaps in
     the order of minx/y and maxx/y.
@@ -39,7 +39,6 @@ class Rect(object):
         self.x, self.y, self.xx, self.yy, self.swapped_x, self.swapped_y = state
 
     def __init__(self, minx: float, miny: float, maxx: float, maxy: float):
-
         self.swapped_x = maxx < minx
         self.swapped_y = maxy < miny
         self.x = minx
@@ -59,17 +58,16 @@ class Rect(object):
 
     def overlap(self, orect):
         """Return the overlapping area of two rectangles.
-        
+
         Parameters
         ----------
         orect : libpysal.cg.Rect
             Another rectangle.
-        
+
         Returns
         -------
         overlapping_area : float
             The area of the overlap between ``orect`` and ``self``.
-        
         """
 
         overlapping_area = self.intersect(orect).area()
@@ -99,7 +97,9 @@ class Rect(object):
         return w * h
 
     def extent(self) -> tuple:
-        """Return the extent of the rectangle in the form: (minx, minx, width, height)."""
+        """Return the extent of the rectangle in the form:
+        (minx, minx, width, height).
+        """
 
         x = self.x
         y = self.y
@@ -108,7 +108,7 @@ class Rect(object):
 
     def grow(self, amt=None, sf=0.5):
         """Grow the bounds of a rectangle.
-        
+
         Parameters
         ----------
         amt : float
@@ -116,12 +116,11 @@ class Rect(object):
             triggers the value of ``BUFFER``.
         sf : float
             The scale factor for ``amt``. Default is ``0.5``.
-            
+
         Returns
         -------
         rect : libpysal.cg.Rect
             A new rectangle grown by ``amt`` and scaled by ``sf``.
-        
         """
 
         if not amt:
@@ -133,52 +132,45 @@ class Rect(object):
 
     def intersect(self, o):
         """Find the intersection of two rectangles.
-        
+
         Parameters
         ----------
         o : libpysal.cg.Rect
             Another rectangle.
-            
+
         Returns
         -------
         intersection : {libpysal.cg.NullRect, libpysal.cg.Rect}
             The intersecting part of ``o`` and ``self``.
-
         """
 
         intersection = None
 
-        if self is NullRect:
-            intersection = NullRect
-        elif o is NullRect:
+        if self is NullRect or o is NullRect:
             intersection = NullRect
 
         if not intersection:
-
             nx, ny = max(self.x, o.x), max(self.y, o.y)
             nx2, ny2 = min(self.xx, o.xx), min(self.yy, o.yy)
             w, h = nx2 - nx, ny2 - ny
 
-            if w <= 0 or h <= 0:
-                intersection = NullRect
-            else:
-                intersection = Rect(nx, ny, nx2, ny2)
+            intersection = NullRect if w <= 0 or h <= 0 else Rect(nx, ny, nx2, ny2)
 
         return intersection
 
     def does_contain(self, o):
         """Check whether the rectangle contains the other rectangle.
-        
+
         Parameters
         ----------
         o : libpysal.cg.Rect
             Another rectangle.
-        
+
         Returns
         -------
         dc : bool
             ``True`` if ``self`` contains ``o`` otherwise ``False``.
-        
+
         """
 
         dc = self.does_containpoint((o.x, o.y)) and self.does_containpoint((o.xx, o.yy))
@@ -187,17 +179,16 @@ class Rect(object):
 
     def does_intersect(self, o):
         """Check whether the rectangles interect.
-        
+
         Parameters
         ----------
         o : libpysal.cg.Rect
             Another rectangle.
-        
+
         Returns
         -------
         dcp : bool
             ``True`` if ``self`` intersects ``o`` otherwise ``False``.
-        
         """
 
         di = self.intersect(o).area() > 0
@@ -206,17 +197,16 @@ class Rect(object):
 
     def does_containpoint(self, p):
         """Check whether the rectangle contains a point or not.
-        
+
         Parameters
         ----------
         p : libpysal.cg.Point
             A point.
-        
+
         Returns
         -------
         dcp : bool
             ``True`` if ``self`` contains ``p`` otherwise ``False``.
-        
         """
 
         x, y = p
@@ -227,17 +217,16 @@ class Rect(object):
 
     def union(self, o):
         """Union two rectangles.
-        
+
         Parameters
         ----------
         o : libpysal.cg.Rect
             Another rectangle.
-        
+
         Returns
         -------
         res : libpysal.cg.Rect
             The union of ``o`` and ``self``.
-
         """
 
         if o is NullRect:
@@ -265,17 +254,16 @@ class Rect(object):
 
     def union_point(self, o):
         """Union the rectangle and a point
-        
+
         Parameters
         ----------
         o : libpysal.cg.Point
             A point.
-        
+
         Returns
         -------
         res : libpysal.cg.Rect
             The union of ``o`` and ``self``.
-
         """
 
         x, y = o
@@ -309,35 +297,34 @@ NullRect.swapped_y = False
 
 def union_all(kids):
     """Create union of all child rectangles.
-    
+
     Parameters
     ----------
     kids : list
         A list of ``libpysal.cg._NodeCursor`` objects.
-    
+
     Returns
     -------
     cur : {libpysal.cg.Rect, libpysal.cg.NullRect}
         The unioned result of all child rectangles.
-    
     """
 
     cur = NullRect
     for k in kids:
         cur = cur.union(k.rect)
 
-    assert False == cur.swapped_x
+    assert False is cur.swapped_x
 
     return cur
 
 
-def Rtree():
+def Rtree():  # noqa N802
     return RTree()
 
 
-class RTree(object):
+class RTree:
     """An RTree for efficiently querying space based on intersecting rectangles.
-    
+
     Attributes
     ----------
     count : int
@@ -357,12 +344,11 @@ class RTree(object):
         The pool of leaf objects in the tree.
     cursor : libpysal.cg._NodeCursor
         The non-root node and all its children.
-    
+
     Examples
     --------
-    
     Instantiate an ``RTree``.
-    
+
     >>> from libpysal.cg import RTree, Chain
     >>> segments = [
     ...     [(0.0, 1.5), (1.5, 1.5)],
@@ -374,10 +360,10 @@ class RTree(object):
     >>> rt = RTree()
     >>> for segment in segments:
     ...     rt.insert(segment, Rect(*segment.bounding_box).grow(sf=10.))
-    
+
     Examine the tree generation statistics. The statistics here
     are all 0 due to the simple structure of the tree in this example.
-    
+
     >>> rt.stats
     {'overflow_f': 0,
      'avg_overflow_t_f': 0.0,
@@ -386,55 +372,53 @@ class RTree(object):
      'sum_kmeans_iter_f': 0,
      'count_kmeans_iter_f': 0,
      'avg_kmeans_iter_f': 0.0}
-    
+
     Examine the number of nodes and leaves.
     There five nodes and four leaves (the root plus its four children).
-    
+
     >>> rt.count, rt.leaf_count
     (5, 4)
-    
+
     The pool of nodes are the node IDs in the tree.
-    
+
     >>> rt.node_pool
     array('L', [0, 4, 0, 0, 1, 1, 2, 2, 3, 3])
-    
+
     The pool of leaves are the geometric objects that were inserted into the tree.
-    
+
     >>> rt.leaf_pool[0].vertices
     [(0.0, 1.5), (1.5, 1.5)]
-    
+
     The pool of rectangles are the bounds of partitioned space in the tree.
     Examine the first one.
-    
+
     >>> rt.rect_pool[:4]
     array('d', [-2.220446049250313e-15, -2.220446049250313e-15, 3.000000000000002, 3.000000000000002])
-    
+
     Add the bounding box of a leaf to the tree manually.
-    
+
     >>> rt.add(Chain(((2,2), (4,4))), (2,2,4,4))
     >>> rt.count, rt.leaf_count
     (6, 5)
-    
+
     Query the tree for an intersection. One object is contained in this query.
-    
+
     >>> rt.intersection([.4, 2.1, .9, 2.6])[0].vertices
     [(0.5, 2), (1, 2.5)]
-    
+
     Query the tree with a much larger box. All objects are contained in this query.
-    
+
     >>> len(rt.intersection([-1, -1, 4, 4])) == rt.leaf_count
     True
-    
+
     Query the tree with box outside the tree objects.
     No objects are contained in this query.
-    
+
     >>> rt.intersection([5, 5, 6, 6])
     []
-    
-    """
+    """  # noqa E501
 
     def __init__(self):
-
         self.count = 0
         self.stats = {
             "overflow_f": 0,
@@ -471,14 +455,13 @@ class RTree(object):
 
     def insert(self, o, orect):
         """Insert an object and its bounding box into the tree.
-        
+
         Parameters
         ----------
         o : libpysal.cg.{Point, Chain, Rectangle, Polygon}
             The object to insert into the tree.
         orect : ibpysal.cg.Rect
             The object's bounding box.
-        
         """
 
         self.cursor.insert(o, orect)
@@ -486,38 +469,36 @@ class RTree(object):
 
     def query_rect(self, r):
         """Query a rectangle.
-        
+
         Parameters
         ----------
         r : {tuple, libpysal.cg.Point}
             The bounding box of the rectangle in question;
             a :math:`(minx,miny,maxx,maxy)` set of coordinates.
-        
+
         Yields
         ------
         x : generator
             ``libpysal.cg._NodeCursor`` objects.
         """
 
-        for x in self.cursor.query_rect(r):
-            yield x
+        yield from self.cursor.query_rect(r)
 
     def query_point(self, p):
         """Query a point.
-        
+
         Parameters
         ----------
         p : {tuple, libpysal.cg.Point}
             The point in question; an :math:`(x,y)` coordinate.
-        
+
         Yields
         ------
         x : generator
             ``libpysal.cg._NodeCursor`` objects.
         """
 
-        for x in self.cursor.query_point(p):
-            yield x
+        yield from self.cursor.query_point(p)
 
     def walk(self, pred):
         """Walk the tree structure with ``pred`` (a function)."""
@@ -527,18 +508,17 @@ class RTree(object):
     def intersection(self, boundingbox):
         """Query for an intersection between leaves in the ``RTree``
         and the bounding box of an object.
-        
+
         Parameters
         ----------
         boundingbox : list
             The bounding box: ``[minx, miny, maxx, maxy]``.
-        
+
         Returns
         -------
         objs : list
             A list of objects whose bounding
             boxes intersect with the query bounding box.
-
         """
 
         # grow the bounding box slightly to handle coincident edges
@@ -548,25 +528,24 @@ class RTree(object):
 
         return objs
 
-    def add(self, id, boundingbox):
+    def add(self, id_, boundingbox):
         """Add the bounding box of a leaf to the ``RTree`` manually with a specified ID.
 
         Parameters
         ----------
-        id : int
+        id_ : int
             An object id.
         boundingbox : list
             The bounding box: ``[minx, miny, maxx, maxy]``.
-        
         """
 
-        self.cursor.insert(id, Rect(*boundingbox))
+        self.cursor.insert(id_, Rect(*boundingbox))
 
 
-class _NodeCursor(object):
+class _NodeCursor:
     """An internal class for keeping track of, and reorganizing,
     the structure and composition of the ``RTree``.
-    
+
     Parameters
     ----------
     rooto : libpysal.cg.{Point, Chain, Rectangle, Polygon}
@@ -579,7 +558,7 @@ class _NodeCursor(object):
         The ID of the first child of the node.
     next_sibling : int
         The ID of the sibling of the node.
-    
+
     Attributes
     ----------
     root : libpysal.cg.RTree
@@ -588,13 +567,12 @@ class _NodeCursor(object):
         See ``RTree.node_pool``.
     rpool : array.array
         See ``RTree.rect_pool``.
-    
     """
 
     @classmethod
     def create(cls, rooto, rect):
         """Create a node in the tree structure.
-        
+
         Parameters
         ----------
         rooto : libpysal.cg.{Point, Chain, Rectangle, Polygon}
@@ -603,12 +581,11 @@ class _NodeCursor(object):
             The ID of the node.
         rect : libpysal.cg.Rect
             The bounding rectangle of the leaf object.
-        
+
         Returns
         -------
         retv : libpysal.cg._NodeCursor
             The generated node.
-        
         """
 
         idx = rooto.count
@@ -625,22 +602,21 @@ class _NodeCursor(object):
     @classmethod
     def create_with_children(cls, children, rooto):
         """Create a non-leaf node in the tree structure.
-        
+
         Parameters
         ----------
         children : list
             The child nodes of the node to be generated
         rooto : libpysal.cg.{Point, Chain, Rectangle, Polygon}
             The object from which the node will be generated.
-        
+
         Returns
         -------
         nc : libpysal.cg._NodeCursor
             The generated node with children.
-        
         """
-        rect = union_all([c for c in children])
-        nr = Rect(rect.x, rect.y, rect.xx, rect.yy)
+        rect = union_all(list(children))
+        Rect(rect.x, rect.y, rect.xx, rect.yy)
 
         assert not rect.swapped_x
         nc = _NodeCursor.create(rooto, rect)
@@ -652,7 +628,7 @@ class _NodeCursor(object):
     @classmethod
     def create_leaf(cls, rooto, leaf_obj, leaf_rect):
         """Create a leaf node in the tree structure.
-        
+
         Parameters
         ----------
         rooto : libpysal.cg.{Point, Chain, Rectangle, Polygon}
@@ -661,12 +637,11 @@ class _NodeCursor(object):
             The leaf object.
         leaf_rect : libpysal.cg.Rect
             The bounding rectangle of the leaf object.
-        
+
         Returns
         -------
         res : libpysal.cg._NodeCursor
             The generated leaf node.
-        
         """
 
         rect = Rect(leaf_rect.x, leaf_rect.y, leaf_rect.xx, leaf_rect.yy)
@@ -718,7 +693,6 @@ class _NodeCursor(object):
         ) = state
 
     def __init__(self, rooto, index, rect, first_child, next_sibling):
-
         self.root = rooto
         self.rpool = rooto.rect_pool
         self.npool = rooto.node_pool
@@ -734,38 +708,34 @@ class _NodeCursor(object):
             yield self
             if not self.is_leaf():
                 for c in self.children():
-                    for cr in c.walk(predicate):
-                        yield cr
+                    yield from c.walk(predicate)
 
     def query_rect(self, r):
         """Yield objects that intersect with the rectangle (``r``)."""
 
-        def p(o, x):
+        def p(o, x):  # noqa ARG001
             return r.does_intersect(o.rect)
 
-        for rr in self.walk(p):
-            yield rr
+        yield from self.walk(p)
 
     def query_point(self, point):
         """Yield objects that intersect with the point (``point``)."""
 
-        def p(o, x):
+        def p(o, x):  # noqa ARG001
             return o.rect.does_containpoint(point)
 
-        for rr in self.walk(p):
-            yield rr
+        yield from self.walk(p)
 
     def lift(self):
         """Promote a node to (potentially) rearrange the
         tree structure for optimal clustering.
-        
+
         Called from ``_NodeCursor._balance()``.
-        
+
         Returns
         -------
         lifted : libpysal.cg._NodeCursor
             The lifted node.
-        
         """
 
         lifted = _NodeCursor(
@@ -802,27 +772,25 @@ class _NodeCursor(object):
     def has_children(self) -> bool:
         """Return ``True`` if the node has children, otherwise ``False``."""
 
-        return not self.is_leaf() and 0 != self.first_child
+        return not self.is_leaf() and self.first_child != 0
 
     def holds_leaves(self) -> bool:
         """Return ``True`` if the node holds leaves, otherwise ``False``."""
 
-        if 0 == self.first_child:
+        if self.first_child == 0:
             return True
         else:
             return self.has_children() and self.get_first_child().is_leaf()
 
     def get_first_child(self):
         """Get the first child of a node.
-        
+
         Returns
         -------
         c : libpysal.cg._NodeCursor
             The first child of the specified node.
-        
         """
 
-        fc = self.first_child
         c = _NodeCursor(self.root, 0, NullRect, 0, 0)
         c._become(self.first_child)
 
@@ -857,9 +825,8 @@ class _NodeCursor(object):
     def nchildren(self) -> int:
         """The number of children nodes."""
 
-        i = self.index
         c = 0
-        for x in self.children():
+        for _x in self.children():
             c += 1
 
         return c
@@ -867,7 +834,6 @@ class _NodeCursor(object):
     def insert(self, leafo, leafrect):
         """Insert a leaf object into the tree. See
         ``RTree.insert(o, orect)`` for parameter description.
-        
         """
 
         index = self.index
@@ -889,12 +855,12 @@ class _NodeCursor(object):
                 # ----------------------
                 # Micro-optimization:
                 #   inlining union() calls -- logic is:
-                #       ignored, child = min(
-                #           [
-                #               ((c.rect.union(leafrect)).area() - c.rect.area(),c.index)
-                #               for c in self.children()
-                #           ]
-                #       )
+                #   ignored, child = min(
+                #       [
+                #           ((c.rect.union(leafrect)).area() - c.rect.area(),c.index)
+                #           for c in self.children()
+                #       ]
+                #   )
                 child = None
                 minarea = -1.0
                 for c in self.children():
@@ -921,7 +887,7 @@ class _NodeCursor(object):
         and ``silhouette_coeff()`` for (heuristically) optimal clusterings of
         nodes in the tree structure after the child count of a node has grown
         past the maximum allowed number (see ``MAXCHILDREN``).
-        
+
         Called from ``_NodeCursor.insert()``.
         """
 
@@ -929,8 +895,6 @@ class _NodeCursor(object):
             return
 
         t = time.process_time()
-
-        cur_score = -10
 
         s_children = [c.lift() for c in self.children()]
 
@@ -959,15 +923,14 @@ class _NodeCursor(object):
 
     def _set_children(self, cs: list):
         """Set up the (new/altered) leaf tree structure.
-        
+
         Called from ``_NodeCursor.create_with_children()``
         and ``_NodeCursor._balance()``.
-        
         """
 
         self.first_child = 0
 
-        if 0 == len(cs):
+        if len(cs) == 0:
             return
 
         pred = None
@@ -975,7 +938,7 @@ class _NodeCursor(object):
             if pred is not None:
                 pred.next_sibling = c.index
                 pred._save_back()
-            if 0 == self.first_child:
+            if self.first_child == 0:
                 self.first_child = c.index
             pred = c
         pred.next_sibling = 0
@@ -983,14 +946,13 @@ class _NodeCursor(object):
         self._save_back()
 
     def _insert_child(self, c):
-        """Internal function for child node insertion. 
+        """Internal function for child node insertion.
         Called from ``_NodeCursor.insert()``.
-        
+
         Parameters
         ----------
         c : libpysal.cg._NodeCursor
             A child ``libpysal.cg._NodeCursor`` object.
-        
         """
 
         c.next_sibling = self.first_child
@@ -1001,7 +963,7 @@ class _NodeCursor(object):
     def children(self):
         """Yield the children of a node."""
 
-        if 0 == self.first_child:
+        if self.first_child == 0:
             return
 
         idx = self.index
@@ -1012,7 +974,7 @@ class _NodeCursor(object):
         self._become(self.first_child)
         while True:
             yield self
-            if 0 == self.next_sibling:
+            if self.next_sibling == 0:
                 break
             else:
                 self._become(self.next_sibling)
@@ -1027,19 +989,18 @@ class _NodeCursor(object):
 
 def avg_diagonals(node, onodes):
     """Calculate the mean diagonals.
-    
+
     Parameters
     ----------
     node : libpysal.cg._NodeCursor
         The target node in question.
     onodes : ist
         A list of ``libpysal.cg._NodeCursor`` objects.
-    
+
     Returns
     -------
     diag_avg : float
         The mean diagonal distance of ``node`` and ``onodes``.
-    
     """
 
     nidx = node.index
@@ -1068,7 +1029,7 @@ def avg_diagonals(node, onodes):
 
 def silhouette_w(node, cluster, next_closest_cluster):
     """Calculate a silhouette score between a certain node and 2 clusters:
-    
+
     Parameters
     ----------
     node : libpysal.cg._NodeCursor
@@ -1077,13 +1038,12 @@ def silhouette_w(node, cluster, next_closest_cluster):
         A list of ``libpysal.cg._NodeCursor`` objects.
     next_closest_cluster : list
         Another list of ``libpysal.cg._NodeCursor`` objects.
-    
+
     Returns
     -------
     silw : float
         The silhouette score between ``{node, cluster}``
         and ``{node, next_closest_cluster}``.
-    
     """
 
     ndist = avg_diagonals(node, cluster)
@@ -1099,17 +1059,16 @@ def silhouette_coeff(clustering):
     the clusters are well defined, a score of ``0`` indicates the clusters are
     undefined, and a score of ``-1`` indicates the clusters are defined
     incorrectly.
-    
+
     Parameters
     ----------
     clustering : list
         A list of ``libpysal.cg._NodeCursor`` objects.
-    
+
     Returns
     -------
     silcoeff : float
         Score for how well defined the clusters are.
-        
     """
 
     # special case for a clustering of 1.0
@@ -1135,17 +1094,16 @@ def silhouette_coeff(clustering):
 
 def center_of_gravity(nodes):
     """Find the center of gravity of multiple nodes.
-    
+
     Parameters
     ----------
     nodes : list
         A list of ``libpysal.cg.RTree`` and ``libpysal.cg._NodeCursor`` objects.
-    
+
     Returns
     -------
     cog : float
         The center of gravity of multiple nodes.
-    
     """
 
     totarea = 0.0
@@ -1165,28 +1123,27 @@ def center_of_gravity(nodes):
 
 def closest(centroids, node):
     """Find the closest controid to the node's center of gravity.
-    
+
     Parameters
     ----------
     centroids : list
         A list of (x, y) coordinates for the center of other clusters.
     node : libpysal.cg_NodeCursor
         A ``libpysal.cg._NodeCursor`` instance.
-    
+
     Returns
     -------
     ridx : int
         The index of the nearest centroid of other cluster.
-
     """
 
     x, y = center_of_gravity([node])
     dist = -1
     ridx = -1
 
-    for (i, (xx, yy)) in enumerate(centroids):
+    for i, (xx, yy) in enumerate(centroids):
         dsq = ((xx - x) ** 2) + ((yy - y) ** 2)
-        if -1 == dist or dsq < dist:
+        if dist == -1 or dsq < dist:
             dist = dsq
             ridx = i
 
@@ -1195,7 +1152,7 @@ def closest(centroids, node):
 
 def k_means_cluster(root, k, nodes):
     """Find ``k`` clusters.
-    
+
     Parameters
     ----------
     root : libpysal.cg.RTree
@@ -1204,12 +1161,11 @@ def k_means_cluster(root, k, nodes):
         The number clusters to find.
     nodes : list
         A list of ``libpysal.cg.RTree`` and ``libpysal.cg._NodeCursor`` objects.
-    
+
     Returns
     -------
     clusters : list
         Updated versions of ``nodes`` defining new clusters.
-    
     """
 
     t = time.process_time()
@@ -1224,7 +1180,7 @@ def k_means_cluster(root, k, nodes):
     # random.shuffle(ns)
 
     cluster_starts = ns[:k]
-    cluster_centers = [center_of_gravity([n]) for n in ns[:k]]
+    cluster_centers = [center_of_gravity([n]) for n in cluster_starts]
 
     # Loop until stable:
     while True:
@@ -1241,12 +1197,9 @@ def k_means_cluster(root, k, nodes):
         for c in clusters:
             if len(c) == 0:
                 print("Error....")
-                print(("Nodes: %d, centers: %s." % (len(ns), repr(cluster_centers))))
+                print("Nodes: %d, centers: %s." % (len(ns), repr(cluster_centers)))
 
             assert len(c) > 0
-
-        rest = ns
-        first = False
 
         new_cluster_centers = [center_of_gravity(c) for c in clusters]
         if new_cluster_centers == cluster_centers:
