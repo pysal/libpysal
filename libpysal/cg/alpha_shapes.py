@@ -429,7 +429,7 @@ def alpha_shape(xys, alpha):
         29(4), 551-559.
     """
     if not HAS_JIT:
-        warn(NUMBA_WARN)  # noqa B028
+        warn(NUMBA_WARN, stacklevel=2)
     if xys.shape[0] < 4:
         from shapely import geometry as geom
         from shapely import ops
@@ -523,7 +523,7 @@ def alpha_shape_auto(
 
     """
     if not HAS_JIT:
-        warn(NUMBA_WARN)  # noqa B028
+        warn(NUMBA_WARN, stacklevel=2)
     from shapely import geometry as geom
 
     if return_circles:

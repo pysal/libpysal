@@ -1179,8 +1179,8 @@ def k_means_cluster(root, k, nodes):
     # Initialize: take n random nodes.
     # random.shuffle(ns)
 
-    ns[:k]
-    cluster_centers = [center_of_gravity([n]) for n in ns[:k]]
+    cluster_starts = ns[:k]
+    cluster_centers = [center_of_gravity([n]) for n in cluster_starts]
 
     # Loop until stable:
     while True:
