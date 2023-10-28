@@ -1,10 +1,10 @@
 import numpy as np
 import pytest
 
-from ....common import ATOL, RTOL, pandas
+from ....common import ATOL, RTOL
 from ....examples import get_path
 from ....io.geotable.file import read_files as rf
-from ...shapes import Chain, LineSegment, Point, Polygon, Rectangle
+from ...shapes import LineSegment, Rectangle
 from .. import _accessors as to_test
 
 
@@ -52,7 +52,7 @@ class TestAccessors:
         ]
 
         bboxes = to_test.bbox(self.polygons).tolist()
-        for ans, bbox in zip(answer, bboxes):
+        for ans, bbox in zip(answer, bboxes, strict=True):
             np.testing.assert_allclose(ans, bbox, rtol=RTOL, atol=ATOL)
 
     def test_bounding_box(self):
@@ -97,9 +97,9 @@ class TestAccessors:
             ],
         ]
 
-        for bbox, answer in zip(line_bboxes, line_answers):
+        for bbox, answer in zip(line_bboxes, line_answers, strict=True):
             np.testing.assert_allclose(bbox, answer, atol=ATOL, rtol=RTOL)
-        for bbox, answer in zip(pgon_bboxes, pgon_answers):
+        for bbox, answer in zip(pgon_bboxes, pgon_answers, strict=True):
             np.testing.assert_allclose(bbox, answer, atol=ATOL, rtol=RTOL)
         for rectangle in line_rects + pgon_rects:
             assert isinstance(rectangle, Rectangle)
@@ -118,7 +118,7 @@ class TestAccessors:
             (0.04759584610455384, -0.44147205133285744),
         ]
 
-        for ct, answer in zip(centroids, centroid_answers):
+        for ct, answer in zip(centroids, centroid_answers, strict=True):
             np.testing.assert_allclose(ct, answer, rtol=RTOL, atol=ATOL)
 
     def test_holes(self):
@@ -186,8 +186,8 @@ class TestAccessors:
                 ],
             ],
         ]
-        for hole, answer in zip(holes, answers):
-            for sub_hole, sub_answer in zip(hole, answer):
+        for hole, answer in zip(holes, answers, strict=True):
+            for sub_hole, sub_answer in zip(hole, answer, strict=True):
                 np.testing.assert_allclose(sub_hole, sub_answer, rtol=RTOL, atol=ATOL)
 
     def test_len(self):
@@ -211,7 +211,7 @@ class TestAccessors:
         with pytest.raises(AttributeError):
             to_test.parts(self.points)
 
-        line_parts = to_test.parts(self.lines)
+        to_test.parts(self.lines)
         pgon_parts = to_test.parts(self.polygons)
 
         pgon_answers = [
@@ -275,42 +275,9 @@ class TestAccessors:
                 ]
             ],
         ]
-        line_answers = [
-            [
-                [
-                    (-0.009053924887015952, -0.25832280562918325),
-                    (0.007481157395930582, -0.2589587703323735),
-                    (0.007481157395930582, -0.2589587703323735),
-                ]
-            ],
-            [
-                [
-                    (0.10923550990637088, -0.2564149115196125),
-                    (0.12895041570526866, -0.2564149115196125),
-                ]
-            ],
-            [
-                [
-                    (0.050726757212867735, -0.3130157701035449),
-                    (0.050726757212867735, -0.356261369920482),
-                    (0.06153815716710198, -0.3448140052630575),
-                    (0.06153815716710198, -0.3448140052630575),
-                ]
-            ],
-            [
-                [
-                    (-0.0414881247497188, -0.41286222850441445),
-                    (-0.012233748402967204, -0.4402087107415953),
-                    (0.027196063194828424, -0.46055958124368335),
-                    (0.07489341593409732, -0.4586516871341126),
-                    (0.11241533342232213, -0.43639292252245376),
-                    (0.1391258509563127, -0.4058666167693217),
-                ]
-            ],
-        ]
 
-        for part, answer in zip(pgon_parts, pgon_answers):
-            for piece, sub_answer in zip(part, answer):
+        for part, answer in zip(pgon_parts, pgon_answers, strict=True):
+            for piece, sub_answer in zip(part, answer, strict=True):
                 np.testing.assert_allclose(piece, sub_answer, rtol=RTOL, atol=ATOL)
 
     def test_perimeter(self):
@@ -333,7 +300,7 @@ class TestAccessors:
             to_test.segments(self.polygons)
 
         line_segments = to_test.segments(self.lines)
-        flattened = [l[0] for l in line_segments]
+        flattened = [l_[0] for l_ in line_segments]
 
         answers = [
             [
@@ -390,8 +357,8 @@ class TestAccessors:
             ],
         ]
 
-        for parts, points in zip(flattened, answers):
-            for piece, answer in zip(parts, points):
+        for parts, points in zip(flattened, answers, strict=True):
+            for piece, answer in zip(parts, points, strict=True):
                 assert isinstance(piece, LineSegment)
                 p1, p2 = piece.p1, piece.p2
                 np.testing.assert_allclose([p1, p2], answer)
@@ -481,7 +448,7 @@ class TestAccessors:
                 (-0.04527237752903268, -0.413550752273984),
             ],
         ]
-        for part, answer in zip(line_verts, line_answers):
+        for part, answer in zip(line_verts, line_answers, strict=True):
             np.testing.assert_allclose(part, answer, atol=ATOL, rtol=RTOL)
-        for part, answer in zip(pgon_verts, pgon_answers):
+        for part, answer in zip(pgon_verts, pgon_answers, strict=True):
             np.testing.assert_allclose(part, answer, atol=ATOL, rtol=RTOL)

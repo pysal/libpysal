@@ -1,12 +1,10 @@
 import numpy as np
 
-from ....common import ATOL, RTOL, pandas
 from ....common import requires as _requires
 from ....examples import get_path
 from ....io import geotable as pdio
-from ... import ops as GIS
+from ... import ops as GIS  # noqa N812
 from ...shapes import Polygon
-from .. import tabular as ta
 
 
 class TestTabular:
@@ -35,7 +33,7 @@ class TestTabular:
         assert isinstance(geodf, gpd.GeoDataFrame)
         new_df = GIS.tabular.to_df(geodf)
         assert isinstance(new_df, pd.DataFrame)
-        for new, old in zip(new_df.geometry, self.columbus.geometry):
+        for new, old in zip(new_df.geometry, self.columbus.geometry, strict=True):
             assert new == old
 
     def test_spatial_join(self):
@@ -49,11 +47,11 @@ class TestTabular:
         assert out[0].area == 2.0
         assert out[1].area == 2.0
 
-        answer_vertices0 = set([(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)])
-        answer_vertices1 = set([(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (2, 1)])
+        answer_vertices0 = {(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)}
+        answer_vertices1 = {(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (2, 1)}
 
-        s0 = set([tuple(map(int, t)) for t in out[0].vertices])
-        s1 = set([tuple(map(int, t)) for t in out[1].vertices])
+        s0 = {tuple(map(int, t)) for t in out[0].vertices}
+        s1 = {tuple(map(int, t)) for t in out[1].vertices}
 
         assert s0 == answer_vertices0
         assert s1 == answer_vertices1
