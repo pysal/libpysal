@@ -1,19 +1,19 @@
-from ..shapes import Point, Chain, asShape
-from ...io.fileio import FileIO as psopen
 from ... import examples as pysal_examples
+from ...io.fileio import FileIO as psopen  # noqa N813
+from ..shapes import Chain, Point, asShape
 
 
-class Testtest_MultiPloygon:
+class TesttestMultiPloygon:
     def test___init__1(self):
         """Tests conversion of polygons with multiple shells to
         geoJSON multipolygons and back.
 
         """
 
-        ncovr = pysal_examples.load_example("NCOVR")
+        pysal_examples.load_example("NCOVR")
         shp = psopen(pysal_examples.get_path("NAT.shp"), "r")
         multipolygons = [p for p in shp if len(p.parts) > 1]
-        geoJSON = [p.__geo_interface__ for p in multipolygons]
+        [p.__geo_interface__ for p in multipolygons]
         for poly in multipolygons:
             json = poly.__geo_interface__
             shape = asShape(json)
@@ -22,7 +22,7 @@ class Testtest_MultiPloygon:
             assert str(shape.parts) == str(poly.parts)
 
 
-class Testtest_MultiLineString:
+class TesttestMultiLineString:
     def test_multipart_chain(self):
         vertices = [
             [Point((0, 0)), Point((1, 0)), Point((1, 5))],

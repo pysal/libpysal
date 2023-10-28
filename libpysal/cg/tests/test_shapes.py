@@ -1,24 +1,25 @@
 import pytest
-from ..shapes import Point, LineSegment, Line, Ray, Chain, Rectangle, Polygon
+
+from ..shapes import Chain, Line, LineSegment, Point, Polygon, Ray, Rectangle
 
 
-class Testtest_Point:
+class TesttestPoint:
     def test___init__1(self):
         """Tests whether points are created without issue."""
 
-        for l in [(-5.0, 10.0), (0.0, -6.0), (float(1e300), float(-1e300))]:
-            p = Point(l)
+        for l_ in [(-5.0, 10.0), (0.0, -6.0), (1e300, float(-1e300))]:
+            Point(l_)
 
     def test___str__1(self):
         """Tests whether the string produced is valid for corner cases."""
 
-        for l in [(-5, 10), (0, -6.0), (float(1e300), -1e300)]:
-            p = Point(l)
+        for l_ in [(-5, 10), (0, -6.0), (1e300, -1e300)]:
+            p = Point(l_)
             # Recast to floats like point does
-            assert str(p) == str((float(l[0]), float(l[1])))
+            assert str(p) == str((float(l_[0]), float(l_[1])))
 
 
-class Testtest_LineSegment:
+class TesttestLineSegment:
     def test_is_ccw1(self):
         """Test corner cases for horizontal segment starting at origin."""
 
@@ -186,7 +187,7 @@ class Testtest_LineSegment:
         assert math.isnan(ls.line.b)
 
         ls = LineSegment(Point((0, 0)), Point((0, 0)))
-        assert ls.line == None
+        assert ls.line is None
 
         ls = LineSegment(Point((5, 0)), Point((10, 0)))
         ls1 = LineSegment(Point((5, 0)), Point((10, 1)))
@@ -197,69 +198,69 @@ class Testtest_LineSegment:
         assert ls.intersect(ls2)
 
 
-class Testtest_Line:
+class TesttestLine:
     def test___init__1(self):
         """Tests a variety of generic cases."""
 
         for m, b in [(4, 0.0), (-140, 5), (0, 0)]:
-            l = Line(m, b)
+            Line(m, b)
 
     def test_y1(self):
         """Tests a variety of generic and special cases (+-infinity)."""
 
-        l = Line(0, 0)
-        assert l.y(0) == 0
-        assert l.y(-1e600) == 0
-        assert l.y(1e600) == 0
+        l_ = Line(0, 0)
+        assert l_.y(0) == 0
+        assert l_.y(-1e600) == 0
+        assert l_.y(1e600) == 0
 
-        l = Line(1, 1)
-        assert l.y(2) == 3
-        assert l.y(-1e600) == -1e600
-        assert l.y(1e600) == 1e600
+        l_ = Line(1, 1)
+        assert l_.y(2) == 3
+        assert l_.y(-1e600) == -1e600
+        assert l_.y(1e600) == 1e600
 
-        l = Line(-1, 1)
-        assert l.y(2) == -1
-        assert l.y(-1e600) == 1e600
-        assert l.y(1e600) == -1e600
+        l_ = Line(-1, 1)
+        assert l_.y(2) == -1
+        assert l_.y(-1e600) == 1e600
+        assert l_.y(1e600) == -1e600
 
     def test_x1(self):
         """Tests a variety of generic and special cases (+-infinity)."""
 
-        l = Line(0, 0)
+        l_ = Line(0, 0)
 
         # self.assertEquals(l.x(0), 0)
         with pytest.raises(ArithmeticError):
-            l.x(0)
+            l_.x(0)
         with pytest.raises(ArithmeticError):
-            l.x(-1e600)
+            l_.x(-1e600)
         with pytest.raises(ArithmeticError):
-            l.x(1e600)
+            l_.x(1e600)
 
-        l = Line(1, 1)
-        assert l.x(3) == 2
-        assert l.x(-1e600) == -1e600
-        assert l.x(1e600) == 1e600
+        l_ = Line(1, 1)
+        assert l_.x(3) == 2
+        assert l_.x(-1e600) == -1e600
+        assert l_.x(1e600) == 1e600
 
-        l = Line(-1, 1)
-        assert l.x(2) == -1
-        assert l.x(-1e600) == 1e600
-        assert l.x(1e600) == -1e600
+        l_ = Line(-1, 1)
+        assert l_.x(2) == -1
+        assert l_.x(-1e600) == 1e600
+        assert l_.x(1e600) == -1e600
 
 
-class Testtest_Ray:
+class TesttestRay:
     def test___init__1(self):
         """Tests generic cases."""
 
-        r = Ray(Point((0, 0)), Point((1, 1)))
-        r = Ray(Point((8, -3)), Point((-5, 9)))
+        Ray(Point((0, 0)), Point((1, 1)))
+        Ray(Point((8, -3)), Point((-5, 9)))
 
 
-class Testtest_Chain:
+class TesttestChain:
     def test___init__1(self):
         """Generic testing that no exception is thrown."""
 
-        c = Chain([Point((0, 0))])
-        c = Chain([[Point((0, 0)), Point((1, 1))], [Point((2, 5))]])
+        Chain([Point((0, 0))])
+        Chain([[Point((0, 0)), Point((1, 1))], [Point((2, 5))]])
 
     def test_vertices1(self):
         """Testing for repeated vertices and multiple parts."""
@@ -325,7 +326,7 @@ class Testtest_Chain:
         assert Chain(vertices).len == 6 + 10
 
 
-class Testtest_Polygon:
+class TesttestPolygon:
     def test___init__1(self):
         """Test various input configurations (list vs. lists of lists, holes)."""
 
@@ -337,32 +338,32 @@ class Testtest_Polygon:
         # one part, multi holes
         # multi part, multi holes
 
-        p = Polygon([Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))])
-        p = Polygon(
+        Polygon([Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))])
+        Polygon(
             [
                 [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                 [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))],
             ]
         )
-        p = Polygon(
+        Polygon(
             [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
             holes=[Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
         )
-        p = Polygon(
+        Polygon(
             [
                 [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                 [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))],
             ],
             holes=[Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
         )
-        p = Polygon(
+        Polygon(
             [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
             holes=[
                 [Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
                 [Point((6, 6)), Point((6, 8)), Point((8, 8)), Point((8, 6))],
             ],
         )
-        p = Polygon(
+        Polygon(
             [
                 [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                 [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))],
@@ -586,13 +587,13 @@ class Testtest_Polygon:
         assert p.contains_point((10, 10)) == 0
 
 
-class Testtest_Rectangle:
+class TesttestRectangle:
     def test___init__1(self):
         """Test exceptions are thrown correctly."""
 
         try:
             # right < left
-            r = Rectangle(1, 1, -1, 5)
+            Rectangle(1, 1, -1, 5)
         except ArithmeticError:
             pass
         else:
@@ -600,7 +601,7 @@ class Testtest_Rectangle:
 
         try:
             # upper < lower
-            r = Rectangle(1, 1, 5, -1)
+            Rectangle(1, 1, 5, -1)
         except ArithmeticError:
             pass
         else:

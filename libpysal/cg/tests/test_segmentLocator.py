@@ -1,6 +1,9 @@
 """Segment Locator Unittest."""
-from ..shapes import *
+
+# ruff: noqa: F403, F405
+
 from ..segmentLocator import *
+from ..shapes import *
 
 
 class TestSegmentGrid:

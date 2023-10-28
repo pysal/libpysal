@@ -1,9 +1,11 @@
-from unittest import TestCase, skipIf
+import os
+from unittest import skipIf
+
+import numpy as np
+from packaging.version import Version
+
 from ...examples import get_path
 from ..alpha_shapes import alpha_shape, alpha_shape_auto
-import numpy as np
-import os
-from packaging.version import Version
 
 try:
     import geopandas
@@ -18,7 +20,7 @@ this_directory = os.path.dirname(__file__)
 
 
 @skipIf(GEOPANDAS_EXTINCT, "Geopandas is missing, so test will not run.")
-class Test_Alpha_Shapes:
+class TestAlphaShapes:
     def setup_method(self):
         eberly = geopandas.read_file(get_path("eberly_net.shp"))
         eberly_vertices = eberly.geometry.apply(

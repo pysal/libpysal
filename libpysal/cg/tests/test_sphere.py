@@ -1,9 +1,11 @@
-import pytest
-from .. import sphere
-from ...io.fileio import FileIO as psopen
-from ... import examples as pysal_examples
 import math
+
 import numpy as np
+import pytest
+
+from ... import examples as pysal_examples
+from ...io.fileio import FileIO as psopen  # noqa N813
+from .. import sphere
 
 
 class TestSphere:
