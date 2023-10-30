@@ -1,8 +1,8 @@
-from ...common import requires as _requires
-from ...io.geotable.utils import to_gdf, to_df
-from warnings import warn as _Warn
 import functools as _f
-import sys as _sys
+from warnings import warn
+
+from ...common import requires as _requires
+from ...io.geotable.utils import to_df, to_gdf
 
 try:
     import pandas as _pd
@@ -11,7 +11,6 @@ try:
     @_f.wraps(_pd.merge)
     def join(*args, **kwargs):
         return _pd.merge(*args, **kwargs)
-
 
 except ImportError:
     pass
@@ -53,13 +52,12 @@ def spatial_join(
         the suffix to apply to overlapping column names from ``df1``.;
         and (4) ``'rsuffix'`` defaults to ``right'``),
         the suffix to apply to overlapping column names from ``df2``.
-    
+
     Returns
     -------
     df : pandas.DataFrame
         A pandas.DataFrame with a new set of polygons
         and attributes resulting from the overlay.
-    
     """
 
     import geopandas as gpd
@@ -103,13 +101,12 @@ def spatial_overlay(
         Default is ``'geometry'``.
     **kwargs : dict
         Optional keyword arguments passed in ``geopandas.tools.overlay``.
-    
+
     Returns
     -------
     df : pandas.DataFrame
         A pandas.DataFrame with a new set of polygons
         and attributes resulting from the overlay.
-    
     """
 
     import geopandas as gpd
@@ -130,13 +127,13 @@ def dissolve(df, by="", **groupby_kws):
     return union(df, by=by, **groupby_kws)
 
 
-def clip(return_exterior=False):
+def clip(return_exterior=False):  # noqa ARG001
     # return modified entries of the df that are within an envelope
     # provide an option to null out the geometries instead of not returning
     raise NotImplementedError
 
 
-def erase(return_interior=True):
+def erase(return_interior=True):  # noqa ARG001
     # return modified entries of the df that are outside of an envelope
     # provide an option to null out the geometries instead of not returning
     raise NotImplementedError
@@ -145,7 +142,10 @@ def erase(return_interior=True):
 @_requires("shapely")
 def union(df, **kws):
     if "by" in kws:
-        warn("When a 'by' argument is provided, you should be using 'dissolve'.")
+        warn(
+            "When a 'by' argument is provided, you should be using 'dissolve'.",
+            stacklevel=2,
+        )
         return dissolve(df, **kws)
     from ._shapely import cascaded_union as union
 

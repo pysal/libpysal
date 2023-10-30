@@ -1,5 +1,8 @@
+# ruff: noqa: F822
+
 import functools as _f
 from warnings import warn
+
 from ...common import requires as _requires
 
 __all__ = [
@@ -45,7 +48,7 @@ def _atomic_op(df, geom_col="geometry", inplace=False, _func=None, **kwargs):
     """Atomic operation internal function."""
 
     outval = df[geom_col].apply(lambda x: _func(x, **kwargs))
-    outcol = "shape_{}".format(_func.__name__)
+    outcol = f"shape_{_func.__name__}"
     if not inplace:
         new = df.copy()
         new[outcol] = outval
@@ -76,14 +79,11 @@ returns a series.
 
 Notes
 -----
-
 Some atomic operations require an 'other' argument.
 
 See Also
 --------
-
 pysal.contrib.shapely_ext.{n}
-
 """
 
 # ensure that the construction of atomics is done only if we can use shapely
@@ -123,10 +123,8 @@ def cascaded_union(df, geom_col="geometry", **groupby_kws):
 
     See Also
     --------
-    
     pysal.shapely_ext.cascaded_union
     pandas.DataFrame.groupby
-    
     """
 
     by = groupby_kws.pop("by", None)
@@ -159,19 +157,17 @@ def unary_union(df, geom_col="geometry", **groupby_kws):
 
     See Also
     --------
-    
     pysal.shapely_ext.unary_union
     pandas.DataFrame.groupby
-    
     """
 
     by = groupby_kws.pop("by", None)
     level = groupby_kws.pop("level", None)
     if by is not None or level is not None:
         df = df.groupby(**groupby_kws)
-        out = df[geom_col].apply(_cascaded_union)
+        out = df[geom_col].apply(_cascaded_union)  # noqa F821
     else:
-        out = _cascaded_union(df[geom_col].tolist())
+        out = _cascaded_union(df[geom_col].tolist())  # noqa F821
     return out
 
 
@@ -179,11 +175,11 @@ def unary_union(df, geom_col="geometry", **groupby_kws):
 def _cascaded_intersection(shapes):
     it = iter(shapes)
     outshape = next(it)
-    for i, shape in enumerate(it):
+    for _i, shape in enumerate(it):
         try:
             outshape = _s.intersection(shape, outshape)
         except NotImplementedError:
-            warn("An intersection is empty!")
+            warn("An intersection is empty!", stacklevel=2)
             return None
     return outshape
 
@@ -204,14 +200,13 @@ def cascaded_intersection(df, geom_col="geometry", **groupby_kws):
     Returns
     -------
     out : {libpysal.cg.{Point, Chain, Polygon}, pandas.DataFrame}
-        A PySAL shape or a dataframe of shapes resulting from the intersection operation.
+        A PySAL shape or a dataframe of shapes resulting
+        from the intersection operation.
 
     See Also
     --------
-    
     pysal.shapely_ext.cascaded_intersection
     pandas.DataFrame.groupby
-    
     """
 
     by = groupby_kws.pop("by", None)

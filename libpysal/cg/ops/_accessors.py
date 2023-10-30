@@ -1,3 +1,5 @@
+# ruff: noqa: F822
+
 import functools as _f
 
 __all__ = [
@@ -17,11 +19,10 @@ __all__ = [
 def get_attr(df, geom_col="geometry", inplace=False, attr=None):
     outval = df[geom_col].apply(lambda x: x.__getattribute__(attr))
     if inplace:
-        outcol = "shape_{}".format(func.__name__)
+        outcol = f"shape_{func.__name__}"  # noqa F821
         df[outcol] = outval
         return None
     return outval
-
 
 
 _doc_template = """
@@ -40,19 +41,16 @@ inplace : bool
 
 Returns
 -------
-
 ``None`` if inplace is set to ``True`` and operation is conducted
 on ``df`` in memory. Otherwise, returns a pandas.Series.
 
 See Also
 --------
-
 For further documentation about the attributes of the object in question, refer
 to shape classes in ``pysal.cg.shapes``.
-
 """
 
-_accessors = dict()
+_accessors = {}
 for k in __all__:
     _accessors[k] = _f.partial(get_attr, attr=k)
     _accessors[k].__doc__ = _doc_template.format(n=k)
