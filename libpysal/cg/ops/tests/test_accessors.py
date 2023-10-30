@@ -245,8 +245,8 @@ class TestAccessors:
                 ]
             ],
         ]
-        for part, answer in zip(line_parts, line_answers):
-            for piece, sub_answer in zip(part, answer):
+        for part, answer in zip(line_parts, line_answers, strict=True):
+            for piece, sub_answer in zip(part, answer, strict=True):
                 np.testing.assert_allclose(piece, sub_answer, rtol=RTOL, atol=ATOL)
 
         pgon_parts = to_test.parts(self.polygons)
