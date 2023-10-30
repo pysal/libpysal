@@ -9,13 +9,14 @@ from libpysal.weights import W
 
 from ._contiguity import (
     _block_contiguity,
+    _fuzzy_contiguity,
     _queen,
     _rook,
     _vertex_set_intersection,
-    _fuzzy_contiguity,
 )
 from ._kernel import _distance_band, _kernel
 from ._parquet import _read_parquet, _to_parquet
+from ._plotting import _plot
 from ._set_ops import _Set_Mixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
@@ -1195,6 +1196,90 @@ class Graph(_Set_Mixin):
             target="neighbor",
             edge_attr="weight",
             create_using=graph_type,
+        )
+
+    def plot(
+        self,
+        gdf,
+        focal=None,
+        nodes=True,
+        color="k",
+        edge_kws=None,
+        node_kws=None,
+        focal_kws=None,
+        ax=None,
+        figsize=None,
+        limit_extent=False,
+    ):
+        """Plot edges and nodes of the Graph
+
+        Creates a ``maptlotlib`` plot based on the topology stored in the
+        Graph and spatial location defined in ``gdf``.
+
+        Parameters
+        ----------
+        gdf : geopandas.GeoDataFrame
+            Geometries indexed using the same index as Graph. Geometry types other than
+            points are converted to centroids encoding start and end point of Graph
+            edges.
+        focal : hashable | array-like[hashable] | None, optional
+            ID or an array-like of IDs of focal geometries whose weights shall be
+            plotted. If None, all weights from all focal geometries are plotted.
+            By default None
+        nodes : bool, optional
+            Plot nodes as points, by default True
+        color : str, optional
+            The color of all objects, by default "k"
+        edge_kws : dict, optional
+            Keyword arguments dictionary to send to ``LineCollection``,
+            which provides fine-grained control over the aesthetics
+            of the edges in the plot. By default None
+        node_kws : dict, optional
+            Keyword arguments dictionary to send to ``ax.scatter``,
+            which provides fine-grained control over the aesthetics
+            of the nodes in the plot. By default None
+        focal_kws : dict, optional
+            Keyword arguments dictionary to send to ``ax.scatter``,
+            which provides fine-grained control over the aesthetics
+            of the focal nodes in the plot on top of generic ``node_kws``.
+            Values of ``node_kws`` are updated from ``focal_kws``.
+            Ignored if ``focal=None``. By default None
+        ax : matplotlib.axes.Axes, optional
+            Axis on which to plot the weights. If None, a new figure and axis are
+            created. By default None
+        figsize : tuple, optional
+            figsize used to create a new axis. By default None
+        limit_extent : bool, optional
+            limit the extent of the axis to the extent of the plotted graph, by default
+            False
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            Axis with the resulting plot
+
+        Notes
+        -----
+        If you'd like to overlay the actual geometries from the
+        ``geopandas.GeoDataFrame``, create an axis by plotting the ``GeoDataFrame``
+        and plot the Graph on top.
+
+            ax = gdf.plot()
+            gdf_graph.plot(gdf, ax=ax)
+
+        """
+        return _plot(
+            G=self,
+            gdf=gdf,
+            focal=focal,
+            nodes=nodes,
+            color=color,
+            node_kws=node_kws,
+            edge_kws=edge_kws,
+            focal_kws=focal_kws,
+            ax=ax,
+            figsize=figsize,
+            limit_extent=limit_extent,
         )
 
 
