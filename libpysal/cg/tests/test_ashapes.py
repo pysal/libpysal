@@ -1,7 +1,7 @@
 import os
-from unittest import skipIf
 
 import numpy as np
+import pytest
 from packaging.version import Version
 
 from ...examples import get_path
@@ -19,7 +19,9 @@ except ImportError:
 this_directory = os.path.dirname(__file__)
 
 
-@skipIf(GEOPANDAS_EXTINCT, "Geopandas is missing, so test will not run.")
+@pytest.mark.skipif(
+    GEOPANDAS_EXTINCT, reason="Geopandas is missing, so test will not run."
+)
 class TestAlphaShapes:
     def setup_method(self):
         eberly = geopandas.read_file(get_path("eberly_net.shp"))
