@@ -203,7 +203,7 @@ class TesttestLine:
         """Tests a variety of generic cases."""
 
         for m, b in [(4, 0.0), (-140, 5), (0, 0)]:
-            Line(m, b)
+            _ = Line(m, b)
 
     def test_y1(self):
         """Tests a variety of generic and special cases (+-infinity)."""
@@ -251,16 +251,16 @@ class TesttestRay:
     def test___init__1(self):
         """Tests generic cases."""
 
-        Ray(Point((0, 0)), Point((1, 1)))
-        Ray(Point((8, -3)), Point((-5, 9)))
+        _ = Ray(Point((0, 0)), Point((1, 1)))
+        _ = Ray(Point((8, -3)), Point((-5, 9)))
 
 
 class TesttestChain:
     def test___init__1(self):
         """Generic testing that no exception is thrown."""
 
-        Chain([Point((0, 0))])
-        Chain([[Point((0, 0)), Point((1, 1))], [Point((2, 5))]])
+        _ = Chain([Point((0, 0))])
+        _ = Chain([[Point((0, 0)), Point((1, 1))], [Point((2, 5))]])
 
     def test_vertices1(self):
         """Testing for repeated vertices and multiple parts."""
@@ -338,32 +338,32 @@ class TesttestPolygon:
         # one part, multi holes
         # multi part, multi holes
 
-        Polygon([Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))])
-        Polygon(
+        _ = Polygon([Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))])
+        _ = Polygon(
             [
                 [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                 [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))],
             ]
         )
-        Polygon(
+        _ = Polygon(
             [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
             holes=[Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
         )
-        Polygon(
+        _ = Polygon(
             [
                 [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                 [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))],
             ],
             holes=[Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
         )
-        Polygon(
+        _ = Polygon(
             [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
             holes=[
                 [Point((2, 2)), Point((4, 2)), Point((4, 4)), Point((2, 4))],
                 [Point((6, 6)), Point((6, 8)), Point((8, 8)), Point((8, 6))],
             ],
         )
-        Polygon(
+        _ = Polygon(
             [
                 [Point((0, 0)), Point((10, 0)), Point((10, 10)), Point((0, 10))],
                 [Point((30, 30)), Point((40, 30)), Point((40, 40)), Point((30, 40))],
@@ -593,7 +593,7 @@ class TesttestRectangle:
 
         try:
             # right < left
-            Rectangle(1, 1, -1, 5)
+            _ = Rectangle(1, 1, -1, 5)
         except ArithmeticError:
             pass
         else:
@@ -601,7 +601,7 @@ class TesttestRectangle:
 
         try:
             # upper < lower
-            Rectangle(1, 1, 5, -1)
+            _ = Rectangle(1, 1, 5, -1)
         except ArithmeticError:
             pass
         else:

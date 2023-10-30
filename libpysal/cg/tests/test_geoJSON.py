@@ -10,10 +10,8 @@ class TesttestMultiPloygon:
 
         """
 
-        pysal_examples.load_example("NCOVR")
         shp = psopen(pysal_examples.get_path("NAT.shp"), "r")
         multipolygons = [p for p in shp if len(p.parts) > 1]
-        [p.__geo_interface__ for p in multipolygons]
         for poly in multipolygons:
             json = poly.__geo_interface__
             shape = asShape(json)
