@@ -211,9 +211,45 @@ class TestAccessors:
         with pytest.raises(AttributeError):
             to_test.parts(self.points)
 
-        to_test.parts(self.lines)
-        pgon_parts = to_test.parts(self.polygons)
+        line_parts = to_test.parts(self.lines)
+        line_answers = [
+            [
+                [
+                    (-0.009053924887015952, -0.25832280562918325),
+                    (0.007481157395930582, -0.2589587703323735),
+                    (0.007481157395930582, -0.2589587703323735),
+                ]
+            ],
+            [
+                [
+                    (0.10923550990637088, -0.2564149115196125),
+                    (0.12895041570526866, -0.2564149115196125),
+                ]
+            ],
+            [
+                [
+                    (0.050726757212867735, -0.3130157701035449),
+                    (0.050726757212867735, -0.356261369920482),
+                    (0.06153815716710198, -0.3448140052630575),
+                    (0.06153815716710198, -0.3448140052630575),
+                ]
+            ],
+            [
+                [
+                    (-0.0414881247497188, -0.41286222850441445),
+                    (-0.012233748402967204, -0.4402087107415953),
+                    (0.027196063194828424, -0.46055958124368335),
+                    (0.07489341593409732, -0.4586516871341126),
+                    (0.11241533342232213, -0.43639292252245376),
+                    (0.1391258509563127, -0.4058666167693217),
+                ]
+            ],
+        ]
+        for part, answer in zip(line_parts, line_answers):
+            for piece, sub_answer in zip(part, answer):
+                np.testing.assert_allclose(piece, sub_answer, rtol=RTOL, atol=ATOL)
 
+        pgon_parts = to_test.parts(self.polygons)
         pgon_answers = [
             [
                 [
@@ -275,7 +311,6 @@ class TestAccessors:
                 ]
             ],
         ]
-
         for part, answer in zip(pgon_parts, pgon_answers, strict=True):
             for piece, sub_answer in zip(part, answer, strict=True):
                 np.testing.assert_allclose(piece, sub_answer, rtol=RTOL, atol=ATOL)
