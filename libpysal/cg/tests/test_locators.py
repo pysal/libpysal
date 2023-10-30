@@ -1,5 +1,7 @@
 """locators Unittest."""
 from ..locators import *
+
+# ruff: noqa: F403, F405
 from ..shapes import *
 
 
@@ -15,14 +17,14 @@ class TestPolygonLocator:
         pg = Polygon
         polys = []
         for i in range(5):
-            l = i * 10
-            r = l + 10
+            l_ = i * 10
+            r = l_ + 10
             b = 10
             t = 20
-            sw = pt((l, b))
+            sw = pt((l_, b))
             se = pt((r, b))
             ne = pt((r, t))
-            nw = pt((l, t))
+            nw = pt((l_, t))
             polys.append(pg([sw, se, ne, nw]))
         self.pl2 = PolygonLocator(polys)
 
@@ -40,7 +42,6 @@ class TestPolygonLocator:
         assert len(res) == 1
 
     def test_overlapping(self):
-
         qr = Rectangle(3, 3, 5, 5)
         res = self.pl.overlapping(qr)
         assert len(res) == 2

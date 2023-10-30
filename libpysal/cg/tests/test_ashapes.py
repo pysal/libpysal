@@ -1,24 +1,19 @@
-from unittest import TestCase, skipIf
+import os
+
+import geopandas
+import numpy as np
+from packaging.version import Version
+from shapely import geometry
+
 from ...examples import get_path
 from ..alpha_shapes import alpha_shape, alpha_shape_auto
-import numpy as np
-import os
-from packaging.version import Version
 
-try:
-    import geopandas
-    from shapely import geometry
-
-    GEOPANDAS_EXTINCT = False
-    GPD_013 = Version(geopandas.__version__) >= Version("0.13")
-except ImportError:
-    GEOPANDAS_EXTINCT = True
+GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 
 this_directory = os.path.dirname(__file__)
 
 
-@skipIf(GEOPANDAS_EXTINCT, "Geopandas is missing, so test will not run.")
-class Test_Alpha_Shapes:
+class TestAlphaShapes:
     def setup_method(self):
         eberly = geopandas.read_file(get_path("eberly_net.shp"))
         eberly_vertices = eberly.geometry.apply(

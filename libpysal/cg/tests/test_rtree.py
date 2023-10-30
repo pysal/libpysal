@@ -7,21 +7,21 @@ class TestPyrtree:
         k = 10
         w = 20
         objects = {}
-        id = 0
+        id_ = 0
         for i in range(k):
             mn_y = i * w
             mx_y = mn_y + w
             for j in range(k):
                 mn_x = j * w
                 mx_x = mn_x + w
-                objects[id] = Rect(mn_x, mn_y, mx_x, mx_y)
-                id += 1
+                objects[id_] = Rect(mn_x, mn_y, mx_x, mx_y)
+                id_ += 1
         self.objects = objects
 
     def test_rtree(self):
         t = RTree()
-        for object in self.objects:
-            t.insert(object, self.objects[object])
+        for object_ in self.objects:
+            t.insert(object_, self.objects[object_])
         assert len(self.objects) == 100
 
         qr = Rect(5, 5, 25, 25)
@@ -49,5 +49,5 @@ class TestPyrtree:
 
         qr = Rect(5, 6, 65, 7)
 
-        res = [r.leaf_obj() for r in t.query_rect((qr)) if r.is_leaf()]
+        res = [r.leaf_obj() for r in t.query_rect(qr) if r.is_leaf()]
         assert len(res) == 4

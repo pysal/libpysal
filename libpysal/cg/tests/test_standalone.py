@@ -1,6 +1,9 @@
-import pytest
-import numpy as np
+# ruff: noqa: F403, F405
+
 import math
+
+import numpy as np
+import pytest
 
 from ..shapes import *
 from ..standalone import *
@@ -10,37 +13,37 @@ class TestBbcommon:
     def test_bbcommon(self):
         b0 = [0, 0, 10, 10]
         b1 = [5, 5, 15, 15]
-        assert 1 == bbcommon(b0, b1)
+        assert bbcommon(b0, b1) == 1
 
     def test_bbcommon_same(self):
         b0 = [0, 0, 10, 10]
         b1 = [0, 0, 10, 10]
-        assert 1 == bbcommon(b0, b1)
+        assert bbcommon(b0, b1) == 1
 
     def test_bbcommon_nested(self):
         b0 = [0, 0, 10, 10]
         b1 = [1, 1, 9, 9]
-        assert 1 == bbcommon(b0, b1)
+        assert bbcommon(b0, b1) == 1
 
     def test_bbcommon_top(self):
         b0 = [0, 0, 10, 10]
         b1 = [3, 5, 6, 15]
-        assert 1 == bbcommon(b0, b1)
+        assert bbcommon(b0, b1) == 1
 
     def test_bbcommon_shared_edge(self):
         b0 = [0, 0, 10, 10]
         b1 = [0, 10, 10, 20]
-        assert 1 == bbcommon(b0, b1)
+        assert bbcommon(b0, b1) == 1
 
     def test_bbcommon_shared_corner(self):
         b0 = [0, 0, 10, 10]
         b1 = [10, 10, 20, 20]
-        assert 1 == bbcommon(b0, b1)
+        assert bbcommon(b0, b1) == 1
 
     def test_bbcommon_floats(self):
         b0 = [0.0, 0.0, 0.1, 0.1]
         b1 = [0.05, 0.05, 0.15, 0.15]
-        assert 1 == bbcommon(b0, b1)
+        assert bbcommon(b0, b1) == 1
 
 
 class TestGetBoundingBox:
@@ -54,31 +57,31 @@ class TestGetAngleBetween:
     def test_get_angle_between(self):
         ray1 = Ray(Point((0, 0)), Point((1, 0)))
         ray2 = Ray(Point((0, 0)), Point((1, 0)))
-        assert 0.0 == get_angle_between(ray1, ray2)
+        assert get_angle_between(ray1, ray2) == 0.0
 
     def test_get_angle_between_expect45(self):
         ray1 = Ray(Point((0, 0)), Point((1, 0)))
         ray2 = Ray(Point((0, 0)), Point((1, 1)))
-        assert 45.0 == math.degrees(get_angle_between(ray1, ray2))
+        assert math.degrees(get_angle_between(ray1, ray2)) == 45.0
 
     def test_get_angle_between_expect90(self):
         ray1 = Ray(Point((0, 0)), Point((1, 0)))
         ray2 = Ray(Point((0, 0)), Point((0, 1)))
-        assert 90.0 == math.degrees(get_angle_between(ray1, ray2))
+        assert math.degrees(get_angle_between(ray1, ray2)) == 90.0
 
 
 class TestIsCollinear:
     def test_is_collinear(self):
-        assert True == is_collinear(Point((0, 0)), Point((1, 1)), Point((5, 5)))
+        assert is_collinear(Point((0, 0)), Point((1, 1)), Point((5, 5)))
 
     def test_is_collinear_expect_false(self):
-        assert False == is_collinear(Point((0, 0)), Point((1, 1)), Point((5, 0)))
+        assert not is_collinear(Point((0, 0)), Point((1, 1)), Point((5, 0)))
 
     def test_is_collinear_along_x(self):
-        assert True == is_collinear(Point((0, 0)), Point((1, 0)), Point((5, 0)))
+        assert is_collinear(Point((0, 0)), Point((1, 0)), Point((5, 0)))
 
     def test_is_collinear_along_y(self):
-        assert True == is_collinear(Point((0, 0)), Point((0, 1)), Point((0, -1)))
+        assert is_collinear(Point((0, 0)), Point((0, 1)), Point((0, -1)))
 
     def test_is_collinear_small_float(self):
         """
@@ -123,41 +126,39 @@ class TestIsCollinear:
 
         """
 
-        assert True == is_collinear(
-            Point((0.1, 0.2)), Point((0.2, 0.3)), Point((0.3, 0.4))
-        )
+        assert is_collinear(Point((0.1, 0.2)), Point((0.2, 0.3)), Point((0.3, 0.4)))
 
     def test_is_collinear_random(self):
         for i in range(10):
             a, b, c = np.random.random(3) * 10 ** (i)
-            assert True == is_collinear(Point((a, a)), Point((b, b)), Point((c, c)))
+            assert is_collinear(Point((a, a)), Point((b, b)), Point((c, c)))
 
     def test_is_collinear_random2(self):
-        for i in range(1000):
+        for _i in range(1000):
             a, b, c = np.random.random(3)
-            assert True == is_collinear(Point((a, a)), Point((b, b)), Point((c, c)))
+            assert is_collinear(Point((a, a)), Point((b, b)), Point((c, c)))
 
 
 class TestGetSegmentsIntersect:
     def test_get_segments_intersect(self):
         seg1 = LineSegment(Point((0, 0)), Point((0, 10)))
         seg2 = LineSegment(Point((-5, 5)), Point((5, 5)))
-        assert (0.0, 5.0) == get_segments_intersect(seg1, seg2)[:]
+        assert get_segments_intersect(seg1, seg2)[:] == (0.0, 5.0)
 
     def test_get_segments_intersect_shared_vert(self):
         seg1 = LineSegment(Point((0, 0)), Point((0, 10)))
         seg2 = LineSegment(Point((-5, 5)), Point((0, 10)))
-        assert (0.0, 10.0) == get_segments_intersect(seg1, seg2)[:]
+        assert get_segments_intersect(seg1, seg2)[:] == (0.0, 10.0)
 
     def test_get_segments_intersect_floats(self):
         seg1 = LineSegment(Point((0, 0)), Point((0, 0.10)))
         seg2 = LineSegment(Point((-0.5, 0.05)), Point((0.5, 0.05)))
-        assert (0.0, 0.05) == get_segments_intersect(seg1, seg2)[:]
+        assert get_segments_intersect(seg1, seg2)[:] == (0.0, 0.05)
 
     def test_get_segments_intersect_angles(self):
         seg1 = LineSegment(Point((0, 0)), Point((1, 1)))
         seg2 = LineSegment(Point((1, 0)), Point((0, 1)))
-        assert (0.5, 0.5) == get_segments_intersect(seg1, seg2)[:]
+        assert get_segments_intersect(seg1, seg2)[:] == (0.5, 0.5)
 
     def test_get_segments_intersect_no_intersect(self):
         seg1 = LineSegment(Point((-5, 5)), Point((5, 5)))
@@ -211,12 +212,12 @@ class TestGetSegmentPointIntersect:
         pt = Point((0, 20))
         assert None is get_segment_point_intersect(seg, pt)
 
-    def test_get_segment_point_intersect_floats(self):
+    def test_get_segment_point_intersect_floats_1(self):
         seg = LineSegment(Point((0.3, 0.3)), Point((0.9, 0.9)))
         pt = Point((0.5, 0.5))
         assert pt == get_segment_point_intersect(seg, pt)
 
-    def test_get_segment_point_intersect_floats(self):
+    def test_get_segment_point_intersect_floats_2(self):
         seg = LineSegment(
             Point((0.0, 0.0)), Point((2.7071067811865475, 2.7071067811865475))
         )
@@ -277,17 +278,17 @@ class TestGetRaySegmentIntersect:
     def test_get_ray_segment_intersect(self):
         ray = Ray(Point((0, 0)), Point((0, 1)))
         seg = LineSegment(Point((-1, 10)), Point((1, 10)))
-        assert (0.0, 10.0) == get_ray_segment_intersect(ray, seg)[:]
+        assert get_ray_segment_intersect(ray, seg)[:] == (0.0, 10.0)
 
     def test_get_ray_segment_intersect_orgin(self):
         ray = Ray(Point((0, 0)), Point((0, 1)))
         seg = LineSegment(Point((-1, 0)), Point((1, 0)))
-        assert (0.0, 0.0) == get_ray_segment_intersect(ray, seg)[:]
+        assert get_ray_segment_intersect(ray, seg)[:] == (0.0, 0.0)
 
     def test_get_ray_segment_intersect_edge(self):
         ray = Ray(Point((0, 0)), Point((0, 1)))
         seg = LineSegment(Point((0, 2)), Point((2, 2)))
-        assert (0.0, 2.0) == get_ray_segment_intersect(ray, seg)[:]
+        assert get_ray_segment_intersect(ray, seg)[:] == (0.0, 2.0)
 
     def test_get_ray_segment_intersect_no_intersect(self):
         ray = Ray(Point((0, 0)), Point((0, 1)))
@@ -373,7 +374,7 @@ class TestGetPointsDist:
     def test_get_points_dist(self):
         pt1 = Point((0.5, 0.5))
         pt2 = Point((0.5, 0.5))
-        assert 0 == get_points_dist(pt1, pt2)
+        assert get_points_dist(pt1, pt2) == 0
 
     def test_get_points_dist_diag(self):
         pt1 = Point((0, 0))
@@ -383,67 +384,67 @@ class TestGetPointsDist:
     def test_get_points_dist_along_x(self):
         pt1 = Point((-1000, 1 / 3.0))
         pt2 = Point((1000, 1 / 3.0))
-        assert 2000 == get_points_dist(pt1, pt2)
+        assert get_points_dist(pt1, pt2) == 2000
 
     def test_get_points_dist_along_y(self):
         pt1 = Point((1 / 3.0, -500))
         pt2 = Point((1 / 3.0, 500))
-        assert 1000 == get_points_dist(pt1, pt2)
+        assert get_points_dist(pt1, pt2) == 1000
 
 
 class TestGetSegmentPointDist:
     def test_get_segment_point_dist(self):
         seg = LineSegment(Point((0, 0)), Point((10, 0)))
         pt = Point((5, 5))
-        assert (5.0, 0.5) == get_segment_point_dist(seg, pt)
+        assert get_segment_point_dist(seg, pt) == (5.0, 0.5)
 
     def test_get_segment_point_dist_on_end_point(self):
         seg = LineSegment(Point((0, 0)), Point((10, 0)))
         pt = Point((0, 0))
-        assert (0.0, 0.0) == get_segment_point_dist(seg, pt)
+        assert get_segment_point_dist(seg, pt) == (0.0, 0.0)
 
     def test_get_segment_point_dist_on_middle(self):
         seg = LineSegment(Point((0, 0)), Point((10, 0)))
         pt = Point((5, 0))
-        assert (0.0, 0.5) == get_segment_point_dist(seg, pt)
+        assert get_segment_point_dist(seg, pt) == (0.0, 0.5)
 
     def test_get_segment_point_diag(self):
         seg = LineSegment(Point((0, 0)), Point((10, 10)))
         pt = Point((5, 5))
-        assert 0.0 == pytest.approx(get_segment_point_dist(seg, pt)[0])
-        assert 0.5 == pytest.approx(get_segment_point_dist(seg, pt)[1])
+        assert pytest.approx(get_segment_point_dist(seg, pt)[0]) == 0.0
+        assert pytest.approx(get_segment_point_dist(seg, pt)[1]) == 0.5
 
     def test_get_segment_point_diag_with_dist(self):
         seg = LineSegment(Point((0, 0)), Point((10, 10)))
         pt = Point((0, 10))
         assert 50 ** (0.5) == pytest.approx(get_segment_point_dist(seg, pt)[0])
-        assert 0.5 == pytest.approx(get_segment_point_dist(seg, pt)[1])
+        assert pytest.approx(get_segment_point_dist(seg, pt)[1]) == 0.5
 
 
 class TestGetPointAtAngleAndDist:
     def test_get_point_at_angle_and_dist(self):
         ray = Ray(Point((0, 0)), Point((1, 0)))
         pt = get_point_at_angle_and_dist(ray, math.pi, 1.0)
-        assert -1.0 == pytest.approx(pt[0])
-        assert 0.0 == pytest.approx(pt[1])
+        assert pytest.approx(pt[0]) == -1.0
+        assert pytest.approx(pt[1]) == 0.0
 
     def test_get_point_at_angle_and_dist_diag(self):
         ray = Ray(Point((0, 0)), Point((1, 1)))
         pt = get_point_at_angle_and_dist(ray, math.pi, 2 ** (0.5))
-        assert -1.0 == pytest.approx(pt[0])
-        assert -1.0 == pytest.approx(pt[1])
+        assert pytest.approx(pt[0]) == -1.0
+        assert pytest.approx(pt[1]) == -1.0
 
     def test_get_point_at_angle_and_dist_diag_90(self):
         ray = Ray(Point((0, 0)), Point((1, 1)))
         pt = get_point_at_angle_and_dist(ray, -math.pi / 2.0, 2 ** (0.5))
-        assert 1.0 == pytest.approx(pt[0])
-        assert -1.0 == pytest.approx(pt[1])
+        assert pytest.approx(pt[0]) == 1.0
+        assert pytest.approx(pt[1]) == -1.0
 
     def test_get_point_at_angle_and_dist_diag_45(self):
         ray = Ray(Point((0, 0)), Point((1, 1)))
         pt = get_point_at_angle_and_dist(ray, -math.pi / 4.0, 1)
-        assert 1.0 == pytest.approx(pt[0])
-        assert 0.0 == pytest.approx(pt[1])
+        assert pytest.approx(pt[0]) == 1.0
+        assert pytest.approx(pt[1]) == 0.0
 
 
 class TestConvexHull:
