@@ -52,7 +52,12 @@ jobs:
           micromamba-version: "latest"
 
       - name: Install libpysal
-        run: pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
+        run: |
+          pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
+
+      - name: Spatial versions
+        run: |
+          python -c 'import geopandas; geopandas.show_versions();'
 
       - name: Test libpysal
         run: |
