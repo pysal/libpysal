@@ -4,7 +4,7 @@ import shapely
 
 
 def _plot(
-    G,  # noqa N803
+    graph_obj,
     gdf,
     focal=None,
     nodes=True,
@@ -23,7 +23,7 @@ def _plot(
 
     Parameters
     ----------
-    G : Graph
+    graph_obj : Graph
         Graph to be plotted
     gdf : geopandas.GeoDataFrame
         Geometries indexed using the same index as Graph. Geometry types other than
@@ -88,19 +88,20 @@ def _plot(
     else:
         edge_kws = {"color": color}
 
-    # get array of coordinates in the order reflecting G._adjacency.index.codes we need
-    # to work on int position to allow fast filtering of duplicated edges and cannot
-    # rely on gdf remaining in the same order between Graph creation and plotting
-    coords = shapely.get_coordinates(gdf.reindex(G.unique_ids).centroid)
+    # get array of coordinates in the order reflecting graph_obj._adjacency.index.codes
+    # we need to work on int position to allow fast filtering of duplicated edges and
+    # cannot rely on gdf remaining in the same order between Graph creation and
+    # plotting
+    coords = shapely.get_coordinates(gdf.reindex(graph_obj.unique_ids).centroid)
 
     if focal is not None:
         if not pd.api.types.is_list_like(focal):
             focal = [focal]
-        subset = G._adjacency[focal]
+        subset = graph_obj._adjacency[focal]
         codes = subset.index.codes
 
     else:
-        codes = G._adjacency.index.codes
+        codes = graph_obj._adjacency.index.codes
 
     # avoid plotting both ij and ji
     edges = np.unique(np.sort(np.column_stack([codes]).T, axis=1), axis=0)

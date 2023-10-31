@@ -1265,8 +1265,8 @@ class Graph(SetOpsMixin):
 
         """
         return _plot(
-            G=self,
-            gdf=gdf,
+            self,
+            gdf,
             focal=focal,
             nodes=nodes,
             color=color,
