@@ -224,11 +224,11 @@ def _validate_sparse_input(sparse, ids=None):
     return _sparse_to_arrays(sparse, ids)
 
 
-def _vec_euclidean_distances(X, Y):  # noqa N803
+def _vec_euclidean_distances(x_vec, y_vec):
     """
     compute the euclidean distances along corresponding rows of two arrays
     """
-    return ((X - Y) ** 2).sum(axis=1) ** 0.5
+    return ((x_vec - y_vec) ** 2).sum(axis=1) ** 0.5
 
 
 def _evaluate_index(data):
