@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from numpy.testing import assert_array_almost_equal
-from scipy.sparse.csr import csr_matrix
+from scipy.sparse import csr_matrix
 from shapely import get_coordinates
 
 from libpysal import graph
