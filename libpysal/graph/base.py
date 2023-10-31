@@ -1113,7 +1113,7 @@ class Graph(_Set_Mixin):
             for j in range(1, k):
                 wj = sp**j
                 rj, cj = wj.nonzero()
-                sj = set(zip(rj, cj), strict=True)
+                sj = set(zip(rj, cj, strict=True))
                 sk.difference_update(sj)
         if not diagonal:
             sk = {(i, j) for i, j in sk if i != j}
