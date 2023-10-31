@@ -6,7 +6,6 @@ import pytest
 from numpy.testing import assert_array_almost_equal
 from shapely import get_coordinates
 from scipy.sparse.csr import csr_matrix
-from sklearn.metrics.pairwise import euclidean_distances
 
 from libpysal import graph
 
