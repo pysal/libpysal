@@ -69,7 +69,7 @@ def _validate_coincident(triangulator):
                     f"the dataset, but {len(geoms)} observations. This means there "
                     "are multiple points in the same location, which is undefined "
                     "for this graph type. To address this issue, consider setting "
-                    "`coincident='clique' or consult the documentation about "
+                    "`coincident='clique'` or consult the documentation about "
                     "coincident points."
                 )
             elif coincident == "jitter":

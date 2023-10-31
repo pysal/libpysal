@@ -5,7 +5,7 @@ from packaging.version import Version
 from ._utils import _resolve_islands
 
 
-class _Set_Mixin:  # noqa N801
+class SetOpsMixin:
     """
     This implements common useful set operations on weights and dunder methods.
     """
