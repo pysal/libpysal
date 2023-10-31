@@ -17,7 +17,7 @@ from ._contiguity import (
 from ._kernel import _distance_band, _kernel
 from ._parquet import _read_parquet, _to_parquet
 from ._plotting import _plot
-from ._set_ops import _Set_Mixin
+from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._utils import _evaluate_index, _neighbor_dict_to_edges, _sparse_to_arrays
@@ -33,7 +33,7 @@ Levi John Wolf (levi.john.wolf@gmail.com)
 """
 
 
-class Graph(_Set_Mixin):
+class Graph(SetOpsMixin):
     """Graph class encoding spatial weights matrices
 
     The :class:`Graph` is currently experimental
@@ -1265,8 +1265,8 @@ class Graph(_Set_Mixin):
 
         """
         return _plot(
-            G=self,
-            gdf=gdf,
+            self,
+            gdf,
             focal=focal,
             nodes=nodes,
             color=color,

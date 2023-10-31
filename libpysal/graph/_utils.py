@@ -1,10 +1,10 @@
 import warnings
+from itertools import permutations
 
 import geopandas
 import numpy as np
 import pandas as pd
 import shapely
-from itertools import permutations
 from packaging.version import Version
 
 GPD_013 = Version(geopandas.__version__) >= Version("0.13")
@@ -77,13 +77,13 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
             clique_to_members["input_index"], left_index=True, right_index=True
         )
         .explode("input_index")
-        .rename(columns=dict(input_index="subclique_focal"))
+        .rename(columns={"input_index": "subclique_focal"})
         .merge(clique_to_members["input_index"], left_on="neighbor", right_index=True)
         .explode("input_index")
-        .rename(columns=dict(input_index="subclique_neighbor"))
+        .rename(columns={"input_index": "subclique_neighbor"})
         .reset_index()
         .drop(["focal", "neighbor", "index"], axis=1)
-        .rename(columns=dict(subclique_focal="focal", subclique_neighbor="neighbor"))
+        .rename(columns={"subclique_focal": "focal", "subclique_neighbor": "neighbor"})
     )
     is_multimember_clique = clique_to_members["input_index"].str.len() > 1
     adj_within_clique = (
@@ -137,7 +137,7 @@ def _build_coincidence_lookup(geoms):
     """
     Identify coincident points and create a look-up table for the coincident geometries.
     """
-    valid_coincident_geom_types = set(("Point",))
+    valid_coincident_geom_types = set(("Point",))  # noqa C405
     if not set(geoms.geom_type) <= valid_coincident_geom_types:
         raise ValueError(
             "coindicence checks are only well-defined for "
@@ -164,7 +164,7 @@ def _build_coincidence_lookup(geoms):
         lut["geometry"] = geopandas.GeoSeries.from_wkb(lut["geometry"])
 
     lut = geopandas.GeoDataFrame(lut)
-    return max_coincident, lut.rename(columns=dict(index="input_index"))
+    return max_coincident, lut.rename(columns={"index": "input_index"})
 
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
@@ -178,7 +178,7 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     the returned coordinates will always pertain to geoms, but may be
     longer than geoms (such as when geoms represents polygons).
     """
-    if isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
+    if isinstance(geoms, geopandas.GeoSeries | geopandas.GeoDataFrame):
         geoms = geoms.geometry
         if ids is None:
             ids = geoms.index
@@ -224,18 +224,18 @@ def _validate_sparse_input(sparse, ids=None):
     return _sparse_to_arrays(sparse, ids)
 
 
-def _vec_euclidean_distances(X, Y):
+def _vec_euclidean_distances(x_vec, y_vec):
     """
     compute the euclidean distances along corresponding rows of two arrays
     """
-    return ((X - Y) ** 2).sum(axis=1) ** 0.5
+    return ((x_vec - y_vec) ** 2).sum(axis=1) ** 0.5
 
 
 def _evaluate_index(data):
     """Helper to get ids from any input."""
     return (
         data.index
-        if isinstance(data, (pd.Series, pd.DataFrame))
+        if isinstance(data, pd.Series | pd.DataFrame)
         else pd.RangeIndex(0, len(data))
     )
 

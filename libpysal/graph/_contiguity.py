@@ -1,12 +1,12 @@
 from collections import defaultdict
 
-import numpy
-import shapely
-import pandas
 import geopandas
+import numpy
+import pandas
+import shapely
 from packaging.version import Version
 
-from ._utils import _neighbor_dict_to_edges, _validate_geometry_input, _resolve_islands
+from ._utils import _neighbor_dict_to_edges, _resolve_islands, _validate_geometry_input
 
 GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 
@@ -43,9 +43,9 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
     )
 
     # initialise the target map
-    graph = dict()
+    graph = {}
     for idx in ids:
-        graph[idx] = set([idx])
+        graph[idx] = {idx}
 
     # get all of the vertices for the input
     vertices, offsets = shapely.get_coordinates(geoms.geometry, return_index=True)
