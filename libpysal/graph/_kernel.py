@@ -1,17 +1,16 @@
 import numpy
-from scipy import sparse, optimize, spatial, stats
+from scipy import optimize, sparse, spatial, stats
 
 from ._utils import (
-    _validate_geometry_input,
     _build_coincidence_lookup,
-    _induce_cliques,
     _jitter_geoms,
-    _sparse_to_arrays,
     _resolve_islands,
+    _sparse_to_arrays,
+    _validate_geometry_input,
 )
 
 try:
-    from sklearn import neighbors, metrics
+    from sklearn import metrics, neighbors
 
     HAS_SKLEARN = True
 except ImportError:
@@ -50,7 +49,7 @@ def _boxcar(distances, bandwidth):
     return r
 
 
-def _identity(distances, bandwidth):
+def _identity(distances, _):
     return distances
 
 
@@ -134,24 +133,25 @@ def _kernel(
         if ids is None:
             ids = numpy.arange(coordinates.shape[0])
 
-    if metric == "haversine":
-        if not (
+    if (
+        metric == "haversine"
+        and not (
             (coordinates[:, 0] > -180)
             & (coordinates[:, 0] < 180)
             & (coordinates[:, 1] > -90)
             & (coordinates[:, 1] < 90)
-        ).all():
-            raise ValueError(
-                "'haversine' metric is limited to the range of "
-                "latitude coordinates (-90, 90) and the range of "
-                "longitude coordinates (-180, 180)."
-            )
+        ).all()
+    ):
+        raise ValueError(
+            "'haversine' metric is limited to the range of latitude coordinates "
+            "(-90, 90) and the range of longitude coordinates (-180, 180)."
+        )
 
     if k is not None:
         if metric != "precomputed":
-            D = _knn(coordinates, k=k, metric=metric, p=p, coincident=coincident)
+            d = _knn(coordinates, k=k, metric=metric, p=p, coincident=coincident)
         else:
-            D = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
+            d = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
         if metric != "precomputed":
             dist_kwds = {}
@@ -167,8 +167,8 @@ def _kernel(
                         f"metric {metric} is not supported by scipy, and scikit-learn "
                         "could not be imported."
                     )
-                D = spatial.distance.pdist(coordinates, metric=metric, **dist_kwds)
-                sq = spatial.distance.squareform(D)
+                d = spatial.distance.pdist(coordinates, metric=metric, **dist_kwds)
+                sq = spatial.distance.squareform(d)
 
             # ensure that self-distance is dropped but 0 between co-located pts not
             # get data and ids for sparse constructor
@@ -180,31 +180,31 @@ def _kernel(
             i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
             j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
             # construct sparse
-            D = sparse.csc_array((data, (i, j)))
+            d = sparse.csc_array((data, (i, j)))
         else:
-            D = sparse.csc_array(coordinates)
+            d = sparse.csc_array(coordinates)
     if bandwidth is None:
-        bandwidth = numpy.percentile(D.data, 25)
+        bandwidth = numpy.percentile(d.data, 25)
     elif bandwidth == "auto":
         if (kernel == "identity") or (kernel is None):
             bandwidth = numpy.nan  # ignored by identity
         else:
-            bandwidth = _optimize_bandwidth(D, kernel)
+            bandwidth = _optimize_bandwidth(d, kernel)
     if callable(kernel):
-        D.data = kernel(D.data, bandwidth)
+        d.data = kernel(d.data, bandwidth)
     else:
-        D.data = _kernel_functions[kernel](D.data, bandwidth)
+        d.data = _kernel_functions[kernel](d.data, bandwidth)
 
     if taper:
-        D.eliminate_zeros()
+        d.eliminate_zeros()
 
-    heads, tails, weights = _sparse_to_arrays(D, ids=ids)
+    heads, tails, weights = _sparse_to_arrays(d, ids=ids)
 
     return _resolve_islands(heads, tails, ids, weights)
 
 
 def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
-    """internal function called only from within _kernel, never directly to build KNN"""
+    """internal function called only within _kernel, never directly to build KNN"""
     coordinates, ids, geoms = _validate_geometry_input(
         coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
@@ -217,29 +217,29 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
             # sklearn haversine works with (lat,lng) in radians...
             coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
         query = _prepare_tree_query(coordinates, metric, p=p)
-        D_linear, ixs = query(coordinates, k=k + 1)
+        d_linear, ixs = query(coordinates, k=k + 1)
         self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
-        D_linear = D_linear[:, 1:]
+        d_linear = d_linear[:, 1:]
         self_ix_flat = numpy.repeat(self_ix, k)
         neighbor_ix_flat = neighbor_ix.flatten()
-        D_linear_flat = D_linear.flatten()
+        d_linear_flat = d_linear.flatten()
         if metric == "haversine":
-            D_linear_flat * 6371  # express haversine distances in kilometers
-        D = sparse.csr_array(
-            (D_linear_flat, (self_ix_flat, neighbor_ix_flat)),
+            d_linear_flat * 6371  # express haversine distances in kilometers
+        d = sparse.csr_array(
+            (d_linear_flat, (self_ix_flat, neighbor_ix_flat)),
             shape=(n_samples, n_samples),
         )
-        return D
+        return d
 
     else:
         if coincident == "raise":
             raise ValueError(
-                f"There are {len(coincident_lut)} "
-                f"unique locations in the dataset, but {len(coordinates)} observations. "
-                f"At least one of these sites has {max_at_one_site} points, more than the "
-                f"{k} nearest neighbors requested. This means there are more than {k} points "
-                "in the same location, which makes this graph type undefined. To address "
-                "this issue, consider setting `coincident='clique' or consult the "
+                f"There are {len(coincident_lut)} unique locations in the dataset, "
+                f"but {len(coordinates)} observations. At least one of these sites "
+                f"has {max_at_one_site} points, more than the {k} nearest neighbors "
+                f"requested. This means there are more than {k} points in the same "
+                "location, which makes this graph type undefined. To address "
+                "this issue, consider setting `coincident='clique'` or consult the "
                 "documentation about coincident points."
             )
         if coincident == "jitter":
@@ -258,7 +258,13 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
             )
             # # implicit coincident == "clique"
             # heads, tails, weights = _sparse_to_arrays(
-            #     _knn(coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise")
+            #     _knn(
+            #         coincident_lut.geometry,
+            #         metric=metric,
+            #         k=k,
+            #         p=p,
+            #         coincident="raise"
+            #     )
             # )
             # adjtable = pandas.DataFrame.from_dict(
             #     dict(focal=heads, neighbor=tails, weight=weights)
@@ -300,9 +306,7 @@ def _prepare_tree_query(coordinates, metric, p=2):
         return tree(coordinates, metric=metric, **dist_kwds).query
     else:
         if metric in ("euclidean", "manhattan", "cityblock", "minkowski"):
-            from scipy.spatial import KDTree as tree
-
-            tree_ = tree(coordinates)
+            tree_ = spatial.KDTree(coordinates)
             p = {"euclidean": 2, "manhattan": 1, "cityblock": 1, "minkowski": p}[metric]
 
             def query(target, k):
@@ -316,7 +320,7 @@ def _prepare_tree_query(coordinates, metric, p=2):
             )
 
 
-def _optimize_bandwidth(D, kernel):
+def _optimize_bandwidth(d, kernel):
     """
     Optimize the bandwidth as a function of entropy for a given kernel function.
 
@@ -326,16 +330,17 @@ def _optimize_bandwidth(D, kernel):
     "moderate" level of smoothing.
     """
     kernel_function = _kernel_functions.get(kernel, kernel)
-    assert callable(
-        kernel_function
-    ), f"kernel {kernel} was not in supported kernel types {_kernel_functions.keys()} or callable"
+    assert callable(kernel_function), (
+        f"kernel {kernel} was not in supported kernel types "
+        f"{_kernel_functions.keys()} or callable"
+    )
 
-    def _loss(bandwidth, D=D, kernel_function=kernel_function):
-        Ku = kernel_function(D.data, bandwidth)
-        bins, _ = numpy.histogram(Ku, bins=int(D.shape[0] ** 0.5), range=(0, 1))
+    def _loss(bandwidth, d=d, kernel_function=kernel_function):
+        k_u = kernel_function(d.data, bandwidth)
+        bins, _ = numpy.histogram(k_u, bins=int(d.shape[0] ** 0.5), range=(0, 1))
         return -stats.entropy(bins / bins.sum())
 
     xopt = optimize.minimize_scalar(
-        _loss, bounds=(0, D.data.max() * 2), method="bounded"
+        _loss, bounds=(0, d.data.max() * 2), method="bounded"
     )
     return xopt.x

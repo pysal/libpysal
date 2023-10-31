@@ -17,7 +17,7 @@ from ._contiguity import (
 from ._kernel import _distance_band, _kernel
 from ._parquet import _read_parquet, _to_parquet
 from ._plotting import _plot
-from ._set_ops import _Set_Mixin
+from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._utils import _evaluate_index, _neighbor_dict_to_edges, _sparse_to_arrays
@@ -33,10 +33,11 @@ Levi John Wolf (levi.john.wolf@gmail.com)
 """
 
 
-class Graph(_Set_Mixin):
+class Graph(SetOpsMixin):
     """Graph class encoding spatial weights matrices
 
-    The :class:`Graph` is currently experimental and its API is incomplete and unstable.
+    The :class:`Graph` is currently experimental
+    and its API is incomplete and unstable.
     """
 
     def __init__(self, adjacency, transformation="O"):
@@ -45,8 +46,8 @@ class Graph(_Set_Mixin):
         It is recommenced to use one of the ``from_*`` or ``build_*`` constructors
         rather than invoking ``__init__`` directly.
 
-        Each observation needs to be present in the focal, at least as a self-loop with
-        a weight 0.
+        Each observation needs to be present in the focal,
+        at least as a self-loop with a weight 0.
 
         Parameters
         ----------
@@ -62,7 +63,6 @@ class Graph(_Set_Mixin):
             - **R** -- Row-standardization (global sum :math:`=n`)
             - **D** -- Double-standardization (global sum :math:`=1`)
             - **V** -- Variance stabilizing
-
 
         """
         if not isinstance(adjacency, pd.Series):
@@ -147,7 +147,7 @@ class Graph(_Set_Mixin):
         return self._adjacency.copy()
 
     @classmethod
-    def from_W(cls, w):
+    def from_W(cls, w):  # noqa N802
         """Create an experimental Graph from libpysal.weights.W object
 
         Parameters
@@ -161,7 +161,7 @@ class Graph(_Set_Mixin):
         """
         return cls.from_weights_dict(dict(w))
 
-    def to_W(self):
+    def to_W(self):  # noqa N802
         """Convert Graph to a libpysal.weights.W object
 
         Returns
@@ -226,9 +226,10 @@ class Graph(_Set_Mixin):
             zip(
                 [focal_col, neighbor_col, weight_col],
                 ["focal_col", "neighbor_col", "weight_col"],
+                strict=True,
             )
         )
-        for col in cols.keys():
+        for col in cols:
             assert col in adjacency.columns.tolist(), (
                 f'"{col}" was given for `{cols[col]}`, but the '
                 f"columns available in `adjacency` are:  {adjacency.columns.tolist()}."
@@ -307,10 +308,8 @@ class Graph(_Set_Mixin):
         Graph
             libpysal.graph.Graph based on weights dictionary of dictionaries
         """
-        idx = {f: [k for k in neighbors] for f, neighbors in weights_dict.items()}
-        data = {
-            f: [k for k in neighbors.values()] for f, neighbors in weights_dict.items()
-        }
+        idx = {f: list(neighbors) for f, neighbors in weights_dict.items()}
+        data = {f: list(neighbors.values()) for f, neighbors in weights_dict.items()}
         return cls.from_dicts(idx, data)
 
     @classmethod
@@ -339,9 +338,9 @@ class Graph(_Set_Mixin):
         """Generate Graph from geometry based on contiguity
 
         Contiguity builder assumes that all geometries are forming a coverage, i.e.
-        a non-overlapping mesh and neighbouring geometries share only points or segments
-        of their exterior boundaries. In practice, ``build_contiguity`` is capable of
-        creating a Graph of partially overlapping geometries when
+        a non-overlapping mesh and neighbouring geometries share only points or
+        segments of their exterior boundaries. In practice, ``build_contiguity`` is
+        capable of creating a Graph of partially overlapping geometries when
         ``strict=False, by_perimeter=False``, but that would not strictly follow the
         definition of queen or rook contiguity.
 
@@ -352,9 +351,9 @@ class Graph(_Set_Mixin):
             resulting Graph is indexed by the original index. If an array of
             shapely.Geometry objects is passed, Graph will assume a RangeIndex.
         rook : bool, optional
-            Contiguity method. If True, two geometries are considered neighbours if they
-            share at least one edge. If False, two geometries are considered neighbours
-            if they share at least one vertex. By default True
+            Contiguity method. If True, two geometries are considered neighbours if
+            they share at least one edge. If False, two geometries are considered
+            neighbours if they share at least one vertex. By default True
         by_perimeter : bool, optional
             If True, ``weight`` represents the length of the shared boundary between
             adjacent units, by default False. For row-standardized version of perimeter
@@ -362,12 +361,12 @@ class Graph(_Set_Mixin):
             ``Graph.build_contiguity(gdf, by_perimeter=True).transform("r")``.
         strict : bool, optional
             Use the strict topological method. If False, the contiguity is determined
-            based on shared coordinates or coordinate sequences representing edges. This
-            assumes geometry coverage that is topologically correct. This method is
-            faster but can miss some relations. If True, the contiguity is determined
-            based on geometric relations that do not require precise topology. This
-            method is slower but will result in correct contiguity even if the topology
-            of geometries is not optimal. By default False
+            based on shared coordinates or coordinate sequences representing edges.
+            This assumes geometry coverage that is topologically correct. This method
+            is faster but can miss some relations. If True, the contiguity is
+            determined based on geometric relations that do not require precise
+            topology. This method is slower but will result in correct contiguity
+            even if the topology of geometries is not optimal. By default False.
 
         Returns
         -------
@@ -448,11 +447,10 @@ class Graph(_Set_Mixin):
         p : int (default: 2)
             parameter for minkowski metric, ignored if metric != "minkowski".
         coincident: str, optional (default "raise")
-            Method for handling coincident points when ``k`` is not None. Options include
+            Method for handling coincident points when ``k`` is not None. Options are
             ``'raise'`` (raising an exception when coincident points are present),
-            ``'jitter'`` (randomly displace coincident points to produce uniqueness), and
+            ``'jitter'`` (randomly displace coincident points to produce uniqueness), &
             ``'clique'`` (induce fully-connected sub cliques for coincident points).
-
 
         Returns
         -------
@@ -498,7 +496,7 @@ class Graph(_Set_Mixin):
         coincident: str, optional (default "raise")
             Method for handling coincident points. Options include
             ``'raise'`` (raising an exception when coincident points are present),
-            ``'jitter'`` (randomly displace coincident points to produce uniqueness), and
+            ``'jitter'`` (randomly displace coincident points to produce uniqueness), &
             ``'clique'`` (induce fully-connected sub cliques for coincident points).
 
 
@@ -583,7 +581,7 @@ class Graph(_Set_Mixin):
         coincident: str, optional (default "raise")
             Method for handling coincident points. Options include
             ``'raise'`` (raising an exception when coincident points are present),
-            ``'jitter'`` (randomly displace coincident points to produce uniqueness), and
+            ``'jitter'`` (randomly displace coincident points to produce uniqueness), &
             ``'clique'`` (induce fully-connected sub cliques for coincident points).
 
         Returns
@@ -737,15 +735,16 @@ class Graph(_Set_Mixin):
     ):
         """Generate Graph from fuzzy contiguity
 
-        Fuzzy contiguity relaxes the notion of contiguity neighbors for the case of
-        geometry collections that violate the condition of planar enforcement. It
-        handles three types of conditions present in such collections that would result
-        in missing links when using the regular contiguity methods.
+        Fuzzy contiguity relaxes the notion of contiguity neighbors
+        for the case of geometry collections that violate the condition
+        of planar enforcement. It handles three types of conditions present
+        in such collections that would result in missing links when using
+        the regular contiguity methods.
 
-        The first are edges for nearby polygons that should be shared, but are digitized
-        separately for the individual polygons and the resulting edges do not
-        coincide, but instead the edges intersect. This case can also be covered by
-        ``build_contiguty`` with the ``strict=False`` parameter.
+        The first are edges for nearby polygons that should be shared, but are
+        digitized separately for the individual polygons and the resulting edges
+        do not coincide, but instead the edges intersect. This case can also be
+        covered by ``build_contiguty`` with the ``strict=False`` parameter.
 
         The second case is similar to the first, only the resultant edges do not
         intersect but are "close". The optional buffering of geometry then closes the
@@ -772,10 +771,10 @@ class Graph(_Set_Mixin):
             ``tolerance`` or ``buffer`` may be specified but not both.
             By default None.
         predicate : str, optional
-            The predicate to use for determination of neighbors. Default is 'intersects'.
-            If None is passed, neighbours are determined based on the intersection of
-            bounding boxes. See the documentation of ``geopandas.GeoSeries.sindex.query``
-            for allowed predicates.
+            The predicate to use for determination of neighbors. Default is
+            'intersects'. If None is passed, neighbours are determined based
+            on the intersection of bounding boxes. See the documentation of
+            ``geopandas.GeoSeries.sindex.query`` for allowed predicates.
 
         Returns
         -------
@@ -904,8 +903,8 @@ class Graph(_Set_Mixin):
             s = self._adjacency.groupby(level=0).transform(
                 lambda group: group / math.sqrt((group**2).sum())
             )
-            nQ = self.n / s.sum()
-            standardized = (s * nQ).fillna(0).values  # isolate comes as NaN -> 0
+            n_q = self.n / s.sum()
+            standardized = (s * n_q).fillna(0).values  # isolate comes as NaN -> 0
 
         else:
             raise ValueError(
@@ -965,7 +964,8 @@ class Graph(_Set_Mixin):
     def isolates(self):
         """Index of observations with no neighbors
 
-        Isolates are encoded as a self-loop with the weight == 0 in the adjacency table.
+        Isolates are encoded as a self-loop with
+        the weight == 0 in the adjacency table.
 
         Returns
         -------
@@ -1012,7 +1012,6 @@ class Graph(_Set_Mixin):
 
         Parameters
         ----------
-
         intrinsic : bool, optional
             Default is ``True``. Intrinsic symmetry is defined as:
 
@@ -1033,13 +1032,11 @@ class Graph(_Set_Mixin):
 
         Returns
         -------
-
         pandas.Series
             A ``Series`` of ``(i,j)`` pairs of asymmetries sorted
             ascending by the focal observation (index value),
             where ``i`` is the focal and ``j`` is the neighbor.
             An empty ``Series`` is returned if no asymmetries are found.
-
         """
         if intrinsic:
             wd = self.sparse.transpose() - self.sparse
@@ -1055,7 +1052,9 @@ class Graph(_Set_Mixin):
                 dtype=self._adjacency.index.dtypes["focal"],
             )
         else:
-            i2id = dict(zip(np.arange(self.unique_ids.shape[0]), self.unique_ids))
+            i2id = dict(
+                zip(np.arange(self.unique_ids.shape[0]), self.unique_ids, strict=True)
+            )
             focal, neighbor = np.nonzero(wd)
             focal = focal.astype(self._adjacency.index.dtypes["focal"])
             neighbor = neighbor.astype(self._adjacency.index.dtypes["focal"])
@@ -1070,9 +1069,9 @@ class Graph(_Set_Mixin):
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order :math:`k`.
 
-        Proper higher order neighbors are returned such that :math:`i` and :math:`j` are
-        :math:`k`-order neighbors if the shortest path from :math:`i-j` is of length
-        :math:`k`.
+        Proper higher order neighbors are returned such that :math:`i` and :math:`j`
+        are :math:`k`-order neighbors if the shortest path from :math:`i-j` is of
+        length :math:`k`.
 
         Parameters
         ----------
@@ -1102,22 +1101,22 @@ class Graph(_Set_Mixin):
         sp = sparse.csr_matrix(binary.sparse)
 
         if lower_order:
-            wk = sum(map(lambda x: sp**x, range(2, k + 1)))
+            wk = sum(sp**x for x in range(2, k + 1))
             shortest_path = False
         else:
             wk = sp**k
 
         rk, ck = wk.nonzero()
-        sk = set(zip(rk, ck))
+        sk = set(zip(rk, ck, strict=True))
 
         if shortest_path:
             for j in range(1, k):
                 wj = sp**j
                 rj, cj = wj.nonzero()
-                sj = set(zip(rj, cj))
+                sj = set(zip(rj, cj, strict=True))
                 sk.difference_update(sj)
         if not diagonal:
-            sk = set([(i, j) for i, j in sk if i != j])
+            sk = {(i, j) for i, j in sk if i != j}
 
         return Graph.from_sparse(
             sparse.coo_array(
@@ -1133,9 +1132,9 @@ class Graph(_Set_Mixin):
     def lag(self, y):
         """Spatial lag operator
 
-        If weights are row standardized, returns the mean of each observation's neighbors;
-        if not, returns the weighted sum of each observation's neighbors.
-
+        If weights are row standardized, returns the mean of each
+        observation's neighbors; if not, returns the weighted sum
+        of each observation's neighbors.
 
         Parameters
         ----------
@@ -1183,12 +1182,9 @@ class Graph(_Set_Mixin):
         try:
             import networkx as nx
         except ImportError:
-            raise ImportError("NetworkX is required.")
+            raise ImportError("NetworkX is required.") from None
 
-        if self.asymmetry().empty:
-            graph_type = nx.Graph
-        else:
-            graph_type = nx.DiGraph
+        graph_type = nx.Graph if self.asymmetry().empty else nx.DiGraph
 
         return nx.from_pandas_edgelist(
             self._adjacency.reset_index(),
@@ -1269,8 +1265,8 @@ class Graph(_Set_Mixin):
 
         """
         return _plot(
-            G=self,
-            gdf=gdf,
+            self,
+            gdf,
             focal=focal,
             nodes=nodes,
             color=color,
@@ -1294,7 +1290,9 @@ def _arrange_arrays(heads, tails, weights, ids=None):
     if ids is None:
         ids = np.unique(np.hstack((heads, tails)))
     lookup = list(ids).index
-    input_df = pd.DataFrame.from_dict(dict(focal=heads, neighbor=tails, weight=weights))
+    input_df = pd.DataFrame.from_dict(
+        {"focal": heads, "neighbor": tails, "weight": weights}
+    )
     return (
         input_df.set_index(["focal", "neighbor"])
         .assign(
@@ -1311,9 +1309,9 @@ def _arrange_arrays(heads, tails, weights, ids=None):
 def read_parquet(path, **kwargs):
     """Read Graph from a Apache Parquet
 
-    Read Graph serialized using `Graph.to_parquet()` back into the `Graph` object. The
-    Parquet file needs to contain adjacency table with a structure required by the `Graph`
-    constructor and optional metadata with the type of transformation.
+    Read Graph serialized using `Graph.to_parquet()` back into the `Graph` object.
+    The Parquet file needs to contain adjacency table with a structure required
+    by the `Graph` constructor and optional metadata with the type of transformation.
 
     Parameters
     ----------

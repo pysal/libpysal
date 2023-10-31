@@ -1,12 +1,11 @@
 import numpy as np
 import pandas
-
 from packaging.version import Version
 
 from ._utils import _resolve_islands
 
 
-class _Set_Mixin:
+class SetOpsMixin:
     """
     This implements common useful set operations on weights and dunder methods.
     """
@@ -53,8 +52,8 @@ class _Set_Mixin:
 
     def intersects(self, right):
         """
-        Returns True if left and right share at least one link, irrespective of weights
-        value.
+        Returns True if left and right share at least one link,
+        irrespective of weights value.
         """
         intersection = self._adjacency.index.drop(self.isolates).intersection(
             right._adjacency.index.drop(right.isolates)
@@ -108,13 +107,15 @@ class _Set_Mixin:
 
     def union(self, right):
         """
-        Provide the union of two Graph objects, collecing all links that are in either graph.
+        Provide the union of two Graph objects,
+        collecing all links that are in either graph.
         """
         from .base import Graph
 
         if not (self.unique_ids == right.unique_ids).all():
             raise ValueError(
-                "Cannot do union of Graphs that are based on different sets of unique IDs."
+                "Cannot do union of Graphs that are "
+                "based on different sets of unique IDs."
             )
 
         union = self._adjacency.index.drop(self.isolates).union(
@@ -131,8 +132,9 @@ class _Set_Mixin:
 
     def difference(self, right):
         """
-        Provide the set difference between the graph on the left and the graph on the right.
-        This returns all links in the left graph that are not in the right graph.
+        Provide the set difference between the graph on
+        the left and the graph on the right. This returns
+        all links in the left graph that are not in the right graph.
         """
         from .base import Graph
 
@@ -193,7 +195,9 @@ class _Set_Mixin:
         try:
             import networkx as nx
         except ImportError:
-            raise ImportError("NetworkX is required to check for graph isomorphism")
+            raise ImportError(
+                "NetworkX is required to check for graph isomorphism"
+            ) from None
 
         nxleft = self.to_networkx()
         nxright = right.to_networkx()
