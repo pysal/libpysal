@@ -3,8 +3,8 @@ from functools import wraps
 
 import numpy
 import pandas
-from scipy import sparse, spatial
 from packaging.version import Version
+from scipy import sparse, spatial
 
 from libpysal.cg import voronoi_frames
 
@@ -65,11 +65,11 @@ def _validate_coincident(triangulator):
         if n_coincident > 0:
             if coincident == "raise":
                 raise ValueError(
-                    f"There are {len(coincident_lut)} "
-                    f"unique locations in the dataset, but {len(geoms)} observations. "
-                    "This means there are multiple points in the same location, which "
-                    "is undefined for this graph type. To address this issue, consider "
-                    "setting `coincident='clique' or consult the documentation about "
+                    f"There are {len(coincident_lut)} unique locations in "
+                    f"the dataset, but {len(geoms)} observations. This means there "
+                    "are multiple points in the same location, which is undefined "
+                    "for this graph type. To address this issue, consider setting "
+                    "`coincident='clique' or consult the documentation about "
                     "coincident points."
                 )
             elif coincident == "jitter":
@@ -97,11 +97,11 @@ def _validate_coincident(triangulator):
             distances = _vec_euclidean_distances(
                 coordinates[heads_ix], coordinates[tails_ix]
             ).squeeze()
-            sparse_D = sparse.csc_array((distances, (heads_ix, tails_ix)))
+            sparse_d = sparse.csc_array((distances, (heads_ix, tails_ix)))
             if bandwidth == "auto":
-                bandwidth = _optimize_bandwidth(sparse_D, kernel)
+                bandwidth = _optimize_bandwidth(sparse_d, kernel)
             _, _, weights = _kernel(
-                sparse_D,
+                sparse_d,
                 metric="precomputed",
                 kernel=kernel,
                 bandwidth=bandwidth,
@@ -109,15 +109,15 @@ def _validate_coincident(triangulator):
             )
         # create adjacency
         adjtable = pandas.DataFrame.from_dict(
-            dict(focal=heads, neighbor=tails, weight=weights)
+            {"focal": heads, "neighbor": tails, "weight": weights}
         )
 
         # TODO: fix this
         # reinsert points resolved via clique
         if (n_coincident > 0) & (coincident == "clique"):
-            # note that the kernel is only used to compute a fill value for the clique.
-            # in the case of the voronoi weights. Using boxcar with an infinite bandwidth
-            # also gives us the correct fill value for the voronoi weight: 1.
+            # Note that the kernel is only used to compute a fill value for the clique.
+            # In the case of the voronoi weights. Using boxcar with an infinite
+            # bandwidth also gives us the correct fill value for the voronoi weight: 1.
             fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
 
@@ -311,7 +311,7 @@ def _relative_neighborhood(coordinates):
     edges, dt = _voronoi_edges(coordinates)
     output, _ = _filter_relativehood(edges, dt.points, return_dkmax=False)
 
-    heads_ix, tails_ix, distance = zip(*output)
+    heads_ix, tails_ix, distance = zip(*output, strict=True)
     heads_ix, tails_ix = numpy.asarray(heads_ix), numpy.asarray(tails_ix)
 
     return heads_ix, tails_ix
@@ -344,7 +344,8 @@ def _voronoi(coordinates, clip="extent", rook=True):
 
         * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily
             larger that the source map. Note that this may lead to cells that are many
-            orders of magnitude larger in extent than the original map. Not recommended.
+            orders of magnitude larger in extent than the original map.
+            Not recommended.
         * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the
             bounding box of the input points.
         * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of
