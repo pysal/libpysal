@@ -155,7 +155,9 @@ def _explore_graph(g, gdf, **kwargs):
     folium.Map
         folium map
     """
-    m = gdf.centroid.explore(**kwargs)
+    gdf = gdf.copy()
+    gdf['id']=gdf.index.values
+    m = gdf.reset_index()[['id', 'geometry']].set_geometry(gdf.centroid).explore(**kwargs)
 
     adj = g.adjacency.reset_index()
 
