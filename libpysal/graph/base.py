@@ -223,7 +223,7 @@ class Graph(_Set_Mixin):
             libpysal.graph.Graph
         """
         cols = dict(
-            zip(  # noqa B905
+            zip(
                 [focal_col, neighbor_col, weight_col],
                 ["focal_col", "neighbor_col", "weight_col"],
                 strict=True,
