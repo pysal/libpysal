@@ -156,15 +156,18 @@ def _explore_graph(g, gdf, **kwargs):
         folium map
     """
     gdf = gdf.copy()
-    gdf['id']=gdf.index.values
-    m = gdf.reset_index()[['id', 'geometry']].set_geometry(gdf.centroid).explore(**kwargs)
+    gdf["id"] = gdf.index.values
+    gdf = gdf.set_geometry(gdf.centroid)
+    m = gdf[["id", "geometry"]].explore(**kwargs)
 
     adj = g.adjacency.reset_index()
 
-    origins = gdf.loc[adj.focal].centroid.geometry
-    destinations = gdf.loc[adj.neighbor].centroid.geometry
-    ods = zip(origins, destinations)
-    lines = gpd.GeoSeries([shapely.geometry.LineString(od) for od in ods], crs=gdf.crs)
+    origins = gdf.loc[adj.focal].get_coordinates().values
+    destinations = gdf.loc[adj.neighbor].get_coordinates().values
+    lines = gpd.GeoSeries(
+        shapely.linestrings(np.hstack([origins, destinations]).reshape(-1, 2, 2)),
+        crs=gdf.crs,
+    )
     edges = gpd.GeoDataFrame(adj, geometry=lines)
     edges.explore(m=m, **kwargs)
 
