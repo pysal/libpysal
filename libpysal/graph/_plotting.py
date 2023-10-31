@@ -1,3 +1,4 @@
+import geopandas as gpd
 import numpy as np
 import pandas as pd
 import shapely
@@ -135,3 +136,34 @@ def _plot(
             ax.scatter(coords[:, 0], coords[:, 1], **node_kws, zorder=2)
 
     return ax
+
+
+def _explore_graph(g, gdf, **kwargs):
+    """Plot graph as an interactive Folium Map
+
+    Parameters
+    ----------
+    g : libpysal.Graph
+        graph to be plotted
+    gdf : geopandas.GeoDataFrame
+        geodataframe used to instantiate to Graph
+    kwargs: additional keyword arguments passed to the geopandas explore
+        method. For example, to make the  nodes larger pass `marker_kwds={'radius':8}`
+
+    Returns
+    -------
+    folium.Map
+        folium map
+    """
+    m = gdf.centroid.explore(**kwargs)
+
+    adj = g.adjacency.reset_index()
+
+    origins = gdf.loc[adj.focal].centroid.geometry
+    destinations = gdf.loc[adj.neighbor].centroid.geometry
+    ods = zip(origins, destinations)
+    lines = gpd.GeoSeries([shapely.geometry.LineString(od) for od in ods], crs=gdf.crs)
+    edges = gpd.GeoDataFrame(adj, geometry=lines)
+    edges.explore(m=m, **kwargs)
+
+    return m

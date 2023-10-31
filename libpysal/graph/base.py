@@ -16,7 +16,7 @@ from ._contiguity import (
 )
 from ._kernel import _distance_band, _kernel
 from ._parquet import _read_parquet, _to_parquet
-from ._plotting import _plot
+from ._plotting import _plot, _explore_graph
 from ._set_ops import _Set_Mixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
@@ -1281,6 +1281,25 @@ class Graph(_Set_Mixin):
             figsize=figsize,
             limit_extent=limit_extent,
         )
+
+    def explore(self, gdf, **kwargs):
+        """Plot graph as an interactive Folium Map
+
+        Parameters
+        ----------
+        g : libpysal.Graph
+            graph to be plotted
+        gdf : geopandas.GeoDataFrame
+            geodataframe used to instantiate to Graph
+        kwargs: additional keyword arguments passed to the geopandas explore
+            method. For example, to make the  nodes larger pass `marker_kwds={'radius':8}`
+
+        Returns
+        -------
+        folium.Map
+            folium map
+        """
+        return _explore_graph(self, gdf, **kwargs)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
