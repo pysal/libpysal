@@ -226,6 +226,7 @@ class Graph(_Set_Mixin):
             zip(  # noqa B905
                 [focal_col, neighbor_col, weight_col],
                 ["focal_col", "neighbor_col", "weight_col"],
+                strict=True,
             )
         )
         for col in cols:
@@ -902,8 +903,8 @@ class Graph(_Set_Mixin):
             s = self._adjacency.groupby(level=0).transform(
                 lambda group: group / math.sqrt((group**2).sum())
             )
-            nQ = self.n / s.sum()  # noqa N806
-            standardized = (s * nQ).fillna(0).values  # isolate comes as NaN -> 0
+            n_q = self.n / s.sum()
+            standardized = (s * n_q).fillna(0).values  # isolate comes as NaN -> 0
 
         else:
             raise ValueError(
@@ -1106,13 +1107,13 @@ class Graph(_Set_Mixin):
             wk = sp**k
 
         rk, ck = wk.nonzero()
-        sk = set(zip(rk, ck))  # noqa B905
+        sk = set(zip(rk, ck, strict=True))
 
         if shortest_path:
             for j in range(1, k):
                 wj = sp**j
                 rj, cj = wj.nonzero()
-                sj = set(zip(rj, cj))  # noqa B905
+                sj = set(zip(rj, cj), strict=True)
                 sk.difference_update(sj)
         if not diagonal:
             sk = {(i, j) for i, j in sk if i != j}
