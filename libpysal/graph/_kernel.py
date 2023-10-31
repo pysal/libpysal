@@ -306,9 +306,7 @@ def _prepare_tree_query(coordinates, metric, p=2):
         return tree(coordinates, metric=metric, **dist_kwds).query
     else:
         if metric in ("euclidean", "manhattan", "cityblock", "minkowski"):
-            from scipy.spatial import KDTree as tree  # noqa N813
-
-            tree_ = tree(coordinates)
+            tree_ = spatial.KDTree(coordinates)
             p = {"euclidean": 2, "manhattan": 1, "cityblock": 1, "minkowski": p}[metric]
 
             def query(target, k):
