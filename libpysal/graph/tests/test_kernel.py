@@ -312,6 +312,7 @@ def test_metric_k(metric):
         assert weight.mean() == pytest.approx(0.00021882448)
         assert weight.max() == pytest.approx(0.000897441)
 
+
 # def test_precomputed(data, ids):
 #     raise NotImplementedError()
 
