@@ -5,6 +5,7 @@ import pandas as pd
 import pytest
 from numpy.testing import assert_array_almost_equal
 from shapely import get_coordinates
+from scipy.sparse.csr import csr_matrix
 from sklearn.metrics.pairwise import euclidean_distances
 
 from libpysal import graph
@@ -199,9 +200,10 @@ class TestKernel:
         self.gdf_str = self.gdf.set_index("placeid")
 
     def test_kernel_precompute(self):
+        sklearn = pytest.importorskip("sklearn")
         df = gpd.read_file(geodatasets.get_path("nybb"))
         df = df.to_crs(df.estimate_utm_crs())
-        distmat = euclidean_distances(get_coordinates(df.centroid))
+        distmat = csr_matrix(sklearn.metrics.pairwise.euclidean_distances(get_coordinates(df.centroid)))
         G = graph.Graph.build_kernel(distmat, metric="precomputed")
         expected = np.array(
             [
