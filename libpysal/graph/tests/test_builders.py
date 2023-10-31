@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 from numpy.testing import assert_array_almost_equal
-from shapely import get_coordinates
 from scipy.sparse.csr import csr_matrix
+from shapely import get_coordinates
 
 from libpysal import graph
 
@@ -202,7 +202,9 @@ class TestKernel:
         sklearn = pytest.importorskip("sklearn")
         df = gpd.read_file(geodatasets.get_path("nybb"))
         df = df.to_crs(df.estimate_utm_crs())
-        distmat = csr_matrix(sklearn.metrics.pairwise.euclidean_distances(get_coordinates(df.centroid)))
+        distmat = csr_matrix(
+            sklearn.metrics.pairwise.euclidean_distances(get_coordinates(df.centroid))
+        )
         G = graph.Graph.build_kernel(distmat, metric="precomputed")
         expected = np.array(
             [
