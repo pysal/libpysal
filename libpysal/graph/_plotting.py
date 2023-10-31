@@ -4,7 +4,7 @@ import shapely
 
 
 def _plot(
-    G,
+    G,  # noqa N803
     gdf,
     focal=None,
     nodes=True,
@@ -80,17 +80,17 @@ def _plot(
         if "color" not in node_kws:
             node_kws["color"] = color
     else:
-        node_kws = dict(color=color)
+        node_kws = {"color": color}
 
     if edge_kws is not None:
         if "color" not in edge_kws:
             edge_kws["color"] = color
     else:
-        edge_kws = dict(color=color)
+        edge_kws = {"color": color}
 
-    # get array of coordinates in the order reflecting G._adjacency.index.codes
-    # we need to work on int position to allow fast filtering of duplicated edges and
-    # cannot rely on gdf remaining in the same order between Graph creation and plotting
+    # get array of coordinates in the order reflecting G._adjacency.index.codes we need
+    # to work on int position to allow fast filtering of duplicated edges and cannot
+    # rely on gdf remaining in the same order between Graph creation and plotting
     coords = shapely.get_coordinates(gdf.reindex(G.unique_ids).centroid)
 
     if focal is not None:

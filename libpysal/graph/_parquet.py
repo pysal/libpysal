@@ -1,8 +1,9 @@
-import libpysal
 import json
 
+import libpysal
 
-def _to_parquet(G, destination, **kwargs):
+
+def _to_parquet(G, destination, **kwargs):  # noqa N803
     """Save adjacency as a Parquet table and add custom metadata
 
     Metadata contain transformation and the libpysal version used to save the file.
@@ -22,7 +23,7 @@ def _to_parquet(G, destination, **kwargs):
         import pyarrow as pa
         import pyarrow.parquet as pq
     except (ImportError, ModuleNotFoundError):
-        raise ImportError("pyarrow is required for `to_parquet`.")
+        raise ImportError("pyarrow is required for `to_parquet`.") from None
     table = pa.Table.from_pandas(G._adjacency.to_frame())
 
     meta = table.schema.metadata
@@ -51,10 +52,10 @@ def _read_parquet(source, **kwargs):
     try:
         import pyarrow.parquet as pq
     except (ImportError, ModuleNotFoundError):
-        raise ImportError("pyarrow is required for `read_parquet`.")
+        raise ImportError("pyarrow is required for `read_parquet`.") from None
 
     table = pq.read_table(source, **kwargs)
-    if b"libpysal" in table.schema.metadata.keys():
+    if b"libpysal" in table.schema.metadata:
         meta = json.loads(table.schema.metadata[b"libpysal"])
         transformation = meta["transformation"]
     else:
