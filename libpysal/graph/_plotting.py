@@ -139,7 +139,18 @@ def _plot(
     return ax
 
 
-def _explore_graph(g, gdf, **kwargs):
+def _explore_graph(
+    g,
+    gdf,
+    focal=None,
+    nodes=True,
+    color="black",
+    edge_kws=None,
+    node_kws=None,
+    focal_kws=None,
+    m=None,
+    **kwargs
+):
     """Plot graph as an interactive Folium Map
 
     Parameters
@@ -148,8 +159,25 @@ def _explore_graph(g, gdf, **kwargs):
         graph to be plotted
     gdf : geopandas.GeoDataFrame
         geodataframe used to instantiate to Graph
-    kwargs: additional keyword arguments passed to the geopandas explore
-        method. For example, to make the  nodes larger pass `marker_kwds={'radius':8}`
+    focal : list, optional
+        subset of focal observations to plot in the map, by default None.
+        If none, all relationships are plotted
+    nodes : bool, optional
+        whether to display observations as nodes in the map, by default True
+    color : str, optional
+        color applied to nodes and edges, by default "black"
+    edge_kws : dict, optional
+        additional keyword arguments passed to geopandas explore function
+        when plotting edges, by default None
+    node_kws : dict, optional
+        additional keyword arguments passed to geopandas explore function
+        when plotting nodes, by default None
+    focal_kws : dict, optional
+        additional keyword arguments passed to geopandas explore function
+        when plotting focal observations, by default None. Only applicable when
+        passing a subset of nodes with the `focal` argument
+    m : Folilum.Map, optional
+        folium map objecto to plot on top of, by default None
 
     Returns
     -------
@@ -159,9 +187,30 @@ def _explore_graph(g, gdf, **kwargs):
     gdf = gdf.copy()
     gdf["id"] = gdf.index.values
     gdf = gdf.set_geometry(gdf.centroid)
-    m = gdf[["id", "geometry"]].explore(**kwargs)
+
+    if node_kws is not None:
+        if "color" not in node_kws:
+            node_kws["color"] = color
+    else:
+        node_kws = {"color": color}
+
+    if focal_kws is not None:
+        if "color" not in node_kws:
+            focal_kws["color"] = color
+    else:
+        focal_kws = {"color": color}
+
+    if edge_kws is not None:
+        if "color" not in edge_kws:
+            edge_kws["color"] = color
+    else:
+        edge_kws = {"color": color}
 
     adj = g.adjacency.reset_index()
+    if focal is not None:
+        if not pd.api.types.is_list_like(focal):
+            focal = [focal]
+        adj = adj[adj["focal"].isin(focal)].reset_index()
 
     origins = gdf.loc[adj.focal].get_coordinates().values
     destinations = gdf.loc[adj.neighbor].get_coordinates().values
@@ -170,6 +219,18 @@ def _explore_graph(g, gdf, **kwargs):
         crs=gdf.crs,
     )
     edges = gpd.GeoDataFrame(adj, geometry=lines)
-    edges.explore(m=m, **kwargs)
 
+    m = (
+        edges[["focal", "neighbor", "weight", "geometry"]].explore(m=m, **edge_kws)
+        if m is not None
+        else edges[["focal", "neighbor", "weight", "geometry"]].explore(**edge_kws)
+    )
+
+    if nodes is True:
+        if focal is not None:
+            dests = gdf.loc[adj.neighbor].index.values
+            m = gdf[gdf.id.isin(dests)][["id", "geometry"]].explore(m=m, **node_kws)
+            m = gdf[gdf["id"].isin(focal)][["id", "geometry"]].explore(m=m, **focal_kws)
+        else:
+            m = gdf[["id", "geometry"]].explore(m=m, **node_kws)
     return m

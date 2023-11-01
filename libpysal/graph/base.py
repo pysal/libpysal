@@ -1278,24 +1278,59 @@ class Graph(SetOpsMixin):
             limit_extent=limit_extent,
         )
 
-    def explore(self, gdf, **kwargs):
+    def explore(
+        self,
+        gdf,
+        focal=None,
+        nodes=True,
+        color="black",
+        edge_kws=None,
+        node_kws=None,
+        focal_kws=None,
+        m=None,
+    ):
         """Plot graph as an interactive Folium Map
 
         Parameters
         ----------
-        g : libpysal.Graph
-            graph to be plotted
         gdf : geopandas.GeoDataFrame
             geodataframe used to instantiate to Graph
-        kwargs: additional keyword arguments passed to the geopandas explore
-            method. For example, to make the  nodes larger pass `marker_kwds={'radius':8}`
+        focal : list, optional
+            subset of focal observations to plot in the map, by default None.
+            If none, all relationships are plotted
+        nodes : bool, optional
+            whether to display observations as nodes in the map, by default True
+        color : str, optional
+            color applied to nodes and edges, by default "black"
+        edge_kws : dict, optional
+            additional keyword arguments passed to geopandas explore function
+            when plotting edges, by default None
+        node_kws : dict, optional
+            additional keyword arguments passed to geopandas explore function
+            when plotting nodes, by default None
+        focal_kws : dict, optional
+            additional keyword arguments passed to geopandas explore function
+            when plotting focal observations, by default None. Only applicable when
+            passing a subset of nodes with the `focal` argument
+        m : Folilum.Map, optional
+            folium map objecto to plot on top of, by default None
 
         Returns
         -------
         folium.Map
             folium map
         """
-        return _explore_graph(self, gdf, **kwargs)
+        return _explore_graph(
+            self,
+            gdf,
+            focal=focal,
+            nodes=nodes,
+            color=color,
+            edge_kws=edge_kws,
+            node_kws=node_kws,
+            focal_kws=focal_kws,
+            m=m,
+        )
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
