@@ -1,11 +1,12 @@
-import pytest
 import geodatasets
 import geopandas
 import pandas as pd
+import pytest
+
 from libpysal.graph.base import Graph
 
 
-class Test_Set_Ops:
+class TestSetOps:
     def setup_method(self):
         self.grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[
             ["OBJECTID", "geometry"]
@@ -96,10 +97,10 @@ class Test_Set_Ops:
 
     def test___eq__(self):
         assert self.distance2500 == self.distance2500.copy()
-        assert not self.distance2500 == self.distance2500_id
+        assert self.distance2500 != self.distance2500_id
 
     def test___ne__(self):
-        assert not self.distance2500 != self.distance2500.copy()
+        assert self.distance2500 == self.distance2500.copy()
         assert self.distance2500 != self.distance2500_id
 
     def test___and__(self):

@@ -13,14 +13,14 @@ For completeness, we need to test a shuffled dataframe
 import geodatasets
 import geopandas
 import numpy as np
-import pytest
 import pandas as pd
+import pytest
 
 from libpysal.graph._kernel import (
+    HAS_SKLEARN,
+    _distance_band,
     _kernel,
     _kernel_functions,
-    _distance_band,
-    HAS_SKLEARN,
 )
 
 grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[
@@ -64,10 +64,7 @@ parametrize_metrics = pytest.mark.parametrize("metric", metrics, metrics)
 
 @parametrize_ids
 def test_neighbors(ids):
-    if ids:
-        data = grocs.set_index(ids)
-    else:
-        data = grocs
+    data = grocs.set_index(ids) if ids else grocs
     head, tail, weight = _kernel(data, bandwidth=5000, kernel="boxcar")
     assert head.shape[0] == 437
     assert tail.shape == head.shape
@@ -102,10 +99,7 @@ def test_no_taper(data):
 
 @parametrize_ids
 def test_ids(ids):
-    if ids:
-        data = grocs.set_index(ids)
-    else:
-        data = grocs
+    data = grocs.set_index(ids) if ids else grocs
     head, tail, _ = _kernel(data)
     np.testing.assert_array_equal(pd.unique(head), data.index)
     assert np.in1d(tail, data.index).all()
@@ -204,16 +198,10 @@ def test_kernels(kernel):
     elif kernel == "cosine":
         assert weight.mean() == pytest.approx(0.1008306468068958)
         assert weight.max() == pytest.approx(0.7852455006403666)
-    elif kernel == "boxcar":
+    elif kernel in ["boxcar", "discrete"]:
         assert weight.mean() == pytest.approx(0.2499540356683214)
         assert weight.max() == 1
-    elif kernel == "discrete":
-        assert weight.mean() == pytest.approx(0.2499540356683214)
-        assert weight.max() == 1
-    elif kernel == "identity":
-        assert weight.mean() == pytest.approx(39758.007361814016)
-        assert weight.max() == pytest.approx(127937.75271993055)
-    elif kernel is None:
+    elif kernel in ["identity", None]:
         assert weight.mean() == pytest.approx(39758.007361814016)
         assert weight.max() == pytest.approx(127937.75271993055)
     else:  # function
@@ -244,10 +232,7 @@ def test_bandwidth(data, bandwidth):
     ],
 )
 def test_metric(metric):
-    if metric == "haversine":
-        data = grocs.to_crs(4326)
-    else:
-        data = grocs
+    data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
     head, tail, weight = _kernel(data, metric=metric, kernel="identity", p=1.5)
@@ -284,10 +269,7 @@ def test_metric(metric):
     ],
 )
 def test_metric_k(metric):
-    if metric == "haversine":
-        data = grocs.to_crs(4326)
-    else:
-        data = grocs
+    data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
     head, tail, weight = _kernel(data, k=3, metric=metric, kernel="identity", p=1.5)
