@@ -18,10 +18,10 @@ import shapely
 
 from libpysal.graph._contiguity import (
     _block_contiguity,
+    _fuzzy_contiguity,
     _queen,
     _rook,
     _vertex_set_intersection,
-    _fuzzy_contiguity,
 )
 
 numpy.random.seed(111211)
@@ -89,9 +89,11 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
         derived = _vertex_set_intersection(data, ids=ids, rook=rook)
         derived_by_index = _vertex_set_intersection(data, rook=rook, ids=None)
 
-    assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
-    assert set(zip(*derived_by_index)) == set(
-        zip(known_heads, known_tails, known_weights)
+    assert set(zip(*derived, strict=True)) == set(
+        zip(known_heads, known_tails, known_weights, strict=True)
+    )
+    assert set(zip(*derived_by_index, strict=True)) == set(
+        zip(known_heads, known_tails, known_weights, strict=True)
     )
 
 
@@ -127,9 +129,11 @@ def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter):
     derived = f(data, by_perimeter=by_perimeter, ids=ids)
     derived_by_index = f(data, by_perimeter=by_perimeter, ids=None)
 
-    assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
-    assert set(zip(*derived_by_index)) == set(
-        zip(known_heads, known_tails, known_weights)
+    assert set(zip(*derived, strict=True)) == set(
+        zip(known_heads, known_tails, known_weights, strict=True)
+    )
+    assert set(zip(*derived_by_index, strict=True)) == set(
+        zip(known_heads, known_tails, known_weights, strict=True)
     )
 
 
@@ -165,9 +169,11 @@ def test_user_pointset_nybb(ids, by_perimeter, rook):
     derived = f(data, by_perimeter=by_perimeter, ids=ids)
     derived_by_index = f(data, by_perimeter=by_perimeter, ids=None)
 
-    assert set(zip(*derived)) == set(zip(known_heads, known_tails, known_weights))
-    assert set(zip(*derived_by_index)) == set(
-        zip(known_heads, known_tails, known_weights)
+    assert set(zip(*derived, strict=True)) == set(
+        zip(known_heads, known_tails, known_weights, strict=True)
+    )
+    assert set(zip(*derived_by_index, strict=True)) == set(
+        zip(known_heads, known_tails, known_weights, strict=True)
     )
 
 
@@ -186,7 +192,7 @@ def test_correctness_rook_queen_distinct(pointset):
         rook_ = _vertex_set_intersection(data.geometry, rook=True)
         queen_ = _vertex_set_intersection(data.geometry, rook=False)
 
-    assert set(zip(*rook_)) != set(zip(*queen_))
+    assert set(zip(*rook_, strict=True)) != set(zip(*queen_, strict=True))
 
 
 def test_geom_type_raise():
@@ -220,13 +226,13 @@ def test_correctness_vertex_set_contiguity_distinct():
 
     rook = _rook(data)
 
-    assert set(zip(*vs_rook)) != set(zip(*rook))
+    assert set(zip(*vs_rook, strict=True)) != set(zip(*rook, strict=True))
 
     vs_queen = _vertex_set_intersection(data, rook=False)
 
     queen = _queen(data)
 
-    assert set(zip(*vs_queen)) != set(zip(*queen))
+    assert set(zip(*vs_queen, strict=True)) != set(zip(*queen, strict=True))
 
 
 @pytest.mark.parametrize(

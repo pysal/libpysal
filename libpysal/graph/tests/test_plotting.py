@@ -185,7 +185,7 @@ class TestPlotting:
 
     def test_kws(self):
         ax = self.G.plot(
-            self.nybb, edge_kws=dict(linestyle="dotted"), node_kws=dict(marker="+")
+            self.nybb, edge_kws={"linestyle": "dotted"}, node_kws={"marker": "+"}
         )
 
         linecollection = ax.collections[0]
@@ -233,8 +233,8 @@ class TestPlotting:
         ax = self.G_str.plot(
             self.nybb_str,
             focal="Queens",
-            focal_kws=dict(color="blue"),
-            node_kws=dict(edgecolor="pink"),
+            focal_kws={"color": "blue"},
+            node_kws={"edgecolor": "pink"},
         )
 
         pathcollection = ax.collections[1]

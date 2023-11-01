@@ -233,9 +233,9 @@ def _vec_euclidean_distances(x_vec, y_vec):
 
 def _evaluate_index(data):
     """Helper to get ids from any input."""
-    if isinstance(data, (pd.Series, pd.DataFrame)):
+    if isinstance(data, pd.Series | pd.DataFrame):
         return data.index
-    elif hasattr(data, 'shape'):
+    elif hasattr(data, "shape"):
         return pd.RangeIndex(0, data.shape[0])
     else:
         return pd.RangeIndex(0, len(data))

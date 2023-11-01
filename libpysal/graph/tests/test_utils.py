@@ -1,15 +1,14 @@
+# ruff: noqa: N811
+
 import geodatasets
 import geopandas
 import numpy
 import pytest
 import shapely
 
-from libpysal.graph._contiguity import \
-    _VALID_GEOMETRY_TYPES as contiguity_types
-from libpysal.graph._kernel import \
-    _VALID_GEOMETRY_TYPES as kernel_types
-from libpysal.graph._triangulation import \
-    _VALID_GEOMETRY_TYPES as triang_types
+from libpysal.graph._contiguity import _VALID_GEOMETRY_TYPES as contiguity_types
+from libpysal.graph._kernel import _VALID_GEOMETRY_TYPES as kernel_types
+from libpysal.graph._triangulation import _VALID_GEOMETRY_TYPES as triang_types
 from libpysal.graph._utils import _validate_geometry_input
 
 columbus = geopandas.read_file(geodatasets.get_path("geoda columbus"))
@@ -53,10 +52,7 @@ def test_validate_input_geoms(geoms, ids, shuffle, external_ids, input_type):
     """
     if ids is not None:
         geoms = geoms.set_index(ids)
-    if external_ids:
-        input_ids = geoms.index
-    else:
-        input_ids = None
+    input_ids = geoms.index if external_ids else None
     if shuffle:
         geoms = geoms.sample(frac=1, replace=False)
     if input_type == "gdf":
@@ -70,18 +66,20 @@ def test_validate_input_geoms(geoms, ids, shuffle, external_ids, input_type):
         geom_type = geoms[0].geom_type
     else:
         raise ValueError(
-            'input_type not in supported testing types: "gdf", "gseries", "array"'
+            "input_type not in supported testing types: 'gdf', 'gseries', 'array'"
         )
 
     coordinates, ids, out_geoms = _validate_geometry_input(geoms, ids=input_ids)
     assert (out_geoms.index == ids).all(), "validated ids are not equal to input ids"
     if geom_type == "Point":
-        assert coordinates.shape[0] == len(
-            geoms
-        ), "Point inputs should be cast to coordinates, but the output coordinates and input geometries are not equal length"
-        assert coordinates.shape[0] == len(
-            ids
-        ), "Point inputs should be cast to coordinates, but the output coordinates and output ids are not equal length"
+        assert coordinates.shape[0] == len(geoms), (
+            "Point inputs should be cast to coordinates, "
+            "but the output coordinates and input geometries are not equal length"
+        )
+        assert coordinates.shape[0] == len(ids), (
+            "Point inputs should be cast to coordinates, "
+            "but the output coordinates and output ids are not equal length"
+        )
         if hasattr(geoms, "geometry"):
             coords = shapely.get_coordinates(geoms.geometry)
         else:
@@ -95,10 +93,7 @@ def test_validate_input_coords(shuffle, ids):
     """
     Test that input coordinate arrays get validated correctly
     """
-    if shuffle:
-        data = columbus.sample(frac=1, replace=False)
-    else:
-        data = columbus
+    data = columbus.sample(frac=1, replace=False) if shuffle else columbus
     input_coords = shapely.get_coordinates(data.centroid)
     if ids is not None:
         ids = data[ids].values
@@ -112,10 +107,17 @@ def test_validate_raises(
     contiguity_types=contiguity_types,
     triang_types=triang_types,
 ):
+    # kernels
     with pytest.raises(ValueError):  # no lines for kernels
         _validate_geometry_input(rivers, valid_geometry_types=kernel_types)
     with pytest.raises(ValueError):  # no polygons for kernels
         _validate_geometry_input(columbus, valid_geometry_types=kernel_types)
+    # triangulation
+    with pytest.raises(ValueError):  # no lines for triangulation
+        _validate_geometry_input(rivers, valid_geometry_types=triang_types)
+    with pytest.raises(ValueError):  # no polygons for triangulation
+        _validate_geometry_input(columbus, valid_geometry_types=triang_types)
+    # contiguity
     with pytest.raises(ValueError):  # no point gdf for contiguity
         _validate_geometry_input(
             columbus.set_geometry(columbus.centroid),

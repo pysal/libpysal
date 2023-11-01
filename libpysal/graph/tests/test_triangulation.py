@@ -14,7 +14,6 @@ import numpy as np
 import pandas as pd
 import pytest
 import shapely
-from scipy import spatial
 
 from libpysal.graph._kernel import _kernel_functions
 from libpysal.graph._triangulation import (
@@ -85,10 +84,16 @@ parametrize_constructors = pytest.mark.parametrize(
 #         bandwidth=bandwidth
 #         )
 #     assert heads.dtype == tails.dtype
-#     assert heads.dtype == stores_unique.get(ids, stores_unique.index).dtype, 'ids failed to propagate'
+#     assert (
+#         heads.dtype == stores_unique.get(ids, stores_unique.index).dtype,
+#         'ids failed to propagate'
+#     )
 #     if kernel is None and bandwidth is None:
 #         np.testing.assert_array_equal(weights, np.ones_like(heads))
-#     assert set(zip(heads, tails)) == set(zip(tails, heads)), "all triangulations should be symmetric, this is not"
+#     assert (
+#         set(zip(heads, tails)) == set(zip(tails, heads)),
+#         "all triangulations should be symmetric, this is not"
+#     )
 
 
 def test_correctness_voronoi_clipping():
@@ -96,14 +101,12 @@ def test_correctness_voronoi_clipping():
     extent = _voronoi(lap_coords, clip="extent", rook=True)
     alpha = _voronoi(lap_coords, clip="ashape", rook=True)
 
-    G_noclip = Graph.from_arrays(*noclip)
-    G_extent = Graph.from_arrays(*extent)
-    G_alpha = Graph.from_arrays(*alpha)
+    g_noclip = Graph.from_arrays(*noclip)
+    g_extent = Graph.from_arrays(*extent)
+    g_alpha = Graph.from_arrays(*alpha)
 
-    assert G_alpha < G_extent
-    assert G_extent <= G_noclip
-
-    D = spatial.distance.squareform(spatial.distance.pdist(lap_coords))
+    assert g_alpha < g_extent
+    assert g_extent <= g_noclip
 
     extent_known = [
         np.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4]),
@@ -115,17 +118,17 @@ def test_correctness_voronoi_clipping():
     ]
 
     np.testing.assert_array_equal(
-        G_extent.adjacency.index.get_level_values(0), extent_known[0]
+        g_extent.adjacency.index.get_level_values(0), extent_known[0]
     )
     np.testing.assert_array_equal(
-        G_extent.adjacency.index.get_level_values(1), extent_known[1]
+        g_extent.adjacency.index.get_level_values(1), extent_known[1]
     )
 
     np.testing.assert_array_equal(
-        G_alpha.adjacency.index.get_level_values(0), alpha_known[0]
+        g_alpha.adjacency.index.get_level_values(0), alpha_known[0]
     )
     np.testing.assert_array_equal(
-        G_alpha.adjacency.index.get_level_values(1), alpha_known[1]
+        g_alpha.adjacency.index.get_level_values(1), alpha_known[1]
     )
 
 
@@ -295,7 +298,7 @@ def test_coincident_clique_voronoi():
     # assert not np.array_equal(cp_w, unique_w)
 
 
-class Test_Coincident:
+class TestCoincident:
     def setup_method(self):
         self.geom = [
             shapely.Point(0, 0),
