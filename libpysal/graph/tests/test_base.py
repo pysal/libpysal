@@ -1,16 +1,15 @@
-import string
 import os
+import string
 import tempfile
 
-import pandas as pd
-import geopandas as gpd
 import geodatasets
+import geopandas as gpd
 import numpy as np
+import pandas as pd
 import pytest
 from scipy import sparse
 
-from libpysal import graph
-from libpysal import weights
+from libpysal import graph, weights
 
 
 class TestBase:
@@ -80,8 +79,8 @@ class TestBase:
             }
             for k, v in self.W_dict_int.items()
         }
-        self.G_int = graph.Graph.from_weights_dict(self.W_dict_int)
-        self.G_str = graph.Graph.from_weights_dict(self.W_dict_str)
+        self.g_int = graph.Graph.from_weights_dict(self.W_dict_int)
+        self.g_str = graph.Graph.from_weights_dict(self.W_dict_str)
         rng = np.random.default_rng(seed=0)
         self.letters = np.asarray(list(string.ascii_letters[:26]))
         rng.shuffle(self.letters)
@@ -89,26 +88,26 @@ class TestBase:
             self.letters[k]: {self.letters[k_]: v_ for k_, v_ in v.items()}
             for k, v in self.W_dict_int.items()
         }
-        self.G_str_unodered = graph.Graph.from_weights_dict(self.W_dict_str_unordered)
+        self.g_str_unodered = graph.Graph.from_weights_dict(self.W_dict_str_unordered)
 
         self.nybb = gpd.read_file(geodatasets.get_path("nybb")).set_index("BoroName")
 
     def test_init(self):
-        G = graph.Graph(self.adjacency_int_binary)
-        assert isinstance(G, graph.Graph)
-        assert hasattr(G, "_adjacency")
-        assert G._adjacency.shape == (9,)
-        pd.testing.assert_series_equal(G._adjacency, self.adjacency_int_binary)
-        assert hasattr(G, "transformation")
-        assert G.transformation == "O"
+        g = graph.Graph(self.adjacency_int_binary)
+        assert isinstance(g, graph.Graph)
+        assert hasattr(g, "_adjacency")
+        assert g._adjacency.shape == (9,)
+        pd.testing.assert_series_equal(g._adjacency, self.adjacency_int_binary)
+        assert hasattr(g, "transformation")
+        assert g.transformation == "O"
 
-        G = graph.Graph(self.adjacency_str_binary)
-        assert isinstance(G, graph.Graph)
-        assert hasattr(G, "_adjacency")
-        assert G._adjacency.shape == (9,)
-        pd.testing.assert_series_equal(G._adjacency, self.adjacency_str_binary)
-        assert hasattr(G, "transformation")
-        assert G.transformation == "O"
+        g = graph.Graph(self.adjacency_str_binary)
+        assert isinstance(g, graph.Graph)
+        assert hasattr(g, "_adjacency")
+        assert g._adjacency.shape == (9,)
+        pd.testing.assert_series_equal(g._adjacency, self.adjacency_str_binary)
+        assert hasattr(g, "transformation")
+        assert g.transformation == "O"
 
         with pytest.raises(TypeError, match="The adjacency table needs to be"):
             graph.Graph(self.adjacency_int_binary.values)
@@ -137,118 +136,118 @@ class TestBase:
             graph.Graph(self.adjacency_int_binary, transformation="foo")
 
     def test_copy(self):
-        G_copy = self.G_str.copy()
-        assert G_copy == self.G_str
-        G_copy._adjacency.iloc[0] = 2
-        assert G_copy != self.G_str
+        g_copy = self.g_str.copy()
+        assert g_copy == self.g_str
+        g_copy._adjacency.iloc[0] = 2
+        assert g_copy != self.g_str
 
     def test_adjacency(self):
-        G = graph.Graph(self.adjacency_int_binary)
-        adjacency = G.adjacency
+        g = graph.Graph(self.adjacency_int_binary)
+        adjacency = g.adjacency
         pd.testing.assert_series_equal(adjacency, self.adjacency_int_binary)
 
         # ensure copy
         adjacency.iloc[0] = 100
-        pd.testing.assert_series_equal(G._adjacency, self.adjacency_int_binary)
+        pd.testing.assert_series_equal(g._adjacency, self.adjacency_int_binary)
 
-    def test_W_roundtrip(self):
-        W = self.G_int.to_W()
+    def test_w_roundtrip(self):
+        w = self.g_int.to_W()
         pd.testing.assert_series_equal(
-            self.G_int._adjacency.sort_index(),
-            W.to_adjlist(drop_islands=False)
+            self.g_int._adjacency.sort_index(),
+            w.to_adjlist(drop_islands=False)
             .set_index(["focal", "neighbor"])["weight"]
             .sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
-        G_roundtripped = graph.Graph.from_W(W)
-        assert self.G_int == G_roundtripped
+        g_roundtripped = graph.Graph.from_W(w)
+        assert self.g_int == g_roundtripped
 
-        W = self.G_str.to_W()
+        w = self.g_str.to_W()
         pd.testing.assert_series_equal(
-            self.G_str._adjacency.sort_index(),
-            W.to_adjlist(drop_islands=False)
+            self.g_str._adjacency.sort_index(),
+            w.to_adjlist(drop_islands=False)
             .set_index(["focal", "neighbor"])["weight"]
             .sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
-        G_roundtripped = graph.Graph.from_W(W)
-        assert self.G_str == G_roundtripped
+        g_roundtripped = graph.Graph.from_W(w)
+        assert self.g_str == g_roundtripped
 
-        W = weights.lat2W(3, 3)
-        G = graph.Graph.from_W(W)
+        w = weights.lat2W(3, 3)
+        g = graph.Graph.from_W(w)
         pd.testing.assert_series_equal(
-            G._adjacency.sort_index(),
-            W.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
+            g._adjacency.sort_index(),
+            w.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
-        W_exp = G.to_W()
-        # assert W.neighbors == W_exp.neighbors
-        assert W.weights == W_exp.weights
+        w_exp = g.to_W()
+        # assert w.neighbors == w_exp.neighbors
+        assert w.weights == w_exp.weights
 
-        W.transform = "r"
-        G_rowwise = graph.Graph.from_W(W)
+        w.transform = "r"
+        g_rowwise = graph.Graph.from_W(w)
         pd.testing.assert_series_equal(
-            G_rowwise._adjacency.sort_index(),
-            W.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
+            g_rowwise._adjacency.sort_index(),
+            w.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
-        W_trans = G_rowwise.to_W()
-        # assert W.neighbors == W_trans.neighbors
-        assert W.weights == W_trans.weights
+        w_trans = g_rowwise.to_W()
+        # assert w.neighbors == w_trans.neighbors
+        assert w.weights == w_trans.weights
 
-        diag = weights.fill_diagonal(W)
-        G_diag = graph.Graph.from_W(diag)
+        diag = weights.fill_diagonal(w)
+        g_diag = graph.Graph.from_W(diag)
         pd.testing.assert_series_equal(
-            G_diag._adjacency.sort_index(),
+            g_diag._adjacency.sort_index(),
             diag.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
-        W_diag = G_diag.to_W()
+        w_diag = g_diag.to_W()
         # assert diag.neighbors == W_diag.neighbors
-        assert diag.weights == W_diag.weights
+        assert diag.weights == w_diag.weights
 
-        W = weights.W(
+        w = weights.W(
             neighbors={"a": ["b"], "b": ["a", "c"], "c": ["b"], "d": []},
             silence_warnings=True,
         )
-        G_isolate = graph.Graph.from_W(W)
+        g_isolate = graph.Graph.from_W(w)
         pd.testing.assert_series_equal(
-            G_isolate._adjacency.sort_index(),
-            W.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
+            g_isolate._adjacency.sort_index(),
+            w.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
-        W_isolate = G_isolate.to_W()
-        # assert W.neighbors == W_isolate.neighbors
-        assert W.weights == W_isolate.weights
+        w_isolate = g_isolate.to_W()
+        # assert w.neighbors == w_isolate.neighbors
+        assert w.weights == w_isolate.weights
 
-        W = self.G_str_unodered.to_W()
-        assert W.id_order_set
-        np.testing.assert_array_equal(W.id_order, self.letters[:10])
+        w = self.g_str_unodered.to_W()
+        assert w.id_order_set
+        np.testing.assert_array_equal(w.id_order, self.letters[:10])
 
     def test_from_sparse(self):
         row = np.array([0, 0, 1, 2, 3, 3])
         col = np.array([1, 3, 3, 2, 1, 3])
         data = np.array([0.1, 0.5, 0.9, 0, 0.3, 0.1])
         sp = sparse.coo_array((data, (row, col)), shape=(4, 4))
-        G = graph.Graph.from_sparse(sp)
+        g = graph.Graph.from_sparse(sp)
         expected = graph.Graph.from_arrays(row, col, data)
-        assert G == expected, "sparse constructor does not match arrays constructor"
+        assert g == expected, "sparse constructor does not match arrays constructor"
 
-        G = graph.Graph.from_sparse(sp.tocsr())
-        assert G == expected, "csc input does not match coo input"
+        g = graph.Graph.from_sparse(sp.tocsr())
+        assert g == expected, "csc input does not match coo input"
 
-        G = graph.Graph.from_sparse(sp.tocsc())
-        assert G == expected, "csr input does not match coo input"
+        g = graph.Graph.from_sparse(sp.tocsc())
+        assert g == expected, "csr input does not match coo input"
 
         ids = ["zero", "one", "two", "three"]
 
-        G_named = graph.Graph.from_sparse(
+        g_named = graph.Graph.from_sparse(
             sp,
             ids=ids,
         )
@@ -258,19 +257,19 @@ class TestBase:
             ["one", "three", "three", "two", "one", "three"],
             data,
         )
-        G_named == expected
+        assert g_named == expected
 
-        G = graph.Graph.from_sparse(
+        g = graph.Graph.from_sparse(
             sp.tocsr(),
             ids=ids,
         )
-        assert G == expected, "sparse csr with ids does not match arrays constructor"
+        assert g == expected, "sparse csr with ids does not match arrays constructor"
 
-        G = graph.Graph.from_sparse(
+        g = graph.Graph.from_sparse(
             sp.tocsc(),
             ids=ids,
         )
-        assert G == (expected), "sparse csr with ids does not match arrays constructor"
+        assert g == (expected), "sparse csr with ids does not match arrays constructor"
 
         dense = np.array(
             [
@@ -282,7 +281,7 @@ class TestBase:
             ]
         )
         sp = sparse.csr_array(dense)
-        G = graph.Graph.from_sparse(
+        g = graph.Graph.from_sparse(
             sp, ids=["staten_island", "queens", "brooklyn", "manhattan", "bronx"]
         )
         expected = graph.Graph.from_arrays(
@@ -313,9 +312,9 @@ class TestBase:
             np.ones(10),
         )
         assert (
-            G == expected
+            g == expected
         ), "sparse csr nybb with ids does not match arrays constructor"
-        np.testing.assert_array_equal(G.sparse.todense(), sp.todense())
+        np.testing.assert_array_equal(g.sparse.todense(), sp.todense())
 
         with pytest.raises(ValueError, match="The length of ids "):
             graph.Graph.from_sparse(sp, ids=["staten_island", "queens"])
@@ -325,9 +324,9 @@ class TestBase:
         neighbor_ids = np.array([1, 2, 5, 4, 5, 8, 7, 8, 7])
         weight = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1])
 
-        G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
+        g = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
         pd.testing.assert_series_equal(
-            G._adjacency,
+            g._adjacency,
             self.adjacency_int_binary,
             check_index_type=False,
             check_dtype=False,
@@ -336,9 +335,9 @@ class TestBase:
         focal_ids = np.asarray(list(self.neighbor_dict_str.keys()))
         neighbor_ids = np.asarray(list(self.neighbor_dict_str.values()))
 
-        G = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
+        g = graph.Graph.from_arrays(focal_ids, neighbor_ids, weight)
         pd.testing.assert_series_equal(
-            G._adjacency,
+            g._adjacency,
             self.adjacency_str_binary,
             check_index_type=False,
             check_dtype=False,
@@ -383,21 +382,21 @@ class TestBase:
         ]
         expected = graph.Graph.from_arrays(exp_focal, exp_neighbor, exp_weight)
 
-        G = graph.Graph.from_weights_dict(weights_dict)
-        assert G == expected
+        g = graph.Graph.from_weights_dict(weights_dict)
+        assert g == expected
 
     def test_from_dicts(self):
-        G = graph.Graph.from_dicts(self.neighbor_dict_int)
+        g = graph.Graph.from_dicts(self.neighbor_dict_int)
         pd.testing.assert_series_equal(
-            G._adjacency,
+            g._adjacency,
             self.adjacency_int_binary,
             check_dtype=False,
             check_index_type=False,
         )
 
-        G = graph.Graph.from_dicts(self.neighbor_dict_str)
+        g = graph.Graph.from_dicts(self.neighbor_dict_str)
         pd.testing.assert_series_equal(
-            G._adjacency,
+            g._adjacency,
             self.adjacency_str_binary,
             check_dtype=False,
         )
@@ -405,42 +404,42 @@ class TestBase:
     @pytest.mark.parametrize("y", [3, 5])
     @pytest.mark.parametrize("id_type", ["int", "str"])
     @pytest.mark.parametrize("rook", [True, False])
-    def test_from_dicts_via_W(self, y, id_type, rook):
-        W = weights.lat2W(3, y, id_type=id_type, rook=rook)
-        G = graph.Graph.from_dicts(W.neighbors, W.weights)
+    def test_from_dicts_via_w(self, y, id_type, rook):
+        w = weights.lat2W(3, y, id_type=id_type, rook=rook)
+        g = graph.Graph.from_dicts(w.neighbors, w.weights)
         pd.testing.assert_series_equal(
-            G._adjacency.sort_index(),
-            W.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
+            g._adjacency.sort_index(),
+            w.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
 
-        W.transform = "r"
-        G_rowwise = graph.Graph.from_dicts(W.neighbors, W.weights)
+        w.transform = "r"
+        g_rowwise = graph.Graph.from_dicts(w.neighbors, w.weights)
         pd.testing.assert_series_equal(
-            G_rowwise._adjacency.sort_index(),
-            W.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
+            g_rowwise._adjacency.sort_index(),
+            w.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
 
-        diag = weights.fill_diagonal(W)
-        G_diag = graph.Graph.from_dicts(diag.neighbors, diag.weights)
+        diag = weights.fill_diagonal(w)
+        g_diag = graph.Graph.from_dicts(diag.neighbors, diag.weights)
         pd.testing.assert_series_equal(
-            G_diag._adjacency.sort_index(),
+            g_diag._adjacency.sort_index(),
             diag.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
 
-        W = weights.W(
+        w = weights.W(
             neighbors={"a": ["b"], "b": ["a", "c"], "c": ["b"], "d": []},
             silence_warnings=True,
         )
-        G_isolate = graph.Graph.from_dicts(W.neighbors, W.weights)
+        g_isolate = graph.Graph.from_dicts(w.neighbors, w.weights)
         pd.testing.assert_series_equal(
-            G_isolate._adjacency.sort_index(),
-            W.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
+            g_isolate._adjacency.sort_index(),
+            w.to_adjlist().set_index(["focal", "neighbor"])["weight"].sort_index(),
             check_index_type=False,
             check_dtype=False,
         )
@@ -458,7 +457,7 @@ class TestBase:
             8: (5, 7),
             9: (),
         }
-        assert self.G_int.neighbors == expected
+        assert self.g_int.neighbors == expected
 
         expected = {
             "a": ("a", "b", "d"),
@@ -472,7 +471,7 @@ class TestBase:
             "i": ("f", "h"),
             "j": (),
         }
-        assert self.G_str.neighbors == expected
+        assert self.g_str.neighbors == expected
 
     def test_weights(self):
         expected = {
@@ -487,7 +486,7 @@ class TestBase:
             8: (0.5, 0.5),
             9: (),
         }
-        assert self.G_int.weights == expected
+        assert self.g_int.weights == expected
 
         expected = {
             "a": (1.0, 0.5, 0.5),
@@ -501,10 +500,10 @@ class TestBase:
             "i": (0.5, 0.5),
             "j": (),
         }
-        assert self.G_str.weights == expected
+        assert self.g_str.weights == expected
 
     def test_sparse(self):
-        sp = self.G_int.sparse
+        sp = self.g_int.sparse
         expected = np.array(
             [
                 [1.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -521,13 +520,13 @@ class TestBase:
         )
         np.testing.assert_array_equal(sp.todense(), expected)
 
-        sp = self.G_str.sparse
+        sp = self.g_str.sparse
         np.testing.assert_array_equal(sp.todense(), expected)
 
-        sp_old = self.G_int.to_W().sparse.todense()
+        sp_old = self.g_int.to_W().sparse.todense()
         np.testing.assert_array_equal(sp.todense(), sp_old)
 
-        sp_old = self.G_str.to_W().sparse.todense()
+        sp_old = self.g_str.to_W().sparse.todense()
         np.testing.assert_array_equal(sp.todense(), sp_old)
 
         # check proper sorting
@@ -544,15 +543,15 @@ class TestBase:
         np.testing.assert_array_equal(nybb.sparse.todense(), nybb_expected)
 
     def test_sparse_roundtrip(self):
-        G = graph.Graph(self.adjacency_int_binary)
-        sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, self.index_int)
-        assert G == G_sp
+        g = graph.Graph(self.adjacency_int_binary)
+        sp = g.sparse
+        g_sp = graph.Graph.from_sparse(sp, self.index_int)
+        assert g == g_sp
 
-        G = graph.Graph(self.adjacency_str_binary)
-        sp = G.sparse
-        G_sp = graph.Graph.from_sparse(sp, self.index_str)
-        assert G == G_sp
+        g = graph.Graph(self.adjacency_str_binary)
+        sp = g.sparse
+        g_sp = graph.Graph.from_sparse(sp, self.index_str)
+        assert g == g_sp
 
     def test_cardinalities(self):
         expected = pd.Series(
@@ -564,28 +563,28 @@ class TestBase:
             ),
             name="cardinalities",
         )
-        pd.testing.assert_series_equal(self.G_str.cardinalities, expected)
+        pd.testing.assert_series_equal(self.g_str.cardinalities, expected)
 
     def test_isolates(self):
         expected = pd.Index(["j"], name="focal")
-        pd.testing.assert_index_equal(self.G_str.isolates, expected)
+        pd.testing.assert_index_equal(self.g_str.isolates, expected)
 
-        self.G_str._adjacency.iloc[1] = 0  # zero weight, no isolate
-        pd.testing.assert_index_equal(self.G_str.isolates, expected)
+        self.g_str._adjacency.iloc[1] = 0  # zero weight, no isolate
+        pd.testing.assert_index_equal(self.g_str.isolates, expected)
 
     def test_n(self):
-        assert self.G_int.n == 10
-        assert self.G_str.n == 10
+        assert self.g_int.n == 10
+        assert self.g_str.n == 10
         assert graph.Graph(self.adjacency_int_binary).n == 9
 
     def test_pct_nonzero(self):
-        assert self.G_int.pct_nonzero == 26.0
+        assert self.g_int.pct_nonzero == 26.0
         assert graph.Graph(self.adjacency_int_binary).pct_nonzero == pytest.approx(
             11.1111111111
         )
 
     def test_nonzero(self):
-        assert self.G_int.nonzero == 25
+        assert self.g_int.nonzero == 25
         assert graph.Graph(self.adjacency_int_binary).nonzero == 9
 
     def test_transform_r(self):
@@ -617,17 +616,17 @@ class TestBase:
             0.5,
             0.0,
         ]
-        exp = self.G_int.adjacency
+        exp = self.g_int.adjacency
         exp.iloc[:] = expected_w
         expected = graph.Graph(exp)
-        assert self.G_int.transform("r") == expected
-        assert self.G_int.transform("r").transformation == "R"
-        assert self.G_int.transform("R") == expected
+        assert self.g_int.transform("r") == expected
+        assert self.g_int.transform("r").transformation == "R"
+        assert self.g_int.transform("R") == expected
 
-        w = self.G_int.to_W()
+        w = self.g_int.to_W()
         w.transform = "r"
-        G_from_W = graph.Graph.from_W(w)
-        assert G_from_W == self.G_int.transform("r")
+        g_from_w = graph.Graph.from_W(w)
+        assert g_from_w == self.g_int.transform("r")
 
     def test_transform_b(self):
         expected_w = [
@@ -658,17 +657,17 @@ class TestBase:
             1,
             0,
         ]
-        exp = self.G_int.adjacency
+        exp = self.g_int.adjacency
         exp.iloc[:] = expected_w
         expected = graph.Graph(exp)
-        assert self.G_int.transform("b") == expected
-        assert self.G_int.transform("b").transformation == "B"
-        assert self.G_int.transform("B") == expected
+        assert self.g_int.transform("b") == expected
+        assert self.g_int.transform("b").transformation == "B"
+        assert self.g_int.transform("B") == expected
 
-        w = self.G_int.to_W()
+        w = self.g_int.to_W()
         w.transform = "b"
-        G_from_W = graph.Graph.from_W(w)
-        assert G_from_W == self.G_int.transform("b")
+        g_from_w = graph.Graph.from_W(w)
+        assert g_from_w == self.g_int.transform("b")
 
     def test_transform_d(self):
         expected_w = [
@@ -699,18 +698,18 @@ class TestBase:
             0.05208333,
             0.0,
         ]
-        exp = self.G_int.adjacency
+        exp = self.g_int.adjacency
         exp.iloc[:] = expected_w
         expected = graph.Graph(exp)
-        assert self.G_int.transform("d") == expected
-        assert self.G_int.transform("d").transformation == "D"
-        assert self.G_int.transform("D") == expected
-        assert self.G_int.transform("D")._adjacency.sum() == pytest.approx(1)
+        assert self.g_int.transform("d") == expected
+        assert self.g_int.transform("d").transformation == "D"
+        assert self.g_int.transform("D") == expected
+        assert self.g_int.transform("D")._adjacency.sum() == pytest.approx(1)
 
-        w = self.G_int.to_W()
+        w = self.g_int.to_W()
         w.transform = "d"
-        G_from_W = graph.Graph.from_W(w)
-        assert G_from_W == self.G_int.transform("d")
+        g_from_w = graph.Graph.from_W(w)
+        assert g_from_w == self.g_int.transform("d")
 
     def test_transform_v(self):
         expected_w = [
@@ -741,26 +740,26 @@ class TestBase:
             0.47765102,
             0.0,
         ]
-        exp = self.G_int.adjacency
+        exp = self.g_int.adjacency
         exp.iloc[:] = expected_w
         expected = graph.Graph(exp)
-        assert self.G_int.transform("v") == expected
-        assert self.G_int.transform("v").transformation == "V"
-        assert self.G_int.transform("V") == expected
+        assert self.g_int.transform("v") == expected
+        assert self.g_int.transform("v").transformation == "V"
+        assert self.g_int.transform("V") == expected
 
-        w = self.G_int.to_W()
+        w = self.g_int.to_W()
         w.transform = "v"
-        G_from_W = graph.Graph.from_W(w)
-        assert G_from_W == self.G_int.transform("v")
+        g_from_w = graph.Graph.from_W(w)
+        assert g_from_w == self.g_int.transform("v")
 
     def test_transform(self):
         # do not transform if transformation == current transformation
-        binary = self.G_int.transform("b")
+        binary = self.g_int.transform("b")
         fast_tracked = binary.transform("b")
         assert binary == fast_tracked
 
         with pytest.raises(ValueError, match="Transformation 'X' is not"):
-            self.G_int.transform("x")
+            self.g_int.transform("x")
 
     def test_asymmetry(self):
         neighbors = {
@@ -770,20 +769,20 @@ class TestBase:
             "d": ["a", "b"],
         }
         weights_d = {"a": [1, 0.5, 1], "b": [1, 1, 1], "c": [1, 1], "d": [1, 1]}
-        G = graph.Graph.from_dicts(neighbors, weights_d)
+        g = graph.Graph.from_dicts(neighbors, weights_d)
         intrinsic = pd.Series(
             ["b", "c", "a", "a"],
             index=pd.Index(["a", "a", "b", "c"], name="focal"),
             name="neighbor",
         )
-        pd.testing.assert_series_equal(intrinsic, G.asymmetry())
+        pd.testing.assert_series_equal(intrinsic, g.asymmetry())
 
         boolean = pd.Series(
             ["b", "a"],
             index=pd.Index(["a", "b"], name="focal"),
             name="neighbor",
         )
-        pd.testing.assert_series_equal(boolean, G.asymmetry(intrinsic=False))
+        pd.testing.assert_series_equal(boolean, g.asymmetry(intrinsic=False))
 
         empty = pd.Series(
             index=pd.Index([], name="focal"),
@@ -791,23 +790,23 @@ class TestBase:
             dtype="int64",
         )
 
-        pd.testing.assert_series_equal(self.G_int.asymmetry(False), empty)
+        pd.testing.assert_series_equal(self.g_int.asymmetry(False), empty)
 
     def test_parquet(self):
         pytest.importorskip("pyarrow")
 
         with tempfile.TemporaryDirectory() as tmpdir:
             path = os.path.join(tmpdir, "g_int.parquet")
-            self.G_int.to_parquet(path)
-            G_int = graph.read_parquet(path)
-            assert self.G_int == G_int
+            self.g_int.to_parquet(path)
+            g_int = graph.read_parquet(path)
+            assert self.g_int == g_int
 
             path = os.path.join(tmpdir, "g_str.parquet")
-            self.G_str.to_parquet(path)
-            G_str = graph.read_parquet(path)
-            assert self.G_str == G_str
+            self.g_str.to_parquet(path)
+            g_str = graph.read_parquet(path)
+            assert self.g_str == g_str
 
-            row_wise = self.G_str.transform("r")
+            row_wise = self.g_str.transform("r")
             path = os.path.join(tmpdir, "row.parquet")
             row_wise.to_parquet(path)
             row_read = graph.read_parquet(path)
@@ -815,9 +814,9 @@ class TestBase:
             assert row_read.transformation == "R"
 
             path = os.path.join(tmpdir, "pandas.parquet")
-            self.G_str._adjacency.to_frame().to_parquet(path)
-            G_pandas = graph.read_parquet(path)
-            assert self.G_str == G_pandas
+            self.g_str._adjacency.to_frame().to_parquet(path)
+            g_pandas = graph.read_parquet(path)
+            assert self.g_str == g_pandas
 
     def test_getitem(self):
         expected = pd.Series(
@@ -825,14 +824,14 @@ class TestBase:
             index=pd.Index(["a", "b", "d"], name="neighbor"),
             name="weight",
         )
-        pd.testing.assert_series_equal(expected, self.G_str["a"])
+        pd.testing.assert_series_equal(expected, self.g_str["a"])
 
         expected = pd.Series(
             [1, 0.5, 0.5],
             index=pd.Index([0, 1, 3], name="neighbor"),
             name="weight",
         )
-        pd.testing.assert_series_equal(expected, self.G_int[0])
+        pd.testing.assert_series_equal(expected, self.g_int[0])
 
         # isolate
         expected = pd.Series(
@@ -840,16 +839,16 @@ class TestBase:
             index=pd.Index([], name="neighbor"),
             name="weight",
         )
-        pd.testing.assert_series_equal(expected, self.G_str["j"])
+        pd.testing.assert_series_equal(expected, self.g_str["j"])
 
     def test_lag(self):
         expected = np.array([4.0, 2.7, 4.0, 3.9, 5.0, 5.1, 6.0, 6.3, 7.0, 0.0])
-        lag = self.G_str.lag(list(range(1, 11)))
+        lag = self.g_str.lag(list(range(1, 11)))
 
         np.testing.assert_allclose(expected, lag)
 
         with pytest.raises(ValueError, match="The length of `y`"):
-            self.G_str.lag(list(range(1, 15)))
+            self.g_str.lag(list(range(1, 15)))
 
     def test_higher_order(self):
         cont = graph.Graph.build_contiguity(self.nybb)

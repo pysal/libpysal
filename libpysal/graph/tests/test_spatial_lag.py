@@ -1,8 +1,8 @@
 import numpy as np
 
 from libpysal import graph
-from libpysal.weights import lat2W
 from libpysal.graph._spatial_lag import _lag_spatial
+from libpysal.weights import lat2W
 
 
 class TestLag:

@@ -1,8 +1,12 @@
-import pytest
-
-import geopandas as gpd
-import pandas as pd
 import geodatasets
+import geopandas as gpd
+import numpy as np
+import pandas as pd
+import pytest
+from numpy.testing import assert_array_almost_equal
+from scipy.sparse import csr_matrix
+from shapely import get_coordinates
+
 from libpysal import graph
 
 TRIANGULATIONS = ["delaunay", "gabriel", "relative_neighborhood", "voronoi"]
@@ -19,122 +23,122 @@ class TestContiguity:
         self.gdf_str = self.gdf.set_index("BoroName")
 
     def test_vertex_intids(self):
-        G = graph.Graph.build_contiguity(self.gdf)
+        g = graph.Graph.build_contiguity(self.gdf)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_vertex_strids(self):
-        G = graph.Graph.build_contiguity(self.gdf_str)
+        g = graph.Graph.build_contiguity(self.gdf_str)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_rook_intids(self):
-        G = graph.Graph.build_contiguity(self.gdf, strict=True)
+        g = graph.Graph.build_contiguity(self.gdf, strict=True)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_rook_strids(self):
-        G = graph.Graph.build_contiguity(self.gdf_str, strict=True)
+        g = graph.Graph.build_contiguity(self.gdf_str, strict=True)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_queen_intids(self):
-        G = graph.Graph.build_contiguity(self.gdf, rook=False, strict=True)
+        g = graph.Graph.build_contiguity(self.gdf, rook=False, strict=True)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_queen_strids(self):
-        G = graph.Graph.build_contiguity(self.gdf_str, rook=False, strict=True)
+        g = graph.Graph.build_contiguity(self.gdf_str, rook=False, strict=True)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_vertex_intids_perimeter(self):
-        G = graph.Graph.build_contiguity(self.gdf, by_perimeter=True)
+        g = graph.Graph.build_contiguity(self.gdf, by_perimeter=True)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_vertex_strid_perimeters(self):
-        G = graph.Graph.build_contiguity(self.gdf_str, by_perimeter=True)
+        g = graph.Graph.build_contiguity(self.gdf_str, by_perimeter=True)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_rook_intids_perimeter(self):
-        G = graph.Graph.build_contiguity(self.gdf, strict=True, by_perimeter=True)
+        g = graph.Graph.build_contiguity(self.gdf, strict=True, by_perimeter=True)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_rook_strid_perimeters(self):
-        G = graph.Graph.build_contiguity(self.gdf_str, strict=True, by_perimeter=True)
+        g = graph.Graph.build_contiguity(self.gdf_str, strict=True, by_perimeter=True)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_queen_intid_perimeters(self):
-        G = graph.Graph.build_contiguity(
+        g = graph.Graph.build_contiguity(
             self.gdf, rook=False, strict=True, by_perimeter=True
         )
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_queen_strids_perimeter(self):
-        G = graph.Graph.build_contiguity(
+        g = graph.Graph.build_contiguity(
             self.gdf_str, rook=False, strict=True, by_perimeter=True
         )
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_block_contiguity(self):
         regimes = ["n", "n", "s", "s", "e", "e", "w", "w", "e", "l"]
-        G = graph.Graph.build_block_contiguity(regimes)
+        g = graph.Graph.build_block_contiguity(regimes)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
         regimes = pd.Series(
             regimes, index=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
         )
-        G = graph.Graph.build_block_contiguity(regimes)
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        g = graph.Graph.build_block_contiguity(regimes)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_fuzzy_contiguity_intids(self):
-        G = graph.Graph.build_fuzzy_contiguity(self.gdf)
+        g = graph.Graph.build_fuzzy_contiguity(self.gdf)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_fuzzy_contiguity_strids(self):
-        G = graph.Graph.build_fuzzy_contiguity(self.gdf_str)
+        g = graph.Graph.build_fuzzy_contiguity(self.gdf_str)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
 
 class TestTriangulation:
@@ -147,38 +151,38 @@ class TestTriangulation:
 
     @pytest.mark.parametrize("method", TRIANGULATIONS)
     def test_triangulation_intids(self, method):
-        G = graph.Graph.build_triangulation(self.gdf, method)
+        g = graph.Graph.build_triangulation(self.gdf, method)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     @pytest.mark.parametrize("method", TRIANGULATIONS)
     def test_triangulation_strids(self, method):
-        G = graph.Graph.build_triangulation(self.gdf_str, method)
+        g = graph.Graph.build_triangulation(self.gdf_str, method)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     @pytest.mark.parametrize("method", TRIANGULATIONS)
     def test_triangulation_intids_kernel(self, method):
-        G = graph.Graph.build_triangulation(
+        g = graph.Graph.build_triangulation(
             self.gdf, method, kernel="parabolic", bandwidth=7500
         )
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     @pytest.mark.parametrize("method", TRIANGULATIONS)
     def test_triangulation_strids_kernel(self, method):
-        G = graph.Graph.build_triangulation(
+        g = graph.Graph.build_triangulation(
             self.gdf_str, method, kernel="parabolic", bandwidth=7500
         )
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_invalid_method(self):
         with pytest.raises(ValueError, match="Method 'invalid' is not supported"):
@@ -194,33 +198,68 @@ class TestKernel:
         )
         self.gdf_str = self.gdf.set_index("placeid")
 
-    def test_kernel_intids(self):
-        G = graph.Graph.build_kernel(self.gdf)
+    def test_kernel_precompute(self):
+        sklearn = pytest.importorskip("sklearn")
+        df = gpd.read_file(geodatasets.get_path("nybb"))
+        df = df.to_crs(df.estimate_utm_crs())
+        distmat = csr_matrix(
+            sklearn.metrics.pairwise.euclidean_distances(get_coordinates(df.centroid))
+        )
+        g = graph.Graph.build_kernel(distmat, metric="precomputed")
+        expected = np.array(
+            [
+                0.07131664,
+                0.14998932,
+                0.09804811,
+                0.0402638,
+                0.07131664,
+                0.18556845,
+                0.17529176,
+                0.16394507,
+                0.14998932,
+                0.18556845,
+                0.17495794,
+                0.11561449,
+                0.09804811,
+                0.17529176,
+                0.17495794,
+                0.19116432,
+                0.0402638,
+                0.16394507,
+                0.11561449,
+                0.19116432,
+            ]
+        )
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert_array_almost_equal(g.adjacency.values, expected, 3)
+
+    def test_kernel_intids(self):
+        g = graph.Graph.build_kernel(self.gdf)
+
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_kernel_strids(self):
-        G = graph.Graph.build_kernel(self.gdf_str)
+        g = graph.Graph.build_kernel(self.gdf_str)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_knn_intids(self):
-        G = graph.Graph.build_knn(self.gdf, k=3)
+        g = graph.Graph.build_knn(self.gdf, k=3)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_knn_strids(self):
-        G = graph.Graph.build_kernel(self.gdf_str, k=3)
+        g = graph.Graph.build_kernel(self.gdf_str, k=3)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
 
 class TestDistanceBand:
@@ -230,50 +269,50 @@ class TestDistanceBand:
         self.gdf_str = self.gdf.set_index("BoroName")
 
     def test_distance_band_intids(self):
-        G = graph.Graph.build_distance_band(self.gdf, 50000)
+        g = graph.Graph.build_distance_band(self.gdf, 50000)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_distance_band_strids(self):
-        G = graph.Graph.build_distance_band(self.gdf_str, 50000)
+        g = graph.Graph.build_distance_band(self.gdf_str, 50000)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_distance_band_intids_weighted(self):
-        G = graph.Graph.build_distance_band(self.gdf, 50000, binary=False)
+        g = graph.Graph.build_distance_band(self.gdf, 50000, binary=False)
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_distance_band_strids_weighted(self):
-        G = graph.Graph.build_distance_band(self.gdf_str, 50000, binary=False)
+        g = graph.Graph.build_distance_band(self.gdf_str, 50000, binary=False)
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_distance_band_intids_kernel(self):
-        G = graph.Graph.build_distance_band(
+        g = graph.Graph.build_distance_band(
             self.gdf, 50000, binary=False, kernel="gaussian"
         )
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_distance_band_strids_kernel(self):
-        G = graph.Graph.build_distance_band(
+        g = graph.Graph.build_distance_band(
             self.gdf_str, 50000, binary=False, kernel="gaussian"
         )
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
 
 class TestAdjacency:
@@ -368,37 +407,33 @@ class TestAdjacency:
         )
 
     def test_adjacency_intids(self):
-        G = graph.Graph.from_adjacency(
+        g = graph.Graph.from_adjacency(
             self.expected_adjacency_intid,
         )
 
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_adjacency_strids(self):
-        G = graph.Graph.from_adjacency(
+        g = graph.Graph.from_adjacency(
             self.expected_adjacency_strid,
         )
 
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["focal"])
-        assert pd.api.types.is_string_dtype(G._adjacency.index.dtypes["neighbor"])
-        assert pd.api.types.is_numeric_dtype(G._adjacency.dtype)
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_adjacency_rename(self):
         adj = self.expected_adjacency_intid
         adj.columns = ["focal", "neighbor", "cost"]  # no longer named weight
-        G = graph.Graph.from_adjacency(adj, weight_col="cost")
+        _ = graph.Graph.from_adjacency(adj, weight_col="cost")
 
     def test_adjacency_wrong(self):
         adj = self.expected_adjacency_intid
         adj.columns = ["focal", "neighbor", "cost"]  # no longer named weight
-        try:
-            G = graph.Graph.from_adjacency(
-                adj,
-            )
-        except AssertionError as e:
-            pass
+        with pytest.raises(AssertionError, match='"weight" was given for `weight_col`'):
+            graph.Graph.from_adjacency(adj)
 
     def test_adjacency_match_contiguity(self):
         contiguity = graph.Graph.build_contiguity(self.gdf)

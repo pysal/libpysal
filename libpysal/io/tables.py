@@ -1,9 +1,11 @@
 __all__ = ["DataTable"]
 
-from . import fileio
-from ..common import requires
 from warnings import warn
+
 import numpy as np
+
+from ..common import requires
+from . import fileio
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
@@ -14,33 +16,26 @@ class DataTable(fileio.FileIO):
     tables should subclass this instead of `FileIO`.
     """
 
-    class _By_Col:
+    class _By_Col:  # noqa N801
         def __init__(self, parent):
-
             self.p = parent
 
         def __repr__(self) -> str:
-
             return "keys: " + self.p.header.__repr__()
 
         def __getitem__(self, key):
-
             return self.p._get_col(key)
 
         def __setitem__(self, key, val):
-
             self.p.cast(key, val)
 
         def __call__(self, key):
-
             return self.p._get_col(key)
 
     def __init__(self, *args, **kwargs):
-
         fileio.FileIO.__init__(self, *args, **kwargs)
 
     def __repr__(self) -> str:
-
         return "DataTable: %s" % self.dataPath
 
     def __len__(self):
@@ -54,14 +49,13 @@ class DataTable(fileio.FileIO):
 
     def _get_col(self, key):
         """Returns the column vector.
-        
+
         Raises
         ------
         AttributeError
             Raised when the header is not set.
         AttributeError
             Raised when a field does not exist.
-            
         """
 
         if not self.header:
@@ -87,7 +81,6 @@ class DataTable(fileio.FileIO):
 
         Notes
         -----
-
         If the variables are not all of the same data type, then ``numpy`` rules
         for casting will result in a uniform type applied to all variables. If only
         strings are passed to the function, then an array with those columns will be
@@ -98,7 +91,6 @@ class DataTable(fileio.FileIO):
 
         Examples
         --------
-
         >>> import libpysal
         >>> dbf = libpysal.io.open(libpysal.examples.get_path('NAT.dbf'))
         >>> hr = dbf.by_col_array('HR70', 'HR80')
@@ -108,7 +100,7 @@ class DataTable(fileio.FileIO):
                [ 1.91515848,  3.4507747 ],
                [ 1.28864319,  3.26381409],
                [ 0.        ,  7.77000777]])
-        
+
         >>> hr = dbf.by_col_array(['HR80', 'HR70'])
         >>> hr[0:5]
         array([[ 8.85582713,  0.        ],
@@ -116,7 +108,7 @@ class DataTable(fileio.FileIO):
                [ 3.4507747 ,  1.91515848],
                [ 3.26381409,  1.28864319],
                [ 7.77000777,  0.        ]])
-        
+
         >>> hr = dbf.by_col_array(['HR80'])
         >>> hr[0:5]
         array([[ 8.85582713],
@@ -124,7 +116,7 @@ class DataTable(fileio.FileIO):
                [ 3.4507747 ],
                [ 3.26381409],
                [ 7.77000777]])
-        
+
         Numpy only supports homogeneous arrays. See Notes above.
 
         >>> hr = dbf.by_col_array('STATE_NAME', 'HR80')
@@ -142,7 +134,7 @@ class DataTable(fileio.FileIO):
                ['Washington'],
                ['Washington'],
                ['Washington']], dtype='<U20')
-        
+
         >>> X[0:5]
         array([[ 8.85582713,  0.        ],
                [17.20874204,  0.        ],
@@ -151,7 +143,7 @@ class DataTable(fileio.FileIO):
                [ 7.77000777,  0.        ]])
         """
 
-        if any([isinstance(arg, list) for arg in args]):
+        if any(isinstance(arg, list) for arg in args):
             results = []
             for namelist in args:
                 if isinstance(namelist, str):
@@ -170,7 +162,7 @@ class DataTable(fileio.FileIO):
     def __getitem__(self, key) -> list:
         """DataTables fully support slicing in 2D. To provide slicing, handlers
         must provide ``__len__``. Slicing accepts up to two arguments. For example,
-        
+
         * ``table[row]``
         * ``table[row, col]``
         * ``table[row_start:row_stop]``
@@ -180,19 +172,18 @@ class DataTable(fileio.FileIO):
         * etc.
 
         ALL indices are Zero-Offsets. For example,
-        
+
         * ``>>> assert index in range(0, len(table))``
-        
+
         Raises
         ------
         TypeError
             Raised when two dimensions are not provided for slicing.
         TypeError
             Raised when an unknown key is present.
-        
         """
 
-        prevPos = self.tell()
+        prev_pos = self.tell()
 
         if issubclass(type(key), str):
             raise TypeError("index should be int or slice")
@@ -225,14 +216,14 @@ class DataTable(fileio.FileIO):
             else:
                 # col_start, col_stop, col_step = cols, cols+1, 1
                 data = [r[cols] for r in data]
-        self.seek(prevPos)
+        self.seek(prev_pos)
 
         return data
 
     @requires("pandas")
     def to_df(self, n=-1, read_shp=False, **df_kws):
         """Convert a ``libpysal.DataTable`` to a ``pandas.DataFrame``.
-        
+
         Parameters
         ----------
         n : int
@@ -241,12 +232,11 @@ class DataTable(fileio.FileIO):
             Read in from a shapefile (``True``). Default is ``False``.
         **df_kws : dict
             Optional keyword arguments to pass into ``pandas.DataFrame()``.
-        
+
         Returns
         -------
         df : pandas.DataFrame
             Pandas dataframe representation of the data.
-
         """
 
         import pandas as pd
@@ -262,12 +252,13 @@ class DataTable(fileio.FileIO):
                 from .geotable.shp import shp2series
 
                 df["geometry"] = shp2series(self.dataPath[:-3] + "shp")
-            except IOError as e:
+            except OSError as e:
                 warn(
                     "Encountered the following error in attempting to read"
                     " the shapefile {}. Proceeding with read, but the error"
                     " will be reproduced below:\n"
-                    " {}".format(self.dataPath[:-3] + "shp", e)
+                    " {}".format(self.dataPath[:-3] + "shp", e),
+                    stacklevel=2,
                 )
         return df
 

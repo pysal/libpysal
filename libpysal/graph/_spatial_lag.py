@@ -18,6 +18,8 @@ def _lag_spatial(graph, y):
     """
     sp = graph.sparse
     if len(y) != sp.shape[0]:
-        raise ValueError("The length of `y` needs to match the number of observations "
-                         f"in Graph. Expected {sp.shape[0]}, got {len(y)}.")
+        raise ValueError(
+            "The length of `y` needs to match the number of observations "
+            f"in Graph. Expected {sp.shape[0]}, got {len(y)}."
+        )
     return graph.sparse @ y
