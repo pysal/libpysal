@@ -233,11 +233,12 @@ def _vec_euclidean_distances(x_vec, y_vec):
 
 def _evaluate_index(data):
     """Helper to get ids from any input."""
-    return (
-        data.index
-        if isinstance(data, pd.Series | pd.DataFrame)
-        else pd.RangeIndex(0, len(data))
-    )
+    if isinstance(data, (pd.Series, pd.DataFrame)):
+        return data.index
+    elif hasattr(data, 'shape'):
+        return pd.RangeIndex(0, data.shape[0])
+    else:
+        return pd.RangeIndex(0, len(data))
 
 
 def _resolve_islands(heads, tails, ids, weights):
