@@ -16,7 +16,7 @@ from ._contiguity import (
 )
 from ._kernel import _distance_band, _kernel
 from ._parquet import _read_parquet, _to_parquet
-from ._plotting import _plot, _explore_graph
+from ._plotting import _explore_graph, _plot
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
