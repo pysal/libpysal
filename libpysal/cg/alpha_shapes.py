@@ -680,9 +680,7 @@ def _filter_holes(geoms, points):  # noqa ARG001
         #   exterior-hole pairs. Therefore, the polygon is a hole.
         # In general, an odd z-order means that there is an uneven number of exteriors.
         #   This means the polygon is not a hole.
-        zorder = sparse.csc_matrix((np.ones_like(inside), (inside, outside))).sum(
-            axis=1
-        )
+        zorder = sparse.csc_array((np.ones_like(inside), (inside, outside))).sum(axis=1)
         zorder = np.asarray(zorder).flatten()
         # Keep only the odd z-orders
         to_include = (zorder % 2).astype(bool)

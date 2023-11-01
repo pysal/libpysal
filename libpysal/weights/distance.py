@@ -894,7 +894,6 @@ class DistanceBand(W):
     def from_dataframe(
         cls, df, threshold, geom_col=None, ids=None, use_index=True, **kwargs
     ):
-
         """
         Make DistanceBand weights from a dataframe.
 
@@ -970,7 +969,7 @@ class DistanceBand(W):
         if threshold is not None:
             zeros = dist > threshold
             dist[zeros] = 0
-        return sp.csr_matrix(dist)
+        return sp.csr_array(dist)
 
 
 def _test():

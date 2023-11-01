@@ -19,7 +19,7 @@ __all__ = [
 
 def spw_from_gal(galfile):
     """
-    Sparse scipy matrix for w from a gal file.
+    Sparse scipy array for w from a gal file.
 
     Parameters
     ----------
@@ -30,8 +30,8 @@ def spw_from_gal(galfile):
     Returns
     -------
 
-    spw      : sparse_matrix
-               scipy sparse matrix in CSR format
+    spw      : sparse array
+               scipy sparse array in CSR format
 
     ids      : array
                identifiers for rows/cols of spw

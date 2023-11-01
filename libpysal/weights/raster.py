@@ -18,7 +18,6 @@ if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 
         return intercepted_function
 
-
 else:
     from ..common import jit
 
@@ -225,7 +224,7 @@ def da2WSP(
         da = da[slice_dict]
 
     ser = da.to_series()
-    dtype = np.int32 if (shape[0] * shape[1]) < 46340 ** 2 else np.int64
+    dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
     if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
         mask = (ser != da.attrs["nodatavals"][0]).to_numpy()
         ids = np.where(mask)[0]
@@ -279,7 +278,7 @@ def da2WSP(
                 *shape, ids, id_map, criterion, k_nas, dtype, n_jobs
             )  # -> (data, (row, col))
 
-        sw = sparse.csr_matrix(
+        sw = sparse.csr_array(
             sw_tup,
             shape=(n, n),
             dtype=np.int8,
@@ -290,9 +289,9 @@ def da2WSP(
     # Since diagonal elements are also added in the result,
     # this method set the diagonal elements to zero and
     # then eliminate zeros from the data. This changes the
-    # sparcity of the csr_matrix !!
+    # sparcity of the csr_array !!
     if k > 1 and not include_nodata:
-        sw = sum(map(lambda x: sw ** x, range(1, k + 1)))
+        sw = sum(map(lambda x: sw**x, range(1, k + 1)))
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
