@@ -1,6 +1,7 @@
+from warnings import warn
+
 from ...cg.shapes import asShape as pShape
 from ...common import requires as _requires
-from warnings import warn
 
 
 @_requires("geopandas")
@@ -25,9 +26,7 @@ def to_df(df, geom_col="geometry", **kw):
 
     See Also
     --------
-
     pandas.DataFrame
-
     """
 
     import pandas as pd
@@ -35,7 +34,7 @@ def to_df(df, geom_col="geometry", **kw):
 
     df[geom_col] = df[geom_col].apply(pShape)
 
-    if isinstance(df, (GeoDataFrame, GeoSeries)):
+    if isinstance(df, GeoDataFrame | GeoSeries):
         df = pd.DataFrame(df, **kw)
 
     return df
@@ -62,9 +61,7 @@ def to_gdf(df, geom_col="geometry", **kw):
 
     See Also
     --------
-
     geopandas.GeoDataFrame
-
     """
 
     from geopandas import GeoDataFrame
@@ -90,11 +87,14 @@ def insert_metadata(df, obj, name=None, inplace=True, overwrite=False):
 
     if hasattr(df, name):
         if overwrite:
-            warn("Overwriting attribute {}! This may break the dataframe!".format(name))
+            warn(
+                f"Overwriting attribute {name}! This may break the dataframe!",
+                stacklevel=2,
+            )
         else:
             raise Exception(
-                "Dataframe already has attribute {}. Cowardly refusing "
-                "to break dataframe.".format(name)
+                f"Dataframe already has attribute {name}. Cowardly refusing "
+                "to break dataframe."
             )
 
     df._metadata.append(name)
