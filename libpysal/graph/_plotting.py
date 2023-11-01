@@ -149,7 +149,6 @@ def _explore_graph(
     node_kws=None,
     focal_kws=None,
     m=None,
-    **kwargs
 ):
     """Plot graph as an interactive Folium Map
 
