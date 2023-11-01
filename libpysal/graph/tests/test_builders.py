@@ -1,8 +1,12 @@
-import pytest
-
-import geopandas as gpd
-import pandas as pd
 import geodatasets
+import geopandas as gpd
+import numpy as np
+import pandas as pd
+import pytest
+from numpy.testing import assert_array_almost_equal
+from scipy.sparse import csr_matrix
+from shapely import get_coordinates
+
 from libpysal import graph
 
 TRIANGULATIONS = ["delaunay", "gabriel", "relative_neighborhood", "voronoi"]
@@ -193,6 +197,41 @@ class TestKernel:
             ignore_index=True
         )
         self.gdf_str = self.gdf.set_index("placeid")
+
+    def test_kernel_precompute(self):
+        sklearn = pytest.importorskip("sklearn")
+        df = gpd.read_file(geodatasets.get_path("nybb"))
+        df = df.to_crs(df.estimate_utm_crs())
+        distmat = csr_matrix(
+            sklearn.metrics.pairwise.euclidean_distances(get_coordinates(df.centroid))
+        )
+        G = graph.Graph.build_kernel(distmat, metric="precomputed")
+        expected = np.array(
+            [
+                0.07131664,
+                0.14998932,
+                0.09804811,
+                0.0402638,
+                0.07131664,
+                0.18556845,
+                0.17529176,
+                0.16394507,
+                0.14998932,
+                0.18556845,
+                0.17495794,
+                0.11561449,
+                0.09804811,
+                0.17529176,
+                0.17495794,
+                0.19116432,
+                0.0402638,
+                0.16394507,
+                0.11561449,
+                0.19116432,
+            ]
+        )
+
+        assert_array_almost_equal(G.adjacency.values, expected, 3)
 
     def test_kernel_intids(self):
         G = graph.Graph.build_kernel(self.gdf)
