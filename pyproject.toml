@@ -134,4 +134,6 @@ filterwarnings = [
     "ignore:In the next version of libpysal, observations with no neighbors",
     "ignore:divide by zero encountered",
     "ignore:invalid value encountered",
+    "ignore:Passing a SingleBlockManager", # https://github.com/geopandas/geopandas/issues/3060
+    "ignore:Passing a BlockManager", # https://github.com/geopandas/geopandas/issues/3060
 ]
