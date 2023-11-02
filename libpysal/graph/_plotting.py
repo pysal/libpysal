@@ -212,8 +212,8 @@ def _explore_graph(
             focal = [focal]
         adj = adj[adj["focal"].isin(focal)].reset_index()
 
-    origins = gdf.loc[adj.focal].get_coordinates().values
-    destinations = gdf.loc[adj.neighbor].get_coordinates().values
+    origins = gdf.loc[adj.focal].geometry.get_coordinates().values
+    destinations = gdf.loc[adj.neighbor].geometry.get_coordinates().values
     lines = gpd.GeoSeries(
         shapely.linestrings(np.hstack([origins, destinations]).reshape(-1, 2, 2)),
         crs=gdf.crs,

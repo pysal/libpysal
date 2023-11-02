@@ -5,6 +5,7 @@ import pytest
 import shapely
 
 from libpysal import graph
+from libpysal.graph.tests.test_utils import fetch_map_string
 
 matplotlib = pytest.importorskip("matplotlib")
 
@@ -253,3 +254,28 @@ class TestPlotting:
         np.testing.assert_array_equal(
             pathcollection_focal.get_facecolor(), np.array([[0.0, 0.0, 1.0, 1.0]])
         )
+
+    def test_explore(self):
+        m = self.G_str.explore(self.nybb_str)
+        s = fetch_map_string(m)
+
+        assert '"focal":"Queens","neighbor":"Bronx","weight":1}' in s
+        assert s.count("black") ==20
+        assert s.count("Brooklyn") ==6
+
+    def test_explore_options(self):
+        m = self.nybb.explore(tiles="CartoDB Positron", tooltip=False)
+        m = self.G_str.explore(self.nybb_str, m=m)
+        m = self.G_str.explore(
+            self.nybb_str,
+            focal="Queens",
+            m=m,
+            edge_kws={"color": "red"},
+            focal_kws={"color": "blue", "marker_kwds": {"radius": 8}},
+        )
+        s = fetch_map_string(m)
+        assert s.count("Manhattan") == 12
+        assert s.count("Queens") == 14
+        assert s.count("Brooklyn") == 10
+        assert s.count("black") == 25
+        assert '"focal":"Queens","neighbor":"Bronx","weight":1}' in s
