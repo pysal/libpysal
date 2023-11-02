@@ -186,6 +186,7 @@ def _explore_graph(
     gdf = gdf.copy()
     gdf["id"] = gdf.index.values
     gdf = gdf.set_geometry(gdf.centroid)
+    gdf = gdf[["id", "geometry"]]
 
     if node_kws is not None:
         if "color" not in node_kws:
@@ -217,21 +218,19 @@ def _explore_graph(
         shapely.linestrings(np.hstack([origins, destinations]).reshape(-1, 2, 2)),
         crs=gdf.crs,
     )
-    edges = gpd.GeoDataFrame(adj, geometry=lines)
+    edges = gpd.GeoDataFrame(adj, geometry=lines)[
+        ["focal", "neighbor", "weight", "geometry"]
+    ]
 
-    m = (
-        edges[["focal", "neighbor", "weight", "geometry"]].explore(m=m, **edge_kws)
-        if m is not None
-        else edges[["focal", "neighbor", "weight", "geometry"]].explore(**edge_kws)
-    )
+    m = edges.explore(m=m, **edge_kws) if m is not None else edges.explore(**edge_kws)
 
     if nodes is True:
         if focal is not None:
             dests = gdf.loc[adj.neighbor].index.values
-            m = gdf[gdf.id.isin(dests)][["id", "geometry"]].explore(m=m, **node_kws)
+            m = gdf[gdf.id.isin(dests)].explore(m=m, **node_kws)
             if focal_kws is None:
                 focal_kws = {}
-            m = gdf[gdf["id"].isin(focal)][["id", "geometry"]].explore(m=m, **dict(node_kws, **focal_kws))
+            m = gdf[gdf["id"].isin(focal)].explore(m=m, **dict(node_kws, **focal_kws))
         else:
-            m = gdf[["id", "geometry"]].explore(m=m, **node_kws)
+            m = gdf.explore(m=m, **node_kws)
     return m
