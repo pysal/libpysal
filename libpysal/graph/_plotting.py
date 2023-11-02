@@ -229,7 +229,9 @@ def _explore_graph(
         if focal is not None:
             dests = gdf.loc[adj.neighbor].index.values
             m = gdf[gdf.id.isin(dests)][["id", "geometry"]].explore(m=m, **node_kws)
-            m = gdf[gdf["id"].isin(focal)][["id", "geometry"]].explore(m=m, **focal_kws)
+            if focal_kws is None:
+                focal_kws = {}
+            m = gdf[gdf["id"].isin(focal)][["id", "geometry"]].explore(m=m, **dict(node_kws, **focal_kws))
         else:
             m = gdf[["id", "geometry"]].explore(m=m, **node_kws)
     return m
