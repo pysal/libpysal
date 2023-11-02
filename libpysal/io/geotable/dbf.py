@@ -1,9 +1,9 @@
 """Miscellaneous file manipulation utilities.
 """
 
-import numpy as np
 import pandas as pd
-from ..fileio import FileIO as ps_open
+
+from ..fileio import FileIO
 
 
 def check_dups(li):
@@ -19,10 +19,9 @@ def check_dups(li):
     -------
     dups : list
         The duplicate IDs.
-        
     """
 
-    dups = list(set([x for x in li if li.count(x) > 1]))
+    dups = list({x for x in li if li.count(x) > 1})
 
     return dups
 
@@ -30,7 +29,7 @@ def check_dups(li):
 def dbfdups(dbfpath, idvar):
     """Checks duplicates in a ``.dBase`` file ID variable must be specified correctly.
     Author(s) -- Luc Anselin <anselin@uchicago.edu>
-    
+
     Parameters
     ----------
     dbfpath : str
@@ -42,12 +41,11 @@ def dbfdups(dbfpath, idvar):
     -------
     dups : list
         The duplicate IDs.
-        
     """
-    db = ps_open(dbfpath, "r")
+    db = FileIO(dbfpath, "r")
     li = db.by_col(idvar)
 
-    dups = list(set([x for x in li if li.count(x) > 1]))
+    dups = list({x for x in li if li.count(x) > 1})
 
     return dups
 
@@ -77,13 +75,11 @@ def df2dbf(df, dbf_path, my_specs=None):
     -------
     dbf_path : str
         Path to the output ``.dbf``
-    
+
     Notes
     -----
-    
     Use of ``dtypes.name`` may not be fully robust, but preferred
     approach of using ``isinstance`` seems too clumsy.
-    
     """
     if my_specs:
         specs = my_specs
@@ -105,11 +101,11 @@ def df2dbf(df, dbf_path, my_specs=None):
         types = [df[i].dtypes.name for i in df.columns]
         specs = [type2spec[t] for t in types]
 
-    db = ps_open(dbf_path, "w")
+    db = FileIO(dbf_path, "w")
     db.header = list(df.columns)
     db.field_spec = specs
 
-    for i, row in list(df.T.items()):
+    for _i, row in list(df.T.items()):
         db.write(row)
     db.close()
 
@@ -138,10 +134,9 @@ def dbf2df(dbf_path, index=None, cols=False, incl_index=False):
     -------
     df : pandas.DataFrame
         The resultant ``pandas.DataFrame`` object.
-    
     """
 
-    db = ps_open(dbf_path)
+    db = FileIO(dbf_path)
 
     if cols:
         if incl_index:
@@ -150,7 +145,7 @@ def dbf2df(dbf_path, index=None, cols=False, incl_index=False):
     else:
         vars_to_read = db.header
 
-    data = dict([(var, db.by_col(var)) for var in vars_to_read])
+    data = {var: db.by_col(var) for var in vars_to_read}
 
     if index:
         index = db.by_col(index)
@@ -187,7 +182,6 @@ def dbfjoin(dbf1_path, dbf2_path, out_path, joinkey1, joinkey2):
     -------
     dp : str
         Path to output file.
-    
     """
 
     df1 = dbf2df(dbf1_path, index=joinkey1)
@@ -215,7 +209,6 @@ def dta2dbf(dta_path, dbf_path):
     -------
     dp : str
         path to output file
-    
     """
 
     db = pd.read_stata(dta_path)
