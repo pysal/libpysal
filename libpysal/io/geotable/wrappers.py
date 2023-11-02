@@ -1,26 +1,29 @@
-from ...common import requires
-from ...cg import asShape
-from .file import read_files, write_files
-import shapely.geometry as sgeom
+import contextlib
+
 import pandas as pd
+import shapely.geometry as sgeom
+
+from ...cg import asShape
+from ...common import requires
+from .file import read_files, write_files
 
 
 @requires("geopandas")
 def geopandas(filename, **kw):
     """Wrapper for ``geopandas.read_file()``.
-    
+
     Parameters
     ----------
     filename : str
         Path to the file.
     **kw : dict
         Optional keyword arguments for ``geopandas.read_file()``.
-        
+
     Returns
     -------
     gdf : geopandas.GeoDataFrame
         The shapefile read in as a ``geopandas.GeoDataFrame``.
-    
+
     """
 
     import geopandas
@@ -33,7 +36,7 @@ def geopandas(filename, **kw):
 @requires("fiona")
 def fiona(filename, geom_type="shapely", **kw):
     """Open a file with ``fiona`` and convert to a ``pandas.DataFrame``.
-    
+
     Parameters
     ----------
     filename : str
@@ -42,7 +45,7 @@ def fiona(filename, geom_type="shapely", **kw):
         Package/method to use from creating geometries. Default is ``'shapely'``.
     **kw : dict
         Optional keyword arguments for ``fiona.open()``.
-    
+
     Returns
     -------
     df : pandas.DataFrame
@@ -53,7 +56,10 @@ def fiona(filename, geom_type="shapely", **kw):
     if geom_type == "shapely":
         converter = sgeom.shape
     elif geom_type is None:
-        converter = lambda x: x
+
+        def converter(x):
+            return x
+
     else:
         converter = asShape
 
@@ -63,11 +69,9 @@ def fiona(filename, geom_type="shapely", **kw):
     with fiona.open(filename, **kw) as f:
         for i, feat in enumerate(f):
             idx = feat.get("id", i)
-            try:
+            with contextlib.suppress(ValueError):
                 idx = int(idx)
-            except ValueError:
-                pass
-            props.update({idx: feat.get("properties", dict())})
+            props.update({idx: feat.get("properties", {})})
             props[idx].update({"geometry": converter(feat["geometry"])})
 
     df = pd.DataFrame().from_dict(props).T

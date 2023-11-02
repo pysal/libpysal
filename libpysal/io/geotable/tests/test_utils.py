@@ -1,10 +1,8 @@
-from .. import utils
-from ..file import read_files as rf
 import pytest
 
 
 @pytest.mark.skip("skpping converters and metadata inserters")
-class Test_Utils:
+class TestUtils:
     def test_converters(self):
         """Make a round trip to geodataframe and back."""
 

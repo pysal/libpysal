@@ -14,7 +14,7 @@ Readers and Writers will mimic python file objects.
 """
 
 
-# ruff: noqa: ARG002, N801, N802, N803, N806
+# ruff: noqa: ARG002, N801, N802, N803, N806, SIM115
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
@@ -89,8 +89,7 @@ class FileIO(metaclass=FileIO_MetaCls):  # should be a type?
                     cls.__registry[cls.getType(dataPath, mode, dataFormat)][mode][0]
                 )
             except KeyError:
-                with open(dataPath, mode) as file:
-                    return file
+                return open(dataPath, mode)
             return newCls
         else:
             return object.__new__(cls)
