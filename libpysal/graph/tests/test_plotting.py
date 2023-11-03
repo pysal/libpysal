@@ -5,12 +5,13 @@ import pytest
 import shapely
 
 from libpysal import graph
-
-matplotlib = pytest.importorskip("matplotlib")
+from libpysal.graph.tests.test_utils import fetch_map_string
 
 
 class TestPlotting:
     def setup_method(self):
+        _ = pytest.importorskip("matplotlib")
+
         self.nybb = geopandas.read_file(geodatasets.get_path("nybb"))
         self.G = graph.Graph.build_contiguity(self.nybb)
 
@@ -253,3 +254,117 @@ class TestPlotting:
         np.testing.assert_array_equal(
             pathcollection_focal.get_facecolor(), np.array([[0.0, 0.0, 1.0, 1.0]])
         )
+
+
+class TestExplore:
+    def setup_method(self):
+        # skip tests when no folium installed
+        pytest.importorskip("folium")
+
+        self.nybb_str = geopandas.read_file(geodatasets.get_path("nybb")).set_index(
+            "BoroName"
+        )
+        self.G_str = graph.Graph.build_contiguity(self.nybb_str)
+
+    def test_default(self):
+        m = self.G_str.explore(self.nybb_str)
+        s = fetch_map_string(m)
+
+        # nodes
+        assert s.count("Point") == 5
+        # edges
+        assert s.count("LineString") == 6
+        # tooltip
+        assert '"focal":"Queens","neighbor":"Bronx","weight":1}' in s
+        # color
+        assert s.count('"__folium_color":"black"') == 11
+        # labels
+        assert s.count("Brooklyn") == 3
+
+    def test_no_nodes(self):
+        m = self.G_str.explore(self.nybb_str, nodes=False)
+        s = fetch_map_string(m)
+
+        # nodes
+        assert s.count("Point") == 0
+        # edges
+        assert s.count("LineString") == 6
+        # tooltip
+        assert '"focal":"Queens","neighbor":"Bronx","weight":1}' in s
+        # color
+        assert s.count('"__folium_color":"black"') == 6
+        # labels
+        assert s.count("Brooklyn") == 2
+
+    def test_focal(self):
+        m = self.G_str.explore(self.nybb_str, focal="Queens")
+        s = fetch_map_string(m)
+
+        # nodes
+        assert s.count("Point") == 4
+        # edges
+        assert s.count("LineString") == 3
+        # tooltip
+        assert '"focal":"Queens","neighbor":"Bronx","weight":1}' in s
+        assert '"focal":"Queens","neighbor":"Manhattan","weight":1}' in s
+        assert '"focal":"Queens","neighbor":"Brooklyn","weight":1}' in s
+        # color
+        assert s.count('"__folium_color":"black"') == 7
+        # labels
+        assert s.count("Brooklyn") == 2
+
+    def test_focal_array(self):
+        m = self.G_str.explore(self.nybb_str, focal=["Queens", "Bronx"])
+        s = fetch_map_string(m)
+
+        # if node is both focal and neighbor, both are plottted as you can style
+        # them differently to see both
+        assert s.count("Point") == 6
+        # edges
+        assert s.count("LineString") == 4
+        # tooltip
+        assert '"focal":"Queens","neighbor":"Bronx","weight":1}' in s
+        assert '"focal":"Queens","neighbor":"Manhattan","weight":1}' in s
+        assert '"focal":"Queens","neighbor":"Brooklyn","weight":1}' in s
+        assert '"focal":"Bronx","neighbor":"Manhattan","weight":1}' in s
+
+        # color
+        assert s.count('"__folium_color":"black"') == 10
+        # labels
+        assert s.count("Brooklyn") == 2
+
+    def test_color(self):
+        m = self.G_str.explore(self.nybb_str, color="red")
+        s = fetch_map_string(m)
+
+        assert s.count('"__folium_color":"red"') == 11
+
+    def test_kws(self):
+        m = self.G_str.explore(
+            self.nybb_str,
+            focal=["Queens", "Bronx"],
+            edge_kws={"color": "red"},
+            node_kws={"color": "blue", "marker_kwds": {"radius": 8}},
+            focal_kws={"color": "pink", "marker_kwds": {"radius": 12}},
+        )
+        s = fetch_map_string(m)
+
+        # color
+        assert s.count('"__folium_color":"red"') == 4
+        assert s.count('"__folium_color":"blue"') == 4
+        assert s.count('"__folium_color":"pink"') == 2
+
+        assert '"radius":8' in s
+        assert '"radius":12' in s
+
+    def test_m(self):
+        m = self.nybb_str.explore()
+        self.G_str.explore(self.nybb_str, m=m)
+        s = fetch_map_string(m)
+
+        # nodes
+        assert s.count("Point") == 5
+        # edges
+        assert s.count("LineString") == 6
+        # geoms
+        assert s.count("Polygon") == 5

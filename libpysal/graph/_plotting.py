@@ -1,3 +1,4 @@
+import geopandas as gpd
 import numpy as np
 import pandas as pd
 import shapely
@@ -136,3 +137,111 @@ def _plot(
             ax.scatter(coords[:, 0], coords[:, 1], **node_kws, zorder=2)
 
     return ax
+
+
+def _explore_graph(
+    g,
+    gdf,
+    focal=None,
+    nodes=True,
+    color="black",
+    edge_kws=None,
+    node_kws=None,
+    focal_kws=None,
+    m=None,
+):
+    """Plot graph as an interactive Folium Map
+
+    Parameters
+    ----------
+    g : libpysal.Graph
+        graph to be plotted
+    gdf : geopandas.GeoDataFrame
+        geodataframe used to instantiate to Graph
+    focal : list, optional
+        subset of focal observations to plot in the map, by default None.
+        If none, all relationships are plotted
+    nodes : bool, optional
+        whether to display observations as nodes in the map, by default True
+    color : str, optional
+        color applied to nodes and edges, by default "black"
+    edge_kws : dict, optional
+        additional keyword arguments passed to geopandas explore function
+        when plotting edges, by default None
+    node_kws : dict, optional
+        additional keyword arguments passed to geopandas explore function
+        when plotting nodes, by default None
+    focal_kws : dict, optional
+        additional keyword arguments passed to geopandas explore function
+        when plotting focal observations, by default None. Only applicable when
+        passing a subset of nodes with the `focal` argument
+    m : Folilum.Map, optional
+        folium map objecto to plot on top of, by default None
+
+    Returns
+    -------
+    folium.Map
+        folium map
+    """
+    geoms = gdf.centroid.reindex(g.unique_ids)
+
+    if node_kws is not None:
+        if "color" not in node_kws:
+            node_kws["color"] = color
+    else:
+        node_kws = {"color": color}
+
+    if focal_kws is not None:
+        if "color" not in node_kws:
+            focal_kws["color"] = color
+    else:
+        focal_kws = {"color": color}
+
+    if edge_kws is not None:
+        if "color" not in edge_kws:
+            edge_kws["color"] = color
+    else:
+        edge_kws = {"color": color}
+
+    coords = shapely.get_coordinates(geoms)
+
+    if focal is not None:
+        if not pd.api.types.is_list_like(focal):
+            focal = [focal]
+        subset = g._adjacency[focal]
+        codes = subset.index.codes
+        adj = subset
+
+    else:
+        codes = g._adjacency.index.codes
+        adj = g._adjacency
+
+    # avoid plotting both ij and ji
+    edges, indices = np.unique(
+        np.sort(np.column_stack([codes]).T, axis=1), return_index=True, axis=0
+    )
+    lines = coords[edges]
+    lines = gpd.GeoSeries(
+        shapely.linestrings(lines),
+        crs=gdf.crs,
+    )
+    adj = adj.iloc[indices].reset_index()
+    edges = gpd.GeoDataFrame(adj, geometry=lines)[
+        ["focal", "neighbor", "weight", "geometry"]
+    ]
+
+    m = edges.explore(m=m, **edge_kws) if m is not None else edges.explore(**edge_kws)
+
+    if nodes is True:
+        if focal is not None:
+            # destinations
+            geoms.iloc[np.unique(subset.index.codes[1])].explore(m=m, **node_kws)
+            if focal_kws is None:
+                focal_kws = {}
+            # focals
+            geoms.iloc[np.unique(subset.index.codes[0])].explore(
+                m=m, **dict(node_kws, **focal_kws)
+            )
+        else:
+            geoms.explore(m=m, **node_kws)
+    return m
