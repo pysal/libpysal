@@ -1288,6 +1288,7 @@ class Graph(SetOpsMixin):
         node_kws=None,
         focal_kws=None,
         m=None,
+        **kwargs,
     ):
         """Plot graph as an interactive Folium Map
 
@@ -1314,6 +1315,9 @@ class Graph(SetOpsMixin):
             passing a subset of nodes with the `focal` argument
         m : Folilum.Map, optional
             folium map objecto to plot on top of, by default None
+        **kwargs : dict, optional
+            additional keyword arguments are passed directly to geopandas.explore, when
+            ``m=None`` by default None
 
         Returns
         -------
@@ -1330,6 +1334,7 @@ class Graph(SetOpsMixin):
             node_kws=node_kws,
             focal_kws=focal_kws,
             m=m,
+            **kwargs,
         )
 
 
