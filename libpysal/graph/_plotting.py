@@ -183,10 +183,7 @@ def _explore_graph(
     folium.Map
         folium map
     """
-    gdf = gdf.copy()
-    gdf["id"] = gdf.index.values
-    gdf = gdf.set_geometry(gdf.centroid)
-    gdf = gdf[["id", "geometry"]]
+    geoms = gdf.centroid.reindex(g.unique_ids)
 
     if node_kws is not None:
         if "color" not in node_kws:
@@ -206,18 +203,27 @@ def _explore_graph(
     else:
         edge_kws = {"color": color}
 
-    adj = g.adjacency.reset_index()
+    coords = shapely.get_coordinates(geoms)
+
     if focal is not None:
         if not pd.api.types.is_list_like(focal):
             focal = [focal]
-        adj = adj[adj["focal"].isin(focal)].reset_index()
+        subset = g._adjacency[focal]
+        codes = subset.index.codes
 
-    origins = shapely.get_coordinates(gdf.loc[adj.focal].geometry)
-    destinations = shapely.get_coordinates(gdf.loc[adj.neighbor].geometry)
+    else:
+        codes = g._adjacency.index.codes
+
+    # avoid plotting both ij and ji
+    edges, indices = np.unique(
+        np.sort(np.column_stack([codes]).T, axis=1), return_index=True, axis=0
+    )
+    lines = coords[edges]
     lines = gpd.GeoSeries(
-        shapely.linestrings(np.hstack([origins, destinations]).reshape(-1, 2, 2)),
+        shapely.linestrings(lines),
         crs=gdf.crs,
     )
+    adj = g.adjacency.iloc[indices].reset_index()
     edges = gpd.GeoDataFrame(adj, geometry=lines)[
         ["focal", "neighbor", "weight", "geometry"]
     ]
@@ -226,11 +232,12 @@ def _explore_graph(
 
     if nodes is True:
         if focal is not None:
-            dests = gdf.loc[adj.neighbor].index.values
-            m = gdf[gdf.id.isin(dests)].explore(m=m, **node_kws)
+            geoms.iloc[np.unique(subset.index.codes[1])].explore(m=m, **node_kws)
             if focal_kws is None:
                 focal_kws = {}
-            m = gdf[gdf["id"].isin(focal)].explore(m=m, **dict(node_kws, **focal_kws))
+            geoms.iloc[np.unique(subset.index.codes[0])].explore(
+                m=m, **dict(node_kws, **focal_kws)
+            )
         else:
-            m = gdf.explore(m=m, **node_kws)
+            geoms.explore(m=m, **node_kws)
     return m
