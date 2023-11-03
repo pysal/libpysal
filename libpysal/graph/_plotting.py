@@ -210,9 +210,11 @@ def _explore_graph(
             focal = [focal]
         subset = g._adjacency[focal]
         codes = subset.index.codes
+        adj = subset
 
     else:
         codes = g._adjacency.index.codes
+        adj = g._adjacency
 
     # avoid plotting both ij and ji
     edges, indices = np.unique(
@@ -223,7 +225,7 @@ def _explore_graph(
         shapely.linestrings(lines),
         crs=gdf.crs,
     )
-    adj = g.adjacency.iloc[indices].reset_index()
+    adj = adj.iloc[indices].reset_index()
     edges = gpd.GeoDataFrame(adj, geometry=lines)[
         ["focal", "neighbor", "weight", "geometry"]
     ]
@@ -232,9 +234,11 @@ def _explore_graph(
 
     if nodes is True:
         if focal is not None:
+            # destinations
             geoms.iloc[np.unique(subset.index.codes[1])].explore(m=m, **node_kws)
             if focal_kws is None:
                 focal_kws = {}
+            # focals
             geoms.iloc[np.unique(subset.index.codes[0])].explore(
                 m=m, **dict(node_kws, **focal_kws)
             )
