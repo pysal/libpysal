@@ -255,22 +255,27 @@ class TestPlotting:
             pathcollection_focal.get_facecolor(), np.array([[0.0, 0.0, 1.0, 1.0]])
         )
 
-    def test_explore(self):
-        # skip tests when no folium installed
-        _ = pytest.importorskip("folium")
 
+class TestExplore:
+    def setup_method(self):
+        # skip tests when no folium installed
+        pytest.importorskip("folium")
+
+        self.nybb_str = geopandas.read_file(geodatasets.get_path("nybb")).set_index(
+            "BoroName"
+        )
+        self.G_str = graph.Graph.build_contiguity(self.nybb_str)
+
+    def test_explore(self):
         m = self.G_str.explore(self.nybb_str)
         s = fetch_map_string(m)
 
         assert '"focal":"Queens","neighbor":"Bronx","weight":1}' in s
-        assert s.count("black") ==20
-        assert s.count("Brooklyn") ==6
+        assert s.count("black") == 20
+        assert s.count("Brooklyn") == 6
 
     def test_explore_options(self):
-        # skip tests when no folium installed
-        _ = pytest.importorskip("folium")
-
-        m = self.nybb.explore(tiles="CartoDB Positron", tooltip=False)
+        m = self.nybb_str.explore(tiles="CartoDB Positron", tooltip=False)
         m = self.G_str.explore(self.nybb_str, m=m)
         m = self.G_str.explore(
             self.nybb_str,
