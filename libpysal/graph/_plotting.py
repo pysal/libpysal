@@ -149,6 +149,7 @@ def _explore_graph(
     node_kws=None,
     focal_kws=None,
     m=None,
+    **kwargs,
 ):
     """Plot graph as an interactive Folium Map
 
@@ -177,6 +178,10 @@ def _explore_graph(
         passing a subset of nodes with the `focal` argument
     m : Folilum.Map, optional
         folium map objecto to plot on top of, by default None
+    **kwargs : dict, optional
+        additional keyword arguments are passed directly to geopandas.explore, when
+        ``m=None`` by default None
+
 
     Returns
     -------
@@ -230,7 +235,11 @@ def _explore_graph(
         ["focal", "neighbor", "weight", "geometry"]
     ]
 
-    m = edges.explore(m=m, **edge_kws) if m is not None else edges.explore(**edge_kws)
+    m = (
+        edges.explore(m=m, **edge_kws)
+        if m is not None
+        else edges.explore(**edge_kws, **kwargs)
+    )
 
     if nodes is True:
         if focal is not None:

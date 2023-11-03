@@ -368,3 +368,9 @@ class TestExplore:
         assert s.count("LineString") == 6
         # geoms
         assert s.count("Polygon") == 5
+
+    def test_explore_kwargs(self):
+        m = self.G_str.explore(self.nybb_str, tiles="OpenStreetMap HOT")
+        s = fetch_map_string(m)
+
+        assert "tile.openstreetmap.fr/hot" in s
