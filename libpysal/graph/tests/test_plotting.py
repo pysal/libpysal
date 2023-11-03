@@ -256,6 +256,9 @@ class TestPlotting:
         )
 
     def test_explore(self):
+        # skip tests when no folium installed
+        _ = pytest.importorskip("folium")
+
         m = self.G_str.explore(self.nybb_str)
         s = fetch_map_string(m)
 
@@ -264,6 +267,9 @@ class TestPlotting:
         assert s.count("Brooklyn") ==6
 
     def test_explore_options(self):
+        # skip tests when no folium installed
+        _ = pytest.importorskip("folium")
+
         m = self.nybb.explore(tiles="CartoDB Positron", tooltip=False)
         m = self.G_str.explore(self.nybb_str, m=m)
         m = self.G_str.explore(
