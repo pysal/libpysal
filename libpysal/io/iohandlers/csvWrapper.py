@@ -1,7 +1,9 @@
-from .. import tables
+# ruff: noqa: N801, N802, N806, N999, SIM115
+
+
 import csv
 
-from typing import Union
+from .. import tables
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ["csvWrapper"]
@@ -12,7 +14,7 @@ class csvWrapper(tables.DataTable):
 
     Examples
     --------
-    
+
     >>> import libpysal
     >>> stl = libpysal.examples.load_example('stl')
     >>> file_name = stl.get_path('stl_hom.csv')
@@ -41,7 +43,7 @@ class csvWrapper(tables.DataTable):
      'RDAC80',
      'RDAC85',
      'RDAC90']
-    
+
     >>> f._spec
     [str,
      str,
@@ -65,16 +67,15 @@ class csvWrapper(tables.DataTable):
      float,
      float,
      float]
-    
+
     """
 
-    __doc__ = tables.DataTable.__doc__
+    __doc__ = tables.DataTable.__doc__  # noqa A003
     FORMATS = ["csv"]
     READ_MODES = ["r", "Ur", "rU", "U"]
     MODES = READ_MODES[:]
 
     def __init__(self, *args, **kwargs):
-
         tables.DataTable.__init__(self, *args, **kwargs)
         self.__idx = {}
         self.__len = None
@@ -84,7 +85,6 @@ class csvWrapper(tables.DataTable):
         return self.__len
 
     def _open(self):
-
         self.fileObj = open(self.dataPath, self.mode)
         if self.mode in self.READ_MODES:
             self.dataObj = csv.reader(self.fileObj)
@@ -99,7 +99,6 @@ class csvWrapper(tables.DataTable):
             self.__len = len(data)
 
     def _determineHeader(self, data: list) -> bool:
-
         HEADER = True
 
         headSpec = self._determineSpec([data[0]])
@@ -112,7 +111,6 @@ class csvWrapper(tables.DataTable):
 
     @staticmethod
     def _determineSpec(data: list) -> list:
-
         cols = len(data[0])
         spec = []
 
@@ -139,8 +137,7 @@ class csvWrapper(tables.DataTable):
 
         return spec
 
-    def _read(self) -> Union[list, None]:
-
+    def _read(self) -> list | None:
         if self.pos < len(self):
             row = self.data[self.pos]
             self.pos += 1

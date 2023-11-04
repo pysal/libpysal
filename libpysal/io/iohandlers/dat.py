@@ -1,5 +1,5 @@
-from . import gwt
 from ...weights import W
+from . import gwt
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["DatIO"]
@@ -11,7 +11,7 @@ class DatIO(gwt.GwtIO):
     This ``.dat`` format is a simple text file with a ``.DAT`` or ``.dat``
     extension. Without a header line, it includes three data columns
     for origin ID, destination ID, and weight values as follows:
-    
+
     ```
     [Line 1]    2    1    0.25
     [Line 2]    5    1    0.50
@@ -28,17 +28,17 @@ class DatIO(gwt.GwtIO):
 
     def _read(self):
         """Reads in a ``.dat`` file as a PySAL `W` object.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -125,7 +125,7 @@ class DatIO(gwt.GwtIO):
         Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -133,5 +133,4 @@ class DatIO(gwt.GwtIO):
         if issubclass(type(obj), W):
             self._writelines(obj)
         else:
-
             raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))

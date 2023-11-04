@@ -1,7 +1,10 @@
+# ruff: noqa: N802, N815, SIM115
+
 import scipy.io as sio
-from .. import fileio
+
 from ...weights import W
 from ...weights.util import full, full2W
+from .. import fileio
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["MatIO"]
@@ -19,13 +22,13 @@ class MatIO(fileio.FileIO):
 
     Notes
     -----
-    
+
     If a given weights object contains too many observations to write it out as
     a full matrix, PySAL writes out the object as a sparse matrix.
 
     References
     ----------
-    
+
     `MathWorks <http://www.mathworks.com/help/pdf_doc/matlab/matfile_format.pdf>`_
     (2011) "MATLAB 7 MAT-File Format."
 
@@ -48,19 +51,19 @@ class MatIO(fileio.FileIO):
 
     varName = property(fget=_get_varName, fset=_set_varName)
 
-    def read(self, n=-1):
+    def read(self, n=-1):  # noqa ARG002
         """
-        
+
         Parameters
         ----------
         n : int
             Read at most ``n`` objects. Default is ``-1``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -76,17 +79,17 @@ class MatIO(fileio.FileIO):
 
     def _read(self):
         """Reads MATLAB ``.mat`` file.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -135,7 +138,7 @@ class MatIO(fileio.FileIO):
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         TypeError

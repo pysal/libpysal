@@ -1,7 +1,10 @@
-from .. import fileio
-from ...weights.weights import W, WSP
-from scipy import sparse
+# ruff: noqa: SIM115
+
 import numpy as np
+from scipy import sparse
+
+from ...weights.weights import WSP, W
+from .. import fileio
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ["GalIO"]
@@ -18,9 +21,9 @@ class GalIO(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
-    def read(self, n=-1, sparse=False):
+    def read(self, n=-1, sparse=False):  # noqa ARG002
         """Read in a ``.gal`` file.
-        
+
         Parameters
         ----------
         n : int
@@ -28,7 +31,7 @@ class GalIO(fileio.FileIO):
         sparse: bool
             If ``True`` return a ``scipy`` sparse object. If ``False``
             return PySAL `W` object. Default is ``False``.
-        
+
         Returns
         -------
         w : {libpysal.weights.W, libpysal.weights.WSP}
@@ -52,12 +55,12 @@ class GalIO(fileio.FileIO):
 
     def _set_data_type(self, typ):
         """
-        
+
         Raises
         ------
         TypeError
             Raised when ``typ`` is not a callable.
-        
+
         """
         if callable(typ):
             self._typ = typ
@@ -73,12 +76,12 @@ class GalIO(fileio.FileIO):
         -------
         w : {libpysal.weights.W, libpysal.weights.WSP}
             A PySAL `W` object or a thin PySAL `WSP`.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -93,10 +96,10 @@ class GalIO(fileio.FileIO):
         >>> w = testfile.read()
         >>> w.n == 100
         True
-        
+
         >>> print(round(w.sd,6))
         1.515124
-        
+
         >>> testfile = libpysal.io.open(libpysal.examples.get_path('sids2.gal'), 'r')
 
         Return a sparse matrix for the `W` information.
@@ -108,7 +111,6 @@ class GalIO(fileio.FileIO):
         """
 
         if self._sparse:
-
             if self.pos > 0:
                 raise StopIteration
 
@@ -128,18 +130,18 @@ class GalIO(fileio.FileIO):
             counter = 0
             typ = self.data_type
 
-            for i in range(n):
-                id, n_neighbors = self.file.readline().strip().split()
-                id = typ(id)
+            for _ in range(n):
+                id_, n_neighbors = self.file.readline().strip().split()
+                id_ = typ(id)
                 n_neighbors = int(n_neighbors)
                 neighbors_i = list(map(typ, self.file.readline().strip().split()))
                 nn = len(neighbors_i)
-                extend([id] * nn)
+                extend([id_] * nn)
                 counter += nn
 
                 for id_neigh in neighbors_i:
                     append(id_neigh)
-                idsappend(id)
+                idsappend(id_)
 
             self.pos += 1
             row = np.array(row)
@@ -153,7 +155,6 @@ class GalIO(fileio.FileIO):
             w = WSP(spmat)
 
         else:
-
             if self.pos > 0:
                 raise StopIteration
 
@@ -171,13 +172,13 @@ class GalIO(fileio.FileIO):
             w = {}
             typ = self.data_type
 
-            for i in range(n):
-                id, n_neighbors = self.file.readline().strip().split()
-                id = typ(id)
+            for _ in range(n):
+                id_, n_neighbors = self.file.readline().strip().split()
+                id_ = typ(id_)
                 n_neighbors = int(n_neighbors)
                 neighbors_i = list(map(typ, self.file.readline().strip().split()))
-                neighbors[id] = neighbors_i
-                ids.append(id)
+                neighbors[id_] = neighbors_i
+                ids.append(id_)
 
             self.pos += 1
 
@@ -197,7 +198,7 @@ class GalIO(fileio.FileIO):
         ------
         TypeError
             Raised when the input ``obj`` is not a PySAL `W`.
-        
+
         Examples
         --------
 
@@ -238,18 +239,18 @@ class GalIO(fileio.FileIO):
         Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
-        
+
         """
 
         self._complain_ifclosed(self.closed)
 
         if issubclass(type(obj), W):
-            IDS = obj.id_order
+            ids = obj.id_order
             self.file.write("%d\n" % (obj.n))
 
-            for id in IDS:
-                neighbors = obj.neighbors[id]
-                self.file.write("%s %d\n" % (str(id), len(neighbors)))
+            for id_ in ids:
+                neighbors = obj.neighbors[id_]
+                self.file.write("%s %d\n" % (str(id_), len(neighbors)))
                 self.file.write(" ".join(map(str, neighbors)) + "\n")
             self.pos += 1
         else:
