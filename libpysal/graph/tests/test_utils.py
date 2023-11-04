@@ -132,3 +132,8 @@ def test_validate_raises(
         _validate_geometry_input(
             numpy.arange(20).reshape(-1, 2), valid_geometry_types=contiguity_types
         )
+
+def fetch_map_string(m):
+    out = m._parent.render()
+    out_str = "".join(out.split())
+    return out_str
