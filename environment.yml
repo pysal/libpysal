@@ -15,7 +15,6 @@ dependencies:
   - requests
   - scipy
   - shapely
-  - xarray
   # optional libpysal deps
   - geodatasets
   - joblib
@@ -25,4 +24,5 @@ dependencies:
   - pyarrow
   - scikit-learn
   - sqlalchemy
+  - xarray
   - zstd

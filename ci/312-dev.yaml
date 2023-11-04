@@ -27,6 +27,7 @@ dependencies:
   - pyproj
   - sqlalchemy
   - zstd
+  - xarray
   - pip
   - pip:
       # dev versions of packages
@@ -34,6 +35,5 @@ dependencies:
       - pandas
       - scikit-learn
       - scipy
-      - xarray
       - git+https://github.com/geopandas/geopandas.git@main
       - git+https://github.com/shapely/shapely.git@main
