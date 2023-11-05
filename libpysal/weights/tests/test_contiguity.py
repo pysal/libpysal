@@ -117,7 +117,7 @@ class ContiguityMixin:
             assert w.id_order[:5] == expected
 
     def test_from_xarray(self):
-        _  = pytest.importorskip("xarray")
+        pytest.importorskip("xarray")
 
         w = self.cls.from_xarray(self.da, sparse=False, n_jobs=-1)
         assert w[self.known_wi_da] == self.known_w_da

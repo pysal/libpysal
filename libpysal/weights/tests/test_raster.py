@@ -7,7 +7,7 @@ from .. import raster
 
 class Testraster:
     def setup_method(self):
-        xarray = pytest.importorskip("xarray")
+        pytest.importorskip("xarray")
         self.da1 = raster.testDataArray()
         self.da2 = raster.testDataArray((1, 4, 4), missing_vals=False)
         self.da3 = self.da2.rename({"band": "layer", "x": "longitude", "y": "latitude"})
