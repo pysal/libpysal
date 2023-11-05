@@ -1,11 +1,11 @@
-from warnings import warn
+# ruff: noqa: N815
 
 import numpy as np
 import pytest
 
 from ... import examples as pysal_examples
 from ...io import geotable as pdio
-from ...io.fileio import FileIO as ps_open
+from ...io.fileio import FileIO
 from .. import contiguity as c
 from .. import util
 from ..weights import W
@@ -14,7 +14,7 @@ from ..weights import W
 class ContiguityMixin:
     polygon_path = pysal_examples.get_path("columbus.shp")
     point_path = pysal_examples.get_path("baltim.shp")
-    f = ps_open(polygon_path)  # our file handler
+    f = FileIO(polygon_path)  # our file handler
     polygons = f.read()  # our iterable
     f.seek(0)  # go back to head of file
     cls = object  # class constructor
@@ -29,9 +29,9 @@ class ContiguityMixin:
     known_w_da = dict()
     try:
         from .. import raster
+
         da = raster.testDataArray((1, 4, 4), missing_vals=False)
-    except ImportError as e:
-        warn('unable to import raster utils, likely from missing xarray')
+    except ImportError:
         da = None
 
     def setup_method(self):
