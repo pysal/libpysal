@@ -2,13 +2,12 @@
 import numpy as np
 import pandas as pd
 import pytest
-from xarray import DataArray
-
 from .. import raster
 
 
 class Testraster:
     def setup_method(self):
+        pytest.importorskip("xarray")
         self.da1 = raster.testDataArray()
         self.da2 = raster.testDataArray((1, 4, 4), missing_vals=False)
         self.da3 = self.da2.rename({"band": "layer", "x": "longitude", "y": "latitude"})
@@ -77,9 +76,10 @@ class Testraster:
         assert w2.index.tolist() == self.da2.to_series().index.tolist()
 
     def test_w2da(self):
+        xarray = pytest.importorskip("xarray")
         w2 = raster.da2W(self.da2, "rook", n_jobs=-1)
         da2 = raster.w2da(self.da2.data.flatten(), w2, self.da2.attrs, self.da2.coords)
-        da_compare = DataArray.equals(da2, self.da2)
+        da_compare = xarray.DataArray.equals(da2, self.da2)
         assert da_compare == True
 
     def test_wsp2da(self):
