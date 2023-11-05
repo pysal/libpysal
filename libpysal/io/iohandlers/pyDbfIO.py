@@ -72,7 +72,7 @@ class DBF(tables.DataTable):
             self._col_index = {}
             idx = 0
 
-            for _fieldno in range(numfields):
+            for _ in range(numfields):
                 # again, check struct for fmt def.
                 name, typ, size, deci = struct.unpack("<11sc4xBB14x", f.read(32))
                 # forces to unicode in 2, to str in 3
@@ -99,7 +99,7 @@ class DBF(tables.DataTable):
             self.header = [fInfo[0] for fInfo in self.field_info[1:]]
             field_spec = []
 
-            for _fname, ftype, flen, fpre in self.field_info[1:]:
+            for _, ftype, flen, fpre in self.field_info[1:]:
                 field_spec.append((ftype, flen, fpre))
 
             self.field_spec = field_spec
@@ -202,7 +202,7 @@ class DBF(tables.DataTable):
             return self.read_record(i + 1)
         result = []
 
-        for (name, typ, _size, deci), value in zip(self.field_info, rec, strict=True):
+        for (name, typ, _, deci), value in zip(self.field_info, rec, strict=True):
             if name == "DeletionFlag":
                 continue
             if typ == "N":
@@ -291,10 +291,6 @@ class DBF(tables.DataTable):
             if value is None:
                 value = " " * size if typ == "C" else "\x00" * size
             elif typ == "N" or typ == "F":
-                str(value).rjust(size, " ")
-                # if len(v) == size:
-                #    value = v
-                # else:
                 value = (("%" + "%d.%d" % (size, deci) + "f") % (value))[:size]
             elif typ == "D":
                 value = value.strftime("%Y%m%d")

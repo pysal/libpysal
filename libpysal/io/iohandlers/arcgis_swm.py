@@ -168,7 +168,7 @@ class ArcGISSwmIO(fileio.FileIO):
                 weights[origin] = list(
                     unpack("<%id" % no_nghs, self.file.read(8 * no_nghs))
                 )
-                list(unpack("<d", self.file.read(8)))[0]
+                _ = list(unpack("<d", self.file.read(8)))[0]
 
         self.pos += 1
 
@@ -229,7 +229,7 @@ class ArcGISSwmIO(fileio.FileIO):
                     weights[origin] = list(
                         unpack("<%id" % no_nghs, self.file.read(8 * no_nghs))
                     )
-                list(unpack("<d", self.file.read(8)))[0]
+                _ = list(unpack("<d", self.file.read(8)))[0]
 
         self.pos += 1
 
