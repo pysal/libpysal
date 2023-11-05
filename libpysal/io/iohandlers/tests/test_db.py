@@ -6,7 +6,7 @@ import shapely
 
 from .... import examples as pysal_examples
 from ... import geotable as pdio
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 
 try:
     import sqlalchemy
@@ -39,7 +39,8 @@ class TestSqliteReader:
             self.conn,
             index=True,
             dtype={
-                "date": sqlalchemy.types.UnicodeText,  # Should convert the df date into a true date object, just a hack again
+                # Should convert the df date into a true date object, just a hack again
+                "date": sqlalchemy.types.UnicodeText,
                 "dataset": sqlalchemy.types.UnicodeText,
                 "street": sqlalchemy.types.UnicodeText,
                 "intersection": sqlalchemy.types.UnicodeText,
@@ -49,7 +50,7 @@ class TestSqliteReader:
         )  # This is converted to TEXT as lowest type common sqlite
 
     def test_deserialize(self):
-        db = psopen(f"sqlite:///{self.dbf}")
+        db = FileIO(f"sqlite:///{self.dbf}")
         assert db.tables == ["newhaven"]
 
         gj = db._get_gjson("newhaven")

@@ -5,11 +5,11 @@ import warnings
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..arcgis_txt import ArcGISTextIO
 
 
-class Testtest_ArcGISTextIO:
+class TesttestArcGISTextIO:
     def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("arcgis_txt.txt")
         self.obj = ArcGISTextIO(test_file, "r")
@@ -52,12 +52,12 @@ class Testtest_ArcGISTextIO:
         f = tempfile.NamedTemporaryFile(suffix=".txt")
         fname = f.name
         f.close()
-        o = psopen(fname, "w", "arcgis_text")
+        o = FileIO(fname, "w", "arcgis_text")
         o.write(w)
         o.close()
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter("always")
-            wnew = psopen(fname, "r", "arcgis_text").read()
+            wnew = FileIO(fname, "r", "arcgis_text").read()
             if len(warn) > 0:
                 assert issubclass(warn[0].category, RuntimeWarning)
                 assert (

@@ -5,11 +5,11 @@ import warnings
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..arcgis_dbf import ArcGISDbfIO
 
 
-class Testtest_ArcGISDbfIO:
+class TesttestArcGISDbfIO:
     def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("arcgis_ohio.dbf")
         self.obj = ArcGISDbfIO(test_file, "r")
@@ -52,10 +52,10 @@ class Testtest_ArcGISDbfIO:
         f = tempfile.NamedTemporaryFile(suffix=".dbf")
         fname = f.name
         f.close()
-        o = psopen(fname, "w", "arcgis_dbf")
+        o = FileIO(fname, "w", "arcgis_dbf")
         o.write(w)
         o.close()
-        f = psopen(fname, "r", "arcgis_dbf")
+        f = FileIO(fname, "r", "arcgis_dbf")
         wnew = f.read()
         f.close()
         assert wnew.pct_nonzero == w.pct_nonzero

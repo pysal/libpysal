@@ -4,11 +4,11 @@ import tempfile
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..gwt import GwtIO
 
 
-class Testtest_GwtIO:
+class TesttestGwtIO:
     def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("juvenile.gwt")
         self.obj = GwtIO(test_file, "r")
@@ -41,13 +41,13 @@ class Testtest_GwtIO:
             f = tempfile.NamedTemporaryFile(suffix=".gwt")
             fname = f.name
             f.close()
-            o = psopen(fname, "w")
+            o = FileIO(fname, "w")
             # copy the shapefile and ID variable names from the old gwt.
             # this is only available after the read() method has been called.
             # o.shpName = self.obj.shpName
             # o.varName = self.obj.varName
             o.write(w)
             o.close()
-            wnew = psopen(fname, "r").read()
+            wnew = FileIO(fname, "r").read()
             assert wnew.pct_nonzero == w.pct_nonzero
             os.remove(fname)
