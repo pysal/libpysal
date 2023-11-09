@@ -941,3 +941,11 @@ class TestBase:
         pd.testing.assert_series_equal(
             expected, nybb.component_labels, check_dtype=False
         )
+
+    def test_eliminate_zeros(self):
+        adj = self.adjacency_str_binary.copy()
+        adj["Bronx", "Queens"] = 0
+        adj["Queens", "Manhattan"] = 0
+        with_zero = graph.Graph(adj)
+        expected = adj.drop([("Bronx", "Queens"), ("Queens", "Manhattan")])
+        pd.testing.assert_series_equal(with_zero.eliminate_zeros()._adjacency, expected)
