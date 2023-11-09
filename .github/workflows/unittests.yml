@@ -53,15 +53,28 @@ jobs:
 
       - name: Install libpysal
         run: |
-          pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
+          pip install .
 
       - name: Spatial versions
         run: |
           python -c 'import geopandas; geopandas.show_versions();'
 
+      - name: Download test files
+        run: |
+          python -c '
+          import geodatasets
+          import libpysal
+
+          geodatasets.fetch("nybb")
+          geodatasets.fetch("geoda liquor_stores")
+          geodatasets.fetch("eea large_rivers")
+          geodatasets.fetch("geoda groceries")
+          geodatasets.fetch("geoda columbus")
+          libpysal.examples.fetch_all()
+          '
       - name: Test libpysal
         run: |
-          pytest -v --color yes --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
+          pytest -v --color yes -n auto --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
 
       - name: Codecov
         uses: codecov/codecov-action@v3
