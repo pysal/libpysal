@@ -78,7 +78,7 @@ class SetOpsMixin:
                 intersection.get_level_values("neighbor"),
                 self.unique_ids,
                 np.ones(intersection.shape[0], dtype=np.int8),
-            ),
+            )
         )
 
     def symmetric_difference(self, right):
@@ -102,7 +102,7 @@ class SetOpsMixin:
                 sym_diff.get_level_values("neighbor"),
                 self.unique_ids,
                 np.ones(sym_diff.shape[0], dtype=np.int8),
-            ),
+            )
         )
 
     def union(self, right):
@@ -127,7 +127,7 @@ class SetOpsMixin:
                 union.get_level_values("neighbor"),
                 self.unique_ids,
                 np.ones(union.shape[0], dtype=np.int8),
-            ),
+            )
         )
 
     def difference(self, right):
@@ -147,7 +147,7 @@ class SetOpsMixin:
                 diff.get_level_values("neighbor"),
                 self.unique_ids,
                 np.ones(diff.shape[0], dtype=np.int8),
-            ),
+            )
         )
 
     def issubgraph(self, right):
