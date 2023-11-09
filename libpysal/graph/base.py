@@ -271,7 +271,7 @@ class Graph(SetOpsMixin):
             libpysal.graph.Graph based on sparse
         """
 
-        return cls.from_arrays(*_sparse_to_arrays(sparse, ids), is_sorted=True)
+        return cls.from_arrays(*_sparse_to_arrays(sparse, ids))
 
     @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight, **kwargs):
@@ -399,10 +399,10 @@ class Graph(SetOpsMixin):
             # use shapely-based constructors
             if rook:
                 return cls.from_arrays(
-                    *_rook(geometry, ids=ids, by_perimeter=by_perimeter), is_sorted=True
+                    *_rook(geometry, ids=ids, by_perimeter=by_perimeter)
                 )
             return cls.from_arrays(
-                *_queen(geometry, ids=ids, by_perimeter=by_perimeter), is_sorted=True
+                *_queen(geometry, ids=ids, by_perimeter=by_perimeter)
             )
 
         # use vertex-based constructor
@@ -486,7 +486,7 @@ class Graph(SetOpsMixin):
             coincident=coincident,
         )
 
-        return cls.from_arrays(head, tail, weight, is_sorted=True)
+        return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_knn(cls, data, k, metric="euclidean", p=2, coincident="raise"):
@@ -534,7 +534,7 @@ class Graph(SetOpsMixin):
             coincident=coincident,
         )
 
-        return cls.from_arrays(head, tail, weight, is_sorted=True)
+        return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_triangulation(
@@ -717,7 +717,6 @@ class Graph(SetOpsMixin):
             adjacency.index.values,
             adjacency.neighbor.values,
             adjacency.weight.values,
-            is_sorted=True,
         )
 
     @classmethod
