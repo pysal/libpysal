@@ -79,7 +79,6 @@ class SetOpsMixin:
                 self.unique_ids,
                 np.ones(intersection.shape[0], dtype=np.int8),
             ),
-            is_sorted=True,
         )
 
     def symmetric_difference(self, right):
@@ -104,7 +103,6 @@ class SetOpsMixin:
                 self.unique_ids,
                 np.ones(sym_diff.shape[0], dtype=np.int8),
             ),
-            is_sorted=True,
         )
 
     def union(self, right):
@@ -130,7 +128,6 @@ class SetOpsMixin:
                 self.unique_ids,
                 np.ones(union.shape[0], dtype=np.int8),
             ),
-            is_sorted=True,
         )
 
     def difference(self, right):
@@ -151,7 +148,6 @@ class SetOpsMixin:
                 self.unique_ids,
                 np.ones(diff.shape[0], dtype=np.int8),
             ),
-            is_sorted=True,
         )
 
     def issubgraph(self, right):
