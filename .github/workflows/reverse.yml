@@ -20,6 +20,8 @@ jobs:
               cenpy
               autoesda
               region
+              greedy
+              pysal
             include: >-
               mapclassify
             install: >-
@@ -36,5 +38,5 @@ jobs:
             installation_command: >-
               pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()'
             fail_on_failure: false
-            verbose: false
+            verbose: true
             parallel: true
