@@ -21,6 +21,10 @@ jobs:
               autoesda
               region
             include: mapclassify
+            whitelist: >-
+              esda
+              spreg
+              spaghetti
             install: >-
               setuptools-scm
               py-opencv
