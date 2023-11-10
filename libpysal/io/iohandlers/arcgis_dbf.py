@@ -1,6 +1,8 @@
-from .. import fileio
-from ...weights.weights import W
+# ruff: noqa: N802, N803, N806, N815
+
 from ...weights.util import remap_ids
+from ...weights.weights import W
+from .. import fileio
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["ArcGISDbfIO"]
@@ -29,7 +31,7 @@ class ArcGISDbfIO(fileio.FileIO):
     record numbers, instead of original ids.
 
     An exemplary structure of an ArcGIS dbf file is as follows:
-    
+
     ```
     [Line 1]    Field1    RECORD_ID    NID    WEIGHT
     [Line 2]    0         72           76     1
@@ -41,7 +43,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
     References
     ----------
-    
+
     http://webhelp.esri.com/arcgisdesktop/9.3/index.cfm?TopicName=Convert_Spatial_Weights_Matrix_to_Table_(Spatial_Statistics)
 
     """
@@ -64,7 +66,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
     varName = property(fget=_get_varName, fset=_set_varName)
 
-    def read(self, n=-1):
+    def read(self, n=-1):  # noqa ARG002
         self._complain_ifclosed(self.closed)
         return self._read()
 
@@ -74,12 +76,12 @@ class ArcGISDbfIO(fileio.FileIO):
 
     def _read(self):
         """Reads ArcGIS dbf file
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A ``libpysal.weights.W`` object.
-        
+
         Raises
         ------
         StopIteration
@@ -88,7 +90,7 @@ class ArcGISDbfIO(fileio.FileIO):
             Raised when the weights data structure is incorrect.
         TypeError
             Raised when the IDs are not integers.
-        
+
         Examples
         --------
 
@@ -237,10 +239,10 @@ class ArcGISDbfIO(fileio.FileIO):
             id_spec = ("N", len(str(max(obj.id_order))), 0)
             self.file.field_spec = [id_spec, id_spec, ("N", 13, 6)]
 
-            for id in obj.id_order:
-                neighbors = list(zip(obj.neighbors[id], obj.weights[id]))
+            for id_ in obj.id_order:
+                neighbors = list(zip(obj.neighbors[id_], obj.weights[id_], strict=True))
                 for neighbor, weight in neighbors:
-                    self.file.write([id, neighbor, weight])
+                    self.file.write([id_, neighbor, weight])
                     self.pos = self.file.pos
 
         else:

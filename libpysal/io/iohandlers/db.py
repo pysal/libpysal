@@ -1,11 +1,12 @@
-from .. import fileio
 from shapely import wkb
+
+from .. import fileio
 
 errmsg = ""
 
 try:
-    from sqlalchemy.ext.automap import automap_base
     from sqlalchemy import create_engine
+    from sqlalchemy.ext.automap import automap_base
     from sqlalchemy.orm import Session
 
     nosql_mode = False
