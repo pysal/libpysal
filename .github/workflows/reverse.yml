@@ -37,7 +37,7 @@ jobs:
               opencv-contrib-python
               KDEpy
             installation_command: >-
-              pip install .; python -c 'import libpysal; print(libpysal.examples.builtin_datasets.keys()); print(examples.get_path("columbus.shp"))'
+              pip install .; python -c 'import libpysal; print(libpysal.examples.builtin_datasets.keys()); print(libpysal.examples.get_path("columbus.shp"))'
             fail_on_failure: false
             verbose: true
             parallel: false
