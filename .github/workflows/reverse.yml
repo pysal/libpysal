@@ -19,10 +19,15 @@ jobs:
               tigernet
               cenpy
               autoesda
+              region
             include: mapclassify
             install: >-
-                setuptools-scm
+              setuptools-scm
+              py-opencv
+              h3-py
+              hdbscan
+              pandana
             installation_command: >-
               pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
             fail_on_failure: false
-            verbose: true
+            verbose: false
