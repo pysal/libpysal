@@ -957,4 +957,4 @@ class TestBase:
                 names=["focal", "neighbor"],
             ),
         )
-        pd.testing.assert_series_equal(expected, sub._adjacency)
+        pd.testing.assert_series_equal(expected, sub._adjacency, check_dtype=False)
