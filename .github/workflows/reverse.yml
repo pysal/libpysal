@@ -34,11 +34,12 @@ jobs:
               hdbscan
               pandana
               astropy
+              geodatasets
             install_pip: >-
               opencv-contrib-python
               KDEpy
             installation_command: >-
-              pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
+              pip install .; python -c 'import libpysal; libpysal.examples.builtin_datasets.keys()'
             fail_on_failure: false
             verbose: true
             parallel: false
