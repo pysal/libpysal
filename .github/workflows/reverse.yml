@@ -38,5 +38,5 @@ jobs:
             installation_command: >-
               pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
             fail_on_failure: false
-            verbose: false
+            verbose: true
             parallel: false
