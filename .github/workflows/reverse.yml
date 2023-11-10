@@ -22,5 +22,7 @@ jobs:
             include: mapclassify
             install: >-
                 setuptools-scm
+            installation_command: >-
+              pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
             fail_on_failure: false
             verbose: true
