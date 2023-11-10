@@ -246,7 +246,7 @@ def _resolve_islands(heads, tails, ids, weights):
     Induce self-loops for a collection of ids and links describing a
     contiguity graph. Induced self-loops will have zero weight.
     """
-    islands = np.setdiff1d(ids, heads)
+    islands = pd.Index(ids).difference(pd.Index(heads))
     if islands.shape != (0,):
         heads = np.hstack((heads, islands))
         tails = np.hstack((tails, islands))

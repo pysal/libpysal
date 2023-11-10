@@ -20,7 +20,12 @@ from ._plotting import _explore_graph, _plot
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
-from ._utils import _evaluate_index, _neighbor_dict_to_edges, _sparse_to_arrays
+from ._utils import (
+    _evaluate_index,
+    _neighbor_dict_to_edges,
+    _resolve_islands,
+    _sparse_to_arrays,
+)
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
@@ -1335,6 +1340,45 @@ class Graph(SetOpsMixin):
             focal_kws=focal_kws,
             m=m,
             **kwargs,
+        )
+
+    def subgraph(self, ids):
+        """Returns a subset of Graph containing only nodes specified in ids
+
+        The resulting subgraph contains only the nodes in ``ids`` and the edges
+        between them or zero-weight self-loops in case of isolates.
+
+        The order of ``ids`` reflects a new canonical order of the resulting
+        subgraph. This means ``ids`` should be equal to the index of the DataFrame
+        containing data linked to the graph to ensure alignment of sparse representation
+        of subgraph.
+
+        Parameters
+        ----------
+        ids : array-like
+            An array of node IDs to be retained
+
+        Returns
+        -------
+        Graph
+            A new Graph that is a subset of the original
+
+        Notes
+        -----
+        Unlike the implementation in ``networkx``, this creates a copy since
+        Graphs in ``libpysal`` are immutable.
+        """
+        masked_adj = self._adjacency[ids]
+        filtered_adj = masked_adj[
+            masked_adj.index.get_level_values("neighbor").isin(ids)
+        ]
+        return Graph.from_arrays(
+            *_resolve_islands(
+                filtered_adj.index.get_level_values("focal"),
+                filtered_adj.index.get_level_values("neighbor"),
+                ids,
+                filtered_adj.values,
+            )
         )
 
 
