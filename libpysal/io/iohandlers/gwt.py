@@ -1,13 +1,16 @@
+# ruff: noqa: N801, N802,N812, N815, SIM115
+
 import os.path
-from .. import fileio as FileIO
-from ...weights.weights import W
 from warnings import warn
+
+from ...weights.weights import W
+from .. import fileio as FileIO
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ["GwtIO"]
 
 
-class unique_filter(object):
+class unique_filter:
     """(Util function) When a new instance is passed as an arugment to the
     builtin filter it will remove duplicate entries without changing the
     order of the list. Be sure to ceate a new instance everytime, unless
@@ -15,11 +18,11 @@ class unique_filter(object):
 
     Examples
     --------
-    
+
     >>> l = ['a', 'a', 'b', 'a', 'c', 'v', 'd', 'a', 'v', 'd']
     >>> list(filter(unique_filter(),l))
     ['a', 'b', 'c', 'v', 'd']
-    
+
     """
 
     def __init__(self):
@@ -34,7 +37,6 @@ class unique_filter(object):
 
 
 class GwtIO(FileIO.FileIO):
-
     FORMATS = ["kwt", "gwt"]
     MODES = ["r", "w"]
 
@@ -62,19 +64,19 @@ class GwtIO(FileIO.FileIO):
 
     shpName = property(fget=_get_shpName, fset=_set_shpName)
 
-    def read(self, n=-1):
+    def read(self, n=-1):  # noqa ARG002
         """
-        
+
         Parameters
         ----------
         n : int
             Read at most ``n`` objects. Default is ``-1``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -94,14 +96,14 @@ class GwtIO(FileIO.FileIO):
         many weight file formats. Header lines, however, are different from
         format to format. So, for code reusability, this part is separated out
         from the ``_read()`` function by Myunghwa Hwang.
-        
+
         Parameters
         ----------
         id_type : type
             Cast IDs as this type.
         ret_ids : bool
             Return IDs (``True``). Default is ``False``.
-        
+
         Returns
         -------
         weights : dict
@@ -110,28 +112,28 @@ class GwtIO(FileIO.FileIO):
             Dictionary of neighbor ID values.
         ids : list
             List of ID values.
-        
+
         """
 
         data = [row.strip().split() for row in self.file.readlines()]
         ids = list(filter(unique_filter(), [x[0] for x in data]))
         ids = list(map(id_type, ids))
-        WN = {}
+        wn = {}
 
         # note: fromkeys is no good here, all keys end up sharing the say dict value
-        for id in ids:
-            WN[id] = {}
+        for id_ in ids:
+            wn[id_] = {}
 
         for i, j, v in data:
             i = id_type(i)
             j = id_type(j)
-            WN[i][j] = float(v)
+            wn[i][j] = float(v)
         weights = {}
         neighbors = {}
 
-        for i in WN:
-            weights[i] = list(WN[i].values())
-            neighbors[i] = list(WN[i].keys())
+        for i in wn:
+            weights[i] = list(wn[i].values())
+            neighbors[i] = list(wn[i].keys())
         if ret_ids:
             return weights, neighbors, ids
         else:
@@ -139,17 +141,17 @@ class GwtIO(FileIO.FileIO):
 
     def _read(self):
         """Reads ``.gwt`` file.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -197,15 +199,15 @@ class GwtIO(FileIO.FileIO):
                     msg = "ID_VAR:'%s' was in in the DBF header, "
                     msg += "proceeding with unordered string IDs."
                     msg = msg % id_var
-                    warn(msg, RuntimeWarning)
+                    warn(msg, RuntimeWarning, stacklevel=2)
             else:
                 msg = "DBF relating to GWT was not found, "
                 msg += "proceeding with unordered string IDs."
-                warn(msg, RuntimeWarning)
-        except:
+                warn(msg, RuntimeWarning, stacklevel=2)
+        except:  # noqa E722
             msg = "Exception occurred will reading DBF, "
             msg += "proceeding with unordered string IDs."
-            warn(msg, RuntimeWarning)
+            warn(msg, RuntimeWarning, stacklevel=2)
 
         self.flag = flag
         self.n = n
@@ -236,21 +238,21 @@ class GwtIO(FileIO.FileIO):
         repeatedly used for many weight file formats. Header lines, however,
         are different from format to format. So, for code reusability, this
         part is separated out from write function by Myunghwa Hwang.
-        
+
         Parameters
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
-        for id in obj.id_order:
-            neighbors = list(zip(obj.neighbors[id], obj.weights[id]))
-            str_id = "_".join(str(id).split())
+        for id_ in obj.id_order:
+            neighbors = list(zip(obj.neighbors[id_], obj.weights[id_], strict=True))
+            str_id = "_".join(str(id_).split())
             for neighbor, weight in neighbors:
                 neighbor = "_".join(str(neighbor).split())
 
-                self.file.write("%s %s %6G\n" % (str_id, neighbor, weight))
+                self.file.write(f"{str_id} {neighbor} {weight:.6G}\n")
                 self.pos += 1
 
     def write(self, obj):
@@ -260,7 +262,7 @@ class GwtIO(FileIO.FileIO):
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         TypeError
@@ -306,7 +308,7 @@ class GwtIO(FileIO.FileIO):
         Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -336,11 +338,9 @@ class GwtIO(FileIO.FileIO):
 
     @staticmethod
     def __zero_offset(neighbors: dict, weights: dict, original_ids=None) -> dict:
-
         if not original_ids:
             original_ids = list(neighbors.keys())
 
-        old_weights = weights
         new_weights = {}
         new_ids = {}
         old_ids = {}
