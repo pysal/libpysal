@@ -1,0 +1,25 @@
+name: Test reverse dependencies
+on:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  reverse_dependencies:
+    name: Reverse dependency testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+
+      - uses: scientific-python/reverse-dependency-testing@main
+        with:
+            package_name: libpysal
+            ignore: >-
+              fine
+              tigernet
+              cenpy
+              autoesda
+            include: mapclassify
+            install: >-
+                setuptools-scm
+            fail_on_failure: false
