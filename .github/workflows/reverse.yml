@@ -27,6 +27,7 @@ jobs:
               h3-py
               hdbscan
               pandana
+              astropy
             install_pip: >-
               opencv-contrib-python
               KDEpy
@@ -34,3 +35,4 @@ jobs:
               pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
             fail_on_failure: false
             verbose: false
+            parallel: false
