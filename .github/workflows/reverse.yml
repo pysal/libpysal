@@ -22,6 +22,7 @@ jobs:
               region
               greedy
               pysal
+              mesa-geo
             include: >-
               mapclassify
             install: >-
@@ -32,6 +33,8 @@ jobs:
               pandana
               astropy
               geodatasets
+              bokeh
+              pulp
             install_pip: >-
               opencv-contrib-python
               KDEpy
