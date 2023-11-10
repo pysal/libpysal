@@ -3,14 +3,17 @@ PySAL ShapeFile Reader and Writer based on pure python shapefile module.
 
 """
 
+# ruff: noqa: N802, N806, N999
+
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __credits__ = "Copyright (c) 2009 Charles R. Schmidt"
 __all__ = ["PurePyShpWrapper"]
 
+from warnings import warn
+
+from ... import cg
 from .. import fileio
 from ..util import shp_file
-from ... import cg
-from warnings import warn
 
 STRING_TO_TYPE = {
     "POLYGON": cg.Polygon,
@@ -37,7 +40,7 @@ class PurePyShpWrapper(fileio.FileIO):
 
     Notes
     -----
-    
+
     This class wraps ``_pyShpIO``'s ``shp_file`` class with the PySAL `FileIO` API.
     shp_file can be used without PySAL.
 
@@ -48,25 +51,25 @@ class PurePyShpWrapper(fileio.FileIO):
     >>> f = tempfile.NamedTemporaryFile(suffix='.shp')
     >>> fname = f.name
     >>> f.close()
-    
+
     >>> import libpysal
     >>> i = libpysal.io.open(libpysal.examples.get_path('10740.shp'),'r')
     >>> o = libpysal.io.open(fname,'w')
-    
+
     >>> for shp in i:
     ...     o.write(shp)
     >>> o.close()
-    
+
     >>> one = libpysal.io.open(libpysal.examples.get_path('10740.shp'),'rb').read()
     >>> two = libpysal.io.open(fname,'rb').read()
     >>> one[0].centroid == two[0].centroid
     True
-    
+
     >>> one = libpysal.io.open(libpysal.examples.get_path('10740.shx'),'rb').read()
     >>> two = libpysal.io.open(fname[:-1]+'x','rb').read()
     >>> one[0].centroid == two[0].centroid
     True
-    
+
     >>> import os
     >>> os.remove(fname); os.remove(fname.replace('.shp','.shx'))
 
@@ -84,7 +87,7 @@ class PurePyShpWrapper(fileio.FileIO):
             self.__create()
 
     def __len__(self) -> int:
-        if self.dataObj != None:
+        if self.dataObj is not None:
             return len(self.dataObj)
         else:
             return 0
@@ -108,7 +111,7 @@ class PurePyShpWrapper(fileio.FileIO):
         except KeyError:
             msg = "%s does not support shapes of type: %s."
             msg = msg % (self.__class__.__name__, self.dataObj.type())
-            raise TypeError(msg)
+            raise TypeError(msg) from None
 
     def __create(self):
         self.write = self.__firstWrite
@@ -176,11 +179,11 @@ class PurePyShpWrapper(fileio.FileIO):
                 rec["NumParts"] = len(shape.parts)
                 all_parts = shape.parts
             partsIndex = [0]
-            for l in [len(part) for part in all_parts][:-1]:
-                partsIndex.append(partsIndex[-1] + l)
+            for l_ in [len(part) for part in all_parts][:-1]:
+                partsIndex.append(partsIndex[-1] + l_)
             rec["Parts Index"] = partsIndex
             verts = sum(all_parts, [])
-            verts = [(x, y) for x, y in verts]
+            verts = list(verts)
             rec["NumPoints"] = len(verts)
             rec["Vertices"] = verts
         self.dataObj.add_shape(rec)
@@ -218,8 +221,12 @@ class PurePyShpWrapper(fileio.FileIO):
                 ]
                 if self.dataObj.type() == "POLYGON":
                     is_cw = [cg.is_clockwise(part) for part in parts]
-                    vertices = [part for part, cw in zip(parts, is_cw) if cw]
-                    holes = [part for part, cw in zip(parts, is_cw) if not cw]
+                    vertices = [
+                        part for part, cw in zip(parts, is_cw, strict=True) if cw
+                    ]
+                    holes = [
+                        part for part, cw in zip(parts, is_cw, strict=True) if not cw
+                    ]
                     if not holes:
                         holes = None
                     shp = self.type(vertices, holes)
@@ -229,17 +236,21 @@ class PurePyShpWrapper(fileio.FileIO):
             elif rec["NumParts"] == 1:
                 vertices = rec["Vertices"]
                 if self.dataObj.type() == "POLYGON" and not cg.is_clockwise(vertices):
-
-                    ### SHAPEFILE WARNING: Polygon %d topology has been fixed. (ccw -> cw)
+                    # SHAPEFILE WARNING:
+                    # Polygon %d topology has been fixed. (ccw -> cw)
                     msg = "SHAPEFILE WARNING: Polygon %d "
                     msg += "topology has been fixed. (ccw -> cw)."
                     msg = msg % self.pos
-                    warn(msg, RuntimeWarning)
+                    warn(msg, RuntimeWarning, stacklevel=2)
                     print(msg)
 
                 shp = self.type(vertices)
             else:
-                warn("Polygon %d has zero parts." % self.pos, RuntimeWarning)
+                warn(
+                    "Polygon %d has zero parts." % self.pos,
+                    RuntimeWarning,
+                    stacklevel=2,
+                )
                 shp = self.type([[]])
                 # raise ValueError, "Polygon %d has zero parts"%self.pos
 
