@@ -27,6 +27,9 @@ jobs:
               h3-py
               hdbscan
               pandana
+            install_pip: >-
+              opencv-contrib-python
+              KDEpy
             installation_command: >-
               pip install .; python -c 'import libpysal; libpysal.examples.fetch_all()'
             fail_on_failure: false
