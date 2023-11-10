@@ -20,7 +20,9 @@ jobs:
               cenpy
               autoesda
               region
-            include: mapclassify
+            include: >-
+              mapclassify
+              libpysal
             whitelist: >-
               esda
               spreg
