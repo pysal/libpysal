@@ -128,6 +128,57 @@ def da2W(
     w.index = wsp.index
     return w
 
+def get_nodata(da):
+    """
+    Identify nodata value in a `DataArray`
+
+    NOTE: follows guidance from https://corteva.github.io/rioxarray/stable/getting_started/nodata_management.html
+    ...
+
+    Arguments
+    ---------
+    da : xarray.DataArray
+        Input 2D or 3D DataArray with shape=(z, y, x)
+
+    Returns
+    -------
+    nodata : int/float
+            Value used for nodata pixels. If no value is available, `None` is
+            returned
+    """
+    if hasattr(da, 'rio'):
+        return da.rio.nodata
+    else:
+        return nodata_from_attrs(da.attrs)
+
+def nodata_from_attrs(attrs):
+    """
+    Identify nodata value in a `DataArray.attrs`
+
+    NOTE: follows guidance from https://corteva.github.io/rioxarray/stable/getting_started/nodata_management.html
+    ...
+
+    Arguments
+    ---------
+    attrs : dict
+           `DataArray.attrs` dictionary
+
+    Returns
+    -------
+    nodata : int/float
+            Value used for nodata pixels. If no value is available, `None` is
+            returned
+    """
+    candidates = [
+            '_FillValue', 'missing_value', 'fill_value', 'nodata', 'nodatavals'
+    ]
+    for i in candidates:
+        if i in attrs:
+            if type(i) == tuple:
+                return attrs[i][0]
+            else:
+                return attrs[i]
+    return None
 
 def da2WSP(
     da,
@@ -226,11 +277,12 @@ def da2WSP(
 
     ser = da.to_series()
     dtype = np.int32 if (shape[0] * shape[1]) < 46340 ** 2 else np.int64
-    if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
-        mask = (ser != da.attrs["nodatavals"][0]).to_numpy()
+    nodata = get_nodata(da)
+    if nodata is not None:
+        mask = (ser != nodata).to_numpy()
         ids = np.where(mask)[0]
         id_map = _idmap(ids, mask, dtype)
-        ser = ser[ser != da.attrs["nodatavals"][0]]
+        ser = ser[ser != nodata]
     else:
         ids = np.arange(len(ser), dtype=dtype)
         id_map = ids.copy()
@@ -248,7 +300,7 @@ def da2WSP(
         include_nodata = False
         # Fallback method to build sparse matrix
         sw = lat2SW(*shape, criterion)
-        if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
+        if nodata is not None:
             sw = sw[mask]
             sw = sw[:, mask]
 
@@ -540,12 +592,13 @@ def _index2da(data, index, attrs, coords):
     dims = idx.names
     indexer = tuple(idx.codes)
     shape = tuple(lev.size for lev in idx.levels)
+    nodata = nodata_from_attrs(attrs)
 
     if coords is None:
         missing = np.prod(shape) > idx.shape[0]
         if missing:
-            if "nodatavals" in attrs:
-                fill_value = attrs["nodatavals"][0]
+            if nodata is not None:
+                fill_value = nodata
             else:
                 min_data = np.min(data)
                 fill_value = min_data - 1 if min_data < 0 else -1
@@ -558,7 +611,7 @@ def _index2da(data, index, attrs, coords):
         for dim, lev in zip(dims, idx.levels):
             coords[dim] = lev.to_numpy()
     else:
-        fill = attrs["nodatavals"][0] if "nodatavals" in attrs else 0
+        fill = nodata if nodata is not None else 0
         data_complete = np.full(shape, fill, data.dtype)
         data_complete[indexer] = data
 
