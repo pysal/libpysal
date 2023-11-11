@@ -16,7 +16,6 @@ class WKTParser:
 
     Examples
     --------
-
     >>> import libpysal
 
     Create some Well-Known Text objects.
@@ -64,7 +63,6 @@ class WKTParser:
     []
 
     See local doctest output for the items not tested.
-
     """
 
     regExes = {
@@ -108,7 +106,6 @@ class WKTParser:
         ------
         NotImplementedError
             Raised when a unknown/unsupported format is passed in.
-
         """
 
         matches = self.regExes["typeStr"].match(wkt)
