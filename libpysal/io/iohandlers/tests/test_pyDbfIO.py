@@ -1,3 +1,5 @@
+# ruff: noqa: N999, SIM115
+
 import os
 import tempfile
 
@@ -5,7 +7,7 @@ from .... import examples as pysal_examples
 from ..pyDbfIO import DBF
 
 
-class Testtest_DBF:
+class TesttestDBF:
     def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("10740.dbf")
         self.dbObj = DBF(test_file, "r")
@@ -40,10 +42,10 @@ class Testtest_DBF:
         objs = self.dbObj.read()
         assert len(objs) == 195
         self.dbObj.seek(0)
-        objsB = list(self.dbObj)
-        assert len(objsB) == 195
-        for rowA, rowB in zip(objs, objsB):
-            assert rowA == rowB
+        objs_b = list(self.dbObj)
+        assert len(objs_b) == 195
+        for row_a, row_b in zip(objs, objs_b, strict=True):
+            assert row_a == row_b
 
     def test_random_access(self):
         self.dbObj.seek(0)

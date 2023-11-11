@@ -3,13 +3,13 @@
 import pytest
 
 from .... import examples as pysal_examples
-from ..geoda_txt import GeoDaTxtReader as GTR
+from ..geoda_txt import GeoDaTxtReader
 
 
-class Testtest_GeoDaTxtReader:
+class TesttestGeoDaTxtReader:
     def setup_method(self):
         test_file = pysal_examples.get_path("stl_hom.txt")
-        self.obj = GTR(test_file, "r")
+        self.obj = GeoDaTxtReader(test_file, "r")
 
     def test___init__(self):
         assert self.obj.header == ["FIPSNO", "HR8488", "HR8893", "HC8488"]
