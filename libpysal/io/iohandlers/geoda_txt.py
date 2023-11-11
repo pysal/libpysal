@@ -1,4 +1,4 @@
-# ruff: noqa: A003, N802, N806, SIM115
+# ruff: noqa: N802, N806, SIM115
 
 from .. import tables
 
@@ -30,8 +30,6 @@ class GeoDaTxtReader(tables.DataTable):
     [int, float, float, int]
 
     """
-
-    __doc__ = tables.DataTable.__doc__
 
     FORMATS = ["geoda_txt"]
     MODES = ["r"]
@@ -112,3 +110,6 @@ class GeoDaTxtReader(tables.DataTable):
                 spec.append(str)
 
         return spec
+
+
+GeoDaTxtReader.__doc__ = tables.DataTable.__doc__
