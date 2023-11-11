@@ -4,6 +4,8 @@ These are working readers/writers that parse '.foo' and '.bar' files.
 
 """
 
+# ruff: noqa: N812, SIM115
+
 from .. import fileio as FileIO
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
@@ -12,7 +14,6 @@ __all__ = ["TemplateWriter", "TemplateReaderWriter"]
 
 # Always subclass FileIO
 class TemplateWriter(FileIO.FileIO):
-
     # REQUIRED, List the formats this class supports.
     FORMATS = ["foo"]
 
@@ -35,18 +36,18 @@ class TemplateWriter(FileIO.FileIO):
 
     # Writers must subclass ``.write()``
     def write(self, obj):
-        """ ``.write`` method of the 'foobar' template
-        
+        """``.write`` method of the 'foobar' template
+
         Parameters
         ----------
         obj : str
             Some string.
-        
+
         Raises
         ------
         TypeError
             Raised when a ``str`` is expected, but got another type.
-        
+
         """
 
         # GOOD TO HAVE, this will prevent invalid operations on closed files.
@@ -57,13 +58,9 @@ class TemplateWriter(FileIO.FileIO):
         # we will support writing string objects in this example,
         # all string are derived from basestring...
         if issubclass(type(obj), str):
-
             # Non-essential...
             def foobar(c):
-                if c in "foobar":
-                    return True
-                else:
-                    return False
+                return c in "foobar"
 
             # e.g. 'foobara' == filter(foobar,'my little foobar example')
             result = list(filter(foobar, obj))
@@ -101,27 +98,24 @@ class TemplateReaderWriter(FileIO.FileIO):
 
     def _filter(self, st):
         def foobar(c):
-            if c in "foobar":
-                return True
-            else:
-                return False
+            return c in "foobar"
 
         # e.g. 'foobara' == filter(foobar,'my little foobar example')
         return list(filter(foobar, st))
 
     def _read(self):
         """The ``_read`` method should return only ONE object.
-        
+
         Returns
         -------
         obj_plus_break : str
             only ONE object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         """
 
         line = self.fileObj.readline()
@@ -138,17 +132,17 @@ class TemplateReaderWriter(FileIO.FileIO):
 
     def write(self, obj):
         """The ``.write`` method of the 'foobar' template, receives an ``obj``.
-        
+
         Paramters
         ---------
         obj : str
             Some string.
-        
+
         Raises
         ------
         TypeError
             Raised when a ``str`` is expected, but got another type.
-        
+
         """
         self._complain_ifclosed(self.closed)
         if issubclass(type(obj), str):
@@ -168,10 +162,10 @@ class TemplateReaderWriter(FileIO.FileIO):
 
 
 if __name__ == "__main__":
-    "NOTE, by running OR importing this module "
+    "NOTE, by running OR importing this module"
     "it's automatically added to the pysal fileIO registry."
 
-    pysal.open.check()
+    pysal.open.check()  # noqa
 
     lines = [
         "This is an example of template FileIO classes",
@@ -182,22 +176,22 @@ if __name__ == "__main__":
         "likewise the reader filters each line from a file.",
     ]
 
-    f = pysal.open("test.foo", "w")
+    f = pysal.open("test.foo", "w")  # noqa
     for line in lines:
         f.write(line)
     f.close()
 
-    f = pysal.open("test.bar", "w")
+    f = pysal.open("test.bar", "w")  # noqa
     for line in lines:
         f.write(line)
     f.close()
 
-    f = pysal.open("test.bar", "r")
+    f = pysal.open("test.bar", "r")  # noqa
     s = "".join(f.read())
     f.close()
     print(s)
 
-    f = open("test.foo", "r")
+    f = open("test.foo")
     s2 = f.read()
     f.close()
     print(s == s2)

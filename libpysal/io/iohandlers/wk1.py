@@ -1,6 +1,9 @@
+# ruff: noqa: ARG002, N802, SIM115
+
 import struct
-from .. import fileio
+
 from ...weights import W
+from .. import fileio
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["Wk1IO"]
@@ -8,7 +11,7 @@ __all__ = ["Wk1IO"]
 
 class Wk1IO(fileio.FileIO):
     """MATLAB ``wk1read.m`` and ``wk1write.m`` that were written by
-    Brian M. Bourgault in 10/22/93. Opens, reads, and writes weights 
+    Brian M. Bourgault in 10/22/93. Opens, reads, and writes weights
     ile objects in Lotus Wk1 format. Lotus Wk1 files are used in Dr.
     LeSage's MATLAB Econometrics library.
 
@@ -20,12 +23,12 @@ class Wk1IO(fileio.FileIO):
     is a blank or has a number.
 
     The internal structure of a `Wk1` file written by PySAL is as follows:
-    
+
     ```
     [BOF][DIM][CPI][CAL][CMODE][CORD][SPLIT][SYNC][CURS][WIN]
     [HCOL][MRG][LBL][CELL_1]...[CELL_m][EOF]
     ```
-    
+
     where ``[CELL_k]`` equals to ``[DTYPE][DLEN][DFORMAT][CINDEX][CVALUE]``.
     The parts between ``[BOF]`` and ``[CELL_1]`` are variable according to
     the software program used to write a ``.wk1`` file. While reading a
@@ -132,7 +135,7 @@ class Wk1IO(fileio.FileIO):
     |  [EOF]      |End of file          |unsigned short           |4      |1,0,0,0                      |
     +-------------+---------------------+-------------------------+-------+-----------------------------+
 
-    """
+    """  # noqa E501
 
     FORMATS = ["wk1"]
     MODES = ["r", "w"]
@@ -149,21 +152,21 @@ class Wk1IO(fileio.FileIO):
     def _get_varName(self) -> str:
         return self._varName
 
-    varName = property(fget=_get_varName, fset=_set_varName)
+    varName = property(fget=_get_varName, fset=_set_varName)  # noqa N815
 
     def read(self, n=-1):
         """
-        
+
         Parameters
         ----------
         n : int
             Read at most ``n`` objects. Default is ``-1``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -181,14 +184,14 @@ class Wk1IO(fileio.FileIO):
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
         ValueError
             Raised when the header of the file is invalid.
-        
+
         Examples
         --------
 
@@ -224,15 +227,14 @@ class Wk1IO(fileio.FileIO):
         dtype, dlen = struct.unpack("<2H", self.file.read(4))
 
         while dtype != 1:
-
             if dtype in [13, 14, 16]:
                 self.file.read(1)
                 row, column = struct.unpack("<2H", self.file.read(4))
-                format, length = "<d", 8
+                format_, length = "<d", 8
 
                 if dtype == 13:
-                    format, length = "<h", 2
-                value = float(struct.unpack(format, self.file.read(length))[0])
+                    format_, length = "<h", 2
+                value = float(struct.unpack(format_, self.file.read(length))[0])
 
                 if value > 0:
                     ngh = neighbors.setdefault(row, [])
@@ -261,14 +263,14 @@ class Wk1IO(fileio.FileIO):
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         ValueError
             Raised when the `WK1` file has more than 256 observations.
         TypeError
             Raised when the input ``obj`` is not a PySAL `W`.
-        
+
         Examples
         --------
 
@@ -360,7 +362,7 @@ class Wk1IO(fileio.FileIO):
             hidcol = tuple(["<2H32b", 100, 32] + [0] * 32)
             f.write(pack(*hidcol))
             f.write(pack("<7H", 40, 10, 4, 76, 66, 2, 2))
-            f.write(pack("<2H1c", 41, 1, "'".encode()))
+            f.write(pack("<2H1c", 41, 1, b"'"))
 
             id2i = obj.id2i
 
@@ -369,7 +371,7 @@ class Wk1IO(fileio.FileIO):
                 for k in w_i[1]:
                     row[id2i[k]] = w_i[1][k]
                 for c, v in enumerate(row):
-                    cell = tuple(["<2H1b2H1d", 14, 13, 113, i, c, v])
+                    cell = ("<2H1b2H1d", 14, 13, 113, i, c, v)
                     f.write(pack(*cell))
             f.write(pack("<4B", 1, 0, 0, 0))
 
