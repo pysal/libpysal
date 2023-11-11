@@ -161,37 +161,37 @@ class TemplateReaderWriter(FileIO.FileIO):
         FileIO.close(self)
 
 
-if __name__ == "__main__":
-    "NOTE, by running OR importing this module"
-    "it's automatically added to the pysal fileIO registry."
-
-    pysal.open.check()  # noqa
-
-    lines = [
-        "This is an example of template FileIO classes",
-        "Each call to write expects a string object",
-        "that string is filtered and only letters 'f','o','b','a','r' are kept",
-        "these kept letters are written to the file",
-        "and a new line char is appends to each line",
-        "likewise the reader filters each line from a file.",
-    ]
-
-    f = pysal.open("test.foo", "w")  # noqa
-    for line in lines:
-        f.write(line)
-    f.close()
-
-    f = pysal.open("test.bar", "w")  # noqa
-    for line in lines:
-        f.write(line)
-    f.close()
-
-    f = pysal.open("test.bar", "r")  # noqa
-    s = "".join(f.read())
-    f.close()
-    print(s)
-
-    f = open("test.foo")
-    s2 = f.read()
-    f.close()
-    print(s == s2)
+# if __name__ == "__main__":
+#     "NOTE, by running OR importing this module"
+#     "it's automatically added to the pysal fileIO registry."
+#
+#     pysal.open.check()  # noqa
+#
+#     lines = [
+#         "This is an example of template FileIO classes",
+#         "Each call to write expects a string object",
+#         "that string is filtered and only letters 'f','o','b','a','r' are kept",
+#         "these kept letters are written to the file",
+#         "and a new line char is appends to each line",
+#         "likewise the reader filters each line from a file.",
+#     ]
+#
+#     f = pysal.open("test.foo", "w")  # noqa
+#     for line in lines:
+#         f.write(line)
+#     f.close()
+#
+#     f = pysal.open("test.bar", "w")  # noqa
+#     for line in lines:
+#         f.write(line)
+#     f.close()
+#
+#     f = pysal.open("test.bar", "r")  # noqa
+#     s = "".join(f.read())
+#     f.close()
+#     print(s)
+#
+#     f = open("test.foo")
+#     s2 = f.read()
+#     f.close()
+#     print(s == s2)
