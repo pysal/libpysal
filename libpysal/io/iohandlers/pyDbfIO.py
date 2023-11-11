@@ -291,6 +291,10 @@ class DBF(tables.DataTable):
             if value is None:
                 value = " " * size if typ == "C" else "\x00" * size
             elif typ == "N" or typ == "F":
+                # v = str(value).rjust(size, " ")
+                # # if len(v) == size:
+                # #    value = v
+                # # else:
                 value = (("%" + "%d.%d" % (size, deci) + "f") % (value))[:size]
             elif typ == "D":
                 value = value.strftime("%Y%m%d")
