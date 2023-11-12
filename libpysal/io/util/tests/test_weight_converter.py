@@ -1,17 +1,17 @@
-import pytest
-from ..weight_converter import WeightConverter
-from ..weight_converter import weight_convert
-from ...fileio import FileIO as psopen
-import tempfile
 import os
+import tempfile
 import warnings
+
+import pytest
 
 # import pysal_examples
 from .... import examples as pysal_examples
+from ...fileio import FileIO
+from ..weight_converter import WeightConverter, weight_convert
 
 
 @pytest.mark.skip("This function is deprecated.")
-class Testtest_WeightConverter:
+class TesttestWeightConverter:
     def setup_method(self):
         test_files = [
             "arcgis_ohio.dbf",
@@ -43,8 +43,8 @@ class Testtest_WeightConverter:
             None,
         ]
         ns = [88, 3, 88, 49, 49, 100, 168, 56, 56, 56, 46, 46]
-        self.dataformats = dict(list(zip(self.test_files, dataformats)))
-        self.ns = dict(list(zip(self.test_files, ns)))
+        self.dataformats = dict(list(zip(self.test_files, dataformats, strict=True)))
+        self.ns = dict(list(zip(self.test_files, ns, strict=True)))
         self.fileformats = [
             ("dbf", "arcgis_dbf"),
             ("txt", "arcgis_text"),
@@ -61,19 +61,19 @@ class Testtest_WeightConverter:
 
     def test__set_w(self):
         for f in self.test_files:
-            with warnings.catch_warnings(record=True) as warn:
-                # note: we are just suppressing the warnings here; individual warnings
-                #       are tested in their specific readers
+            with warnings.catch_warnings(record=True):
+                # note: we are just suppressing the warnings here;
+                # individual warnings are tested in their specific readers
                 warnings.simplefilter("always")
                 wc = WeightConverter(f, dataFormat=self.dataformats[f])
-            assert wc.w_set() == True
+            assert wc.w_set() is True
             assert wc.w.n == self.ns[f]
 
     def test_write(self):
         for f in self.test_files:
-            with warnings.catch_warnings(record=True) as warn:
-                # note: we are just suppressing the warnings here; individual warnings
-                #       are tested in their specific readers
+            with warnings.catch_warnings(record=True):
+                # note: we are just suppressing the warnings here;
+                # individual warnings are tested in their specific readers
                 warnings.simplefilter("always")
                 wc = WeightConverter(f, dataFormat=self.dataformats[f])
 
@@ -84,9 +84,9 @@ class Testtest_WeightConverter:
                 temp_fname = temp_f.name
                 temp_f.close()
 
-                with warnings.catch_warnings(record=True) as warn:
-                    # note: we are just suppressing the warnings here; individual warnings
-                    #       are tested in their specific readers
+                with warnings.catch_warnings(record=True):
+                    # note: we are just suppressing the warnings here;
+                    # individual warnings are tested in their specific readers
                     warnings.simplefilter("always")
                     if ext == "swm":
                         wc.write(temp_fname, useIdIndex=True)
@@ -99,14 +99,14 @@ class Testtest_WeightConverter:
                     else:
                         wc.write(temp_fname, dataFormat=dataformat)
 
-                with warnings.catch_warnings(record=True) as warn:
-                    # note: we are just suppressing the warnings here; individual warnings
-                    #       are tested in their specific readers
+                with warnings.catch_warnings(record=True):
+                    # note: we are just suppressing the warnings here;
+                    # individual warnings are tested in their specific readers
                     warnings.simplefilter("always")
                     if dataformat is None:
-                        wnew = psopen(temp_fname, "r").read()
+                        wnew = FileIO(temp_fname, "r").read()
                     else:
-                        wnew = psopen(temp_fname, "r", dataformat).read()
+                        wnew = FileIO(temp_fname, "r", dataformat).read()
 
                 if (
                     ext in ["dbf", "swm", "dat", "wk1", "gwt"]
@@ -119,16 +119,16 @@ class Testtest_WeightConverter:
 
     def test_weight_convert(self):
         for f in self.test_files:
-            inFile = f
-            inDataFormat = self.dataformats[f]
-            with warnings.catch_warnings(record=True) as warn:
+            in_file = f
+            in_data_format = self.dataformats[f]
+            with warnings.catch_warnings(record=True):
                 # note: we are just suppressing the warnings here; individual warnings
                 #       are tested in their specific readers
                 warnings.simplefilter("always")
-                if inDataFormat is None:
-                    in_file = psopen(inFile, "r")
+                if in_data_format is None:
+                    in_file = FileIO(in_file, "r")
                 else:
-                    in_file = psopen(inFile, "r", inDataFormat)
+                    in_file = FileIO(in_file, "r", in_data_format)
                 wold = in_file.read()
                 in_file.close()
 
@@ -136,35 +136,35 @@ class Testtest_WeightConverter:
                 if f.lower().endswith(ext):
                     continue
                 temp_f = tempfile.NamedTemporaryFile(suffix=".%s" % ext)
-                outFile = temp_f.name
+                out_file = temp_f.name
                 temp_f.close()
-                outDataFormat, useIdIndex, matrix_form = dataformat, False, False
+                out_data_format, use_id_index, matrix_form = dataformat, False, False
                 if ext == "swm" or dataformat in ["arcgis_dbf", "arcgis_text"]:
-                    useIdIndex = True
+                    use_id_index = True
                 elif dataformat == "stata_text":
                     matrix_form = True
 
-                with warnings.catch_warnings(record=True) as warn:
-                    # note: we are just suppressing the warnings here; individual warnings
-                    #       are tested in their specific readers
+                with warnings.catch_warnings(record=True):
+                    # note: we are just suppressing the warnings here;
+                    # individual warnings are tested in their specific readers
                     warnings.simplefilter("always")
                     weight_convert(
-                        inFile,
-                        outFile,
-                        inDataFormat,
-                        outDataFormat,
-                        useIdIndex,
+                        in_file,
+                        out_file,
+                        in_data_format,
+                        out_data_format,
+                        use_id_index,
                         matrix_form,
                     )
 
-                with warnings.catch_warnings(record=True) as warn:
-                    # note: we are just suppressing the warnings here; individual warnings
-                    #       are tested in their specific readers
+                with warnings.catch_warnings(record=True):
+                    # note: we are just suppressing the warnings here;
+                    # individual warnings are tested in their specific readers
                     warnings.simplefilter("always")
                     if dataformat is None:
-                        wnew = psopen(outFile, "r").read()
+                        wnew = FileIO(out_file, "r").read()
                     else:
-                        wnew = psopen(outFile, "r", dataformat).read()
+                        wnew = FileIO(out_file, "r", dataformat).read()
 
                 if (
                     ext in ["dbf", "swm", "dat", "wk1", "gwt"]
@@ -173,4 +173,4 @@ class Testtest_WeightConverter:
                     assert wnew.n == wold.n - len(wold.islands)
                 else:
                     assert wnew.n == wold.n
-                os.remove(outFile)
+                os.remove(out_file)

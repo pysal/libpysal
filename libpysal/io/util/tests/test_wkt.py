@@ -1,9 +1,10 @@
 import pytest
+
+from ....cg.shapes import Chain, Point, Polygon
 from ..wkt import WKTParser
-from ....cg.shapes import Point, Chain, Polygon
 
 
-class Testtest_WKTParser:
+class TesttestWKTParser:
     def setup_method(self):
         # Create some Well-Known Text objects
         self.wktPOINT = "POINT(6 10)"
@@ -12,7 +13,10 @@ class Testtest_WKTParser:
         self.unsupported = [
             "MULTIPOINT(3.5 5.6,4.8 10.5)",
             "MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4))",
-            "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))",
+            (
+                "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),"
+                "(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))"
+            ),
             "GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))",
             "POINT ZM (1 1 5 60)",
             "POINT M (1 1 80)",
@@ -47,5 +51,5 @@ class Testtest_WKTParser:
         for wkt in self.unsupported:
             pytest.raises(NotImplementedError, self.parser.fromWKT, wkt)
         for wkt in self.empty:
-            assert self.parser.fromWKT(wkt) == None
+            assert self.parser.fromWKT(wkt) is None
         assert self.parser.__call__ == self.parser.fromWKT
