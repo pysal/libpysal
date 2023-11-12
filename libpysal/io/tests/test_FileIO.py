@@ -1,3 +1,5 @@
+# ruff: noqa: N999
+
 from ...examples import get_path
 from ..fileio import FileIO
 
