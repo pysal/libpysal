@@ -74,7 +74,7 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
     """
     adj_across_clique = (
         adjtable.merge(
-            clique_to_members["input_index"], left_index=True, right_index=True
+            clique_to_members["input_index"], left_on="focal", right_index=True
         )
         .explode("input_index")
         .rename(columns={"input_index": "subclique_focal"})
@@ -84,7 +84,7 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
         .reset_index()
         .drop(["focal", "neighbor", "index"], axis=1)
         .rename(columns={"subclique_focal": "focal", "subclique_neighbor": "neighbor"})
-    )
+    )[["focal", "neighbor", "weight"]]
     is_multimember_clique = clique_to_members["input_index"].str.len() > 1
     adj_within_clique = (
         clique_to_members[is_multimember_clique]["input_index"]
