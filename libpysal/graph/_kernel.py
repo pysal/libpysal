@@ -1,8 +1,10 @@
 import numpy
+import pandas
 from scipy import optimize, sparse, spatial, stats
 
 from ._utils import (
     _build_coincidence_lookup,
+    _induce_cliques,
     _jitter_geoms,
     _resolve_islands,
     _sparse_to_arrays,
@@ -253,28 +255,22 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
             )
 
         if coincident == "clique":
-            raise NotImplementedError(
-                "clique-based resolver of coincident points is not yet implemented."
+            heads, tails, weights = _sparse_to_arrays(
+                _knn(
+                    coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise"
+                )
             )
-            # # implicit coincident == "clique"
-            # heads, tails, weights = _sparse_to_arrays(
-            #     _knn(
-            #         coincident_lut.geometry,
-            #         metric=metric,
-            #         k=k,
-            #         p=p,
-            #         coincident="raise"
-            #     )
-            # )
-            # adjtable = pandas.DataFrame.from_dict(
-            #     dict(focal=heads, neighbor=tails, weight=weights)
-            # )
-            # adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=0)
-            # return sparse.csr_array(
-            #     adjtable.weight.values,
-            #     (adjtable.focal.values, adjtable.neighbor.values),
-            #     shape=(n_samples, n_samples),
-            # )
+            adjtable = pandas.DataFrame.from_dict(
+                dict(focal=heads, neighbor=tails, weight=weights)
+            )
+            adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=0)
+            return sparse.csr_array(
+                (
+                    adjtable.weight.values,
+                    (adjtable.focal.values, adjtable.neighbor.values),
+                ),
+                shape=(n_samples, n_samples),
+            )
         raise ValueError(
             f"'{coincident}' is not a valid option. Use one of "
             "['raise', 'jitter', 'clique']."
