@@ -5,10 +5,11 @@ contiguity and distance criteria.
 
 __author__ = "Sergio J. Rey <srey@asu.edu> "
 
-from .util import get_points_array_from_shapefile, min_threshold_distance
-from ..io.fileio import FileIO as ps_open
-from .. import cg
 import numpy as np
+
+from .. import cg
+from ..io.fileio import FileIO
+from .util import get_points_array_from_shapefile, min_threshold_distance
 
 __all__ = [
     "min_threshold_dist_from_shapefile",
@@ -23,16 +24,13 @@ def spw_from_gal(galfile):
 
     Parameters
     ----------
-
     galfile  : string
                name of gal file including suffix
 
     Returns
     -------
-
     spw      : sparse_matrix
                scipy sparse matrix in CSR format
-
     ids      : array
                identifiers for rows/cols of spw
 
@@ -42,10 +40,9 @@ def spw_from_gal(galfile):
     >>> spw = libpysal.weights.spw_from_gal(libpysal.examples.get_path("sids2.gal"))
     >>> spw.sparse.nnz
     462
-
     """
 
-    return ps_open(galfile, "r").read(sparse=True)
+    return FileIO(galfile, "r").read(sparse=True)
 
 
 def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
@@ -75,10 +72,15 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     Examples
     --------
     >>> import libpysal
-    >>> md = libpysal.weights.min_threshold_dist_from_shapefile(libpysal.examples.get_path("columbus.shp"))
+    >>> md = libpysal.weights.min_threshold_dist_from_shapefile(
+    ...     libpysal.examples.get_path("columbus.shp")
+    ... )
     >>> md
     0.6188641580768541
-    >>> libpysal.weights.min_threshold_dist_from_shapefile(libpysal.examples.get_path("stl_hom.shp"), libpysal.cg.sphere.RADIUS_EARTH_MILES)
+    >>> libpysal.weights.min_threshold_dist_from_shapefile(
+    ...     libpysal.examples.get_path("stl_hom.shp"),
+    ...     libpysal.cg.sphere.RADIUS_EARTH_MILES
+    ... )
     31.846942936393717
 
     Notes
@@ -87,7 +89,6 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     based on polygon centroids. Distances are defined using coordinates in
     shapefile which are assumed to be projected and not geographical
     coordinates.
-
     """
     points = get_points_array_from_shapefile(shapefile)
     if radius is not None:
@@ -98,13 +99,12 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     return min_threshold_distance(points, p)
 
 
-def build_lattice_shapefile(nrows, ncols, outFileName):
+def build_lattice_shapefile(nrows, ncols, outFileName):  # noqa N803
     """
     Build a lattice shapefile with nrows rows and ncols cols.
 
     Parameters
     ----------
-
     nrows       : int
                   Number of rows
     ncols       : int
@@ -115,13 +115,12 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
     Returns
     -------
     None
-
     """
     if not outFileName.endswith(".shp"):
         raise ValueError("outFileName must end with .shp")
-    o = ps_open(outFileName, "w")
+    o = FileIO(outFileName, "w")
     dbf_name = outFileName.split(".")[0] + ".dbf"
-    d = ps_open(dbf_name, "w")
+    d = FileIO(dbf_name, "w")
     d.header = ["ID"]
     d.field_spec = [("N", 8, 0)]
     c = 0
@@ -141,8 +140,8 @@ def build_lattice_shapefile(nrows, ncols, outFileName):
 def _test():
     import doctest
 
-    # the following line could be used to define an alternative to the '<BLANKLINE>' flag
-    # doctest.BLANKLINE_MARKER = 'something better than <BLANKLINE>'
+    # the following line could be used to define an alternative to the '<BLANKLINE>'
+    # flag doctest.BLANKLINE_MARKER = 'something better than <BLANKLINE>'
     start_suppress = np.get_printoptions()["suppress"]
     np.set_printoptions(suppress=True)
     doctest.testmod()
