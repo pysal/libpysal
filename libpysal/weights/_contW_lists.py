@@ -1,6 +1,10 @@
-from ..cg.shapes import Polygon, Chain
-import itertools as it
+# ruff: noqa: N999
+
 import collections
+import contextlib
+import itertools as it
+
+from ..cg.shapes import Chain, Polygon
 
 QUEEN = 1
 ROOK = 2
@@ -9,7 +13,7 @@ __author__ = "Jay Laura jlaura@asu.edu"
 
 
 def _get_verts(shape):
-    if isinstance(shape, (Polygon, Chain)):
+    if isinstance(shape, Polygon | Chain):
         return shape.vertices
     else:
         return _get_boundary_points(shape)
@@ -24,9 +28,13 @@ def _get_boundary_points(shape):
         shape = shape.boundary
         return _get_boundary_points(shape)
     elif shape.geom_type.lower() == "linestring":
-        return list(map(tuple, list(zip(*shape.coords.xy))))
+        return list(map(tuple, list(zip(*shape.coords.xy, strict=True))))
     elif shape.geom_type.lower() == "multilinestring":
-        return list(it.chain(*(list(zip(*shape.coords.xy)) for shape in shape.geoms)))
+        return list(
+            it.chain(
+                *(list(zip(*shape.coords.xy, strict=True)) for shape in shape.geoms)
+            )
+        )
     elif shape.geom_type.lower() == "multipolygon":
         return list(
             it.chain(*(_get_boundary_points(part.boundary) for part in shape.geoms))
@@ -60,10 +68,10 @@ class ContiguityWeightsLists:
         self.jcontiguity()
 
     def jcontiguity(self):
-        numPoly = len(self.collection)
+        num_poly = len(self.collection)
 
         w = {}
-        for i in range(numPoly):
+        for i in range(num_poly):
             w[i] = set()
 
         geoms = []
@@ -71,7 +79,7 @@ class ContiguityWeightsLists:
         c = 0  # PolyID Counter
 
         if self.wttype == QUEEN:
-            for n in range(numPoly):
+            for n in range(num_poly):
                 verts = _get_verts(self.collection[n])
                 offsets += [c] * len(verts)
                 geoms += verts
@@ -82,20 +90,18 @@ class ContiguityWeightsLists:
                 items[vertex].add(offsets[i])
 
             shared_vertices = []
-            for item, location in list(items.items()):
+            for _, location in list(items.items()):
                 if len(location) > 1:
                     shared_vertices.append(location)
 
             for vert_set in shared_vertices:
                 for v in vert_set:
                     w[v] = w[v] | vert_set
-                    try:
+                    with contextlib.suppress(Exception):
                         w[v].remove(v)
-                    except:
-                        pass
 
         elif self.wttype == ROOK:
-            for n in range(numPoly):
+            for n in range(num_poly):
                 verts = _get_verts(self.collection[n])
                 for v in range(len(verts) - 1):
                     geoms.append(tuple(sorted([verts[v], verts[v + 1]])))
@@ -107,17 +113,16 @@ class ContiguityWeightsLists:
                 items[item].add(offsets[i])
 
             shared_vertices = []
-            for item, location in list(items.items()):
+            for _, location in list(items.items()):
                 if len(location) > 1:
                     shared_vertices.append(location)
 
             for vert_set in shared_vertices:
                 for v in vert_set:
                     w[v] = w[v] | vert_set
-                    try:
+                    with contextlib.suppress(Exception):
                         w[v].remove(v)
-                    except:
-                        pass
+
         else:
             raise Exception(f"Weight type {self.wttype} Not Understood!")
         self.w = w
