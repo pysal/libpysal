@@ -1,7 +1,11 @@
-from scipy.spatial import Delaunay as _Delaunay
+import warnings
+
+import numpy
+import pandas
 from scipy import sparse
-from libpysal.weights import W, WSP
-import pandas, numpy, warnings
+from scipy.spatial import Delaunay as _Delaunay
+
+from libpysal.weights import WSP, W
 
 try:
     from numba import njit
@@ -51,12 +55,13 @@ class Delaunay(W):
 
     def __init__(self, coordinates, **kwargs):
         try:
-            from numba import njit
+            from numba import njit  # noqa F401
         except ModuleNotFoundError:
             warnings.warn(
                 "The numba package is used extensively in this module"
                 " to accelerate the computation of graphs. Without numba,"
-                " these computations may become unduly slow on large data."
+                " these computations may become unduly slow on large data.",
+                stacklevel=2,
             )
         edges, _ = self._voronoi_edges(coordinates)
         ids = kwargs.get("ids")
@@ -144,7 +149,7 @@ class Delaunay(W):
                 f" but this delaunay triangulation is only well-defined for points."
                 f" Choose a method to convert your dataframe into points (like using"
                 f" the df.centroid) and use that to estimate this graph."
-            )
+            ) from None
 
 
 class Gabriel(Delaunay):
@@ -173,12 +178,13 @@ class Gabriel(Delaunay):
 
     def __init__(self, coordinates, **kwargs):
         try:
-            from numba import njit
+            from numba import njit  # noqa F401
         except ModuleNotFoundError:
             warnings.warn(
                 "The numba package is used extensively in this module"
                 " to accelerate the computation of graphs. Without numba,"
-                " these computations may become unduly slow on large data."
+                " these computations may become unduly slow on large data.",
+                stacklevel=2,
             )
         edges, dt = self._voronoi_edges(coordinates)
         droplist = _filter_gabriel(
@@ -198,7 +204,7 @@ class Gabriel(Delaunay):
         W.__init__(self, gabriel_neighbors, id_order=list(ids), **kwargs)
 
 
-class Relative_Neighborhood(Delaunay):
+class Relative_Neighborhood(Delaunay):  # noqa N801
     """
     Constructs the Relative Neighborhood graph from a set of points.
     This graph is a subset of the Delaunay triangulation, where only
@@ -206,11 +212,11 @@ class Relative_Neighborhood(Delaunay):
     the Minimum Spanning Tree, with additional "relative neighbors"
     introduced.
 
-    A relative neighbor pair of points i,j must be closer than the 
-    maximum distance between i (or j) and each other point k. 
-    This means that the points are at least as close to one another 
-    as they are to any other point. 
-    
+    A relative neighbor pair of points i,j must be closer than the
+    maximum distance between i (or j) and each other point k.
+    This means that the points are at least as close to one another
+    as they are to any other point.
+
     Parameters
     ----------
     coordinates :   array of points, (N,2)
@@ -222,16 +228,17 @@ class Relative_Neighborhood(Delaunay):
 
     def __init__(self, coordinates, binary=True, **kwargs):
         try:
-            from numba import njit
+            from numba import njit  # noqa F401
         except ModuleNotFoundError:
             warnings.warn(
                 "The numba package is used extensively in this module"
                 " to accelerate the computation of graphs. Without numba,"
-                " these computations may become unduly slow on large data."
+                " these computations may become unduly slow on large data.",
+                stacklevel=2,
             )
         edges, dt = self._voronoi_edges(coordinates)
         output, dkmax = _filter_relativehood(edges, dt.points, return_dkmax=False)
-        row, col, data = zip(*output)
+        row, col, data = zip(*output, strict=True)
         if binary:
             data = numpy.ones_like(col, dtype=float)
         sp = sparse.csc_matrix((data, (row, col)))  # TODO: faster way than this?
@@ -288,7 +295,6 @@ def _filter_gabriel(edges, coordinates):
     in order to construct the Gabriel graph.
     """
     edge_pointer = 0
-    n = edges.max()
     n_edges = len(edges)
     to_drop = []
     while edge_pointer < n_edges:
@@ -328,9 +334,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     3. for each edge of the delaunay (i,j), prune
        if any dkmax is greater than d(i,j)
     """
-    edge_pointer = 0
     n = edges.max()
-    n_edges = len(edges)
     out = []
     r = []
     for edge in edges:
