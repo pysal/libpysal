@@ -159,8 +159,8 @@ def adjlist_map(
     funcs=(np.subtract,),
     W=None,
     alist=None,
-    # focal_col="focal",
-    # neighbor_col="neighbor",
+    focal_col="focal",  # noqa ARG001
+    neighbor_col="neighbor",  # noqa ARG001
     to_adjlist_kws=dict(drop_islands=None),
 ):
     """
