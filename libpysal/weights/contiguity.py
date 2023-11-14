@@ -759,4 +759,4 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     elif criterion.lower() == "queen":
         return Queen(polygons, ids=ids)
     else:
-        raise Exception(f"Weights criterion '{criterion}' was not found.")
+        raise ValueError(f"Weights criterion '{criterion}' was not found.")
