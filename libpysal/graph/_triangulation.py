@@ -123,6 +123,8 @@ def _validate_coincident(triangulator):
             # bandwidth also gives us the correct fill value for the voronoi weight: 1.
             fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
+            coordinates, ids, geoms = input_coordinates, input_ids, input_geoms
+            heads, tails, weights = adjtable.values.T
 
         if PANDAS_GE_21:
             # ensure proper sorting
