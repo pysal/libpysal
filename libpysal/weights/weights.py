@@ -1197,7 +1197,7 @@ class W:
                     wijs = self.weights[i]
                     q[i] = math.sqrt(sum([wij * wij for wij in wijs]))
                     s[i] = [wij / q[i] for wij in wijs]
-                    Q += sum([si for si in s[i]])  # noqa C416
+                    Q += sum(s[i])
                 nQ = self.n / Q
                 for i in self.weights:
                     weights[i] = [w * nQ for w in s[i]]
