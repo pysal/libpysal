@@ -8,7 +8,7 @@ from .. import adjtools as adj
 from ..util import lat2W
 
 
-class Test_Adjlist:
+class TestAdjlist:
     def setup_method(self):
         self.knownW = io.open(examples.get_path("columbus.gal")).read()
 
@@ -60,14 +60,14 @@ class Test_Adjlist:
                 alist_neighbors[idx] = []
             badgrid = weights.W(alist_neighbors)
             np.testing.assert_allclose(badgrid.sparse.toarray(), grid.sparse.toarray())
-        tuples = set([tuple(t) for t in alist[["focal", "neighbor"]].values])
+        tuples = {tuple(t) for t in alist[["focal", "neighbor"]].values}
         full_alist = grid.to_adjlist(drop_islands=True)
-        all_possible = set([tuple(t) for t in full_alist[["focal", "neighbor"]].values])
+        all_possible = {tuple(t) for t in full_alist[["focal", "neighbor"]].values}
         assert tuples.issubset(all_possible), (
             "the de-duped adjlist has links " "not in the duplicated adjlist."
         )
         complements = all_possible.difference(tuples)
-        reversed_complements = set([t[::-1] for t in complements])
+        reversed_complements = {t[::-1] for t in complements}
         assert reversed_complements == tuples, (
             "the remaining links in the duplicated"
             " adjlist are not the reverse of the links"
@@ -131,7 +131,7 @@ class Test_Adjlist:
         W = weights.Queen.from_dataframe(df)
         hoval, crime, inc = list(map(self.apply_and_compare_columbus, atts))
         mapped = adj.adjlist_map(df[atts], W=W, to_adjlist_kws=dict(drop_islands=True))
-        for name, data in zip(atts, (hoval, crime, inc)):
+        for name, data in zip(atts, (hoval, crime, inc), strict=True):
             np.testing.assert_allclose(
                 data, mapped["_".join(("subtract", name))].values
             )
