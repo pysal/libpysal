@@ -856,7 +856,7 @@ class W:
                 list(self.cardinalities.values()),
                 list(range(self.min_neighbors, self.max_neighbors + 2)),
             )
-            self._histogram = list(zip(bin_, ct, strict=False))
+            self._histogram = list(zip(bin_[:-1], ct, strict=True))
             self._cache["histogram"] = self._histogram
         return self._histogram
 
