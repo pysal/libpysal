@@ -33,7 +33,7 @@ class DistanceMixin:
 
     cls = object  # class constructor
     known_wi = None  # index of known w entry to compare
-    known_w = dict()  # actual w entry
+    known_w = {}  # actual w entry
     known_name = known_wi
 
     def setup_method(self):

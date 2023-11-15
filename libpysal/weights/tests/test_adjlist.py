@@ -79,12 +79,12 @@ class TestAdjlist:
         import geopandas
 
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
-        W = weights.Queen.from_dataframe(df)
-        alist = adj.adjlist_apply(df[col], W=W, to_adjlist_kws=dict(drop_islands=True))
+        w = weights.Queen.from_dataframe(df)
+        alist = adj.adjlist_apply(df[col], W=w, to_adjlist_kws={"drop_islands": True})
         right_hovals = alist.groupby("focal").att_focal.unique()
         assert (right_hovals == df[col]).all()
         allpairs = np.subtract.outer(df[col].values, df[col].values)
-        flat_diffs = allpairs[W.sparse.toarray().astype(bool)]
+        flat_diffs = allpairs[w.sparse.toarray().astype(bool)]
         np.testing.assert_allclose(flat_diffs, alist["subtract"].values)
         return flat_diffs
 
@@ -95,15 +95,15 @@ class TestAdjlist:
         import geopandas
 
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
-        W = weights.Queen.from_dataframe(df)
+        w = weights.Queen.from_dataframe(df)
 
-        ssq = lambda x_y: np.sum((x_y[0] - x_y[1]) ** 2).item()
+        ssq = lambda x_y: np.sum((x_y[0] - x_y[1]) ** 2).item()  # noqa E731
         ssq.__name__ = "sum_of_squares"
         alist = adj.adjlist_apply(
             df[["HOVAL", "CRIME", "INC"]],
-            W=W,
+            W=w,
             func=ssq,
-            to_adjlist_kws=dict(drop_islands=True),
+            to_adjlist_kws={"drop_islands": True},
         )
         known_ssq = [
             1301.1639302990804,
@@ -128,9 +128,9 @@ class TestAdjlist:
     def test_map(self):
         atts = ["HOVAL", "CRIME", "INC"]
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
-        W = weights.Queen.from_dataframe(df)
+        w = weights.Queen.from_dataframe(df)
         hoval, crime, inc = list(map(self.apply_and_compare_columbus, atts))
-        mapped = adj.adjlist_map(df[atts], W=W, to_adjlist_kws=dict(drop_islands=True))
+        mapped = adj.adjlist_map(df[atts], W=w, to_adjlist_kws={"drop_islands": True})
         for name, data in zip(atts, (hoval, crime, inc), strict=True):
             np.testing.assert_allclose(
                 data, mapped["_".join(("subtract", name))].values
@@ -154,28 +154,28 @@ class TestAdjlist:
     def test_ids(self):
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
         df["my_id"] = range(3, len(df) + 3)
-        W = weights.Queen.from_dataframe(df, ids="my_id")
-        W_adj = W.to_adjlist(drop_islands=True)
+        w = weights.Queen.from_dataframe(df, ids="my_id")
+        w_adj = w.to_adjlist(drop_islands=True)
         for i in range(3, 8):
-            assert i in W_adj.focal
-            assert i in W_adj.neighbor
-        for i in W_adj.focal:
+            assert i in w_adj.focal
+            assert i in w_adj.neighbor
+        for i in w_adj.focal:
             assert i in list(range(3, len(df) + 3))
-        for i in W_adj.neighbor:
+        for i in w_adj.neighbor:
             assert i in list(range(3, len(df) + 3))
 
     def test_str_ids(self):
         df = geopandas.read_file(examples.get_path("columbus.dbf")).head()
         snakes = ["mamba", "boa", "python", "rattlesnake", "cobra"]
         df["my_str_id"] = snakes
-        W = weights.Queen.from_dataframe(df, ids="my_str_id")
-        W_adj = W.to_adjlist(drop_islands=True)
+        w = weights.Queen.from_dataframe(df, ids="my_str_id")
+        w_adj = w.to_adjlist(drop_islands=True)
         for i in snakes:
-            (W_adj.focal == i).any()
-            (W_adj.neighbor == i).any()
-        for i in W_adj.focal:
+            (w_adj.focal == i).any()
+            (w_adj.neighbor == i).any()
+        for i in w_adj.focal:
             assert i in snakes
-        for i in W_adj.neighbor:
+        for i in w_adj.neighbor:
             assert i in snakes
 
     def test_lat2w(self):
