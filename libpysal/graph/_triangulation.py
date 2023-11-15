@@ -75,8 +75,11 @@ def _validate_coincident(triangulator):
             elif coincident == "jitter":
                 coordinates, geoms = _jitter_geoms(coordinates, geoms, seed=seed)
             elif coincident == "clique":
-                raise NotImplementedError(
-                    "clique-based resolver of coincident points is not yet implemented."
+                input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
+                coordinates, ids, geoms = _validate_geometry_input(
+                    coincident_lut.geometry,
+                    ids=coincident_lut.index,
+                    valid_geometry_types=_VALID_GEOMETRY_TYPES,
                 )
             else:
                 raise ValueError(
