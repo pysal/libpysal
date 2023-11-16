@@ -461,7 +461,6 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
         i, j = edge
         pi = coordinates[i]
         pj = coordinates[j]
-        dkmax = 0
         dij = ((pi - pj) ** 2).sum() ** 0.5
         prune = False
         for k in range(n_coordinates):
@@ -470,8 +469,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
             pk = coordinates[k]
             dik = ((pi - pk) ** 2).sum() ** 0.5
             djk = ((pj - pk) ** 2).sum() ** 0.5
-            distances = numpy.array([dik, djk, dkmax])
-            dkmax = distances.max()
+            dkmax = numpy.array([dik, djk]).max()
             prune |= dkmax <= dij
         if prune:
             pass

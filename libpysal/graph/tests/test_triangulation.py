@@ -192,16 +192,16 @@ def test_correctness_gabriel():
 def test_correctness_relative_n():
     head, tail, weight = _relative_neighborhood(cau_coords)
 
-    known_head = np.array([0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4])
-    known_tail = np.array([2, 4, 2, 3, 0, 1, 3, 4, 1, 2, 4, 0, 2, 3])
+    known_head = np.array([0, 1, 2, 2, 2, 3, 4, 4])
+    known_tail = np.array([4, 2, 1, 3, 4, 2, 0, 2])
 
     np.testing.assert_array_equal(known_head, head)
     np.testing.assert_array_equal(known_tail, tail)
     np.testing.assert_array_equal(np.ones(head.shape), weight)
 
     head, tail, weight = _relative_neighborhood(lap_coords)
-    known_head = np.array([0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4])
-    known_tail = np.array([1, 2, 3, 4, 0, 4, 0, 3, 0, 2, 0, 1])
+    known_head = np.array([0, 0, 1, 2, 2, 3, 4, 4])
+    known_tail = np.array([2, 4, 4, 0, 3, 2, 0, 1])
 
     np.testing.assert_array_equal(known_head, head)
     np.testing.assert_array_equal(known_tail, tail)
@@ -402,8 +402,8 @@ class TestCoincident:
             self.df_int, coincident="jitter", seed=0
         )
 
-        exp_heads = np.array([0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5])
-        exp_tails = np.array([1, 2, 4, 0, 3, 4, 5, 0, 3, 1, 2, 5, 0, 1, 5, 1, 3, 4])
+        exp_heads = np.array([0, 0, 1, 1, 2, 3, 3, 4, 4, 5])
+        exp_tails = np.array([2, 4, 3, 4, 0, 1, 5, 0, 1, 3])
         exp_w = np.ones(exp_heads.shape, dtype="int8")
 
         np.testing.assert_array_equal(heads, exp_heads)
@@ -423,8 +423,8 @@ class TestCoincident:
             self.df_int, coincident="clique", seed=0
         )
 
-        exp_heads = np.array([0, 0, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5])
-        exp_tails = np.array([1, 4, 0, 2, 3, 4, 5, 1, 3, 1, 2, 0, 1, 1])
+        exp_heads = np.array([0, 0, 1, 1, 1, 1, 2, 2, 3, 4, 4, 5])
+        exp_tails = np.array([1, 4, 0, 2, 4, 5, 1, 3, 2, 0, 1, 1])
         exp_w = np.ones(exp_heads.shape, dtype="int8")
 
         np.testing.assert_array_equal(heads, exp_heads)
