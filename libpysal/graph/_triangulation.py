@@ -457,7 +457,7 @@ def _filter_gabriel(edges, coordinates):
 @njit
 def _filter_relativehood(edges, coordinates, return_dkmax=False):
     """
-    This is a direct implementation of the algorithm from Toussaint (1980), RNG-2
+    This is a direct reimplementation of the algorithm from Toussaint (1980), RNG-2
 
     1. Compute the delaunay
     2. for each edge of the delaunay (i,j), compute
@@ -465,7 +465,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     3. for each edge of the delaunay (i,j), prune
        if any dkmax is greater than d(i,j)
     """
-    n = edges.max()
+    n_coordinates = coordinates.shape[0]
     out = []
     r = []
     for edge in edges:
@@ -475,21 +475,21 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
         dkmax = 0
         dij = ((pi - pj) ** 2).sum() ** 0.5
         prune = False
-        for k in range(n):
+        for k in range(n_coordinates):
+            if (i == k) or (j == k):
+                continue
             pk = coordinates[k]
             dik = ((pi - pk) ** 2).sum() ** 0.5
             djk = ((pj - pk) ** 2).sum() ** 0.5
             distances = numpy.array([dik, djk, dkmax])
             dkmax = distances.max()
-            prune = dkmax < dij
-            if (not return_dkmax) & prune:
-                break
+            prune |= dkmax <= dij
         if prune:
-            continue
-        out.append((i, j, dij))
+            pass
+        else:
+            out.append((i, j, dij))
         if return_dkmax:
             r.append(dkmax)
-
     return out, r
 
 
