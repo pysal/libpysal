@@ -121,7 +121,10 @@ def _validate_coincident(triangulator):
             # Note that the kernel is only used to compute a fill value for the clique.
             # In the case of the voronoi weights. Using boxcar with an infinite
             # bandwidth also gives us the correct fill value for the voronoi weight: 1.
-            fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
+            if kernel is None: #kernel not set, weights are assumed binary
+                fill_value = 1
+            else:
+                fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
             coordinates, ids, geoms = input_coordinates, input_ids, input_geoms
             heads, tails, weights = adjtable.values.T
