@@ -11,6 +11,7 @@ from libpysal.cg import voronoi_frames
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
+    _reorder_adjtable_by_ids,
     _build_coincidence_lookup,
     _induce_cliques,
     _jitter_geoms,
@@ -27,7 +28,6 @@ except ModuleNotFoundError:
 
     HAS_NUMBA = False
 
-PANDAS_GE_21 = Version(pandas.__version__) >= Version("2.1.0")
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
@@ -126,25 +126,10 @@ def _validate_coincident(triangulator):
             coordinates, ids, geoms = input_coordinates, input_ids, input_geoms
             heads, tails, weights = adjtable.values.T
 
-        if PANDAS_GE_21:
-            # ensure proper sorting
-            sorted_index = (
-                adjtable[["focal", "neighbor"]]
-                .map(list(ids).index)
-                .sort_values(["focal", "neighbor"])
-                .index
-            )
-        else:
-            # ensure proper sorting
-            sorted_index = (
-                adjtable[["focal", "neighbor"]]
-                .applymap(list(ids).index)
-                .sort_values(["focal", "neighbor"])
-                .index
-            )
+        adjtable = _reorder_adjtable_by_ids(adjtable, ids)
 
         # return data for Graph.from_arrays
-        return heads[sorted_index], tails[sorted_index], weights[sorted_index]
+        return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
 
     return tri_with_validation
 

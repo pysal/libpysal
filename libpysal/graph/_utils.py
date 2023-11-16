@@ -8,6 +8,7 @@ import shapely
 from packaging.version import Version
 
 GPD_013 = Version(geopandas.__version__) >= Version("0.13")
+PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
 
 
 def _sparse_to_arrays(sparray, ids=None):
@@ -260,3 +261,23 @@ def _resolve_islands(heads, tails, ids, weights):
         adjacency.index.get_level_values(1),
         adjacency.values,
     )
+
+
+def _reorder_adjtable_by_ids(adjtable, ids):
+    if PANDAS_GE_21:
+        # ensure proper sorting
+        sorted_index = (
+            adjtable[["focal", "neighbor"]]
+            .map(list(ids).index)
+            .sort_values(["focal", "neighbor"])
+            .index
+        )
+    else:
+        # ensure proper sorting
+        sorted_index = (
+            adjtable[["focal", "neighbor"]]
+            .applymap(list(ids).index)
+            .sort_values(["focal", "neighbor"])
+            .index
+        )
+    return adjtable.iloc[sorted_index].reset_index(drop=True)
