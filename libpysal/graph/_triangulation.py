@@ -167,6 +167,21 @@ def _delaunay(coordinates):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
+    coincident : string (default: "raise")
+        How to deal with coincident points. Coincident points make all triangulations
+        ill-posed, and thus they need to be addressed in order to create a valid graph.
+        This parameter must be one of the following:
+        * "raise": raise an error if coincident points are present. This is default.
+        * "jitter": jitter the input points by a small value. This makes the resulting
+            depend on the seed provided to the triangulation function.
+        * "clique": expand coincident points into a graph clique. This creates a
+            "unique points" triangulation using all of the unique locations in the data.
+            Then, co-located samples are connected within a site. Finally, co-located
+            samples are connected to other sites in the "unique points" triangulation.
+    seed : int (default: None)
+        An integer value used to ensure that the pseudorandom number generator provides
+        the same value over replications. By default, no seed is used, so results
+        will be random every time. This is only used if coincident='jitter'.
 
     Notes
     -----
@@ -237,6 +252,21 @@ def _gabriel(coordinates):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
+    coincident : string (default: "raise")
+        How to deal with coincident points. Coincident points make all triangulations
+        ill-posed, and thus they need to be addressed in order to create a valid graph.
+        This parameter must be one of the following:
+        * "raise": raise an error if coincident points are present. This is default.
+        * "jitter": jitter the input points by a small value. This makes the resulting
+            depend on the seed provided to the triangulation function.
+        * "clique": expand coincident points into a graph clique. This creates a
+            "unique points" triangulation using all of the unique locations in the data.
+            Then, co-located samples are connected within a site. Finally, co-located
+            samples are connected to other sites in the "unique points" triangulation.
+    seed : int (default: None)
+        An integer value used to ensure that the pseudorandom number generator provides
+        the same value over replications. By default, no seed is used, so results
+        will be random every time. This is only used if coincident='jitter'.
     """
     if not HAS_NUMBA:
         warnings.warn(
@@ -293,6 +323,21 @@ def _relative_neighborhood(coordinates):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
+    coincident : string (default: "raise")
+        How to deal with coincident points. Coincident points make all triangulations
+        ill-posed, and thus they need to be addressed in order to create a valid graph.
+        This parameter must be one of the following:
+        * "raise": raise an error if coincident points are present. This is default.
+        * "jitter": jitter the input points by a small value. This makes the resulting
+            depend on the seed provided to the triangulation function.
+        * "clique": expand coincident points into a graph clique. This creates a
+            "unique points" triangulation using all of the unique locations in the data.
+            Then, co-located samples are connected within a site. Finally, co-located
+            samples are connected to other sites in the "unique points" triangulation.
+    seed : int (default: None)
+        An integer value used to ensure that the pseudorandom number generator provides
+        the same value over replications. By default, no seed is used, so results
+        will be random every time. This is only used if coincident='jitter'.
     """
     if not HAS_NUMBA:
         warnings.warn(
@@ -352,6 +397,21 @@ def _voronoi(coordinates, clip="extent", rook=True):
         Contiguity method. If True, two geometries are considered neighbours if they
         share at least one edge. If False, two geometries are considered neighbours
         if they share at least one vertex. By default True.
+    coincident : string (default: "raise")
+        How to deal with coincident points. Coincident points make all triangulations
+        ill-posed, and thus they need to be addressed in order to create a valid graph.
+        This parameter must be one of the following:
+        * "raise": raise an error if coincident points are present. This is default.
+        * "jitter": jitter the input points by a small value. This makes the resulting
+            depend on the seed provided to the triangulation function.
+        * "clique": expand coincident points into a graph clique. This creates a
+            "unique points" triangulation using all of the unique locations in the data.
+            Then, co-located samples are connected within a site. Finally, co-located
+            samples are connected to other sites in the "unique points" triangulation.
+    seed : int (default: None)
+        An integer value used to ensure that the pseudorandom number generator provides
+        the same value over replications. By default, no seed is used, so results
+        will be random every time. This is only used if coincident='jitter'.
 
     Notes
     -----
