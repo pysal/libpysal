@@ -1191,14 +1191,14 @@ class W:
                 weights = {}
                 q = {}
                 s = {}
-                q = 0.0
+                big_q = 0.0
                 self.weights = self.transformations["O"]
                 for i in self.weights:
                     wijs = self.weights[i]
                     q[i] = math.sqrt(sum([wij * wij for wij in wijs]))
                     s[i] = [wij / q[i] for wij in wijs]
-                    q += sum(s[i])
-                nq = self.n / q
+                    big_q += sum(s[i])
+                nq = self.n / big_q
                 for i in self.weights:
                     weights[i] = [w * nq for w in s[i]]
                 weights = weights
