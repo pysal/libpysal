@@ -1,21 +1,23 @@
 # ruff: noqa: B006, N802
 
-from .util import lat2SW
-from .weights import WSP, W
-import numpy as np
-from warnings import warn
 import os
 import sys
+from warnings import warn
+
+import numpy as np
 from scipy import sparse
+
+from .util import lat2SW
+from .weights import WSP, W
 
 if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 
-    def jit(*dec_args, **dec_kwargs):
+    def jit(*dec_args, **dec_kwargs):  # noqa ARG001
         """
         decorator mimicking numba.jit
         """
 
-        def intercepted_function(f, *f_args, **f_kwargs):
+        def intercepted_function(f, *f_args, **f_kwargs):  # noqa ARG001
             return f
 
         return intercepted_function
@@ -241,7 +243,7 @@ def da2WSP(
     n = len(ids)
 
     try:
-        import numba
+        import numba  # noqa F401
     except (ModuleNotFoundError, ImportError):
         warn(
             "numba cannot be imported, parallel processing "
@@ -261,7 +263,7 @@ def da2WSP(
 
         if n_jobs != 1:
             try:
-                import joblib
+                import joblib  # noqa F401
             except (ModuleNotFoundError, ImportError):
                 warn(
                     f"Parallel processing is requested (n_jobs={n_jobs}),"
@@ -296,7 +298,7 @@ def da2WSP(
     # then eliminate zeros from the data. This changes the
     # sparcity of the csr_matrix !!
     if k > 1 and not include_nodata:
-        sw = sum(map(lambda x: sw**x, range(1, k + 1)))
+        sw = sum(sw**x for x in range(1, k + 1))
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
@@ -563,7 +565,7 @@ def _index2da(data, index, attrs, coords):
             else:
                 min_data = np.min(data)
                 fill_value = min_data - 1 if min_data < 0 else -1
-                attrs["nodatavals"] = tuple([fill_value])
+                attrs["nodatavals"] = tuple([fill_value])  # noqa C409
             data_complete = np.full(shape, fill_value, data.dtype)
         else:
             data_complete = np.empty(shape, data.dtype)

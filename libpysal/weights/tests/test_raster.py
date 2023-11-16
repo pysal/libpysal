@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+
 from .. import raster
 
 
@@ -80,7 +81,7 @@ class Testraster:
         w2 = raster.da2W(self.da2, "rook", n_jobs=-1)
         da2 = raster.w2da(self.da2.data.flatten(), w2, self.da2.attrs, self.da2.coords)
         da_compare = xarray.DataArray.equals(da2, self.da2)
-        assert da_compare == True
+        assert da_compare is True
 
     def test_wsp2da(self):
         wsp1 = raster.da2WSP(self.da1, "queen")

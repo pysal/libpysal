@@ -1,3 +1,5 @@
+# ruff: noqa: N999
+
 import numpy as np
 
 from ..spintW import ODW, mat2L, netW, vecW
@@ -302,8 +304,8 @@ class TestODWeights:
         )
 
     def test_odw_full(self):
-        W = ODW(self.O, self.D)
-        np.testing.assert_allclose(self.ODW, W.full()[0])
+        w = ODW(self.O, self.D)
+        np.testing.assert_allclose(self.ODW, w.full()[0])
 
 
 class TestNetW:
@@ -411,24 +413,24 @@ class TestNetW:
         self.edge_list = [(0, 1), (0, 2), (1, 0), (1, 2), (2, 0), (2, 1)]
 
     def test_net_od(self):
-        netW_OD = netW(self.link_list, share="OD")
-        np.testing.assert_allclose(netW_OD.full()[0], self.OD)
+        netw_od = netW(self.link_list, share="OD")
+        np.testing.assert_allclose(netw_od.full()[0], self.OD)
 
     def test_net_o(self):
-        netW_O = netW(self.link_list, share="O")
-        np.testing.assert_allclose(netW_O.full()[0], self.O)
+        netw_o = netW(self.link_list, share="O")
+        np.testing.assert_allclose(netw_o.full()[0], self.O)
 
     def test_net_d(self):
-        netW_D = netW(self.link_list, share="D")
-        np.testing.assert_allclose(netW_D.full()[0], self.D)
+        netw_d = netW(self.link_list, share="D")
+        np.testing.assert_allclose(netw_d.full()[0], self.D)
 
     def test_net_c(self):
-        netW_C = netW(self.link_list, share="C")
-        np.testing.assert_allclose(netW_C.full()[0], self.C)
+        netw_c = netW(self.link_list, share="C")
+        np.testing.assert_allclose(netw_c.full()[0], self.C)
 
     def test_net_all(self):
-        netW_all = netW(self.link_list, share="A")
-        np.testing.assert_allclose(netW_all.full()[0], self._all)
+        netw_all = netW(self.link_list, share="A")
+        np.testing.assert_allclose(netw_all.full()[0], self._all)
 
     def test_mat2_l(self):
         mat = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])
@@ -452,7 +454,7 @@ class TestVecW:
         )
 
     def test_vec_w(self):
-        W = vecW(
+        w = vecW(
             self.origin_x,
             self.origin_y,
             self.dest_x,
@@ -460,4 +462,4 @@ class TestVecW:
             threshold=np.inf,
             binary=False,
         )
-        np.testing.assert_allclose(self.continuous, W.full()[0])
+        np.testing.assert_allclose(self.continuous, w.full()[0])
