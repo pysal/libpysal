@@ -324,8 +324,11 @@ def test_coincident():
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
     # k, clique
-    with pytest.raises(NotImplementedError):
-        _kernel(grocs_duplicated, k=2, coincident="clique")
+    head, tail, weight = _kernel(grocs_duplicated, k=2, coincident="clique")
+    assert head.shape[0] >= len(grocs_duplicated) * 2
+    assert tail.shape == head.shape
+    assert weight.shape == head.shape
+    np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
 
 def test_shape_preservation():

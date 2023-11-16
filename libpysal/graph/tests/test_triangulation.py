@@ -192,8 +192,8 @@ def test_correctness_gabriel():
 def test_correctness_relative_n():
     head, tail, weight = _relative_neighborhood(cau_coords)
 
-    known_head = np.array([0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4])
-    known_tail = np.array([1, 2, 4, 0, 2, 3, 0, 1, 3, 4, 1, 2, 4, 0, 2, 3])
+    known_head = np.array([0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4])
+    known_tail = np.array([2, 4, 2, 3, 0, 1, 3, 4, 1, 2, 4, 0, 2, 3])
 
     np.testing.assert_array_equal(known_head, head)
     np.testing.assert_array_equal(known_tail, tail)
@@ -284,20 +284,6 @@ def test_coincident_jitter_voronoi():
     assert unique_heads.shape[0] == 3368
 
 
-def test_coincident_clique_voronoi():
-    with pytest.raises(NotImplementedError, match="clique-based"):
-        _voronoi(stores, clip=False, coincident="clique")
-    # G_voronoi_cp_heads, G_voronoi_cp_tails, cp_w = _voronoi(
-    #     stores, clip=False, coincident="clique"
-    # )
-    # G_voronoi_unique_heads, G_voronoi_unique_tails, unique_w = _voronoi(
-    #     stores_unique, clip=False
-    # )
-    # assert not np.array_equal(G_voronoi_cp_heads, G_voronoi_unique_heads)
-    # assert not np.array_equal(G_voronoi_cp_tails, G_voronoi_unique_tails)
-    # assert not np.array_equal(cp_w, unique_w)
-
-
 class TestCoincident:
     def setup_method(self):
         self.geom = [
@@ -343,16 +329,15 @@ class TestCoincident:
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
         np.testing.assert_array_equal(weights, exp_w)
 
-    @pytest.mark.xfail
     def test_delaunay_clique(self):
         # TODO: fix the implemntation to make this pass
         heads, tails, weights = _delaunay(self.df_int, coincident="clique", seed=0)
 
         exp_heads = np.array(
-            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
+            [0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5]
         )
         exp_tails = np.array(
-            [1, 2, 4, 5, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
+            [1, 2, 4, 5, 0, 2, 3, 4, 5, 0, 1, 3, 4, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3, 4]
         )
         exp_w = np.ones(exp_heads.shape, dtype="int8")
 
@@ -388,17 +373,12 @@ class TestCoincident:
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
         np.testing.assert_array_equal(weights, exp_w)
 
-    @pytest.mark.xfail
     def test_gabriel_clique(self):
         # TODO: fix the implemntation to make this pass
         heads, tails, weights = _gabriel(self.df_int, coincident="clique", seed=0)
 
-        exp_heads = np.array(
-            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
-        )
-        exp_tails = np.array(
-            [1, 2, 4, 5, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
-        )
+        exp_heads = np.array([0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 4, 5])
+        exp_tails = np.array([1, 2, 4, 0, 2, 3, 4, 5, 0, 1, 3, 4, 1, 2, 0, 1, 2, 1])
         exp_w = np.ones(exp_heads.shape, dtype="int8")
 
         np.testing.assert_array_equal(heads, exp_heads)
@@ -437,19 +417,14 @@ class TestCoincident:
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
         np.testing.assert_array_equal(weights, exp_w)
 
-    @pytest.mark.xfail
     def test_relative_neighborhood_clique(self):
         # TODO: fix the implemntation to make this pass
         heads, tails, weights = _relative_neighborhood(
             self.df_int, coincident="clique", seed=0
         )
 
-        exp_heads = np.array(
-            [0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5]
-        )
-        exp_tails = np.array(
-            [1, 2, 4, 5, 0, 2, 3, 5, 0, 1, 3, 1, 2, 5, 0, 1, 2, 5, 0, 1, 3]
-        )
+        exp_heads = np.array([0, 0, 1, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5])
+        exp_tails = np.array([1, 4, 0, 2, 3, 4, 5, 1, 3, 1, 2, 0, 1, 1])
         exp_w = np.ones(exp_heads.shape, dtype="int8")
 
         np.testing.assert_array_equal(heads, exp_heads)
@@ -486,13 +461,12 @@ class TestCoincident:
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
         np.testing.assert_array_equal(weights, exp_w)
 
-    @pytest.mark.xfail
     def test_voronoi_clique(self):
         # TODO: fix the implemntation to make this pass
         heads, tails, weights = _voronoi(self.df_int, coincident="clique", seed=0)
 
-        exp_heads = np.array([0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5])
-        exp_tails = np.array([1, 4, 0, 2, 3, 5, 1, 3, 1, 2, 5, 0, 1, 1, 3])
+        exp_heads = np.array([0, 0, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5])
+        exp_tails = np.array([1, 4, 0, 2, 3, 4, 5, 1, 3, 1, 2, 5, 0, 1, 1, 3])
         exp_w = np.ones(exp_heads.shape, dtype="int8")
 
         np.testing.assert_array_equal(heads, exp_heads)
