@@ -565,7 +565,7 @@ def _index2da(data, index, attrs, coords):
             else:
                 min_data = np.min(data)
                 fill_value = min_data - 1 if min_data < 0 else -1
-                attrs["nodatavals"] = tuple([fill_value])
+                attrs["nodatavals"] = tuple([fill_value])  # noqa C409
             data_complete = np.full(shape, fill_value, data.dtype)
         else:
             data_complete = np.empty(shape, data.dtype)
