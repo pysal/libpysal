@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from ... import examples
-from ...io.fileio import FileIO as psopen
+from ...io.fileio import FileIO
 from .. import util
 from ..contiguity import Queen, Rook
 from ..distance import KNN, DistanceBand
@@ -104,11 +104,11 @@ class Testutil:
 
     def test_comb(self):
         x = list(range(4))
-        l = []
+        l_ = []
         for i in util.comb(x, 2):
-            l.append(i)
+            l_.append(i)
         lo = [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]]
-        assert l == lo
+        assert l_ == lo
 
     def test_order(self):
         w3 = util.order(self.w, kmax=3)
@@ -162,9 +162,9 @@ class Testutil:
         util.higher_order(wsparse, 2)
         util.higher_order(ww, 2)
         ww.transform = "r"
-        wsparse_notbinary = wrook.sparse
+        wsparse_notbinary = wrook.sparse  # noqa F841
+        util.higher_order(wsparse, 2)
         with pytest.raises(ValueError):
-            util.higher_order(wsparse, 2)
             util.higher_order(ww, 3)
 
     def test_shimbel(self):
@@ -200,7 +200,6 @@ class Testutil:
         ids = ["myID0", "myID1", "myID2", "myID3"]
         w = util.full2W(a, ids=ids)
         np.testing.assert_array_equal(w.full()[0], a)
-        w.full()[0] == a
 
     def test_wsp2_w(self):
         sp = util.lat2SW(2, 5)
@@ -210,7 +209,7 @@ class Testutil:
         assert w[0] == {1: 1, 5: 1}
         for weights in w.weights.values():
             assert isinstance(weights, list)
-        w = psopen(examples.get_path("sids2.gal"), "r").read()
+        w = FileIO(examples.get_path("sids2.gal"), "r").read()
         wsp = WSP(w.sparse, w.id_order)
         w = util.WSP2W(wsp)
         assert w.n == 100
@@ -332,14 +331,12 @@ class Testutil:
         rs_df = gpd.read_file(rs)
         wf = fuzzy_contiguity(rs_df)
         assert wf.islands == []
-        assert set(wf.neighbors[0]) == set([239, 59, 152, 23])
+        assert set(wf.neighbors[0]) == {239, 59, 152, 23}
         buff = fuzzy_contiguity(rs_df, buffering=True, buffer=0.2)
-        assert set(buff.neighbors[0]) == set([175, 119, 239, 59, 152, 246, 23, 107])
+        assert set(buff.neighbors[0]) == {175, 119, 239, 59, 152, 246, 23, 107}
         rs_index = rs_df.set_index("NM_MUNICIP")
         index_w = fuzzy_contiguity(rs_index)
-        assert set(index_w.neighbors["TAVARES"]) == set(
-            ["SÃO JOSÉ DO NORTE", "MOSTARDAS"]
-        )
+        assert set(index_w.neighbors["TAVARES"]) == {"SÃO JOSÉ DO NORTE", "MOSTARDAS"}
         wf_pred = fuzzy_contiguity(rs_df, predicate="touches")
-        assert set(wf_pred.neighbors[0]) == set([])
-        assert set(wf_pred.neighbors[1]) == set([142, 82, 197, 285, 386, 350])
+        assert set(wf_pred.neighbors[0]) == set()
+        assert set(wf_pred.neighbors[1]) == {142, 82, 197, 285, 386, 350}
