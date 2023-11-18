@@ -162,7 +162,7 @@ class Testutil:
         util.higher_order(wsparse, 2)
         util.higher_order(ww, 2)
         ww.transform = "r"
-        wsparse_notbinary = wrook.sparse  # noqa F841
+        _ = wrook.sparse
         util.higher_order(wsparse, 2)
         with pytest.raises(ValueError):
             util.higher_order(ww, 3)
