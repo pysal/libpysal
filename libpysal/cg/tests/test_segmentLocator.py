@@ -1,6 +1,6 @@
 """Segment Locator Unittest."""
 
-# ruff: noqa: F403, F405
+# ruff: noqa: F403, F405, N999
 
 from ..segmentLocator import *
 from ..shapes import *
