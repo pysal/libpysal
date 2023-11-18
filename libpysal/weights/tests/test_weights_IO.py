@@ -1,3 +1,5 @@
+# ruff: noqa: N999
+
 import os
 import tempfile
 
