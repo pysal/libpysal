@@ -5,11 +5,10 @@ Computational geometry code for PySAL: Python Spatial Analysis Library.
 
 __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow, Hu Shao"
 
-# ruff: noqa: A003, B028, N802, E402
+# ruff: noqa: A003, N802, E402
 
 import math
 import warnings
-from typing import Union
 
 from .sphere import arcdist
 
@@ -97,7 +96,7 @@ class Point(Geometry):
     """
 
     def __init__(self, loc):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self.__loc = tuple(map(float, loc))
 
     @classmethod
@@ -242,7 +241,7 @@ class Point(Geometry):
 
         return hash(self.__loc)
 
-    def __getitem__(self, *args) -> Union[int, float]:
+    def __getitem__(self, *args) -> int | float:
         """Return the coordinate for the given dimension.
 
         Parameters
@@ -348,7 +347,7 @@ class LineSegment(Geometry):
     """
 
     def __init__(self, start_pt, end_pt):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self._p1 = start_pt
         self._p2 = end_pt
         self._reset_props()
@@ -755,12 +754,12 @@ class VerticalLine(Geometry):
     """
 
     def __init__(self, x):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self._x = float(x)
         self.m = float("inf")
         self.b = float("nan")
 
-    def x(self, y) -> float:  # noqa ARG002
+    def x(self, y) -> float:  # noqa: ARG002
         """Returns the :math:`x`-value of the line at a particular :math:`y`-value.
 
         Parameters
@@ -777,7 +776,7 @@ class VerticalLine(Geometry):
 
         return self._x
 
-    def y(self, x) -> float:  # noqa ARG002
+    def y(self, x) -> float:  # noqa: ARG002
         """Returns the :math:`y`-value of the line at a particular :math:`x`-value.
 
         Parameters
@@ -821,14 +820,14 @@ class Line(Geometry):
     """
 
     def __init__(self, m, b):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         if m == float("inf"):
             raise ArithmeticError("Slope cannot be infinite.")
 
         self.m = float(m)
         self.b = float(b)
 
-    def x(self, y: Union[int, float]) -> float:
+    def x(self, y: int | float) -> float:
         """Returns the :math:`x`-value of the line at a particular :math:`y`-value.
 
         Parameters
@@ -853,7 +852,7 @@ class Line(Geometry):
 
         return (y - self.b) / self.m
 
-    def y(self, x: Union[int, float]) -> float:
+    def y(self, x: int | float) -> float:
         """Returns the :math:`y`-value of the line at a particular :math:`x`-value.
 
         Parameters
@@ -903,7 +902,7 @@ class Ray:
     """
 
     def __init__(self, origin, second_p):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self.o = origin
         self.p = second_p
 
@@ -929,7 +928,7 @@ class Chain(Geometry):
     """
 
     def __init__(self, vertices: list):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         if isinstance(vertices[0], list):
             self._vertices = list(vertices)
         else:
@@ -1052,10 +1051,10 @@ class Chain(Geometry):
         4.0
         """
 
-        def dist(v1: tuple, v2: tuple) -> Union[int, float]:
+        def dist(v1: tuple, v2: tuple) -> int | float:
             return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
-        def part_perimeter(p: list) -> Union[int, float]:
+        def part_perimeter(p: list) -> int | float:
             return sum([dist(p[i], p[i + 1]) for i in range(len(p) - 1)])
 
         if self._len is None:
@@ -1064,12 +1063,12 @@ class Chain(Geometry):
         return self._len
 
     @property
-    def arclen(self) -> Union[int, float]:
+    def arclen(self) -> int | float:
         """Returns the geometric length of the chain
         computed using 'arcdistance' (meters).
         """
 
-        def part_perimeter(p: list) -> Union[int, float]:
+        def part_perimeter(p: list) -> int | float:
             return sum([arcdist(p[i], p[i + 1]) * 1000.0 for i in range(len(p) - 1)])
 
         if self._arclen is None:
@@ -1120,7 +1119,7 @@ class Ring(Geometry):
     """
 
     def __init__(self, vertices):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         if vertices[0] != vertices[-1]:
             vertices = vertices[:] + vertices[0:1]
             # msg = "Supplied vertices do not form a closed ring, "
@@ -1142,11 +1141,11 @@ class Ring(Geometry):
         return len(self)
 
     @staticmethod
-    def dist(v1, v2) -> Union[int, float]:
+    def dist(v1, v2) -> int | float:
         return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
     @property
-    def perimeter(self) -> Union[int, float]:
+    def perimeter(self) -> int | float:
         if self._perimeter is None:
             dist = self.dist
             v = self.vertices
@@ -1198,7 +1197,7 @@ class Ring(Geometry):
         return self._bounding_box
 
     @property
-    def area(self) -> Union[int, float]:
+    def area(self) -> int | float:
         """Returns the area of the ring.
 
         Examples
@@ -1219,7 +1218,7 @@ class Ring(Geometry):
         return abs(self.signed_area)
 
     @property
-    def signed_area(self) -> Union[int, float]:
+    def signed_area(self) -> int | float:
         if self._area is None:
             vertices = self.vertices
             x = [v[0] for v in vertices]
@@ -1391,7 +1390,7 @@ class Polygon(Geometry):
     """
 
     def __init__(self, vertices, holes=None):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self._part_rings = []
         self._hole_rings = []
 
@@ -1537,7 +1536,7 @@ class Polygon(Geometry):
         return [list(part) for part in self._vertices]
 
     @property
-    def perimeter(self) -> Union[int, float]:
+    def perimeter(self) -> int | float:
         """Returns the perimeter of the polygon.
 
         Examples
@@ -1547,13 +1546,15 @@ class Polygon(Geometry):
         4.0
         """
 
-        def dist(v1: Union[int, float], v2: Union[int, float]) -> float:
+        def dist(v1: int | float, v2: int | float) -> float:
             return math.hypot(v1[0] - v2[0], v1[1] - v2[1])
 
-        def part_perimeter(part) -> Union[int, float]:
+        def part_perimeter(part) -> int | float:
             return sum([dist(part[i], part[i + 1]) for i in range(-1, len(part) - 1)])
 
-        sum_perim = lambda part_type: sum([part_perimeter(part) for part in part_type])
+        sum_perim = lambda part_type: sum(  # noqa: E731
+            [part_perimeter(part) for part in part_type]
+        )
 
         if self._perimeter is None:
             self._perimeter = sum_perim(self._vertices) + sum_perim(self._holes)
@@ -1642,10 +1643,12 @@ class Polygon(Geometry):
                 __area += (pv[i][0] + pv[i + 1][0]) * (pv[i][1] - pv[i + 1][1])
             __area = __area * 0.5
             if __area < 0:
-                __area = -area  # noqa F821
+                __area = -area  # noqa: F821
             return __area
 
-        sum_area = lambda part_type: sum([part_area(part) for part in part_type])
+        sum_area = lambda part_type: sum(
+            [part_area(part) for part in part_type]
+        )  # noqa: E731
         _area = sum_area(self._vertices) - sum_area(self._holes)
 
         return _area
@@ -1670,14 +1673,14 @@ class Polygon(Geometry):
         (5.0353535353535355, 5.0353535353535355)
         """
 
-        CP = [ring.centroid for ring in self._part_rings]
-        AP = [ring.area for ring in self._part_rings]
-        CH = [ring.centroid for ring in self._hole_rings]
-        AH = [-ring.area for ring in self._hole_rings]
+        cp = [ring.centroid for ring in self._part_rings]
+        ap = [ring.area for ring in self._part_rings]
+        ch = [ring.centroid for ring in self._hole_rings]
+        ah = [-ring.area for ring in self._hole_rings]
 
-        A = AP + AH
-        cx = sum([pt[0] * area for pt, area in zip(CP + CH, A, strict=True)]) / sum(A)
-        cy = sum([pt[1] * area for pt, area in zip(CP + CH, A, strict=True)]) / sum(A)
+        a = ap + ah
+        cx = sum([pt[0] * area for pt, area in zip(cp + ch, a, strict=True)]) / sum(a)
+        cy = sum([pt[1] * area for pt, area in zip(cp + ch, a, strict=True)]) / sum(a)
 
         return cx, cy
 
@@ -1794,7 +1797,7 @@ class Rectangle(Geometry):
     """
 
     def __init__(self, left, lower, right, upper):
-        warnings.warn(dep_msg, FutureWarning)
+        warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         if right < left or upper < lower:
             raise ArithmeticError("Rectangle must have positive area.")
         self.left = float(left)
@@ -1827,8 +1830,8 @@ class Rectangle(Geometry):
         return False
 
     def __add__(self, other):
-        x, y, X, Y = self[:]
-        x1, y2, X1, Y1 = other[:]
+        x, y, X, Y = self[:]  # noqa: N806
+        x1, y2, X1, Y1 = other[:]  # noqa: N806
 
         return Rectangle(
             min(self.left, other.left),
@@ -1917,7 +1920,7 @@ class Rectangle(Geometry):
         self.upper = center[1] + scale * (self.upper - center[1])
 
     @property
-    def area(self) -> Union[int, float]:
+    def area(self) -> int | float:
         """Returns the area of the Rectangle.
 
         Examples
@@ -1930,7 +1933,7 @@ class Rectangle(Geometry):
         return (self.right - self.left) * (self.upper - self.lower)
 
     @property
-    def width(self) -> Union[int, float]:
+    def width(self) -> int | float:
         """Returns the width of the Rectangle.
 
         Examples
@@ -1943,7 +1946,7 @@ class Rectangle(Geometry):
         return self.right - self.left
 
     @property
-    def height(self) -> Union[int, float]:
+    def height(self) -> int | float:
         """Returns the height of the Rectangle.
 
         Examples
@@ -1956,7 +1959,7 @@ class Rectangle(Geometry):
         return self.upper - self.lower
 
 
-_geoJSON_type_to_Pysal_type = {  # noqa N816
+_geoJSON_type_to_Pysal_type = {  # noqa: N816
     "point": Point,
     "linestring": Chain,
     "multilinestring": Chain,
