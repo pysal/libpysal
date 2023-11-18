@@ -1223,13 +1223,13 @@ class Ring(Geometry):
             vertices = self.vertices
             x = [v[0] for v in vertices]
             y = [v[1] for v in vertices]
-            N = len(self)
+            n = len(self)
 
-            A = 0.0
-            for i in range(N - 1):
-                A += (x[i] + x[i + 1]) * (y[i] - y[i + 1])
-            A = A * 0.5
-            self._area = -A
+            a = 0.0
+            for i in range(n - 1):
+                a += (x[i] + x[i + 1]) * (y[i] - y[i + 1])
+            a = a * 0.5
+            self._area = -a
 
         return self._area
 
@@ -1266,16 +1266,16 @@ class Ring(Geometry):
             vertices = self.vertices
             x = [v[0] for v in vertices]
             y = [v[1] for v in vertices]
-            A = self.signed_area
-            N = len(self)
+            a = self.signed_area
+            n = len(self)
             cx = 0
             cy = 0
-            for i in range(N - 1):
+            for i in range(n - 1):
                 f = x[i] * y[i + 1] - x[i + 1] * y[i]
                 cx += (x[i] + x[i + 1]) * f
                 cy += (y[i] + y[i + 1]) * f
-            cx = 1.0 / (6 * A) * cx
-            cy = 1.0 / (6 * A) * cy
+            cx = 1.0 / (6 * a) * cx
+            cy = 1.0 / (6 * a) * cy
             self._centroid = Point((cx, cy))
 
         return self._centroid
@@ -1646,9 +1646,9 @@ class Polygon(Geometry):
                 __area = -area  # noqa: F821
             return __area
 
-        sum_area = lambda part_type: sum(
+        sum_area = lambda part_type: sum(  # noqa: E731
             [part_area(part) for part in part_type]
-        )  # noqa: E731
+        )
         _area = sum_area(self._vertices) - sum_area(self._holes)
 
         return _area

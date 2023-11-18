@@ -315,9 +315,9 @@ class Arc_KDTree(temp_KDTree):
                 * 0.5
             )
         max_distance = sphere.arcdist2linear(max_distance, self.radius) + FLOAT_EPS * 3
-        D = temp_KDTree.sparse_distance_matrix(self, other, max_distance)
-        D = D.tocoo()
-        # print D.data
-        a2l = lambda x: sphere.linear2arcdist(x, self.radius)
-        # print map(a2l,D.data)
-        return scipy.sparse.coo_matrix((list(map(a2l, D.data)), (D.row, D.col))).todok()
+        d = temp_KDTree.sparse_distance_matrix(self, other, max_distance)
+        d = d.tocoo()
+        # print d.data
+        a2l = lambda x: sphere.linear2arcdist(x, self.radius)  # noqa: E731
+        # print map(a2l,d.data)
+        return scipy.sparse.coo_matrix((list(map(a2l, d.data)), (d.row, d.col))).todok()
