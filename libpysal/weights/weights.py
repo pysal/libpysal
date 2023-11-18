@@ -2,7 +2,7 @@
 Weights.
 """
 
-# ruff: noqa: N802
+# ruff: noqa: N802, N803
 
 __author__ = "Sergio J. Rey <srey@asu.edu>"
 
@@ -375,8 +375,8 @@ class W:
             adjlist = adjlist.copy(deep=True)
             adjlist["weight"] = 1
         grouper = adjlist.groupby(focal_col)
-        neighbors = dict()
-        weights = dict()
+        neighbors = {}
+        weights = {}
         for ix, chunk in grouper:
             neighbors_to_ix = chunk[neighbor_col].values
             weights_to_ix = chunk[weight_col].values
@@ -474,8 +474,8 @@ class W:
             raise ImportError(
                 "NetworkX 2.7+ is required to use this function."
             ) from None
-        G = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
-        return nx.from_scipy_sparse_array(self.sparse, create_using=G)
+        g = nx.DiGraph() if len(self.asymmetries) > 0 else nx.Graph()
+        return nx.from_scipy_sparse_array(self.sparse, create_using=g)
 
     @classmethod
     def from_networkx(cls, graph, weight_col="weight"):  # noqa ARG003
@@ -1191,16 +1191,16 @@ class W:
                 weights = {}
                 q = {}
                 s = {}
-                Q = 0.0
+                big_q = 0.0
                 self.weights = self.transformations["O"]
                 for i in self.weights:
                     wijs = self.weights[i]
                     q[i] = math.sqrt(sum([wij * wij for wij in wijs]))
                     s[i] = [wij / q[i] for wij in wijs]
-                    Q += sum(s[i])
-                nQ = self.n / Q
+                    big_q += sum(s[i])
+                nq = self.n / big_q
                 for i in self.weights:
-                    weights[i] = [w * nQ for w in s[i]]
+                    weights[i] = [w * nq for w in s[i]]
                 weights = weights
                 self.transformations[value] = weights
                 self.weights = weights
@@ -1293,9 +1293,9 @@ class W:
         if not inplace:
             neighbors = copy.deepcopy(self.neighbors)
             weights = copy.deepcopy(self.weights)
-            out_W = W(neighbors, weights, id_order=self.id_order)
-            out_W.symmetrize(inplace=True)
-            return out_W
+            out_w = W(neighbors, weights, id_order=self.id_order)
+            out_w.symmetrize(inplace=True)
+            return out_w
         else:
             for focal, fneighbs in list(self.neighbors.items()):
                 for j, neighbor in enumerate(fneighbs):
@@ -1303,7 +1303,7 @@ class W:
                     if focal not in neighb_neighbors:
                         self.neighbors[neighbor].append(focal)
                         self.weights[neighbor].append(self.weights[focal][j])
-            self._cache = dict()
+            self._cache = {}
             return
 
     def full(self):
@@ -1466,12 +1466,12 @@ class W:
             if "color" not in node_kws:
                 node_kws["color"] = color
         else:
-            node_kws = dict(color=color)
+            node_kws = {"color": color}
         if edge_kws is not None:
             if "color" not in edge_kws:
                 edge_kws["color"] = color
         else:
-            edge_kws = dict(color=color)
+            edge_kws = {"color": color}
 
         for idx, neighbors in self.neighbors.items():
             if idx in self.islands:
