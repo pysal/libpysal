@@ -5,8 +5,8 @@ from scipy import optimize, sparse, spatial, stats
 from ._utils import (
     _build_coincidence_lookup,
     _induce_cliques,
-    _reorder_adjtable_by_ids,
     _jitter_geoms,
+    _reorder_adjtable_by_ids,
     _resolve_islands,
     _sparse_to_arrays,
     _validate_geometry_input,
