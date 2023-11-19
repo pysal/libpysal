@@ -403,10 +403,10 @@ def haversine(x):
 # Lambda functions
 
 # degree to radian conversion
-d2r = lambda x: x * math.pi / 180.0  # noqa E731
+d2r = lambda x: x * math.pi / 180.0  # noqa: E731
 
 # radian to degree conversion
-r2d = lambda x: x * 180.0 / math.pi  # noqa E731
+r2d = lambda x: x * 180.0 / math.pi  # noqa: E731
 
 
 def radangle(p0, p1):

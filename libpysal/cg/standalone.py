@@ -406,7 +406,7 @@ def get_polygon_point_intersect(poly, pt):
 
     def pt_lies_on_part_boundary(p, vx):
         vx_range = range(-1, len(vx) - 1)
-        seg = lambda i: LineSegment(vx[i], vx[i + 1])  # noqa E731
+        seg = lambda i: LineSegment(vx[i], vx[i + 1])  # noqa: E731
         return [i for i in vx_range if get_segment_point_dist(seg(i), p)[0] == 0] != []
 
     ret = None
