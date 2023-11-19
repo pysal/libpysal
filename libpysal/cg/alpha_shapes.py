@@ -63,7 +63,7 @@ def nb_dist(x, y):
     1.4142135623730951
     """
     sum_ = 0
-    for x_i, y_i in zip(x, y):  # noqa B905
+    for x_i, y_i in zip(x, y):  # noqa: B905
         sum_ += (x_i - y_i) ** 2
     dist = np.sqrt(sum_)
     return dist
@@ -651,7 +651,7 @@ def _construct_centers(a, b, radius):
         return down_x, down_y
 
 
-def _filter_holes(geoms, points):  # noqa ARG001
+def _filter_holes(geoms, points):  # noqa: ARG001
     """
     Filter hole polygons using a computational geometry solution
     """

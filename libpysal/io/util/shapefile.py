@@ -440,7 +440,7 @@ class shp_file:
     def __iter__(self):
         return self
 
-    def type(self) -> str:  # noqa A003
+    def type(self) -> str:  # noqa: A003
         return self.shape.String_Type
 
     def __next__(self) -> int:
@@ -800,7 +800,7 @@ class NullShape:
     def unpack(self) -> None:
         return None
 
-    def pack(self, x=None) -> str:  # noqa ARG002
+    def pack(self, x=None) -> str:  # noqa: ARG002
         return pack("<i", 0)
 
 

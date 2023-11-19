@@ -1,4 +1,4 @@
-from .weights import *  # noqa I001
+from .weights import *  # noqa: I001
 from .distance import *
 from .contiguity import *
 from .spintW import *

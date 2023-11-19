@@ -1,5 +1,5 @@
 from ... import examples as pysal_examples
-from ...io.fileio import FileIO as psopen  # noqa N813
+from ...io.fileio import FileIO as psopen  # noqa: N813
 from ..shapes import Chain, Point, asShape
 
 

@@ -135,7 +135,7 @@ class Wk1IO(fileio.FileIO):
     |  [EOF]      |End of file          |unsigned short           |4      |1,0,0,0                      |
     +-------------+---------------------+-------------------------+-------+-----------------------------+
 
-    """  # noqa E501
+    """  # noqa: E501
 
     FORMATS = ["wk1"]
     MODES = ["r", "w"]
@@ -152,7 +152,7 @@ class Wk1IO(fileio.FileIO):
     def _get_varName(self) -> str:
         return self._varName
 
-    varName = property(fget=_get_varName, fset=_set_varName)  # noqa N815
+    varName = property(fget=_get_varName, fset=_set_varName)  # noqa: N815
 
     def read(self, n=-1):
         """

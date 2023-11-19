@@ -55,7 +55,7 @@ class Delaunay(W):
 
     def __init__(self, coordinates, **kwargs):
         try:
-            from numba import njit  # noqa F401
+            from numba import njit  # noqa: F401
         except ModuleNotFoundError:
             warnings.warn(
                 "The numba package is used extensively in this module"
@@ -178,7 +178,7 @@ class Gabriel(Delaunay):
 
     def __init__(self, coordinates, **kwargs):
         try:
-            from numba import njit  # noqa F401
+            from numba import njit  # noqa: F401
         except ModuleNotFoundError:
             warnings.warn(
                 "The numba package is used extensively in this module"
@@ -204,7 +204,7 @@ class Gabriel(Delaunay):
         W.__init__(self, gabriel_neighbors, id_order=list(ids), **kwargs)
 
 
-class Relative_Neighborhood(Delaunay):  # noqa N801
+class Relative_Neighborhood(Delaunay):  # noqa: N801
     """
     Constructs the Relative Neighborhood graph from a set of points.
     This graph is a subset of the Delaunay triangulation, where only
@@ -228,7 +228,7 @@ class Relative_Neighborhood(Delaunay):  # noqa N801
 
     def __init__(self, coordinates, binary=True, **kwargs):
         try:
-            from numba import njit  # noqa F401
+            from numba import njit  # noqa: F401
         except ModuleNotFoundError:
             warnings.warn(
                 "The numba package is used extensively in this module"

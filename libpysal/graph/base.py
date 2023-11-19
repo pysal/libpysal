@@ -147,7 +147,7 @@ class Graph(SetOpsMixin):
         return self._adjacency.copy()
 
     @classmethod
-    def from_W(cls, w):  # noqa N802
+    def from_W(cls, w):  # noqa: N802
         """Create an experimental Graph from libpysal.weights.W object
 
         Parameters
@@ -161,7 +161,7 @@ class Graph(SetOpsMixin):
         """
         return cls.from_weights_dict(dict(w))
 
-    def to_W(self):  # noqa N802
+    def to_W(self):  # noqa: N802
         """Convert Graph to a libpysal.weights.W object
 
         Returns

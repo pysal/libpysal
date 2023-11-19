@@ -12,12 +12,12 @@ from .weights import WSP, W
 
 if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 
-    def jit(*dec_args, **dec_kwargs):  # noqa ARG001
+    def jit(*dec_args, **dec_kwargs):  # noqa: ARG001
         """
         decorator mimicking numba.jit
         """
 
-        def intercepted_function(f, *f_args, **f_kwargs):  # noqa ARG001
+        def intercepted_function(f, *f_args, **f_kwargs):  # noqa: ARG001
             return f
 
         return intercepted_function
@@ -243,7 +243,7 @@ def da2WSP(
     n = len(ids)
 
     try:
-        import numba  # noqa F401
+        import numba  # noqa: F401
     except (ModuleNotFoundError, ImportError):
         warn(
             "numba cannot be imported, parallel processing "
@@ -263,7 +263,7 @@ def da2WSP(
 
         if n_jobs != 1:
             try:
-                import joblib  # noqa F401
+                import joblib  # noqa: F401
             except (ModuleNotFoundError, ImportError):
                 warn(
                     f"Parallel processing is requested (n_jobs={n_jobs}),"
@@ -565,7 +565,7 @@ def _index2da(data, index, attrs, coords):
             else:
                 min_data = np.min(data)
                 fill_value = min_data - 1 if min_data < 0 else -1
-                attrs["nodatavals"] = tuple([fill_value])  # noqa C409
+                attrs["nodatavals"] = tuple([fill_value])  # noqa: C409
             data_complete = np.full(shape, fill_value, data.dtype)
         else:
             data_complete = np.empty(shape, data.dtype)

@@ -70,7 +70,7 @@ class csvWrapper(tables.DataTable):
 
     """
 
-    __doc__ = tables.DataTable.__doc__  # noqa A003
+    __doc__ = tables.DataTable.__doc__  # noqa: A003
     FORMATS = ["csv"]
     READ_MODES = ["r", "Ur", "rU", "U"]
     MODES = READ_MODES[:]

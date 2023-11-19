@@ -54,7 +54,7 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
     if Wo.transform != "b":
         try:
             Wo.tranform = "b"
-        except:  # noqa E722
+        except:  # noqa: E722
             raise AttributeError(
                 "Wo is not binary and cannot be transformed to "
                 "binary. Wo must be binary or suitably transformed to binary."
@@ -62,7 +62,7 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
     if Wd.transform != "b":
         try:
             Wd.tranform = "b"
-        except:  # noqa E722
+        except:  # noqa: E722
             raise AttributeError(
                 "Wd is not binary and cannot be transformed to "
                 "binary. Wd must be binary or suitably transformed to binary."
@@ -168,7 +168,7 @@ def vecW(
     alpha=-1.0,
     binary=True,
     ids=None,
-    build_sp=False,  # noqa ARG001
+    build_sp=False,  # noqa: ARG001
     **kwargs,
 ):
     """

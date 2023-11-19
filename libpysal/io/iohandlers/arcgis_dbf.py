@@ -66,7 +66,7 @@ class ArcGISDbfIO(fileio.FileIO):
 
     varName = property(fget=_get_varName, fset=_set_varName)
 
-    def read(self, n=-1):  # noqa ARG002
+    def read(self, n=-1):  # noqa: ARG002
         self._complain_ifclosed(self.closed)
         return self._read()
 

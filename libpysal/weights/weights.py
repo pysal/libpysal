@@ -182,7 +182,7 @@ class W:
     UserWarning: The weights matrix is not fully connected:
     There are 3 disconnected components.
     There are 2 islands with ids: 2, 3.
-    """  # noqa E501
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -190,7 +190,7 @@ class W:
         weights=None,
         id_order=None,
         silence_warnings=False,
-        ids=None,  # noqa ARG002
+        ids=None,  # noqa: ARG002
     ):
         self.silence_warnings = silence_warnings
         self.transformations = {}
@@ -232,7 +232,7 @@ class W:
         """Reset properties."""
         self._cache = {}
 
-    def to_file(self, path="", format=None):  # noqa A002
+    def to_file(self, path="", format=None):  # noqa: A002
         """
         Write a weights to a file. The format is guessed automatically
         from the path, but can be overridden with the format argument.
@@ -255,7 +255,7 @@ class W:
         f.close()
 
     @classmethod
-    def from_file(cls, path="", format=None):  # noqa A002
+    def from_file(cls, path="", format=None):  # noqa: A002
         """
         Read a weights file into a W object.
 
@@ -478,7 +478,7 @@ class W:
         return nx.from_scipy_sparse_array(self.sparse, create_using=g)
 
     @classmethod
-    def from_networkx(cls, graph, weight_col="weight"):  # noqa ARG003
+    def from_networkx(cls, graph, weight_col="weight"):  # noqa: ARG003
         """Convert a ``networkx`` graph to a PySAL ``W`` object.
 
         Parameters
@@ -1261,7 +1261,7 @@ class W:
         >>> w=W(neighbors,weights)
         >>> w.asymmetry()
         [(0, 1), (1, 0)]
-        """  # noqa E501
+        """  # noqa: E501
 
         if intrinsic:
             wd = self.sparse.transpose() - self.sparse

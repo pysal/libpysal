@@ -19,7 +19,7 @@ from ._utils import (
 )
 
 try:
-    from numba import njit  # noqa E401
+    from numba import njit  # noqa: E401
 
     HAS_NUMBA = True
 except ModuleNotFoundError:

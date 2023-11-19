@@ -153,7 +153,7 @@ def lag_categorical(w, y, ties="tryself"):
     >>> check = np.array([['b', 'd'], ['a', 'c'], ['b', 'c'], ['c', 'd'], ['b', 'd'], ['c', 'c'], ['b', 'd'], ['c', 'd'], ['b', 'c']])
     >>> np.array_equal(check, ym_lag)
     True
-    """  # noqa E501
+    """  # noqa: E501
     if isinstance(y, list):
         y = np.array(y)
     orig_shape = y.shape

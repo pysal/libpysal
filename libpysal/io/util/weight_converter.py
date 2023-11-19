@@ -73,12 +73,12 @@ class WeightConverter:
                 f = FileIO(self.inputPath, "r", self.inputDataFormat)
             else:
                 f = FileIO(self.inputPath, "r")
-        except:  # noqa E722
+        except:  # noqa: E722
             raise OSError("A problem occurred while reading the input file.") from None
         else:
             try:
                 self.w = f.read()
-            except:  # noqa E722
+            except:  # noqa: E722
                 raise RuntimeError(
                     "A problem occurred while creating a weights object."
                 ) from None
@@ -174,7 +174,7 @@ class WeightConverter:
                 o = FileIO(outputPath, "w", dataFormat)
             else:
                 o = FileIO(outputPath, "w")
-        except:  # noqa E722
+        except:  # noqa: E722
             raise OSError(
                 "A problem occurred while creating the output file."
             ) from None
@@ -186,7 +186,7 @@ class WeightConverter:
                     o.write(self.w, matrix_form=matrix_form)
                 else:
                     o.write(self.w)
-            except:  # noqa E722
+            except:  # noqa: E722
                 raise RuntimeError(
                     "A problem occurred while writing out the weights object."
                 ) from None

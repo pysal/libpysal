@@ -41,7 +41,7 @@ def fetch_all():
         example = datasets[name]
         try:
             example.download()
-        except:  # noqa E722
+        except:  # noqa: E722
             print(f"Example not downloaded: {name}")
     example_manager.add_examples(datasets)
 
