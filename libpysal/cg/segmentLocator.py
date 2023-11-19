@@ -381,7 +381,7 @@ def grid_check(bins, segments, qpoints, visualize=False):
     t0 = time.time()
     g = SegmentLocator(segments, bins)
     t1 = time.time()
-    g.grid.kd  # noqa B018
+    g.grid.kd  # noqa: B018
     t2 = time.time()
     print("Created Grid in %0.4f seconds" % (t1 - t0))
     print("Created KDTree in %0.4f seconds" % (t2 - t1))
