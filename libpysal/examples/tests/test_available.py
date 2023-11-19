@@ -50,7 +50,7 @@ class TestExamples:
     def test_data_home_fallback(self, path_exists_mock, makedirs_mock):
         data_home = user_data_dir("pysal", "pysal")
 
-        def makedirs_side_effect(path, exist_ok=False):  # noqa ARG001
+        def makedirs_side_effect(path, exist_ok=False):  # noqa: ARG001
             if path == data_home:
                 raise OSError(errno.EROFS)
 

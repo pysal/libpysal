@@ -709,7 +709,7 @@ class PolygonLocator:
         >>> try: n = pl.nearest(Point((-1, 1)))
         ... except NotImplementedError: print("future test: str(min(n.vertices())) == (0.0, 1.0)")
         future test: str(min(n.vertices())) == (0.0, 1.0)
-        """  # noqa E501
+        """  # noqa: E501
         raise NotImplementedError
 
     def region(self, region_rect):

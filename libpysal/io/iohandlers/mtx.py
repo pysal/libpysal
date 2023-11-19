@@ -59,7 +59,7 @@ class MtxIO(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode + "b")
 
-    def read(self, n=-1, sparse=False):  # noqa ARG002
+    def read(self, n=-1, sparse=False):  # noqa: ARG002
         """
 
         Parameters

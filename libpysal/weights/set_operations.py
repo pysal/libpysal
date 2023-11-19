@@ -386,7 +386,7 @@ def w_subset(w1, ids, **kwargs):
     return W(neighbors, id_order=list(ids), **kwargs)
 
 
-def w_clip(w1, w2, outSP=True, **kwargs):  # noqa N803
+def w_clip(w1, w2, outSP=True, **kwargs):  # noqa: N803
     """
     Clip a continuous W object (w1) with a different W object (w2) so only cells where
     w2 has a non-zero value remain with non-zero values in w1.

@@ -516,7 +516,7 @@ class Kernel(W):
     >>> kqd.weights
     {0: [1.0, 0.35206533556593145, 0.3412334260702758], 1: [0.35206533556593145, 1.0, 0.2419707487162134, 0.3412334260702758, 0.31069657591175387], 2: [0.2419707487162134, 1.0, 0.31069657591175387], 3: [0.3412334260702758, 0.3412334260702758, 1.0, 0.3011374490937829, 0.26575287272131043], 4: [0.31069657591175387, 0.31069657591175387, 0.3011374490937829, 1.0, 0.35206533556593145], 5: [0.26575287272131043, 0.35206533556593145, 1.0]}
 
-    """  # noqa E501
+    """  # noqa: E501
 
     def __init__(
         self,
@@ -549,7 +549,7 @@ class Kernel(W):
             try:
                 bandwidth = np.array(bandwidth)
                 bandwidth.shape = (len(bandwidth), 1)
-            except:  # noqa E722
+            except:  # noqa: E722
                 bandwidth = np.ones((len(data), 1), "float") * bandwidth
             self.bandwidth = bandwidth
         else:
@@ -833,7 +833,7 @@ class DistanceBand(W):
                         data, distance_metric=distance_metric, radius=radius
                     )
                     self.data = self.kdtree.data
-                except:  # noqa E722
+                except:  # noqa: E722
                     raise ValueError("Could not make array from data") from None
             else:
                 self.data = data

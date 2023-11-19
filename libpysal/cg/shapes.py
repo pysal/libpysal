@@ -760,7 +760,7 @@ class VerticalLine(Geometry):
         self.m = float("inf")
         self.b = float("nan")
 
-    def x(self, y) -> float:  # noqa ARG002
+    def x(self, y) -> float:  # noqa: ARG002
         """Returns the :math:`x`-value of the line at a particular :math:`y`-value.
 
         Parameters
@@ -777,7 +777,7 @@ class VerticalLine(Geometry):
 
         return self._x
 
-    def y(self, x) -> float:  # noqa ARG002
+    def y(self, x) -> float:  # noqa: ARG002
         """Returns the :math:`y`-value of the line at a particular :math:`x`-value.
 
         Parameters
@@ -1642,7 +1642,7 @@ class Polygon(Geometry):
                 __area += (pv[i][0] + pv[i + 1][0]) * (pv[i][1] - pv[i + 1][1])
             __area = __area * 0.5
             if __area < 0:
-                __area = -area  # noqa F821
+                __area = -area  # noqa: F821
             return __area
 
         sum_area = lambda part_type: sum([part_area(part) for part in part_type])
@@ -1956,7 +1956,7 @@ class Rectangle(Geometry):
         return self.upper - self.lower
 
 
-_geoJSON_type_to_Pysal_type = {  # noqa N816
+_geoJSON_type_to_Pysal_type = {  # noqa: N816
     "point": Point,
     "linestring": Chain,
     "multilinestring": Chain,

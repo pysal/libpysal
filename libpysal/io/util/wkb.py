@@ -28,7 +28,7 @@ SOURCE: http://webhelp.esri.com/arcgisserver/9.3/dotNet/index.htm#geodatabases/t
 
     Building Blocks : Point, LinearRing
 
-"""  # noqa E501
+"""  # noqa: E501
 
 import struct
 import sys

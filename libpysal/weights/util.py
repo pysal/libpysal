@@ -284,7 +284,7 @@ def block_weights(regimes, ids=None, sparse=False, **kwargs):
     >>> w = block_weights(regimes)
     >>> w.neighbors == {0: [1], 1: [0], 2: [3], 3: [2], 4: [5, 8], 5: [4, 8], 6: [7], 7: [6], 8: [4, 5]}
     True
-    """  # noqa E501
+    """  # noqa: E501
     rids = np.unique(regimes)
     neighbors = {}
     npnz = np.nonzero
@@ -899,7 +899,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
         return WSP2W(w_out)
 
 
-def remap_ids(w, old2new, id_order=[], **kwargs):  # noqa B006
+def remap_ids(w, old2new, id_order=[], **kwargs):  # noqa: B006
     """
     Remaps the IDs in a spatial weights object.
 
@@ -1301,7 +1301,7 @@ def isKDTree(obj):
     This is a utility function to determine whether or not an object is a
     KDTree, since KDTree and cKDTree have no common parent type
     """
-    return any([issubclass(type(obj), KDTYPE) for KDTYPE in KDTREE_TYPES])  # noqa C419
+    return any([issubclass(type(obj), KDTYPE) for KDTYPE in KDTREE_TYPES])  # noqa: C419
 
 
 def attach_islands(w, w_knn1, **kwargs):
@@ -1423,7 +1423,7 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     ----------
     Planar Enforcement:
     http://ibis.geog.ubc.ca/courses/klink/gis.notes/ncgia/u12.html#SEC12.6
-    """  # noqa E501
+    """  # noqa: E501
 
     gdf = geodataframe
     assert gdf.sindex, (

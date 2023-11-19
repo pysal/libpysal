@@ -64,7 +64,7 @@ class GwtIO(FileIO.FileIO):
 
     shpName = property(fget=_get_shpName, fset=_set_shpName)
 
-    def read(self, n=-1):  # noqa ARG002
+    def read(self, n=-1):  # noqa: ARG002
         """
 
         Parameters
@@ -204,7 +204,7 @@ class GwtIO(FileIO.FileIO):
                 msg = "DBF relating to GWT was not found, "
                 msg += "proceeding with unordered string IDs."
                 warn(msg, RuntimeWarning, stacklevel=2)
-        except:  # noqa E722
+        except:  # noqa: E722
             msg = "Exception occurred will reading DBF, "
             msg += "proceeding with unordered string IDs."
             warn(msg, RuntimeWarning, stacklevel=2)

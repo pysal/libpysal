@@ -72,7 +72,7 @@ class GeoBUGSTextIO(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
-    def read(self, n=-1):  # noqa ARG002
+    def read(self, n=-1):  # noqa: ARG002
         """Read a GeoBUGS text file.
 
         Returns

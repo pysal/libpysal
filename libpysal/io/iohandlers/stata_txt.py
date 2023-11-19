@@ -67,7 +67,7 @@ class StataTextIO(fileio.FileIO):
     matrix object in STATA. However, all those notes are lost when the matrix
     is exported. PySAL also does not take care of those notes.
 
-    """  # noqa E501
+    """  # noqa: E501
 
     FORMATS = ["stata_text"]
     MODES = ["r", "w"]
@@ -77,7 +77,7 @@ class StataTextIO(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
-    def read(self, n=-1):  # noqa ARG002
+    def read(self, n=-1):  # noqa: ARG002
         """
 
         Parameters

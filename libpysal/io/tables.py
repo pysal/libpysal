@@ -16,7 +16,7 @@ class DataTable(fileio.FileIO):
     tables should subclass this instead of `FileIO`.
     """
 
-    class _By_Col:  # noqa N801
+    class _By_Col:  # noqa: N801
         def __init__(self, parent):
             self.p = parent
 

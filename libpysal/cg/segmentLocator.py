@@ -210,13 +210,13 @@ class SegmentGrid:
         res = self.res
         line = segment.line
         tiny = res / 1000.0
-        for i in range(1 + min(i, I_), max(i, I_)):  # noqa B020
+        for i in range(1 + min(i, I_), max(i, I_)):  # noqa: B020
             # print 'i',i
             x = self.x_range[0] + (i * res)
             y = line.y(x)
             self.bin_loc((x - tiny, y), id)
             self.bin_loc((x + tiny, y), id)
-        for j in range(1 + min(j, J_), max(j, J_)):  # noqa B020
+        for j in range(1 + min(j, J_), max(j, J_)):  # noqa: B020
             # print 'j',j
             y = self.y_range[0] + (j * res)
             x = line.x(y)
@@ -226,7 +226,7 @@ class SegmentGrid:
         self._kd2 = None
         return True
 
-    def remove(self, segment):  # noqa ARG002
+    def remove(self, segment):  # noqa: ARG002
         self._kd = None
         self._kd2 = None
         pass
@@ -311,7 +311,7 @@ class SegmentGrid:
                 cols[idx],
             )  # (i,j)'s of the filled grid cells within radius.
 
-            for t in zip(rows, cols):  # noqa B905
+            for t in zip(rows, cols):  # noqa: B905
                 possibles.update(self.hash[t])
 
             if DEBUG:
@@ -361,7 +361,7 @@ def combo_check(bins, segments, qpoints):
             DEBUG = False
 
 
-def brute_check(segments, qpoints):  # noqa ARG001
+def brute_check(segments, qpoints):  # noqa: ARG001
     t0 = time.time()
     G2 = BruteSegmentLocator(segs)
     t1 = time.time()
@@ -379,7 +379,7 @@ def grid_check(bins, segments, qpoints, visualize=False):
     t0 = time.time()
     G = SegmentLocator(segments, bins)
     t1 = time.time()
-    G.grid.kd  # noqa B018
+    G.grid.kd  # noqa: B018
     t2 = time.time()
     print("Created Grid in %0.4f seconds" % (t1 - t0))
     print("Created KDTree in %0.4f seconds" % (t2 - t1))
@@ -415,7 +415,7 @@ def binSizeTest():
         qpts = random_points(q)
         for col, bins in enumerate(binSizes):
             print("N, Bins:", n, bins)
-            qps = test_grid(bins, segs, qpts)  # noqa F821
+            qps = test_grid(bins, segs, qpts)  # noqa: F821
             results[row, col] = qps
     return results
 

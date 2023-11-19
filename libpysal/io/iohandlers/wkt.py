@@ -51,7 +51,7 @@ class WKTReader(fileio.FileIO):
         self.__pos = 0
         self.__open()
 
-    def open(self):  # noqa A003
+    def open(self):  # noqa: A003
         self.__open()
 
     def __open(self):

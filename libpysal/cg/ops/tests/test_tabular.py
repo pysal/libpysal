@@ -3,7 +3,7 @@ import numpy as np
 from ....common import requires as _requires
 from ....examples import get_path
 from ....io import geotable as pdio
-from ... import ops as GIS  # noqa N812
+from ... import ops as GIS  # noqa: N812
 from ...shapes import Polygon
 
 

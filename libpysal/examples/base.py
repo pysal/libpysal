@@ -86,7 +86,7 @@ def type_of_script() -> str:
     """Helper function to determine run context."""
 
     try:
-        ipy_str = str(type(get_ipython()))  # noqa F821
+        ipy_str = str(type(get_ipython()))  # noqa: F821
         if "zmqshell" in ipy_str:
             return "jupyter"
         if "terminal" in ipy_str:
@@ -217,7 +217,7 @@ class Example:
 class Examples:
     """Manager for pysal example datasets."""
 
-    def __init__(self, datasets={}):  # noqa B006
+    def __init__(self, datasets={}):  # noqa: B006
         self.datasets = datasets
 
     def add_examples(self, examples):
@@ -269,7 +269,7 @@ class Examples:
             example = self.remotes[name]
             try:
                 example.download()
-            except:  # noqa E722
+            except:  # noqa: E722
                 print(f"Example not downloaded: {name}.")
 
     def get_installed_names(self) -> list:
@@ -281,7 +281,7 @@ class Examples:
         if name in self.datasets:
             try:
                 return self.datasets[name].download_url
-            except:  # noqa E722
+            except:  # noqa: E722
                 print(f"{name} is a built-in dataset, no url.")
         else:
             print(f"{name} is not an available dataset.")

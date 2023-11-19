@@ -318,7 +318,7 @@ def union_all(kids):
     return cur
 
 
-def Rtree():  # noqa N802
+def Rtree():  # noqa: N802
     return RTree()
 
 
@@ -416,7 +416,7 @@ class RTree:
 
     >>> rt.intersection([5, 5, 6, 6])
     []
-    """  # noqa E501
+    """  # noqa: E501
 
     def __init__(self):
         self.count = 0
@@ -713,7 +713,7 @@ class _NodeCursor:
     def query_rect(self, r):
         """Yield objects that intersect with the rectangle (``r``)."""
 
-        def p(o, x):  # noqa ARG001
+        def p(o, x):  # noqa: ARG001
             return r.does_intersect(o.rect)
 
         yield from self.walk(p)
@@ -721,7 +721,7 @@ class _NodeCursor:
     def query_point(self, point):
         """Yield objects that intersect with the point (``point``)."""
 
-        def p(o, x):  # noqa ARG001
+        def p(o, x):  # noqa: ARG001
             return o.rect.does_containpoint(point)
 
         yield from self.walk(p)

@@ -27,16 +27,16 @@ class TestShapely:
 
     def compare(self, func_name, df, **kwargs):
         geom_list = df.geometry.tolist()
-        shefunc = she.__dict__[func_name]  # noqa F821
-        shtfunc = sht.__dict__[func_name]  # noqa F821
+        shefunc = she.__dict__[func_name]  # noqa: F821
+        shtfunc = sht.__dict__[func_name]  # noqa: F821
 
         try:
             she_vals = (shefunc(geom, **kwargs) for geom in geom_list)
             sht_vals = shtfunc(df, inplace=False, **kwargs)
             sht_list = sht_vals[f"shape_{func_name}"].tolist()
             for tabular, shapely in zip(sht_list, she_vals, strict=True):
-                if comp.is_shape(tabular) and comp.is_shape(shapely):  # noqa F821
-                    comp.equal(tabular, shapely)  # noqa F821
+                if comp.is_shape(tabular) and comp.is_shape(shapely):  # noqa: F821
+                    comp.equal(tabular, shapely)  # noqa: F821
                 else:
                     assert tabular == shapely
         except NotImplementedError as e:
