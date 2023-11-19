@@ -3,7 +3,6 @@ from functools import wraps
 
 import numpy
 import pandas
-from packaging.version import Version
 from scipy import sparse, spatial
 
 from libpysal.cg import voronoi_frames
