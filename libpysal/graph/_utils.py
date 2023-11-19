@@ -8,6 +8,7 @@ import shapely
 from packaging.version import Version
 
 GPD_013 = Version(geopandas.__version__) >= Version("0.13")
+PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
 
 
 def _sparse_to_arrays(sparray, ids=None):
@@ -74,7 +75,7 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
     """
     adj_across_clique = (
         adjtable.merge(
-            clique_to_members["input_index"], left_index=True, right_index=True
+            clique_to_members["input_index"], left_on="focal", right_index=True
         )
         .explode("input_index")
         .rename(columns={"input_index": "subclique_focal"})
@@ -84,7 +85,7 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
         .reset_index()
         .drop(["focal", "neighbor", "index"], axis=1)
         .rename(columns={"subclique_focal": "focal", "subclique_neighbor": "neighbor"})
-    )
+    )[["focal", "neighbor", "weight"]]
     is_multimember_clique = clique_to_members["input_index"].str.len() > 1
     adj_within_clique = (
         clique_to_members[is_multimember_clique]["input_index"]
@@ -260,3 +261,23 @@ def _resolve_islands(heads, tails, ids, weights):
         adjacency.index.get_level_values(1),
         adjacency.values,
     )
+
+
+def _reorder_adjtable_by_ids(adjtable, ids):
+    if PANDAS_GE_21:
+        # ensure proper sorting
+        sorted_index = (
+            adjtable[["focal", "neighbor"]]
+            .map(list(ids).index)
+            .sort_values(["focal", "neighbor"])
+            .index
+        )
+    else:
+        # ensure proper sorting
+        sorted_index = (
+            adjtable[["focal", "neighbor"]]
+            .applymap(list(ids).index)
+            .sort_values(["focal", "neighbor"])
+            .index
+        )
+    return adjtable.iloc[sorted_index].reset_index(drop=True)
