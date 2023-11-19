@@ -20,7 +20,12 @@ from ._plotting import _explore_graph, _plot
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
-from ._utils import _evaluate_index, _neighbor_dict_to_edges, _sparse_to_arrays
+from ._utils import (
+    _evaluate_index,
+    _neighbor_dict_to_edges,
+    _resolve_islands,
+    _sparse_to_arrays,
+)
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
 
@@ -40,7 +45,7 @@ class Graph(SetOpsMixin):
     and its API is incomplete and unstable.
     """
 
-    def __init__(self, adjacency, transformation="O"):
+    def __init__(self, adjacency, transformation="O", is_sorted=False):
         """Weights base class based on adjacency list
 
         It is recommenced to use one of the ``from_*`` or ``build_*`` constructors
@@ -63,6 +68,14 @@ class Graph(SetOpsMixin):
             - **R** -- Row-standardization (global sum :math:`=n`)
             - **D** -- Double-standardization (global sum :math:`=1`)
             - **V** -- Variance stabilizing
+        is_sorted : bool, default False
+            ``adjacency`` capturing the graph needs to be canonically sorted to
+            initialize the class. The MultiIndex needs to be ordered i-->j
+            on both focal and neighbor levels according to the order of ids in the
+            original data from which the Graph is created. Sorting is performed by
+            default based on the order of unique values in the focal level. Set
+            ``is_sorted=True`` to skip this step if the adjacency is already canonically
+            sorted.
 
         """
         if not isinstance(adjacency, pd.Series):
@@ -91,9 +104,12 @@ class Graph(SetOpsMixin):
                 f"'transformation' needs to be one of {ALLOWED_TRANSFORMATIONS}. "
                 f"'{transformation}' was given instead."
             )
-        # adjacency always ordered i-->j on both levels
-        ids = adjacency.index.get_level_values(0).unique().values
-        adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
+
+        if not is_sorted:
+            # adjacency always ordered i-->j on both levels
+            ids = adjacency.index.get_level_values(0).unique().values
+            adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
+
         self._adjacency = adjacency
         self.transformation = transformation
 
@@ -132,7 +148,9 @@ class Graph(SetOpsMixin):
             libpysal.graph.Graph as a copy of the original
         """
         return Graph(
-            self._adjacency.copy(deep=deep), transformation=self.transformation
+            self._adjacency.copy(deep=deep),
+            transformation=self.transformation,
+            is_sorted=True,
         )
 
     @cached_property
@@ -261,7 +279,7 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(*_sparse_to_arrays(sparse, ids))
 
     @classmethod
-    def from_arrays(cls, focal_ids, neighbor_ids, weight):
+    def from_arrays(cls, focal_ids, neighbor_ids, weight, **kwargs):
         """Generate Graph from arrays of indices and weights of the same length
 
         The arrays needs to be sorted in a way ensuring that focal_ids.unique() is
@@ -275,6 +293,8 @@ class Graph(SetOpsMixin):
             neighbor indices
         weight : array-like
             weights
+        **kwargs
+            keyword arguments passed to the class constructor
 
         Returns
         -------
@@ -289,7 +309,8 @@ class Graph(SetOpsMixin):
                 index=pd.MultiIndex.from_arrays(
                     [focal_ids, neighbor_ids], names=["focal", "neighbor"]
                 ),
-            )
+            ),
+            **kwargs,
         )
 
         return w
@@ -698,7 +719,9 @@ class Graph(SetOpsMixin):
         adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
 
         return cls.from_arrays(
-            adjacency.index.values, adjacency.neighbor.values, adjacency.weight.values
+            adjacency.index.values,
+            adjacency.neighbor.values,
+            adjacency.weight.values,
         )
 
     @classmethod
@@ -915,7 +938,7 @@ class Graph(SetOpsMixin):
         standardized_adjacency = pd.Series(
             standardized, name="weight", index=self._adjacency.index
         )
-        return Graph(standardized_adjacency, transformation)
+        return Graph(standardized_adjacency, transformation, is_sorted=True)
 
     @cached_property
     def _components(self):
@@ -1337,6 +1360,45 @@ class Graph(SetOpsMixin):
             **kwargs,
         )
 
+    def subgraph(self, ids):
+        """Returns a subset of Graph containing only nodes specified in ids
+
+        The resulting subgraph contains only the nodes in ``ids`` and the edges
+        between them or zero-weight self-loops in case of isolates.
+
+        The order of ``ids`` reflects a new canonical order of the resulting
+        subgraph. This means ``ids`` should be equal to the index of the DataFrame
+        containing data linked to the graph to ensure alignment of sparse representation
+        of subgraph.
+
+        Parameters
+        ----------
+        ids : array-like
+            An array of node IDs to be retained
+
+        Returns
+        -------
+        Graph
+            A new Graph that is a subset of the original
+
+        Notes
+        -----
+        Unlike the implementation in ``networkx``, this creates a copy since
+        Graphs in ``libpysal`` are immutable.
+        """
+        masked_adj = self._adjacency[ids]
+        filtered_adj = masked_adj[
+            masked_adj.index.get_level_values("neighbor").isin(ids)
+        ]
+        return Graph.from_arrays(
+            *_resolve_islands(
+                filtered_adj.index.get_level_values("focal"),
+                filtered_adj.index.get_level_values("neighbor"),
+                ids,
+                filtered_adj.values,
+            )
+        )
+
 
 def _arrange_arrays(heads, tails, weights, ids=None):
     """
@@ -1385,4 +1447,4 @@ def read_parquet(path, **kwargs):
         deserialized Graph
     """
     adjacency, transformation = _read_parquet(path, **kwargs)
-    return Graph(adjacency, transformation)
+    return Graph(adjacency, transformation, is_sorted=True)
