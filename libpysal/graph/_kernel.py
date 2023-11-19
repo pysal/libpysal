@@ -254,7 +254,7 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
                 coincident="jitter",
             )
 
-        if (coincident == "clique") & (n_coincident > 0):
+        if (coincident == "clique"):
             heads, tails, weights = _sparse_to_arrays(
                 _knn(
                     coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise"
