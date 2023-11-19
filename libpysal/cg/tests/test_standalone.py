@@ -600,6 +600,6 @@ class TestDistanceMatrix:
         for i in range(0, len(points)):
             for j in range(i, len(points)):
                 x, y = points[i]
-                X, Y = points[j]
-                d = ((x - X) ** 2 + (y - Y) ** 2) ** (0.5)
+                _x, _y = points[j]
+                d = ((x - _x) ** 2 + (y - _y) ** 2) ** (0.5)
                 assert dist[i, j] == d

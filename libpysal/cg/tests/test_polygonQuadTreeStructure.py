@@ -1,4 +1,7 @@
 """locators Unittest."""
+
+# ruff: noqa: N999
+
 from ..polygonQuadTreeStructure import QuadTreeStructureSingleRing
 from ..shapes import Ring
 

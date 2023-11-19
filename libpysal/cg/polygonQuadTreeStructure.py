@@ -2,6 +2,9 @@
 Quad Tree Structure Class for PySAL_core/cg/shapes.Ring, PySAL_core/cg/shapes.Polygon
 This structure could speed up the determining of point in polygon process
 """
+
+# ruff: noqa: N999
+
 __author__ = "Hu Shao"
 
 import math
