@@ -8,7 +8,7 @@ import pytest
 import scipy.sparse
 
 from ... import examples
-from ...io.fileio import FileIO as psopen
+from ...io.fileio import FileIO
 from .. import util
 from ..contiguity import Rook
 from ..distance import KNN
@@ -102,7 +102,7 @@ class TestW:
         w = lat2W(3, 3)
         assert w.asymmetry() == []
         w.transform = "r"
-        assert not w.asymmetry() == []
+        assert w.asymmetry() != []
 
     def test_asymmetry_string_index(self):
         neighbors = {
@@ -427,8 +427,8 @@ class TestW:
         assert isinstance(sparse, scipy.sparse.coo_array)
 
     def test_sparse_fmt(self):
-        with pytest.raises(ValueError) as exc_info:
-            sparse = self.w_islands.to_sparse("dog")
+        with pytest.raises(ValueError):
+            self.w_islands.to_sparse("dog")
 
     def test_from_sparse(self):
         sparse = self.w_islands.to_sparse()
@@ -438,7 +438,7 @@ class TestW:
         assert w.neighbors[3] == [3]
 
 
-class Test_WSP_Back_To_W:
+class TestWSPBackToW:
     # Test to make sure we get back to the same W functionality
     def setup_method(self):
         self.w = Rook.from_shapefile(
@@ -528,7 +528,7 @@ class Test_WSP_Back_To_W:
         w = util.lat2W(3, 3)
         assert w.asymmetry() == []
         w.transform = "r"
-        assert not w.asymmetry() == []
+        assert w.asymmetry() != []
 
     def test_cardinalities(self):
         w = util.lat2W(3, 3)
@@ -742,7 +742,7 @@ class Test_WSP_Back_To_W:
 
 class TestWSP:
     def setup_method(self):
-        self.w = psopen(examples.get_path("sids2.gal")).read()
+        self.w = FileIO(examples.get_path("sids2.gal")).read()
         self.wsp = WSP(self.w.sparse, self.w.id_order)
         w3x3 = util.lat2W(3, 3)
         self.w3x3 = WSP(w3x3.sparse)

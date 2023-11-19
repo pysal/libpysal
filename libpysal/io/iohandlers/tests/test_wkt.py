@@ -4,7 +4,7 @@ from .... import examples as pysal_examples
 from ..wkt import WKTReader
 
 
-class Testtest_WKTReader:
+class TesttestWKTReader:
     def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("stl_hom.wkt")
         self.obj = WKTReader(test_file, "r")

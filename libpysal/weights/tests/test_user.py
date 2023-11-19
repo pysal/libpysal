@@ -4,7 +4,7 @@ import pytest
 
 from ... import examples
 from .. import user
-from ..contiguity import Rook, Voronoi
+from ..contiguity import Rook
 
 
 class Testuser:

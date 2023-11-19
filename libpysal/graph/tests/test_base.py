@@ -949,3 +949,20 @@ class TestBase:
         with_zero = graph.Graph(adj)
         expected = adj.drop([("Bronx", "Queens"), ("Queens", "Manhattan")])
         pd.testing.assert_series_equal(with_zero.eliminate_zeros()._adjacency, expected)
+
+    def test_subgraph(self):
+        knn = graph.Graph.build_knn(self.nybb.set_geometry(self.nybb.centroid), k=2)
+        sub = knn.subgraph(["Staten Island", "Bronx", "Brooklyn"])
+        assert sub < knn
+        expected = pd.Series(
+            [1, 0, 0],
+            name="weight",
+            index=pd.MultiIndex.from_arrays(
+                [
+                    ["Staten Island", "Bronx", "Brooklyn"],
+                    ["Brooklyn", "Bronx", "Brooklyn"],
+                ],
+                names=["focal", "neighbor"],
+            ),
+        )
+        pd.testing.assert_series_equal(expected, sub._adjacency, check_dtype=False)

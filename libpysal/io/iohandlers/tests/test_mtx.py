@@ -4,7 +4,7 @@ import tempfile
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..mtx import MtxIO
 
 
@@ -22,8 +22,9 @@ class TesttestMtxIO:
         w = self.obj.read()
         assert w.n == 49
         assert w.mean_neighbors == 4.7346938775510203
-        assert [0.33329999999999999, 0.33329999999999999, 0.33329999999999999] == \
-            list(w[1].values())
+        assert [0.33329999999999999, 0.33329999999999999, 0.33329999999999999] == list(
+            w[1].values()
+        )
         s0 = w.s0
         self.obj.seek(0)
         wsp = self.obj.read(sparse=True)
@@ -43,10 +44,10 @@ class TesttestMtxIO:
             f = tempfile.NamedTemporaryFile(suffix=".mtx")
             fname = f.name
             f.close()
-            o = psopen(fname, "w")
+            o = FileIO(fname, "w")
             o.write(w)
             o.close()
-            wnew = psopen(fname, "r").read(sparse=i)
+            wnew = FileIO(fname, "r").read(sparse=i)
             if i:
                 assert wnew.s0 == w.s0
             else:

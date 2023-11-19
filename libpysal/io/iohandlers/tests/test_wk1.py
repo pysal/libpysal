@@ -4,11 +4,11 @@ import tempfile
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..wk1 import Wk1IO
 
 
-class Testtest_Wk1IO:
+class TesttestWk1IO:
     def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("spat-sym-us.wk1")
         self.obj = Wk1IO(test_file, "r")
@@ -35,10 +35,9 @@ class Testtest_Wk1IO:
         f = tempfile.NamedTemporaryFile(suffix=".wk1")
         fname = f.name
         f.close()
-        o = psopen(fname, "w")
+        o = FileIO(fname, "w")
         o.write(w)
         o.close()
-        wnew = psopen(fname, "r").read()
+        wnew = FileIO(fname, "r").read()
         assert wnew.pct_nonzero == w.pct_nonzero
         os.remove(fname)
-

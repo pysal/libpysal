@@ -4,11 +4,11 @@ import tempfile
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..stata_txt import StataTextIO
 
 
-class Testtest_StataTextIO:
+class TesttestStataTextIO:
     def setup_method(self):
         self.test_file_sparse = test_file_sparse = pysal_examples.get_path(
             "stata_sparse.txt"
@@ -48,12 +48,12 @@ class Testtest_StataTextIO:
             f = tempfile.NamedTemporaryFile(suffix=".txt")
             fname = f.name
             f.close()
-            o = psopen(fname, "w", "stata_text")
+            o = FileIO(fname, "w", "stata_text")
             if obj == self.obj_sparse:
                 o.write(w)
             else:
                 o.write(w, matrix_form=True)
             o.close()
-            wnew = psopen(fname, "r", "stata_text").read()
+            wnew = FileIO(fname, "r", "stata_text").read()
             assert wnew.pct_nonzero == w.pct_nonzero
             os.remove(fname)

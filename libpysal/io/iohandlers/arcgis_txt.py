@@ -1,9 +1,10 @@
 import os.path
-from . import gwt
+from warnings import warn
+
 from ...weights import W
 from ...weights.util import remap_ids
 from .. import fileio
-from warnings import warn
+from . import gwt
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["ArcGISTextIO"]
@@ -15,7 +16,7 @@ class ArcGISTextIO(gwt.GwtIO):
     Statistics tools. This format is a simple text file with ASCII encoding and
     can be directly used with the tools under the category of "Mapping Clusters."
     But, it cannot be used with the "Generate Spatial Weights Matrix" tool.
-    
+
     The first line of the ArcGIS text file is a header including the name of
     a data column that holded the ID variable in the original source data table.
     After this header line, it includes three data columns for origin ID,
@@ -26,7 +27,7 @@ class ArcGISTextIO(gwt.GwtIO):
     numbers, instead of original IDs.
 
     An exemplary structure of an ArcGIS text file is as follows:
-    
+
     [Line 1]    StationID
     [Line 2]    1    1    0.0
     [Line 3]    1    2    0.1
@@ -36,7 +37,7 @@ class ArcGISTextIO(gwt.GwtIO):
     [Line 7]    3    1    0.16667
     [Line 8]    3    2    0.06667
     [Line 9]    3    3    0.0
-    
+
 
     As shown in the above example, this file format allows explicit specification
     of weights for self-neighbors. When no entry is available for self-neighbors,
@@ -49,7 +50,7 @@ class ArcGISTextIO(gwt.GwtIO):
 
     Notes
     -----
-    
+
     When there is a ``.dbf`` file whose name is identical to the name of the source
     text file, `ArcGISTextIO` checks the data type of the ID data column and uses it
     for reading and writing the text file. Otherwise, it considers IDs are strings.
@@ -65,20 +66,20 @@ class ArcGISTextIO(gwt.GwtIO):
 
     def _read(self):
         """Read in an ArcGIS text file.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         TypeError
             Raised when the IDs are not integers.
-        
+
         Examples
         --------
 
@@ -126,15 +127,15 @@ class ArcGISTextIO(gwt.GwtIO):
                     msg = "ID_VAR:'%s' was in in the DBF header, "
                     msg += "proceeding with unordered string IDs."
                     msg = msg % id_var
-                    warn(msg, RuntimeWarning)
+                    warn(msg, RuntimeWarning, stacklevel=2)
             else:
                 msg = "DBF relating to ArcGIS TEXT was not found, "
                 msg += "proceeding with unordered string IDs."
-                warn(msg, RuntimeWarning)
-        except:
+                warn(msg, RuntimeWarning, stacklevel=2)
+        except:  # noqa E722
             msg = "Exception occurred will reading DBF, "
             msg += "proceeding with unordered string IDs."
-            warn(msg, RuntimeWarning)
+            warn(msg, RuntimeWarning, stacklevel=2)
 
         if (id_type is not int) or (id_order and type(id_order)[0] is not int):
             raise TypeError("The data type for IDs should be integer.")
@@ -158,7 +159,7 @@ class ArcGISTextIO(gwt.GwtIO):
 
         return w
 
-    def write(self, obj, useIdIndex=False):
+    def write(self, obj, useIdIndex=False):  # noqa N803
         """
 
         Parameters
@@ -174,7 +175,7 @@ class ArcGISTextIO(gwt.GwtIO):
             Raised when the IDs in input ``obj`` are not integers.
         TypeError
             Raised when the input ``obj`` is not a PySAL `W`.
-        
+
         Examples
         --------
 
@@ -217,7 +218,7 @@ class ArcGISTextIO(gwt.GwtIO):
         Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
-        
+
         """
 
         self._complain_ifclosed(self.closed)

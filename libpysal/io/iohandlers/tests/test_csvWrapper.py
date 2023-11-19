@@ -1,10 +1,8 @@
-from sys import version as V
+# ruff: noqa: N999
 
 from .... import examples as pysal_examples
 from ...util import WKTParser
 from .. import csvWrapper
-
-PY3 = int(V[0]) > 2
 
 
 class TesttestCsvWrapper:
@@ -38,10 +36,10 @@ class TesttestCsvWrapper:
         objs = self.obj.read()
         assert len(objs) == 78
         self.obj.seek(0)
-        objsB = list(self.obj)
-        assert len(objsB) == 78
-        for rowA, rowB in zip(objs, objsB):
-            assert rowA == rowB
+        objs_b = list(self.obj)
+        assert len(objs_b) == 78
+        for row_a, row_b in zip(objs, objs_b, strict=True):
+            assert row_a == row_b
 
     def test_casting(self):
         self.obj.cast("WKT", WKTParser())
@@ -63,12 +61,8 @@ class TesttestCsvWrapper:
             (-89.4927978515625, 39.980186462402344),
             (-89.585220336914062, 39.978794097900391),
         ]
-        if PY3:
-            for i, pt in enumerate(self.obj.__next__()[0].vertices):
-                assert pt[:] == verts[i]
-        else:
-            for i, pt in enumerate(self.obj.next()[0].vertices):
-                assert pt[:] == verts[i]
+        for i, pt in enumerate(self.obj.__next__()[0].vertices):
+            assert pt[:] == verts[i]
 
     def test_by_col(self):
         for field in self.obj.header:

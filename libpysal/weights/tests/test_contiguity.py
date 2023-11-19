@@ -19,14 +19,14 @@ class ContiguityMixin:
     f.seek(0)  # go back to head of file
     cls = object  # class constructor
     known_wi = None  # index of known w entry to compare
-    known_w = dict()  # actual w entry
+    known_w = {}  # actual w entry
     known_name = known_wi
     known_namedw = known_w
     idVariable = None  # id variable from file or column
     known_wspi_da = None
-    known_wsp_da = dict()
+    known_wsp_da = {}
     known_wi_da = None
-    known_w_da = dict()
+    known_w_da = {}
     try:
         from .. import raster
 

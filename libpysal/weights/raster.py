@@ -1,23 +1,26 @@
-from .util import lat2SW
-from .weights import WSP, W
-import numpy as np
-from warnings import warn
+# ruff: noqa: B006, N802
+
 import os
 import sys
+from warnings import warn
+
+import numpy as np
 from scipy import sparse
+
+from .util import lat2SW
+from .weights import WSP, W
 
 if os.path.basename(sys.argv[0]) in ("pytest", "py.test"):
 
-    def jit(*dec_args, **dec_kwargs):
+    def jit(*dec_args, **dec_kwargs):  # noqa ARG001
         """
         decorator mimicking numba.jit
         """
 
-        def intercepted_function(f, *f_args, **f_kwargs):
+        def intercepted_function(f, *f_args, **f_kwargs):  # noqa ARG001
             return f
 
         return intercepted_function
-
 
 else:
     from ..common import jit
@@ -51,7 +54,8 @@ def da2W(
     coords_labels : dictionary
         Pass dimension labels for coordinates and layers if they do not
         belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+        e.g. coords_labels = {"y_label": "latitude",
+        "x_label": "longitude", "z_label": "year"}
         Default is {} empty dictionary.
     k : int
         Order of contiguity, this will select all neighbors upto kth order.
@@ -78,7 +82,6 @@ def da2W(
 
     Examples
     --------
-
     >>> from libpysal.weights.raster import da2W, testDataArray
     >>> da = testDataArray().rename(
             {'band': 'layer', 'x': 'longitude', 'y': 'latitude'})
@@ -119,7 +122,8 @@ def da2W(
         "xarray.DataArray (raster) object. This computation "
         "can be very slow and not scale well. It is recommended, "
         "if possible, to instead build WSP object, which is more "
-        "efficient and faster. You can do this by using da2WSP method."
+        "efficient and faster. You can do this by using da2WSP method.",
+        stacklevel=2,
     )
     wsp = da2WSP(da, criterion, z_value, coords_labels, k, include_nodata, n_jobs)
     w = wsp.to_W(**kwargs)
@@ -154,7 +158,8 @@ def da2WSP(
     coords_labels : dictionary
         Pass dimension labels for coordinates and layers if they do not
         belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+        e.g. coords_labels = {"y_label": "latitude",
+        "x_label": "longitude", "z_label": "year"}
         Default is {} empty dictionary.
     k : int
         Order of contiguity, this will select all neighbors upto kth order.
@@ -225,7 +230,7 @@ def da2WSP(
         da = da[slice_dict]
 
     ser = da.to_series()
-    dtype = np.int32 if (shape[0] * shape[1]) < 46340 ** 2 else np.int64
+    dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
     if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
         mask = (ser != da.attrs["nodatavals"][0]).to_numpy()
         ids = np.where(mask)[0]
@@ -238,12 +243,13 @@ def da2WSP(
     n = len(ids)
 
     try:
-        import numba
+        import numba  # noqa F401
     except (ModuleNotFoundError, ImportError):
         warn(
             "numba cannot be imported, parallel processing "
             "and include_nodata functionality will be disabled. "
-            "falling back to slower method"
+            "falling back to slower method",
+            stacklevel=2,
         )
         include_nodata = False
         # Fallback method to build sparse matrix
@@ -257,7 +263,7 @@ def da2WSP(
 
         if n_jobs != 1:
             try:
-                import joblib
+                import joblib  # noqa F401
             except (ModuleNotFoundError, ImportError):
                 warn(
                     f"Parallel processing is requested (n_jobs={n_jobs}),"
@@ -292,7 +298,7 @@ def da2WSP(
     # then eliminate zeros from the data. This changes the
     # sparcity of the csr_matrix !!
     if k > 1 and not include_nodata:
-        sw = sum(map(lambda x: sw ** x, range(1, k + 1)))
+        sw = sum(sw**x for x in range(1, k + 1))
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
@@ -332,7 +338,6 @@ def w2da(data, w, attrs={}, coords=None):
     >>> w = da2W(da, z_value=2)
     >>> data = np.random.randint(0, 255, len(w.index))
     >>> da1 = w2da(data, w)
-
     """
     if not isinstance(w, W):
         raise TypeError("w must be an instance of weights.W")
@@ -340,7 +345,8 @@ def w2da(data, w, attrs={}, coords=None):
         da = _index2da(data, w.index, attrs, coords)
     else:
         raise AttributeError(
-            "This method requires `w` object to include `index` attribute that is built as a `pandas.MultiIndex` object."
+            "This method requires `w` object to include `index` "
+            "attribute that is built as a `pandas.MultiIndex` object."
         )
     return da
 
@@ -375,7 +381,6 @@ def wsp2da(data, wsp, attrs={}, coords=None):
     >>> wsp = da2WSP(da, z_value=2)
     >>> data = np.random.randint(0, 255, len(wsp.index))
     >>> da1 = w2da(data, wsp)
-
     """
     if not isinstance(wsp, WSP):
         raise TypeError("wsp must be an instance of weights.WSP")
@@ -383,7 +388,8 @@ def wsp2da(data, wsp, attrs={}, coords=None):
         da = _index2da(data, wsp.index, attrs, coords)
     else:
         raise AttributeError(
-            "This method requires `wsp` object to include `index` attribute that is built as a `pandas.MultiIndex` object."
+            "This method requires `wsp` object to include `index` "
+            "attribute that is built as a `pandas.MultiIndex` object."
         )
     return da
 
@@ -415,7 +421,9 @@ def testDataArray(shape=(3, 4, 4), time=False, rand=False, missing_vals=True):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError("xarray must be installed to use this functionality")
+        raise ModuleNotFoundError(
+            "xarray must be installed to use this functionality"
+        ) from None
     if not rand:
         np.random.seed(12345)
     coords = {}
@@ -457,7 +465,8 @@ def _da_checker(da, z_value, coords_labels):
     coords_labels : dictionary
         Pass dimension labels for coordinates and layers if they do not
         belong to default dimensions, which are (band/time, y/lat, x/lon)
-        e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+        e.g. coords_labels = {"y_label": "latitude","
+        "x_label": "longitude", "z_label": "year"}
         Default is {} empty dictionary.
 
     Returns
@@ -470,7 +479,9 @@ def _da_checker(da, z_value, coords_labels):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError("xarray must be installed to use this functionality")
+        raise ModuleNotFoundError(
+            "xarray must be installed to use this functionality"
+        ) from None
 
     if not isinstance(da, DataArray):
         raise TypeError("da must be an instance of xarray.DataArray")
@@ -502,7 +513,10 @@ def _da_checker(da, z_value, coords_labels):
         z_id = 1
         if z_value is None:
             if da.sizes[def_labels["z_label"]] != 1:
-                warn("Multiple layers detected. Using first layer as default.")
+                warn(
+                    "Multiple layers detected. Using first layer as default.",
+                    stacklevel=2,
+                )
         else:
             z_id += tuple(da[def_labels["z_label"]]).index(z_value)
     else:
@@ -533,7 +547,9 @@ def _index2da(data, index, attrs, coords):
     try:
         from xarray import DataArray
     except ImportError:
-        raise ModuleNotFoundError("xarray must be installed to use this functionality")
+        raise ModuleNotFoundError(
+            "xarray must be installed to use this functionality"
+        ) from None
 
     data = np.array(data).flatten()
     idx = index
@@ -549,13 +565,13 @@ def _index2da(data, index, attrs, coords):
             else:
                 min_data = np.min(data)
                 fill_value = min_data - 1 if min_data < 0 else -1
-                attrs["nodatavals"] = tuple([fill_value])
+                attrs["nodatavals"] = tuple([fill_value])  # noqa C409
             data_complete = np.full(shape, fill_value, data.dtype)
         else:
             data_complete = np.empty(shape, data.dtype)
         data_complete[indexer] = data
         coords = {}
-        for dim, lev in zip(dims, idx.levels):
+        for dim, lev in zip(dims, idx.levels, strict=True):
             coords[dim] = lev.to_numpy()
     else:
         fill = attrs["nodatavals"][0] if "nodatavals" in attrs else 0
@@ -851,7 +867,7 @@ def _parSWbuilder(
             delayed(_compute_chunk)(nrows, ncols, *ids, id_map, criterion, k, dtype)
             for ids in chunk
         )
-    rows, cols = zip(*worker_out)
+    rows, cols = zip(*worker_out, strict=True)
     rows = np.concatenate(rows)
     cols = np.concatenate(cols)
     data = np.ones_like(rows, dtype=np.int8)

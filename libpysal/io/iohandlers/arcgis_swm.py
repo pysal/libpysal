@@ -1,8 +1,12 @@
-import numpy as np
+# ruff: noqa: N802, N806, N815, SIM115
+
 from struct import pack, unpack
-from .. import fileio
+
+import numpy as np
+
 from ...weights import W
 from ...weights.util import remap_ids
+from .. import fileio
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["ArcGISSwmIO"]
@@ -13,7 +17,7 @@ class ArcGISSwmIO(fileio.FileIO):
     Spatial weights objects in the ArcGIS ``.swm`` format are used in ArcGIS
     Spatial Statistics tools. Particularly, this format can be directly used
     with the tools under the category of Mapping Clusters.
-    
+
     The values for``ORG_i`` and ``DST_i`` should be integers, as ArcGIS Spatial
     Statistics tools support only unique integer IDs. For the case where a
     weights object uses non-integer IDs, `ArcGISSwmIO` allows users to use
@@ -22,22 +26,22 @@ class ArcGISSwmIO(fileio.FileIO):
 
     .. table:: ArcGIS SWM Components
     ============ ============ ==================================== ================================
-        Part      Data type           Description                               Length             
+        Part      Data type           Description                               Length
     ============ ============ ==================================== ================================
-     ID_VAR_NAME  ASCII TEXT  ID variable name                     Flexible (Up to the 1st ;)      
+     ID_VAR_NAME  ASCII TEXT  ID variable name                     Flexible (Up to the 1st ;)
      ESRI_SRS     ASCII TEXT  ESRI spatial reference system        Flexible (Btw the 1st ; and \\n)
-     NO_OBS       l.e. int    Number of observations               4                               
-     ROW_STD      l.e. int    Whether or not row-standardized      4                               
-     WGT_i                                                                                         
-     ORG_i        l.e. int    ID of observaiton i                  4                               
-     NO_NGH_i     l.e. int    Number of neighbors for obs. i (m)   4                               
-     NGHS_i                                                                                        
-     DSTS_i       l.e. int    IDs of all neighbors of obs. i       4*m                             
-     WS_i         l.e. float  Weights for obs. i and its neighbors 8*m                             
-     W_SUM_i      l.e. float  Sum of weights for "                 8                               
+     NO_OBS       l.e. int    Number of observations               4
+     ROW_STD      l.e. int    Whether or not row-standardized      4
+     WGT_i
+     ORG_i        l.e. int    ID of observaiton i                  4
+     NO_NGH_i     l.e. int    Number of neighbors for obs. i (m)   4
+     NGHS_i
+     DSTS_i       l.e. int    IDs of all neighbors of obs. i       4*m
+     WS_i         l.e. float  Weights for obs. i and its neighbors 8*m
+     W_SUM_i      l.e. float  Sum of weights for "                 8
     ============ ============ ==================================== ================================
 
-    """
+    """  # noqa E501
 
     FORMATS = ["swm"]
     MODES = ["r", "w"]
@@ -66,7 +70,7 @@ class ArcGISSwmIO(fileio.FileIO):
 
     srs = property(fget=_get_srs, fset=_set_srs)
 
-    def read(self, n=-1):
+    def read(self, n=-1):  # noqa ARG002
         self._complain_ifclosed(self.closed)
         return self._read()
 
@@ -77,17 +81,17 @@ class ArcGISSwmIO(fileio.FileIO):
 
     def _read(self):
         """Read an ArcGIS ``.swm`` file.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -131,17 +135,17 @@ class ArcGISSwmIO(fileio.FileIO):
 
     def read_old_version(self, header):
         """Read the old version of ArcGIS(<10.1) ``.swm`` file.
-        
+
         Parameters
         ----------
         header : str
             The first line of the ``.swm`` file.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         id_var, srs = header[:-1].split(";")
@@ -152,7 +156,7 @@ class ArcGISSwmIO(fileio.FileIO):
         neighbors = {}
         weights = {}
 
-        for i in range(no_obs):
+        for _ in range(no_obs):
             origin, no_nghs = tuple(unpack("<2l", self.file.read(8)))
             neighbors[origin] = []
             weights[origin] = []
@@ -164,7 +168,7 @@ class ArcGISSwmIO(fileio.FileIO):
                 weights[origin] = list(
                     unpack("<%id" % no_nghs, self.file.read(8 * no_nghs))
                 )
-                w_sum = list(unpack("<d", self.file.read(8)))[0]
+                _ = list(unpack("<d", self.file.read(8)))[0]
 
         self.pos += 1
 
@@ -175,19 +179,19 @@ class ArcGISSwmIO(fileio.FileIO):
     def read_new_version(self, header_line):
         """Read the new version of ArcGIS(<10.1) ``.swm`` file, which contains
         more parameters and records weights in two ways, fixed or variable.
-        
+
         Parameters
         ----------
         header_line : str
             The first line of the ``.swm`` file, which contains a lot of
             parameters. The parameters are divided by semicolons (';') and
             the key-value of each parameter is divided by at marks ('@').
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         headerDict = {}
@@ -205,12 +209,11 @@ class ArcGISSwmIO(fileio.FileIO):
             fixedWeights = headerDict["FIXEDWEIGHTS"].upper().strip() == "TRUE"
 
         no_obs, row_std = tuple(unpack("<2l", self.file.read(8)))
-        is_row_standard = row_std == 1
 
         neighbors = {}
         weights = {}
 
-        for i in range(no_obs):
+        for _ in range(no_obs):
             origin, no_nghs = tuple(unpack("<2l", self.file.read(8)))
             neighbors[origin] = []
             weights[origin] = []
@@ -226,7 +229,7 @@ class ArcGISSwmIO(fileio.FileIO):
                     weights[origin] = list(
                         unpack("<%id" % no_nghs, self.file.read(8 * no_nghs))
                     )
-                w_sum = list(unpack("<d", self.file.read(8)))[0]
+                _ = list(unpack("<d", self.file.read(8)))[0]
 
         self.pos += 1
 
@@ -234,7 +237,7 @@ class ArcGISSwmIO(fileio.FileIO):
 
         return w
 
-    def write(self, obj, useIdIndex=False):
+    def write(self, obj, useIdIndex=False):  # noqa N803
         """Writes a spatial weights matrix data file in ``.swm`` format.
 
         Parameters
@@ -250,7 +253,7 @@ class ArcGISSwmIO(fileio.FileIO):
             Raised when the input ``obj`` is not a PySAL `W`.
         TypeError
             Raised when the IDs in input ``obj`` are not integers.
-        
+
         Examples
         --------
 
@@ -296,7 +299,7 @@ class ArcGISSwmIO(fileio.FileIO):
         Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -304,14 +307,14 @@ class ArcGISSwmIO(fileio.FileIO):
         if not issubclass(type(obj), W):
             raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
 
-        if not (type(obj.id_order[0]) in (np.int32, np.int64, int)) and not useIdIndex:
+        if (type(obj.id_order[0]) not in (np.int32, np.int64, int)) and not useIdIndex:
             raise TypeError("ArcGIS SWM files support only integer IDs.")
 
         if useIdIndex:
             id2i = obj.id2i
             obj = remap_ids(obj, id2i)
 
-        unk = str("%s;%s\n" % (self.varName, self.srs)).encode()
+        unk = str(f"{self.varName};{self.srs}\n").encode()
         self.file.write(unk)
         self.file.write(pack("<l", obj.n))
         self.file.write(pack("<l", obj.transform.upper() == "R"))
@@ -320,8 +323,8 @@ class ArcGISSwmIO(fileio.FileIO):
             self.file.write(pack("<l", obs))
             no_nghs = len(obj.weights[obs])
             self.file.write(pack("<l", no_nghs))
-            self.file.write(pack("<%il" % no_nghs, *obj.neighbors[obs]))
-            self.file.write(pack("<%id" % no_nghs, *obj.weights[obs]))
+            self.file.write(pack(f"<{no_nghs}l", *obj.neighbors[obs]))
+            self.file.write(pack(f"<{no_nghs}d", *obj.weights[obs]))
             self.file.write(pack("<d", sum(obj.weights[obs])))
 
         self.pos += 1
