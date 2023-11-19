@@ -1417,7 +1417,7 @@ class Graph(SetOpsMixin):
         isolates = self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
         # substract isolates from mask of zeros
         zeros = (self._adjacency == 0) != isolates
-        return Graph(self._adjacency[~zeros])
+        return Graph(self._adjacency[~zeros], is_sorted=True)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
