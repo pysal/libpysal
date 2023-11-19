@@ -99,7 +99,7 @@ def min_threshold_dist_from_shapefile(shapefile, radius=None, p=2):
     return min_threshold_distance(points, p)
 
 
-def build_lattice_shapefile(nrows, ncols, outFileName):  # noqa N803
+def build_lattice_shapefile(nrows, ncols, outFileName):  # noqa: N803
     """
     Build a lattice shapefile with nrows rows and ncols cols.
 

@@ -41,7 +41,7 @@ class ArcGISSwmIO(fileio.FileIO):
      W_SUM_i      l.e. float  Sum of weights for "                 8
     ============ ============ ==================================== ================================
 
-    """  # noqa E501
+    """  # noqa: E501
 
     FORMATS = ["swm"]
     MODES = ["r", "w"]
@@ -70,7 +70,7 @@ class ArcGISSwmIO(fileio.FileIO):
 
     srs = property(fget=_get_srs, fset=_set_srs)
 
-    def read(self, n=-1):  # noqa ARG002
+    def read(self, n=-1):  # noqa: ARG002
         self._complain_ifclosed(self.closed)
         return self._read()
 
@@ -237,7 +237,7 @@ class ArcGISSwmIO(fileio.FileIO):
 
         return w
 
-    def write(self, obj, useIdIndex=False):  # noqa N803
+    def write(self, obj, useIdIndex=False):  # noqa: N803
         """Writes a spatial weights matrix data file in ``.swm`` format.
 
         Parameters

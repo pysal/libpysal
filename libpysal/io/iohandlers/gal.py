@@ -21,7 +21,7 @@ class GalIO(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
-    def read(self, n=-1, sparse=False):  # noqa ARG002
+    def read(self, n=-1, sparse=False):  # noqa: ARG002
         """Read in a ``.gal`` file.
 
         Parameters

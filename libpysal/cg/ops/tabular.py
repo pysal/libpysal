@@ -127,13 +127,13 @@ def dissolve(df, by="", **groupby_kws):
     return union(df, by=by, **groupby_kws)
 
 
-def clip(return_exterior=False):  # noqa ARG001
+def clip(return_exterior=False):  # noqa: ARG001
     # return modified entries of the df that are within an envelope
     # provide an option to null out the geometries instead of not returning
     raise NotImplementedError
 
 
-def erase(return_interior=True):  # noqa ARG001
+def erase(return_interior=True):  # noqa: ARG001
     # return modified entries of the df that are outside of an envelope
     # provide an option to null out the geometries instead of not returning
     raise NotImplementedError

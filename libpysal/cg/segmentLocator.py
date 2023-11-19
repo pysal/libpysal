@@ -228,7 +228,7 @@ class SegmentGrid:
         self._kd2 = None
         return True
 
-    def remove(self, segment):  # noqa ARG002
+    def remove(self, segment):  # noqa: ARG002
         self._kd = None
         self._kd2 = None
         pass
@@ -313,7 +313,7 @@ class SegmentGrid:
                 cols[idx],
             )  # (i,j)'s of the filled grid cells within radius.
 
-            for t in zip(rows, cols):  # noqa B905
+            for t in zip(rows, cols):  # noqa: B905
                 possibles.update(self.hash[t])
 
             if DEBUG:
@@ -363,7 +363,7 @@ def combo_check(bins, segments, qpoints):
             DEBUG = False
 
 
-def brute_check(segments, qpoints):  # noqa ARG001
+def brute_check(segments, qpoints):  # noqa: ARG001
     t0 = time.time()
     g2 = BruteSegmentLocator(segs)
     t1 = time.time()
@@ -417,7 +417,7 @@ def binSizeTest():
         qpts = random_points(q)
         for col, bins in enumerate(binSizes):
             print("N, Bins:", n, bins)
-            qps = test_grid(bins, segs, qpts)  # noqa F821
+            qps = test_grid(bins, segs, qpts)  # noqa: F821
             results[row, col] = qps
     return results
 

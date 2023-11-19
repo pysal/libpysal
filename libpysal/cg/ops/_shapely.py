@@ -165,9 +165,9 @@ def unary_union(df, geom_col="geometry", **groupby_kws):
     level = groupby_kws.pop("level", None)
     if by is not None or level is not None:
         df = df.groupby(**groupby_kws)
-        out = df[geom_col].apply(_cascaded_union)  # noqa F821
+        out = df[geom_col].apply(_cascaded_union)  # noqa: F821
     else:
-        out = _cascaded_union(df[geom_col].tolist())  # noqa F821
+        out = _cascaded_union(df[geom_col].tolist())  # noqa: F821
     return out
 
 

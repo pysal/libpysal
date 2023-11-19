@@ -167,7 +167,7 @@ def linear2arcdist(linear_dist, radius=RADIUS_EARTH_KM):
     return arc_dist
 
 
-def toXYZ(pt):  # noqa N802
+def toXYZ(pt):  # noqa: N802
     """Convert a point's latitude and longitude to x,y,z.
 
     Parameters
@@ -190,7 +190,7 @@ def toXYZ(pt):  # noqa N802
     return x, y, z
 
 
-def toLngLat(xyz):  # noqa N802
+def toLngLat(xyz):  # noqa: N802
     """Convert a point's x,y,z to latitude and longitude.
 
     Parameters

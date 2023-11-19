@@ -253,7 +253,7 @@ class Rook(W):
         coords_labels={},
         k=1,
         include_nodata=False,
-        n_jobs=1,  # noqa ARG003
+        n_jobs=1,  # noqa: ARG003
         sparse=True,
         **kwargs,
     ):
@@ -542,7 +542,7 @@ class Queen(W):
         coords_labels={},
         k=1,
         include_nodata=False,
-        n_jobs=1,  # noqa ARG003
+        n_jobs=1,  # noqa: ARG003
         sparse=True,
         **kwargs,
     ):

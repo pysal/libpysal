@@ -573,7 +573,7 @@ def get_rectangle_rectangle_intersection(r0, r1, checkOverlap=True):
     >>> ri = get_rectangle_rectangle_intersection(r0,r1)
     >>> ri[:] == r1[:]
     True
-    """  # noqa E501
+    """  # noqa: E501
 
     intersection = None
     common_bb = True
@@ -634,7 +634,7 @@ def get_polygon_point_dist(poly, pt):
         part_prox = []
         for vertices in poly._vertices:
             vx_range = range(-1, len(vertices) - 1)
-            seg = lambda i: LineSegment(vertices[i], vertices[i + 1])  # noqa B023
+            seg = lambda i: LineSegment(vertices[i], vertices[i + 1])  # noqa: B023
             _min_dist = min([get_segment_point_dist(seg(i), pt)[0] for i in vx_range])
             part_prox.append(_min_dist)
         dist = min(part_prox)

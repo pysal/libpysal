@@ -106,7 +106,7 @@ class TestContiguityWeights:
         shplyneighbs = ContiguityWeightsLists(gdf.geometry.tolist(), QUEEN)
         assert pysalneighbs.w == shplyneighbs.w
 
-    def build_w(self, shapefile, type_, idVariable=None):  # noqa N803
+    def build_w(self, shapefile, type_, idVariable=None):  # noqa: N803
         """Building 2 W's the hard way. We need to do this so we
         can test both rtree and binning
         """
