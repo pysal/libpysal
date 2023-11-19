@@ -6,7 +6,7 @@ Helper functions for computational geometry in PySAL.
 __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow"
 __credits__ = "Copyright (c) 2005-2009 Sergio J. Rey"
 
-# ruff: noqa: F403, F405
+# ruff: noqa: F403, F405, N803
 
 
 import copy
@@ -406,7 +406,7 @@ def get_polygon_point_intersect(poly, pt):
 
     def pt_lies_on_part_boundary(p, vx):
         vx_range = range(-1, len(vx) - 1)
-        seg = lambda i: LineSegment(vx[i], vx[i + 1])
+        seg = lambda i: LineSegment(vx[i], vx[i + 1])  # noqa: E731
         return [i for i in vx_range if get_segment_point_dist(seg(i), p)[0] == 0] != []
 
     ret = None
@@ -1155,13 +1155,13 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
     # get_rectangle_rectangle_intersection inlined for speed.
     r0 = poly1.bounding_box
     r1 = poly2.bounding_box
-    wLeft = max(r0.left, r1.left)
-    wLower = max(r0.lower, r1.lower)
-    wRight = min(r0.right, r1.right)
-    wUpper = min(r0.upper, r1.upper)
+    w_left = max(r0.left, r1.left)
+    w_lower = max(r0.lower, r1.lower)
+    w_right = min(r0.right, r1.right)
+    w_upper = min(r0.upper, r1.upper)
 
-    segmentsA = set()
-    common = list()
+    segments_a = set()
+    common = []
 
     for part in poly1.parts + [p for p in poly1.holes if p]:
         if part[0] != part[-1]:  # not closed
@@ -1172,14 +1172,14 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
             # inlining point_touches_rectangle for speed
             x, y = a
             # check if point a is in the bounding box intersection
-            if x >= wLeft and x <= wRight and y >= wLower and y <= wUpper:
+            if x >= w_left and x <= w_right and y >= w_lower and y <= w_upper:
                 x, y = b
                 # check if point b is in the bounding box intersection
-                if x >= wLeft and x <= wRight and y >= wLower and y <= wUpper:
+                if x >= w_left and x <= w_right and y >= w_lower and y <= w_upper:
                     if a > b:
-                        segmentsA.add((b, a))
+                        segments_a.add((b, a))
                     else:
-                        segmentsA.add((a, b))
+                        segments_a.add((a, b))
             a = b
 
     _ret_bool = False
@@ -1192,11 +1192,11 @@ def get_shared_segments(poly1, poly2, bool_ret=False):
         for b in islice(part, 1, None):
             # inlining point_touches_rectangle for speed
             x, y = a
-            if x >= wLeft and x <= wRight and y >= wLower and y <= wUpper:
+            if x >= w_left and x <= w_right and y >= w_lower and y <= w_upper:
                 x, y = b
-                if x >= wLeft and x <= wRight and y >= wLower and y <= wUpper:
+                if x >= w_left and x <= w_right and y >= w_lower and y <= w_upper:
                     seg = (b, a) if a > b else (a, b)
-                    if seg in segmentsA:
+                    if seg in segments_a:
                         common.append(LineSegment(*seg))
                         if bool_ret:
                             _ret_bool = True
@@ -1232,7 +1232,7 @@ def distance_matrix(X, p=2.0, threshold=5e7):
 
     Returns
     -------
-    D : numpy.ndarray
+    d : numpy.ndarray
         An n by :math:`m` :math:`p`-norm distance matrix.
 
     Raises
@@ -1280,18 +1280,18 @@ def distance_matrix(X, p=2.0, threshold=5e7):
     n, k = X.shape
 
     if (n**2) * 32 > threshold:
-        D = scipy.spatial.distance_matrix(X, X, p)
+        d = scipy.spatial.distance_matrix(X, X, p)
     else:
-        M = np.ones((n, n))
-        D = np.zeros((n, n))
+        m = np.ones((n, n))
+        d = np.zeros((n, n))
         for col in range(k):
             x = X[:, col]
-            xM = x * M
-            dx = xM - xM.T
+            x_m = x * m
+            dx = x_m - x_m.T
             if p % 2 != 0:
                 dx = np.abs(dx)
             dx2 = dx**p
-            D += dx2
-        D = D ** (1.0 / p)
+            d += dx2
+        d = d ** (1.0 / p)
 
-    return D
+    return d

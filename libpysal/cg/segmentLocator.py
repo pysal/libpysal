@@ -1,4 +1,4 @@
-# ruff: noqa: A001, A002, B028, N801, N802
+# ruff: noqa: A002, N802, N806, N999
 
 import math
 import random
@@ -30,7 +30,7 @@ class BruteSegmentLocator:
 
 class SegmentLocator:
     def __init__(self, segments, nbins=500):
-        warnings.warn("SegmentLocator " + dep_msg, FutureWarning)
+        warnings.warn("SegmentLocator " + dep_msg, FutureWarning, stacklevel=2)
         self.data = segments
         if hasattr(segments, "bounding_box"):
             bbox = segments.bounding_box
@@ -52,9 +52,11 @@ class SegmentLocator:
         return possibles[numpy.argmin(distances)]
 
 
-class Polyline_Shapefile_SegmentLocator:
+class Polyline_Shapefile_SegmentLocator:  # noqa: N801
     def __init__(self, shpfile, nbins=500):
-        warnings.warn("Polyline_Shapefile_SegmentLocator " + dep_msg, FutureWarning)
+        warnings.warn(
+            "Polyline_Shapefile_SegmentLocator " + dep_msg, FutureWarning, stacklevel=2
+        )
         self.data = shpfile
         bbox = Rectangle(*shpfile.bbox)
         res = max((bbox.right - bbox.left), (bbox.upper - bbox.lower)) / float(nbins)
@@ -102,7 +104,7 @@ class SegmentGrid:
         TODO: complete this doctest
         >>> g = SegmentGrid(Rectangle(0, 0, 10, 10), 1)
         """
-        warnings.warn("SegmentGrid " + dep_msg, FutureWarning)
+        warnings.warn("SegmentGrid " + dep_msg, FutureWarning, stacklevel=2)
         if resolution == 0:
             raise Exception("Cannot create grid with resolution 0")
         self.res = resolution
@@ -203,20 +205,20 @@ class SegmentGrid:
                 + str(segment)
             )
         i, j = self.bin_loc(segment.p1, id)
-        I_, J_ = self.bin_loc(segment.p2, id)
+        i_, j_ = self.bin_loc(segment.p2, id)
         self.endMask[i, j] = True
-        self.endMask[I_, J_] = True
+        self.endMask[i_, j_] = True
 
         res = self.res
         line = segment.line
         tiny = res / 1000.0
-        for i in range(1 + min(i, I_), max(i, I_)):  # noqa: B020
+        for i in range(1 + min(i, i_), max(i, i_)):  # noqa: B020
             # print 'i',i
             x = self.x_range[0] + (i * res)
             y = line.y(x)
             self.bin_loc((x - tiny, y), id)
             self.bin_loc((x + tiny, y), id)
-        for j in range(1 + min(j, J_), max(j, J_)):  # noqa: B020
+        for j in range(1 + min(j, j_), max(j, j_)):  # noqa: B020
             # print 'j',j
             y = self.y_range[0] + (j * res)
             x = line.x(y)
@@ -280,25 +282,25 @@ class SegmentGrid:
             #### Filter indicies by bounds of the grid.
             ### filters must be applied one at a time
             ### I havn't figure out a way to group these
-            filter = rows >= 0
-            rows = rows[filter]
-            cols = cols[filter]  # i >= 0
-            filter = rows < self.i_range
-            rows = rows[filter]
-            cols = cols[filter]  # i < i_range
-            filter = cols >= 0
-            rows = rows[filter]
-            cols = cols[filter]  # j >= 0
-            filter = cols < self.j_range
-            rows = rows[filter]
-            cols = cols[filter]  # j < j_range
+            filter_ = rows >= 0
+            rows = rows[filter_]
+            cols = cols[filter_]  # i >= 0
+            filter_ = rows < self.i_range
+            rows = rows[filter_]
+            cols = cols[filter_]  # i < i_range
+            filter_ = cols >= 0
+            rows = rows[filter_]
+            cols = cols[filter_]  # j >= 0
+            filter_ = cols < self.j_range
+            rows = rows[filter_]
+            cols = cols[filter_]  # j < j_range
             if DEBUG:
-                maskCopy = self.mask.copy().astype(float)
-                maskCopy += self.endMask.astype(float)
-                maskCopy[rows, cols] += 1
-                maskCopy[row, col] += 3
+                mask_copy = self.mask.copy().astype(float)
+                mask_copy += self.endMask.astype(float)
+                mask_copy[rows, cols] += 1
+                mask_copy[row, col] += 3
                 i = pylab.matshow(
-                    maskCopy,
+                    mask_copy,
                     origin="lower",
                     extent=self.x_range + self.y_range,
                     fignum=1,
@@ -320,8 +322,8 @@ class SegmentGrid:
             ### The old way...
             ### previously I was using kd.query_ball_point on,
             ### but the performance was terrible.
-            I_ = self.kd2.query_ball_point(grid_loc, radius)
-            for i in I_:
+            i_ = self.kd2.query_ball_point(grid_loc, radius)
+            for i in i_:
                 t = tuple(self.kd.data[i])
                 possibles.update(self.hash[t])
         return list(possibles)
@@ -341,16 +343,16 @@ def random_points(n):
 
 
 def combo_check(bins, segments, qpoints):
-    G = SegmentLocator(segments, bins)
-    G2 = BruteSegmentLocator(segs)
+    g = SegmentLocator(segments, bins)
+    g2 = BruteSegmentLocator(segs)
     for pt in qpoints:
-        a = G.nearest(pt)
-        b = G2.nearest(pt)
+        a = g.nearest(pt)
+        b = g2.nearest(pt)
         if a != b:
             print(a, b, a == b)
             global DEBUG
             DEBUG = True
-            a = G.nearest(pt)
+            a = g.nearest(pt)
             print(a)
             a = segments[a]
             b = segments[b]
@@ -363,11 +365,11 @@ def combo_check(bins, segments, qpoints):
 
 def brute_check(segments, qpoints):  # noqa: ARG001
     t0 = time.time()
-    G2 = BruteSegmentLocator(segs)
+    g2 = BruteSegmentLocator(segs)
     t1 = time.time()
     print("Created Brute in %0.4f seconds" % (t1 - t0))
     t2 = time.time()
-    q = list(map(G2.nearest, qpoints))
+    q = list(map(g2.nearest, qpoints))
     t3 = time.time()
     print("Brute Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2))
     print("Total Brute Time:", t3 - t0)
@@ -377,19 +379,19 @@ def brute_check(segments, qpoints):  # noqa: ARG001
 
 def grid_check(bins, segments, qpoints, visualize=False):
     t0 = time.time()
-    G = SegmentLocator(segments, bins)
+    g = SegmentLocator(segments, bins)
     t1 = time.time()
-    G.grid.kd  # noqa: B018
+    g.grid.kd  # noqa: B018
     t2 = time.time()
     print("Created Grid in %0.4f seconds" % (t1 - t0))
     print("Created KDTree in %0.4f seconds" % (t2 - t1))
     if visualize:
         pylab.matshow(
-            G.grid.mask, origin="lower", extent=G.grid.x_range + G.grid.y_range
+            g.grid.mask, origin="lower", extent=g.grid.x_range + g.grid.y_range
         )
 
     t2 = time.time()
-    list(map(G.nearest, qpoints))
+    list(map(g.nearest, qpoints))
     t3 = time.time()
     print("Grid Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2))
     print("Total Grid Time:", t3 - t0)

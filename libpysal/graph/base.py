@@ -995,9 +995,13 @@ class Graph(SetOpsMixin):
         pandas.Index
             Index with a subset of observations that do not have any neighbor
         """
-        nulls = self._adjacency[self._adjacency == 0].reset_index(level=1)
+        nulls = self._adjacency[self._adjacency == 0]
         # since not all zeros are necessarily isolates, do the focal == neighbor check
-        return nulls[nulls.index == nulls.neighbor].index.unique()
+        return (
+            nulls[nulls.index.codes[0] == nulls.index.codes[1]]
+            .index.get_level_values(0)
+            .unique()
+        )
 
     @cached_property
     def unique_ids(self):
@@ -1398,6 +1402,22 @@ class Graph(SetOpsMixin):
                 filtered_adj.values,
             )
         )
+
+    def eliminate_zeros(self):
+        """Remove graph edges with zero weight
+        Eliminates edges with weight == 0 that do not encode an
+        isolate. This is useful to clean-up edges that will make
+        no effect in operations like :meth:`lag`.
+        Returns
+        -------
+        Graph
+            subset of Graph with zero-weight edges eliminated
+        """
+        # get a mask for isolates
+        isolates = self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
+        # substract isolates from mask of zeros
+        zeros = (self._adjacency == 0) != isolates
+        return Graph(self._adjacency[~zeros], is_sorted=True)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):

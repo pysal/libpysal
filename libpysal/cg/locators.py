@@ -494,9 +494,9 @@ class PolygonLocator:
         for polygon in polygons:
             x = polygon.bounding_box.left
             y = polygon.bounding_box.lower
-            X = polygon.bounding_box.right
-            Y = polygon.bounding_box.upper
-            self._rtree.insert(polygon, Rect(x, y, X, Y))
+            _x = polygon.bounding_box.right
+            _y = polygon.bounding_box.upper
+            self._rtree.insert(polygon, Rect(x, y, _x, _y))
 
     def inside(self, query_rectangle):
         """
@@ -549,7 +549,7 @@ class PolygonLocator:
             ]
         )
         ip = []
-        GPPI = get_polygon_point_intersect
+        gppi = get_polygon_point_intersect
         for poly in res:
             lower = poly.bounding_box.lower
             right = poly.bounding_box.right
@@ -557,7 +557,7 @@ class PolygonLocator:
             left = poly.bounding_box.left
             p1 = Point((left, lower))
             p2 = Point((right, upper))
-            if GPPI(qp, p1) and GPPI(qp, p2):
+            if gppi(qp, p1) and gppi(qp, p2):
                 ip.append(poly)
         return ip
 
