@@ -254,14 +254,14 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
                 coincident="jitter",
             )
 
-        if (coincident == "clique"):
+        if coincident == "clique":
             heads, tails, weights = _sparse_to_arrays(
                 _knn(
                     coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise"
                 )
             )
             adjtable = pandas.DataFrame.from_dict(
-                dict(focal=heads, neighbor=tails, weight=weights)
+                {"focal": heads, "neighbor": tails, "weight": weights}
             )
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=-1)
             adjtable = _reorder_adjtable_by_ids(adjtable, ids)

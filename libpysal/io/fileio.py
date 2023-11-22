@@ -146,7 +146,7 @@ class FileIO(metaclass=FileIO_MetaCls):  # should be a type?
             print(f"Ext: '.{key}', Modes: {list(val.keys())!r}")
 
     @classmethod
-    def open(cls, *args, **kwargs):  # noqa: A001
+    def open(cls, *args, **kwargs):  # noqa: A001, A003
         """Alias for ``FileIO()``."""
 
         return cls(*args, **kwargs)
