@@ -644,8 +644,8 @@ def _remote_data():
     url = "https://geodacenter.github.io/data-and-lab//"
     try:
         page = requests.get(url)
-    except:  # noqa E722
-        warnings.warn("Remote data sets not available. Check connection.")  # noqa B028
+    except:  # noqa: E722
+        warnings.warn("Remote data sets not available. Check connection.")  # noqa: B028
         return {}
     soup = BeautifulSoup(page.text, "html.parser")
     samples = soup.find(class_="samples")

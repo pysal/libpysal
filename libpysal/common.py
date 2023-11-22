@@ -1,6 +1,6 @@
 import copy
 
-import pandas  #  noqa F401
+import pandas  #  noqa: F401
 
 try:
     from patsy import PatsyError
@@ -23,7 +23,7 @@ try:
 
 except ImportError:
 
-    def jit(function=None, **kwargs):  # noqa ARG001
+    def jit(function=None, **kwargs):  # noqa: ARG001
         """Mimic numba.jit() with synthetic wrapper."""
 
         if function is not None:
@@ -128,7 +128,7 @@ def requires(*args, **kwargs):
             return function
         else:
 
-            def passer(*args, **kwargs):  # noqa ARG001
+            def passer(*args, **kwargs):  # noqa: ARG001
                 if v:
                     missing = [arg for i, arg in enumerate(wanted) if not available[i]]
                     print(f"missing dependencies: {missing}")

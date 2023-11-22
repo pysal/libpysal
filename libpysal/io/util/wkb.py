@@ -2,19 +2,19 @@
 
 Where PySAL shapes support multiple parts, "MULTI"type shapes
 will be converted to a single multi-part shape:
-    
+
     MULTIPOLYGON -> Polygon
     MULTILINESTRING -> Chain
 
 Otherwise a list of shapes will be returned:
-    
+
     MULTIPOINT -> [pt0, ..., ptN]
 
 Some concepts aren't well supported by PySAL shapes. For example:
-    
+
     wkt = 'MULTIPOLYGON EMPTY' -> '\x01   \x06\x00\x00\x00   \x00\x00\x00\x00'
                                   |  <  | WKBMultiPolygon |    0 parts      |
-    
+
 ``pysal.cg.Polygon`` does not support 0 part polygons. ``None`` is returned in this case.
 
 
@@ -28,12 +28,13 @@ SOURCE: http://webhelp.esri.com/arcgisserver/9.3/dotNet/index.htm#geodatabases/t
 
     Building Blocks : Point, LinearRing
 
-"""
+"""  # noqa: E501
 
-from io import StringIO
-from ... import cg
-import sys
 import struct
+import sys
+from io import StringIO
+
+from ... import cg
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ["loads"]
@@ -81,24 +82,21 @@ def loads(s: str):
             WKBMultiPolygon                 mpolygon;
         }
     };
-    
+
     Returns
     -------
     geom : {None, libpysal.cg.{Point, Chain, Polygon}}
         The geometric object or ``None``.
-    
+
     Raises
     ------
     TypeError
         Raised when an unsupported shape type is passed in.
-    
+
     """
 
     # To allow recursive calls, read only the bytes we need.
-    if hasattr(s, "read"):
-        dat = s
-    else:
-        dat = StringIO(s)
+    dat = s if hasattr(s, "read") else StringIO(s)
     endian = ENDIAN[dat.read(1)]
     typ = struct.unpack("I", dat.read(4))[0]
     if typ == 1:
@@ -186,10 +184,7 @@ def loads(s: str):
         holes = sum([p.holes for p in polys if p.holes[0]], [])
 
         # MULTIPOLYGON EMPTY, isn't well supported by PySAL shape types.
-        if not parts:
-            geom = None
-        else:
-            geom = cg.Polygon(parts, holes)
+        geom = None if not parts else cg.Polygon(parts, holes)
     elif typ == 7:
         """
         WKBGeometryCollection {
@@ -205,56 +200,63 @@ def loads(s: str):
     try:
         return geom
     except NameError:
-        raise TypeError("Type (%d) is unknown or unsupported." % typ)
+        raise TypeError("Type (%d) is unknown or unsupported." % typ) from None
 
 
-if __name__ == "__main__":
-
-    # TODO: Refactor below into Unit Tests
-    wktExamples = [
-        "POINT(6 10)",
-        "LINESTRING(3 4,10 50,20 25)",
-        "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))",
-        "MULTIPOINT(3.5 5.6,4.8 10.5)",
-        "MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4))",
-        # This MULTIPOLYGON is not valid, the 2nd shell instects the 1st.
-        #'MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))',
-        "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2)),((5 3,6 2,6 4,5 3)))",
-        "GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))",
-        #'POINT ZM (1 1 5 60)',  <-- ZM is not supported by WKB ?
-        #'POINT M (1 1 80)',     <-- M is not supported by WKB ?
-        #'POINT EMPTY',          <-- NOT SUPPORT
-        "MULTIPOLYGON EMPTY",
-    ]
-
-    # shapely only used for testing.
-    try:
-        import shapely.wkt, shapely.geometry
-        from pysal.contrib.shapely_ext import to_wkb
-    except ImportError:
-        print("shapely is used to test this module.")
-        raise
-    for example in wktExamples:
-        print(example)
-        shape0 = shapely.wkt.loads(example)
-        shape1 = loads(shape0.to_wkb())
-        if example.startswith("MULTIPOINT"):
-            shape2 = shapely.geometry.asMultiPoint(shape1)
-        elif example.startswith("GEOMETRYCOLLECTION"):
-            shape2 = shapely.geometry.collection.GeometryCollection(
-                list(map(shapely.geometry.asShape, shape1))
-            )
-        elif example == "MULTIPOLYGON EMPTY":
-            # Skip Test
-            shape2 = None
-        else:
-            shape2 = shapely.geometry.asShape(shape1)
-
-        print(shape1)
-        if shape2:
-            assert shape0.equals(shape2)
-            print(shape0.equals(shape2))
-        else:
-            print("Skip")
-
-        print("")
+# if __name__ == "__main__":
+#
+#    # TODO: Refactor below into Unit Tests
+#    wktExamples = [
+#        "POINT(6 10)",
+#        "LINESTRING(3 4,10 50,20 25)",
+#        "POLYGON((1 1,5 1,5 5,1 5,1 1),(2 2, 3 2, 3 3, 2 3,2 2))",
+#        "MULTIPOINT(3.5 5.6,4.8 10.5)",
+#        "MULTILINESTRING((3 4,10 50,20 25),(-5 -8,-10 -8,-15 -4))",
+#        # This MULTIPOLYGON is not valid, the 2nd shell instects the 1st.
+#        #(
+#        #    'MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),"
+#        #    "(2 2, 3 2, 3 3, 2 3,2 2)),((3 3,6 2,6 4,3 3)))'
+#        #,
+#        (
+#            "MULTIPOLYGON(((1 1,5 1,5 5,1 5,1 1),"
+#            "(2 2, 3 2, 3 3, 2 3,2 2)),((5 3,6 2,6 4,5 3)))"
+#        ),
+#        "GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))",
+#        #'POINT ZM (1 1 5 60)',  <-- ZM is not supported by WKB ?
+#        #'POINT M (1 1 80)',     <-- M is not supported by WKB ?
+#        #'POINT EMPTY',          <-- NOT SUPPORT
+#        "MULTIPOLYGON EMPTY",
+#    ]
+#
+#    # shapely only used for testing.
+#    try:
+#        import shapely.geometry
+#        import shapely.wkt
+#        from pysal.contrib.shapely_ext import to_wkb
+#    except ImportError:
+#        print("shapely is used to test this module.")
+#        raise
+#    for example in wktExamples:
+#        print(example)
+#        shape0 = shapely.wkt.loads(example)
+#        shape1 = loads(shape0.to_wkb())
+#        if example.startswith("MULTIPOINT"):
+#            shape2 = shapely.geometry.asMultiPoint(shape1)
+#        elif example.startswith("GEOMETRYCOLLECTION"):
+#            shape2 = shapely.geometry.collection.GeometryCollection(
+#                list(map(shapely.geometry.asShape, shape1))
+#            )
+#        elif example == "MULTIPOLYGON EMPTY":
+#            # Skip Test
+#            shape2 = None
+#        else:
+#            shape2 = shapely.geometry.asShape(shape1)
+#
+#        print(shape1)
+#        if shape2:
+#            assert shape0.equals(shape2)
+#            print(shape0.equals(shape2))
+#        else:
+#            print("Skip")
+#
+#        print("")

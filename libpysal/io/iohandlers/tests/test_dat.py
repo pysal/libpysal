@@ -4,11 +4,11 @@ import tempfile
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..dat import DatIO
 
 
-class Testtest_DatIO:
+class TesttestDatIO:
     def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("wmat.dat")
         self.obj = DatIO(test_file, "r")
@@ -35,9 +35,9 @@ class Testtest_DatIO:
         f = tempfile.NamedTemporaryFile(suffix=".dat")
         fname = f.name
         f.close()
-        o = psopen(fname, "w")
+        o = FileIO(fname, "w")
         o.write(w)
         o.close()
-        wnew = psopen(fname, "r").read()
+        wnew = FileIO(fname, "r").read()
         assert wnew.pct_nonzero == w.pct_nonzero
         os.remove(fname)

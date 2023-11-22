@@ -1,5 +1,7 @@
-from .. import fileio
+# ruff: noqa: SIM115
+
 from ...weights import W
+from .. import fileio
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["GeoBUGSTextIO"]
@@ -11,11 +13,11 @@ class GeoBUGSTextIO(fileio.FileIO):
     `GeoBUGS` generates a spatial weights matrix as an R object and writes
     it out as an ASCII text representation of the R object. An exemplary
     `GeoBUGS` text file is as follows.
-    
+
     ```
     list([CARD], [ADJ], [WGT], [SUMNUMNEIGH])
     ```
-    
+
     where ``[CARD]`` and ``[ADJ]`` are required but the others are optional.
     PySAL assumes ``[CARD]`` and ``[ADJ]`` always exist in an input text file.
     It can read a `GeoBUGS` text file, even when its content is not written
@@ -31,7 +33,7 @@ class GeoBUGSTextIO(fileio.FileIO):
 
     [ADJ]:
         adj = c ([a list of comma-splitted neighbor IDs])
-        
+
         If caridnality is zero, neighbor IDs are skipped. The ordering of
         observations is the same in both ``[CARD]`` and ``[ADJ]``.
         Neighbor IDs are record numbers starting from one.
@@ -48,7 +50,7 @@ class GeoBUGSTextIO(fileio.FileIO):
 
     Notes
     -----
-    
+
     For the files generated from R the ``spdep``, ``nb2WB``, and ``dput``
     functions. It is assumed that the value for the control parameter of
     the ``dput`` function is ``NULL``. Please refer to R ``spdep`` and
@@ -56,7 +58,7 @@ class GeoBUGSTextIO(fileio.FileIO):
 
     References
     ----------
-    
+
     * **Thomas, A., Best, N., Lunn, D., Arnold, R., and Spiegelhalter, D.**
         (2004) GeoBUGS User Manual. R spdep nb2WB function help file.
 
@@ -70,7 +72,7 @@ class GeoBUGSTextIO(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
-    def read(self, n=-1):
+    def read(self, n=-1):  # noqa: ARG002
         """Read a GeoBUGS text file.
 
         Returns
@@ -119,17 +121,17 @@ class GeoBUGSTextIO(fileio.FileIO):
 
     def _read(self):
         """Reads in a `GeoBUGSTextIO` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         if self.pos > 0:
@@ -214,7 +216,7 @@ class GeoBUGSTextIO(fileio.FileIO):
         ------
         TypeError
             Raised when the input ``obj`` is not a PySAL `W`.
-        
+
         Examples
         --------
 
@@ -240,7 +242,7 @@ class GeoBUGSTextIO(fileio.FileIO):
 
         >>> o = libpysal.io.open(fname, 'w', 'geobugs_text')
 
-        Write the Weights object into the open file. 
+        Write the Weights object into the open file.
 
         >>> o.write(w)
         >>> o.close()
@@ -263,7 +265,6 @@ class GeoBUGSTextIO(fileio.FileIO):
         self._complain_ifclosed(self.closed)
 
         if issubclass(type(obj), W):
-
             cardinalities, neighbors, weights = [], [], []
             for i in obj.id_order:
                 cardinalities.append(obj.cardinalities[i])

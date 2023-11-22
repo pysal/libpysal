@@ -5,11 +5,11 @@ import warnings
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..mat import MatIO
 
 
-class Testtest_MatIO:
+class TesttestMatIO:
     def setup_method(self):
         self.test_file = test_file = pysal_examples.get_path("spat-sym-us.mat")
         self.obj = MatIO(test_file, "r")
@@ -36,13 +36,13 @@ class Testtest_MatIO:
         f = tempfile.NamedTemporaryFile(suffix=".mat")
         fname = f.name
         f.close()
-        o = psopen(fname, "w")
+        o = FileIO(fname, "w")
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter("always")
             o.write(w)
             if len(warn) > 0:
                 assert issubclass(warn[0].category, FutureWarning)
         o.close()
-        wnew = psopen(fname, "r").read()
+        wnew = FileIO(fname, "r").read()
         assert wnew.pct_nonzero == w.pct_nonzero
         os.remove(fname)

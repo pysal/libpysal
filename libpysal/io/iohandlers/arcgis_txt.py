@@ -132,7 +132,7 @@ class ArcGISTextIO(gwt.GwtIO):
                 msg = "DBF relating to ArcGIS TEXT was not found, "
                 msg += "proceeding with unordered string IDs."
                 warn(msg, RuntimeWarning, stacklevel=2)
-        except:  # noqa E722
+        except:  # noqa: E722
             msg = "Exception occurred will reading DBF, "
             msg += "proceeding with unordered string IDs."
             warn(msg, RuntimeWarning, stacklevel=2)
@@ -159,7 +159,7 @@ class ArcGISTextIO(gwt.GwtIO):
 
         return w
 
-    def write(self, obj, useIdIndex=False):  # noqa N803
+    def write(self, obj, useIdIndex=False):  # noqa: N803
         """
 
         Parameters

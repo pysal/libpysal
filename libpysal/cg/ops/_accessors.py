@@ -19,7 +19,7 @@ __all__ = [
 def get_attr(df, geom_col="geometry", inplace=False, attr=None):
     outval = df[geom_col].apply(lambda x: x.__getattribute__(attr))
     if inplace:
-        outcol = f"shape_{func.__name__}"  # noqa F821
+        outcol = f"shape_{func.__name__}"  # noqa: F821
         df[outcol] = outval
         return None
     return outval

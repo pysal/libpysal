@@ -1,7 +1,12 @@
 """
 Spatial lag operations.
 """
-__author__ = "Sergio J. Rey <srey@asu.edu>, David C. Folch <david.folch@asu.edu>, Levi John Wolf <ljw2@asu.edu"
+__author__ = (
+    "Sergio J. Rey <srey@asu.edu>, "
+    "David C. Folch <david.folch@asu.edu>, "
+    "Levi John Wolf <ljw2@asu.edu"
+)
+
 __all__ = ["lag_spatial", "lag_categorical"]
 
 import numpy as np
@@ -16,7 +21,6 @@ def lag_spatial(w, y):
 
     Parameters
     ----------
-
     w                   : W
                           libpysal spatial weightsobject
     y                   : array
@@ -24,13 +28,11 @@ def lag_spatial(w, y):
 
     Returns
     -------
-
     wy                  : array
                           array of numeric values for the spatial lag
 
     Examples
     --------
-
     Setup a 9x9 binary spatial weights matrix and vector of data; compute the
     spatial lag of the vector.
 
@@ -50,7 +52,6 @@ def lag_spatial(w, y):
     array([2.        , 2.        , 3.        , 3.33333333, 4.        ,
            4.66666667, 5.        , 6.        , 6.        ])
 
-
     Explicitly define data vector as 9x1 and recompute the spatial lag
 
     >>> y.shape = (9, 1)
@@ -65,7 +66,6 @@ def lag_spatial(w, y):
            [5.        ],
            [6.        ],
            [6.        ]])
-
 
     Take the spatial lag of a 9x2 data matrix
 
@@ -83,7 +83,6 @@ def lag_spatial(w, y):
            [5.        , 3.        ],
            [6.        , 2.        ],
            [6.        , 2.        ]])
-
     """
     return w.sparse * y
 
@@ -97,7 +96,6 @@ def lag_categorical(w, y, ties="tryself"):
 
     Parameters
     ----------
-
     w                   : W
                           PySAL spatial weightsobject
     y                   : iterable
@@ -111,6 +109,7 @@ def lag_categorical(w, y, ties="tryself"):
                           and break a tie. If this does not resolve the tie,
                           a winner is chosen randomly. To just use random choice to
                           break ties, pass "random" instead.
+
     Returns
     -------
     an (n x k) column vector containing the most common neighboring observation
@@ -124,7 +123,6 @@ def lag_categorical(w, y, ties="tryself"):
 
     Examples
     --------
-
     Set up a 9x9 weights matrix describing a 3x3 regular lattice. Lag one list of
     categorical variables with no ties.
 
@@ -141,7 +139,9 @@ def lag_categorical(w, y, ties="tryself"):
 
     >>> yvect = np.array(y).reshape(9,1)
     >>> yvect_l = libpysal.weights.lag_categorical(w,yvect)
-    >>> check = np.array( [ [i] for i in  ['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b']] )
+    >>> check = np.array(
+    ...     [ [i] for i in  ['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b']]
+    ... )
     >>> np.array_equal(yvect_l, check)
     True
 
@@ -153,14 +153,12 @@ def lag_categorical(w, y, ties="tryself"):
     >>> check = np.array([['b', 'd'], ['a', 'c'], ['b', 'c'], ['c', 'd'], ['b', 'd'], ['c', 'c'], ['b', 'd'], ['c', 'd'], ['b', 'c']])
     >>> np.array_equal(check, ym_lag)
     True
-
-    """
+    """  # noqa: E501
     if isinstance(y, list):
         y = np.array(y)
     orig_shape = y.shape
-    if len(orig_shape) > 1:
-        if orig_shape[1] > 1:
-            return np.vstack([lag_categorical(w, col) for col in y.T]).T
+    if len(orig_shape) > 1 and orig_shape[1] > 1:
+        return np.vstack([lag_categorical(w, col) for col in y.T]).T
     y = y.flatten()
     output = np.zeros_like(y)
     labels = np.unique(y)

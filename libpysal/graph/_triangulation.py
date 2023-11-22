@@ -3,7 +3,6 @@ from functools import wraps
 
 import numpy
 import pandas
-from packaging.version import Version
 from scipy import sparse, spatial
 
 from libpysal.cg import voronoi_frames
@@ -14,12 +13,13 @@ from ._utils import (
     _build_coincidence_lookup,
     _induce_cliques,
     _jitter_geoms,
+    _reorder_adjtable_by_ids,
     _validate_geometry_input,
     _vec_euclidean_distances,
 )
 
 try:
-    from numba import njit  # noqa E401
+    from numba import njit  # noqa: E401
 
     HAS_NUMBA = True
 except ModuleNotFoundError:
@@ -27,7 +27,6 @@ except ModuleNotFoundError:
 
     HAS_NUMBA = False
 
-PANDAS_GE_21 = Version(pandas.__version__) >= Version("2.1.0")
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
@@ -75,8 +74,11 @@ def _validate_coincident(triangulator):
             elif coincident == "jitter":
                 coordinates, geoms = _jitter_geoms(coordinates, geoms, seed=seed)
             elif coincident == "clique":
-                raise NotImplementedError(
-                    "clique-based resolver of coincident points is not yet implemented."
+                input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
+                coordinates, ids, geoms = _validate_geometry_input(
+                    coincident_lut.geometry,
+                    ids=coincident_lut.index,
+                    valid_geometry_types=_VALID_GEOMETRY_TYPES,
                 )
             else:
                 raise ValueError(
@@ -112,34 +114,25 @@ def _validate_coincident(triangulator):
             {"focal": heads, "neighbor": tails, "weight": weights}
         )
 
-        # TODO: fix this
         # reinsert points resolved via clique
         if (n_coincident > 0) & (coincident == "clique"):
             # Note that the kernel is only used to compute a fill value for the clique.
             # In the case of the voronoi weights. Using boxcar with an infinite
             # bandwidth also gives us the correct fill value for the voronoi weight: 1.
-            fill_value = _kernel_functions[kernel](numpy.array([0]), bandwidth).item()
+            if kernel is None:  # kernel not set, weights are assumed binary
+                fill_value = 1
+            else:
+                fill_value = _kernel_functions[kernel](
+                    numpy.array([0]), bandwidth
+                ).item()
             adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
+            coordinates, ids, geoms = input_coordinates, input_ids, input_geoms
+            heads, tails, weights = adjtable.values.T
 
-        if PANDAS_GE_21:
-            # ensure proper sorting
-            sorted_index = (
-                adjtable[["focal", "neighbor"]]
-                .map(list(ids).index)
-                .sort_values(["focal", "neighbor"])
-                .index
-            )
-        else:
-            # ensure proper sorting
-            sorted_index = (
-                adjtable[["focal", "neighbor"]]
-                .applymap(list(ids).index)
-                .sort_values(["focal", "neighbor"])
-                .index
-            )
+        adjtable = _reorder_adjtable_by_ids(adjtable, ids)
 
         # return data for Graph.from_arrays
-        return heads[sorted_index], tails[sorted_index], weights[sorted_index]
+        return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
 
     return tri_with_validation
 
@@ -173,6 +166,21 @@ def _delaunay(coordinates):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
+    coincident : string (default: "raise")
+        How to deal with coincident points. Coincident points make all triangulations
+        ill-posed, and thus they need to be addressed in order to create a valid graph.
+        This parameter must be one of the following:
+        * "raise": raise an error if coincident points are present. This is default.
+        * "jitter": jitter the input points by a small value. This makes the resulting
+            depend on the seed provided to the triangulation function.
+        * "clique": expand coincident points into a graph clique. This creates a
+            "unique points" triangulation using all of the unique locations in the data.
+            Then, co-located samples are connected within a site. Finally, co-located
+            samples are connected to other sites in the "unique points" triangulation.
+    seed : int (default: None)
+        An integer value used to ensure that the pseudorandom number generator provides
+        the same value over replications. By default, no seed is used, so results
+        will be random every time. This is only used if coincident='jitter'.
 
     Notes
     -----
@@ -243,6 +251,21 @@ def _gabriel(coordinates):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
+    coincident : string (default: "raise")
+        How to deal with coincident points. Coincident points make all triangulations
+        ill-posed, and thus they need to be addressed in order to create a valid graph.
+        This parameter must be one of the following:
+        * "raise": raise an error if coincident points are present. This is default.
+        * "jitter": jitter the input points by a small value. This makes the resulting
+            depend on the seed provided to the triangulation function.
+        * "clique": expand coincident points into a graph clique. This creates a
+            "unique points" triangulation using all of the unique locations in the data.
+            Then, co-located samples are connected within a site. Finally, co-located
+            samples are connected to other sites in the "unique points" triangulation.
+    seed : int (default: None)
+        An integer value used to ensure that the pseudorandom number generator provides
+        the same value over replications. By default, no seed is used, so results
+        will be random every time. This is only used if coincident='jitter'.
     """
     if not HAS_NUMBA:
         warnings.warn(
@@ -299,6 +322,21 @@ def _relative_neighborhood(coordinates):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
+    coincident : string (default: "raise")
+        How to deal with coincident points. Coincident points make all triangulations
+        ill-posed, and thus they need to be addressed in order to create a valid graph.
+        This parameter must be one of the following:
+        * "raise": raise an error if coincident points are present. This is default.
+        * "jitter": jitter the input points by a small value. This makes the resulting
+            depend on the seed provided to the triangulation function.
+        * "clique": expand coincident points into a graph clique. This creates a
+            "unique points" triangulation using all of the unique locations in the data.
+            Then, co-located samples are connected within a site. Finally, co-located
+            samples are connected to other sites in the "unique points" triangulation.
+    seed : int (default: None)
+        An integer value used to ensure that the pseudorandom number generator provides
+        the same value over replications. By default, no seed is used, so results
+        will be random every time. This is only used if coincident='jitter'.
     """
     if not HAS_NUMBA:
         warnings.warn(
@@ -358,6 +396,21 @@ def _voronoi(coordinates, clip="extent", rook=True):
         Contiguity method. If True, two geometries are considered neighbours if they
         share at least one edge. If False, two geometries are considered neighbours
         if they share at least one vertex. By default True.
+    coincident : string (default: "raise")
+        How to deal with coincident points. Coincident points make all triangulations
+        ill-posed, and thus they need to be addressed in order to create a valid graph.
+        This parameter must be one of the following:
+        * "raise": raise an error if coincident points are present. This is default.
+        * "jitter": jitter the input points by a small value. This makes the resulting
+            depend on the seed provided to the triangulation function.
+        * "clique": expand coincident points into a graph clique. This creates a
+            "unique points" triangulation using all of the unique locations in the data.
+            Then, co-located samples are connected within a site. Finally, co-located
+            samples are connected to other sites in the "unique points" triangulation.
+    seed : int (default: None)
+        An integer value used to ensure that the pseudorandom number generator provides
+        the same value over replications. By default, no seed is used, so results
+        will be random every time. This is only used if coincident='jitter'.
 
     Notes
     -----
@@ -452,7 +505,7 @@ def _filter_gabriel(edges, coordinates):
 @njit
 def _filter_relativehood(edges, coordinates, return_dkmax=False):
     """
-    This is a direct implementation of the algorithm from Toussaint (1980), RNG-2
+    This is a direct reimplementation of the algorithm from Toussaint (1980), RNG-2
 
     1. Compute the delaunay
     2. for each edge of the delaunay (i,j), compute
@@ -460,31 +513,29 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     3. for each edge of the delaunay (i,j), prune
        if any dkmax is greater than d(i,j)
     """
-    n = edges.max()
+    n_coordinates = coordinates.shape[0]
     out = []
     r = []
     for edge in edges:
         i, j = edge
         pi = coordinates[i]
         pj = coordinates[j]
-        dkmax = 0
         dij = ((pi - pj) ** 2).sum() ** 0.5
         prune = False
-        for k in range(n):
+        for k in range(n_coordinates):
+            if (i == k) or (j == k):
+                continue
             pk = coordinates[k]
             dik = ((pi - pk) ** 2).sum() ** 0.5
             djk = ((pj - pk) ** 2).sum() ** 0.5
-            distances = numpy.array([dik, djk, dkmax])
-            dkmax = distances.max()
-            prune = dkmax < dij
-            if (not return_dkmax) & prune:
-                break
+            dkmax = numpy.array([dik, djk]).max()
+            prune |= dkmax <= dij
         if prune:
-            continue
-        out.append((i, j, dij))
+            pass
+        else:
+            out.append((i, j, dij))
         if return_dkmax:
             r.append(dkmax)
-
     return out, r
 
 

@@ -1,14 +1,13 @@
 import numpy as np
 
-from ... import cg, weights
+from ... import cg
 from ... import examples as pysal_examples
-from ...cg.kdtree import RADIUS_EARTH_KM, KDTree
-from ...common import ATOL, RTOL, pandas
+from ...cg.kdtree import KDTree
+from ...common import RTOL
 from ...io import geotable as pdio
-from ...io.fileio import FileIO as psopen
+from ...io.fileio import FileIO
 from .. import contiguity as c
 from .. import distance as d
-from .. import raster
 from ..util import get_points_array
 
 # All instances should test these four methods, and define their own functional
@@ -21,11 +20,11 @@ class DistanceMixin:
     points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
     euclidean_kdt = KDTree(points, distance_metric="euclidean")
 
-    polygon_f = psopen(polygon_path)  # our file handler
+    polygon_f = FileIO(polygon_path)  # our file handler
     poly_centroids = get_points_array(polygon_f)  # our iterable
     polygon_f.seek(0)  # go back to head of file
 
-    arc_f = psopen(arc_path)
+    arc_f = FileIO(arc_path)
     arc_points = get_points_array(arc_f)
     arc_f.seek(0)
     arc_kdt = KDTree(
@@ -34,7 +33,7 @@ class DistanceMixin:
 
     cls = object  # class constructor
     known_wi = None  # index of known w entry to compare
-    known_w = dict()  # actual w entry
+    known_w = {}  # actual w entry
     known_name = known_wi
 
     def setup_method(self):
@@ -49,25 +48,25 @@ class DistanceMixin:
     def test_init(self):
         # test vanilla, named
         raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
+            "You need to implement this test before this module will pass"
         )
 
     def test_from_shapefile(self):
         # test vanilla, named, sparse
         raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
+            "You need to implement this test before this module will pass"
         )
 
     def test_from_array(self):
         # test named, sparse
         raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
+            "You need to implement this test before this module will pass"
         )
 
     def test_from_dataframe(self):
         # test named, columnar, defau
         raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
+            "You need to implement this test before this module will pass"
         )
 
 
@@ -149,7 +148,7 @@ class TestDistanceBand(DistanceMixin):
         DistanceMixin.setup_method(self)
         self.grid_path = pysal_examples.get_path("lattice10x10.shp")
         self.grid_rook_w = c.Rook.from_shapefile(self.grid_path)
-        self.grid_f = psopen(self.grid_path)
+        self.grid_f = FileIO(self.grid_path)
         self.grid_points = get_points_array(self.grid_f)
         self.grid_f.seek(0)
 
@@ -239,7 +238,7 @@ class TestDistanceBand(DistanceMixin):
 
     def test_dense(self):
         w_rook = c.Rook.from_shapefile(pysal_examples.get_path("lattice10x10.shp"))
-        polys = psopen(pysal_examples.get_path("lattice10x10.shp"))
+        polys = FileIO(pysal_examples.get_path("lattice10x10.shp"))
         centroids = [p.centroid for p in polys]
         w_db = d.DistanceBand(centroids, 1, build_sp=False)
 
@@ -254,6 +253,9 @@ class TestDistanceBand(DistanceMixin):
         names = [chr(x) for x in range(60, 160)]
         df = pd.DataFrame({"obs": random_data, "geometry": geom_series, "names": names})
         w = d.DistanceBand.from_dataframe(df, 1, ids=df.names)
+
+        for k, o1, o2 in zip(names, df["names"].values, w.id_order, strict=True):
+            assert k == o1 == o2
 
 
 class TestKernel(DistanceMixin):

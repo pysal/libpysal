@@ -4,12 +4,16 @@ network based weights (netW), and distance-decay based vector weights (vecW).
 
 """
 
+# ruff: noqa: N802, N803, N999
+
 __author__ = "Taylor Oshan  <tayoshan@gmail.com> "
 
-from scipy.sparse import kron
-from .weights import W, WSP
-from .distance import DistanceBand
 from collections import OrderedDict
+
+from scipy.sparse import kron
+
+from .distance import DistanceBand
+from .weights import WSP, W
 
 
 def ODW(Wo, Wd, transform="r", silence_warnings=True):
@@ -22,22 +26,19 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
     ----------
     Wo          : W object for origin locations
                   o x o spatial weight object amongst o origins
-
     Wd          : W object for destination locations
                   d x d spatial weight object amongst d destinations
-
     transform   : Transformation for standardization of final OD spatial weight; default
                   is 'r' for row standardized
 
     Returns
     -------
-    W           : spatial contiguity W object for assocations between flows
+    ww           : spatial contiguity W object for assocations between flows
                  o*d x o*d spatial weight object amongst o*d flows between o
                  origins and d destinations
 
     Examples
     --------
-
     >>> import libpysal
     >>> O = libpysal.weights.lat2W(2,2)
     >>> D = libpysal.weights.lat2W(2,2)
@@ -49,33 +50,32 @@ def ODW(Wo, Wd, transform="r", silence_warnings=True):
     >>> OD.full()[0][0]
     array([0.  , 0.  , 0.  , 0.  , 0.  , 0.25, 0.25, 0.  , 0.  , 0.25, 0.25,
            0.  , 0.  , 0.  , 0.  , 0.  ])
-
     """
     if Wo.transform != "b":
         try:
             Wo.tranform = "b"
-        except:
+        except:  # noqa: E722
             raise AttributeError(
                 "Wo is not binary and cannot be transformed to "
                 "binary. Wo must be binary or suitably transformed to binary."
-            )
+            ) from None
     if Wd.transform != "b":
         try:
             Wd.tranform = "b"
-        except:
+        except:  # noqa: E722
             raise AttributeError(
                 "Wd is not binary and cannot be transformed to "
                 "binary. Wd must be binary or suitably transformed to binary."
-            )
-    Wo = Wo.sparse
-    Wo.eliminate_zeros()
-    Wd = Wd.sparse
-    Wd.eliminate_zeros()
-    Ww = kron(Wo, Wd, format="csr")
-    Ww.eliminate_zeros()
-    Ww = WSP(Ww).to_W(silence_warnings=silence_warnings)
-    Ww.transform = transform
-    return Ww
+            ) from None
+    wo = Wo.sparse
+    wo.eliminate_zeros()
+    wd = Wd.sparse
+    wd.eliminate_zeros()
+    ww = kron(wo, wd, format="csr")
+    ww.eliminate_zeros()
+    ww = WSP(ww).to_W(silence_warnings=silence_warnings)
+    ww.transform = transform
+    return ww
 
 
 def netW(link_list, share="A", transform="r", **kwargs):
@@ -88,19 +88,22 @@ def netW(link_list, share="A", transform="r", **kwargs):
     link_list   : list
                   of tuples where each tuple is of the form (o,d) where o is an
                   origin id and d is a destination id
-
     share       : string
-                  denoting how to define the nodal relationship used to determine neighboring edges; defualt is 'A' for any shared nodes between two network edges; options include: O a shared origin node; D a shared destination node; OD; a shared origin or a shared destination node; C a shared node that is the destination of the first edge and the origin of the second edge - i.e., a directed chain is formed moving from edge one to edge two.
-
+                  denoting how to define the nodal relationship used to determine
+                  neighboring edges; defualt is 'A' for any shared nodes between two
+                  network edges; options include: O a shared origin node; D a shared
+                  destination node; OD; a shared origin or a shared destination node;
+                  C a shared node that is the destination of the first edge and the
+                  origin of the second edge - i.e., a directed chain is formed moving
+                  from edge one to edge two.
     transform   : Transformation for standardization of final OD spatial weight; default
                   is 'r' for row standardized
     **kwargs    : keyword arguments
                   optional arguments for :class:`pysal.weights.W`
 
-
     Returns
     -------
-     W          : nodal contiguity W object for networkd edges or flows
+    net_w          : nodal contiguity W object for networkd edges or flows
                   W Object representing the binary adjacency of the network edges
                   given a definition of nodal relationshilibpysal.weights.spintW.
 
@@ -117,7 +120,6 @@ def netW(link_list, share="A", transform="r", **kwargs):
     >>> any_common = libpysal.weights.netW(links, share='A')
     >>> any_common.neighbors[('a', 'b')]
     [('a', 'c'), ('a', 'd'), ('c', 'b'), ('c', 'a')]
-
     """
     neighbors = {}
     neighbors = OrderedDict()
@@ -151,9 +153,9 @@ def netW(link_list, share="A", transform="r", **kwargs):
                 raise AttributeError(
                     "Parameter 'share' must be 'O', 'D'," " 'OD', or 'C'"
                 )
-    netW = W(neighbors, **kwargs)
-    netW.tranform = transform
-    return netW
+    net_w = W(neighbors, **kwargs)
+    net_w.tranform = transform
+    return net_w
 
 
 def vecW(
@@ -166,8 +168,8 @@ def vecW(
     alpha=-1.0,
     binary=True,
     ids=None,
-    build_sp=False,
-    **kwargs
+    build_sp=False,  # noqa: ARG001
+    **kwargs,
 ):
     """
     Distance-based spatial weight for vectors that is computed using a
@@ -198,7 +200,6 @@ def vecW(
                  distance decay parameter for weight (default -1.0)
                  if alpha is positive the weights will not decline with
                  distance. If binary is True, alpha is ignored
-
     ids         : list
                   values to use for keys of the neighbors and weights dicts
     build_sp    : boolean
@@ -209,10 +210,9 @@ def vecW(
     **kwargs    : keyword arguments
                   optional arguments for :class:`pysal.weights.W`
 
-
     Returns
     -------
-    W           : DistanceBand W object that uses 4-dimenional distances between
+    w           : DistanceBand W object that uses 4-dimenional distances between
                   vectors origin and destination coordinates.
 
     Examples
@@ -228,10 +228,9 @@ def vecW(
     >>> W2 = libpysal.weights.vecW(x1, y2, x1, y2, threshold=8.5)
     >>> list(W2.neighbors[0])
     [1, 2]
-
     """
-    data = list(zip(origin_x, origin_y, dest_x, dest_y))
-    W = DistanceBand(
+    data = list(zip(origin_x, origin_y, dest_x, dest_y, strict=True))
+    w = DistanceBand(
         data,
         threshold=threshold,
         p=p,
@@ -239,9 +238,9 @@ def vecW(
         alpha=alpha,
         ids=ids,
         build_sp=False,
-        **kwargs
+        **kwargs,
     )
-    return W
+    return w
 
 
 def mat2L(edge_matrix):
@@ -261,7 +260,6 @@ def mat2L(edge_matrix):
      edge_list    : list
                     of tuples where each tuple is of the form (o,d) where o is an
                     origin id and d is a destination id
-
     """
     if len(edge_matrix.shape) != 2:
         raise AttributeError(

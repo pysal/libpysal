@@ -167,7 +167,7 @@ def linear2arcdist(linear_dist, radius=RADIUS_EARTH_KM):
     return arc_dist
 
 
-def toXYZ(pt):  # noqa N802
+def toXYZ(pt):  # noqa: N802
     """Convert a point's latitude and longitude to x,y,z.
 
     Parameters
@@ -190,7 +190,7 @@ def toXYZ(pt):  # noqa N802
     return x, y, z
 
 
-def toLngLat(xyz):  # noqa N802
+def toLngLat(xyz):  # noqa: N802
     """Convert a point's x,y,z to latitude and longitude.
 
     Parameters
@@ -403,10 +403,10 @@ def haversine(x):
 # Lambda functions
 
 # degree to radian conversion
-d2r = lambda x: x * math.pi / 180.0
+d2r = lambda x: x * math.pi / 180.0  # noqa: E731
 
 # radian to degree conversion
-r2d = lambda x: x * 180.0 / math.pi
+r2d = lambda x: x * 180.0 / math.pi  # noqa: E731
 
 
 def radangle(p0, p1):
@@ -544,15 +544,15 @@ def geointerpolate(p0, p1, t, lonx=True):
     d = radangle(p0, p1)
     k = 1.0 / math.sin(d)
     t = t * d
-    A = math.sin(d - t) * k
-    B = math.sin(t) * k
+    a = math.sin(d - t) * k
+    b = math.sin(t) * k
 
     x0, y0 = d2r(p0[0]), d2r(p0[1])
     x1, y1 = d2r(p1[0]), d2r(p1[1])
 
-    x = A * math.cos(y0) * math.cos(x0) + B * math.cos(y1) * math.cos(x1)
-    y = A * math.cos(y0) * math.sin(x0) + B * math.cos(y1) * math.sin(x1)
-    z = A * math.sin(y0) + B * math.sin(y1)
+    x = a * math.cos(y0) * math.cos(x0) + b * math.cos(y1) * math.cos(x1)
+    y = a * math.cos(y0) * math.sin(x0) + b * math.cos(y1) * math.sin(x1)
+    z = a * math.sin(y0) + b * math.sin(y1)
 
     newpx = r2d(math.atan2(y, x))
     newpy = r2d(math.atan2(z, math.sqrt(x * x + y * y)))

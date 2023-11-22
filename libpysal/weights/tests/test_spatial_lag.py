@@ -5,7 +5,7 @@ from ..util import lat2W
 from ..weights import W
 
 
-class Test_spatial_lag:
+class TestSpatialLag:
     def setup_method(self):
         self.neighbors = {"c": ["b"], "b": ["c", "a"], "a": ["b"]}
         self.weights = {"c": [1.0], "b": [1.0, 1.0], "a": [1.0]}

@@ -21,5 +21,5 @@ from . import (
 
 try:
     from . import db
-except:  # noqa E722
-    warnings.warn("SQLAlchemy not installed, database I/O disabled")  # noqa B028
+except:  # noqa: E722
+    warnings.warn("SQLAlchemy not installed, database I/O disabled")  # noqa: B028

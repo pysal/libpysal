@@ -1,12 +1,15 @@
+# ruff: noqa: N802, N803
+
 import os
-from ..fileio import FileIO as psopen
 from warnings import warn
+
+from ..fileio import FileIO
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["weight_convert"]
 
 
-class WeightConverter(object):
+class WeightConverter:
     """Opens and reads a weights file in a format, then writes
     the file in other formats.
 
@@ -21,12 +24,14 @@ class WeightConverter(object):
     number of observations in the new weights file will be the original
     number of observations substracted by the number of islands. This is
     because `ArcGIS DBF/SWM/TEXT`, `DAT`, `WK1` formats ignore islands.
-
     """
 
     def __init__(self, inputPath, dataFormat=None):
-
-        warn("WeightConverter will be deprecated in PySAL 3.1.", DeprecationWarning)
+        warn(
+            "WeightConverter will be deprecated in PySAL 3.1.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
         self.inputPath = inputPath
         self.inputDataFormat = dataFormat
@@ -35,17 +40,16 @@ class WeightConverter(object):
     def _setW(self):
         """Reads a weights file and sets a
         ``pysal.weights.W`` object as an attribute.
-        
+
         Raises
         ------
         IOError
             Raised when there is a problem reading in the file.
         RuntimeError
             Raised when there is a problem creating the weights object.
-        
+
         Examples
         --------
-
         Create a WeightConvert object.
 
         >>> import libpysal
@@ -62,23 +66,22 @@ class WeightConverter(object):
 
         >>> wc.w.n
         88
-
         """
 
         try:
             if self.inputDataFormat:
-                f = psopen(self.inputPath, "r", self.inputDataFormat)
+                f = FileIO(self.inputPath, "r", self.inputDataFormat)
             else:
-                f = psopen(self.inputPath, "r")
-        except:
-            raise IOError("A problem occurred while reading the input file.")
+                f = FileIO(self.inputPath, "r")
+        except:  # noqa: E722
+            raise OSError("A problem occurred while reading the input file.") from None
         else:
             try:
                 self.w = f.read()
-            except:
+            except:  # noqa: E722
                 raise RuntimeError(
                     "A problem occurred while creating a weights object."
-                )
+                ) from None
             finally:
                 f.close()
 
@@ -89,7 +92,7 @@ class WeightConverter(object):
 
     def write(self, outputPath, dataFormat=None, useIdIndex=True, matrix_form=True):
         """
-        
+
         Parameters
         ----------
         outputPath : str
@@ -115,7 +118,6 @@ class WeightConverter(object):
 
         Examples
         --------
-        
         >>> import tempfile, os, libpysal
 
         Create a `WeightConverter` object.
@@ -155,7 +157,6 @@ class WeightConverter(object):
         Clean up the temporary file.
 
         >>> os.remove(fname)
-
         """
 
         ext = os.path.splitext(outputPath)[1]
@@ -170,11 +171,13 @@ class WeightConverter(object):
 
         try:
             if dataFormat:
-                o = psopen(outputPath, "w", dataFormat)
+                o = FileIO(outputPath, "w", dataFormat)
             else:
-                o = psopen(outputPath, "w")
-        except:
-            raise IOError("A problem occurred while creating the output file.")
+                o = FileIO(outputPath, "w")
+        except:  # noqa: E722
+            raise OSError(
+                "A problem occurred while creating the output file."
+            ) from None
         else:
             try:
                 if dataFormat in ["arcgis_text", "arcgis_dbf"] or ext == "swm":
@@ -183,10 +186,10 @@ class WeightConverter(object):
                     o.write(self.w, matrix_form=matrix_form)
                 else:
                     o.write(self.w)
-            except:
+            except:  # noqa: E722
                 raise RuntimeError(
                     "A problem occurred while writing out the weights object."
-                )
+                ) from None
             finally:
                 o.close()
 
@@ -226,7 +229,6 @@ def weight_convert(
 
     Examples
     --------
-    
     >>> import tempfile, os, libpysal
 
     Create a temporary file for this example.
@@ -266,7 +268,6 @@ def weight_convert(
     Clean up the temporary file.
 
     >>> os.remove(fname)
-
     """
 
     converter = WeightConverter(inPath, dataFormat=inDataFormat)

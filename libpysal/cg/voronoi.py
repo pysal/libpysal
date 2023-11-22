@@ -229,7 +229,7 @@ def voronoi_frames(points, radius=None, clip="extent"):
 
     >>> regions_df.shape == points_df.shape
     True
-    """  # noqa E501
+    """  # noqa: E501
 
     regions, vertices = voronoi(points, radius=radius)
     regions, vertices = as_dataframes(regions, vertices, points)

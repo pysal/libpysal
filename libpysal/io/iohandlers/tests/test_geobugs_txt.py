@@ -4,11 +4,11 @@ import tempfile
 import pytest
 
 from .... import examples as pysal_examples
-from ...fileio import FileIO as psopen
+from ...fileio import FileIO
 from ..geobugs_txt import GeoBUGSTextIO
 
 
-class Testtest_GeoBUGSTextIO:
+class TesttestGeoBUGSTextIO:
     def setup_method(self):
         self.test_file_scot = test_file_scot = pysal_examples.get_path("geobugs_scot")
         self.test_file_col = test_file_col = pysal_examples.get_path(
@@ -48,9 +48,9 @@ class Testtest_GeoBUGSTextIO:
             f = tempfile.NamedTemporaryFile(suffix="")
             fname = f.name
             f.close()
-            o = psopen(fname, "w", "geobugs_text")
+            o = FileIO(fname, "w", "geobugs_text")
             o.write(w)
             o.close()
-            wnew = psopen(fname, "r", "geobugs_text").read()
+            wnew = FileIO(fname, "r", "geobugs_text").read()
             assert wnew.pct_nonzero == w.pct_nonzero
             os.remove(fname)

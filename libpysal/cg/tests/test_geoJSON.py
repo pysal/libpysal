@@ -1,5 +1,7 @@
+# ruff: noqa: N999
+
 from ... import examples as pysal_examples
-from ...io.fileio import FileIO as psopen  # noqa N813
+from ...io.fileio import FileIO
 from ..shapes import Chain, Point, asShape
 
 
@@ -10,7 +12,7 @@ class TesttestMultiPloygon:
 
         """
 
-        shp = psopen(pysal_examples.get_path("NAT.shp"), "r")
+        shp = FileIO(pysal_examples.get_path("NAT.shp"), "r")
         multipolygons = [p for p in shp if len(p.parts) > 1]
         for poly in multipolygons:
             json = poly.__geo_interface__
