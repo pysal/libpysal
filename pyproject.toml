@@ -52,8 +52,8 @@ plus = [
     "zstd",
 ]
 dev = [
-    "black",
     "pre-commit",
+    "ruff",
     "watermark",
 ]
 docs = [
