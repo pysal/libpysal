@@ -30,7 +30,6 @@ dependencies:
   - zstd
   - xarray=2022.3
   - pulp
-  - coin-or-cbc
-  - pip
   - pip:
+      - pulp
       - platformdirs==2.0.2

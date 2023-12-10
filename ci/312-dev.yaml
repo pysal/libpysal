@@ -28,8 +28,6 @@ dependencies:
   - sqlalchemy
   - zstd
   - pip
-  - pulp
-  - coin-or-cbc
   - pip:
       # dev versions of packages
       - --pre --index-url https://pypi.anaconda.org/scientific-python-nightly-wheels/simple --extra-index-url https://pypi.org/simple
@@ -39,3 +37,4 @@ dependencies:
       - xarray
       - git+https://github.com/geopandas/geopandas.git@main
       - git+https://github.com/shapely/shapely.git@main
+      - pulp
