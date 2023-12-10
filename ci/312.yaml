@@ -23,6 +23,8 @@ dependencies:
   - geodatasets
   - joblib
   - networkx
+  - pulp
+  - coin-or-cbc
   # - numba # follow up when numba is ready for 3.12
   - pyarrow
   - scikit-learn

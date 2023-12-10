@@ -29,6 +29,8 @@ dependencies:
   - sqlalchemy=2.0
   - zstd
   - xarray=2022.3
+  - pulp
+  - coin-or-cbc
   - pip
   - pip:
       - platformdirs==2.0.2

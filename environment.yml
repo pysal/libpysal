@@ -17,6 +17,8 @@ dependencies:
   - shapely
   # optional libpysal deps
   - geodatasets
+  - pulp
+  - coin-or-cbc
   - joblib
   - matplotlib
   - networkx
