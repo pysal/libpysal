@@ -52,8 +52,8 @@ plus = [
     "zstd",
 ]
 dev = [
-    "black",
     "pre-commit",
+    "ruff",
     "watermark",
 ]
 docs = [
@@ -78,9 +78,6 @@ tests = [
 
 [tool.setuptools.packages.find]
 include = ["libpysal", "libpysal.*"]
-
-[tool.black]
-line-length = 88
 
 [tool.ruff]
 line-length = 88
