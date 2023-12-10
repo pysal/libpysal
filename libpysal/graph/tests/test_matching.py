@@ -30,7 +30,7 @@ simple = np.random.random(size=(5, 2))
 def test_correctness_k1():
     # manual solution for simple k=1 by hungarian method
     known = np.row_stack([(0, 3), (1, 4), (2, 3), (3, 3), (4, 1)])
-    computed = _spatial_matching(simple, k=1)
+    computed = _spatial_matching(simple, n_matches=1)
     np.testing.assert_array_equal(
         known, np.column_stack(computed[0], computed[1])
     )

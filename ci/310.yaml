@@ -29,6 +29,7 @@ dependencies:
   - sqlalchemy
   - xarray
   - zstd
+  - coin-or-cbc
   - pip
   - pip:
       - pulp
