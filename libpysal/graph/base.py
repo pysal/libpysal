@@ -730,7 +730,7 @@ class Graph(SetOpsMixin):
         # ids need to be addressed here, rather than in the matching
         # because x and y can have different id sets. It's only
         # in W where we *know* we can just use one id vector.
-        cls.from_arrays(head, tail, weight)
+        return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_triangulation(
