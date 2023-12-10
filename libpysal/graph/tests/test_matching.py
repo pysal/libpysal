@@ -29,14 +29,14 @@ simple = np.random.random(size=(5, 2))
 
 def test_correctness_k1():
     # manual solution for simple k=1 by hungarian method
-    known = numpy.row_stack([(0, 3), (1, 4), (2, 3), (3, 3), (4, 1)])
+    known = np.row_stack([(0, 3), (1, 4), (2, 3), (3, 3), (4, 1)])
     computed = _spatial_matching(simple, k=1)
-    numpy.testing.assert_array_equal(
-        known, numpy.column_stack(computed[0], computed[1])
+    np.testing.assert_array_equal(
+        known, np.column_stack(computed[0], computed[1])
     )
     computed_partial = _spatial_matching(simple, k=1)
     # manual solution by relaxing the above
-    known = numpy.row_stack(
+    known = np.row_stack(
         [
             (0, 2, 0.5),
             (0, 3, 0.5),
@@ -48,7 +48,7 @@ def test_correctness_k1():
             (4, 1, 1),
         ]
     )
-    numpy.testing.assert_array_equal(known, numpy.column_stack(computed_partial))
+    np.testing.assert_array_equal(known, np.column_stack(computed_partial))
 
 
 def test_stores():
@@ -66,8 +66,8 @@ def test_stores():
         (computed_heads, computed_tails),
         (computed_heads_p, computed_tails_p),
     ):
-        _, n_by_heads = numpy.unique(heads, return_counts=True)
-        _, n_by_tails = numpy.unique(tails, return_counts=True)
+        _, n_by_heads = np.unique(heads, return_counts=True)
+        _, n_by_tails = np.unique(tails, return_counts=True)
         assert n_by_heads.max() == 4
         assert n_by_heads.min() == 3
         assert n_by_tails.max() == 4
