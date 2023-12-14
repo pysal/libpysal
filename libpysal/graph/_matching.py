@@ -2,6 +2,7 @@ import warnings
 
 import numpy
 from sklearn.metrics import pairwise_distances
+
 from ._utils import _validate_geometry_input
 
 _VALID_GEOMETRY_TYPES = ["Point"]
@@ -84,7 +85,7 @@ def _spatial_matching(
         )
         y_ids = x_ids
         distance_matrix = pairwise_distances(x, metric=metric, **metric_kwargs)
-        )
+
         match_between = False
 
     n_targets, n_sources = distance_matrix.shape
@@ -145,8 +146,7 @@ def _spatial_matching(
         for i in range(n_sources):
             summand = pulp.lpSum([match_vars[j, i] for j in range(n_targets)])
             mp += pulp.LpConstraint(summand, sense=-1, rhs=n_matches)
-    if solver is None:
-        solver = pulp.COIN(msg=False)
+
     status = mp.solve(solver)
 
     if (status != 1) & (not allow_partial_match):
