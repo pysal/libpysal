@@ -32,7 +32,7 @@ def test_correctness_k1():
     known = np.row_stack([(0, 3), (1, 4), (2, 3), (3, 0), (3, 2), (4, 1)])
     computed = _spatial_matching(simple, n_matches=1)
     np.testing.assert_array_equal(known, np.column_stack((computed[0], computed[1])))
-    computed_partial = _spatial_matching(simple, k=1)
+    computed_partial = _spatial_matching(simple, n_matches=1, allow_partial_match=True)
     # manual solution by relaxing the above
     known = np.row_stack(
         [
