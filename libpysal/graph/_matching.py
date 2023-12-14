@@ -1,8 +1,7 @@
 import warnings
 
 import numpy
-from scipy import spatial
-
+from sklearn.metrics import pairwise_distances
 from ._utils import _validate_geometry_input
 
 _VALID_GEOMETRY_TYPES = ["Point"]
@@ -77,15 +76,14 @@ def _spatial_matching(
         y, y_ids, _ = _validate_geometry_input(
             y, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
-        distance_matrix = spatial.distance.cdist(x, y, metric=metric)
+        distance_matrix = pairwise_distances(x, y, metric=metric)
         match_between = True
     else:
         x, x_ids, _ = _validate_geometry_input(
             x, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
         y_ids = x_ids
-        distance_matrix = spatial.distance.squareform(
-            spatial.distance.pdist(x, metric=metric, **metric_kwargs)
+        distance_matrix = pairwise_distances(x, metric=metric, **metric_kwargs)
         )
         match_between = False
 
