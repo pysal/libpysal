@@ -89,7 +89,7 @@ def _spatial_matching(
         )
         match_between = False
 
-    n_targets, n_sources = D.shape
+    n_targets, n_sources = distance_matrix.shape
 
     if match_between:
         row, col = numpy.meshgrid(
