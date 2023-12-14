@@ -36,7 +36,9 @@ def test_correctness_k1():
     known = np.row_stack([(0, 3), (1, 4), (2, 3), (3, 0), (3, 2), (4, 1)])
     computed = _spatial_matching(simple, n_matches=1)
     np.testing.assert_array_equal(known, np.column_stack((computed[0], computed[1])))
-    computed_partial = _spatial_matching(simple, n_matches=1, allow_partial_match=True)
+    computed_partial = _spatial_matching(
+        simple, n_matches=1, allow_partial_match=True, solver=default_solver
+    )
     # manual solution by relaxing the above
     known = np.row_stack(
         [
@@ -60,10 +62,10 @@ def test_stores():
         raise Exception("configuration of pulp has failed, no available solvers")
     default_solver = getattr(pulp, default_solver[0])()
     computed_heads, computed_tails, computed_weights = _spatial_matching(
-        stores.head(101), n_matches=3
+        stores.head(101), n_matches=3, solver=default_solver
     )
     computed_heads_p, computed_tails_p, computed_weights_p = _spatial_matching(
-        stores.head(101), allow_partial_match=True, n_matches=3
+        stores.head(101), allow_partial_match=True, n_matches=3, solver=default_solver
     )
     assert (computed_weights == 1).all()
     assert (computed_weights_p < 1).any()
@@ -93,9 +95,13 @@ def test_returns_mip():
     if len(default_solver) == 0:
         raise Exception("configuration of pulp has failed, no available solvers")
     default_solver = getattr(pulp, default_solver[0])()
-    *computed, mip = _spatial_matching(simple, n_matches=4, return_mip=True)
+    *computed, mip = _spatial_matching(
+        simple, n_matches=4, return_mip=True, solver=default_solver
+    )
     assert mip.sol_status == 1
     assert mip.objective.value() > 0
     with pytest.warns(UserWarning, match="Problem is Infeasible"):
-        *computed, mip = _spatial_matching(simple, n_matches=6, return_mip=True)
+        *computed, mip = _spatial_matching(
+            simple, n_matches=6, return_mip=True, solver=default_solver
+        )
     assert mip.sol_status == -1
