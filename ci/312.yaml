@@ -12,7 +12,6 @@ dependencies:
   - requests
   - scipy
   - shapely
-  - coin-or-cbc
   # testing
   - codecov
   - matplotlib
