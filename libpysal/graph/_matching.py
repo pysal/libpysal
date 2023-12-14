@@ -40,7 +40,8 @@ def _spatial_matching(
     y : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame (default: None)
         geometries that are used as a source for matching. If a geopandas.Geo* object
         is provided, the .geometry attribute is used. If a numpy.ndarray with
-        a geometry dtype is used, then the coordinates are extracted and used. If none, matches are made within `x`.
+        a geometry dtype is used, then the coordinates are extracted and
+        used. If none, matches are made within `x`.
     n_matches : int (default: None)
         number of matches
     metric : string or callable (default: 'euclidean')
@@ -61,15 +62,13 @@ def _spatial_matching(
         must have a weight of either zero or one. A partial matching may
         have a shorter total distance, but will result in a weighted
         graph.
-    p : int (default: 2)
-        parameter for minkowski metric, ignored if metric != "minkowski".
     """
     try:
         import pulp
     except ImportError as error:
         raise ImportError("spatial matching requires the pulp library") from error
     if metric == "precomputed":
-        D = x
+        distance_matrix = x
         match_between = y is not None
     elif y is not None:
         x, x_ids, _ = _validate_geometry_input(
@@ -78,14 +77,14 @@ def _spatial_matching(
         y, y_ids, _ = _validate_geometry_input(
             y, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
-        D = spatial.distance.cdist(x, y, metric=metric)
+        distance_matrix = spatial.distance.cdist(x, y, metric=metric)
         match_between = True
     else:
         x, x_ids, _ = _validate_geometry_input(
             x, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
         y_ids = x_ids
-        D = spatial.distance.squareform(
+        distance_matrix = spatial.distance.squareform(
             spatial.distance.pdist(x, metric=metric, **metric_kwargs)
         )
         match_between = False
@@ -115,7 +114,10 @@ def _spatial_matching(
     )
     # we want to minimize the geographic distance of links in the graph
     mp.objective = pulp.lpSum(
-        [match_vars[i, j] * D[i, j] for i, j in zip(row, col, strict=True)]
+        [
+            match_vars[i, j] * distance_matrix[i, j]
+            for i, j in zip(row, col, strict=True)
+        ]
     )
 
     # for each observation
