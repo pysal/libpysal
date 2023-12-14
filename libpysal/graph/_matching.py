@@ -1,8 +1,9 @@
 import warnings
 
 import numpy
-from ._utils import _validate_geometry_input
 from scipy import spatial
+
+from ._utils import _validate_geometry_input
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
@@ -15,6 +16,7 @@ def _spatial_matching(
     solver=None,
     return_mip=False,
     allow_partial_match=False,
+    **metric_kwargs,
 ):
     """
     Match locations in one dataset to at least `n_matches`
@@ -23,10 +25,10 @@ def _spatial_matching(
 
     Letting d_{ij} be
 
-    minimize \sum_i^n \sum_j^n  d_{ij}m_{ij}
+    minimize \\sum_i^n \\sum_j^n  d_{ij}m_{ij}
     subject to
-        \sum_j^n m_{ij} >= k \forall i
-        m_{ij} \in {0,1} forall ij
+        \\sum_j^n m_{ij} >= k \forall i
+        m_{ij} \\in {0,1} forall ij
 
 
         Paramters
@@ -83,7 +85,9 @@ def _spatial_matching(
             x, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
         y_ids = x_ids
-        D = spatial.distance.squareform(spatial.distance.pdist(x, metric=metric))
+        D = spatial.distance.squareform(
+            spatial.distance.pdist(x, metric=metric, **metric_kwargs)
+        )
         match_between = False
 
     n_targets, n_sources = D.shape

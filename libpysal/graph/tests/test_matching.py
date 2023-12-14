@@ -11,10 +11,8 @@ For completeness, we need to test a shuffled dataframe
 import geodatasets
 import geopandas
 import numpy as np
-import pandas as pd
-from scipy import sparse
 import pytest
-import shapely
+
 from libpysal.graph._matching import _spatial_matching
 from libpysal.graph.base import Graph
 

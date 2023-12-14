@@ -718,14 +718,21 @@ class Graph(SetOpsMixin):
 
     @classmethod
     def build_spatial_matches(
-        cls, data, k, metric="euclidean", p=2, solver=None, allow_partial_match=False
+        cls,
+        data,
+        k,
+        metric="euclidean",
+        solver=None,
+        allow_partial_match=False,
+        **metric_kwargs,
     ):
         head, tail, weight = _spatial_matching(
             x=data,
             metric=metric,
             n_matches=k,
-            solver=None,
+            solver=solver,
             allow_partial_match=allow_partial_match,
+            **metric_kwargs
         )
         # ids need to be addressed here, rather than in the matching
         # because x and y can have different id sets. It's only
