@@ -27,6 +27,7 @@ simple = np.random.random(size=(5, 2))
 
 def test_correctness_k1():
     pulp = pytest.importorskip("pulp")
+    pytest.importorskip("sklearn")
     default_solver = pulp.listSolvers(onlyAvailable=True)
     if len(default_solver) == 0:
         raise Exception("configuration of pulp has failed, no available solvers")
@@ -57,6 +58,7 @@ def test_correctness_k1():
 
 def test_stores():
     pulp = pytest.importorskip("pulp")
+    pytest.importorskip("sklearn")
     default_solver = pulp.listSolvers(onlyAvailable=True)
     if len(default_solver) == 0:
         raise Exception("configuration of pulp has failed, no available solvers")
@@ -91,6 +93,7 @@ def test_stores():
 
 def test_returns_mip():
     pulp = pytest.importorskip("pulp")
+    pytest.importorskip("sklearn")
     default_solver = pulp.listSolvers(onlyAvailable=True)
     if len(default_solver) == 0:
         raise Exception("configuration of pulp has failed, no available solvers")
