@@ -26,8 +26,13 @@ simple = np.random.random(size=(5, 2))
 
 
 def test_correctness_k1():
-    pytest.importorskip("pulp")
-    # manual solution for simple k=1 by hungarian method
+    pulp = pytest.importorskip("pulp")
+    default_solver = pulp.listSolvers(onlyAvailable=True)
+    if len(default_solver) == 0:
+        raise Exception("configuration of pulp has failed, no available solvers")
+    default_solver = getattr(
+        pulp, default_solver[0]
+    )()  # manual solution for simple k=1 by hungarian method
     known = np.row_stack([(0, 3), (1, 4), (2, 3), (3, 0), (3, 2), (4, 1)])
     computed = _spatial_matching(simple, n_matches=1)
     np.testing.assert_array_equal(known, np.column_stack((computed[0], computed[1])))
@@ -49,7 +54,11 @@ def test_correctness_k1():
 
 
 def test_stores():
-    pytest.importorskip("pulp")
+    pulp = pytest.importorskip("pulp")
+    default_solver = pulp.listSolvers(onlyAvailable=True)
+    if len(default_solver) == 0:
+        raise Exception("configuration of pulp has failed, no available solvers")
+    default_solver = getattr(pulp, default_solver[0])()
     computed_heads, computed_tails, computed_weights = _spatial_matching(
         stores.head(101), n_matches=3
     )
@@ -79,7 +88,11 @@ def test_stores():
 
 
 def test_returns_mip():
-    pytest.importorskip("pulp")
+    pulp = pytest.importorskip("pulp")
+    default_solver = pulp.listSolvers(onlyAvailable=True)
+    if len(default_solver) == 0:
+        raise Exception("configuration of pulp has failed, no available solvers")
+    default_solver = getattr(pulp, default_solver[0])()
     *computed, mip = _spatial_matching(simple, n_matches=4, return_mip=True)
     assert mip.sol_status == 1
     assert mip.objective.value() > 0
