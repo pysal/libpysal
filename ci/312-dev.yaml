@@ -7,7 +7,6 @@ dependencies:
   - jinja2
   - platformdirs
   - requests
-  - coin-or-cbc
   # testing
   - codecov
   - matplotlib
