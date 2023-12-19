@@ -732,7 +732,7 @@ class Graph(SetOpsMixin):
             n_matches=k,
             solver=solver,
             allow_partial_match=allow_partial_match,
-            **metric_kwargs
+            **metric_kwargs,
         )
         # ids need to be addressed here, rather than in the matching
         # because x and y can have different id sets. It's only

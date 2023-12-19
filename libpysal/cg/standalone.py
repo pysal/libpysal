@@ -635,7 +635,7 @@ def get_polygon_point_dist(poly, pt):
         for vertices in poly._vertices:
             vx_range = range(-1, len(vertices) - 1)
             seg = lambda i: LineSegment(  # noqa: E731
-                vertices[i],  # noqa: B023
+                vertices[i],
                 vertices[i + 1],  # noqa: B023
             )
             _min_dist = min([get_segment_point_dist(seg(i), pt)[0] for i in vx_range])
