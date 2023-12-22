@@ -1405,9 +1405,11 @@ class Graph(SetOpsMixin):
 
     def eliminate_zeros(self):
         """Remove graph edges with zero weight
+
         Eliminates edges with weight == 0 that do not encode an
         isolate. This is useful to clean-up edges that will make
         no effect in operations like :meth:`lag`.
+
         Returns
         -------
         Graph
@@ -1419,17 +1421,26 @@ class Graph(SetOpsMixin):
         zeros = (self._adjacency == 0) != isolates
         return Graph(self._adjacency[~zeros], is_sorted=True)
 
-    def fill_diagonal(self):
+    def fill_diagonal(self, val=1):
+        """Fill Graph with values inserted along the main diagonal.
+
+        Value for each ``focal == neighbor`` location in the graph is set to ``val``.
+
+        Returns
+        -------
+        Graph
+            A new Graph with new values along the diagonal
+        """
         no_isolates = self.unique_ids.difference(self.isolates)
         addition = pd.Series(
-            1,
+            val,
             index=pd.MultiIndex.from_arrays(
                 [no_isolates, no_isolates], names=["focal", "neighbor"]
             ),
             name="weight",
         )
         adj = pd.concat([self._adjacency, addition])
-        adj.loc[self.isolates] = 1
+        adj.loc[self.isolates] = val
         return Graph(adj, is_sorted=False)
 
     def fill_diagonal_sparse(self):
