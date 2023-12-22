@@ -162,7 +162,7 @@ class Graph(SetOpsMixin):
         pandas.Series
             Underlying adjacency list
         """
-        return self._adjacency.copy(deep=True)
+        return self._adjacency.copy()
 
     @classmethod
     def from_W(cls, w):  # noqa: N802
