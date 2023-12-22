@@ -162,7 +162,7 @@ class Graph(SetOpsMixin):
         pandas.Series
             Underlying adjacency list
         """
-        return self._adjacency.copy()
+        return self._adjacency.copy(deep=True)
 
     @classmethod
     def from_W(cls, w):  # noqa: N802
@@ -1418,6 +1418,25 @@ class Graph(SetOpsMixin):
         # substract isolates from mask of zeros
         zeros = (self._adjacency == 0) != isolates
         return Graph(self._adjacency[~zeros], is_sorted=True)
+
+    def fill_diagonal(self):
+        no_isolates = self.unique_ids.difference(self.isolates)
+        addition = pd.Series(
+            1,
+            index=pd.MultiIndex.from_arrays(
+                [no_isolates, no_isolates], names=["focal", "neighbor"]
+            ),
+            name="weight",
+        )
+        adj = pd.concat([self._adjacency, addition])
+        adj.loc[self.isolates] = 1
+        return Graph(adj, is_sorted=False)
+
+    def fill_diagonal_sparse(self):
+        sp = self.sparse
+        sp = sp.tolil()
+        sp.setdiag(1)
+        return Graph.from_sparse(sp, ids=self.unique_ids)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
