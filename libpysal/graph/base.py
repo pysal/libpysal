@@ -1426,22 +1426,33 @@ class Graph(SetOpsMixin):
 
         Value for each ``focal == neighbor`` location in the graph is set to ``val``.
 
+        Parameters
+        ----------
+        val : float | array-like
+            Defines the value(s) to which the weights matrix diagonal should
+            be set. If a constant is passed then each element along the
+            diagonal will get this value (default is 1). An array of length
+            Graph.n can be passed to set explicit values to each element along
+            the diagonal (assumed to be in the same order as original data).
+
         Returns
         -------
         Graph
             A new Graph with new values along the diagonal
         """
-        no_isolates = self.unique_ids.difference(self.isolates)
         addition = pd.Series(
             val,
             index=pd.MultiIndex.from_arrays(
-                [no_isolates, no_isolates], names=["focal", "neighbor"]
+                [self.unique_ids, self.unique_ids], names=["focal", "neighbor"]
             ),
             name="weight",
         )
-        adj = pd.concat([self._adjacency, addition])
-        adj.loc[self.isolates] = val
-        return Graph(adj, is_sorted=False)
+        adj = (
+            pd.concat([self.adjacency.drop(self.isolates), addition])
+            .reindex(self.unique_ids, level=0)
+            .reindex(self.unique_ids, level=1)
+        )
+        return Graph(adj, is_sorted=True)
 
     def fill_diagonal_sparse(self):
         sp = self.sparse
