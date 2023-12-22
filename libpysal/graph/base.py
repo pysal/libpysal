@@ -1421,24 +1421,23 @@ class Graph(SetOpsMixin):
         zeros = (self._adjacency == 0) != isolates
         return Graph(self._adjacency[~zeros], is_sorted=True)
 
-    def fill_diagonal(self, val=1):
-        """Fill Graph with values inserted along the main diagonal.
+    def set_self_weights(self, val=1):
+        """Set self-weights in the Graph to a value.
 
         Value for each ``focal == neighbor`` location in the graph is set to ``val``.
 
         Parameters
         ----------
         val : float | array-like
-            Defines the value(s) to which the weights matrix diagonal should
-            be set. If a constant is passed then each element along the
-            diagonal will get this value (default is 1). An array of length
-            Graph.n can be passed to set explicit values to each element along
-            the diagonal (assumed to be in the same order as original data).
+            Defines the value(s) to which the self-weights should be set. If a constant
+            is passed then each self-weight will get this value (default is 1). An array
+            of length ``Graph.n``can be passed to set explicit values to each
+            self-weight (assumed to be in the same order as original data).
 
         Returns
         -------
         Graph
-            A new Graph with new values along the diagonal
+            A new Graph with self-weights set
         """
         addition = pd.Series(
             val,
@@ -1453,12 +1452,6 @@ class Graph(SetOpsMixin):
             .reindex(self.unique_ids, level=1)
         )
         return Graph(adj, is_sorted=True)
-
-    def fill_diagonal_sparse(self):
-        sp = self.sparse
-        sp = sp.tolil()
-        sp.setdiag(1)
-        return Graph.from_sparse(sp, ids=self.unique_ids)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
