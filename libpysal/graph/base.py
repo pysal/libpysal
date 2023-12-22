@@ -1421,26 +1421,26 @@ class Graph(SetOpsMixin):
         zeros = (self._adjacency == 0) != isolates
         return Graph(self._adjacency[~zeros], is_sorted=True)
 
-    def set_self_weights(self, val=1):
-        """Set self-weights in the Graph to a value.
+    def add_self_loops(self, weight=1):
+        """Set add self-loopswith a set weight to the Graph.
 
-        Value for each ``focal == neighbor`` location in the graph is set to ``val``.
+        Value for each ``focal == neighbor`` location in the graph is set to ``weight``.
 
         Parameters
         ----------
-        val : float | array-like
-            Defines the value(s) to which the self-weights should be set. If a constant
-            is passed then each self-weight will get this value (default is 1). An array
-            of length ``Graph.n``can be passed to set explicit values to each
-            self-weight (assumed to be in the same order as original data).
+        weight : float | array-like
+            Defines the value(s) to which the weiight of self-loops should be set. If a
+            constant is passed then each self-loop will get this value (default is 1).
+            An array of length ``Graph.n``can be passed to set explicit values to each
+            self-lopp (assumed to be in the same order as original data).
 
         Returns
         -------
         Graph
-            A new Graph with self-weights set
+            A new Graph with added self-loops
         """
         addition = pd.Series(
-            val,
+            weight,
             index=pd.MultiIndex.from_arrays(
                 [self.unique_ids, self.unique_ids], names=["focal", "neighbor"]
             ),

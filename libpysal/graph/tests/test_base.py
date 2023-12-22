@@ -967,13 +967,13 @@ class TestBase:
         )
         pd.testing.assert_series_equal(expected, sub._adjacency, check_dtype=False)
 
-    def test_fill_diagonal(self):
+    def test_add_self_loops(self):
         contig = graph.Graph.build_contiguity(self.nybb)
-        diag = contig.fill_diagonal()
+        diag = contig.add_self_loops()
         assert len(diag._adjacency) == 15
         assert diag._adjacency.sum() == 15
 
-        diag_array = contig.fill_diagonal([2, 3, 4, 5, 6])
+        diag_array = contig.add_self_loops([2, 3, 4, 5, 6])
         assert len(diag_array._adjacency) == 15
         assert diag_array._adjacency.sum() == 30
 
