@@ -1421,23 +1421,23 @@ class Graph(SetOpsMixin):
         zeros = (self._adjacency == 0) != isolates
         return Graph(self._adjacency[~zeros], is_sorted=True)
 
-    def add_self_loops(self, weight=1):
-        """Set add self-loopswith a set weight to the Graph.
+    def assign_self_weight(self, weight=1):
+        """Assign values to edges represeting self-weight.
 
         Value for each ``focal == neighbor`` location in the graph is set to ``weight``.
 
         Parameters
         ----------
         weight : float | array-like
-            Defines the value(s) to which the weiight of self-loops should be set. If a
+            Defines the value(s) to which the weight of self-loops should be set. If a
             constant is passed then each self-loop will get this value (default is 1).
-            An array of length ``Graph.n``can be passed to set explicit values to each
+            An array of length ``Graph.n`` can be passed to set explicit values to each
             self-lopp (assumed to be in the same order as original data).
 
         Returns
         -------
         Graph
-            A new Graph with added self-loops
+            A new Graph with added self-weights
         """
         addition = pd.Series(
             weight,
