@@ -966,3 +966,19 @@ class TestBase:
             ),
         )
         pd.testing.assert_series_equal(expected, sub._adjacency, check_dtype=False)
+
+    def test_assign_self_weight(self):
+        contig = graph.Graph.build_contiguity(self.nybb)
+        diag = contig.assign_self_weight()
+        assert len(diag._adjacency) == 15
+        assert diag._adjacency.sum() == 15
+
+        diag_array = contig.assign_self_weight([2, 3, 4, 5, 6])
+        assert len(diag_array._adjacency) == 15
+        assert diag_array._adjacency.sum() == 30
+
+        for i, val in enumerate(range(2, 7)):
+            assert (
+                diag_array._adjacency[(contig.unique_ids[i], contig.unique_ids[i])]
+                == val
+            )

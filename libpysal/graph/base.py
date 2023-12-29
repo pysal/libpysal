@@ -1405,9 +1405,11 @@ class Graph(SetOpsMixin):
 
     def eliminate_zeros(self):
         """Remove graph edges with zero weight
+
         Eliminates edges with weight == 0 that do not encode an
         isolate. This is useful to clean-up edges that will make
         no effect in operations like :meth:`lag`.
+
         Returns
         -------
         Graph
@@ -1418,6 +1420,40 @@ class Graph(SetOpsMixin):
         # substract isolates from mask of zeros
         zeros = (self._adjacency == 0) != isolates
         return Graph(self._adjacency[~zeros], is_sorted=True)
+
+    def assign_self_weight(self, weight=1):
+        """Assign values to edges representing self-weight.
+
+        The value for each ``focal == neighbor`` location in
+        the graph is set to ``weight``.
+
+        Parameters
+        ----------
+        weight : float | array-like
+            Defines the value(s) to which the weight representing the relationship with
+            itself should be set. If a constant is passed then each self-weight will get
+            this value (default is 1). An array of length ``Graph.n`` can be passed to
+            set explicit values to each self-weight (assumed to be in the same order as
+            original data).
+
+        Returns
+        -------
+        Graph
+            A new ``Graph`` with added self-weights.
+        """
+        addition = pd.Series(
+            weight,
+            index=pd.MultiIndex.from_arrays(
+                [self.unique_ids, self.unique_ids], names=["focal", "neighbor"]
+            ),
+            name="weight",
+        )
+        adj = (
+            pd.concat([self.adjacency.drop(self.isolates), addition])
+            .reindex(self.unique_ids, level=0)
+            .reindex(self.unique_ids, level=1)
+        )
+        return Graph(adj, is_sorted=True)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
