@@ -1429,10 +1429,11 @@ class Graph(SetOpsMixin):
         Parameters
         ----------
         weight : float | array-like
-            Defines the value(s) to which the weight of self-loops should be set. If a
-            constant is passed then each self-loop will get this value (default is 1).
-            An array of length ``Graph.n`` can be passed to set explicit values to each
-            self-loop (assumed to be in the same order as original data).
+            Defines the value(s) to which the weight representing the relationship with
+            itself should be set. If a constant is passed then each self-weight will get
+            this value (default is 1). An array of length ``Graph.n`` can be passed to
+            set explicit values to each self-weight (assumed to be in the same order as
+            original data).
 
         Returns
         -------
