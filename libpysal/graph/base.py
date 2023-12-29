@@ -1424,7 +1424,8 @@ class Graph(SetOpsMixin):
     def assign_self_weight(self, weight=1):
         """Assign values to edges representing self-weight.
 
-        The value for each ``focal == neighbor`` location in the graph is set to ``weight``.
+        The value for each ``focal == neighbor`` location in
+        the graph is set to ``weight``.
 
         Parameters
         ----------
