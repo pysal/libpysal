@@ -26,10 +26,20 @@ from libpysal.graph._triangulation import (
 from libpysal.graph._utils import CoplanarError
 from libpysal.graph.base import Graph
 
-stores = geopandas.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
-    index_parts=False
-)
-stores_unique = stores.drop_duplicates(subset="geometry")
+
+@pytest.fixture(scope="session")
+def stores():
+    stores = geopandas.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
+        index_parts=False
+    )
+    return stores
+
+
+@pytest.fixture(scope="session")
+def stores_unique(stores):
+    stores_unique = stores.drop_duplicates(subset="geometry")
+    return stores_unique
+
 
 kernel_functions = [None] + list(_kernel_functions.keys())
 
@@ -210,8 +220,9 @@ def test_correctness_relative_n():
     np.testing.assert_array_equal(np.ones(head.shape), weight)
 
 
+@pytest.mark.network
 @parametrize_ids
-def test_ids(ids):
+def test_ids(ids, stores_unique):
     data = stores_unique.sample(frac=1)
     if ids is not None:
         data = data.set_index(ids)
@@ -270,12 +281,14 @@ def test_kernel():
     np.testing.assert_array_almost_equal(expected, weight)
 
 
-def test_coplanar_raise_voronoi():
+@pytest.mark.network
+def test_coplanar_raise_voronoi(stores):
     with pytest.raises(ValueError, match="There are"):
         _voronoi(stores, clip=False)
 
 
-def test_coplanar_jitter_voronoi():
+@pytest.mark.network
+def test_coplanar_jitter_voronoi(stores, stores_unique):
     cp_heads, cp_tails, cp_w = _voronoi(stores, clip=False, coplanar="jitter")
     unique_heads, unique_tails, unique_w = _voronoi(stores_unique, clip=False)
     assert not np.array_equal(cp_heads, unique_heads)

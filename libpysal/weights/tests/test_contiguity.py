@@ -107,6 +107,7 @@ class ContiguityMixin:
         w = self.cls.from_dataframe(df, geom_col="the_geom", ids=self.idVariable)
         assert w[self.known_name] == self.known_namedw
 
+    @pytest.mark.network
     def test_from_geodataframe_order(self):
         import geopandas
 

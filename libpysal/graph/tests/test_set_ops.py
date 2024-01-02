@@ -6,6 +6,7 @@ import pytest
 from libpysal.graph.base import Graph
 
 
+@pytest.mark.network
 class TestSetOps:
     def setup_method(self):
         self.grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[

@@ -24,19 +24,27 @@ from libpysal.graph._contiguity import (
     _vertex_set_intersection,
 )
 
-numpy.random.seed(111211)
-rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers")).sample(
-    frac=1, replace=False
-)
-rivers["strID"] = rivers.NAME
-rivers["intID"] = rivers.index.values + 2
 
-nybb = geopandas.read_file(geodatasets.get_path("ny bb"))
-nybb["strID"] = nybb.BoroName
-nybb["intID"] = nybb.BoroCode
+@pytest.fixture(scope="session")
+def rivers():
+    numpy.random.seed(111211)
+    rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers")).sample(
+        frac=1, replace=False
+    )
+    rivers["strID"] = rivers.NAME
+    rivers["intID"] = rivers.index.values + 2
+    return rivers
+
+
+@pytest.fixture(scope="session")
+def nybb():
+    nybb = geopandas.read_file(geodatasets.get_path("ny bb"))
+    nybb["strID"] = nybb.BoroName
+    nybb["intID"] = nybb.BoroCode
+    return nybb
+
 
 parametrize_ids = pytest.mark.parametrize("ids", [None, "strID", "intID"])
-parametrize_geoms = pytest.mark.parametrize("geoms", [rivers, nybb], ["rivers", "nybb"])
 parametrize_perim = pytest.mark.parametrize(
     "by_perimeter", [False, True], ids=["binary", "perimeter"]
 )
@@ -46,14 +54,15 @@ parametrize_pointset = pytest.mark.parametrize(
 )
 
 
+@pytest.mark.network
 @parametrize_pointset
 @parametrize_rook
 @parametrize_ids
-def test_user_rivers(ids, rook, pointset, data=rivers):
+def test_user_rivers(ids, rook, pointset, rivers):
     """
     Check whether contiguity is constructed correctly for rivers in Europe.
     """
-    data = data.reset_index(drop=False).rename(columns={"index": "original_index"})
+    data = rivers.reset_index(drop=False).rename(columns={"index": "original_index"})
     ids = "original_index" if ids is None else ids
     data.index = data[ids].values
     ids = data.index.values
@@ -97,10 +106,11 @@ def test_user_rivers(ids, rook, pointset, data=rivers):
     )
 
 
+@pytest.mark.network
 @parametrize_rook
 @parametrize_perim
 @parametrize_ids
-def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter):
+def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter, nybb):
     """
     check whether vertexset contiguity is constructed correctly
     for nybb
@@ -137,10 +147,11 @@ def test_user_vertex_set_intersection_nybb(ids, rook, by_perimeter):
     )
 
 
+@pytest.mark.network
 @parametrize_rook
 @parametrize_perim
 @parametrize_ids
-def test_user_pointset_nybb(ids, by_perimeter, rook):
+def test_user_pointset_nybb(ids, by_perimeter, rook, nybb):
     """
     check whether pointset weights are constructed correctly
     for nybb
@@ -204,7 +215,8 @@ def test_geom_type_raise():
         _vertex_set_intersection(data)
 
 
-def test_overlap_raise():
+@pytest.mark.network
+def test_overlap_raise(nybb):
     data = nybb.set_index("BoroName").geometry.copy()
     data.iloc[1] = shapely.union(
         data.iloc[1], shapely.Point(1021176.479, 181374.797).buffer(10000)
@@ -268,7 +280,8 @@ def test_block_contiguity(regimes):
     assert {f: n.tolist() for f, n in neighbors.items()} == wn_str
 
 
-def test_fuzzy_contiguity():
+@pytest.mark.network
+def test_fuzzy_contiguity(nybb):
     # integer
     head, tail, weight = _fuzzy_contiguity(nybb.set_index("intID"), nybb["intID"])
     numpy.testing.assert_array_equal(

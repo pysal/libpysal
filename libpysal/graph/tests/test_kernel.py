@@ -24,11 +24,20 @@ from libpysal.graph._kernel import (
 )
 from libpysal.graph._utils import CoplanarError
 
-grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[
-    ["OBJECTID", "geometry"]
-].explode(ignore_index=True)
-grocs["strID"] = grocs.OBJECTID.astype(str)
-grocs["intID"] = grocs.OBJECTID.values
+
+def _grocs():
+    grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[
+        ["OBJECTID", "geometry"]
+    ].explode(ignore_index=True)
+    grocs["strID"] = grocs.OBJECTID.astype(str)
+    grocs["intID"] = grocs.OBJECTID.values
+    return grocs
+
+
+@pytest.fixture(scope="session")
+def grocs():
+    return _grocs()
+
 
 kernel_functions = list(_kernel_functions.keys())
 
@@ -41,8 +50,6 @@ def my_kernel(distances, bandwidth):
 
 kernel_functions.append(my_kernel)
 
-metrics = ("euclidean", "haversine")
-
 np.random.seed(6301)
 # create a 2-d laplace distribution as a "degenerate"
 # over-concentrated distribution
@@ -53,18 +60,29 @@ lap_coords = np.random.laplace(size=(200, 2)) / 50
 # spatial outlier-y distribution
 cau_coords = np.random.standard_cauchy(size=(200, 2))
 
-data = (grocs, lap_coords)
+
+@pytest.fixture(
+    scope="session",
+    params=[pytest.param("grocs", marks=pytest.mark.network), "lap", "cau"],
+)
+def data(request):
+    if request.param == "grocs":
+        return _grocs()
+    elif request.param == "lap":
+        return lap_coords
+    elif request.param == "cau":
+        return cau_coords
+
 
 parametrize_ids = pytest.mark.parametrize("ids", [None, "strID", "intID"])
-parametrize_data = pytest.mark.parametrize("data", [grocs, lap_coords, cau_coords])
 parametrize_kernelfunctions = pytest.mark.parametrize("kernel", kernel_functions)
-parametrize_metrics = pytest.mark.parametrize("metric", metrics, metrics)
 
 # how do we parameterize conditional on sklearn in env?
 
 
+@pytest.mark.network
 @parametrize_ids
-def test_neighbors(ids):
+def test_neighbors(ids, grocs):
     data = grocs.set_index(ids) if ids else grocs
     head, tail, weight = _kernel(data, bandwidth=5000, kernel="boxcar")
     assert head.shape[0] == 437
@@ -86,7 +104,6 @@ def test_neighbors(ids):
     )
 
 
-@parametrize_data
 def test_no_taper(data):
     head, tail, weight = _kernel(data, taper=False)
     assert head.shape[0] == len(data) * (len(data) - 1)
@@ -98,15 +115,17 @@ def test_no_taper(data):
         np.testing.assert_array_equal(np.unique(head), np.arange(len(data)))
 
 
+@pytest.mark.network
 @parametrize_ids
-def test_ids(ids):
+def test_ids(ids, grocs):
     data = grocs.set_index(ids) if ids else grocs
     head, tail, _ = _kernel(data)
     np.testing.assert_array_equal(pd.unique(head), data.index)
     assert np.in1d(tail, data.index).all()
 
 
-def test_distance():
+@pytest.mark.network
+def test_distance(grocs):
     _, _, weight = _kernel(grocs, kernel="identity")
     known = np.linspace(9, weight.shape[0], 10, dtype=int, endpoint=False)
     np.testing.assert_array_almost_equal(
@@ -168,7 +187,6 @@ def test_distance():
     )
 
 
-@parametrize_data
 def test_k(data):
     head, tail, weight = _kernel(data, k=3, kernel="identity")
     assert head.shape[0] == data.shape[0] * 3
@@ -181,8 +199,9 @@ def test_k(data):
     # TODO: test it with the code above and default kernel
 
 
+@pytest.mark.network
 @parametrize_kernelfunctions
-def test_kernels(kernel):
+def test_kernels(kernel, grocs):
     _, _, weight = _kernel(grocs, kernel=kernel, taper=False)
     if kernel == "triangular":
         assert weight.mean() == pytest.approx(0.09416822598434019)
@@ -210,7 +229,6 @@ def test_kernels(kernel):
         assert weight.max() == pytest.approx(0.9855481738848647)
 
 
-@parametrize_data
 @pytest.mark.parametrize("bandwidth", [None, 0.05, 0.4])
 def test_bandwidth(data, bandwidth):
     head, tail, weight = _kernel(data, bandwidth=bandwidth)
@@ -222,6 +240,7 @@ def test_bandwidth(data, bandwidth):
         np.testing.assert_array_equal(np.unique(head), np.arange(len(data)))
 
 
+@pytest.mark.network
 @pytest.mark.parametrize(
     "metric",
     [
@@ -232,7 +251,7 @@ def test_bandwidth(data, bandwidth):
         "haversine",
     ],
 )
-def test_metric(metric):
+def test_metric(metric, grocs):
     data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
@@ -259,6 +278,7 @@ def test_metric(metric):
         assert weight.max() == pytest.approx(0.371465)
 
 
+@pytest.mark.network
 @pytest.mark.parametrize(
     "metric",
     [
@@ -269,7 +289,7 @@ def test_metric(metric):
         "haversine",
     ],
 )
-def test_metric_k(metric):
+def test_metric_k(metric, grocs):
     data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
@@ -300,7 +320,8 @@ def test_metric_k(metric):
 #     raise NotImplementedError()
 
 
-def test_coplanar():
+@pytest.mark.network
+def test_coplanar(grocs):
     grocs_duplicated = pd.concat(
         [grocs, grocs.iloc[:10], grocs.iloc[:3]], ignore_index=True
     )
@@ -361,7 +382,8 @@ def test_shape_preservation():
     np.testing.assert_array_equal(weight, np.zeros((100,), dtype=int))
 
 
-def test_haversine_check():
+@pytest.mark.network
+def test_haversine_check(grocs):
     with pytest.raises(ValueError, match="'haversine'"):
         _kernel(grocs, k=2, metric="haversine")
 
