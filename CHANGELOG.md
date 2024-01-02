@@ -1,8 +1,44 @@
-# Version 4.3.0 (2020-06-28)
+# Changelog
+
+## [Unreleased]
+
+### Added
+
+- W.to_sparse  [#498](https://github.com/pysal/libpysal/pull/498) [@sjsrey](https://github.com/sjsrey/)
+- W.from_WSP [#496](https://github.com/pysal/libpysal/pull/496) [@sjsrey](https://github.com/sjsrey/)
+
+
+### Changed
+- Changlog conventions [#505](https://github.com/pysal/libpysal/pull/505) [@sjsrey](https://github.com/sjsrey/)
+- No longer polling remotes on init [#504](https://github.com/pysal/libpysal/pull/504) [@sjsrey](https://github.com/sjsrey/)
+- Change the handling of IDs in from_dataframe constructors [#477](https://github.com/pysal/libpysal/pull477) [@martinfleis](https://github.com/martinfleis)
+
+### Fixed
+
+- Fixed Sphinx Warnings [#492](https://github.com/pysal/libpysal/pull/492) [@QuLogic](https://github.com/QuLogic)
+- Fixed Linux user path test [#491](https://github.com/pysal/libpysal/pull/481) [@QuLogic](https://github.com/QuLogic)
+
+
+### Removed
+
+- Sklearn dependency [#509](https://github.com/pysal/libpysal/pull/509) [@sjsrey](https://github.com/sjsrey/)
+- Support for Python 3.7 [#502](https://github.com/pysal/libpysal/pull/502) [@jGaboardi](https://github.com/jGaboardi)
+
+
+
+## [4.7.0] (2022-11-17)
+
+### Changed
+
+- Addressed [ShapleyDepreciationWarning](https://github.com/pysal/libpysal/pull/488 )
+- Swapped [platformdirs for appdirs](https://github.com/pysal/libpysal/pull/481)
+- Increased [granularity in example handling](https://github.com/pysal/libpysal/pull/486)
+
+## Version 4.3.0 (2020-06-28)
 
 We closed a total of 85 issues (enhancements and bug fixes) through 27 pull requests, since our last release on 2020-02-01.
 
-## Issues Closed
+### Issues Closed
   - Standardize libpysal/examples/*.py docstrings (#294)
   - Fetch (#295)
   - Mac builds seem to take longer — bump up timeout (#273)
@@ -62,7 +98,7 @@ We closed a total of 85 issues (enhancements and bug fixes) through 27 pull requ
   - test_map breakage due to pandas 1.0 deprecation of ufunc.outer (#236)
   - BUG:  ufunc.outer deprecated (#237)
 
-## Pull Requests
+### Pull Requests
   - Standardize libpysal/examples/*.py docstrings (#294)
   - Fetch (#295)
   - Mac builds seem to take longer — bump up timeout (#273)
