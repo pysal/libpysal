@@ -379,7 +379,7 @@ class TestGetPointsDist:
     def test_get_points_dist_diag(self):
         pt1 = Point((0, 0))
         pt2 = Point((1, 1))
-        assert 2 ** (0.5) == get_points_dist(pt1, pt2)
+        assert get_points_dist(pt1, pt2) == 2 ** (0.5)
 
     def test_get_points_dist_along_x(self):
         pt1 = Point((-1000, 1 / 3.0))
@@ -417,7 +417,7 @@ class TestGetSegmentPointDist:
     def test_get_segment_point_diag_with_dist(self):
         seg = LineSegment(Point((0, 0)), Point((10, 10)))
         pt = Point((0, 10))
-        assert 50 ** (0.5) == pytest.approx(get_segment_point_dist(seg, pt)[0])
+        assert pytest.approx(get_segment_point_dist(seg, pt)[0]) == 50 ** (0.5)
         assert pytest.approx(get_segment_point_dist(seg, pt)[1]) == 0.5
 
 
