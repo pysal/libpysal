@@ -69,7 +69,7 @@ jobs:
           geodatasets.fetch("geoda liquor_stores")
           geodatasets.fetch("eea large_rivers")
           geodatasets.fetch("geoda groceries")
-          geodatasets.fetch("geoda columbus")
+          geodatasets.fetch("geoda guerry")
           libpysal.examples.fetch_all()
           '
       - name: Test libpysal
