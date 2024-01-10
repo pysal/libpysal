@@ -11,9 +11,9 @@ from libpysal.graph._kernel import _VALID_GEOMETRY_TYPES as kernel_types
 from libpysal.graph._triangulation import _VALID_GEOMETRY_TYPES as triang_types
 from libpysal.graph._utils import _validate_geometry_input
 
-columbus = geopandas.read_file(geodatasets.get_path("geoda columbus"))
-columbus["intID"] = columbus.POLYID.values
-columbus["strID"] = columbus.POLYID.astype(str)
+guerry = geopandas.read_file(geodatasets.get_path("geoda guerry"))
+guerry["intID"] = range(len(guerry))
+guerry["strID"] = guerry.intID.astype(str)
 rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers"))
 rivers["strID"] = rivers.NAME
 rivers["intID"] = rivers.index.values + 1
@@ -21,8 +21,8 @@ rivers["intID"] = rivers.index.values + 1
 id_types = [None, "intID", "strID"]
 id_type_names = ["no index", "int index", "string index"]
 
-geom_names = ["columbus", "columbus centroids", "rivers"]
-geoms = [columbus, columbus.set_geometry(columbus.geometry.centroid), rivers]
+geom_names = ["guerry", "guerry centroids", "rivers"]
+geoms = [guerry, guerry.set_geometry(guerry.geometry.centroid), rivers]
 
 shuffle = [False, True]
 external_ids = [False, True]
@@ -93,7 +93,7 @@ def test_validate_input_coords(shuffle, ids):
     """
     Test that input coordinate arrays get validated correctly
     """
-    data = columbus.sample(frac=1, replace=False) if shuffle else columbus
+    data = guerry.sample(frac=1, replace=False) if shuffle else guerry
     input_coords = shapely.get_coordinates(data.centroid)
     if ids is not None:
         ids = data[ids].values
@@ -111,21 +111,21 @@ def test_validate_raises(
     with pytest.raises(ValueError):  # no lines for kernels
         _validate_geometry_input(rivers, valid_geometry_types=kernel_types)
     with pytest.raises(ValueError):  # no polygons for kernels
-        _validate_geometry_input(columbus, valid_geometry_types=kernel_types)
+        _validate_geometry_input(guerry, valid_geometry_types=kernel_types)
     # triangulation
     with pytest.raises(ValueError):  # no lines for triangulation
         _validate_geometry_input(rivers, valid_geometry_types=triang_types)
     with pytest.raises(ValueError):  # no polygons for triangulation
-        _validate_geometry_input(columbus, valid_geometry_types=triang_types)
+        _validate_geometry_input(guerry, valid_geometry_types=triang_types)
     # contiguity
     with pytest.raises(ValueError):  # no point gdf for contiguity
         _validate_geometry_input(
-            columbus.set_geometry(columbus.centroid),
+            guerry.set_geometry(guerry.centroid),
             valid_geometry_types=contiguity_types,
         )
     with pytest.raises(ValueError):  # no point gseries for contiguity
         _validate_geometry_input(
-            columbus.set_geometry(columbus.centroid).geometry,
+            guerry.set_geometry(guerry.centroid).geometry,
             valid_geometry_types=contiguity_types,
         )
     with pytest.raises(ValueError):  # no point arrays for contiguity
