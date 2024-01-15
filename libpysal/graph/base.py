@@ -1455,6 +1455,35 @@ class Graph(SetOpsMixin):
         )
         return Graph(adj, is_sorted=True)
 
+    def apply(self, y, func, **kwargs):
+        """Apply a reduction across the neighbor sets
+
+        Applies ``func`` over groups of ``y`` defined by neighbors for each focal.
+
+        Parameters
+        ----------
+        y : array_like
+            array of values to be grouped. Can be 1-D or 2-D and will be coerced to a
+            pandas object
+        func : function, str, list, dict or None
+            Function to use for aggregating the data passed to pandas ``GroupBy.apply``.
+
+        Returns
+        -------
+        Series | DataFrame
+            pandas object indexed by unique_ids
+        """
+        if not isinstance(y, pd.Series | pd.DataFrame):
+            y = pd.DataFrame(y) if hasattr(y, "ndim") and y.ndim == 2 else pd.Series(y)
+        grouper = y.take(self._adjacency.index.codes[1]).groupby(
+            self._adjacency.index.codes[0]
+        )
+        result = grouper.apply(func, **kwargs)
+        result.index = self.unique_ids
+        if isinstance(result, pd.Series):
+            result.name = None
+        return result
+
 
 def _arrange_arrays(heads, tails, weights, ids=None):
     """
