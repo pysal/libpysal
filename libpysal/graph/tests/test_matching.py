@@ -30,9 +30,8 @@ pytest.importorskip("sklearn")
 default_solver = pulp.listSolvers(onlyAvailable=True)
 if len(default_solver) == 0:
     raise Exception("configuration of pulp has failed, no available solvers")
-default_solver = getattr(
-    pulp, default_solver[0]
-)()  
+default_solver = getattr(pulp, default_solver[0])()
+
 
 def test_correctness_k1():
     # manual solution for simple k=1 by hungarian method
