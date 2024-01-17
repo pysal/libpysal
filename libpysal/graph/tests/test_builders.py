@@ -454,20 +454,15 @@ class TestMatching:
         self.gdf_str = self.gdf_str.set_geometry(self.gdf_str.centroid)
 
     def test_matching_intids(self):
-        g = graph.Graph.build_spatial_matches(
-            self.gdf, k=1
-        )
+        g = graph.Graph.build_spatial_matches(self.gdf, k=1)
 
         assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_matching_strids(self):
-        g = graph.Graph.build_spatial_matches(
-            self.gdf_str, k=2
-        )
+        g = graph.Graph.build_spatial_matches(self.gdf_str, k=2)
 
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
-
