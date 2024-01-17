@@ -407,7 +407,7 @@ class TestAdjacency:
         )
 
     def test_adjacency_intids(self):
-        g = graph.Graph.from_adjacency(
+        g = graph.Graph.build_spatial_matches(
             self.expected_adjacency_intid,
         )
 
@@ -443,3 +443,28 @@ class TestAdjacency:
         contiguity_str = graph.Graph.build_contiguity(self.gdf_str)
         built_str = graph.Graph.from_adjacency(self.expected_adjacency_strid)
         assert contiguity_str == built_str
+
+
+class TestMatching:
+    def setup_method(self):
+        self.gdf = gpd.read_file(geodatasets.get_path("nybb"))
+        self.gdf_str = self.gdf.set_index("BoroName")
+
+    def test_adjacency_intids(self):
+        g = graph.Graph.build_spatial_matches(
+            self.gdf,
+        )
+
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+
+    def test_adjacency_strids(self):
+        g = graph.Graph.build_spatial_matching(
+            self.gdf_str,
+        )
+
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+
