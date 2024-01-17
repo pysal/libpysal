@@ -447,6 +447,7 @@ class TestAdjacency:
 
 class TestMatching:
     def setup_method(self):
+        pytest.importorskip("pulp")
         self.gdf = gpd.read_file(geodatasets.get_path("nybb"))
         self.gdf = self.gdf.set_geometry(self.gdf.centroid)
         self.gdf_str = self.gdf.set_index("BoroName")
