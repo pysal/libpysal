@@ -27,7 +27,7 @@ from ._utils import (
     _sparse_to_arrays,
 )
 
-ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
+ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
 # listed alphabetically
 __author__ = """"
@@ -68,6 +68,7 @@ class Graph(SetOpsMixin):
             - **R** -- Row-standardization (global sum :math:`=n`)
             - **D** -- Double-standardization (global sum :math:`=1`)
             - **V** -- Variance stabilizing
+            - **C** -- Custom
         is_sorted : bool, default False
             ``adjacency`` capturing the graph needs to be canonically sorted to
             initialize the class. The MultiIndex needs to be ordered i-->j
@@ -885,7 +886,7 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        transformation : str
+        transformation : str | callable
             Transformation method. The following are
             valid transformations.
 
@@ -893,6 +894,9 @@ class Graph(SetOpsMixin):
             - **R** -- Row-standardization (global sum :math:`=n`)
             - **D** -- Double-standardization (global sum :math:`=1`)
             - **V** -- Variance stabilizing
+
+            Alternatively, you can pass your own callable passed to
+            ``self.adjacency.groupby(level=0).transform()``.
 
         Returns
         -------
@@ -904,7 +908,8 @@ class Graph(SetOpsMixin):
         ValueError
             Value error for unsupported transformation
         """
-        transformation = transformation.upper()
+        if isinstance(transformation, str):
+            transformation = transformation.upper()
 
         if self.transformation == transformation:
             return self.copy()
@@ -929,10 +934,14 @@ class Graph(SetOpsMixin):
             n_q = self.n / s.sum()
             standardized = (s * n_q).fillna(0).values  # isolate comes as NaN -> 0
 
+        elif callable(transformation):
+            standardized = self._adjacency.groupby(level=0).transform(transformation)
+            transformation = "C"
+
         else:
             raise ValueError(
                 f"Transformation '{transformation}' is not supported. "
-                f"Use one of {ALLOWED_TRANSFORMATIONS[1:]}"
+                f"Use one of {ALLOWED_TRANSFORMATIONS[1:]} or pass a callable."
             )
 
         standardized_adjacency = pd.Series(
@@ -1483,6 +1492,24 @@ class Graph(SetOpsMixin):
         if isinstance(result, pd.Series):
             result.name = None
         return result
+
+    def aggregate(self, func):
+        """Aggregate weights within a neighbor set
+
+        Apply a custom aggregation function to a group of weights of the same focal
+        geometry.
+
+        Parameters
+        ----------
+        func : callable
+            A callable accepted by pandas ``groupby.agg`` method
+
+        Returns
+        -------
+        pd.Series
+            Aggregated weights
+        """
+        return self._adjacency.groupby(level=0).agg(func)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):

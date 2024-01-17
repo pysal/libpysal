@@ -761,6 +761,12 @@ class TestBase:
         with pytest.raises(ValueError, match="Transformation 'X' is not"):
             self.g_int.transform("x")
 
+    def test_transform_callable(self):
+        contig = graph.Graph.build_contiguity(self.nybb)
+        trans = contig.transform(lambda x: x * 10)
+        assert trans.transformation == "C"
+        assert trans.adjacency.sum() == 100
+
     def test_asymmetry(self):
         neighbors = {
             "a": ["b", "c", "d"],
@@ -1071,7 +1077,23 @@ class TestBase:
         )
         pd.testing.assert_frame_equal(
             contig.apply(
-                self.nybb[["Shape_Leng", "Shape_Area"]].values, lambda x: x.sum(axis=None)
+                self.nybb[["Shape_Leng", "Shape_Area"]].values,
+                lambda x: x.sum(axis=None),
             ),
+            expected,
+        )
+
+    def test_aggregate(self):
+        contig = graph.Graph.build_contiguity(self.nybb)
+        expected = pd.Series(
+            [7.3890561, 7.3890561, 20.08553692, 20.08553692, 1.0],
+            index=pd.Index(
+                ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"],
+                name="focal",
+            ),
+            name="weight",
+        )
+        pd.testing.assert_series_equal(
+            contig.aggregate(lambda x: np.exp(np.sum(x))),
             expected,
         )
