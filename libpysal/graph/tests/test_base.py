@@ -761,6 +761,12 @@ class TestBase:
         with pytest.raises(ValueError, match="Transformation 'X' is not"):
             self.g_int.transform("x")
 
+    def test_transform_callable(self):
+        contig = graph.Graph.build_contiguity(self.nybb)
+        trans = contig.transform(lambda x: x * 10)
+        assert trans.transformation == "C"
+        assert trans.adjacency.sum() == 100
+
     def test_asymmetry(self):
         neighbors = {
             "a": ["b", "c", "d"],
@@ -982,3 +988,112 @@ class TestBase:
                 diag_array._adjacency[(contig.unique_ids[i], contig.unique_ids[i])]
                 == val
             )
+
+    def test_apply(self):
+        contig = graph.Graph.build_contiguity(self.nybb)
+
+        # pandas built-in
+        expected = pd.Series(
+            [1.62382200e09, 3.76087588e09, 3.68168493e09, 6.16961834e09, 3.68168493e09],
+            index=pd.Index(
+                ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
+                name="focal",
+            ),
+        )
+        pd.testing.assert_series_equal(contig.apply(self.nybb.area, "sum"), expected)
+
+        # numpy
+        expected = pd.Series(
+            [1.62382200e09, 1.18692629e09, 1.84084247e09, 1.93747835e09, 1.84084247e09],
+            index=pd.Index(
+                ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
+                name="focal",
+            ),
+        )
+        pd.testing.assert_series_equal(
+            contig.apply(self.nybb.area, np.median), expected
+        )
+
+        # lambda over geometry
+        expected = pd.Series(
+            [2.06271959e09, 6.68788190e09, 7.57087991e09, 8.78957337e09, 7.57087991e09],
+            index=pd.Index(
+                ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
+                name="focal",
+            ),
+        )
+        pd.testing.assert_series_equal(
+            contig.apply(self.nybb.geometry, lambda x: x.unary_union.convex_hull.area),
+            expected,
+        )
+
+        # reduction over a dataframe
+        expected = pd.DataFrame(
+            [
+                [3.30470010e05, 1.62381982e09],
+                [1.56477261e06, 3.76087473e09],
+                [1.25564314e06, 3.68168433e09],
+                [2.10181756e06, 6.16961599e09],
+                [1.25564314e06, 3.68168433e09],
+            ],
+            columns=["Shape_Leng", "Shape_Area"],
+            index=pd.Index(
+                ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
+                name="focal",
+            ),
+        )
+        pd.testing.assert_frame_equal(
+            contig.apply(
+                self.nybb, lambda x: x[["Shape_Leng", "Shape_Area"]].sum(axis=None)
+            ),
+            expected,
+        )
+
+        # 1D array input
+        expected = pd.Series(
+            [1.62382200e09, 3.76087588e09, 3.68168493e09, 6.16961834e09, 3.68168493e09],
+            index=pd.Index(
+                ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
+                name="focal",
+            ),
+        )
+        pd.testing.assert_series_equal(
+            contig.apply(self.nybb.area.values, "sum"), expected
+        )
+
+        # 2D array input
+        expected = pd.DataFrame(
+            [
+                [3.30470010e05, 1.62381982e09],
+                [1.56477261e06, 3.76087473e09],
+                [1.25564314e06, 3.68168433e09],
+                [2.10181756e06, 6.16961599e09],
+                [1.25564314e06, 3.68168433e09],
+            ],
+            index=pd.Index(
+                ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
+                name="focal",
+            ),
+        )
+        pd.testing.assert_frame_equal(
+            contig.apply(
+                self.nybb[["Shape_Leng", "Shape_Area"]].values,
+                lambda x: x.sum(axis=None),
+            ),
+            expected,
+        )
+
+    def test_aggregate(self):
+        contig = graph.Graph.build_contiguity(self.nybb)
+        expected = pd.Series(
+            [7.3890561, 7.3890561, 20.08553692, 20.08553692, 1.0],
+            index=pd.Index(
+                ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"],
+                name="focal",
+            ),
+            name="weight",
+        )
+        pd.testing.assert_series_equal(
+            contig.aggregate(lambda x: np.exp(np.sum(x))),
+            expected,
+        )
