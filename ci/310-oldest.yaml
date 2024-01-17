@@ -29,7 +29,7 @@ dependencies:
   - sqlalchemy=2.0
   - zstd
   - xarray=2022.3
-  - pulp
+  - pip
   - pip:
       - pulp
       - platformdirs==2.0.2
