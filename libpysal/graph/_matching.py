@@ -152,7 +152,7 @@ def _spatial_matching(
     if (status != 1) & (not allow_partial_match):
         warnings.warn(
             f"Problem is {pulp.LpStatus[status]}, so edge weights may be non-integer!",
-            stacklevel=1,
+            stacklevel=2,
         )
 
     edges = [
