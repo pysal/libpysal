@@ -339,7 +339,8 @@ def voronoi_polygons(
     shrink: float = 0,
     segment: float = 0,
 ) -> gpd.GeoSeries:
-    """Create Voronoi polygons from a GeoSeries of points, lines, or polygons.
+    """
+    Create Voronoi polygons from a GeoSeries of points, lines, or polygons.
 
     This is a wrapper around ``shapely.voronoi_polygons`` that handles not only
     points but also lines and polygons through their discretization and dissolution
@@ -347,22 +348,23 @@ def voronoi_polygons(
 
     Parameters
     ----------
-    gdf : GeoSeries | GeoDataFrame
+    geometry : GeoSeries | GeoDataFrame
         A GeoSeries of points, lines, or polygons.
     limit : shapely.Polygon, optional
         Polygon used to clip the Voronoi polygons, by default None
-    shrink : int, optional
-        distance for the negative buffer of polygons required when there are polygons
+    shrink : float, optional
+        Distance for the negative buffer of polygons required when there are polygons
         sharing portion of their exterior, by default 0
-    segment : int, optional
-        distance for the segmentation of lines used to add coordinates to lines or
+    segment : float, optional
+        Distance for the segmentation of lines used to add coordinates to lines or
         polygons prior Voronoi tessellation, by default 0
 
     Returns
     -------
     GeoSeries
-        GeoSeries of voronoi polygons with index allowing to link back to the input
+        GeoSeries of Voronoi polygons with index allowing to link back to the input
     """
+    # Check if the input geometry is in a geographic CRS
     if geometry.crs and geometry.crs.is_geographic:
         raise ValueError(
             "Geometry is in a geographic CRS. "
@@ -370,40 +372,55 @@ def voronoi_polygons(
             "projected CRS before using voronoi_polygons.",
         )
 
+    # Set precision of the input geometry (avoids GEOS precision issues)
     objects = shapely.set_precision(geometry.geometry.copy(), 0.00001)
+
     geom_types = objects.geom_type
     mask_poly = geom_types.isin(["Polygon", "MultiPolygon"])
     mask_line = objects.geom_type.isin(["LineString", "MultiLineString"])
 
-    if shrink != 0 and mask_poly.any():
-        objects[mask_poly] = (
-            objects[mask_poly]
-            .buffer(-shrink, cap_style=2, join_style=2)
-            .segmentize(segment)
-        )
+    if mask_poly.any():
+        # Shrink polygons if required
+        if shrink != 0:
+            objects[mask_poly] = objects[mask_poly].buffer(
+                -shrink, cap_style=2, join_style=2
+            )
+        # Segmentize polygons if required
+        if segment != 0:
+            objects[mask_poly] = objects[mask_poly].segmentize(segment)
 
-    # exclude conincident points
     if mask_line.any():
+        if segment != 0:
+            objects[mask_line] = objects[mask_line].segmentize(segment)
+
+        # Remove duplicate coordinates from lines
         objects[mask_line] = (
             objects.loc[mask_line]
-            .segmentize(segment)
             .get_coordinates(index_parts=True)
             .drop_duplicates(keep=False)
             .groupby(level=0)
             .apply(shapely.multipoints)
         )
 
+    # Compute Voronoi polygons
     voronoi = shapely.voronoi_polygons(
         shapely.GeometryCollection(objects.values), extend_to=limit
     )
-    geoms = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
-    ids_objects, ids_geoms = geoms.sindex.query(objects, predicate="intersects")
-    polygons = (
-        geoms.iloc[ids_geoms]
-        .groupby(objects.index.take(ids_objects))
-        .agg(shapely.coverage_union_all)
-    ).set_crs(geometry.crs)
+    # Get individual polygons out of the collection
+    polygons = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
+    if mask_poly.any() or mask_line.any():
+        # Assign to each input geometry the corresponding Voronoi polygon
+        ids_objects, ids_polygons = polygons.sindex.query(
+            objects, predicate="intersects"
+        )
+        # Dissolve polygons
+        polygons = (
+            polygons.iloc[ids_polygons]
+            .groupby(objects.index.take(ids_objects))
+            .agg(shapely.coverage_union_all)
+        ).set_crs(geometry.crs)
 
+    # Clip polygons if limit is provided
     if limit is not None:
         to_be_clipped = polygons.sindex.query(limit.boundary, "intersects")
         polygons.iloc[to_be_clipped] = polygons.iloc[to_be_clipped].intersection(limit)
