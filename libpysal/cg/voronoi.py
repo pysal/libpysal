@@ -5,7 +5,9 @@ Adapted from https://gist.github.com/pv/8036995
 
 """
 
+import geopandas as gpd
 import numpy as np
+import shapely
 from scipy.spatial import Voronoi
 
 __author__ = "Serge Rey <sjsrey@gmail.com>"
@@ -329,3 +331,81 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
         )
     clipped_regions = geopandas.overlay(regions, clipper, how="intersection")
     return clipped_regions
+
+
+def voronoi_polygons(
+    geometry,
+    limit=None,
+    shrink=0,
+    segment=0,
+):
+    """Create Voronoi polygons from a GeoSeries of points, lines, or polygons.
+
+    This is a wrapper around ``shapely.voronoi_polygons`` that handles not only
+    points but also lines and polygons through their discretization and dissolution
+    of the resulting polygons.
+
+    Parameters
+    ----------
+    gdf : GeoSeries | GeoDataFrame
+        A GeoSeries of points, lines, or polygons.
+    limit : shapely.Polygon, optional
+        Polygon used to clip the Voronoi polygons, by default None
+    shrink : int, optional
+        distance for the negative buffer of polygons required when there are polygons
+        sharing portion of their exterior, by default 0
+    segment : int, optional
+        distance for the segmentation of lines used to add coordinates to lines or
+        polygons prior Voronoi tessellation, by default 0
+
+    Returns
+    -------
+    GeoSeries
+        GeoSeries of voronoi polygons with index allowing to link back to the input
+    """
+    if geometry.crs and geometry.crs.is_geographic:
+        raise ValueError(
+            "Geometry is in a geographic CRS. "
+            "Use 'GeoSeries.to_crs()' to re-project geometries to a "
+            "projected CRS before using voronoi_polygons.",
+        )
+
+    objects = shapely.set_precision(geometry.geometry.copy(), 0.00001)
+    geom_types = objects.geom_type
+    mask_poly = geom_types.isin(["Polygon", "MultiPolygon"])
+    mask_line = objects.geom_type.isin(["LineString", "MultiLineString"])
+
+    if shrink != 0 and mask_poly.any():
+        objects[mask_poly] = (
+            objects[mask_poly]
+            .buffer(-shrink, cap_style=2, join_style=2)
+            .segmentize(segment)
+        )
+
+    # exclude conincident points
+    if mask_line.any():
+        objects[mask_line] = (
+            objects.loc[mask_line]
+            .segmentize(segment)
+            .get_coordinates(index_parts=True)
+            .drop_duplicates(keep=False)
+            .groupby(level=0)
+            .apply(shapely.multipoints)
+        )
+
+    voronoi = shapely.voronoi_polygons(
+        shapely.GeometryCollection(objects.values), extend_to=limit
+    )
+    geoms = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
+    ids_objects, ids_geoms = geoms.sindex.query(objects, predicate="intersects")
+    polygons = (
+        geoms.iloc[ids_geoms]
+        .groupby(objects.index.take(ids_objects))
+        .agg(shapely.coverage_union_all)
+    ).set_crs(geometry.crs)
+
+    if limit is not None:
+        to_be_clipped = polygons.sindex.query(limit.boundary, "intersects")
+        polygons.iloc[to_be_clipped] = polygons.iloc[to_be_clipped].intersection(limit)
+
+    return polygons
