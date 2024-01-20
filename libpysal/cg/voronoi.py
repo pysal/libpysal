@@ -334,11 +334,11 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
 
 
 def voronoi_polygons(
-    geometry,
-    limit=None,
-    shrink=0,
-    segment=0,
-):
+    geometry: gpd.GeoSeries | gpd.GeoDataFrame,
+    limit: shapely.Geometry = None,
+    shrink: float = 0,
+    segment: float = 0,
+) -> gpd.GeoSeries:
     """Create Voronoi polygons from a GeoSeries of points, lines, or polygons.
 
     This is a wrapper around ``shapely.voronoi_polygons`` that handles not only
