@@ -1,7 +1,16 @@
 name: Test reverse dependencies
 on:
-  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * 1,4"
   workflow_dispatch:
+    inputs:
+      version:
+        description: Manual reverse dependency testing
+        default: test
+        required: false
+
 jobs:
   reverse_dependencies:
     name: Reverse dependency testing
@@ -11,7 +20,7 @@ jobs:
         with:
             fetch-depth: 0
 
-      - uses: scientific-python/reverse-dependency-testing@main
+      - uses: scientific-python/reverse-dependency-testing-action@main
         with:
             package_name: libpysal
             ignore: >-
@@ -40,6 +49,6 @@ jobs:
               KDEpy
             installation_command: >-
               pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()'
-            fail_on_failure: false
-            verbose: false
+            fail_on_failure: true
+            verbose: true
             parallel: true
