@@ -42,4 +42,4 @@ jobs:
               pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()'
             fail_on_failure: false
             verbose: true
-            parallel: true
+            parallel: false
