@@ -256,16 +256,16 @@ def test_block_contiguity(regimes):
         8: [4, 5],
         9: [],
     }
-    assert {f: n.tolist() for f, n, in neighbors.items()} == wn
+    assert {f: n.tolist() for f, n in neighbors.items()} == wn
 
     ids = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
     neighbors = _block_contiguity(regimes, ids=ids)
     wn_str = {ids[f]: [ids[o] for o in n] for f, n in wn.items()}
-    assert {f: n.tolist() for f, n, in neighbors.items()} == wn_str
+    assert {f: n.tolist() for f, n in neighbors.items()} == wn_str
 
     regimes = pandas.Series(regimes, index=ids)
     neighbors = _block_contiguity(regimes)
-    assert {f: n.tolist() for f, n, in neighbors.items()} == wn_str
+    assert {f: n.tolist() for f, n in neighbors.items()} == wn_str
 
 
 def test_fuzzy_contiguity():

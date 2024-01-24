@@ -27,7 +27,7 @@ from ._utils import (
     _sparse_to_arrays,
 )
 
-ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
+ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
 # listed alphabetically
 __author__ = """"
@@ -68,6 +68,7 @@ class Graph(SetOpsMixin):
             - **R** -- Row-standardization (global sum :math:`=n`)
             - **D** -- Double-standardization (global sum :math:`=1`)
             - **V** -- Variance stabilizing
+            - **C** -- Custom
         is_sorted : bool, default False
             ``adjacency`` capturing the graph needs to be canonically sorted to
             initialize the class. The MultiIndex needs to be ordered i-->j
@@ -885,7 +886,7 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        transformation : str
+        transformation : str | callable
             Transformation method. The following are
             valid transformations.
 
@@ -893,6 +894,9 @@ class Graph(SetOpsMixin):
             - **R** -- Row-standardization (global sum :math:`=n`)
             - **D** -- Double-standardization (global sum :math:`=1`)
             - **V** -- Variance stabilizing
+
+            Alternatively, you can pass your own callable passed to
+            ``self.adjacency.groupby(level=0).transform()``.
 
         Returns
         -------
@@ -904,7 +908,8 @@ class Graph(SetOpsMixin):
         ValueError
             Value error for unsupported transformation
         """
-        transformation = transformation.upper()
+        if isinstance(transformation, str):
+            transformation = transformation.upper()
 
         if self.transformation == transformation:
             return self.copy()
@@ -929,10 +934,14 @@ class Graph(SetOpsMixin):
             n_q = self.n / s.sum()
             standardized = (s * n_q).fillna(0).values  # isolate comes as NaN -> 0
 
+        elif callable(transformation):
+            standardized = self._adjacency.groupby(level=0).transform(transformation)
+            transformation = "C"
+
         else:
             raise ValueError(
                 f"Transformation '{transformation}' is not supported. "
-                f"Use one of {ALLOWED_TRANSFORMATIONS[1:]}"
+                f"Use one of {ALLOWED_TRANSFORMATIONS[1:]} or pass a callable."
             )
 
         standardized_adjacency = pd.Series(
@@ -1405,9 +1414,11 @@ class Graph(SetOpsMixin):
 
     def eliminate_zeros(self):
         """Remove graph edges with zero weight
+
         Eliminates edges with weight == 0 that do not encode an
         isolate. This is useful to clean-up edges that will make
         no effect in operations like :meth:`lag`.
+
         Returns
         -------
         Graph
@@ -1418,6 +1429,87 @@ class Graph(SetOpsMixin):
         # substract isolates from mask of zeros
         zeros = (self._adjacency == 0) != isolates
         return Graph(self._adjacency[~zeros], is_sorted=True)
+
+    def assign_self_weight(self, weight=1):
+        """Assign values to edges representing self-weight.
+
+        The value for each ``focal == neighbor`` location in
+        the graph is set to ``weight``.
+
+        Parameters
+        ----------
+        weight : float | array-like
+            Defines the value(s) to which the weight representing the relationship with
+            itself should be set. If a constant is passed then each self-weight will get
+            this value (default is 1). An array of length ``Graph.n`` can be passed to
+            set explicit values to each self-weight (assumed to be in the same order as
+            original data).
+
+        Returns
+        -------
+        Graph
+            A new ``Graph`` with added self-weights.
+        """
+        addition = pd.Series(
+            weight,
+            index=pd.MultiIndex.from_arrays(
+                [self.unique_ids, self.unique_ids], names=["focal", "neighbor"]
+            ),
+            name="weight",
+        )
+        adj = (
+            pd.concat([self.adjacency.drop(self.isolates), addition])
+            .reindex(self.unique_ids, level=0)
+            .reindex(self.unique_ids, level=1)
+        )
+        return Graph(adj, is_sorted=True)
+
+    def apply(self, y, func, **kwargs):
+        """Apply a reduction across the neighbor sets
+
+        Applies ``func`` over groups of ``y`` defined by neighbors for each focal.
+
+        Parameters
+        ----------
+        y : array_like
+            array of values to be grouped. Can be 1-D or 2-D and will be coerced to a
+            pandas object
+        func : function, str, list, dict or None
+            Function to use for aggregating the data passed to pandas ``GroupBy.apply``.
+
+        Returns
+        -------
+        Series | DataFrame
+            pandas object indexed by unique_ids
+        """
+        if not isinstance(y, pd.Series | pd.DataFrame):
+            y = pd.DataFrame(y) if hasattr(y, "ndim") and y.ndim == 2 else pd.Series(y)
+        grouper = y.take(self._adjacency.index.codes[1]).groupby(
+            self._adjacency.index.codes[0]
+        )
+        result = grouper.apply(func, **kwargs)
+        result.index = self.unique_ids
+        if isinstance(result, pd.Series):
+            result.name = None
+        return result
+
+    def aggregate(self, func):
+        """Aggregate weights within a neighbor set
+
+        Apply a custom aggregation function to a group of weights of the same focal
+        geometry.
+
+        Parameters
+        ----------
+        func : callable
+            A callable accepted by pandas ``groupby.agg`` method
+
+        Returns
+        -------
+        pd.Series
+            Aggregated weights
+        """
+        return self._adjacency.groupby(level=0).agg(func)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):

@@ -3,6 +3,8 @@ review the [contributing procedures](https://github.com/pysal/pysal/wiki/GitHub-
 
 ## Style and format
 
-1. Python 3.6, 3.7, and 3.8 are the officially supported versions.
-2. This project follows the formatting conventions of [`black`](https://black.readthedocs.io/en/stable/) and utilizes [`pre-commit`](https://pre-commit.com) to format commits prior to pull requests being made. 
-    * LJ Miranda provides an [excellent, concise guide](https://ljvmiranda921.github.io/notebook/2018/06/21/precommits-using-black-and-flake8/) on setting up and implementing a `pre-commit` hook for `black`.
+1. At the time of this writing, Python 3.10, 3.11, and 3.12 are the officially supported versions.
+2. This project implements the linting and formatting conventions of [`ruff`](https://docs.astral.sh/ruff/) on all incoming Pull Requests. To ensure a PR is properly linted and formatted prior to creating a Pull Request, [install `pre-commit`](https://pre-commit.com/#installation) in your development environment and then [set up the `libpysal` configuration of pre-commit hooks](https://pre-commit.com/#3-install-the-git-hook-scripts). 
+ 
+ 
+ 

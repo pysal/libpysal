@@ -197,7 +197,7 @@ class TestShxFile:
 class TestNullShape:
     def test_pack(self):
         null_shape = NullShape()
-        assert b"\x00" * 4 == null_shape.pack()
+        assert null_shape.pack() == b"\x00" * 4
 
     def test_unpack(self):
         null_shape = NullShape()
