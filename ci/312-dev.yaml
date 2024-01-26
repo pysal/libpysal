@@ -37,3 +37,4 @@ dependencies:
       - xarray
       - git+https://github.com/geopandas/geopandas.git@main
       - git+https://github.com/shapely/shapely.git@main
+      - pulp
