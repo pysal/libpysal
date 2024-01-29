@@ -35,6 +35,8 @@ jobs:
               mesa-geo
             include: >-
               mapclassify
+            whitelist: >-
+              pointpats
             install: >-
               setuptools-scm
               py-opencv
@@ -45,7 +47,7 @@ jobs:
               geodatasets
               bokeh
               pulp
-              opencv
+              py-opencv
               dask-geopandas
             install_pip: >-
               KDEpy
