@@ -24,7 +24,7 @@
 
 libpysal development is hosted on [github](https://github.com/pysal/libpysal).
 
-Discussions of development occurs on the [developer list](http://groups.google.com/group/pysal-dev) as well as [Discord](https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc&link=https://discord.gg/BxFTEPFFZn)](https://discord.gg/BxFTEPFFZn).
+Discussions of development occurs on the [developer list](http://groups.google.com/group/pysal-dev) as well as [Discord](https://discord.gg/BxFTEPFFZn).
 
 ## Contributing
 
