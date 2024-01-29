@@ -6,8 +6,8 @@ libpysal: Python Spatial Analysis Library Core
 .. image:: https://github.com/pysal/libpysal/workflows/.github/workflows/unittests.yml/badge.svg
    :target: https://github.com/pysal/libpysal/actions?query=workflow%3A.github%2Fworkflows%2Funittests.yml
 
-.. image:: https://badges.gitter.im/pysal/pysal.svg
-   :target: https://gitter.im/pysal/pysal
+.. image:: https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc
+   :target: https://discord.gg/BxFTEPFFZn
 
 .. image:: https://badge.fury.io/py/libpysal.svg
     :target: https://badge.fury.io/py/libpysal
@@ -31,7 +31,6 @@ libpysal: Python Spatial Analysis Library Core
       </div>
     </div>
 
-
 ************
 Introduction
 ************
@@ -42,7 +41,6 @@ Introduction
 - Input-and output: libpysal.io
 - Computational geometry: libpysal.cg
 - Built-in example datasets libpysal.examples
-
 
 Examples demonstrating some of **libpysal** functionality are available in the `tutorial <tutorial.html>`_.
 
@@ -60,9 +58,9 @@ libpysal development is hosted on github_.
 
 Discussions of development occurs on the
 `developer list <http://groups.google.com/group/pysal-dev>`_
-as well as gitter_.
+as well as discord_.
 
-.. _gitter : https://gitter.im/pysal/pysal?
+.. _discord : https://discord.gg/BxFTEPFFZn
 
 ****************
 Getting Involved
@@ -71,7 +69,6 @@ Getting Involved
 If you are interested in contributing to PySAL please see our
 `development guidelines  <https://github.com/pysal/pysal/wiki>`_.
 
-
 ***********
 Bug reports
 ***********
@@ -79,7 +76,6 @@ Bug reports
 To search for or report bugs, please see libpysal's issues_.
 
 .. _issues :  http://github.com/pysal/libpysal/issues
-
 
 ***************
 Citing libpysal
@@ -102,8 +98,6 @@ If you use PySAL in a scientific publication, we would appreciate citations to t
         keywords={Open Source; Software; Spatial}
       }
 
-
-
 *******************
 License information
 *******************
@@ -112,13 +106,10 @@ See the file "LICENSE.txt" for information on the history of this
 software, terms & conditions for usage, and a DISCLAIMER OF ALL
 WARRANTIES.
 
-
 libpysal
 ========
 
 Core components of the Python Spatial Analysis Library (`PySAL`_)
-
-
 
 .. toctree::
    :hidden:

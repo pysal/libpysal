@@ -5,6 +5,7 @@
 [![PyPI version](https://badge.fury.io/py/libpysal.svg)](https://badge.fury.io/py/libpysal)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/libpysal.svg)](https://anaconda.org/conda-forge/libpysal)
 [![DOI](https://zenodo.org/badge/81501824.svg)](https://zenodo.org/badge/latestdoi/81501824)
+[![Discord](https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc&link=https://discord.gg/BxFTEPFFZn)](https://discord.gg/BxFTEPFFZn)
    
 ## libpysal modules
 
@@ -23,7 +24,7 @@
 
 libpysal development is hosted on [github](https://github.com/pysal/libpysal).
 
-Discussions of development occurs on the [developer list](http://groups.google.com/group/pysal-dev) as well as [gitter](https://gitter.im/pysal/pysal?).
+Discussions of development occurs on the [developer list](http://groups.google.com/group/pysal-dev) as well as [Discord](https://discord.gg/BxFTEPFFZn).
 
 ## Contributing
 
