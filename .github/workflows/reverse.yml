@@ -39,7 +39,6 @@ jobs:
               pointpats
             install: >-
               setuptools-scm
-              py-opencv
               h3-py
               hdbscan
               pandana
@@ -51,8 +50,6 @@ jobs:
               kdepy
               matplotlib
               statsmodels
-            installation_command: >-
-              pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()'; pip install opencv-contrib-python
             fail_on_failure: true
             verbose: true
             parallel: false
