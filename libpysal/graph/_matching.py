@@ -23,16 +23,20 @@ def _spatial_matching(
     locations in another (possibly identical) dataset
     by minimizing the total distance between matched locations.
 
-    Letting d_{ij} be
+    Letting :math:`d_{ij}` be
 
-    minimize \\sum_i^n \\sum_j^n  d_{ij}m_{ij}
-    subject to
-        \\sum_j^n m_{ij} >= k \forall i
-        m_{ij} \\in {0,1} forall ij
+    .. math::
+
+        \\text{minimize} \\sum_i^n \\sum_j^n  d_{ij}m_{ij}
+
+        \\text{subject to}
+            \\sum_j^n m_{ij} >= k \\forall i
+
+            m_{ij} \\in {0,1} \\forall ij
 
 
-        Paramters
-    ---------
+    Parameters
+    ----------
     x : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
         geometries that need matches. If a geopandas.Geo* object
         is provided, the .geometry attribute is used. If a numpy.ndarray with

@@ -727,6 +727,55 @@ class Graph(SetOpsMixin):
         allow_partial_match=False,
         **metric_kwargs,
     ):
+        """
+        Match locations in one dataset to at least `n_matches`
+        locations in another (possibly identical) dataset
+        by minimizing the total distance between matched locations.
+
+        Letting :math:`d_{ij}` be
+
+        .. math::
+
+            \\text{minimize} \\sum_i^n \\sum_j^n  d_{ij}m_{ij}
+
+            \\text{subject to}
+                \\sum_j^n m_{ij} >= k \\forall i
+
+                m_{ij} \\in {0,1} \\forall ij
+
+
+        Parameters
+        ----------
+        x : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries that need matches. If a geopandas.Geo* object
+            is provided, the .geometry attribute is used. If a numpy.ndarray with
+            a geometry dtype is used, then the coordinates are extracted and used.
+        y : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame (default: None)
+            geometries that are used as a source for matching. If a geopandas object
+            is provided, the .geometry attribute is used. If a numpy.ndarray with
+            a geometry dtype is used, then the coordinates are extracted and
+            used. If none, matches are made within `x`.
+        n_matches : int (default: None)
+            number of matches
+        metric : string or callable (default: 'euclidean')
+            distance function to apply over the input coordinates. Supported options
+            depend on whether or not scikit-learn is installed. If so, then any
+            distance function supported by scikit-learn is supported here. Otherwise,
+            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
+        solver : solver from pulp (default: None)
+            a solver defined by the pulp optimization library. If no solver is
+            provided, pulp's default solver will be used. This is generally
+            pulp.COIN(), but this may vary depending on your configuration.
+        return_mip : bool (default: False)
+            whether or not to return the instance of the pulp.LpProblem. By
+            default, the problem is not returned to the user.
+        allow_partial_match : bool (default: False)
+            whether to allow for partial matching. A partial match may have
+            a weight between zero and one, while a "full" match (by default)
+            must have a weight of either zero or one. A partial matching may
+            have a shorter total distance, but will result in a weighted
+            graph.
+        """
         head, tail, weight = _spatial_matching(
             x=data,
             metric=metric,
