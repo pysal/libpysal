@@ -35,8 +35,6 @@ jobs:
               mesa-geo
             include: >-
               mapclassify
-            whitelist: >-
-              pointpats
             install: >-
               setuptools-scm
               h3-py
@@ -50,6 +48,8 @@ jobs:
               kdepy
               matplotlib
               statsmodels
+            installation_command: >-
+              pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()';
             fail_on_failure: true
             verbose: true
             parallel: false
