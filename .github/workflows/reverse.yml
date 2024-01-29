@@ -46,7 +46,7 @@ jobs:
               bokeh
               pulp
               opencv
-              dask_geopandas
+              dask-geopandas
             install_pip: >-
               KDEpy
             installation_command: >-
