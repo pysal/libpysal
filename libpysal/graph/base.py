@@ -751,7 +751,7 @@ class Graph(SetOpsMixin):
             is provided, the .geometry attribute is used. If a numpy.ndarray with
             a geometry dtype is used, then the coordinates are extracted and used.
         y : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame (default: None)
-            geometries that are used as a source for matching. If a geopandas.Geo* object
+            geometries that are used as a source for matching. If a geopandas object
             is provided, the .geometry attribute is used. If a numpy.ndarray with
             a geometry dtype is used, then the coordinates are extracted and
             used. If none, matches are made within `x`.
