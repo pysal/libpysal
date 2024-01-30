@@ -36,7 +36,6 @@ jobs:
               mapclassify
             install: >-
               setuptools-scm
-              py-opencv
               h3-py
               hdbscan
               pandana
@@ -44,11 +43,12 @@ jobs:
               geodatasets
               bokeh
               pulp
-            install_pip: >-
-              opencv-contrib-python
-              KDEpy
+              dask-geopandas
+              kdepy
+              matplotlib
+              statsmodels
             installation_command: >-
-              pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()'
+              pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()';
             fail_on_failure: true
             verbose: true
-            parallel: true
+            parallel: false
