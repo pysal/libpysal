@@ -311,8 +311,8 @@ def voronoi_frames(
     shrink: float = 0,
     segment: float = 0,
     precision: float = 1e-5,
-    return_input: bool | None = True,
-    as_gdf: bool = True,
+    return_input: bool | None = None,
+    as_gdf: bool | None = None,
 ) -> gpd.GeoSeries:
     """
     Create Voronoi polygons from a GeoSeries of points, lines, or polygons.
@@ -323,20 +323,25 @@ def voronoi_frames(
 
     Parameters
     ----------
-    geometry : GeoSeries | GeoDataFrame
-        A GeoSeries of points, lines, or polygons.
-    limit : shapely.Polygon, optional
-        Polygon used to clip the Voronoi polygons, by default None
+    geometry : GeoSeries | GeoDataFrame | array_like
+        A GeoSeries of points, lines, or polygons or an array of coordinates.
+    radius : float, optional
+        Deprecated. Has no effect any longer.
+    clip : str, shapely.geometry.Polygon, optional
+        Polygon used to clip the Voronoi polygons, by default "extent"
+        The options are:
 
-
-        An overloaded option about how to clip the voronoi cells.
-        Default is ``'extent'``. Options are as follows.
-
-        * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.
-        * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the bounding box of the input points.
-        * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of the input points.
-        * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using ``libpysal.cg.alpha_shape_auto``).
-        * Polygon -- Clip to an arbitrary Polygon.
+        * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily
+          larger that the source map. Note that this may lead to cells that are many
+          orders of magnitude larger in extent than the original map. Not recommended.
+        * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the
+          bounding box of the input points.
+        * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of
+          the input points.
+        * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that
+          contains all points (e.g. the smallest alphashape, using
+          ``libpysal.cg.alpha_shape_auto``).
+        * ``shapely.Polygon`` -- Clip to an arbitrary Polygon.
 
     shrink : float, optional
         Distance for the negative buffer of polygons required when there are polygons
@@ -344,10 +349,17 @@ def voronoi_frames(
     segment : float, optional
         Distance for the segmentation of lines used to add coordinates to lines or
         polygons prior Voronoi tessellation, by default 0
+    precision : float, optional
+        Precision under which the voronoi algorithm is generated, by default 1e-5
+    return_input : bool, optional
+        Whether to return the input geometry, defaults to True
+    as_gdf : bool, optional
+        Whether to return the output as a GeoDataFrame (True) or GeoSeries (False),
+        defaults to True
 
     Returns
     -------
-    GeoSeries
+    GeoSeries | GeoDataFrame | tuple
         GeoSeries of Voronoi polygons with index allowing to link back to the input
     """
     if radius is not None:
