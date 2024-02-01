@@ -310,6 +310,7 @@ def voronoi_frames(
     clip: str | shapely.Geometry | None = "extent",
     shrink: float = 0,
     segment: float = 0,
+    precision: float = 1e-5,
     return_input: bool | None = True,
     as_gdf: bool = True,
 ) -> gpd.GeoSeries:
@@ -366,7 +367,7 @@ def voronoi_frames(
                 "projected CRS before using voronoi_polygons.",
             )
         # Set precision of the input geometry (avoids GEOS precision issues)
-        objects = shapely.set_precision(geometry.geometry.copy(), 0.00001)
+        objects = shapely.set_precision(geometry.geometry.copy(), precision)
 
         geom_types = objects.geom_type
         mask_poly = geom_types.isin(["Polygon", "MultiPolygon"])
