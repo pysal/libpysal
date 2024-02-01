@@ -38,3 +38,6 @@ dependencies:
   - sphinx
   - sphinxcontrib-bibtex
   - sphinx_bootstrap_theme
+  - pip
+  - pip:
+      - pulp

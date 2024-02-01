@@ -1,0 +1,54 @@
+name: Test reverse dependencies
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * 1,4"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Manual reverse dependency testing
+        default: test
+        required: false
+
+jobs:
+  reverse_dependencies:
+    name: Reverse dependency testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+
+      - uses: scientific-python/reverse-dependency-testing-action@main
+        with:
+            package_name: libpysal
+            ignore: >-
+              fine
+              tigernet
+              cenpy
+              autoesda
+              region
+              greedy
+              pysal
+              mesa-geo
+            include: >-
+              mapclassify
+            install: >-
+              setuptools-scm
+              h3-py
+              hdbscan
+              pandana
+              astropy
+              geodatasets
+              bokeh
+              pulp
+              dask-geopandas
+              kdepy
+              matplotlib
+              statsmodels
+            installation_command: >-
+              pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()';
+            fail_on_failure: true
+            verbose: true
+            parallel: false

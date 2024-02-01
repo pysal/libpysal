@@ -31,4 +31,5 @@ dependencies:
   - xarray=2022.3
   - pip
   - pip:
+      - pulp
       - platformdirs==2.0.2

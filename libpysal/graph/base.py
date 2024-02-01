@@ -15,6 +15,7 @@ from ._contiguity import (
     _vertex_set_intersection,
 )
 from ._kernel import _distance_band, _kernel
+from ._matching import _spatial_matching
 from ._parquet import _read_parquet, _to_parquet
 from ._plotting import _explore_graph, _plot
 from ._set_ops import SetOpsMixin
@@ -27,7 +28,7 @@ from ._utils import (
     _sparse_to_arrays,
 )
 
-ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V")
+ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
 # listed alphabetically
 __author__ = """"
@@ -68,6 +69,7 @@ class Graph(SetOpsMixin):
             - **R** -- Row-standardization (global sum :math:`=n`)
             - **D** -- Double-standardization (global sum :math:`=1`)
             - **V** -- Variance stabilizing
+            - **C** -- Custom
         is_sorted : bool, default False
             ``adjacency`` capturing the graph needs to be canonically sorted to
             initialize the class. The MultiIndex needs to be ordered i-->j
@@ -355,6 +357,30 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
+    def build_block_contiguity(cls, regimes):
+        """Generate Graph from block contiguity (regime neighbors)
+
+        Block contiguity structures are relevant when defining neighbor relations
+        based on membership in a regime. For example, all counties belonging to
+        the same state could be defined as neighbors, in an analysis of all
+        counties in the US.
+
+        Parameters
+        ----------
+        regimes : list-like
+            list-like of regimes. If pandas.Series, its index is used to encode Graph.
+            Otherwise a default RangeIndex is used.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding block contiguity
+        """
+        ids = _evaluate_index(regimes)
+
+        return cls.from_dicts(_block_contiguity(regimes, ids=ids))
+
+    @classmethod
     def build_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
         """Generate Graph from geometry based on contiguity
 
@@ -416,6 +442,156 @@ class Graph(SetOpsMixin):
                 geometry, rook=rook, ids=ids, by_perimeter=by_perimeter
             )
         )
+
+    @classmethod
+    def build_distance_band(
+        cls, data, threshold, binary=True, alpha=-1.0, kernel=None, bandwidth=None
+    ):
+        """Generate Graph from geometry based on a distance band
+
+        Parameters
+        ----------
+        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries containing locations to compute the
+            delaunay triangulation. If a geopandas object with Point
+            geometry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geometry is used, then the coordinates are extracted and used.
+            If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
+            coordinates.
+        threshold : float
+            distance band
+        binary : bool, optional
+            If True :math:`w_{ij}=1` if :math:`d_{i,j}<=threshold`, otherwise
+            :math:`w_{i,j}=0`.
+            If False :math:`wij=dij^{alpha}`, by default True.
+        alpha : float, optional
+            distance decay parameter for weight (default -1.0)
+            if alpha is positive the weights will not decline with
+            distance. Ignored if ``binary=True`` or ``kernel`` is not None.
+        kernel : str, optional
+            kernel function to use in order to weight the output graph. See
+            :meth:`Graph.build_kernel` for details. Ignored if ``binary=True``.
+        bandwidth : float (default: None)
+            distance to use in the kernel computation. Should be on the same scale as
+            the input coordinates. Ignored if ``binary=True`` or ``kernel=None``.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding distance band weights
+        """
+        ids = _evaluate_index(data)
+
+        dist = _distance_band(data, threshold)
+
+        if binary:
+            head, tail, weight = _kernel(
+                dist,
+                kernel="boxcar",
+                metric="precomputed",
+                ids=ids,
+                bandwidth=np.inf,
+            )
+        elif kernel is not None:
+            head, tail, weight = _kernel(
+                dist,
+                kernel=kernel,
+                metric="precomputed",
+                ids=ids,
+                bandwidth=bandwidth,
+            )
+        else:
+            head, tail, weight = _kernel(
+                dist,
+                kernel=lambda distances, alpha: np.power(distances, alpha),
+                metric="precomputed",
+                ids=ids,
+                bandwidth=alpha,
+            )
+
+        adjacency = pd.DataFrame.from_dict(
+            {"focal": head, "neighbor": tail, "weight": weight}
+        ).set_index("focal")
+
+        # drop diagonal
+        counts = adjacency.index.value_counts()
+        no_isolates = counts[counts > 1]
+        adjacency = adjacency[
+            ~(
+                adjacency.index.isin(no_isolates.index)
+                & (adjacency.index == adjacency.neighbor)
+            )
+        ]
+        # set isolates to 0 - distance band should never contain self-weight
+        adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
+
+        return cls.from_arrays(
+            adjacency.index.values, adjacency.neighbor.values, adjacency.weight.values
+        )
+
+    @classmethod
+    def build_fuzzy_contiguity(
+        cls,
+        geometry,
+        tolerance=None,
+        buffer=None,
+        predicate="intersects",
+    ):
+        """Generate Graph from fuzzy contiguity
+
+        Fuzzy contiguity relaxes the notion of contiguity neighbors
+        for the case of geometry collections that violate the condition
+        of planar enforcement. It handles three types of conditions present
+        in such collections that would result in missing links when using
+        the regular contiguity methods.
+
+        The first are edges for nearby polygons that should be shared, but are
+        digitized separately for the individual polygons and the resulting edges
+        do not coincide, but instead the edges intersect. This case can also be
+        covered by ``build_contiguty`` with the ``strict=False`` parameter.
+
+        The second case is similar to the first, only the resultant edges do not
+        intersect but are "close". The optional buffering of geometry then closes the
+        gaps between the polygons and a resulting intersection is encoded as a link.
+
+        The final case arises when one polygon is "inside" a second polygon but is not
+        encoded to represent a hole in the containing polygon.
+
+        It is also possible to create a contiguity based on a custom spatial predicate.
+
+        Parameters
+        ----------
+        geoms :  array-like of shapely.Geometry objects
+            Could be geopandas.GeoSeries or geopandas.GeoDataFrame, in which case the
+            resulting Graph is indexed by the original index. If an array of
+            shapely.Geometry objects is passed, Graph will assume a RangeIndex.
+        tolerance : float, optional
+            The percentage of the length of the minimum side of the bounding rectangle
+            for the ``geoms`` to use in determining the buffering distance. Either
+            ``tolerance`` or ``buffer`` may be specified but not both.
+            By default None.
+        buffer : float, optional
+            Exact buffering distance in the units of ``geoms.crs``. Either
+            ``tolerance`` or ``buffer`` may be specified but not both.
+            By default None.
+        predicate : str, optional
+            The predicate to use for determination of neighbors. Default is
+            'intersects'. If None is passed, neighbours are determined based
+            on the intersection of bounding boxes. See the documentation of
+            ``geopandas.GeoSeries.sindex.query`` for allowed predicates.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding fuzzy contiguity
+        """
+        ids = _evaluate_index(geometry)
+
+        heads, tails, weights = _fuzzy_contiguity(
+            geometry, ids, tolerance=tolerance, buffer=buffer, predicate=predicate
+        )
+
+        return cls.from_arrays(heads, tails, weights)
 
     @classmethod
     def build_kernel(
@@ -542,6 +718,78 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
+    def build_spatial_matches(
+        cls,
+        data,
+        k,
+        metric="euclidean",
+        solver=None,
+        allow_partial_match=False,
+        **metric_kwargs,
+    ):
+        """
+        Match locations in one dataset to at least `n_matches`
+        locations in another (possibly identical) dataset
+        by minimizing the total distance between matched locations.
+
+        Letting :math:`d_{ij}` be
+
+        .. math::
+
+            \\text{minimize} \\sum_i^n \\sum_j^n  d_{ij}m_{ij}
+
+            \\text{subject to}
+                \\sum_j^n m_{ij} >= k \\forall i
+
+                m_{ij} \\in {0,1} \\forall ij
+
+
+        Parameters
+        ----------
+        x : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            geometries that need matches. If a geopandas.Geo* object
+            is provided, the .geometry attribute is used. If a numpy.ndarray with
+            a geometry dtype is used, then the coordinates are extracted and used.
+        y : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame (default: None)
+            geometries that are used as a source for matching. If a geopandas object
+            is provided, the .geometry attribute is used. If a numpy.ndarray with
+            a geometry dtype is used, then the coordinates are extracted and
+            used. If none, matches are made within `x`.
+        n_matches : int (default: None)
+            number of matches
+        metric : string or callable (default: 'euclidean')
+            distance function to apply over the input coordinates. Supported options
+            depend on whether or not scikit-learn is installed. If so, then any
+            distance function supported by scikit-learn is supported here. Otherwise,
+            only euclidean, minkowski, and manhattan/cityblock distances are admitted.
+        solver : solver from pulp (default: None)
+            a solver defined by the pulp optimization library. If no solver is
+            provided, pulp's default solver will be used. This is generally
+            pulp.COIN(), but this may vary depending on your configuration.
+        return_mip : bool (default: False)
+            whether or not to return the instance of the pulp.LpProblem. By
+            default, the problem is not returned to the user.
+        allow_partial_match : bool (default: False)
+            whether to allow for partial matching. A partial match may have
+            a weight between zero and one, while a "full" match (by default)
+            must have a weight of either zero or one. A partial matching may
+            have a shorter total distance, but will result in a weighted
+            graph.
+        """
+        head, tail, weight = _spatial_matching(
+            x=data,
+            metric=metric,
+            n_matches=k,
+            solver=solver,
+            allow_partial_match=allow_partial_match,
+            **metric_kwargs,
+        )
+        # ids need to be addressed here, rather than in the matching
+        # because x and y can have different id sets. It's only
+        # in W where we *know* we can just use one id vector.
+        return cls.from_arrays(head, tail, weight)
+
+    @classmethod
     def build_triangulation(
         cls,
         data,
@@ -636,182 +884,6 @@ class Graph(SetOpsMixin):
 
         return cls.from_arrays(head, tail, weights)
 
-    @classmethod
-    def build_distance_band(
-        cls, data, threshold, binary=True, alpha=-1.0, kernel=None, bandwidth=None
-    ):
-        """Generate Graph from geometry based on a distance band
-
-        Parameters
-        ----------
-        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
-            geometries containing locations to compute the
-            delaunay triangulation. If a geopandas object with Point
-            geometry is provided, the .geometry attribute is used. If a numpy.ndarray
-            with shapely geometry is used, then the coordinates are extracted and used.
-            If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
-            coordinates.
-        threshold : float
-            distance band
-        binary : bool, optional
-            If True :math:`w_{ij}=1` if :math:`d_{i,j}<=threshold`, otherwise
-            :math:`w_{i,j}=0`.
-            If False :math:`wij=dij^{alpha}`, by default True.
-        alpha : float, optional
-            distance decay parameter for weight (default -1.0)
-            if alpha is positive the weights will not decline with
-            distance. Ignored if ``binary=True`` or ``kernel`` is not None.
-        kernel : str, optional
-            kernel function to use in order to weight the output graph. See
-            :meth:`Graph.build_kernel` for details. Ignored if ``binary=True``.
-        bandwidth : float (default: None)
-            distance to use in the kernel computation. Should be on the same scale as
-            the input coordinates. Ignored if ``binary=True`` or ``kernel=None``.
-
-        Returns
-        -------
-        Graph
-            libpysal.graph.Graph encoding distance band weights
-        """
-        ids = _evaluate_index(data)
-
-        dist = _distance_band(data, threshold)
-
-        if binary:
-            head, tail, weight = _kernel(
-                dist,
-                kernel="boxcar",
-                metric="precomputed",
-                ids=ids,
-                bandwidth=np.inf,
-            )
-        elif kernel is not None:
-            head, tail, weight = _kernel(
-                dist,
-                kernel=kernel,
-                metric="precomputed",
-                ids=ids,
-                bandwidth=bandwidth,
-            )
-        else:
-            head, tail, weight = _kernel(
-                dist,
-                kernel=lambda distances, alpha: np.power(distances, alpha),
-                metric="precomputed",
-                ids=ids,
-                bandwidth=alpha,
-            )
-
-        adjacency = pd.DataFrame.from_dict(
-            {"focal": head, "neighbor": tail, "weight": weight}
-        ).set_index("focal")
-
-        # drop diagonal
-        counts = adjacency.index.value_counts()
-        no_isolates = counts[counts > 1]
-        adjacency = adjacency[
-            ~(
-                adjacency.index.isin(no_isolates.index)
-                & (adjacency.index == adjacency.neighbor)
-            )
-        ]
-        # set isolates to 0 - distance band should never contain self-weight
-        adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
-
-        return cls.from_arrays(
-            adjacency.index.values,
-            adjacency.neighbor.values,
-            adjacency.weight.values,
-        )
-
-    @classmethod
-    def build_block_contiguity(cls, regimes):
-        """Generate Graph from block contiguity (regime neighbors)
-
-        Block contiguity structures are relevant when defining neighbor relations
-        based on membership in a regime. For example, all counties belonging to
-        the same state could be defined as neighbors, in an analysis of all
-        counties in the US.
-
-        Parameters
-        ----------
-        regimes : list-like
-            list-like of regimes. If pandas.Series, its index is used to encode Graph.
-            Otherwise a default RangeIndex is used.
-
-        Returns
-        -------
-        Graph
-            libpysal.graph.Graph encoding block contiguity
-        """
-        ids = _evaluate_index(regimes)
-
-        return cls.from_dicts(_block_contiguity(regimes, ids=ids))
-
-    @classmethod
-    def build_fuzzy_contiguity(
-        cls,
-        geometry,
-        tolerance=None,
-        buffer=None,
-        predicate="intersects",
-    ):
-        """Generate Graph from fuzzy contiguity
-
-        Fuzzy contiguity relaxes the notion of contiguity neighbors
-        for the case of geometry collections that violate the condition
-        of planar enforcement. It handles three types of conditions present
-        in such collections that would result in missing links when using
-        the regular contiguity methods.
-
-        The first are edges for nearby polygons that should be shared, but are
-        digitized separately for the individual polygons and the resulting edges
-        do not coincide, but instead the edges intersect. This case can also be
-        covered by ``build_contiguty`` with the ``strict=False`` parameter.
-
-        The second case is similar to the first, only the resultant edges do not
-        intersect but are "close". The optional buffering of geometry then closes the
-        gaps between the polygons and a resulting intersection is encoded as a link.
-
-        The final case arises when one polygon is "inside" a second polygon but is not
-        encoded to represent a hole in the containing polygon.
-
-        It is also possible to create a contiguity based on a custom spatial predicate.
-
-        Parameters
-        ----------
-        geoms :  array-like of shapely.Geometry objects
-            Could be geopandas.GeoSeries or geopandas.GeoDataFrame, in which case the
-            resulting Graph is indexed by the original index. If an array of
-            shapely.Geometry objects is passed, Graph will assume a RangeIndex.
-        tolerance : float, optional
-            The percentage of the length of the minimum side of the bounding rectangle
-            for the ``geoms`` to use in determining the buffering distance. Either
-            ``tolerance`` or ``buffer`` may be specified but not both.
-            By default None.
-        buffer : float, optional
-            Exact buffering distance in the units of ``geoms.crs``. Either
-            ``tolerance`` or ``buffer`` may be specified but not both.
-            By default None.
-        predicate : str, optional
-            The predicate to use for determination of neighbors. Default is
-            'intersects'. If None is passed, neighbours are determined based
-            on the intersection of bounding boxes. See the documentation of
-            ``geopandas.GeoSeries.sindex.query`` for allowed predicates.
-
-        Returns
-        -------
-        Graph
-            libpysal.graph.Graph encoding fuzzy contiguity
-        """
-        ids = _evaluate_index(geometry)
-
-        heads, tails, weights = _fuzzy_contiguity(
-            geometry, ids, tolerance=tolerance, buffer=buffer, predicate=predicate
-        )
-
-        return cls.from_arrays(heads, tails, weights)
-
     @cached_property
     def neighbors(self):
         """Get neighbors dictionary
@@ -885,7 +957,7 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        transformation : str
+        transformation : str | callable
             Transformation method. The following are
             valid transformations.
 
@@ -893,6 +965,9 @@ class Graph(SetOpsMixin):
             - **R** -- Row-standardization (global sum :math:`=n`)
             - **D** -- Double-standardization (global sum :math:`=1`)
             - **V** -- Variance stabilizing
+
+            Alternatively, you can pass your own callable passed to
+            ``self.adjacency.groupby(level=0).transform()``.
 
         Returns
         -------
@@ -904,7 +979,8 @@ class Graph(SetOpsMixin):
         ValueError
             Value error for unsupported transformation
         """
-        transformation = transformation.upper()
+        if isinstance(transformation, str):
+            transformation = transformation.upper()
 
         if self.transformation == transformation:
             return self.copy()
@@ -929,10 +1005,14 @@ class Graph(SetOpsMixin):
             n_q = self.n / s.sum()
             standardized = (s * n_q).fillna(0).values  # isolate comes as NaN -> 0
 
+        elif callable(transformation):
+            standardized = self._adjacency.groupby(level=0).transform(transformation)
+            transformation = "C"
+
         else:
             raise ValueError(
                 f"Transformation '{transformation}' is not supported. "
-                f"Use one of {ALLOWED_TRANSFORMATIONS[1:]}"
+                f"Use one of {ALLOWED_TRANSFORMATIONS[1:]} or pass a callable."
             )
 
         standardized_adjacency = pd.Series(
@@ -1454,6 +1534,53 @@ class Graph(SetOpsMixin):
             .reindex(self.unique_ids, level=1)
         )
         return Graph(adj, is_sorted=True)
+
+    def apply(self, y, func, **kwargs):
+        """Apply a reduction across the neighbor sets
+
+        Applies ``func`` over groups of ``y`` defined by neighbors for each focal.
+
+        Parameters
+        ----------
+        y : array_like
+            array of values to be grouped. Can be 1-D or 2-D and will be coerced to a
+            pandas object
+        func : function, str, list, dict or None
+            Function to use for aggregating the data passed to pandas ``GroupBy.apply``.
+
+        Returns
+        -------
+        Series | DataFrame
+            pandas object indexed by unique_ids
+        """
+        if not isinstance(y, pd.Series | pd.DataFrame):
+            y = pd.DataFrame(y) if hasattr(y, "ndim") and y.ndim == 2 else pd.Series(y)
+        grouper = y.take(self._adjacency.index.codes[1]).groupby(
+            self._adjacency.index.codes[0]
+        )
+        result = grouper.apply(func, **kwargs)
+        result.index = self.unique_ids
+        if isinstance(result, pd.Series):
+            result.name = None
+        return result
+
+    def aggregate(self, func):
+        """Aggregate weights within a neighbor set
+
+        Apply a custom aggregation function to a group of weights of the same focal
+        geometry.
+
+        Parameters
+        ----------
+        func : callable
+            A callable accepted by pandas ``groupby.agg`` method
+
+        Returns
+        -------
+        pd.Series
+            Aggregated weights
+        """
+        return self._adjacency.groupby(level=0).agg(func)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):

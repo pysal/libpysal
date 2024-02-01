@@ -34,6 +34,7 @@ dependencies = [
     "requests>=2.27",
     "scipy>=1.8",
     "shapely>=2.0.1",
+    "scikit-learn>=1.1",
 ]
 
 [project.urls]
@@ -46,7 +47,6 @@ plus = [
     "networkx>=2.7",
     "numba>=0.55",
     "pyarrow>=7.0",
-    "scikit-learn>=1.1",
     "sqlalchemy>=2.0",
     "xarray>=2022.3",
     "zstd",
