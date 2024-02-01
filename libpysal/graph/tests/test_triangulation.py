@@ -280,8 +280,8 @@ def test_coincident_jitter_voronoi():
     assert not np.array_equal(cp_tails, unique_tails)
     assert not np.array_equal(cp_w, unique_w)
 
-    assert cp_heads.shape[0] == 3392
-    assert unique_heads.shape[0] == 3368
+    assert cp_heads.shape[0] == 3384
+    assert unique_heads.shape[0] == 3360
 
 
 class TestCoincident:

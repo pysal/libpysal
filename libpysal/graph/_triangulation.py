@@ -424,7 +424,7 @@ def _voronoi(coordinates, clip="extent", rook=True):
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
-    cells, _ = voronoi_frames(coordinates, clip=clip)
+    cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False)
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
 
     return heads_ix, tails_ix

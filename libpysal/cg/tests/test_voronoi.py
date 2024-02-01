@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from ..shapes import Polygon, asShape
 from ..voronoi import voronoi, voronoi_frames
@@ -22,7 +23,10 @@ class TestVoronoi:
         ]
 
     def test_voronoi(self):
-        regions, vertices = voronoi(self.points)
+        with pytest.warns(
+            FutureWarning, match="The 'voronoi' function is considered private"
+        ):
+            regions, vertices = voronoi(self.points)
         assert regions == [[1, 3, 2], [4, 5, 1, 0], [0, 1, 7, 6], [9, 0, 8]]
 
         np.testing.assert_array_almost_equal(vertices, self.vertices)

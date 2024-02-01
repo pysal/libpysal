@@ -4,9 +4,11 @@ Voronoi tesslation of 2-d point sets.
 Adapted from https://gist.github.com/pv/8036995
 
 """
+import warnings
 
 import geopandas as gpd
 import numpy as np
+import numpy.typing as npt
 import shapely
 from scipy.spatial import Voronoi
 
@@ -53,6 +55,12 @@ def voronoi(points, radius=None):
            [  1.78491801,  19.89803294],
            [ -9.22691341,  -4.58994414]])
     """
+    warnings.warn(
+        "The 'voronoi' function is considered private and will be "
+        "removed in a future release.",
+        FutureWarning,
+        stacklevel=2,
+    )
 
     vor = voronoi_regions(Voronoi(points), radius=radius)
 
@@ -75,6 +83,12 @@ def voronoi_regions(vor, radius=None):
         A two-element tuple consisting of a list of finite voronoi regions
         and an array Voronoi vertex coordinates.
     """
+    warnings.warn(
+        "The 'voronoi_regions' function is considered private and will be "
+        "removed in a future release.",
+        FutureWarning,
+        stacklevel=2,
+    )
 
     new_regions = []
     new_vertices = vor.vertices.tolist()
@@ -155,6 +169,12 @@ def as_dataframes(regions, vertices, points):
     ImportError
         Raised when ``shapely`` is not available.
     """
+    warnings.warn(
+        "The 'as_dataframes' function is considered private and will be "
+        "removed in a future release.",
+        FutureWarning,
+        stacklevel=2,
+    )
 
     try:
         import geopandas as gpd
@@ -184,62 +204,6 @@ def as_dataframes(regions, vertices, points):
         point_df["geometry"] = [Point(pnt) for pnt in points]
 
     return region_df, point_df
-
-
-def voronoi_frames(points, radius=None, clip="extent"):
-    """Composite helper to return Voronoi regions and
-    generator points as individual dataframes.
-
-    Parameters
-    ----------
-    points : array_like
-        The originator points.
-    radius : float
-        The distance to 'points at infinity' used in building voronoi cells.
-        Default is ``None``.
-    clip : {str, shapely.geometry.Polygon}
-        An overloaded option about how to clip the voronoi cells.
-        Default is ``'extent'``. Options are as follows.
-
-        * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.
-        * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the bounding box of the input points.
-        * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of the input points.
-        * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using ``libpysal.cg.alpha_shape_auto``).
-        * Polygon -- Clip to an arbitrary Polygon.
-
-    Returns
-    -------
-    reg_vtx : tuple
-        Two ``geopandas.GeoDataFrame`` (or ``pandas.DataFrame`` if ``geopandas``
-        is unavailable) objects--``(region_df, points_df)``--of finite
-        Voronoi polygons and the originator points as geometries.
-
-    Notes
-    -----
-    If ``geopandas`` is not available the return types will be
-    ``pandas.DataFrame`` objects, each with a geometry column populated
-    with PySAL shapes. If ``geopandas`` is available, return types are
-    ``pandas.GeoDataFrame`` objects with a geometry column populated
-    with shapely geometry types.
-
-    Examples
-    --------
-    >>> points = [(10.2, 5.1), (4.7, 2.2), (5.3, 5.7), (2.7, 5.3)]
-    >>> regions_df, points_df = voronoi_frames(points)
-    >>> regions_df.shape
-    (4, 1)
-
-    >>> regions_df.shape == points_df.shape
-    True
-    """  # noqa: E501
-
-    regions, vertices = voronoi(points, radius=radius)
-    regions, vertices = as_dataframes(regions, vertices, points)
-    if clip:
-        regions = clip_voronoi_frames_to_extent(regions, vertices, clip=clip)
-
-    reg_vtx = regions, vertices
-    return reg_vtx
 
 
 def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
@@ -282,6 +246,13 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
     ValueError
         Raised when in invalid value for ``clip`` is passed in.
     """
+    warnings.warn(
+        "The 'clip_voronoi_frames_to_extent' function is considered private and will be "
+        "removed in a future release.",
+        FutureWarning,
+        stacklevel=2,
+    )
+
     try:
         from shapely.geometry import Polygon
     except ImportError:
@@ -333,11 +304,14 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
     return clipped_regions
 
 
-def voronoi_polygons(
-    geometry: gpd.GeoSeries | gpd.GeoDataFrame,
-    limit: shapely.Geometry = None,
+def voronoi_frames(
+    geometry: gpd.GeoSeries | gpd.GeoDataFrame | npt.ArrayLike,
+    radius: float | None = None,
+    clip: str | shapely.Geometry | None = "extent",
     shrink: float = 0,
     segment: float = 0,
+    return_input: bool | None = True,
+    as_gdf: bool = True,
 ) -> gpd.GeoSeries:
     """
     Create Voronoi polygons from a GeoSeries of points, lines, or polygons.
@@ -352,6 +326,17 @@ def voronoi_polygons(
         A GeoSeries of points, lines, or polygons.
     limit : shapely.Polygon, optional
         Polygon used to clip the Voronoi polygons, by default None
+
+
+        An overloaded option about how to clip the voronoi cells.
+        Default is ``'extent'``. Options are as follows.
+
+        * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily larger that the source map. Note that this may lead to cells that are many orders of magnitude larger in extent than the original map. Not recommended.
+        * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the bounding box of the input points.
+        * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of the input points.
+        * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that contains all points (e.g. the smallest alphashape, using ``libpysal.cg.alpha_shape_auto``).
+        * Polygon -- Clip to an arbitrary Polygon.
+
     shrink : float, optional
         Distance for the negative buffer of polygons required when there are polygons
         sharing portion of their exterior, by default 0
@@ -364,43 +349,57 @@ def voronoi_polygons(
     GeoSeries
         GeoSeries of Voronoi polygons with index allowing to link back to the input
     """
-    # Check if the input geometry is in a geographic CRS
-    if geometry.crs and geometry.crs.is_geographic:
-        raise ValueError(
-            "Geometry is in a geographic CRS. "
-            "Use 'GeoSeries.to_crs()' to re-project geometries to a "
-            "projected CRS before using voronoi_polygons.",
+    if radius is not None:
+        warnings.warn(
+            "The 'radius' parameter is deprecated and will be removed in a future "
+            "release. It has no effect any longer.",
+            FutureWarning,
+            stacklevel=2,
         )
 
-    # Set precision of the input geometry (avoids GEOS precision issues)
-    objects = shapely.set_precision(geometry.geometry.copy(), 0.00001)
-
-    geom_types = objects.geom_type
-    mask_poly = geom_types.isin(["Polygon", "MultiPolygon"])
-    mask_line = objects.geom_type.isin(["LineString", "MultiLineString"])
-
-    if mask_poly.any():
-        # Shrink polygons if required
-        if shrink != 0:
-            objects[mask_poly] = objects[mask_poly].buffer(
-                -shrink, cap_style=2, join_style=2
+    if isinstance(geometry, gpd.GeoDataFrame | gpd.GeoSeries):
+        # Check if the input geometry is in a geographic CRS
+        if geometry.crs and geometry.crs.is_geographic:
+            raise ValueError(
+                "Geometry is in a geographic CRS. "
+                "Use 'GeoSeries.to_crs()' to re-project geometries to a "
+                "projected CRS before using voronoi_polygons.",
             )
-        # Segmentize polygons if required
-        if segment != 0:
-            objects[mask_poly] = objects[mask_poly].segmentize(segment)
+        # Set precision of the input geometry (avoids GEOS precision issues)
+        objects = shapely.set_precision(geometry.geometry.copy(), 0.00001)
 
-    if mask_line.any():
-        if segment != 0:
-            objects[mask_line] = objects[mask_line].segmentize(segment)
+        geom_types = objects.geom_type
+        mask_poly = geom_types.isin(["Polygon", "MultiPolygon"])
+        mask_line = objects.geom_type.isin(["LineString", "MultiLineString"])
 
-        # Remove duplicate coordinates from lines
-        objects[mask_line] = (
-            objects.loc[mask_line]
-            .get_coordinates(index_parts=True)
-            .drop_duplicates(keep=False)
-            .groupby(level=0)
-            .apply(shapely.multipoints)
-        )
+        if mask_poly.any():
+            # Shrink polygons if required
+            if shrink != 0:
+                objects[mask_poly] = objects[mask_poly].buffer(
+                    -shrink, cap_style=2, join_style=2
+                )
+            # Segmentize polygons if required
+            if segment != 0:
+                objects[mask_poly] = objects[mask_poly].segmentize(segment)
+
+        if mask_line.any():
+            if segment != 0:
+                objects[mask_line] = objects[mask_line].segmentize(segment)
+
+            # Remove duplicate coordinates from lines
+            objects[mask_line] = (
+                objects.loc[mask_line]
+                .get_coordinates(index_parts=True)
+                .drop_duplicates(keep=False)
+                .groupby(level=0)
+                .apply(shapely.multipoints)
+            )
+    else:
+        geometry = np.asarray(geometry)
+        objects = geometry = gpd.GeoSeries.from_xy(geometry[:, 0], geometry[:, 1])
+        mask_poly = mask_line = np.array([False])
+
+    limit = _get_limit(objects, clip)
 
     # Compute Voronoi polygons
     voronoi = shapely.voronoi_polygons(
@@ -408,21 +407,82 @@ def voronoi_polygons(
     )
     # Get individual polygons out of the collection
     polygons = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
+    # Assign to each input geometry the corresponding Voronoi polygon
+    # TODO: check if we still need this after shapely/shapely#1968 is released
+    ids_objects, ids_polygons = polygons.sindex.query(objects, predicate="intersects")
     if mask_poly.any() or mask_line.any():
-        # Assign to each input geometry the corresponding Voronoi polygon
-        ids_objects, ids_polygons = polygons.sindex.query(
-            objects, predicate="intersects"
-        )
         # Dissolve polygons
         polygons = (
             polygons.iloc[ids_polygons]
             .groupby(objects.index.take(ids_objects))
             .agg(shapely.coverage_union_all)
-        ).set_crs(geometry.crs)
+        )
+        if geometry.crs is not None:
+            geometry = geometry.set_crs(geometry.crs)
+    else:
+        polygons = polygons.iloc[ids_polygons].reset_index(drop=True)
 
     # Clip polygons if limit is provided
     if limit is not None:
         to_be_clipped = polygons.sindex.query(limit.boundary, "intersects")
         polygons.iloc[to_be_clipped] = polygons.iloc[to_be_clipped].intersection(limit)
 
+    if as_gdf is None:
+        as_gdf = True
+        warnings.warn(
+            "The 'as_gdf' parameter currently defaults to True but will "
+            "default to False in a future release. Set it explicitly to avoid "
+            "this warning.",
+            FutureWarning,
+            stacklevel=2,
+        )
+
+    if as_gdf:
+        polygons = polygons.to_frame("geometry")
+        geometry = geometry.geometry.to_frame("geometry")
+
+    if return_input is None:
+        return_input = True
+        warnings.warn(
+            "The 'return_input' parameter currently defaults to True but will "
+            "default to False in a future release. Set it explicitly to avoid "
+            "this warning.",
+            FutureWarning,
+            stacklevel=2,
+        )
+
+    if return_input:
+        return polygons, geometry
+
     return polygons
+
+
+def _get_limit(points, clip):
+    if clip is None or clip is False or clip.lower() == "none":
+        return None
+    if isinstance(clip, shapely.Geometry):
+        return clip
+
+    if clip.lower() in ("bounds", "bounding box", "bbox", "extent"):
+        return shapely.box(*points.total_bounds)
+
+    if clip.lower() in ("chull", "convex hull", "convex_hull"):
+        return points.unary_union.convex_hull
+
+    if clip.lower() in (
+        "ahull",
+        "alpha hull",
+        "alpha_hull",
+        "ashape",
+        "alpha shape",
+        "alpha_shape",
+    ):
+        from .alpha_shapes import alpha_shape_auto
+
+        coordinates = shapely.get_coordinates(points.values)
+        return alpha_shape_auto(coordinates)
+
+    raise ValueError(
+        f"Clip type '{clip}' not understood. Try one of the supported options: "
+        "[None, 'extent', 'chull', 'ahull']."
+    )
