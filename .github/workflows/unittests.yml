@@ -77,7 +77,7 @@ jobs:
           pytest -v --color yes -n auto --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
 
       - name: Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
 
       - name: Generate and publish the report
         if: |
