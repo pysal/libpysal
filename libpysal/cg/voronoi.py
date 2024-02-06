@@ -10,6 +10,7 @@ import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 import shapely
+from packaging.version import Version
 from scipy.spatial import Voronoi
 
 __author__ = "Serge Rey <sjsrey@gmail.com>"
@@ -247,8 +248,8 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
         Raised when in invalid value for ``clip`` is passed in.
     """
     warnings.warn(
-        "The 'clip_voronoi_frames_to_extent' function is considered private and will be "
-        "removed in a future release.",
+        "The 'clip_voronoi_frames_to_extent' function is considered private "
+        "and will be removed in a future release.",
         FutureWarning,
         stacklevel=2,
     )
@@ -310,7 +311,7 @@ def voronoi_frames(
     clip: str | shapely.Geometry | None = "extent",
     shrink: float = 0,
     segment: float = 0,
-    precision: float = 1e-5,
+    grid_size: float = 1e-5,
     return_input: bool | None = None,
     as_gdf: bool | None = None,
 ) -> gpd.GeoSeries:
@@ -349,8 +350,9 @@ def voronoi_frames(
     segment : float, optional
         Distance for the segmentation of lines used to add coordinates to lines or
         polygons prior Voronoi tessellation, by default 0
-    precision : float, optional
-        Precision under which the voronoi algorithm is generated, by default 1e-5
+    grid_size : float, optional
+        Grid size precision under which the voronoi algorithm is generated,
+        by default 1e-5
     return_input : bool, optional
         Whether to return the input geometry, defaults to True
     as_gdf : bool, optional
@@ -379,7 +381,7 @@ def voronoi_frames(
                 "projected CRS before using voronoi_polygons.",
             )
         # Set precision of the input geometry (avoids GEOS precision issues)
-        objects = shapely.set_precision(geometry.geometry.copy(), precision)
+        objects = shapely.set_precision(geometry.geometry.copy(), grid_size)
 
         geom_types = objects.geom_type
         mask_poly = geom_types.isin(["Polygon", "MultiPolygon"])
@@ -421,8 +423,15 @@ def voronoi_frames(
     # Get individual polygons out of the collection
     polygons = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
     # Assign to each input geometry the corresponding Voronoi polygon
-    # TODO: check if we still need this after shapely/shapely#1968 is released
-    ids_objects, ids_polygons = polygons.sindex.query(objects, predicate="intersects")
+    # TODO: check if we still need indexing after shapely/shapely#1968 is released
+    if Version(gpd.__version__) < Version("0.13.0"):
+        ids_objects, ids_polygons = polygons.sindex.query_bulk(
+            objects, predicate="intersects"
+        )
+    else:
+        ids_objects, ids_polygons = polygons.sindex.query(
+            objects, predicate="intersects"
+        )
     if mask_poly.any() or mask_line.any():
         # Dissolve polygons
         polygons = (
@@ -431,7 +440,7 @@ def voronoi_frames(
             .agg(shapely.coverage_union_all)
         )
         if geometry.crs is not None:
-            geometry = geometry.set_crs(geometry.crs)
+            polygons = polygons.set_crs(geometry.crs)
     else:
         polygons = polygons.iloc[ids_polygons].reset_index(drop=True)
 
@@ -471,11 +480,10 @@ def voronoi_frames(
 
 
 def _get_limit(points, clip):
-    if clip is None or clip is False or clip.lower() == "none":
-        return None
     if isinstance(clip, shapely.Geometry):
         return clip
-
+    if clip is None or clip is False or clip.lower() == "none":
+        return None
     if clip.lower() in ("bounds", "bounding box", "bbox", "extent"):
         return shapely.box(*points.total_bounds)
 
