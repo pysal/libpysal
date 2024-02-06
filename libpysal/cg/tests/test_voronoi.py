@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 import shapely
 from geopandas.testing import assert_geoseries_equal
+from packaging.version import Version
 
 from ..voronoi import voronoi, voronoi_frames
 
@@ -82,6 +83,10 @@ class TestVoronoi:
             check_less_precise=True,
         )
 
+    @pytest.mark.skipif(
+        Version(gpd.__version__) < Version("0.13.0"),
+        reason="requires geopandas>=0.13.0",
+    )
     def test_from_lines(self):
         geoms = voronoi_frames(
             self.lines, as_gdf=False, return_input=False, segment=0.1
@@ -94,6 +99,17 @@ class TestVoronoi:
             crs="EPSG:3857",
         )
         assert_geoseries_equal(geoms.simplify(0.1), expected, check_less_precise=True)
+
+    @pytest.mark.skipif(
+        Version(gpd.__version__) >= Version("0.13.0"),
+        reason="requires geopandas>=0.13.0",
+    )
+    def test_from_lines_import_error(self):
+        with pytest.raises(
+            ImportError,
+            match="Voronoi tessellation of lines requires geopandas 0.13.0 or later.",
+        ):
+            voronoi_frames(self.lines, as_gdf=False, return_input=False, segment=0.1)
 
     def test_clip_none(self):
         geoms = voronoi_frames(

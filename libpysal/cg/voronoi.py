@@ -401,6 +401,11 @@ def voronoi_frames(
             if segment != 0:
                 objects[mask_line] = shapely.segmentize(objects[mask_line], segment)
 
+            if Version(gpd.__version__) < Version("0.13.0"):
+                raise ImportError(
+                    "Voronoi tessellation of lines requires geopandas 0.13.0 or later."
+                )
+
             # Remove duplicate coordinates from lines
             objects[mask_line] = (
                 objects.loc[mask_line]
