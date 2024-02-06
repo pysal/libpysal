@@ -395,11 +395,11 @@ def voronoi_frames(
                 )
             # Segmentize polygons if required
             if segment != 0:
-                objects[mask_poly] = objects[mask_poly].segmentize(segment)
+                objects[mask_poly] = shapely.segmentize(objects[mask_poly], segment)
 
         if mask_line.any():
             if segment != 0:
-                objects[mask_line] = objects[mask_line].segmentize(segment)
+                objects[mask_line] = shapely.segmentize(objects[mask_line], segment)
 
             # Remove duplicate coordinates from lines
             objects[mask_line] = (

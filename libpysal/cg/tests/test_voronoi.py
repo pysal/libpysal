@@ -57,7 +57,7 @@ class TestVoronoi:
                 "POLYGON ((7.5 2.5, 4 3.66666666, 4 5, 7.5 5, 7.5 2.5))",
             ],
         )
-        assert_geoseries_equal(geoms, expected, check_less_precise=True)
+        assert_geoseries_equal(geoms, expected, check_less_precise=True, normalize=True)
 
     def test_from_polygons(self):
         geoms = voronoi_frames(
@@ -72,7 +72,7 @@ class TestVoronoi:
             ],
             crs="EPSG:3857",
         )
-        assert_geoseries_equal(geoms, expected, check_less_precise=True)
+        assert_geoseries_equal(geoms, expected, check_less_precise=True, normalize=True)
 
     def test_from_lines(self):
         geoms = voronoi_frames(
@@ -85,7 +85,9 @@ class TestVoronoi:
             ],
             crs="EPSG:3857",
         )
-        assert_geoseries_equal(geoms.simplify(0.1), expected, check_less_precise=True)
+        assert_geoseries_equal(
+            geoms.simplify(0.1), expected, check_less_precise=True, normalize=True
+        )
 
     def test_clip_none(self):
         geoms = voronoi_frames(
@@ -98,7 +100,7 @@ class TestVoronoi:
                 "POLYGON ((-2 11, 7.5 11, 7.5 2.5, -2 5.66666666, -2 11))",
             ],
         )
-        assert_geoseries_equal(geoms, expected, check_less_precise=True)
+        assert_geoseries_equal(geoms, expected, check_less_precise=True, normalize=True)
 
     def test_clip_chull(self):
         geoms = voronoi_frames(
@@ -111,7 +113,7 @@ class TestVoronoi:
                 "POLYGON ((7.5 3.75, 6 3, 4.5 3.5, 5 5, 7.5 5, 7.5 3.75))",
             ],
         )
-        assert_geoseries_equal(geoms, expected, check_less_precise=True)
+        assert_geoseries_equal(geoms, expected, check_less_precise=True, normalize=True)
 
     def test_clip_ahull(self):
         geoms = voronoi_frames(
@@ -124,7 +126,7 @@ class TestVoronoi:
                 "POLYGON ((7.5 3.75, 6 3, 4.5 3.5, 5 5, 7.5 5, 7.5 3.75))",
             ],
         )
-        assert_geoseries_equal(geoms, expected, check_less_precise=True)
+        assert_geoseries_equal(geoms, expected, check_less_precise=True, normalize=True)
 
     def test_clip_polygon(self):
         geoms = voronoi_frames(
@@ -141,7 +143,7 @@ class TestVoronoi:
                 "POLYGON ((7.5 2.5, -10 8.33333333, -10 10, 7.5 10, 7.5 2.5))",
             ],
         )
-        assert_geoseries_equal(geoms, expected, check_less_precise=True)
+        assert_geoseries_equal(geoms, expected, check_less_precise=True, normalize=True)
 
     def test_clip_error(self):
         with pytest.raises(ValueError, match="Clip type 'invalid' not understood."):
