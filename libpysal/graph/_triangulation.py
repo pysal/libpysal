@@ -356,7 +356,7 @@ def _relative_neighborhood(coordinates):
 
 
 @_validate_coincident
-def _voronoi(coordinates, clip="extent", rook=True):
+def _voronoi(coordinates, clip="bounding_box", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -378,20 +378,20 @@ def _voronoi(coordinates, clip="extent", rook=True):
     clip : str (default: 'bbox')
         An overloaded option about how to clip the voronoi cells passed to
         ``libpysal.cg.voronoi_frames()``.
-        Default is ``'extent'``. Options are as follows.
+        Default is ``'bounding_box'``. Options are as follows.
 
-        * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily
-            larger that the source map. Note that this may lead to cells that are many
-            orders of magnitude larger in extent than the original map.
-            Not recommended.
-        * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the
-            bounding box of the input points.
-        * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of
-            the input points.
-        * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that
-            contains all points (e.g. the smallest alphashape, using
-            ``libpysal.cg.alpha_shape_auto``).
-        * Polygon -- Clip to an arbitrary Polygon.
+        * ``None`` -- No clip is applied. Voronoi cells may be arbitrarily
+          larger that the source map. Note that this may lead to cells that are many
+          orders of magnitude larger in extent than the original map. Not recommended.
+        * ``'bounding_box'`` -- Clip the voronoi cells to the
+          bounding box of the input points.
+        * ``'convex_hull'`` -- Clip the voronoi cells to the convex hull of
+          the input points.
+        * ``'alpha_shape'`` -- Clip the voronoi cells to the tightest hull that
+          contains all points (e.g. the smallest alpha shape, using
+          :func:`libpysal.cg.alpha_shape_auto`).
+        * ``shapely.Polygon`` -- Clip to an arbitrary Polygon.
+
     rook : bool, optional
         Contiguity method. If True, two geometries are considered neighbours if they
         share at least one edge. If False, two geometries are considered neighbours

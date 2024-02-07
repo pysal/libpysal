@@ -605,7 +605,7 @@ class Queen(W):
         return w
 
 
-def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
+def Voronoi(points, criterion="rook", clip="alpha_shape", **kwargs):
     """
     Voronoi weights for a 2-d point set
 
