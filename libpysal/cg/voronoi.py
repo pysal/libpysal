@@ -17,6 +17,8 @@ __author__ = "Serge Rey <sjsrey@gmail.com>"
 
 __all__ = ["voronoi_frames"]
 
+GPD_GE_013 = Version(gpd.__version__) >= Version("0.13.0")
+
 
 def voronoi(points, radius=None):
     """Determine finite Voronoi diagram for a 2-d point set.
@@ -395,24 +397,25 @@ def voronoi_frames(
                 )
             # Segmentize polygons if required
             if segment != 0:
-                objects[mask_poly] = shapely.segmentize(objects[mask_poly], segment)
+                objects.loc[mask_poly] = shapely.segmentize(objects[mask_poly], segment)
 
         if mask_line.any():
             if segment != 0:
-                objects[mask_line] = shapely.segmentize(objects[mask_line], segment)
+                objects.loc[mask_line] = shapely.segmentize(objects[mask_line], segment)
 
-            if Version(gpd.__version__) < Version("0.13.0"):
+            if not GPD_GE_013:
                 raise ImportError(
                     "Voronoi tessellation of lines requires geopandas 0.13.0 or later."
                 )
 
             # Remove duplicate coordinates from lines
-            objects[mask_line] = (
+            objects.loc[mask_line] = (
                 objects.loc[mask_line]
                 .get_coordinates(index_parts=True)
                 .drop_duplicates(keep=False)
                 .groupby(level=0)
                 .apply(shapely.multipoints)
+                .values
             )
     else:
         geometry = np.asarray(geometry)
@@ -429,12 +432,12 @@ def voronoi_frames(
     polygons = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
     # Assign to each input geometry the corresponding Voronoi polygon
     # TODO: check if we still need indexing after shapely/shapely#1968 is released
-    if Version(gpd.__version__) < Version("0.13.0"):
-        ids_objects, ids_polygons = polygons.sindex.query_bulk(
+    if GPD_GE_013:
+        ids_objects, ids_polygons = polygons.sindex.query(
             objects, predicate="intersects"
         )
     else:
-        ids_objects, ids_polygons = polygons.sindex.query(
+        ids_objects, ids_polygons = polygons.sindex.query_bulk(
             objects, predicate="intersects"
         )
     if mask_poly.any() or mask_line.any():

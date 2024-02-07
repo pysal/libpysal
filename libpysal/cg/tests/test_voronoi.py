@@ -102,7 +102,7 @@ class TestVoronoi:
 
     @pytest.mark.skipif(
         Version(gpd.__version__) >= Version("0.13.0"),
-        reason="requires geopandas>=0.13.0",
+        reason="requires geopandas<0.13.0",
     )
     def test_from_lines_import_error(self):
         with pytest.raises(
