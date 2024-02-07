@@ -1044,7 +1044,7 @@ class TestBase:
         )
         pd.testing.assert_frame_equal(
             contig.apply(
-                self.nybb, lambda x: x[["Shape_Leng", "Shape_Area"]].sum(axis=None)
+                self.nybb, lambda x: x[["Shape_Leng", "Shape_Area"]].sum(axis=0)
             ),
             expected,
         )
@@ -1078,7 +1078,7 @@ class TestBase:
         pd.testing.assert_frame_equal(
             contig.apply(
                 self.nybb[["Shape_Leng", "Shape_Area"]].values,
-                lambda x: x.sum(axis=None),
+                lambda x: x.sum(axis=0),
             ),
             expected,
         )
