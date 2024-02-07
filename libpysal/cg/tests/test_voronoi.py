@@ -130,7 +130,7 @@ class TestVoronoi:
 
     def test_clip_chull(self):
         geoms = voronoi_frames(
-            self.points2, as_gdf=False, return_input=False, clip="chull"
+            self.points2, as_gdf=False, return_input=False, clip="convex_hull"
         )
         expected = gpd.GeoSeries.from_wkt(
             [
@@ -147,7 +147,7 @@ class TestVoronoi:
 
     def test_clip_ahull(self):
         geoms = voronoi_frames(
-            self.points2, as_gdf=False, return_input=False, clip="ahull"
+            self.points2, as_gdf=False, return_input=False, clip="alpha_shape"
         )
         expected = gpd.GeoSeries.from_wkt(
             [
@@ -212,3 +212,11 @@ class TestVoronoi:
     def test_radius(self):
         with pytest.warns(FutureWarning, match="The 'radius' parameter is deprecated"):
             voronoi_frames(self.points2, radius=1)
+
+    @pytest.mark.parametrize("clip", ["none", "bounds", "chull", "ahull"])
+    def test_deprecated_clip(self, clip):
+        with pytest.warns(
+            FutureWarning,
+            match=f"The '{clip}' option for the 'clip' parameter is deprecated",
+        ):
+            voronoi_frames(self.points2, clip=clip)

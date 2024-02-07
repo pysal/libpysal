@@ -310,7 +310,7 @@ def clip_voronoi_frames_to_extent(regions, vertices, clip="extent"):
 def voronoi_frames(
     geometry: gpd.GeoSeries | gpd.GeoDataFrame | npt.ArrayLike,
     radius: float | None = None,
-    clip: str | shapely.Geometry | None = "extent",
+    clip: str | shapely.Geometry | None = "bounding_box",
     shrink: float = 0,
     segment: float = 0,
     grid_size: float = 1e-5,
@@ -331,19 +331,19 @@ def voronoi_frames(
     radius : float, optional
         Deprecated. Has no effect any longer.
     clip : str, shapely.geometry.Polygon, optional
-        Polygon used to clip the Voronoi polygons, by default "extent"
+        Polygon used to clip the Voronoi polygons, by default "bounding_box"
         The options are:
 
-        * ``'none'``/``None`` -- No clip is applied. Voronoi cells may be arbitrarily
+        * ``None`` -- No clip is applied. Voronoi cells may be arbitrarily
           larger that the source map. Note that this may lead to cells that are many
           orders of magnitude larger in extent than the original map. Not recommended.
-        * ``'bbox'``/``'extent'``/``'bounding box'`` -- Clip the voronoi cells to the
+        * ``'bounding_box'`` -- Clip the voronoi cells to the
           bounding box of the input points.
-        * ``'chull``/``'convex hull'`` -- Clip the voronoi cells to the convex hull of
+        * ``'convex_hull'`` -- Clip the voronoi cells to the convex hull of
           the input points.
-        * ``'ashape'``/``'ahull'`` -- Clip the voronoi cells to the tightest hull that
-          contains all points (e.g. the smallest alphashape, using
-          ``libpysal.cg.alpha_shape_auto``).
+        * ``'alpha_shape'`` -- Clip the voronoi cells to the tightest hull that
+          contains all points (e.g. the smallest alpha shape, using
+          :func:`libpysal.cg.alpha_shape_auto`).
         * ``shapely.Polygon`` -- Clip to an arbitrary Polygon.
 
     shrink : float, optional
@@ -490,12 +490,34 @@ def voronoi_frames(
 def _get_limit(points, clip):
     if isinstance(clip, shapely.Geometry):
         return clip
-    if clip is None or clip is False or clip.lower() == "none":
+    if clip is None or clip is False:
         return None
-    if clip.lower() in ("bounds", "bounding box", "bbox", "extent"):
+    if clip.lower() == "none":
+        warnings.warn(
+            "The 'none' option for the 'clip' parameter is deprecated and will "
+            "be removed in a future release. Use None or False instead.",
+            FutureWarning,
+            stacklevel=3,
+        )
+        return None
+    if clip.lower() in ("bounding_box", "bounds", "bounding box", "bbox", "extent"):
+        if clip.lower() != "bounding_box":
+            warnings.warn(
+                f"The '{clip}' option for the 'clip' parameter is deprecated and "
+                "will be removed in a future release. Use 'bounding_box' instead.",
+                FutureWarning,
+                stacklevel=3,
+            )
         return shapely.box(*points.total_bounds)
 
     if clip.lower() in ("chull", "convex hull", "convex_hull"):
+        if clip.lower() != "convex_hull":
+            warnings.warn(
+                f"The '{clip}' option for the 'clip' parameter is deprecated and "
+                "will be removed in a future release. Use 'convex_hull' instead.",
+                FutureWarning,
+                stacklevel=3,
+            )
         return points.unary_union.convex_hull
 
     if clip.lower() in (
@@ -506,6 +528,13 @@ def _get_limit(points, clip):
         "alpha shape",
         "alpha_shape",
     ):
+        if clip.lower() != "alpha_shape":
+            warnings.warn(
+                f"The '{clip}' option for the 'clip' parameter is deprecated and "
+                "will be removed in a future release. Use 'alpha_shape' instead.",
+                FutureWarning,
+                stacklevel=3,
+            )
         from .alpha_shapes import alpha_shape_auto
 
         coordinates = shapely.get_coordinates(points.values)
@@ -513,5 +542,5 @@ def _get_limit(points, clip):
 
     raise ValueError(
         f"Clip type '{clip}' not understood. Try one of the supported options: "
-        "[None, 'extent', 'chull', 'ahull']."
+        "[None, 'bounding_box', 'convex_hull', 'alpha_shape', shapely.Polygon]."
     )
