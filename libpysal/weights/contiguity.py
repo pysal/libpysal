@@ -53,8 +53,10 @@ class Rook(W):
         polygons, backup = itertools.tee(polygons)
         first_shape = next(iter(backup))
         if isinstance(first_shape, point_type):
-            polygons, vertices = voronoi_frames(get_points_array(polygons))
-            polygons = list(polygons.geometry)
+            polygons = voronoi_frames(
+                get_points_array(polygons), return_input=False, as_gdf=False
+            )
+            polygons = list(polygons)
         neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
 
@@ -337,8 +339,10 @@ class Queen(W):
         polygons, backup = itertools.tee(polygons)
         first_shape = next(iter(backup))
         if isinstance(first_shape, point_type):
-            polygons, vertices = voronoi_frames(get_points_array(polygons))
-            polygons = list(polygons.geometry)
+            polygons = voronoi_frames(
+                get_points_array(polygons), return_input=False, as_gdf=False
+            )
+            polygons = list(polygons)
         neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
 
@@ -601,7 +605,7 @@ class Queen(W):
         return w
 
 
-def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
+def Voronoi(points, criterion="rook", clip="alpha_shape", **kwargs):
     """
     Voronoi weights for a 2-d point set
 
@@ -631,7 +635,7 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
     """
     from ..cg.voronoi import voronoi_frames
 
-    region_df, _ = voronoi_frames(points, clip=clip)
+    region_df = voronoi_frames(points, clip=clip, return_input=False, as_gdf=True)
     if criterion.lower() == "queen":
         cls = Queen
     elif criterion.lower() == "rook":

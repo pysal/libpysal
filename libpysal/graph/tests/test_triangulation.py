@@ -98,8 +98,8 @@ parametrize_constructors = pytest.mark.parametrize(
 
 def test_correctness_voronoi_clipping():
     noclip = _voronoi(lap_coords, clip=None, rook=True)
-    extent = _voronoi(lap_coords, clip="extent", rook=True)
-    alpha = _voronoi(lap_coords, clip="ashape", rook=True)
+    extent = _voronoi(lap_coords, clip="bounding_box", rook=True)
+    alpha = _voronoi(lap_coords, clip="alpha_shape", rook=True)
 
     g_noclip = Graph.from_arrays(*noclip)
     g_extent = Graph.from_arrays(*extent)
@@ -280,8 +280,8 @@ def test_coincident_jitter_voronoi():
     assert not np.array_equal(cp_tails, unique_tails)
     assert not np.array_equal(cp_w, unique_w)
 
-    assert cp_heads.shape[0] == 3392
-    assert unique_heads.shape[0] == 3368
+    assert cp_heads.shape[0] == 3384
+    assert unique_heads.shape[0] == 3360
 
 
 class TestCoincident:
