@@ -84,7 +84,7 @@ class Graph(SetOpsMixin):
             raise TypeError(
                 f"The adjacency table needs to be a pandas.Series. {type(adjacency)}"
             )
-        if not adjacency.index.names == ["focal", "neighbor"]:
+        if not tuple(adjacency.index.names) == ("focal", "neighbor"):
             raise ValueError(
                 "The index of the adjacency table needs to be a MultiIndex named "
                 "['focal', 'neighbor']."
