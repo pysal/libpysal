@@ -189,34 +189,18 @@ class Graph(SetOpsMixin):
         libpysal.weights.W
             representation of graph as a weights.W object
         """
-        ids, labels = pd.factorize(
-            self._adjacency.index.get_level_values("focal"), sort=False
-        )
-        neighbors = (
-            self._adjacency.reset_index(level=1)
-            .groupby(ids)
-            .apply(
-                lambda group: list(
-                    group[
-                        ~((group.index == group.neighbor) & (group.weight == 0))
-                    ].neighbor
-                )
-            )
-        )
-        neighbors.index = labels[neighbors.index]
-        weights = (
-            self._adjacency.reset_index(level=1)
-            .groupby(ids)
-            .apply(
-                lambda group: list(
-                    group[
-                        ~((group.index == group.neighbor) & (group.weight == 0))
-                    ].weight
-                )
-            )
-        )
-        weights.index = labels[weights.index]
-        return W(neighbors.to_dict(), weights.to_dict(), id_order=labels.tolist())
+        grouper = self._adjacency.groupby(level=0)
+        neighbors = {}
+        weights = {}
+        for ix, chunk in grouper:
+            if ix in self.isolates:
+                neighbors[ix] = []
+                weights[ix] = []
+            else:
+                neighbors[ix] = chunk.index.get_level_values("neighbor").tolist()
+                weights[ix] = chunk.tolist()
+
+        return W(neighbors=neighbors, weights=weights, id_order=self.unique_ids)
 
     @classmethod
     def from_adjacency(
