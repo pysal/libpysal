@@ -425,7 +425,7 @@ def voronoi_frames(
         shapely.GeometryCollection(objects.values), extend_to=limit
     )
     # Get individual polygons out of the collection
-    polygons = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
+    polygons = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs).make_valid()
 
     # temporary fix for libgeos/geos#1062
     if not (polygons.geom_type == "Polygon").all():
