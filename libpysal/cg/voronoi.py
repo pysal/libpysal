@@ -378,8 +378,9 @@ def voronoi_frames(
                 "Use 'GeoSeries.to_crs()' to re-project geometries to a "
                 "projected CRS before using voronoi_polygons.",
             )
-        # Set precision of the input geometry (avoids GEOS precision issues)
-        objects = geometry.copy()
+
+        objects = geometry.geometry.copy()
+
         geom_types = objects.geom_type
         mask_poly = geom_types.isin(["Polygon", "MultiPolygon"])
         mask_line = objects.geom_type.isin(["LineString", "MultiLineString"])
