@@ -313,7 +313,6 @@ def voronoi_frames(
     clip: str | shapely.Geometry | None = "bounding_box",
     shrink: float = 0,
     segment: float = 0,
-    grid_size: float = 1e-5,
     return_input: bool | None = None,
     as_gdf: bool | None = None,
 ) -> gpd.GeoSeries:
@@ -352,9 +351,6 @@ def voronoi_frames(
     segment : float, optional
         Distance for the segmentation of lines used to add coordinates to lines or
         polygons prior Voronoi tessellation, by default 0
-    grid_size : float, optional
-        Grid size precision under which the voronoi algorithm is generated,
-        by default 1e-5
     return_input : bool, optional
         Whether to return the input geometry, defaults to True
     as_gdf : bool, optional
@@ -383,8 +379,7 @@ def voronoi_frames(
                 "projected CRS before using voronoi_polygons.",
             )
         # Set precision of the input geometry (avoids GEOS precision issues)
-        objects = shapely.set_precision(geometry.geometry.copy(), grid_size)
-
+        objects = geometry.copy()
         geom_types = objects.geom_type
         mask_poly = geom_types.isin(["Polygon", "MultiPolygon"])
         mask_line = objects.geom_type.isin(["LineString", "MultiLineString"])
@@ -430,6 +425,12 @@ def voronoi_frames(
     )
     # Get individual polygons out of the collection
     polygons = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
+
+    # temporary fix for libgeos/geos#1062
+    if not (polygons.geom_type == "Polygon").all():
+        polygons = polygons.explode(ignore_index=True)
+        polygons = polygons[polygons.geom_type == "Polygon"]
+
     # Assign to each input geometry the corresponding Voronoi polygon
     # TODO: check if we still need indexing after shapely/shapely#1968 is released
     if GPD_GE_013:
