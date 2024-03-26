@@ -1,6 +1,3 @@
-from libpysal import graph
-
-
 def _build_from_h3(ids, order=1):
     """Generate Graph from H3 hexagons.
 
