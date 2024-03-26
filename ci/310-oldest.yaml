@@ -15,8 +15,6 @@ dependencies:
   # testing
   - codecov
   - matplotlib>=3.6
-  - tobler
-  - h3-py
   - pytest
   - pytest-cov
   - pytest-mpl
