@@ -10,6 +10,8 @@ dependencies:
   # testing
   - codecov
   - matplotlib
+  - tobler
+  - h3-py
   - pytest
   - pytest-cov
   - pytest-mpl
