@@ -382,6 +382,7 @@ def voronoi_frames(
                 "Use 'GeoSeries.to_crs()' to re-project geometries to a "
                 "projected CRS before using voronoi_polygons.",
             )
+
         # Set precision of the input geometry (avoids GEOS precision issues)
         objects = shapely.set_precision(geometry.geometry.copy(), grid_size)
 
@@ -429,7 +430,15 @@ def voronoi_frames(
         shapely.GeometryCollection(objects.values), extend_to=limit
     )
     # Get individual polygons out of the collection
-    polygons = gpd.GeoSeries(shapely.get_parts(voronoi), crs=geometry.crs)
+    polygons = gpd.GeoSeries(
+        shapely.make_valid(shapely.get_parts(voronoi)), crs=geometry.crs
+    )
+
+    # temporary fix for libgeos/geos#1062
+    if not (polygons.geom_type == "Polygon").all():
+        polygons = polygons.explode(ignore_index=True)
+        polygons = polygons[polygons.geom_type == "Polygon"]
+
     # Assign to each input geometry the corresponding Voronoi polygon
     # TODO: check if we still need indexing after shapely/shapely#1968 is released
     if GPD_GE_013:
