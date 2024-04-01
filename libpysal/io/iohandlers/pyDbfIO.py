@@ -319,7 +319,7 @@ class DBF(tables.DataTable):
         if self.mode == "w":
             self.flush()
             # End of file
-            self.f.write(b"\x1A")
+            self.f.write(b"\x1a")
         self.f.close()
 
         tables.DataTable.close(self)

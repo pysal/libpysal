@@ -1,4 +1,5 @@
 """Unit tests for gal.py"""
+
 import tempfile
 
 import pytest

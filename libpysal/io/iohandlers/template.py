@@ -1,4 +1,4 @@
-""" Example Reader and Writer
+"""Example Reader and Writer
 
 These are working readers/writers that parse '.foo' and '.bar' files.
 
