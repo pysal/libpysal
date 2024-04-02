@@ -70,9 +70,8 @@ class DBF(tables.DataTable):
             fmt = "s"
 
             self._col_index = {}
-            idx = 0
 
-            for _ in range(numfields):
+            for idx in range(numfields):
                 # again, check struct for fmt def.
                 name, typ, size, deci = struct.unpack("<11sc4xBB14x", f.read(32))
                 # forces to unicode in 2, to str in 3
@@ -82,7 +81,6 @@ class DBF(tables.DataTable):
                 name = name.replace("\0", "")
                 # eliminate NULs from string
                 self._col_index[name] = (idx, record_size)
-                idx += 1
                 # alt: str(size) + 's'
                 fmt += "%ds" % size
 
