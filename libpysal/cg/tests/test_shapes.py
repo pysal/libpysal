@@ -7,7 +7,7 @@ class TesttestPoint:
     def test___init__1(self):
         """Tests whether points are created without issue."""
 
-        for l_ in [(-5.0, 10.0), (0.0, -6.0), (1e300, float(-1e300))]:
+        for l_ in [(-5.0, 10.0), (0.0, -6.0), (1e300, -1e300)]:
             Point(l_)
 
     def test___str__1(self):

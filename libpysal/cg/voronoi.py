@@ -4,6 +4,7 @@ Voronoi tesslation of 2-d point sets.
 Adapted from https://gist.github.com/pv/8036995
 
 """
+
 import warnings
 
 import geopandas as gpd

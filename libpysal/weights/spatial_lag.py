@@ -1,6 +1,7 @@
 """
 Spatial lag operations.
 """
+
 __author__ = (
     "Sergio J. Rey <srey@asu.edu>, "
     "David C. Folch <david.folch@asu.edu>, "

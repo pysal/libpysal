@@ -8,6 +8,7 @@ For completeness, we need to test a shuffled dataframe
 - check two kernel functions
 - numba/nonumba
 """
+
 import geodatasets
 import geopandas
 import numpy as np

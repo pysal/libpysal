@@ -1,5 +1,4 @@
-"""Miscellaneous file manipulation utilities.
-"""
+"""Miscellaneous file manipulation utilities."""
 
 import pandas as pd
 

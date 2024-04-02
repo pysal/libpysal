@@ -1,4 +1,4 @@
-""" Load WKB into PySAL shapes.
+"""Load WKB into PySAL shapes.
 
 Where PySAL shapes support multiple parts, "MULTI"type shapes
 will be converted to a single multi-part shape:

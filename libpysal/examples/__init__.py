@@ -6,7 +6,6 @@ this module and remotes that can be downloaded.
 This module provides functionality for working with these example datasets.
 """
 
-
 from typing import Union
 
 import pandas as pd

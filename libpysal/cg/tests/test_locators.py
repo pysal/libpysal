@@ -1,4 +1,5 @@
 """locators Unittest."""
+
 from ..locators import *
 
 # ruff: noqa: F403, F405
