@@ -191,7 +191,7 @@ class Graph(SetOpsMixin):
         libpysal.weights.W
             representation of graph as a weights.W object
         """
-        grouper = self._adjacency.groupby(level=0)
+        grouper = self._adjacency.groupby(level=0, sort=False)
         neighbors = {}
         weights = {}
         for ix, chunk in grouper:
@@ -883,7 +883,7 @@ class Graph(SetOpsMixin):
         dict
             dict of tuples representing neighbors
         """
-        grouper = self._adjacency.groupby(level=0)
+        grouper = self._adjacency.groupby(level=0, sort=False)
         neighbors = {}
         for ix, chunk in grouper:
             if ix in self.isolates:
@@ -906,7 +906,7 @@ class Graph(SetOpsMixin):
         dict
             dict of tuples representing weights
         """
-        grouper = self._adjacency.groupby(level=0)
+        grouper = self._adjacency.groupby(level=0, sort=False)
         weights = {}
         for ix, chunk in grouper:
             if ix in self.isolates:
