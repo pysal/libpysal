@@ -34,10 +34,10 @@ def _to_gal(graph_obj, path):
 
     Parameters
     ----------
+    graph_obj : Graph
+        Graph object
     path : str
         path to GAL file
-    neighbors : dict
-        neighbors dict
     """
     grouper = graph_obj._adjacency.groupby(level=0, sort=False)
 

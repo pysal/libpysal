@@ -27,6 +27,7 @@ from ._utils import (
     _sparse_to_arrays,
 )
 from .io._gal import _read_gal, _to_gal
+from .io._gwt import _read_gwt, _to_gwt
 from .io._parquet import _read_parquet, _to_parquet
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
@@ -1276,6 +1277,22 @@ class Graph(SetOpsMixin):
         """
         _to_gal(self, path)
 
+    def to_gwt(self, path):
+        """Save Graph to a GWT file
+
+        Graph is serialized to the GWT file format.
+
+        Parameters
+        ----------
+        path : str
+            path to the GWT file
+
+        See also
+        --------
+        read_gwt
+        """
+        _to_gwt(self, path)
+
     def to_networkx(self):
         """Convert Graph to a ``networkx`` graph.
 
@@ -1648,3 +1665,20 @@ def read_gal(path):
     """
     neighbors = _read_gal(path)
     return Graph.from_dicts(neighbors)
+
+
+def read_gwt(path):
+    """Read Graph from a GWT file
+
+    Parameters
+    ----------
+    path : str
+        path to a file
+
+    Returns
+    -------
+    Graph
+        deserialized Graph
+    """
+    head, tail, weight = _read_gwt(path)
+    return Graph.from_arrays(head, tail, weight)
