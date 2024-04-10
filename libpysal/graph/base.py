@@ -367,7 +367,7 @@ class Graph(SetOpsMixin):
         >>> france = gpd.read_file(get_path('geoda guerry')).set_index('Dprmnt')
         >>> france[['Region', 'geometry']].head()
                      Region                                           geometry
-        Dprtmnt                                                               
+        Dprtmnt
         Ain               E  POLYGON ((801150.000 2092615.000, 800669.000 2...
         Aisne             N  POLYGON ((729326.000 2521619.000, 729320.000 2...
         Allier            C  POLYGON ((710830.000 2137350.000, 711746.000 2...
@@ -375,7 +375,7 @@ class Graph(SetOpsMixin):
         Hautes-Alpes      E  POLYGON ((886504.000 1922890.000, 885733.000 1...
         >>> block_contiguity = graph.Graph.build_block_contiguity(france['Region'])
         >>> block_contiguity.adjacency
-        focal   neighbor       
+        focal   neighbor
         Ain     Basses-Alpes       1
                 Hautes-Alpes       1
                 Aube               1
