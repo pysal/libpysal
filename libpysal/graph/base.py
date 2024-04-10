@@ -890,6 +890,43 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding triangulation weights
+        
+        Example
+        -------
+
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+        
+        Note that the function requires point geometry as an input
+
+        >>> triangulation = graph.Graph.build_triangulation(nybb.centroid)
+        >>> triangulation.adjacency
+        focal          neighbor     
+        Staten Island  Brooklyn         1
+                       Manhattan        1
+        Queens         Brooklyn         1
+                       Manhattan        1
+                       Bronx            1
+        Brooklyn       Staten Island    1
+                       Queens           1
+                       Manhattan        1
+        Manhattan      Staten Island    1
+                       Queens           1
+                       Brooklyn         1
+                       Bronx            1
+        Bronx          Queens           1
+                       Manhattan        1
+        Name: weight, dtype: int64
         """
         ids = _evaluate_index(data)
 
