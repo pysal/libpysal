@@ -75,9 +75,10 @@ class Graph(SetOpsMixin):
             initialize the class. The MultiIndex needs to be ordered i-->j
             on both focal and neighbor levels according to the order of ids in the
             original data from which the Graph is created. Sorting is performed by
-            default based on the order of unique values in the focal level. Set
-            ``is_sorted=True`` to skip this step if the adjacency is already canonically
-            sorted.
+            default based on the order of unique values in the focal level. Sorting
+            needs to be reflected in both the values of the MultiIndex and also the
+            underlying MultiIndex.codes. Set ``is_sorted=True`` to skip this step if the
+            adjacency is already canonically sorted and you are certain about it.
 
         """
         if not isinstance(adjacency, pd.Series):
