@@ -519,9 +519,9 @@ class Graph(SetOpsMixin):
 
         >>> distance_band = graph.Graph.build_distance_band(
         ...     nybb.centroid, 
-                45000,
-                binary=False
-                )
+        ...     45000,
+        ...     binary=False,
+        ... )
         >>> distance_band.adjacency
         focal          neighbor     
         Staten Island  Staten Island    0.000000
@@ -535,11 +535,11 @@ class Graph(SetOpsMixin):
 
         >>> distance_band = graph.Graph.build_distance_band(
         ...     nybb.centroid,
-                45000,
-                binary=False,
-                kernel='bisquare',
-                bandwidth=60000
-                )
+        ...     45000,
+        ...     binary=False,
+        ...     kernel='bisquare',
+        ...     bandwidth=60000,
+        ... )
         >>> distance_band.adjacency
         focal          neighbor     
         Staten Island  Staten Island    0.000000
