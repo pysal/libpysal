@@ -517,7 +517,11 @@ class Graph(SetOpsMixin):
 
         Instead of binary weights you can use inverse distance.
 
-        >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 45000, binary=False)
+        >>> distance_band = graph.Graph.build_distance_band(
+        ...     nybb.centroid, 
+                45000,
+                binary=False
+                )
         >>> distance_band.adjacency
         focal          neighbor     
         Staten Island  Staten Island    0.000000
@@ -529,7 +533,13 @@ class Graph(SetOpsMixin):
 
         You can specify the kernel function.
 
-        >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 45000, binary=False, kernel='bisquare', bandwidth=60000)
+        >>> distance_band = graph.Graph.build_distance_band(
+        ...     nybb.centroid,
+                45000,
+                binary=False,
+                kernel='bisquare',
+                bandwidth=60000
+                )
         >>> distance_band.adjacency
         focal          neighbor     
         Staten Island  Staten Island    0.000000
