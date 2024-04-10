@@ -223,10 +223,10 @@ class Graph(SetOpsMixin):
         >>> w = contiguity.to_W()
         >>> w.neighbors
         {'Bronx': ['Queens', 'Manhattan'],
-            'Brooklyn': ['Queens', 'Manhattan'],
-            'Manhattan': ['Queens', 'Brooklyn', 'Bronx'],
-            'Queens': ['Brooklyn', 'Manhattan', 'Bronx'],
-            'Staten Island': []}
+         'Brooklyn': ['Queens', 'Manhattan'],
+         'Manhattan': ['Queens', 'Brooklyn', 'Bronx'],
+         'Queens': ['Brooklyn', 'Manhattan', 'Bronx'],
+         'Staten Island': []}
         """
         grouper = self._adjacency.groupby(level=0)
         neighbors = {}
