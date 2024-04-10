@@ -419,7 +419,7 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         >>> contiguity = graph.Graph.build_contiguity(nybb)
         >>> contiguity.adjacency
         focal          neighbor
@@ -437,10 +437,10 @@ class Graph(SetOpsMixin):
         Name: weight, dtype: int64
 
         Weight by perimeter instead of binary weights:
-        
+
         >>> contiguity_perimeter = graph.Graph.build_contiguity(nybb, by_perimeter=True)
         >>> contiguity_perimeter.adjacency
-        focal          neighbor     
+        focal          neighbor
         Staten Island  Staten Island        0.000000
         Queens         Brooklyn         50867.502055
                        Manhattan          103.745207
@@ -890,7 +890,7 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding triangulation weights
-        
+
         Example
         -------
 
@@ -906,12 +906,12 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         Note that the function requires point geometry as an input
 
         >>> triangulation = graph.Graph.build_triangulation(nybb.centroid)
         >>> triangulation.adjacency
-        focal          neighbor     
+        focal          neighbor
         Staten Island  Brooklyn         1
                        Manhattan        1
         Queens         Brooklyn         1
