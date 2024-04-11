@@ -365,6 +365,10 @@ class Graph(SetOpsMixin):
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
         >>> france = gpd.read_file(get_path('geoda guerry')).set_index('Dprmnt')
+        
+        In the GeoDa Guerry dataset, the Region column reflects the region 
+        (North, East, West, South or Central) to which each department belongs.
+        
         >>> france[['Region', 'geometry']].head()
                      Region                                           geometry
         Dprtmnt
