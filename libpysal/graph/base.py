@@ -361,7 +361,7 @@ class Graph(SetOpsMixin):
             libpysal.graph.Graph encoding block contiguity
 
         Examples
-        -------
+        --------
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
         >>> france = gpd.read_file(get_path('geoda guerry')).set_index('Dprmnt')
