@@ -362,14 +362,6 @@ class Graph(SetOpsMixin):
         You can also specify weights (for example based
         on the length of the shared border):
 
-        >>> neighbors = {
-        ...     'Africa': ['Asia'],
-        ...     'Asia': ['Africa', 'Europe'],
-        ...     'Australia': [],
-        ...     'Europe': ['Asia'],
-        ...     'North America': ['South America'],
-        ...     'South America': ['North America'],
-        ... }
         >>> weights = {
         ...     'Africa': [1],
         ...     'Asia': [0.2, 0.8],
