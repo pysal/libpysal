@@ -365,10 +365,10 @@ class Graph(SetOpsMixin):
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
         >>> france = gpd.read_file(get_path('geoda guerry')).set_index('Dprmnt')
-        
-        In the GeoDa Guerry dataset, the Region column reflects the region 
+
+        In the GeoDa Guerry dataset, the Region column reflects the region
         (North, East, West, South or Central) to which each department belongs.
-        
+
         >>> france[['Region', 'geometry']].head()
                      Region                                           geometry
         Dprtmnt
@@ -377,8 +377,8 @@ class Graph(SetOpsMixin):
         Allier            C  POLYGON ((710830.000 2137350.000, 711746.000 2...
         Basses-Alpes      E  POLYGON ((882701.000 1920024.000, 882408.000 1...
         Hautes-Alpes      E  POLYGON ((886504.000 1922890.000, 885733.000 1...
-        
-        Using the ``"Region"`` labels as ``regimes`` then identifies all departments 
+
+        Using the ``"Region"`` labels as ``regimes`` then identifies all departments
         within the region as neighbors.
 
         >>> block_contiguity = graph.Graph.build_block_contiguity(france['Region'])
