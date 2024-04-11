@@ -399,6 +399,43 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding block contiguity
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> france = gpd.read_file(get_path('geoda guerry')).set_index('Dprmnt')
+
+        In the GeoDa Guerry dataset, the Region column reflects the region
+        (North, East, West, South or Central) to which each department belongs.
+
+        >>> france[['Region', 'geometry']].head()
+                     Region                                           geometry
+        Dprtmnt
+        Ain               E  POLYGON ((801150.000 2092615.000, 800669.000 2...
+        Aisne             N  POLYGON ((729326.000 2521619.000, 729320.000 2...
+        Allier            C  POLYGON ((710830.000 2137350.000, 711746.000 2...
+        Basses-Alpes      E  POLYGON ((882701.000 1920024.000, 882408.000 1...
+        Hautes-Alpes      E  POLYGON ((886504.000 1922890.000, 885733.000 1...
+
+        Using the ``"Region"`` labels as ``regimes`` then identifies all departments
+        within the region as neighbors.
+
+        >>> block_contiguity = graph.Graph.build_block_contiguity(france['Region'])
+        >>> block_contiguity.adjacency
+        focal   neighbor
+        Ain     Basses-Alpes       1
+                Hautes-Alpes       1
+                Aube               1
+                Cote-d'Or          1
+                Doubs              1
+                                  ..
+        Vienne  Mayenne            1
+                Morbihan           1
+                Basses-Pyrenees    1
+                Deux-Sevres        1
+                Vendee             1
+        Name: weight, Length: 1360, dtype: int32
         """
         ids = _evaluate_index(regimes)
 
