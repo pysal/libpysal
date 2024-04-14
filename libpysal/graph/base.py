@@ -465,7 +465,7 @@ class Graph(SetOpsMixin):
             libpysal.graph.Graph encoding distance band weights
 
         Examples
-        -------
+        --------
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
         >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
