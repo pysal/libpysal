@@ -471,20 +471,20 @@ class Graph(SetOpsMixin):
         >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
         >>> nybb
                        BoroCode  ...                                           geometry
-        BoroName                 ...                                                   
+        BoroName                 ...
         Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
         Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
         Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         Note that the function requires point geometry as the input.
         The treshold distance is in units of the dataframe.
 
         >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 45000)
         >>> distance_band.adjacency
-        focal          neighbor     
+        focal          neighbor
         Staten Island  Staten Island    0
         Queens         Brooklyn         1
         Brooklyn       Queens           1
@@ -494,7 +494,7 @@ class Graph(SetOpsMixin):
 
         >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 110000)
         >>> distance_band.adjacency
-        focal          neighbor     
+        focal          neighbor
         Staten Island  Queens           1
                        Brooklyn         1
                        Manhattan        1
@@ -518,12 +518,12 @@ class Graph(SetOpsMixin):
         Instead of binary weights you can use inverse distance.
 
         >>> distance_band = graph.Graph.build_distance_band(
-        ...     nybb.centroid, 
+        ...     nybb.centroid,
         ...     45000,
         ...     binary=False,
         ... )
         >>> distance_band.adjacency
-        focal          neighbor     
+        focal          neighbor
         Staten Island  Staten Island    0.000000
         Queens         Brooklyn         0.000024
         Brooklyn       Queens           0.000024
@@ -541,7 +541,7 @@ class Graph(SetOpsMixin):
         ...     bandwidth=60000,
         ... )
         >>> distance_band.adjacency
-        focal          neighbor     
+        focal          neighbor
         Staten Island  Staten Island    0.000000
         Queens         Brooklyn         0.232079
         Brooklyn       Queens           0.232079
