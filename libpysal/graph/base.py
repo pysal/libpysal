@@ -479,9 +479,9 @@ class Graph(SetOpsMixin):
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
 
-        Note that the method requires point geometry (or an array of coordinates 
+        Note that the method requires point geometry (or an array of coordinates
         representing points) as an input.
-        
+
         The threshold distance is in the units of the geometry projection. You can check it
         using the ``nybb.crs`` property.
 
@@ -496,7 +496,7 @@ class Graph(SetOpsMixin):
         Name: weight, dtype: int64
 
         The larger threshold yields more neighbors.
-        
+
         >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 110000)
         >>> distance_band.adjacency
         focal          neighbor
