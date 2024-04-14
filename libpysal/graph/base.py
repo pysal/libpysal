@@ -540,6 +540,96 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding distance band weights
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        Note that the method requires point geometry (or an array of coordinates
+        representing points) as an input.
+
+        The threshold distance is in the units of the geometry projection.
+        You can check it using the ``nybb.crs`` property.
+
+        >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 45000)
+        >>> distance_band.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0
+        Queens         Brooklyn         1
+        Brooklyn       Queens           1
+        Manhattan      Bronx            1
+        Bronx          Manhattan        1
+        Name: weight, dtype: int64
+
+        The larger threshold yields more neighbors.
+
+        >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 110000)
+        >>> distance_band.adjacency
+        focal          neighbor
+        Staten Island  Queens           1
+                       Brooklyn         1
+                       Manhattan        1
+        Queens         Staten Island    1
+                       Brooklyn         1
+                       Manhattan        1
+                       Bronx            1
+        Brooklyn       Staten Island    1
+                       Queens           1
+                       Manhattan        1
+                       Bronx            1
+        Manhattan      Staten Island    1
+                       Queens           1
+                       Brooklyn         1
+                       Bronx            1
+        Bronx          Queens           1
+                       Brooklyn         1
+                       Manhattan        1
+        Name: weight, dtype: int64
+
+        Instead of binary weights you can use inverse distance.
+
+        >>> distance_band = graph.Graph.build_distance_band(
+        ...     nybb.centroid,
+        ...     45000,
+        ...     binary=False,
+        ... )
+        >>> distance_band.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0.000000
+        Queens         Brooklyn         0.000024
+        Brooklyn       Queens           0.000024
+        Manhattan      Bronx            0.000026
+        Bronx          Manhattan        0.000026
+        Name: weight, dtype: float64
+
+        Or specify the kernel function to derive weight from the distance.
+
+        >>> distance_band = graph.Graph.build_distance_band(
+        ...     nybb.centroid,
+        ...     45000,
+        ...     binary=False,
+        ...     kernel='bisquare',
+        ...     bandwidth=60000,
+        ... )
+        >>> distance_band.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0.000000
+        Queens         Brooklyn         0.232079
+        Brooklyn       Queens           0.232079
+        Manhattan      Bronx            0.309825
+        Bronx          Manhattan        0.309825
+        Name: weight, dtype: float64
         """
         ids = _evaluate_index(data)
 
