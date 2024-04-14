@@ -482,8 +482,8 @@ class Graph(SetOpsMixin):
         Note that the method requires point geometry (or an array of coordinates
         representing points) as an input.
 
-        The threshold distance is in the units of the geometry projection. You can check it
-        using the ``nybb.crs`` property.
+        The threshold distance is in the units of the geometry projection.
+        You can check it using the ``nybb.crs`` property.
 
         >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 45000)
         >>> distance_band.adjacency
