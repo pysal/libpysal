@@ -745,18 +745,6 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
 
-        >>> knn1 = graph.Graph.build_knn(nybb.centroid, k=1)
-        >>> knn1.adjacency
-        focal          neighbor
-        Staten Island  Brooklyn     1
-        Queens         Brooklyn     1
-        Brooklyn       Queens       1
-        Manhattan      Bronx        1
-        Bronx          Manhattan    1
-        Name: weight, dtype: int32
-
-        Example with different number of neighbors.
-
         >>> knn3 = graph.Graph.build_knn(nybb.centroid, k=3)
         >>> knn3.adjacency
         focal           neighbor
@@ -775,6 +763,19 @@ class Graph(SetOpsMixin):
         Bronx           Queens           1
                         Brooklyn         1
                         Manhattan        1
+        Name: weight, dtype: int32
+
+        Specifying k=1 identifies the nearest neighbor 
+        (note that this can be asymmetrical):
+
+        >>> knn1 = graph.Graph.build_knn(nybb.centroid, k=1)
+        >>> knn1.adjacency
+        focal          neighbor
+        Staten Island  Brooklyn     1
+        Queens         Brooklyn     1
+        Brooklyn       Queens       1
+        Manhattan      Bronx        1
+        Bronx          Manhattan    1
         Name: weight, dtype: int32
         """
         ids = _evaluate_index(data)
