@@ -404,8 +404,8 @@ class Graph(SetOpsMixin):
         Graph
             libpysal.graph.Graph encoding contiguity weights
 
-        Example
-        -------
+        Examples
+        --------
 
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
@@ -891,8 +891,8 @@ class Graph(SetOpsMixin):
         Graph
             libpysal.graph.Graph encoding triangulation weights
 
-        Example
-        -------
+        Examples
+        --------
 
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
@@ -907,7 +907,8 @@ class Graph(SetOpsMixin):
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
 
-        Note that the function requires point geometry as an input
+        Note that the method requires point geometry (or an array of coordinates 
+        representing points) as an input.
 
         >>> triangulation = graph.Graph.build_triangulation(nybb.centroid)
         >>> triangulation.adjacency
