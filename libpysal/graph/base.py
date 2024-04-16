@@ -525,6 +525,56 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding contiguity weights
+
+        Examples
+        --------
+
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0
+        Queens         Brooklyn         1
+                       Manhattan        1
+                       Bronx            1
+        Brooklyn       Queens           1
+                       Manhattan        1
+        Manhattan      Queens           1
+                       Brooklyn         1
+                       Bronx            1
+        Bronx          Queens           1
+                       Manhattan        1
+        Name: weight, dtype: int64
+
+        Weight by perimeter instead of binary weights:
+
+        >>> contiguity_perimeter = graph.Graph.build_contiguity(nybb, by_perimeter=True)
+        >>> contiguity_perimeter.adjacency
+        focal          neighbor
+        Staten Island  Staten Island        0.000000
+        Queens         Brooklyn         50867.502055
+                       Manhattan          103.745207
+                       Bronx                5.777002
+        Brooklyn       Queens           50867.502055
+                       Manhattan         5736.546898
+        Manhattan      Queens             103.745207
+                       Brooklyn          5736.546898
+                       Bronx             5258.300879
+        Bronx          Queens               5.777002
+                       Manhattan         5258.300879
+        Name: weight, dtype: float64
         """
         ids = _evaluate_index(geometry)
 
@@ -1099,6 +1149,44 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding triangulation weights
+
+        Examples
+        --------
+
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        Note that the method requires point geometry (or an array of coordinates
+        representing points) as an input.
+
+        >>> triangulation = graph.Graph.build_triangulation(nybb.centroid)
+        >>> triangulation.adjacency
+        focal          neighbor
+        Staten Island  Brooklyn         1
+                       Manhattan        1
+        Queens         Brooklyn         1
+                       Manhattan        1
+                       Bronx            1
+        Brooklyn       Staten Island    1
+                       Queens           1
+                       Manhattan        1
+        Manhattan      Staten Island    1
+                       Queens           1
+                       Brooklyn         1
+                       Bronx            1
+        Bronx          Queens           1
+                       Manhattan        1
+        Name: weight, dtype: int64
         """
         ids = _evaluate_index(data)
 
