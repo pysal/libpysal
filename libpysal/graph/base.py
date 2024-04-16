@@ -765,7 +765,7 @@ class Graph(SetOpsMixin):
                         Manhattan        1
         Name: weight, dtype: int32
 
-        Specifying k=1 identifies the nearest neighbor 
+        Specifying k=1 identifies the nearest neighbor
         (note that this can be asymmetrical):
 
         >>> knn1 = graph.Graph.build_knn(nybb.centroid, k=1)
