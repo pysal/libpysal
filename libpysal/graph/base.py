@@ -376,6 +376,51 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph based on dictionaries
+
+        Examples
+        --------
+        >>> neighbors = {
+        ...     'Africa': ['Asia'],
+        ...     'Asia': ['Africa', 'Europe'],
+        ...     'Australia': [],
+        ...     'Europe': ['Asia'],
+        ...     'North America': ['South America'],
+        ...     'South America': ['North America'],
+        ... }
+        >>> connectivity = graph.Graph.from_dicts(neighbors)
+        >>> connectivity.adjacency
+        focal          neighbor
+        Africa         Asia             1
+        Asia           Africa           1
+                       Europe           1
+        Australia      Australia        0
+        Europe         Asia             1
+        North America  South America    1
+        South America  North America    1
+        Name: weight, dtype: float64
+
+        You can also specify weights (for example based
+        on the length of the shared border):
+
+        >>> weights = {
+        ...     'Africa': [1],
+        ...     'Asia': [0.2, 0.8],
+        ...     'Australia': [],
+        ...     'Europe': [1],
+        ...     'North America': [1],
+        ...     'South America': [1],
+        ... }
+        >>> connectivity = graph.Graph.from_dicts(neighbors, weights)
+        >>> connectivity.adjacency
+        focal          neighbor
+        Africa         Asia             1.0
+        Asia           Africa           0.2
+                       Europe           0.8
+        Australia      Australia        0.0
+        Europe         Asia             1.0
+        North America  South America    1.0
+        South America  North America    1.0
+        Name: weight, dtype: float64
         """
         head, tail, weight = _neighbor_dict_to_edges(neighbors, weights=weights)
         return cls.from_arrays(head, tail, weight)
@@ -852,6 +897,53 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding KNN weights
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index('BoroName')
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+
+        >>> knn3 = graph.Graph.build_knn(nybb.centroid, k=3)
+        >>> knn3.adjacency
+        focal           neighbor
+        Staten Island   Queens           1
+                        Brooklyn         1
+                        Manhattan        1
+        Queens          Brooklyn         1
+                        Manhattan        1
+                        Bronx            1
+        Brooklyn        Staten Island    1
+                        Queens           1
+                        Manhattan        1
+        Manhattan       Queens           1
+                        Brooklyn         1
+                        Bronx            1
+        Bronx           Queens           1
+                        Brooklyn         1
+                        Manhattan        1
+        Name: weight, dtype: int32
+
+        Specifying k=1 identifies the nearest neighbor
+        (note that this can be asymmetrical):
+
+        >>> knn1 = graph.Graph.build_knn(nybb.centroid, k=1)
+        >>> knn1.adjacency
+        focal          neighbor
+        Staten Island  Brooklyn     1
+        Queens         Brooklyn     1
+        Brooklyn       Queens       1
+        Manhattan      Bronx        1
+        Bronx          Manhattan    1
+        Name: weight, dtype: int32
         """
         ids = _evaluate_index(data)
 
