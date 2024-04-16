@@ -3,6 +3,8 @@ from functools import cached_property
 
 import numpy as np
 import pandas as pd
+from packaging.version import Version
+from scipy import __version__ as scipy_version
 from scipy import sparse
 
 from libpysal.weights import W
@@ -229,7 +231,7 @@ class Graph(SetOpsMixin):
          'Queens': ['Brooklyn', 'Manhattan', 'Bronx'],
          'Staten Island': []}
         """
-        grouper = self._adjacency.groupby(level=0)
+        grouper = self._adjacency.groupby(level=0, sort=False)
         neighbors = {}
         weights = {}
         for ix, chunk in grouper:
@@ -1228,18 +1230,14 @@ class Graph(SetOpsMixin):
         dict
             dict of tuples representing neighbors
         """
-        return (
-            self._adjacency.reset_index(level=1)
-            .groupby(level=0)
-            .apply(
-                lambda group: tuple(
-                    group[
-                        ~((group.index == group.neighbor) & (group.weight == 0))
-                    ].neighbor
-                )
-            )
-            .to_dict()
-        )
+        grouper = self._adjacency.groupby(level=0, sort=False)
+        neighbors = {}
+        for ix, chunk in grouper:
+            if ix in self.isolates:
+                neighbors[ix] = ()
+            else:
+                neighbors[ix] = tuple(chunk.index.get_level_values("neighbor"))
+        return neighbors
 
     @cached_property
     def weights(self):
@@ -1255,30 +1253,26 @@ class Graph(SetOpsMixin):
         dict
             dict of tuples representing weights
         """
-        return (
-            self._adjacency.reset_index(level=1)
-            .groupby(level=0)
-            .apply(
-                lambda group: tuple(
-                    group[
-                        ~((group.index == group.neighbor) & (group.weight == 0))
-                    ].weight
-                )
-            )
-            .to_dict()
-        )
+        grouper = self._adjacency.groupby(level=0, sort=False)
+        weights = {}
+        for ix, chunk in grouper:
+            if ix in self.isolates:
+                weights[ix] = ()
+            else:
+                weights[ix] = tuple(chunk)
+        return weights
 
     @cached_property
     def sparse(self):
-        """Return a scipy.sparse array (COO)
+        """Return a scipy.sparse array (CSR)
 
         Returns
         -------
-        scipy.sparse.COO
+        scipy.sparse.CSR
             sparse representation of the adjacency
         """
-        # pivot to COO sparse matrix and cast to array
-        return sparse.coo_array(
+        # pivot to COO sparse matrix and cast to sparse CRS array
+        return sparse.csr_array(
             self._adjacency.astype("Sparse[float]").sparse.to_coo(sort_labels=True)[0]
         )
 
@@ -1353,8 +1347,7 @@ class Graph(SetOpsMixin):
     @cached_property
     def _components(self):
         """helper for n_components and component_labels"""
-        # TODO: remove casting to matrix once scipy supports arrays here
-        return sparse.csgraph.connected_components(sparse.coo_matrix(self.sparse))
+        return sparse.csgraph.connected_components(self.sparse)
 
     @cached_property
     def n_components(self):
@@ -1532,23 +1525,24 @@ class Graph(SetOpsMixin):
         Graph
             higher order weights
         """
-        # TODO: remove casting to matrix once scipy implements matrix_power on array.
-        # [https://github.com/scipy/scipy/pull/18544]
+        if not Version(scipy_version) >= Version("1.12.0"):
+            raise ImportError("Graph.higher_order() requires scipy>=1.12.0.")
+
         binary = self.transform("B")
-        sp = sparse.csr_matrix(binary.sparse)
+        sp = binary.sparse
 
         if lower_order:
-            wk = sum(sp**x for x in range(2, k + 1))
+            wk = sum(sparse.linalg.matrix_power(sp, x) for x in range(2, k + 1))
             shortest_path = False
         else:
-            wk = sp**k
+            wk = sparse.linalg.matrix_power(sp, k)
 
         rk, ck = wk.nonzero()
         sk = set(zip(rk, ck, strict=True))
 
         if shortest_path:
             for j in range(1, k):
-                wj = sp**j
+                wj = sparse.linalg.matrix_power(sp, j)
                 rj, cj = wj.nonzero()
                 sj = set(zip(rj, cj, strict=True))
                 sk.difference_update(sj)

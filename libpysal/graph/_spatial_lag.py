@@ -22,4 +22,4 @@ def _lag_spatial(graph, y):
             "The length of `y` needs to match the number of observations "
             f"in Graph. Expected {sp.shape[0]}, got {len(y)}."
         )
-    return graph.sparse @ y
+    return sp @ y
