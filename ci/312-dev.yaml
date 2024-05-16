@@ -21,7 +21,7 @@ dependencies:
   - geos
   - joblib
   - networkx
-  # - numba # follow up when numba is ready for 3.12
+  - numba
   - packaging
   - pyarrow
   - pyproj
