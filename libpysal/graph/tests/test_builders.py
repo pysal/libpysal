@@ -190,6 +190,23 @@ class TestTriangulation:
                 self.gdf, method="invalid", kernel="parabolic", bandwidth=7500
             )
 
+    def test_delunay_subsets(self):
+        delaunay = graph.Graph.build_triangulation(
+            self.gdf_str, "delaunay", kernel="identity"
+        )
+        gabriel = graph.Graph.build_triangulation(
+            self.gdf_str, "gabriel", kernel="identity"
+        )
+        rn = graph.Graph.build_triangulation(
+            self.gdf_str, "relative_neighborhood", kernel="identity"
+        )
+        pd.testing.assert_series_equal(
+            gabriel.adjacency, delaunay.adjacency.loc[gabriel.adjacency.index]
+        )
+        pd.testing.assert_series_equal(
+            rn.adjacency, delaunay.adjacency.loc[rn.adjacency.index]
+        )
+
 
 class TestKernel:
     def setup_method(self):
