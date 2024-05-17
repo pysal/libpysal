@@ -144,7 +144,6 @@ def _build_coincidence_lookup(geoms):
             "coindicence checks are only well-defined for "
             f"geom_types: {valid_coincident_geom_types}"
         )
-    max_coincident = geoms.geometry.duplicated().sum()
     if GPD_013:
         lut = (
             geoms.to_frame("geometry")
@@ -165,7 +164,7 @@ def _build_coincidence_lookup(geoms):
         lut["geometry"] = geopandas.GeoSeries.from_wkb(lut["geometry"])
 
     lut = geopandas.GeoDataFrame(lut)
-    return max_coincident, lut.rename(columns={"index": "input_index"})
+    return lut.rename(columns={"index": "input_index"})
 
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):

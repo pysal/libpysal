@@ -211,8 +211,7 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
     coordinates, ids, geoms = _validate_geometry_input(
         coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
-    n_coincident, coincident_lut = _build_coincidence_lookup(geoms)
-    max_at_one_site = coincident_lut.input_index.str.len().max()
+    n_coincident = geoms.geometry.duplicated().sum()
     n_samples, _ = coordinates.shape
 
     if n_coincident == 0:
@@ -234,6 +233,8 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
         )
         return d
     else:
+        coincident_lut = _build_coincidence_lookup(geoms)
+        max_at_one_site = coincident_lut.input_index.str.len().max()
         if coincident == "raise":
             raise ValueError(
                 f"There are {len(coincident_lut)} unique locations in the dataset, "
