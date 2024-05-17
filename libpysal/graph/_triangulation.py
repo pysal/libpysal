@@ -283,8 +283,11 @@ def _gabriel(coordinates):
     heads_ix, tails_ix = numpy.row_stack(
         list(set(map(tuple, edges)).difference(set(droplist)))
     ).T
+    order = numpy.lexsort((tails_ix, heads_ix))
+    sorted_heads_ix = heads_ix[order]
+    sorted_tails_ix = tails_ix[order]
 
-    return heads_ix, tails_ix
+    return sorted_heads_ix, sorted_tails_ix
 
 
 @_validate_coincident
