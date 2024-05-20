@@ -132,7 +132,7 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
             data_array = pd.to_numeric(data_array)
     else:
         data_array = np.ones(idxs.shape[0], dtype=int)
-        data_array[isolates] = 0
+        data_array[isolates.values] = 0
     return heads, tails, data_array
 
 
