@@ -109,13 +109,15 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
     that the any self-loops have a weight of zero.
     """
     idxs = pd.Series(neighbors).explode()
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            "Downcasting object dtype arrays on .fillna, .ffill, .bfill ",
-            FutureWarning,
-        )
-        idxs = idxs.fillna(pd.Series(idxs.index, index=idxs.index))  # self-loops
+    isolates = idxs.isna()
+    if isolates.any():
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                "Downcasting object dtype arrays on .fillna, .ffill, .bfill ",
+                FutureWarning,
+            )
+            idxs = idxs.fillna(pd.Series(idxs.index, index=idxs.index))  # self-loops
     heads, tails = idxs.index.values, idxs.values
     tails = tails.astype(heads.dtype)
     if weights is not None:
@@ -130,7 +132,7 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
             data_array = pd.to_numeric(data_array)
     else:
         data_array = np.ones(idxs.shape[0], dtype=int)
-        data_array[heads == tails] = 0
+        data_array[isolates] = 0
     return heads, tails, data_array
 
 

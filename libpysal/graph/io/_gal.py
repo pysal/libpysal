@@ -1,3 +1,6 @@
+import contextlib
+
+
 def _read_gal(path):
     """Read GAL weights to Graph object
 
@@ -26,6 +29,11 @@ def _read_gal(path):
             id_, _ = file.readline().strip().split()
             neighbors_i = file.readline().strip().split()
             neighbors[id_] = neighbors_i
+
+    # try casting to ints to ensure loss-less roundtrip of integer node ids
+    with contextlib.suppress(ValueError):
+        neighbors = {int(k): list(map(int, v)) for k, v in neighbors.items()}
+
     return neighbors
 
 
@@ -48,7 +56,9 @@ def _to_gal(graph_obj, path):
             if ix in graph_obj.isolates:
                 neighbors = []
             else:
-                neighbors = chunk.index.get_level_values("neighbor").tolist()
+                neighbors = (
+                    chunk.index.get_level_values("neighbor").astype(str).tolist()
+                )
 
             file.write(f"{ix} {len(neighbors)}\n")
             file.write(" ".join(neighbors) + "\n")

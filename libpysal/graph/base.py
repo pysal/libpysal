@@ -1653,6 +1653,9 @@ def read_parquet(path, **kwargs):
 def read_gal(path):
     """Read Graph from a GAL file
 
+    The reader tries to infer the dtype of IDs. In case of unsuccessful
+    casting to int, it will fall back to string.
+
     Parameters
     ----------
     path : str
