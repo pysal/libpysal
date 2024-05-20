@@ -10,6 +10,8 @@ dependencies:
   # testing
   - codecov
   - matplotlib
+  - tobler
+  - h3-py
   - pytest
   - pytest-cov
   - pytest-mpl
@@ -21,7 +23,7 @@ dependencies:
   - geos
   - joblib
   - networkx
-  # - numba # follow up when numba is ready for 3.12
+  - numba
   - packaging
   - pyarrow
   - pyproj

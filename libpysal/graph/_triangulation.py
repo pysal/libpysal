@@ -58,10 +58,11 @@ def _validate_coincident(triangulator):
         )
 
         # check for coincident points
-        n_coincident, coincident_lut = _build_coincidence_lookup(geoms)
+        n_coincident = geoms.geometry.duplicated().sum()
 
         # resolve coincident points prior triangulation
         if n_coincident > 0:
+            coincident_lut = _build_coincidence_lookup(geoms)
             if coincident == "raise":
                 raise ValueError(
                     f"There are {len(coincident_lut)} unique locations in "
@@ -129,7 +130,7 @@ def _validate_coincident(triangulator):
             coordinates, ids, geoms = input_coordinates, input_ids, input_geoms
             heads, tails, weights = adjtable.values.T
 
-        adjtable = _reorder_adjtable_by_ids(adjtable, ids)
+            adjtable = _reorder_adjtable_by_ids(adjtable, ids)
 
         # return data for Graph.from_arrays
         return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
@@ -283,8 +284,11 @@ def _gabriel(coordinates):
     heads_ix, tails_ix = numpy.row_stack(
         list(set(map(tuple, edges)).difference(set(droplist)))
     ).T
+    order = numpy.lexsort((tails_ix, heads_ix))
+    sorted_heads_ix = heads_ix[order]
+    sorted_tails_ix = tails_ix[order]
 
-    return heads_ix, tails_ix
+    return sorted_heads_ix, sorted_tails_ix
 
 
 @_validate_coincident

@@ -3,6 +3,8 @@ from functools import cached_property
 
 import numpy as np
 import pandas as pd
+from packaging.version import Version
+from scipy import __version__ as scipy_version
 from scipy import sparse
 
 from libpysal.weights import W
@@ -14,6 +16,7 @@ from ._contiguity import (
     _rook,
     _vertex_set_intersection,
 )
+from ._indices import _build_from_h3
 from ._kernel import _distance_band, _kernel
 from ._matching import _spatial_matching
 from ._plotting import _explore_graph, _plot
@@ -84,9 +87,10 @@ class Graph(SetOpsMixin):
             initialize the class. The MultiIndex needs to be ordered i-->j
             on both focal and neighbor levels according to the order of ids in the
             original data from which the Graph is created. Sorting is performed by
-            default based on the order of unique values in the focal level. Set
-            ``is_sorted=True`` to skip this step if the adjacency is already canonically
-            sorted.
+            default based on the order of unique values in the focal level. Sorting
+            needs to be reflected in both the values of the MultiIndex and also the
+            underlying MultiIndex.codes. Set ``is_sorted=True`` to skip this step if the
+            adjacency is already canonically sorted and you are certain about it.
 
         """
         if not isinstance(adjacency, pd.Series):
@@ -197,8 +201,47 @@ class Graph(SetOpsMixin):
         -------
         libpysal.weights.W
             representation of graph as a weights.W object
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0
+        Queens         Brooklyn         1
+                       Manhattan        1
+                       Bronx            1
+        Brooklyn       Queens           1
+                       Manhattan        1
+        Manhattan      Queens           1
+                       Brooklyn         1
+                       Bronx            1
+        Bronx          Queens           1
+                       Manhattan        1
+        Name: weight, dtype: int64
+
+        >>> w = contiguity.to_W()
+        >>> w.neighbors
+        {'Bronx': ['Queens', 'Manhattan'],
+         'Brooklyn': ['Queens', 'Manhattan'],
+         'Manhattan': ['Queens', 'Brooklyn', 'Bronx'],
+         'Queens': ['Brooklyn', 'Manhattan', 'Bronx'],
+         'Staten Island': []}
         """
-        grouper = self._adjacency.groupby(level=0)
+        grouper = self._adjacency.groupby(level=0, sort=False)
         neighbors = {}
         weights = {}
         for ix, chunk in grouper:
@@ -345,6 +388,51 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph based on dictionaries
+
+        Examples
+        --------
+        >>> neighbors = {
+        ...     'Africa': ['Asia'],
+        ...     'Asia': ['Africa', 'Europe'],
+        ...     'Australia': [],
+        ...     'Europe': ['Asia'],
+        ...     'North America': ['South America'],
+        ...     'South America': ['North America'],
+        ... }
+        >>> connectivity = graph.Graph.from_dicts(neighbors)
+        >>> connectivity.adjacency
+        focal          neighbor
+        Africa         Asia             1
+        Asia           Africa           1
+                       Europe           1
+        Australia      Australia        0
+        Europe         Asia             1
+        North America  South America    1
+        South America  North America    1
+        Name: weight, dtype: float64
+
+        You can also specify weights (for example based
+        on the length of the shared border):
+
+        >>> weights = {
+        ...     'Africa': [1],
+        ...     'Asia': [0.2, 0.8],
+        ...     'Australia': [],
+        ...     'Europe': [1],
+        ...     'North America': [1],
+        ...     'South America': [1],
+        ... }
+        >>> connectivity = graph.Graph.from_dicts(neighbors, weights)
+        >>> connectivity.adjacency
+        focal          neighbor
+        Africa         Asia             1.0
+        Asia           Africa           0.2
+                       Europe           0.8
+        Australia      Australia        0.0
+        Europe         Asia             1.0
+        North America  South America    1.0
+        South America  North America    1.0
+        Name: weight, dtype: float64
         """
         head, tail, weight = _neighbor_dict_to_edges(neighbors, weights=weights)
         return cls.from_arrays(head, tail, weight)
@@ -368,6 +456,43 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding block contiguity
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> france = gpd.read_file(get_path('geoda guerry')).set_index('Dprmnt')
+
+        In the GeoDa Guerry dataset, the Region column reflects the region
+        (North, East, West, South or Central) to which each department belongs.
+
+        >>> france[['Region', 'geometry']].head()
+                     Region                                           geometry
+        Dprtmnt
+        Ain               E  POLYGON ((801150.000 2092615.000, 800669.000 2...
+        Aisne             N  POLYGON ((729326.000 2521619.000, 729320.000 2...
+        Allier            C  POLYGON ((710830.000 2137350.000, 711746.000 2...
+        Basses-Alpes      E  POLYGON ((882701.000 1920024.000, 882408.000 1...
+        Hautes-Alpes      E  POLYGON ((886504.000 1922890.000, 885733.000 1...
+
+        Using the ``"Region"`` labels as ``regimes`` then identifies all departments
+        within the region as neighbors.
+
+        >>> block_contiguity = graph.Graph.build_block_contiguity(france['Region'])
+        >>> block_contiguity.adjacency
+        focal   neighbor
+        Ain     Basses-Alpes       1
+                Hautes-Alpes       1
+                Aube               1
+                Cote-d'Or          1
+                Doubs              1
+                                  ..
+        Vienne  Mayenne            1
+                Morbihan           1
+                Basses-Pyrenees    1
+                Deux-Sevres        1
+                Vendee             1
+        Name: weight, Length: 1360, dtype: int32
         """
         ids = _evaluate_index(regimes)
 
@@ -412,6 +537,56 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding contiguity weights
+
+        Examples
+        --------
+
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0
+        Queens         Brooklyn         1
+                       Manhattan        1
+                       Bronx            1
+        Brooklyn       Queens           1
+                       Manhattan        1
+        Manhattan      Queens           1
+                       Brooklyn         1
+                       Bronx            1
+        Bronx          Queens           1
+                       Manhattan        1
+        Name: weight, dtype: int64
+
+        Weight by perimeter instead of binary weights:
+
+        >>> contiguity_perimeter = graph.Graph.build_contiguity(nybb, by_perimeter=True)
+        >>> contiguity_perimeter.adjacency
+        focal          neighbor
+        Staten Island  Staten Island        0.000000
+        Queens         Brooklyn         50867.502055
+                       Manhattan          103.745207
+                       Bronx                5.777002
+        Brooklyn       Queens           50867.502055
+                       Manhattan         5736.546898
+        Manhattan      Queens             103.745207
+                       Brooklyn          5736.546898
+                       Bronx             5258.300879
+        Bronx          Queens               5.777002
+                       Manhattan         5258.300879
+        Name: weight, dtype: float64
         """
         ids = _evaluate_index(geometry)
 
@@ -472,6 +647,96 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding distance band weights
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        Note that the method requires point geometry (or an array of coordinates
+        representing points) as an input.
+
+        The threshold distance is in the units of the geometry projection.
+        You can check it using the ``nybb.crs`` property.
+
+        >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 45000)
+        >>> distance_band.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0
+        Queens         Brooklyn         1
+        Brooklyn       Queens           1
+        Manhattan      Bronx            1
+        Bronx          Manhattan        1
+        Name: weight, dtype: int64
+
+        The larger threshold yields more neighbors.
+
+        >>> distance_band = graph.Graph.build_distance_band(nybb.centroid, 110000)
+        >>> distance_band.adjacency
+        focal          neighbor
+        Staten Island  Queens           1
+                       Brooklyn         1
+                       Manhattan        1
+        Queens         Staten Island    1
+                       Brooklyn         1
+                       Manhattan        1
+                       Bronx            1
+        Brooklyn       Staten Island    1
+                       Queens           1
+                       Manhattan        1
+                       Bronx            1
+        Manhattan      Staten Island    1
+                       Queens           1
+                       Brooklyn         1
+                       Bronx            1
+        Bronx          Queens           1
+                       Brooklyn         1
+                       Manhattan        1
+        Name: weight, dtype: int64
+
+        Instead of binary weights you can use inverse distance.
+
+        >>> distance_band = graph.Graph.build_distance_band(
+        ...     nybb.centroid,
+        ...     45000,
+        ...     binary=False,
+        ... )
+        >>> distance_band.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0.000000
+        Queens         Brooklyn         0.000024
+        Brooklyn       Queens           0.000024
+        Manhattan      Bronx            0.000026
+        Bronx          Manhattan        0.000026
+        Name: weight, dtype: float64
+
+        Or specify the kernel function to derive weight from the distance.
+
+        >>> distance_band = graph.Graph.build_distance_band(
+        ...     nybb.centroid,
+        ...     45000,
+        ...     binary=False,
+        ...     kernel='bisquare',
+        ...     bandwidth=60000,
+        ... )
+        >>> distance_band.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0.000000
+        Queens         Brooklyn         0.232079
+        Brooklyn       Queens           0.232079
+        Manhattan      Bronx            0.309825
+        Bronx          Manhattan        0.309825
+        Name: weight, dtype: float64
         """
         ids = _evaluate_index(data)
 
@@ -694,6 +959,53 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding KNN weights
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index('BoroName')
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+
+        >>> knn3 = graph.Graph.build_knn(nybb.centroid, k=3)
+        >>> knn3.adjacency
+        focal           neighbor
+        Staten Island   Queens           1
+                        Brooklyn         1
+                        Manhattan        1
+        Queens          Brooklyn         1
+                        Manhattan        1
+                        Bronx            1
+        Brooklyn        Staten Island    1
+                        Queens           1
+                        Manhattan        1
+        Manhattan       Queens           1
+                        Brooklyn         1
+                        Bronx            1
+        Bronx           Queens           1
+                        Brooklyn         1
+                        Manhattan        1
+        Name: weight, dtype: int32
+
+        Specifying k=1 identifies the nearest neighbor
+        (note that this can be asymmetrical):
+
+        >>> knn1 = graph.Graph.build_knn(nybb.centroid, k=1)
+        >>> knn1.adjacency
+        focal          neighbor
+        Staten Island  Brooklyn     1
+        Queens         Brooklyn     1
+        Brooklyn       Queens       1
+        Manhattan      Bronx        1
+        Bronx          Manhattan    1
+        Name: weight, dtype: int32
         """
         ids = _evaluate_index(data)
 
@@ -849,6 +1161,44 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding triangulation weights
+
+        Examples
+        --------
+
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        Note that the method requires point geometry (or an array of coordinates
+        representing points) as an input.
+
+        >>> triangulation = graph.Graph.build_triangulation(nybb.centroid)
+        >>> triangulation.adjacency
+        focal          neighbor
+        Staten Island  Brooklyn         1
+                       Manhattan        1
+        Queens         Brooklyn         1
+                       Manhattan        1
+                       Bronx            1
+        Brooklyn       Staten Island    1
+                       Queens           1
+                       Manhattan        1
+        Manhattan      Staten Island    1
+                       Queens           1
+                       Brooklyn         1
+                       Bronx            1
+        Bronx          Queens           1
+                       Manhattan        1
+        Name: weight, dtype: int64
         """
         ids = _evaluate_index(data)
 
@@ -876,6 +1226,49 @@ class Graph(SetOpsMixin):
 
         return cls.from_arrays(head, tail, weights)
 
+    @classmethod
+    def build_h3(cls, ids, order=1, weight="distance"):
+        """Generate Graph from indices of H3 hexagons.
+
+        Encode a graph from a set of H3 hexagons. The graph is generated by
+        considering the H3 hexagons as nodes and connecting them based on their
+        contiguity. The contiguity is defined by the order parameter, which
+        specifies the number of steps to consider as neighbors. The weight
+        parameter defines the type of weight to assign to the edges.
+
+        Requires the `h3` library.
+
+        Parameters
+        ----------
+        ids : array-like
+            Array of H3 IDs encoding focal geometries
+        order : int, optional
+            Order of contiguity, by default 1
+        weight : str, optional
+            Type of weight. Options are:
+
+            * ``distance``: raw topological distance between cells
+            * ``binary``: 1 for neighbors, 0 for non-neighbors
+            * ``inverse``: 1 / distance between cells
+
+            By default "distance".
+
+        Returns
+        -------
+        Graph
+        """
+        neigbors, weights = _build_from_h3(ids, order=order)
+        g = cls.from_dicts(neigbors, weights)
+
+        if weight == "distance":
+            return g
+        elif weight == "binary":
+            return g.transform("b")
+        elif weight == "inverse":
+            return cls(1 / g._adjacency, is_sorted=True)
+        else:
+            raise ValueError("weight must be one of 'distance', 'binary', or 'inverse'")
+
     @cached_property
     def neighbors(self):
         """Get neighbors dictionary
@@ -890,18 +1283,14 @@ class Graph(SetOpsMixin):
         dict
             dict of tuples representing neighbors
         """
-        return (
-            self._adjacency.reset_index(level=1)
-            .groupby(level=0)
-            .apply(
-                lambda group: tuple(
-                    group[
-                        ~((group.index == group.neighbor) & (group.weight == 0))
-                    ].neighbor
-                )
-            )
-            .to_dict()
-        )
+        grouper = self._adjacency.groupby(level=0, sort=False)
+        neighbors = {}
+        for ix, chunk in grouper:
+            if ix in self.isolates:
+                neighbors[ix] = ()
+            else:
+                neighbors[ix] = tuple(chunk.index.get_level_values("neighbor"))
+        return neighbors
 
     @cached_property
     def weights(self):
@@ -917,30 +1306,26 @@ class Graph(SetOpsMixin):
         dict
             dict of tuples representing weights
         """
-        return (
-            self._adjacency.reset_index(level=1)
-            .groupby(level=0)
-            .apply(
-                lambda group: tuple(
-                    group[
-                        ~((group.index == group.neighbor) & (group.weight == 0))
-                    ].weight
-                )
-            )
-            .to_dict()
-        )
+        grouper = self._adjacency.groupby(level=0, sort=False)
+        weights = {}
+        for ix, chunk in grouper:
+            if ix in self.isolates:
+                weights[ix] = ()
+            else:
+                weights[ix] = tuple(chunk)
+        return weights
 
     @cached_property
     def sparse(self):
-        """Return a scipy.sparse array (COO)
+        """Return a scipy.sparse array (CSR)
 
         Returns
         -------
-        scipy.sparse.COO
+        scipy.sparse.CSR
             sparse representation of the adjacency
         """
-        # pivot to COO sparse matrix and cast to array
-        return sparse.coo_array(
+        # pivot to COO sparse matrix and cast to sparse CRS array
+        return sparse.csr_array(
             self._adjacency.astype("Sparse[float]").sparse.to_coo(sort_labels=True)[0]
         )
 
@@ -1015,8 +1400,7 @@ class Graph(SetOpsMixin):
     @cached_property
     def _components(self):
         """helper for n_components and component_labels"""
-        # TODO: remove casting to matrix once scipy supports arrays here
-        return sparse.csgraph.connected_components(sparse.coo_matrix(self.sparse))
+        return sparse.csgraph.connected_components(self.sparse)
 
     @cached_property
     def n_components(self):
@@ -1194,23 +1578,24 @@ class Graph(SetOpsMixin):
         Graph
             higher order weights
         """
-        # TODO: remove casting to matrix once scipy implements matrix_power on array.
-        # [https://github.com/scipy/scipy/pull/18544]
+        if not Version(scipy_version) >= Version("1.12.0"):
+            raise ImportError("Graph.higher_order() requires scipy>=1.12.0.")
+
         binary = self.transform("B")
-        sp = sparse.csr_matrix(binary.sparse)
+        sp = binary.sparse
 
         if lower_order:
-            wk = sum(sp**x for x in range(2, k + 1))
+            wk = sum(sparse.linalg.matrix_power(sp, x) for x in range(2, k + 1))
             shortest_path = False
         else:
-            wk = sp**k
+            wk = sparse.linalg.matrix_power(sp, k)
 
         rk, ck = wk.nonzero()
         sk = set(zip(rk, ck, strict=True))
 
         if shortest_path:
             for j in range(1, k):
-                wj = sp**j
+                wj = sparse.linalg.matrix_power(sp, j)
                 rj, cj = wj.nonzero()
                 sj = set(zip(rj, cj, strict=True))
                 sk.difference_update(sj)
