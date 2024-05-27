@@ -846,6 +846,32 @@ class TestBase:
             g_pandas = graph.read_parquet(path)
             assert self.g_str == g_pandas
 
+    def test_gal(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "g_int.gal")
+            g_int = self.g_int.transform("b")
+            g_int.to_gal(path)
+            g_int_ = graph.read_gal(path)
+            assert g_int == g_int_
+
+            path = os.path.join(tmpdir, "g_str.gal")
+            g_str = self.g_str.transform("b")
+            g_str.to_gal(path)
+            g_str_ = graph.read_gal(path)
+            assert g_str == g_str_
+
+    def test_gwt(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "g_int.gwt")
+            self.g_int.to_gwt(path)
+            g_int = graph.read_gwt(path)
+            assert self.g_int == g_int
+
+            path = os.path.join(tmpdir, "g_str.gwt")
+            self.g_str.to_gwt(path)
+            g_str = graph.read_gwt(path)
+            assert self.g_str == g_str
+
     def test_getitem(self):
         expected = pd.Series(
             [1, 0.5, 0.5],
