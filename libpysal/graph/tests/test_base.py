@@ -137,6 +137,26 @@ class TestBase:
         with pytest.raises(ValueError, match="'transformation' needs to be"):
             graph.Graph(self.adjacency_int_binary, transformation="foo")
 
+    def test___repr__(self):
+        expected = (
+            "<Graph with 10 nodes and 25 nonzero edges>\n"
+            " Indexed by: [0, 1, 2, 3, 4, ...]"
+        )
+        assert repr(self.g_int) == expected
+
+        expected = (
+            "<Graph with 10 nodes and 25 nonzero edges>\n"
+            " Indexed by: ['a', 'b', 'c', 'd', 'e', ...]"
+        )
+        assert repr(self.g_str) == expected
+
+        nybb = graph.Graph.build_contiguity(self.nybb)
+        expected = (
+            "<Graph with 5 nodes and 10 nonzero edges>\n"
+            " Indexed by: ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']"
+        )
+        assert repr(nybb) == expected
+
     def test_copy(self):
         g_copy = self.g_str.copy()
         assert g_copy == self.g_str

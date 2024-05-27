@@ -140,6 +140,16 @@ class Graph(SetOpsMixin):
             )
         return self._adjacency.loc[item]
 
+    def __repr__(self):
+        if len(self.unique_ids) > 5:
+            unique_ids = f"{str(self.unique_ids[:5].tolist())[:-1]}, ...]"
+        else:
+            unique_ids = self.unique_ids.tolist()
+        return (
+            f"<Graph with {self.n} nodes and {self.nonzero} nonzero edges>\n "
+            f"Indexed by: {unique_ids}"
+        )
+
     def copy(self, deep=True):
         """Make a copy of this Graph's adjacency table and transformation
 
