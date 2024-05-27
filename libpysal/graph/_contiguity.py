@@ -82,8 +82,6 @@ def _vertex_set_intersection(geoms, rook=True, ids=None, by_perimeter=False):
     for idx in ids:
         graph[idx].remove(idx)
 
-    # return graph
-
     heads, tails, weights = _neighbor_dict_to_edges(graph)
 
     if by_perimeter:
