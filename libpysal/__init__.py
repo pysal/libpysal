@@ -24,7 +24,7 @@ weights
 import contextlib
 from importlib.metadata import PackageNotFoundError, version
 
-from . import cg, examples, io, weights
+from . import cg, examples, graph, io, weights
 
 with contextlib.suppress(PackageNotFoundError):
     __version__ = version("libpysal")

@@ -19,7 +19,6 @@ from ._contiguity import (
 from ._indices import _build_from_h3
 from ._kernel import _distance_band, _kernel
 from ._matching import _spatial_matching
-from ._parquet import _read_parquet, _to_parquet
 from ._plotting import _explore_graph, _plot
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
@@ -30,6 +29,9 @@ from ._utils import (
     _resolve_islands,
     _sparse_to_arrays,
 )
+from .io._gal import _read_gal, _to_gal
+from .io._gwt import _read_gwt, _to_gwt
+from .io._parquet import _read_parquet, _to_parquet
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
@@ -40,6 +42,13 @@ Eli Knaap (ek@knaaptime.com)
 Serge Rey (sjsrey@gmail.com)
 Levi John Wolf (levi.john.wolf@gmail.com)
 """
+
+__all__ = [
+    "Graph",
+    "read_parquet",
+    "read_gal",
+    "read_gwt",
+]
 
 
 class Graph(SetOpsMixin):
@@ -1644,6 +1653,38 @@ class Graph(SetOpsMixin):
         """
         _to_parquet(self, path, **kwargs)
 
+    def to_gal(self, path):
+        """Save Graph to a GAL file
+
+        Graph is serialized to the GAL file format.
+
+        Parameters
+        ----------
+        path : str
+            path to the GAL file
+
+        See also
+        --------
+        read_gal
+        """
+        _to_gal(self, path)
+
+    def to_gwt(self, path):
+        """Save Graph to a GWT file
+
+        Graph is serialized to the GWT file format.
+
+        Parameters
+        ----------
+        path : str
+            path to the GWT file
+
+        See also
+        --------
+        read_gwt
+        """
+        _to_gwt(self, path)
+
     def to_networkx(self):
         """Convert Graph to a ``networkx`` graph.
 
@@ -1999,3 +2040,40 @@ def read_parquet(path, **kwargs):
     """
     adjacency, transformation = _read_parquet(path, **kwargs)
     return Graph(adjacency, transformation, is_sorted=True)
+
+
+def read_gal(path):
+    """Read Graph from a GAL file
+
+    The reader tries to infer the dtype of IDs. In case of unsuccessful
+    casting to int, it will fall back to string.
+
+    Parameters
+    ----------
+    path : str
+        path to a file
+
+    Returns
+    -------
+    Graph
+        deserialized Graph
+    """
+    neighbors = _read_gal(path)
+    return Graph.from_dicts(neighbors)
+
+
+def read_gwt(path):
+    """Read Graph from a GWT file
+
+    Parameters
+    ----------
+    path : str
+        path to a file
+
+    Returns
+    -------
+    Graph
+        deserialized Graph
+    """
+    head, tail, weight = _read_gwt(path)
+    return Graph.from_arrays(head, tail, weight)

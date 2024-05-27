@@ -10,7 +10,6 @@ dependencies:
   # testing
   - codecov
   - matplotlib
-  - tobler
   - h3-py
   - pytest
   - pytest-cov
@@ -39,4 +38,5 @@ dependencies:
       - xarray
       - git+https://github.com/geopandas/geopandas.git@main
       - git+https://github.com/shapely/shapely.git@main
+      - git+https://github.com/pysal/tobler.git@main
       - pulp
