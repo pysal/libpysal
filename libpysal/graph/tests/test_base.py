@@ -139,21 +139,21 @@ class TestBase:
 
     def test___repr__(self):
         expected = (
-            "<Graph with 10 nodes and 25 nonzero edges>\n"
-            " Indexed by: [0, 1, 2, 3, 4, ...]"
+            "<Graph of 10 nodes and 25 nonzero edges indexed by\n"
+            " [0, 1, 2, 3, 4, ...]>"
         )
         assert repr(self.g_int) == expected
 
         expected = (
-            "<Graph with 10 nodes and 25 nonzero edges>\n"
-            " Indexed by: ['a', 'b', 'c', 'd', 'e', ...]"
+            "<Graph of 10 nodes and 25 nonzero edges indexed by\n"
+            " ['a', 'b', 'c', 'd', 'e', ...]>"
         )
         assert repr(self.g_str) == expected
 
         nybb = graph.Graph.build_contiguity(self.nybb)
         expected = (
-            "<Graph with 5 nodes and 10 nonzero edges>\n"
-            " Indexed by: ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']"
+            "<Graph of 5 nodes and 10 nonzero edges indexed by\n"
+            " ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>"
         )
         assert repr(nybb) == expected
 

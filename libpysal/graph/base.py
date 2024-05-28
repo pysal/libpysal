@@ -155,8 +155,8 @@ class Graph(SetOpsMixin):
         else:
             unique_ids = self.unique_ids.tolist()
         return (
-            f"<Graph with {self.n} nodes and {self.nonzero} nonzero edges>\n "
-            f"Indexed by: {unique_ids}"
+            f"<Graph of {self.n} nodes and {self.nonzero} nonzero edges indexed by\n"
+            f" {unique_ids}>"
         )
 
     def copy(self, deep=True):
