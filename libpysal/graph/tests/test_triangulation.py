@@ -332,7 +332,7 @@ class TestCoincident:
 
     def test_delaunay_clique(self):
         # TODO: fix the implemntation to make this pass
-        heads, tails, weights = _delaunay(self.df_int, coincident="clique", seed=0)
+        heads, tails, weights = _delaunay(self.df_int, coincident="clique")
 
         exp_heads = np.array(
             [0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5]
@@ -345,7 +345,7 @@ class TestCoincident:
         np.testing.assert_array_equal(heads, exp_heads)
         np.testing.assert_array_equal(tails, exp_tails)
 
-        heads, tails, weights = _delaunay(self.df_string, coincident="clique", seed=0)
+        heads, tails, weights = _delaunay(self.df_string, coincident="clique")
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
@@ -376,7 +376,7 @@ class TestCoincident:
 
     def test_gabriel_clique(self):
         # TODO: fix the implemntation to make this pass
-        heads, tails, weights = _gabriel(self.df_int, coincident="clique", seed=0)
+        heads, tails, weights = _gabriel(self.df_int, coincident="clique")
 
         exp_heads = np.array([0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 4, 5])
         exp_tails = np.array([1, 2, 4, 0, 2, 3, 4, 5, 0, 1, 3, 4, 1, 2, 0, 1, 2, 1])
@@ -385,7 +385,7 @@ class TestCoincident:
         np.testing.assert_array_equal(heads, exp_heads)
         np.testing.assert_array_equal(tails, exp_tails)
 
-        heads, tails, weights = _gabriel(self.df_string, coincident="clique", seed=0)
+        heads, tails, weights = _gabriel(self.df_string, coincident="clique")
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
@@ -420,9 +420,7 @@ class TestCoincident:
 
     def test_relative_neighborhood_clique(self):
         # TODO: fix the implemntation to make this pass
-        heads, tails, weights = _relative_neighborhood(
-            self.df_int, coincident="clique", seed=0
-        )
+        heads, tails, weights = _relative_neighborhood(self.df_int, coincident="clique")
 
         exp_heads = np.array([0, 0, 1, 1, 1, 1, 2, 2, 3, 4, 4, 5])
         exp_tails = np.array([1, 4, 0, 2, 4, 5, 1, 3, 2, 0, 1, 1])
@@ -432,7 +430,7 @@ class TestCoincident:
         np.testing.assert_array_equal(tails, exp_tails)
 
         heads, tails, weights = _relative_neighborhood(
-            self.df_string, coincident="clique", seed=0
+            self.df_string, coincident="clique"
         )
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))

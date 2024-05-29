@@ -518,6 +518,8 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
             if (i == k) or (j == k):
                 continue
             pk = coordinates[k]
+            if (pi == pk).all() or (pj == pk).all():  # coincident
+                continue
             dik = ((pi - pk) ** 2).sum() ** 0.5
             djk = ((pj - pk) ** 2).sum() ** 0.5
             dkmax = numpy.array([dik, djk]).max()
