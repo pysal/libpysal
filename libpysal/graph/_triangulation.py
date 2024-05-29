@@ -10,9 +10,9 @@ from libpysal.cg import voronoi_frames
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
-    _build_coincidence_lookup,
-    _induce_cliques,
-    _jitter_geoms,
+    # _build_coincidence_lookup,
+    # _induce_cliques,
+    # _jitter_geoms,
     _reorder_adjtable_by_ids,
     _validate_geometry_input,
     _vec_euclidean_distances,
@@ -49,50 +49,15 @@ def _validate_coincident(triangulator):
         coincident="raise",
         kernel=None,
         bandwidth=None,
-        seed=None,
+        # seed=None,
     ):
         # validate geometry input
         coordinates, ids, geoms = _validate_geometry_input(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
 
-        # check for coincident points
-        n_coincident = geoms.geometry.duplicated().sum()
-
-        # resolve coincident points prior triangulation
-        if n_coincident > 0:
-            coincident_lut = _build_coincidence_lookup(geoms)
-            if coincident == "raise":
-                raise ValueError(
-                    f"There are {len(coincident_lut)} unique locations in "
-                    f"the dataset, but {len(geoms)} observations. This means there "
-                    "are multiple points in the same location, which is undefined "
-                    "for this graph type. To address this issue, consider setting "
-                    "`coincident='clique'` or consult the documentation about "
-                    "coincident points."
-                )
-            elif coincident == "jitter":
-                coordinates, geoms = _jitter_geoms(coordinates, geoms, seed=seed)
-            elif coincident == "clique":
-                input_coordinates, input_ids, input_geoms = coordinates, ids, geoms
-                coordinates, ids, geoms = _validate_geometry_input(
-                    coincident_lut.geometry,
-                    ids=coincident_lut.index,
-                    valid_geometry_types=_VALID_GEOMETRY_TYPES,
-                )
-            else:
-                raise ValueError(
-                    f"Recieved option coincident='{coincident}', but only options "
-                    "'raise','clique','jitter' are suppported."
-                )
-
         # generate triangulation (triangulator is the wrapped function)
-        heads_ix, tails_ix, dt = triangulator(coordinates, coincident)
-
-        # TODO: expand the clique here so we don't send an isolate to kernel
-
-        # map ids
-        heads, tails = ids[heads_ix], ids[tails_ix]
+        heads_ix, tails_ix, coplanar, edges = triangulator(coordinates, coincident)
 
         # process weights
         if kernel is None:
@@ -110,14 +75,15 @@ def _validate_coincident(triangulator):
                 kernel=kernel,
                 bandwidth=bandwidth,
                 taper=False,
+                resolve_isolates=False,  # no isolates in triangulation
             )
         # create adjacency
         adjtable = pandas.DataFrame.from_dict(
-            {"focal": heads, "neighbor": tails, "weight": weights}
+            {"focal": heads_ix, "neighbor": tails_ix, "weight": weights}
         )
 
         # reinsert points resolved via clique
-        if (n_coincident > 0) & (coincident == "clique"):
+        if (coplanar.shape[0] > 0) & (coincident == "clique"):
             # Note that the kernel is only used to compute a fill value for the clique.
             # In the case of the voronoi weights. Using boxcar with an infinite
             # bandwidth also gives us the correct fill value for the voronoi weight: 1.
@@ -127,11 +93,32 @@ def _validate_coincident(triangulator):
                 fill_value = _kernel_functions[kernel](
                     numpy.array([0]), bandwidth
                 ).item()
-            adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=fill_value)
-            coordinates, ids, geoms = input_coordinates, input_ids, input_geoms
-            heads, tails, weights = adjtable.values.T
+            coplanar_addition = []
+            coplanar, _, nearest = coplanar.T
+            for c, n in zip(coplanar, nearest, strict=True):
+                neighbors = edges[:, 1][edges[:, 0] == n]
+                for n_ in neighbors:
+                    fill = weights[(heads_ix == n) & (tails_ix == n_)].item()
+                    coplanar_addition.append([c, n_, fill])
+                    coplanar_addition.append([n_, c, fill])
+                coplanar_addition.append([c, n, fill_value])
+                coplanar_addition.append([n, c, fill_value])
+            adjtable_filled = pandas.concat(
+                [
+                    adjtable,
+                    pandas.DataFrame(
+                        coplanar_addition, columns=["focal", "neighbor", "weight"]
+                    ),
+                ],
+                ignore_index=True,
+            )
+            adjtable_filled["focal"] = ids[adjtable_filled.focal]
+            adjtable_filled["neighbor"] = ids[adjtable_filled.neighbor]
 
-            adjtable = _reorder_adjtable_by_ids(adjtable, ids)
+            adjtable = _reorder_adjtable_by_ids(adjtable_filled, ids)
+        else:
+            adjtable["focal"] = ids[adjtable.focal]
+            adjtable["neighbor"] = ids[adjtable.neighbor]
 
         # return data for Graph.from_arrays
         return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
@@ -209,14 +196,14 @@ def _delaunay(coordinates, coincident):
             " these computations may become unduly slow on large data.",
             stacklevel=3,
         )
-    edges, dt = _voronoi_edges(coordinates, coincident)
+    edges, _, coplanar = _voronoi_edges(coordinates, coincident)
     heads_ix, tails_ix = edges.T
 
-    return heads_ix, tails_ix, dt
+    return heads_ix, tails_ix, coplanar, edges
 
 
 @_validate_coincident
-def _gabriel(coordinates):
+def _gabriel(coordinates, coincident):
     """
     Constructs the Gabriel graph of a set of points. This graph is a subset of
     the Delaunay triangulation where only "short" links are retained. This
@@ -276,23 +263,22 @@ def _gabriel(coordinates):
             stacklevel=3,
         )
 
-    edges, dt = _voronoi_edges(coordinates)
+    edges, points, coplanar = _voronoi_edges(coordinates, coincident)
     droplist = _filter_gabriel(
         edges,
-        dt.points,
+        points,
     )
-    heads_ix, tails_ix = numpy.row_stack(
-        list(set(map(tuple, edges)).difference(set(droplist)))
-    ).T
+    edges = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist))))
+    heads_ix, tails_ix = edges.T
     order = numpy.lexsort((tails_ix, heads_ix))
     sorted_heads_ix = heads_ix[order]
     sorted_tails_ix = tails_ix[order]
 
-    return sorted_heads_ix, sorted_tails_ix
+    return sorted_heads_ix, sorted_tails_ix, coplanar, edges
 
 
 @_validate_coincident
-def _relative_neighborhood(coordinates):
+def _relative_neighborhood(coordinates, coincident):
     """
     Constructs the Relative Neighborhood graph from a set of points.
     This graph is a subset of the Delaunay triangulation, where only
@@ -350,13 +336,13 @@ def _relative_neighborhood(coordinates):
             stacklevel=3,
         )
 
-    edges, dt = _voronoi_edges(coordinates)
-    output, _ = _filter_relativehood(edges, dt.points, return_dkmax=False)
+    edges, points, coplanar = _voronoi_edges(coordinates, coincident)
+    output, _ = _filter_relativehood(edges, points, return_dkmax=False)
 
     heads_ix, tails_ix, distance = zip(*output, strict=True)
     heads_ix, tails_ix = numpy.asarray(heads_ix), numpy.asarray(tails_ix)
 
-    return heads_ix, tails_ix
+    return heads_ix, tails_ix, coplanar, numpy.row_stack([heads_ix, tails_ix]).T
 
 
 @_validate_coincident
@@ -545,10 +531,15 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     return out, r
 
 
-def _voronoi_edges(coordinates, concident, qhull_options=None):
-    if concident == "jitter":
-        qhull_options = "QJ Qbb Qc Qz Q12"
+def _voronoi_edges(coordinates, coincident, qhull_options=None):
+    if coincident == "jitter":
+        qhull_options = "QJ"
+
     dt = spatial.Delaunay(coordinates, qhull_options=qhull_options)
+
+    if dt.coplanar.shape[0] > 0 and coincident == "raise":
+        raise ValueError("coincident points not allowed")
+
     edges = _edges_from_simplices(dt.simplices)
     edges = (
         pandas.DataFrame(numpy.asarray(list(edges)))
@@ -556,4 +547,4 @@ def _voronoi_edges(coordinates, concident, qhull_options=None):
         .drop_duplicates()
         .values
     )
-    return edges, dt
+    return edges, dt.points, dt.coplanar

@@ -7,7 +7,7 @@ from ._utils import (
     _induce_cliques,
     _jitter_geoms,
     _reorder_adjtable_by_ids,
-    _resolve_islands,
+    # _resolve_islands,
     _sparse_to_arrays,
     _validate_geometry_input,
 )
@@ -79,6 +79,7 @@ def _kernel(
     p=2,
     taper=True,
     coincident="raise",
+    resolve_isolates=True,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -201,9 +202,11 @@ def _kernel(
     if taper:
         d.eliminate_zeros()
 
-    heads, tails, weights = _sparse_to_arrays(d, ids=ids)
+    heads, tails, weights = _sparse_to_arrays(
+        d, ids=ids, resolve_isolates=resolve_isolates
+    )
 
-    return _resolve_islands(heads, tails, ids, weights)
+    return heads, tails, weights
 
 
 def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):

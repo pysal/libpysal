@@ -11,7 +11,7 @@ GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
 
 
-def _sparse_to_arrays(sparray, ids=None):
+def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True):
     """Convert sparse array to arrays of adjacency"""
     sparray = sparray.tocoo(copy=False)
     if ids is not None:
@@ -32,7 +32,11 @@ def _sparse_to_arrays(sparray, ids=None):
         tail = sparray.col[sorter]
         data = sparray.data[sorter]
         ids = np.arange(sparray.shape[0], dtype=int)
-    return _resolve_islands(head, tail, ids, data)
+
+    if resolve_isolates:
+        return _resolve_islands(head, tail, ids, data)
+
+    return head, tail, data
 
 
 def _jitter_geoms(coordinates, geoms, seed=None):
