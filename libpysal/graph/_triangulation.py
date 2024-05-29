@@ -37,22 +37,22 @@ Serge Rey (sjsrey@gmail.com)
 
 # This is in the module, rather than in `utils`, to ensure that it
 # can access `_VALID_GEOMETRY_TYPES` without defining a nested decorator.
-def _validate_coincident(triangulator):
-    """This is a decorator that validates input for coincident points"""
+def _validate_coplanar(triangulator):
+    """This is a decorator that validates input for coplanar points"""
 
     @wraps(triangulator)
     def tri_with_validation(
         coordinates,
         ids=None,
-        coincident="raise",
+        coplanar="raise",
         kernel=None,
         bandwidth=None,
         seed=None,
         **kwargs,
     ):
-        if coincident not in ["raise", "jitter", "clique"]:
+        if coplanar not in ["raise", "jitter", "clique"]:
             raise ValueError(
-                f"Recieved option coincident='{coincident}', but only options "
+                f"Recieved option coplanar='{coplanar}', but only options "
                 "'raise','clique','jitter' are suppported."
             )
 
@@ -60,12 +60,12 @@ def _validate_coincident(triangulator):
         coordinates, ids, _ = _validate_geometry_input(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
-        if coincident == "jitter":
+        if coplanar == "jitter":
             coordinates = _jitter_geoms(coordinates, seed=seed)
 
         # generate triangulation (triangulator is the wrapped function)
         heads_ix, tails_ix, coplanar, edges = triangulator(
-            coordinates, coincident, **kwargs
+            coordinates, coplanar, **kwargs
         )
 
         # process weights
@@ -92,7 +92,7 @@ def _validate_coincident(triangulator):
         )
 
         # reinsert points resolved via clique
-        if (coplanar.shape[0] > 0) & (coincident == "clique"):
+        if (coplanar.shape[0] > 0) & (coplanar == "clique"):
             # Note that the kernel is only used to compute a fill value for the clique.
             # In the case of the voronoi weights. Using boxcar with an infinite
             # bandwidth also gives us the correct fill value for the voronoi weight: 1.
@@ -135,8 +135,8 @@ def _validate_coincident(triangulator):
     return tri_with_validation
 
 
-@_validate_coincident
-def _delaunay(coordinates, coincident):
+@_validate_coplanar
+def _delaunay(coordinates, coplanar):
     """
     Constructor of the Delaunay graph of a set of input points.
     Relies on scipy.spatial.Delaunay and numba to quickly construct
@@ -164,21 +164,21 @@ def _delaunay(coordinates, coincident):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
-    coincident : string (default: "raise")
-        How to deal with coincident points. Coincident points make all triangulations
+    coplanar : string (default: "raise")
+        How to deal with coplanar points. Coplanar points make all triangulations
         ill-posed, and thus they need to be addressed in order to create a valid graph.
         This parameter must be one of the following:
-        * "raise": raise an error if coincident points are present. This is default.
+        * "raise": raise an error if coplanar points are present. This is default.
         * "jitter": jitter the input points by a small value. This makes the resulting
             depend on the seed provided to the triangulation function.
-        * "clique": expand coincident points into a graph clique. This creates a
+        * "clique": expand coplanar points into a graph clique. This creates a
             "unique points" triangulation using all of the unique locations in the data.
             Then, co-located samples are connected within a site. Finally, co-located
             samples are connected to other sites in the "unique points" triangulation.
     seed : int (default: None)
         An integer value used to ensure that the pseudorandom number generator provides
         the same value over replications. By default, no seed is used, so results
-        will be random every time. This is only used if coincident='jitter'.
+        will be random every time. This is only used if coplanar='jitter'.
 
     Notes
     -----
@@ -205,14 +205,14 @@ def _delaunay(coordinates, coincident):
             " these computations may become unduly slow on large data.",
             stacklevel=3,
         )
-    edges, _, coplanar = _voronoi_edges(coordinates, coincident)
+    edges, _, coplanar = _voronoi_edges(coordinates, coplanar)
     heads_ix, tails_ix = edges.T
 
     return heads_ix, tails_ix, coplanar, edges
 
 
-@_validate_coincident
-def _gabriel(coordinates, coincident):
+@_validate_coplanar
+def _gabriel(coordinates, coplanar):
     """
     Constructs the Gabriel graph of a set of points. This graph is a subset of
     the Delaunay triangulation where only "short" links are retained. This
@@ -248,21 +248,21 @@ def _gabriel(coordinates, coincident):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
-    coincident : string (default: "raise")
-        How to deal with coincident points. Coincident points make all triangulations
+    coplanar : string (default: "raise")
+        How to deal with coplanar points. Coplanar points make all triangulations
         ill-posed, and thus they need to be addressed in order to create a valid graph.
         This parameter must be one of the following:
-        * "raise": raise an error if coincident points are present. This is default.
+        * "raise": raise an error if coplanar points are present. This is default.
         * "jitter": jitter the input points by a small value. This makes the resulting
             depend on the seed provided to the triangulation function.
-        * "clique": expand coincident points into a graph clique. This creates a
+        * "clique": expand coplanar points into a graph clique. This creates a
             "unique points" triangulation using all of the unique locations in the data.
             Then, co-located samples are connected within a site. Finally, co-located
             samples are connected to other sites in the "unique points" triangulation.
     seed : int (default: None)
         An integer value used to ensure that the pseudorandom number generator provides
         the same value over replications. By default, no seed is used, so results
-        will be random every time. This is only used if coincident='jitter'.
+        will be random every time. This is only used if coplanar='jitter'.
     """
     if not HAS_NUMBA:
         warnings.warn(
@@ -272,7 +272,7 @@ def _gabriel(coordinates, coincident):
             stacklevel=3,
         )
 
-    edges, points, coplanar = _voronoi_edges(coordinates, coincident)
+    edges, points, coplanar = _voronoi_edges(coordinates, coplanar)
     droplist = _filter_gabriel(
         edges,
         points,
@@ -286,8 +286,8 @@ def _gabriel(coordinates, coincident):
     return sorted_heads_ix, sorted_tails_ix, coplanar, edges
 
 
-@_validate_coincident
-def _relative_neighborhood(coordinates, coincident):
+@_validate_coplanar
+def _relative_neighborhood(coordinates, coplanar):
     """
     Constructs the Relative Neighborhood graph from a set of points.
     This graph is a subset of the Delaunay triangulation, where only
@@ -321,21 +321,21 @@ def _relative_neighborhood(coordinates, coincident):
     kernel : string or callable
         kernel function to use in order to weight the output graph. See the kernel()
         function for more details.
-    coincident : string (default: "raise")
-        How to deal with coincident points. Coincident points make all triangulations
+    coplanar : string (default: "raise")
+        How to deal with coplanar points. Coplanar points make all triangulations
         ill-posed, and thus they need to be addressed in order to create a valid graph.
         This parameter must be one of the following:
-        * "raise": raise an error if coincident points are present. This is default.
+        * "raise": raise an error if coplanar points are present. This is default.
         * "jitter": jitter the input points by a small value. This makes the resulting
             depend on the seed provided to the triangulation function.
-        * "clique": expand coincident points into a graph clique. This creates a
+        * "clique": expand coplanar points into a graph clique. This creates a
             "unique points" triangulation using all of the unique locations in the data.
             Then, co-located samples are connected within a site. Finally, co-located
             samples are connected to other sites in the "unique points" triangulation.
     seed : int (default: None)
         An integer value used to ensure that the pseudorandom number generator provides
         the same value over replications. By default, no seed is used, so results
-        will be random every time. This is only used if coincident='jitter'.
+        will be random every time. This is only used if coplanar='jitter'.
     """
     if not HAS_NUMBA:
         warnings.warn(
@@ -345,7 +345,7 @@ def _relative_neighborhood(coordinates, coincident):
             stacklevel=3,
         )
 
-    edges, points, coplanar = _voronoi_edges(coordinates, coincident)
+    edges, points, coplanar = _voronoi_edges(coordinates, coplanar)
     output, _ = _filter_relativehood(edges, points, return_dkmax=False)
 
     heads_ix, tails_ix, distance = zip(*output, strict=True)
@@ -354,8 +354,8 @@ def _relative_neighborhood(coordinates, coincident):
     return heads_ix, tails_ix, coplanar, numpy.row_stack([heads_ix, tails_ix]).T
 
 
-@_validate_coincident
-def _voronoi(coordinates, coincident, clip="bounding_box", rook=True):
+@_validate_coplanar
+def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -395,21 +395,21 @@ def _voronoi(coordinates, coincident, clip="bounding_box", rook=True):
         Contiguity method. If True, two geometries are considered neighbours if they
         share at least one edge. If False, two geometries are considered neighbours
         if they share at least one vertex. By default True.
-    coincident : string (default: "raise")
-        How to deal with coincident points. Coincident points make all triangulations
+    coplanar : string (default: "raise")
+        How to deal with coplanar points. Coplanar points make all triangulations
         ill-posed, and thus they need to be addressed in order to create a valid graph.
         This parameter must be one of the following:
-        * "raise": raise an error if coincident points are present. This is default.
+        * "raise": raise an error if coplanar points are present. This is default.
         * "jitter": jitter the input points by a small value. This makes the resulting
             depend on the seed provided to the triangulation function.
-        * "clique": expand coincident points into a graph clique. This creates a
+        * "clique": expand coplanar points into a graph clique. This creates a
             "unique points" triangulation using all of the unique locations in the data.
             Then, co-located samples are connected within a site. Finally, co-located
             samples are connected to other sites in the "unique points" triangulation.
     seed : int (default: None)
         An integer value used to ensure that the pseudorandom number generator provides
         the same value over replications. By default, no seed is used, so results
-        will be random every time. This is only used if coincident='jitter'.
+        will be random every time. This is only used if coplanar='jitter'.
 
     Notes
     -----
@@ -423,7 +423,7 @@ def _voronoi(coordinates, coincident, clip="bounding_box", rook=True):
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
-    if coincident == "raise":
+    if coplanar == "raise":
         unique = numpy.unique(coordinates, axis=0)
         if unique.shape != coordinates.shape:
             raise ValueError(
@@ -431,8 +431,8 @@ def _voronoi(coordinates, coincident, clip="bounding_box", rook=True):
                 f"the dataset, but {len(coordinates)} observations. This means there "
                 "are multiple points in the same location, which is undefined "
                 "for this graph type. To address this issue, consider setting "
-                "`coincident='clique'` or consult the documentation about "
-                "coincident points."
+                "`coplanar='clique'` or consult the documentation about "
+                "coplanar points."
             )
     cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False)
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
@@ -536,7 +536,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
             if (i == k) or (j == k):
                 continue
             pk = coordinates[k]
-            if (pi == pk).all() or (pj == pk).all():  # coincident
+            if (pi == pk).all() or (pj == pk).all():  # coplanar
                 continue
             dik = ((pi - pk) ** 2).sum() ** 0.5
             djk = ((pj - pk) ** 2).sum() ** 0.5
@@ -551,17 +551,17 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     return out, r
 
 
-def _voronoi_edges(coordinates, coincident):
+def _voronoi_edges(coordinates, coplanar):
     dt = spatial.Delaunay(coordinates)
 
-    if dt.coplanar.shape[0] > 0 and coincident == "raise":
+    if dt.coplanar.shape[0] > 0 and coplanar == "raise":
         raise ValueError(
             f"There are {len(coordinates) - len(dt.coplanar)} unique locations in "
             f"the dataset, but {len(coordinates)} observations. This means there "
             "are multiple points in the same location, which is undefined "
             "for this graph type. To address this issue, consider setting "
-            "`coincident='clique'` or consult the documentation about "
-            "coincident points."
+            "`coplanar='clique'` or consult the documentation about "
+            "coplanar points."
         )
 
     edges = _edges_from_simplices(dt.simplices)

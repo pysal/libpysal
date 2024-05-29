@@ -143,15 +143,15 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
     return heads, tails, data_array
 
 
-def _build_coincidence_lookup(geoms):
+def _build_coplanarity_lookup(geoms):
     """
-    Identify coincident points and create a look-up table for the coincident geometries.
+    Identify coplanar points and create a look-up table for the coplanar geometries.
     """
-    valid_coincident_geom_types = set(("Point",))  # noqa: C405
-    if not set(geoms.geom_type) <= valid_coincident_geom_types:
+    valid_coplanar_geom_types = set(("Point",))  # noqa: C405
+    if not set(geoms.geom_type) <= valid_coplanar_geom_types:
         raise ValueError(
-            "coindicence checks are only well-defined for "
-            f"geom_types: {valid_coincident_geom_types}"
+            "Coplanarity checks are only well-defined for "
+            f"geom_types: {valid_coplanar_geom_types}"
         )
     if GPD_013:
         lut = (
