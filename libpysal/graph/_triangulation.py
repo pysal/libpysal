@@ -50,7 +50,6 @@ def _validate_coincident(triangulator):
         kernel=None,
         bandwidth=None,
         seed=None,
-        **kwargs,
     ):
         # validate geometry input
         coordinates, ids, geoms = _validate_geometry_input(
@@ -88,7 +87,9 @@ def _validate_coincident(triangulator):
                 )
 
         # generate triangulation (triangulator is the wrapped function)
-        heads_ix, tails_ix = triangulator(coordinates, **kwargs)
+        heads_ix, tails_ix, dt = triangulator(coordinates, coincident)
+
+        # TODO: expand the clique here so we don't send an isolate to kernel
 
         # map ids
         heads, tails = ids[heads_ix], ids[tails_ix]
@@ -139,7 +140,7 @@ def _validate_coincident(triangulator):
 
 
 @_validate_coincident
-def _delaunay(coordinates):
+def _delaunay(coordinates, coincident):
     """
     Constructor of the Delaunay graph of a set of input points.
     Relies on scipy.spatial.Delaunay and numba to quickly construct
@@ -208,11 +209,10 @@ def _delaunay(coordinates):
             " these computations may become unduly slow on large data.",
             stacklevel=3,
         )
-
-    edges, _ = _voronoi_edges(coordinates)
+    edges, dt = _voronoi_edges(coordinates, coincident)
     heads_ix, tails_ix = edges.T
 
-    return heads_ix, tails_ix
+    return heads_ix, tails_ix, dt
 
 
 @_validate_coincident
@@ -428,6 +428,8 @@ def _voronoi(coordinates, clip="bounding_box", rook=True):
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
+    # TODO: handle jittering manually here. Clique is handeld automatically
+    # TODO: given shapely returns duplicated face for duplicated point
     cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False)
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
 
@@ -543,8 +545,10 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     return out, r
 
 
-def _voronoi_edges(coordinates):
-    dt = spatial.Delaunay(coordinates)
+def _voronoi_edges(coordinates, concident, qhull_options=None):
+    if concident == "jitter":
+        qhull_options = "QJ Qbb Qc Qz Q12"
+    dt = spatial.Delaunay(coordinates, qhull_options=qhull_options)
     edges = _edges_from_simplices(dt.simplices)
     edges = (
         pandas.DataFrame(numpy.asarray(list(edges)))
