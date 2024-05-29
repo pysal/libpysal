@@ -39,7 +39,7 @@ def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True):
     return head, tail, data
 
 
-def _jitter_geoms(coordinates, geoms, seed=None):
+def _jitter_geoms(coordinates, geoms=None, seed=None):
     """
     Jitter geometries based on the smallest required movements to induce
     uniqueness. For each point, this samples a radius and angle uniformly
@@ -65,8 +65,13 @@ def _jitter_geoms(coordinates, geoms, seed=None):
     dy = r + np.cos(theta)
     # then adding the displacements
     coordinates = coordinates + np.column_stack((dx, dy))
-    geoms = geopandas.GeoSeries(geopandas.points_from_xy(*coordinates.T, crs=geoms.crs))
-    return coordinates, geoms
+    if geoms is not None:
+        geoms = geopandas.GeoSeries(
+            geopandas.points_from_xy(*coordinates.T, crs=geoms.crs)
+        )
+        return coordinates, geoms
+
+    return coordinates
 
 
 def _induce_cliques(adjtable, clique_to_members, fill_value=1):

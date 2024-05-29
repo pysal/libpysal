@@ -12,7 +12,7 @@ from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
     # _build_coincidence_lookup,
     # _induce_cliques,
-    # _jitter_geoms,
+    _jitter_geoms,
     _reorder_adjtable_by_ids,
     _validate_geometry_input,
     _vec_euclidean_distances,
@@ -49,15 +49,26 @@ def _validate_coincident(triangulator):
         coincident="raise",
         kernel=None,
         bandwidth=None,
-        # seed=None,
+        seed=None,
+        **kwargs,
     ):
+        if coincident not in ["raise", "jitter", "clique"]:
+            raise ValueError(
+                f"Recieved option coincident='{coincident}', but only options "
+                "'raise','clique','jitter' are suppported."
+            )
+
         # validate geometry input
-        coordinates, ids, geoms = _validate_geometry_input(
+        coordinates, ids, _ = _validate_geometry_input(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
+        if coincident == "jitter":
+            coordinates = _jitter_geoms(coordinates, seed=seed)
 
         # generate triangulation (triangulator is the wrapped function)
-        heads_ix, tails_ix, coplanar, edges = triangulator(coordinates, coincident)
+        heads_ix, tails_ix, coplanar, edges = triangulator(
+            coordinates, coincident, **kwargs
+        )
 
         # process weights
         if kernel is None:
@@ -69,7 +80,7 @@ def _validate_coincident(triangulator):
             sparse_d = sparse.csc_array((distances, (heads_ix, tails_ix)))
             if bandwidth == "auto":
                 bandwidth = _optimize_bandwidth(sparse_d, kernel)
-            _, _, weights = _kernel(
+            heads_ix, tails_ix, weights = _kernel(
                 sparse_d,
                 metric="precomputed",
                 kernel=kernel,
@@ -346,7 +357,7 @@ def _relative_neighborhood(coordinates, coincident):
 
 
 @_validate_coincident
-def _voronoi(coordinates, clip="bounding_box", rook=True):
+def _voronoi(coordinates, coincident, clip="bounding_box", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -414,12 +425,21 @@ def _voronoi(coordinates, clip="bounding_box", rook=True):
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
-    # TODO: handle jittering manually here. Clique is handeld automatically
-    # TODO: given shapely returns duplicated face for duplicated point
+    if coincident == "raise":
+        unique = numpy.unique(coordinates, axis=0)
+        if unique.shape != coordinates.shape:
+            raise ValueError(
+                f"There are {len(unique)} unique locations in "
+                f"the dataset, but {len(coordinates)} observations. This means there "
+                "are multiple points in the same location, which is undefined "
+                "for this graph type. To address this issue, consider setting "
+                "`coincident='clique'` or consult the documentation about "
+                "coincident points."
+            )
     cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False)
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
 
-    return heads_ix, tails_ix
+    return heads_ix, tails_ix, numpy.array([]), numpy.array([])
 
 
 #### utilities
@@ -533,14 +553,18 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     return out, r
 
 
-def _voronoi_edges(coordinates, coincident, qhull_options=None):
-    if coincident == "jitter":
-        qhull_options = "QJ"
-
-    dt = spatial.Delaunay(coordinates, qhull_options=qhull_options)
+def _voronoi_edges(coordinates, coincident):
+    dt = spatial.Delaunay(coordinates)
 
     if dt.coplanar.shape[0] > 0 and coincident == "raise":
-        raise ValueError("coincident points not allowed")
+        raise ValueError(
+            f"There are {len(coordinates) - len(dt.coplanar)} unique locations in "
+            f"the dataset, but {len(coordinates)} observations. This means there "
+            "are multiple points in the same location, which is undefined "
+            "for this graph type. To address this issue, consider setting "
+            "`coincident='clique'` or consult the documentation about "
+            "coincident points."
+        )
 
     edges = _edges_from_simplices(dt.simplices)
     edges = (

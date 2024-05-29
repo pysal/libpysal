@@ -98,9 +98,9 @@ parametrize_constructors = pytest.mark.parametrize(
 
 
 def test_correctness_voronoi_clipping():
-    noclip = _voronoi(lap_coords, clip=None, rook=True)
-    extent = _voronoi(lap_coords, clip="bounding_box", rook=True)
-    alpha = _voronoi(lap_coords, clip="alpha_shape", rook=True)
+    noclip = _voronoi(lap_coords, coincident="raise", clip=None, rook=True)
+    extent = _voronoi(lap_coords, coincident="raise", clip="bounding_box", rook=True)
+    alpha = _voronoi(lap_coords, coincident="raise", clip="alpha_shape", rook=True)
 
     g_noclip = Graph.from_arrays(*noclip)
     g_extent = Graph.from_arrays(*extent)
