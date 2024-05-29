@@ -7,7 +7,6 @@ from ._utils import (
     _induce_cliques,
     _jitter_geoms,
     _reorder_adjtable_by_ids,
-    # _resolve_islands,
     _sparse_to_arrays,
     _validate_geometry_input,
 )
@@ -125,6 +124,8 @@ def _kernel(
         parameter for minkowski metric, ignored if metric != "minkowski".
     taper : bool (default: True)
         remove links with a weight equal to zero
+    resolve_isolates : bool
+        Try to resolve isolates. Can be disabled if we are dealing with cliques later.
     """
     if metric != "precomputed":
         coordinates, ids, _ = _validate_geometry_input(
@@ -202,11 +203,7 @@ def _kernel(
     if taper:
         d.eliminate_zeros()
 
-    heads, tails, weights = _sparse_to_arrays(
-        d, ids=ids, resolve_isolates=resolve_isolates
-    )
-
-    return heads, tails, weights
+    return _sparse_to_arrays(d, ids=ids, resolve_isolates=resolve_isolates)
 
 
 def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):

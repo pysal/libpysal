@@ -10,8 +10,6 @@ from libpysal.cg import voronoi_frames
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
-    # _build_coincidence_lookup,
-    # _induce_cliques,
     _jitter_geoms,
     _reorder_adjtable_by_ids,
     _validate_geometry_input,
