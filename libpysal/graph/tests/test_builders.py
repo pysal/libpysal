@@ -265,14 +265,14 @@ class TestKernel:
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_knn_intids(self):
-        g = graph.Graph.build_knn(self.gdf, k=3, coincident="jitter")
+        g = graph.Graph.build_knn(self.gdf, k=3, coplanar="jitter")
 
         assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
     def test_knn_strids(self):
-        g = graph.Graph.build_kernel(self.gdf_str, k=3, coincident="jitter")
+        g = graph.Graph.build_kernel(self.gdf_str, k=3, coplanar="jitter")
 
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])

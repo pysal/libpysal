@@ -299,7 +299,7 @@ def test_metric_k(metric):
 #     raise NotImplementedError()
 
 
-def test_coincident():
+def test_coplanar():
     grocs_duplicated = pd.concat(
         [grocs, grocs.iloc[:10], grocs.iloc[:3]], ignore_index=True
     )
@@ -315,16 +315,14 @@ def test_coincident():
         _kernel(grocs_duplicated, k=2)
 
     # k, jitter
-    head, tail, weight = _kernel(
-        grocs_duplicated, taper=False, k=2, coincident="jitter"
-    )
+    head, tail, weight = _kernel(grocs_duplicated, taper=False, k=2, coplanar="jitter")
     assert head.shape[0] == len(grocs_duplicated) * 2
     assert tail.shape == head.shape
     assert weight.shape == head.shape
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
     # k, clique
-    head, tail, weight = _kernel(grocs_duplicated, k=2, coincident="clique")
+    head, tail, weight = _kernel(grocs_duplicated, k=2, coplanar="clique")
     assert head.shape[0] >= len(grocs_duplicated) * 2
     assert tail.shape == head.shape
     assert weight.shape == head.shape

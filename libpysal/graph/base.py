@@ -851,7 +851,7 @@ class Graph(SetOpsMixin):
         bandwidth=None,
         metric="euclidean",
         p=2,
-        coincident="raise",
+        coplanar="raise",
     ):
         """Generate Graph from geometry data based on a kernel function
 
@@ -892,11 +892,11 @@ class Graph(SetOpsMixin):
             only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         p : int (default: 2)
             parameter for minkowski metric, ignored if metric != "minkowski".
-        coincident: str, optional (default "raise")
-            Method for handling coincident points when ``k`` is not None. Options are
-            ``'raise'`` (raising an exception when coincident points are present),
-            ``'jitter'`` (randomly displace coincident points to produce uniqueness), &
-            ``'clique'`` (induce fully-connected sub cliques for coincident points).
+        coplanar: str, optional (default "raise")
+            Method for handling coplanar points when ``k`` is not None. Options are
+            ``'raise'`` (raising an exception when coplanar points are present),
+            ``'jitter'`` (randomly displace coplanar points to produce uniqueness), &
+            ``'clique'`` (induce fully-connected sub cliques for coplanar points).
 
         Returns
         -------
@@ -913,13 +913,13 @@ class Graph(SetOpsMixin):
             k=k,
             p=p,
             ids=ids,
-            coincident=coincident,
+            coplanar=coplanar,
         )
 
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
-    def build_knn(cls, data, k, metric="euclidean", p=2, coincident="raise"):
+    def build_knn(cls, data, k, metric="euclidean", p=2, coplanar="raise"):
         """Generate Graph from geometry data based on k-nearest neighbors search
 
         Parameters
@@ -939,11 +939,11 @@ class Graph(SetOpsMixin):
             only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         p : int (default: 2)
             parameter for minkowski metric, ignored if metric != "minkowski".
-        coincident: str, optional (default "raise")
-            Method for handling coincident points. Options include
-            ``'raise'`` (raising an exception when coincident points are present),
-            ``'jitter'`` (randomly displace coincident points to produce uniqueness), &
-            ``'clique'`` (induce fully-connected sub cliques for coincident points).
+        coplanar: str, optional (default "raise")
+            Method for handling coplanar points. Options include
+            ``'raise'`` (raising an exception when coplanar points are present),
+            ``'jitter'`` (randomly displace coplanar points to produce uniqueness), &
+            ``'clique'`` (induce fully-connected sub cliques for coplanar points).
 
 
         Returns
@@ -1008,7 +1008,7 @@ class Graph(SetOpsMixin):
             k=k,
             p=p,
             ids=ids,
-            coincident=coincident,
+            coplanar=coplanar,
         )
 
         return cls.from_arrays(head, tail, weight)
@@ -1094,7 +1094,7 @@ class Graph(SetOpsMixin):
         kernel="boxcar",
         clip="bounding_box",
         rook=True,
-        coincident="raise",
+        coplanar="raise",
     ):
         """Generate Graph from geometry based on triangulation
 
@@ -1142,11 +1142,11 @@ class Graph(SetOpsMixin):
             If True, two geometries are considered neighbours if they
             share at least one edge. If False, two geometries are considered neighbours
             if they share at least one vertex. By default True
-        coincident: str, optional (default "raise")
-            Method for handling coincident points. Options include
-            ``'raise'`` (raising an exception when coincident points are present),
-            ``'jitter'`` (randomly displace coincident points to produce uniqueness), &
-            ``'clique'`` (induce fully-connected sub cliques for coincident points).
+        coplanar: str, optional (default "raise")
+            Method for handling coplanar points. Options include
+            ``'raise'`` (raising an exception when coplanar points are present),
+            ``'jitter'`` (randomly displace coplanar points to produce uniqueness), &
+            ``'clique'`` (induce fully-connected sub cliques for coplanar points).
 
         Returns
         -------
@@ -1195,19 +1195,19 @@ class Graph(SetOpsMixin):
 
         if method == "delaunay":
             head, tail, weights = _delaunay(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coplanar=coplanar
             )
         elif method == "gabriel":
             head, tail, weights = _gabriel(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coplanar=coplanar
             )
         elif method == "relative_neighborhood":
             head, tail, weights = _relative_neighborhood(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coincident=coincident
+                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coplanar=coplanar
             )
         elif method == "voronoi":
             head, tail, weights = _voronoi(
-                data, ids=ids, clip=clip, rook=rook, coincident=coincident
+                data, ids=ids, clip=clip, rook=rook, coplanar=coplanar
             )
         else:
             raise ValueError(
