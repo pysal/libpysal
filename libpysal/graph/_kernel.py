@@ -211,6 +211,9 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
     coordinates, ids, geoms = _validate_geometry_input(
         coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
+    if coincident == "jitter":
+        coordinates, geoms = _jitter_geoms(coordinates, geoms=geoms)
+
     n_coincident = geoms.geometry.duplicated().sum()
     n_samples, _ = coordinates.shape
 
