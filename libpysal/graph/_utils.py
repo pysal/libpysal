@@ -121,7 +121,7 @@ def _induce_cliques2(adjtable, coplanar, nearest, edges, fill_value=1):
     for c, n in zip(coplanar, nearest, strict=True):
         neighbors = edges[:, 1][edges[:, 0] == n]
         for n_ in neighbors:
-            fill = adjtable.weights[
+            fill = adjtable.weight[
                 (adjtable.focal == n) & (adjtable.neighbor == n_)
             ].item()
             coplanar_addition.append([c, n_, fill])

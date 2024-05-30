@@ -66,7 +66,7 @@ def _validate_coplanar(triangulator):
             coordinates = _jitter_geoms(coordinates, seed=seed)
 
         # generate triangulation (triangulator is the wrapped function)
-        heads_ix, tails_ix, coplanar, edges = triangulator(
+        heads_ix, tails_ix, coplanar_loopkup, edges = triangulator(
             coordinates, coplanar, **kwargs
         )
 
@@ -94,7 +94,7 @@ def _validate_coplanar(triangulator):
         )
 
         # reinsert points resolved via clique
-        if (coplanar.shape[0] > 0) & (coplanar == "clique"):
+        if (coplanar_loopkup.shape[0] > 0) & (coplanar == "clique"):
             # Note that the kernel is only used to compute a fill value for the clique.
             # In the case of the voronoi weights. Using boxcar with an infinite
             # bandwidth also gives us the correct fill value for the voronoi weight: 1.
@@ -104,7 +104,7 @@ def _validate_coplanar(triangulator):
                 fill_value = _kernel_functions[kernel](
                     numpy.array([0]), bandwidth
                 ).item()
-            coplanar, _, nearest = coplanar.T
+            coplanar, _, nearest = coplanar_loopkup.T
             adjtable = _induce_cliques2(adjtable, coplanar, nearest, edges, fill_value)
             adjtable["focal"] = ids[adjtable.focal]
             adjtable["neighbor"] = ids[adjtable.neighbor]
