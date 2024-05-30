@@ -314,7 +314,9 @@ class Graph(SetOpsMixin):
             libpysal.graph.Graph based on sparse
         """
 
-        return cls.from_arrays(*_sparse_to_arrays(sparse, ids))
+        return cls(
+            _sparse_to_arrays(sparse, ids, return_adjacency=True), is_sorted=True
+        )
 
     @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight, **kwargs):

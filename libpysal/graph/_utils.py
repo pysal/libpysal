@@ -16,7 +16,7 @@ class CoplanarError(ValueError):
     pass
 
 
-def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True):
+def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True, return_adjacency=False):
     """Convert sparse array to arrays of adjacency
 
     When we know we are dealing with cliques, we don't want to resolve
@@ -43,7 +43,16 @@ def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True):
         ids = np.arange(sparray.shape[0], dtype=int)
 
     if resolve_isolates:
-        return _resolve_islands(head, tail, ids, data)
+        return _resolve_islands(
+            head, tail, ids, data, return_adjacency=return_adjacency
+        )
+
+    if return_adjacency:
+        return pd.Series(
+            data,
+            index=pd.MultiIndex.from_arrays([head, tail], names=["focal", "neighbor"]),
+            name="weight",
+        )
 
     return head, tail, data
 
@@ -214,13 +223,6 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     )
 
 
-def _validate_sparse_input(sparse, ids=None):
-    assert (
-        sparse.shape[0] == sparse.shape[1]
-    ), "coordinates should represent a distance matrix if metric='precomputed'"
-    return _sparse_to_arrays(sparse, ids)
-
-
 def _vec_euclidean_distances(x_vec, y_vec):
     """
     compute the euclidean distances along corresponding rows of two arrays
@@ -238,7 +240,7 @@ def _evaluate_index(data):
         return pd.RangeIndex(0, len(data))
 
 
-def _resolve_islands(heads, tails, ids, weights):
+def _resolve_islands(heads, tails, ids, weights, return_adjacency=False):
     """
     Induce self-loops for a collection of ids and links describing a
     contiguity graph. Induced self-loops will have zero weight.
@@ -250,8 +252,14 @@ def _resolve_islands(heads, tails, ids, weights):
         weights = np.hstack((weights, np.zeros_like(islands, dtype=int)))
 
     # ensure proper order after adding isolates to the end
-    adjacency = pd.Series(weights, index=pd.MultiIndex.from_arrays([heads, tails]))
+    adjacency = pd.Series(
+        weights,
+        index=pd.MultiIndex.from_arrays([heads, tails], names=["focal", "neighbor"]),
+        name="weight",
+    )
     adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
+    if return_adjacency:
+        return adjacency
     return (
         adjacency.index.get_level_values(0),
         adjacency.index.get_level_values(1),
@@ -260,20 +268,9 @@ def _resolve_islands(heads, tails, ids, weights):
 
 
 def _reorder_adjtable_by_ids(adjtable, ids):
-    if PANDAS_GE_21:
-        # ensure proper sorting
-        sorted_index = (
-            adjtable[["focal", "neighbor"]]
-            .map(list(ids).index)
-            .sort_values(["focal", "neighbor"])
-            .index
-        )
-    else:
-        # ensure proper sorting
-        sorted_index = (
-            adjtable[["focal", "neighbor"]]
-            .applymap(list(ids).index)
-            .sort_values(["focal", "neighbor"])
-            .index
-        )
-    return adjtable.iloc[sorted_index].reset_index(drop=True)
+    return (
+        adjtable.set_index(["focal", "neighbor"])
+        .reindex(ids, level=0)
+        .reindex(ids, level=1)
+        .reset_index()
+    )
