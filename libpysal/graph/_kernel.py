@@ -3,6 +3,7 @@ import pandas
 from scipy import optimize, sparse, spatial, stats
 
 from ._utils import (
+    CoplanarError,
     _build_coplanarity_lookup,
     _induce_cliques,
     _jitter_geoms,
@@ -239,7 +240,7 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise"):
         coplanar_lut = _build_coplanarity_lookup(geoms)
         max_at_one_site = coplanar_lut.input_index.str.len().max()
         if coplanar == "raise":
-            raise ValueError(
+            raise CoplanarError(
                 f"There are {len(coplanar_lut)} unique locations in the dataset, "
                 f"but {len(coordinates)} observations. At least one of these sites "
                 f"has {max_at_one_site} points, more than the {k} nearest neighbors "

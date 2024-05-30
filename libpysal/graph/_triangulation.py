@@ -10,6 +10,8 @@ from libpysal.cg import voronoi_frames
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
+    CoplanarError,
+    _induce_cliques2,
     _jitter_geoms,
     _reorder_adjtable_by_ids,
     _validate_geometry_input,
@@ -102,29 +104,35 @@ def _validate_coplanar(triangulator):
                 fill_value = _kernel_functions[kernel](
                     numpy.array([0]), bandwidth
                 ).item()
-            coplanar_addition = []
             coplanar, _, nearest = coplanar.T
-            for c, n in zip(coplanar, nearest, strict=True):
-                neighbors = edges[:, 1][edges[:, 0] == n]
-                for n_ in neighbors:
-                    fill = weights[(heads_ix == n) & (tails_ix == n_)].item()
-                    coplanar_addition.append([c, n_, fill])
-                    coplanar_addition.append([n_, c, fill])
-                coplanar_addition.append([c, n, fill_value])
-                coplanar_addition.append([n, c, fill_value])
-            adjtable_filled = pandas.concat(
-                [
-                    adjtable,
-                    pandas.DataFrame(
-                        coplanar_addition, columns=["focal", "neighbor", "weight"]
-                    ),
-                ],
-                ignore_index=True,
-            )
-            adjtable_filled["focal"] = ids[adjtable_filled.focal]
-            adjtable_filled["neighbor"] = ids[adjtable_filled.neighbor]
+            adjtable = _induce_cliques2(adjtable, coplanar, nearest, edges, fill_value)
+            adjtable["focal"] = ids[adjtable.focal]
+            adjtable["neighbor"] = ids[adjtable.neighbor]
 
-            adjtable = _reorder_adjtable_by_ids(adjtable_filled, ids)
+            adjtable = _reorder_adjtable_by_ids(adjtable, ids)
+            # coplanar_addition = []
+            # coplanar, _, nearest = coplanar.T
+            # for c, n in zip(coplanar, nearest, strict=True):
+            #     neighbors = edges[:, 1][edges[:, 0] == n]
+            #     for n_ in neighbors:
+            #         fill = weights[(heads_ix == n) & (tails_ix == n_)].item()
+            #         coplanar_addition.append([c, n_, fill])
+            #         coplanar_addition.append([n_, c, fill])
+            #     coplanar_addition.append([c, n, fill_value])
+            #     coplanar_addition.append([n, c, fill_value])
+            # adjtable_filled = pandas.concat(
+            #     [
+            #         adjtable,
+            #         pandas.DataFrame(
+            #             coplanar_addition, columns=["focal", "neighbor", "weight"]
+            #         ),
+            #     ],
+            #     ignore_index=True,
+            # )
+            # adjtable_filled["focal"] = ids[adjtable_filled.focal]
+            # adjtable_filled["neighbor"] = ids[adjtable_filled.neighbor]
+
+            # adjtable = _reorder_adjtable_by_ids(adjtable_filled, ids)
         else:
             adjtable["focal"] = ids[adjtable.focal]
             adjtable["neighbor"] = ids[adjtable.neighbor]
@@ -426,7 +434,7 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
     if coplanar == "raise":
         unique = numpy.unique(coordinates, axis=0)
         if unique.shape != coordinates.shape:
-            raise ValueError(
+            raise CoplanarError(
                 f"There are {len(unique)} unique locations in "
                 f"the dataset, but {len(coordinates)} observations. This means there "
                 "are multiple points in the same location, which is undefined "
@@ -555,7 +563,7 @@ def _voronoi_edges(coordinates, coplanar):
     dt = spatial.Delaunay(coordinates)
 
     if dt.coplanar.shape[0] > 0 and coplanar == "raise":
-        raise ValueError(
+        raise CoplanarError(
             f"There are {len(coordinates) - len(dt.coplanar)} unique locations in "
             f"the dataset, but {len(coordinates)} observations. This means there "
             "are multiple points in the same location, which is undefined "

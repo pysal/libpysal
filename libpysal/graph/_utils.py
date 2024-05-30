@@ -11,6 +11,10 @@ GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
 
 
+class CoplanarError(ValueError):
+    pass
+
+
 def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True):
     """Convert sparse array to arrays of adjacency"""
     sparray = sparray.tocoo(copy=False)
@@ -112,6 +116,28 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
     return new_adj
 
 
+def _induce_cliques2(adjtable, coplanar, nearest, edges, fill_value=1):
+    coplanar_addition = []
+    for c, n in zip(coplanar, nearest, strict=True):
+        neighbors = edges[:, 1][edges[:, 0] == n]
+        for n_ in neighbors:
+            fill = adjtable.weights[
+                (adjtable.focal == n) & (adjtable.neighbor == n_)
+            ].item()
+            coplanar_addition.append([c, n_, fill])
+            coplanar_addition.append([n_, c, fill])
+        coplanar_addition.append([c, n, fill_value])
+        coplanar_addition.append([n, c, fill_value])
+    adjtable_filled = pd.concat(
+        [
+            adjtable,
+            pd.DataFrame(coplanar_addition, columns=["focal", "neighbor", "weight"]),
+        ],
+        ignore_index=True,
+    )
+    return adjtable_filled
+
+
 def _neighbor_dict_to_edges(neighbors, weights=None):
     """
     Convert a neighbor dict to a set of (head, tail, weight) edges, assuming
@@ -174,6 +200,20 @@ def _build_coplanarity_lookup(geoms):
 
     lut = geopandas.GeoDataFrame(lut)
     return lut.rename(columns={"index": "input_index"})
+
+
+def _build_coplanarity_lookup2(geoms):
+    coplanar = []
+    nearest = []
+    r = geoms.groupby(geoms).groups
+    for g in r.values():
+        if len(g) == 2:
+            coplanar.append(g[0])
+            nearest.append(g[1])
+        elif len(g) > 2:
+            for n in g[1:]:
+                coplanar.append(n)
+                nearest.append(g)
 
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
