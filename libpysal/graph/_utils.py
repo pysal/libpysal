@@ -144,7 +144,7 @@ def _build_coplanarity_lookup(geoms):
     geoms = geoms.reset_index(drop=True)
     coplanar = []
     nearest = []
-    r = geoms.groupby(geoms).groups
+    r = geoms.groupby(geoms).groups if GPD_013 else geoms.groupby(geoms.to_wkb()).groups
     for g in r.values():
         if len(g) == 2:
             coplanar.append(g[0])
