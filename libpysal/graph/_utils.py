@@ -1,5 +1,4 @@
 import warnings
-from itertools import permutations
 
 import geopandas
 import numpy as np
@@ -78,7 +77,7 @@ def _jitter_geoms(coordinates, geoms=None, seed=None):
     return coordinates
 
 
-def _induce_cliques(adjtable, clique_to_members, fill_value=1):
+def _induce_cliques(adjtable, coplanar, nearest, fill_value=1):
     """
     induce cliques into the input graph. This connects everything within a
     clique together, as well as connecting all things outside of the clique
@@ -86,40 +85,9 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
 
     This does not guarantee/understand ordering of the *output* adjacency table.
     """
-    adj_across_clique = (
-        adjtable.merge(
-            clique_to_members["input_index"], left_on="focal", right_index=True
-        )
-        .explode("input_index")
-        .rename(columns={"input_index": "subclique_focal"})
-        .merge(clique_to_members["input_index"], left_on="neighbor", right_index=True)
-        .explode("input_index")
-        .rename(columns={"input_index": "subclique_neighbor"})
-        .reset_index()
-        .drop(["focal", "neighbor", "index"], axis=1)
-        .rename(columns={"subclique_focal": "focal", "subclique_neighbor": "neighbor"})
-    )[["focal", "neighbor", "weight"]]
-    is_multimember_clique = clique_to_members["input_index"].str.len() > 1
-    adj_within_clique = (
-        clique_to_members[is_multimember_clique]["input_index"]
-        .apply(lambda x: list(permutations(x, 2)))
-        .explode()
-        .apply(pd.Series)
-        .rename(columns={0: "focal", 1: "neighbor"})
-        .assign(weight=fill_value)
-    )
-
-    new_adj = pd.concat(
-        (adj_across_clique, adj_within_clique), ignore_index=True, axis=0
-    ).reset_index(drop=True)
-
-    return new_adj
-
-
-def _induce_cliques2(adjtable, coplanar, nearest, edges, fill_value=1):
     coplanar_addition = []
     for c, n in zip(coplanar, nearest, strict=True):
-        neighbors = edges[:, 1][edges[:, 0] == n]
+        neighbors = adjtable.neighbor[adjtable.focal == n]
         for n_ in neighbors:
             fill = adjtable.weight[
                 (adjtable.focal == n) & (adjtable.neighbor == n_)
@@ -173,36 +141,7 @@ def _build_coplanarity_lookup(geoms):
     """
     Identify coplanar points and create a look-up table for the coplanar geometries.
     """
-    valid_coplanar_geom_types = set(("Point",))  # noqa: C405
-    if not set(geoms.geom_type) <= valid_coplanar_geom_types:
-        raise ValueError(
-            "Coplanarity checks are only well-defined for "
-            f"geom_types: {valid_coplanar_geom_types}"
-        )
-    if GPD_013:
-        lut = (
-            geoms.to_frame("geometry")
-            .reset_index()
-            .groupby("geometry")["index"]
-            .agg(list)
-            .reset_index()
-        )
-    else:
-        lut = (
-            geoms.to_wkb()
-            .to_frame("geometry")
-            .reset_index()
-            .groupby("geometry")["index"]
-            .agg(list)
-            .reset_index()
-        )
-        lut["geometry"] = geopandas.GeoSeries.from_wkb(lut["geometry"])
-
-    lut = geopandas.GeoDataFrame(lut)
-    return lut.rename(columns={"index": "input_index"})
-
-
-def _build_coplanarity_lookup2(geoms):
+    geoms = geoms.reset_index(drop=True)
     coplanar = []
     nearest = []
     r = geoms.groupby(geoms).groups
@@ -213,7 +152,8 @@ def _build_coplanarity_lookup2(geoms):
         elif len(g) > 2:
             for n in g[1:]:
                 coplanar.append(n)
-                nearest.append(g)
+                nearest.append(g[0])
+    return np.asarray(coplanar), np.asarray(nearest)
 
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):

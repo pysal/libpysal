@@ -237,15 +237,16 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise"):
         )
         return d
     else:
-        coplanar_lut = _build_coplanarity_lookup(geoms)
-        max_at_one_site = coplanar_lut.input_index.str.len().max()
+        coplanar_lookup, nearest = _build_coplanarity_lookup(geoms)
+        _, counts = numpy.unique(nearest, return_counts=True)
+        max_at_one_site = counts.max()
         if coplanar == "raise":
             raise CoplanarError(
-                f"There are {len(coplanar_lut)} unique locations in the dataset, "
-                f"but {len(coordinates)} observations. At least one of these sites "
-                f"has {max_at_one_site} points, more than the {k} nearest neighbors "
-                f"requested. This means there are more than {k} points in the same "
-                "location, which makes this graph type undefined. To address "
+                f"There are {len(coordinates) - len(coplanar_lookup)} unique locations "
+                f"in the dataset, but {len(coordinates)} observations. At least one of "
+                f"these sites has {max_at_one_site} points, more than the {k} nearest "
+                f"neighbors requested. This means there are more than {k} points in "
+                "the same location, which makes this graph type undefined. To address "
                 "this issue, consider setting `coplanar='clique'` or consult the "
                 "documentation about coplanar points."
             )
@@ -261,12 +262,22 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise"):
 
         if coplanar == "clique":
             heads, tails, weights = _sparse_to_arrays(
-                _knn(coplanar_lut.geometry, metric=metric, k=k, p=p, coplanar="raise")
+                _knn(
+                    numpy.delete(coordinates, coplanar_lookup, 0),
+                    metric=metric,
+                    k=k,
+                    p=p,
+                    coplanar="raise",
+                )
             )
             adjtable = pandas.DataFrame.from_dict(
                 {"focal": heads, "neighbor": tails, "weight": weights}
             )
-            adjtable = _induce_cliques(adjtable, coplanar_lut, fill_value=-1)
+            adjtable = _induce_cliques(
+                adjtable, coplanar_lookup, nearest, fill_value=-1
+            )
+            adjtable["focal"] = ids[adjtable.focal]
+            adjtable["neighbor"] = ids[adjtable.neighbor]
             adjtable = _reorder_adjtable_by_ids(adjtable, ids)
             sparse_out = sparse.csr_array(
                 (

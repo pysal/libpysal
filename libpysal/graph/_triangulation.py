@@ -11,7 +11,7 @@ from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
     CoplanarError,
-    _induce_cliques2,
+    _induce_cliques,
     _jitter_geoms,
     _reorder_adjtable_by_ids,
     _validate_geometry_input,
@@ -66,7 +66,7 @@ def _validate_coplanar(triangulator):
             coordinates = _jitter_geoms(coordinates, seed=seed)
 
         # generate triangulation (triangulator is the wrapped function)
-        heads_ix, tails_ix, coplanar_loopkup, edges = triangulator(
+        heads_ix, tails_ix, coplanar_loopkup = triangulator(
             coordinates, coplanar, **kwargs
         )
 
@@ -105,7 +105,7 @@ def _validate_coplanar(triangulator):
                     numpy.array([0]), bandwidth
                 ).item()
             coplanar, _, nearest = coplanar_loopkup.T
-            adjtable = _induce_cliques2(adjtable, coplanar, nearest, edges, fill_value)
+            adjtable = _induce_cliques(adjtable, coplanar, nearest, fill_value)
             adjtable["focal"] = ids[adjtable.focal]
             adjtable["neighbor"] = ids[adjtable.neighbor]
 
@@ -193,7 +193,7 @@ def _delaunay(coordinates, coplanar):
     edges, _, coplanar = _voronoi_edges(coordinates, coplanar)
     heads_ix, tails_ix = edges.T
 
-    return heads_ix, tails_ix, coplanar, edges
+    return heads_ix, tails_ix, coplanar
 
 
 @_validate_coplanar
@@ -268,7 +268,7 @@ def _gabriel(coordinates, coplanar):
     sorted_heads_ix = heads_ix[order]
     sorted_tails_ix = tails_ix[order]
 
-    return sorted_heads_ix, sorted_tails_ix, coplanar, edges
+    return sorted_heads_ix, sorted_tails_ix, coplanar
 
 
 @_validate_coplanar
@@ -336,7 +336,7 @@ def _relative_neighborhood(coordinates, coplanar):
     heads_ix, tails_ix, distance = zip(*output, strict=True)
     heads_ix, tails_ix = numpy.asarray(heads_ix), numpy.asarray(tails_ix)
 
-    return heads_ix, tails_ix, coplanar, numpy.row_stack([heads_ix, tails_ix]).T
+    return heads_ix, tails_ix, coplanar
 
 
 @_validate_coplanar
@@ -422,7 +422,7 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
     cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False)
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
 
-    return heads_ix, tails_ix, numpy.array([]), numpy.array([])
+    return heads_ix, tails_ix, numpy.array([])
 
 
 #### utilities
