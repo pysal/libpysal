@@ -1,5 +1,4 @@
 import warnings
-from itertools import permutations
 
 import geopandas
 import numpy as np
@@ -11,8 +10,18 @@ GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
 
 
-def _sparse_to_arrays(sparray, ids=None):
-    """Convert sparse array to arrays of adjacency"""
+class CoplanarError(ValueError):
+    """Custom ValueError raised when coplanar points are detected."""
+
+    pass
+
+
+def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True):
+    """Convert sparse array to arrays of adjacency
+
+    When we know we are dealing with cliques, we don't want to resolve
+    isolates here but will do that later once cliques are induced.
+    """
     sparray = sparray.tocoo(copy=False)
     if ids is not None:
         ids = np.asarray(ids)
@@ -32,10 +41,14 @@ def _sparse_to_arrays(sparray, ids=None):
         tail = sparray.col[sorter]
         data = sparray.data[sorter]
         ids = np.arange(sparray.shape[0], dtype=int)
-    return _resolve_islands(head, tail, ids, data)
+
+    if resolve_isolates:
+        return _resolve_islands(head, tail, ids, data)
+
+    return head, tail, data
 
 
-def _jitter_geoms(coordinates, geoms, seed=None):
+def _jitter_geoms(coordinates, geoms=None, seed=None):
     """
     Jitter geometries based on the smallest required movements to induce
     uniqueness. For each point, this samples a radius and angle uniformly
@@ -61,11 +74,16 @@ def _jitter_geoms(coordinates, geoms, seed=None):
     dy = r + np.cos(theta)
     # then adding the displacements
     coordinates = coordinates + np.column_stack((dx, dy))
-    geoms = geopandas.GeoSeries(geopandas.points_from_xy(*coordinates.T, crs=geoms.crs))
-    return coordinates, geoms
+    if geoms is not None:
+        geoms = geopandas.GeoSeries(
+            geopandas.points_from_xy(*coordinates.T, crs=geoms.crs)
+        )
+        return coordinates, geoms
+
+    return coordinates
 
 
-def _induce_cliques(adjtable, clique_to_members, fill_value=1):
+def _induce_cliques(adjtable, coplanar, nearest, fill_value=1):
     """
     induce cliques into the input graph. This connects everything within a
     clique together, as well as connecting all things outside of the clique
@@ -73,34 +91,25 @@ def _induce_cliques(adjtable, clique_to_members, fill_value=1):
 
     This does not guarantee/understand ordering of the *output* adjacency table.
     """
-    adj_across_clique = (
-        adjtable.merge(
-            clique_to_members["input_index"], left_on="focal", right_index=True
-        )
-        .explode("input_index")
-        .rename(columns={"input_index": "subclique_focal"})
-        .merge(clique_to_members["input_index"], left_on="neighbor", right_index=True)
-        .explode("input_index")
-        .rename(columns={"input_index": "subclique_neighbor"})
-        .reset_index()
-        .drop(["focal", "neighbor", "index"], axis=1)
-        .rename(columns={"subclique_focal": "focal", "subclique_neighbor": "neighbor"})
-    )[["focal", "neighbor", "weight"]]
-    is_multimember_clique = clique_to_members["input_index"].str.len() > 1
-    adj_within_clique = (
-        clique_to_members[is_multimember_clique]["input_index"]
-        .apply(lambda x: list(permutations(x, 2)))
-        .explode()
-        .apply(pd.Series)
-        .rename(columns={0: "focal", 1: "neighbor"})
-        .assign(weight=fill_value)
+    coplanar_addition = []
+    for c, n in zip(coplanar, nearest, strict=True):
+        neighbors = adjtable.neighbor[adjtable.focal == n]
+        for n_ in neighbors:
+            fill = adjtable.weight[
+                (adjtable.focal == n) & (adjtable.neighbor == n_)
+            ].item()
+            coplanar_addition.append([c, n_, fill])
+            coplanar_addition.append([n_, c, fill])
+        coplanar_addition.append([c, n, fill_value])
+        coplanar_addition.append([n, c, fill_value])
+    adjtable_filled = pd.concat(
+        [
+            adjtable,
+            pd.DataFrame(coplanar_addition, columns=["focal", "neighbor", "weight"]),
+        ],
+        ignore_index=True,
     )
-
-    new_adj = pd.concat(
-        (adj_across_clique, adj_within_clique), ignore_index=True, axis=0
-    ).reset_index(drop=True)
-
-    return new_adj
+    return adjtable_filled
 
 
 def _neighbor_dict_to_edges(neighbors, weights=None):
@@ -136,37 +145,23 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
     return heads, tails, data_array
 
 
-def _build_coincidence_lookup(geoms):
+def _build_coplanarity_lookup(geoms):
     """
-    Identify coincident points and create a look-up table for the coincident geometries.
+    Identify coplanar points and create a look-up table for the coplanar geometries.
     """
-    valid_coincident_geom_types = set(("Point",))  # noqa: C405
-    if not set(geoms.geom_type) <= valid_coincident_geom_types:
-        raise ValueError(
-            "coindicence checks are only well-defined for "
-            f"geom_types: {valid_coincident_geom_types}"
-        )
-    if GPD_013:
-        lut = (
-            geoms.to_frame("geometry")
-            .reset_index()
-            .groupby("geometry")["index"]
-            .agg(list)
-            .reset_index()
-        )
-    else:
-        lut = (
-            geoms.to_wkb()
-            .to_frame("geometry")
-            .reset_index()
-            .groupby("geometry")["index"]
-            .agg(list)
-            .reset_index()
-        )
-        lut["geometry"] = geopandas.GeoSeries.from_wkb(lut["geometry"])
-
-    lut = geopandas.GeoDataFrame(lut)
-    return lut.rename(columns={"index": "input_index"})
+    geoms = geoms.reset_index(drop=True)
+    coplanar = []
+    nearest = []
+    r = geoms.groupby(geoms).groups if GPD_013 else geoms.groupby(geoms.to_wkb()).groups
+    for g in r.values():
+        if len(g) == 2:
+            coplanar.append(g[0])
+            nearest.append(g[1])
+        elif len(g) > 2:
+            for n in g[1:]:
+                coplanar.append(n)
+                nearest.append(g[0])
+    return np.asarray(coplanar), np.asarray(nearest)
 
 
 def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):

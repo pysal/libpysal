@@ -23,6 +23,7 @@ from libpysal.graph._triangulation import (
     _relative_neighborhood,
     _voronoi,
 )
+from libpysal.graph._utils import CoplanarError
 from libpysal.graph.base import Graph
 
 stores = geopandas.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
@@ -98,9 +99,9 @@ parametrize_constructors = pytest.mark.parametrize(
 
 
 def test_correctness_voronoi_clipping():
-    noclip = _voronoi(lap_coords, clip=None, rook=True)
-    extent = _voronoi(lap_coords, clip="bounding_box", rook=True)
-    alpha = _voronoi(lap_coords, clip="alpha_shape", rook=True)
+    noclip = _voronoi(lap_coords, coplanar="raise", clip=None, rook=True)
+    extent = _voronoi(lap_coords, coplanar="raise", clip="bounding_box", rook=True)
+    alpha = _voronoi(lap_coords, coplanar="raise", clip="alpha_shape", rook=True)
 
     g_noclip = Graph.from_arrays(*noclip)
     g_extent = Graph.from_arrays(*extent)
@@ -269,13 +270,13 @@ def test_kernel():
     np.testing.assert_array_almost_equal(expected, weight)
 
 
-def test_coincident_raise_voronoi():
+def test_coplanar_raise_voronoi():
     with pytest.raises(ValueError, match="There are"):
         _voronoi(stores, clip=False)
 
 
-def test_coincident_jitter_voronoi():
-    cp_heads, cp_tails, cp_w = _voronoi(stores, clip=False, coincident="jitter")
+def test_coplanar_jitter_voronoi():
+    cp_heads, cp_tails, cp_w = _voronoi(stores, clip=False, coplanar="jitter")
     unique_heads, unique_tails, unique_w = _voronoi(stores_unique, clip=False)
     assert not np.array_equal(cp_heads, unique_heads)
     assert not np.array_equal(cp_tails, unique_tails)
@@ -285,14 +286,14 @@ def test_coincident_jitter_voronoi():
     assert unique_heads.shape[0] == 3360
 
 
-class TestCoincident:
+class TestCoplanar:
     def setup_method(self):
         self.geom = [
             shapely.Point(0, 0),
             shapely.Point(1, 1),
             shapely.Point(2, 0),
             shapely.Point(3, 1),
-            shapely.Point(0, 0),  # coincident point
+            shapely.Point(0, 0),  # coplanar point
             shapely.Point(0, 5),
         ]
         self.df_int = geopandas.GeoDataFrame(
@@ -305,13 +306,13 @@ class TestCoincident:
 
     def test_delaunay_error(self):
         with pytest.raises(
-            ValueError,
+            CoplanarError,
             match="There are 5 unique locations in the dataset, but 6 observations",
         ):
             _delaunay(self.df_int)
 
     def test_delaunay_jitter(self):
-        heads, tails, weights = _delaunay(self.df_int, coincident="jitter", seed=0)
+        heads, tails, weights = _delaunay(self.df_int, coplanar="jitter", seed=0)
 
         exp_heads = np.array(
             [0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5]
@@ -324,7 +325,7 @@ class TestCoincident:
         np.testing.assert_array_equal(heads, exp_heads)
         np.testing.assert_array_equal(tails, exp_tails)
 
-        heads, tails, weights = _delaunay(self.df_string, coincident="jitter", seed=0)
+        heads, tails, weights = _delaunay(self.df_string, coplanar="jitter", seed=0)
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
@@ -332,7 +333,7 @@ class TestCoincident:
 
     def test_delaunay_clique(self):
         # TODO: fix the implemntation to make this pass
-        heads, tails, weights = _delaunay(self.df_int, coincident="clique", seed=0)
+        heads, tails, weights = _delaunay(self.df_int, coplanar="clique")
 
         exp_heads = np.array(
             [0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5]
@@ -345,7 +346,7 @@ class TestCoincident:
         np.testing.assert_array_equal(heads, exp_heads)
         np.testing.assert_array_equal(tails, exp_tails)
 
-        heads, tails, weights = _delaunay(self.df_string, coincident="clique", seed=0)
+        heads, tails, weights = _delaunay(self.df_string, coplanar="clique")
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
@@ -353,13 +354,13 @@ class TestCoincident:
 
     def test_gabriel_error(self):
         with pytest.raises(
-            ValueError,
+            CoplanarError,
             match="There are 5 unique locations in the dataset, but 6 observations",
         ):
             _gabriel(self.df_int)
 
     def test_gabriel_jitter(self):
-        heads, tails, weights = _gabriel(self.df_int, coincident="jitter", seed=0)
+        heads, tails, weights = _gabriel(self.df_int, coplanar="jitter", seed=0)
 
         exp_heads = np.array([0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5])
         exp_tails = np.array([2, 4, 2, 3, 4, 5, 0, 1, 3, 1, 2, 5, 0, 1, 1, 3])
@@ -368,7 +369,7 @@ class TestCoincident:
         np.testing.assert_array_equal(heads, exp_heads)
         np.testing.assert_array_equal(tails, exp_tails)
 
-        heads, tails, weights = _gabriel(self.df_string, coincident="jitter", seed=0)
+        heads, tails, weights = _gabriel(self.df_string, coplanar="jitter", seed=0)
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
@@ -376,7 +377,7 @@ class TestCoincident:
 
     def test_gabriel_clique(self):
         # TODO: fix the implemntation to make this pass
-        heads, tails, weights = _gabriel(self.df_int, coincident="clique", seed=0)
+        heads, tails, weights = _gabriel(self.df_int, coplanar="clique")
 
         exp_heads = np.array([0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 4, 5])
         exp_tails = np.array([1, 2, 4, 0, 2, 3, 4, 5, 0, 1, 3, 4, 1, 2, 0, 1, 2, 1])
@@ -385,7 +386,7 @@ class TestCoincident:
         np.testing.assert_array_equal(heads, exp_heads)
         np.testing.assert_array_equal(tails, exp_tails)
 
-        heads, tails, weights = _gabriel(self.df_string, coincident="clique", seed=0)
+        heads, tails, weights = _gabriel(self.df_string, coplanar="clique")
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
@@ -393,14 +394,14 @@ class TestCoincident:
 
     def test_relative_neighborhood_error(self):
         with pytest.raises(
-            ValueError,
+            CoplanarError,
             match="There are 5 unique locations in the dataset, but 6 observations",
         ):
             _relative_neighborhood(self.df_int)
 
     def test_relative_neighborhood_jitter(self):
         heads, tails, weights = _relative_neighborhood(
-            self.df_int, coincident="jitter", seed=0
+            self.df_int, coplanar="jitter", seed=0
         )
 
         exp_heads = np.array([0, 0, 1, 1, 2, 3, 3, 4, 4, 5])
@@ -411,7 +412,7 @@ class TestCoincident:
         np.testing.assert_array_equal(tails, exp_tails)
 
         heads, tails, weights = _relative_neighborhood(
-            self.df_string, coincident="jitter", seed=0
+            self.df_string, coplanar="jitter", seed=0
         )
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
@@ -420,9 +421,7 @@ class TestCoincident:
 
     def test_relative_neighborhood_clique(self):
         # TODO: fix the implemntation to make this pass
-        heads, tails, weights = _relative_neighborhood(
-            self.df_int, coincident="clique", seed=0
-        )
+        heads, tails, weights = _relative_neighborhood(self.df_int, coplanar="clique")
 
         exp_heads = np.array([0, 0, 1, 1, 1, 1, 2, 2, 3, 4, 4, 5])
         exp_tails = np.array([1, 4, 0, 2, 4, 5, 1, 3, 2, 0, 1, 1])
@@ -432,7 +431,7 @@ class TestCoincident:
         np.testing.assert_array_equal(tails, exp_tails)
 
         heads, tails, weights = _relative_neighborhood(
-            self.df_string, coincident="clique", seed=0
+            self.df_string, coplanar="clique"
         )
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
@@ -441,13 +440,13 @@ class TestCoincident:
 
     def test_voronoi_error(self):
         with pytest.raises(
-            ValueError,
+            CoplanarError,
             match="There are 5 unique locations in the dataset, but 6 observations",
         ):
             _voronoi(self.df_int)
 
     def test_voronoi_jitter(self):
-        heads, tails, weights = _voronoi(self.df_int, coincident="jitter", seed=0)
+        heads, tails, weights = _voronoi(self.df_int, coplanar="jitter", seed=0)
 
         exp_heads = np.array([0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5])
         exp_tails = np.array([1, 2, 4, 0, 2, 3, 4, 5, 0, 1, 3, 1, 2, 5, 0, 1, 1, 3])
@@ -456,7 +455,7 @@ class TestCoincident:
         np.testing.assert_array_equal(heads, exp_heads)
         np.testing.assert_array_equal(tails, exp_tails)
 
-        heads, tails, weights = _voronoi(self.df_string, coincident="jitter", seed=0)
+        heads, tails, weights = _voronoi(self.df_string, coplanar="jitter", seed=0)
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
@@ -464,7 +463,7 @@ class TestCoincident:
 
     def test_voronoi_clique(self):
         # TODO: fix the implemntation to make this pass
-        heads, tails, weights = _voronoi(self.df_int, coincident="clique", seed=0)
+        heads, tails, weights = _voronoi(self.df_int, coplanar="clique", seed=0)
 
         exp_heads = np.array([0, 0, 1, 1, 1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5])
         exp_tails = np.array([1, 4, 0, 2, 3, 4, 5, 1, 3, 1, 2, 5, 0, 1, 1, 3])
@@ -473,7 +472,7 @@ class TestCoincident:
         np.testing.assert_array_equal(heads, exp_heads)
         np.testing.assert_array_equal(tails, exp_tails)
 
-        heads, tails, weights = _voronoi(self.df_string, coincident="clique", seed=0)
+        heads, tails, weights = _voronoi(self.df_string, coplanar="clique", seed=0)
 
         np.testing.assert_array_equal(heads, np.vectorize(self.mapping.get)(exp_heads))
         np.testing.assert_array_equal(tails, np.vectorize(self.mapping.get)(exp_tails))
@@ -482,6 +481,6 @@ class TestCoincident:
     def test_wrong_resolver(self):
         with pytest.raises(
             ValueError,
-            match="Recieved option coincident='nonsense'",
+            match="Recieved option coplanar='nonsense'",
         ):
-            _delaunay(self.df_int, coincident="nonsense")
+            _delaunay(self.df_int, coplanar="nonsense")

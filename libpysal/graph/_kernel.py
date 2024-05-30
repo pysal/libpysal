@@ -3,11 +3,11 @@ import pandas
 from scipy import optimize, sparse, spatial, stats
 
 from ._utils import (
-    _build_coincidence_lookup,
+    CoplanarError,
+    _build_coplanarity_lookup,
     _induce_cliques,
     _jitter_geoms,
     _reorder_adjtable_by_ids,
-    _resolve_islands,
     _sparse_to_arrays,
     _validate_geometry_input,
 )
@@ -78,7 +78,8 @@ def _kernel(
     ids=None,
     p=2,
     taper=True,
-    coincident="raise",
+    coplanar="raise",
+    resolve_isolates=True,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -124,6 +125,8 @@ def _kernel(
         parameter for minkowski metric, ignored if metric != "minkowski".
     taper : bool (default: True)
         remove links with a weight equal to zero
+    resolve_isolates : bool
+        Try to resolve isolates. Can be disabled if we are dealing with cliques later.
     """
     if metric != "precomputed":
         coordinates, ids, _ = _validate_geometry_input(
@@ -152,7 +155,7 @@ def _kernel(
 
     if k is not None:
         if metric != "precomputed":
-            d = _knn(coordinates, k=k, metric=metric, p=p, coincident=coincident)
+            d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
         else:
             d = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
@@ -201,20 +204,21 @@ def _kernel(
     if taper:
         d.eliminate_zeros()
 
-    heads, tails, weights = _sparse_to_arrays(d, ids=ids)
-
-    return _resolve_islands(heads, tails, ids, weights)
+    return _sparse_to_arrays(d, ids=ids, resolve_isolates=resolve_isolates)
 
 
-def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
+def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise"):
     """internal function called only within _kernel, never directly to build KNN"""
     coordinates, ids, geoms = _validate_geometry_input(
         coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
-    n_coincident = geoms.geometry.duplicated().sum()
+    if coplanar == "jitter":
+        coordinates, geoms = _jitter_geoms(coordinates, geoms=geoms)
+
+    n_coplanar = geoms.geometry.duplicated().sum()
     n_samples, _ = coordinates.shape
 
-    if n_coincident == 0:
+    if n_coplanar == 0:
         if metric == "haversine":
             # sklearn haversine works with (lat,lng) in radians...
             coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
@@ -233,38 +237,47 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
         )
         return d
     else:
-        coincident_lut = _build_coincidence_lookup(geoms)
-        max_at_one_site = coincident_lut.input_index.str.len().max()
-        if coincident == "raise":
-            raise ValueError(
-                f"There are {len(coincident_lut)} unique locations in the dataset, "
-                f"but {len(coordinates)} observations. At least one of these sites "
-                f"has {max_at_one_site} points, more than the {k} nearest neighbors "
-                f"requested. This means there are more than {k} points in the same "
-                "location, which makes this graph type undefined. To address "
-                "this issue, consider setting `coincident='clique'` or consult the "
-                "documentation about coincident points."
+        coplanar_lookup, nearest = _build_coplanarity_lookup(geoms)
+        _, counts = numpy.unique(nearest, return_counts=True)
+        max_at_one_site = counts.max()
+        if coplanar == "raise":
+            raise CoplanarError(
+                f"There are {len(coordinates) - len(coplanar_lookup)} unique locations "
+                f"in the dataset, but {len(coordinates)} observations. At least one of "
+                f"these sites has {max_at_one_site} points, more than the {k} nearest "
+                f"neighbors requested. This means there are more than {k} points in "
+                "the same location, which makes this graph type undefined. To address "
+                "this issue, consider setting `coplanar='clique'` or consult the "
+                "documentation about coplanar points."
             )
-        if coincident == "jitter":
-            # force re-jittering over and over again until the coincidence is broken
+        if coplanar == "jitter":
+            # force re-jittering over and over again until the coplanarity is broken
             return _knn(
                 _jitter_geoms(coordinates, geoms)[-1],
                 metric=metric,
                 k=k,
                 p=p,
-                coincident="jitter",
+                coplanar="jitter",
             )
 
-        if coincident == "clique":
+        if coplanar == "clique":
             heads, tails, weights = _sparse_to_arrays(
                 _knn(
-                    coincident_lut.geometry, metric=metric, k=k, p=p, coincident="raise"
+                    numpy.delete(coordinates, coplanar_lookup, 0),
+                    metric=metric,
+                    k=k,
+                    p=p,
+                    coplanar="raise",
                 )
             )
             adjtable = pandas.DataFrame.from_dict(
                 {"focal": heads, "neighbor": tails, "weight": weights}
             )
-            adjtable = _induce_cliques(adjtable, coincident_lut, fill_value=-1)
+            adjtable = _induce_cliques(
+                adjtable, coplanar_lookup, nearest, fill_value=-1
+            )
+            adjtable["focal"] = ids[adjtable.focal]
+            adjtable["neighbor"] = ids[adjtable.neighbor]
             adjtable = _reorder_adjtable_by_ids(adjtable, ids)
             sparse_out = sparse.csr_array(
                 (
@@ -276,7 +289,7 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coincident="raise"):
             sparse_out.data[sparse_out.data < 0] = 0
             return sparse_out
         raise ValueError(
-            f"'{coincident}' is not a valid option. Use one of "
+            f"'{coplanar}' is not a valid option. Use one of "
             "['raise', 'jitter', 'clique']."
         )
 

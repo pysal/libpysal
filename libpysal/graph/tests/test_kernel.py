@@ -22,6 +22,7 @@ from libpysal.graph._kernel import (
     _kernel,
     _kernel_functions,
 )
+from libpysal.graph._utils import CoplanarError
 
 grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[
     ["OBJECTID", "geometry"]
@@ -299,7 +300,7 @@ def test_metric_k(metric):
 #     raise NotImplementedError()
 
 
-def test_coincident():
+def test_coplanar():
     grocs_duplicated = pd.concat(
         [grocs, grocs.iloc[:10], grocs.iloc[:3]], ignore_index=True
     )
@@ -311,20 +312,18 @@ def test_coincident():
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
     # k, raise
-    with pytest.raises(ValueError, match="There are"):
+    with pytest.raises(CoplanarError, match="There are"):
         _kernel(grocs_duplicated, k=2)
 
     # k, jitter
-    head, tail, weight = _kernel(
-        grocs_duplicated, taper=False, k=2, coincident="jitter"
-    )
+    head, tail, weight = _kernel(grocs_duplicated, taper=False, k=2, coplanar="jitter")
     assert head.shape[0] == len(grocs_duplicated) * 2
     assert tail.shape == head.shape
     assert weight.shape == head.shape
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
     # k, clique
-    head, tail, weight = _kernel(grocs_duplicated, k=2, coincident="clique")
+    head, tail, weight = _kernel(grocs_duplicated, k=2, coplanar="clique")
     assert head.shape[0] >= len(grocs_duplicated) * 2
     assert tail.shape == head.shape
     assert weight.shape == head.shape
