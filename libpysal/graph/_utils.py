@@ -11,6 +11,8 @@ PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
 
 
 class CoplanarError(ValueError):
+    """Custom ValueError raised when coplanar points are detected."""
+
     pass
 
 
