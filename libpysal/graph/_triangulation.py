@@ -110,29 +110,6 @@ def _validate_coplanar(triangulator):
             adjtable["neighbor"] = ids[adjtable.neighbor]
 
             adjtable = _reorder_adjtable_by_ids(adjtable, ids)
-            # coplanar_addition = []
-            # coplanar, _, nearest = coplanar.T
-            # for c, n in zip(coplanar, nearest, strict=True):
-            #     neighbors = edges[:, 1][edges[:, 0] == n]
-            #     for n_ in neighbors:
-            #         fill = weights[(heads_ix == n) & (tails_ix == n_)].item()
-            #         coplanar_addition.append([c, n_, fill])
-            #         coplanar_addition.append([n_, c, fill])
-            #     coplanar_addition.append([c, n, fill_value])
-            #     coplanar_addition.append([n, c, fill_value])
-            # adjtable_filled = pandas.concat(
-            #     [
-            #         adjtable,
-            #         pandas.DataFrame(
-            #             coplanar_addition, columns=["focal", "neighbor", "weight"]
-            #         ),
-            #     ],
-            #     ignore_index=True,
-            # )
-            # adjtable_filled["focal"] = ids[adjtable_filled.focal]
-            # adjtable_filled["neighbor"] = ids[adjtable_filled.neighbor]
-
-            # adjtable = _reorder_adjtable_by_ids(adjtable_filled, ids)
         else:
             adjtable["focal"] = ids[adjtable.focal]
             adjtable["neighbor"] = ids[adjtable.neighbor]
