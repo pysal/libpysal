@@ -23,6 +23,7 @@ from libpysal.graph._triangulation import (
     _relative_neighborhood,
     _voronoi,
 )
+from libpysal.graph._utils import CoplanarError
 from libpysal.graph.base import Graph
 
 stores = geopandas.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
@@ -305,7 +306,7 @@ class Testcoplanar:
 
     def test_delaunay_error(self):
         with pytest.raises(
-            ValueError,
+            CoplanarError,
             match="There are 5 unique locations in the dataset, but 6 observations",
         ):
             _delaunay(self.df_int)
@@ -353,7 +354,7 @@ class Testcoplanar:
 
     def test_gabriel_error(self):
         with pytest.raises(
-            ValueError,
+            CoplanarError,
             match="There are 5 unique locations in the dataset, but 6 observations",
         ):
             _gabriel(self.df_int)
@@ -393,7 +394,7 @@ class Testcoplanar:
 
     def test_relative_neighborhood_error(self):
         with pytest.raises(
-            ValueError,
+            CoplanarError,
             match="There are 5 unique locations in the dataset, but 6 observations",
         ):
             _relative_neighborhood(self.df_int)
@@ -439,7 +440,7 @@ class Testcoplanar:
 
     def test_voronoi_error(self):
         with pytest.raises(
-            ValueError,
+            CoplanarError,
             match="There are 5 unique locations in the dataset, but 6 observations",
         ):
             _voronoi(self.df_int)
