@@ -286,7 +286,7 @@ def test_coplanar_jitter_voronoi():
     assert unique_heads.shape[0] == 3360
 
 
-class Testcoplanar:
+class TestCoplanar:
     def setup_method(self):
         self.geom = [
             shapely.Point(0, 0),
