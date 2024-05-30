@@ -22,6 +22,7 @@ from libpysal.graph._kernel import (
     _kernel,
     _kernel_functions,
 )
+from libpysal.graph._utils import CoplanarError
 
 grocs = geopandas.read_file(geodatasets.get_path("geoda groceries"))[
     ["OBJECTID", "geometry"]
@@ -311,7 +312,7 @@ def test_coplanar():
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
     # k, raise
-    with pytest.raises(ValueError, match="There are"):
+    with pytest.raises(CoplanarError, match="There are"):
         _kernel(grocs_duplicated, k=2)
 
     # k, jitter
