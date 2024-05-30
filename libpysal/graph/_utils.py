@@ -17,7 +17,11 @@ class CoplanarError(ValueError):
 
 
 def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True):
-    """Convert sparse array to arrays of adjacency"""
+    """Convert sparse array to arrays of adjacency
+
+    When we know we are dealing with cliques, we don't want to resolve
+    isolates here but will do that later once cliques are induced.
+    """
     sparray = sparray.tocoo(copy=False)
     if ids is not None:
         ids = np.asarray(ids)
