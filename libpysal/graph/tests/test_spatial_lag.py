@@ -1,3 +1,4 @@
+import pytest
 import numpy as np
 
 from libpysal import graph
@@ -16,6 +17,13 @@ class TestLag:
         self.weights = {"a": [1.0], "b": [1.0, 1.0], "c": [1.0], "d": []}
         self.g = graph.Graph.from_dicts(self.neighbors, self.weights)
         self.y = np.array([0, 1, 2, 3])
+        self.yc = np.array([*'ababcbcbc'])
+        w = lat2W(3,3)
+        w.transform = 'r'
+        self.gc = graph.Graph.from_W(w)
+
+
+
 
     def test_lag_spatial(self):
         yl = _lag_spatial(self.g, self.y)
@@ -29,3 +37,26 @@ class TestLag:
         yl = _lag_spatial(g_row, y)
         ylc = np.array([2.0, 2.0, 3.0, 3.33333333, 4.0, 4.66666667, 5.0, 6.0, 6.0])
         np.testing.assert_array_almost_equal(yl, ylc)
+
+
+    def test_lag_spatial_categorical(self):
+        yl = _lag_spatial(self.gc, self.yc, categorical=True)
+        ylc = np.array(['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b'],
+                       dtype=object)
+        np.testing.assert_array_equal(yl, ylc)
+        self.yc[3] = 'a'   # create ties
+        np.random.seed(12345)
+        yl = _lag_spatial(self.gc, self.yc, categorical=True, ties='random')
+        ylc = np.array(['a', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b'], dtype=object)
+        yl1 = _lag_spatial(self.gc, self.yc, categorical=True, ties='random')
+        yls = _lag_spatial(self.gc, self.yc, categorical=True, ties='tryself')
+        np.testing.assert_array_equal(yl, ylc)
+        yl1c=np.array(['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b'], dtype=object)
+        np.testing.assert_array_equal(yl1, yl1c)
+        ylsc = np.array(['a', 'a', 'b', 'a', 'b', 'c', 'b', 'c', 'b'], dtype=object)
+        np.testing.assert_array_equal(yls, ylsc)
+
+    def test_ties_raise(self):
+        with pytest.raises(ValueError):
+            self.yc[3] = 'a'   # create ties
+            yl = _lag_spatial(self.gc, self.yc, categorical=True)

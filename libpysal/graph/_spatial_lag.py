@@ -45,6 +45,16 @@ def _lag_spatial(graph, y, categorical=False, ties='raise'):
     >>> _lag_spatial(graph, y)
     array([ 4.,  6.,  6., 10., 16., 14., 10., 18., 12.])
 
+    Row standardization
+    >>> w = lat2W(3,3)
+    >>> w.transform = 'r'
+    >>> graph = Graph.from_W(w)
+    >>> y = np.arange(9)
+    >>> _lag_spatial(graph, y)
+    array([2.        , 2.        , 3.        , 3.33333333, 4.        ,
+           4.66666667, 5.        , 6.        , 6.        ])
+
+
     Categorical Lag (no ties)
     >>> y = np.array([*'ababcbcbc'])
     >>> _lag_spatial(graph, y, categorical=True)
@@ -58,7 +68,7 @@ def _lag_spatial(graph, y, categorical=False, ties='raise'):
     >>> _lag_spatial(graph, y, categorical=True, ties='random')
     array(['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b'], dtype=object)
     >>> _lag_spatial(graph, y, categorical=True, ties='tryself')
-    array(['a', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b'], dtype=object)
+    array(['a', 'a', 'b', 'a', 'b', 'c', 'b', 'c', 'b'], dtype=object)
 
     """
     sp = graph.sparse
