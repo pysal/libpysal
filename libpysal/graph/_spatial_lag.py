@@ -105,7 +105,7 @@ def _lag_spatial(graph, y, categorical=False, ties='raise'):
 
         else:
             raise ValueError(
-                f"Recieved option ties='{ties}', but only options "
+                f"Received option ties='{ties}', but only options "
                 "'raise','random','tryself' are supported."
             )
 
