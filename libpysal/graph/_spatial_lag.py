@@ -24,8 +24,7 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
         - 'random': Will break ties randomly.
         - 'tryself': Add a self-weight to attempt to break the tie
           with the focal label. If the self-weight does not break a
-          tie, or the self-weight induces a tie, the tie will be be
-          broken randomly.
+          tie, the tie will be be broken randomly.
 
 
     Returns
@@ -134,7 +133,7 @@ def _check_ties(focal):
     return False
 
 
-def _get_categorical_lag(focal, ties="random", own=None):
+def _get_categorical_lag(focal, ties="random"):
     """Reduction to determine categorical spatial lag for a focal
     unit.
 
@@ -143,10 +142,16 @@ def _get_categorical_lag(focal, ties="random", own=None):
     focal: row from pandas Dataframe
           Data is a Graph with an additional column having the labels for the neighbors
 
-    ties:
+    ties : {'raise', 'random', 'tryself'}, optional
+        Policy on how to break ties when a focal unit has multiple
+        modes for a categorical lag.
+        - 'raise': This will raise an exception if ties are
+          encountered to alert the user (Default).
+        - 'random': Will break ties randomly.
+        - 'tryself': Add a self-weight to attempt to break the tie
+          with the focal label. If the self-weight does not break a
+          tie, the tie will be be broken randomly.
 
-    own:
-       label of the focal unit
     Returns
     -------
     str
