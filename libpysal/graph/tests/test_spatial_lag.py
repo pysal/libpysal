@@ -50,6 +50,16 @@ class TestLag:
         np.testing.assert_array_equal(yl1, yl1c)
         ylsc = np.array(["a", "a", "b", "c", "b", "c", "a", "c", "b"], dtype=object)
         np.testing.assert_array_equal(yls, ylsc)
+        # self-weight
+        neighbors = self.gc.neighbors
+        neighbors[0] = (0, 3, 1)  # add self neighbor for observation 0
+        gc = graph.Graph.from_dicts(neighbors)
+        self.yc[3] = "b"
+        yls = _lag_spatial(gc, self.yc, categorical=True, ties="tryself")
+        assert yls[0] in ["b", "a"]
+        self.yc[3] = "a"
+        yls = _lag_spatial(gc, self.yc, categorical=True, ties="tryself")
+        assert yls[0] == "a"
 
     def test_ties_raise(self):
         with pytest.raises(ValueError):
