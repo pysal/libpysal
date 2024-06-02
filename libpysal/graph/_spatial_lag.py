@@ -21,10 +21,12 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
         modes for a categorical lag.
         - 'raise': This will raise an exception if ties are
           encountered to alert the user (Default).
-        - 'random': Will break ties randomly.
-        - 'tryself': Add a self-weight to attempt to break the tie
-          with the focal label. If the self-weight does not break a
-          tie, the tie will be be broken randomly.
+        - 'random': modal label ties Will be broken randomly.
+        - 'tryself': check if focal label breaks the tie between label
+          modes.  If the focal label does not break the modal tie, the
+          tie will be be broken randomly. If the focal unit has a
+          self-weight, focal label is not used to break any tie,
+          rather any tie will be broken randomly.
 
 
     Returns
@@ -67,7 +69,7 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
     >>> _lag_spatial(graph, y, categorical=True, ties='random')
     array(['b', 'a', 'b', 'c', 'b', 'c', 'b', 'c', 'b'], dtype=object)
     >>> _lag_spatial(graph, y, categorical=True, ties='tryself')
-    array(['a', 'a', 'b', 'a', 'b', 'c', 'b', 'c', 'b'], dtype=object)
+    array(['a', 'a', 'b', 'c', 'b', 'c', 'a', 'c', 'b'], dtype=object)
 
     """
     sp = graph.sparse
@@ -76,6 +78,11 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
             "The length of `y` needs to match the number of observations "
             f"in Graph. Expected {sp.shape[0]}, got {len(y)}."
         )
+
+    # coerce list to array
+    if isinstance(y, list):
+        y = np.array(y)
+
     if (
         isinstance(y.dtype, pd.CategoricalDtype)
         or pd.api.types.is_object_dtype(y.dtype)
@@ -100,6 +107,8 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
                 "or `ties='random'` or consult the documentation "
                 "about ties and the categorical spatial lag."
             )
+        # either there are ties and random|tryself specified or
+        # there are no ties
         gb = df.groupby(by=["focal"])
         if ties == "random" or ties == "raise":
             return gb.apply(_get_categorical_lag).values
@@ -134,8 +143,7 @@ def _check_ties(focal):
 
 
 def _get_categorical_lag(focal, ties="random"):
-    """Reduction to determine categorical spatial lag for a focal
-    unit.
+    """Reduction to determine categorical spatial lag for a focal unit.
 
     Parameters
     ----------
@@ -148,13 +156,16 @@ def _get_categorical_lag(focal, ties="random"):
         - 'raise': This will raise an exception if ties are
           encountered to alert the user (Default).
         - 'random': Will break ties randomly.
-        - 'tryself': Add a self-weight to attempt to break the tie
-          with the focal label. If the self-weight does not break a
-          tie, the tie will be be broken randomly.
+        - 'tryself': check if focal label breaks the tie between label
+          modes.  If the focal label does not break the modal tie, the
+          tie will be be broken randomly. If the focal unit has a
+          self-weight, focal label is not used to break any tie,
+          rather any tie will be broken randomly.
+
 
     Returns
     -------
-    str
+    str|int|float:
       Label for the value of the categorical lag
     """
     self_weight = focal.focal_idx.values[0] in focal.neighbor_idx.values
