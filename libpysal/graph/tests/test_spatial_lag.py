@@ -48,7 +48,7 @@ class TestLag:
         np.testing.assert_array_equal(yl, ylc)
         yl1c = np.array(["b", "a", "b", "c", "b", "c", "b", "c", "b"], dtype=object)
         np.testing.assert_array_equal(yl1, yl1c)
-        ylsc = np.array(["a", "a", "b", "a", "b", "c", "b", "c", "b"], dtype=object)
+        ylsc = np.array(["a", "a", "b", "c", "b", "c", "a", "c", "b"], dtype=object)
         np.testing.assert_array_equal(yls, ylsc)
 
     def test_ties_raise(self):

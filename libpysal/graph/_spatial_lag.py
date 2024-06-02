@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def _lag_spatial(graph, y, categorical=False, ties='raise'):
+def _lag_spatial(graph, y, categorical=False, ties="raise"):
     """Spatial lag operator
 
     Constructs spatial lag based on neighbor relations of the graph.
@@ -77,21 +77,22 @@ def _lag_spatial(graph, y, categorical=False, ties='raise'):
             "The length of `y` needs to match the number of observations "
             f"in Graph. Expected {sp.shape[0]}, got {len(y)}."
         )
-    if (isinstance(y.dtype, pd.CategoricalDtype)
+    if (
+        isinstance(y.dtype, pd.CategoricalDtype)
         or pd.api.types.is_object_dtype(y.dtype)
         or pd.api.types.is_bool_dtype(y.dtype)
         or pd.api.types.is_string_dtype(y.dtype)
     ):
         categorical = True
     if categorical:
-        if ties == 'tryself':
-            graph = graph.assign_self_weight()
         df = pd.DataFrame(data=graph.adjacency)
-        df['neighbor_label'] = y[graph.adjacency.index.get_level_values(1)]
-        gb = df.groupby(['focal', 'neighbor_label']
-                        ).count().groupby(level='focal')
+        df["neighbor_label"] = y[graph.adjacency.index.get_level_values(1)]
+        df["own_label"] = y[graph.adjacency.index.get_level_values(0)]
+        df["neighbor_idx"] = df.index.get_level_values(1)
+        df["focal_idx"] = df.index.get_level_values(0)
+        gb = df.groupby(["focal", "neighbor_label"]).count().groupby(level="focal")
         n_ties = gb.apply(_check_ties).sum()
-        if n_ties and ties == 'raise':
+        if n_ties and ties == "raise":
             raise ValueError(
                 f"There are {n_ties} ties that must be broken "
                 f"to define the categorical "
@@ -100,9 +101,11 @@ def _lag_spatial(graph, y, categorical=False, ties='raise'):
                 "or `ties='random'` or consult the documentation "
                 "about ties and the categorical spatial lag."
             )
-        elif ties in ('random', 'tryself', 'raise'):
+        gb = df.groupby(by=["focal"])
+        if ties == "random" or ties == "raise":
             return gb.apply(_get_categorical_lag).values
-
+        elif ties == "tryself" or ties == "raise":
+            return gb.apply(_get_categorical_lag, ties="tryself").values
         else:
             raise ValueError(
                 f"Received option ties='{ties}', but only options "
@@ -131,7 +134,7 @@ def _check_ties(focal):
     return False
 
 
-def _get_categorical_lag(focal):
+def _get_categorical_lag(focal, ties="random", own=None):
     """Reduction to determine categorical spatial lag for a focal
     unit.
 
@@ -140,11 +143,23 @@ def _get_categorical_lag(focal):
     focal: row from pandas Dataframe
           Data is a Graph with an additional column having the labels for the neighbors
 
+    ties:
+
+    own:
+       label of the focal unit
     Returns
     -------
     str
       Label for the value of the categorical lag
     """
-    filtered = focal[focal.weight == focal.weight.max()]
-    max_label = filtered.index.get_level_values('neighbor_label').values
-    return np.random.choice(max_label, 1)[0]
+    self_weight = focal.focal_idx.values[0] in focal.neighbor_idx.values
+    labels, counts = np.unique(focal.neighbor_label, return_counts=True)
+    node_label = labels[counts == counts.max()]
+    if ties == "random" or (ties == "tryself" and self_weight):
+        return np.random.choice(node_label, 1)[0]
+    elif ties == "tryself" and not self_weight:
+        self_label = focal.own_label.values[0]
+        if self_label in node_label:  # focal breaks tie
+            return self_label
+        else:
+            return np.random.choice(node_label, 1)[0]
