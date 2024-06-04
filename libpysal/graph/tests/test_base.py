@@ -93,6 +93,8 @@ class TestBase:
         self.g_str_unodered = graph.Graph.from_weights_dict(self.W_dict_str_unordered)
 
         self.nybb = gpd.read_file(geodatasets.get_path("nybb")).set_index("BoroName")
+        self.guerry = gpd.read_file(geodatasets.get_path("geoda guerry"))
+
 
     def test_init(self):
         g = graph.Graph(self.adjacency_int_binary)
@@ -1129,3 +1131,41 @@ class TestBase:
             contig.aggregate(lambda x: np.exp(np.sum(x))),
             expected,
         )
+
+    def test_describe(self):
+        contig = graph.Graph.build_contiguity(
+            self.guerry, rook=False).higher_order(
+                k=3, lower_order=True).assign_self_weight()
+        y = self.guerry.geometry.area
+        stats = contig.describe(y)
+        pd.testing.assert_series_equal(stats['count'],
+                                       contig.cardinalities,
+                                       check_index_type=False,
+                                       check_names=False)
+        pd.testing.assert_series_equal(stats['sum'],
+                                        pd.Series(contig.lag(y),
+                                                  index=contig.unique_ids),
+                                        check_index_type=False,
+                                        check_names=False)
+        r_contig = contig.transform('R')
+        pd.testing.assert_series_equal(stats['mean'],
+                                        pd.Series(r_contig.lag(y),
+                                                  index=contig.unique_ids),
+                                        check_index_type=False,
+                                        check_names=False)
+        ## compute only some statistics
+        specific_stats = contig.describe(y, statistics=['count', 'sum', 'mean'])
+        pd.testing.assert_frame_equal(specific_stats[['count', 'sum', 'mean']],
+                                    stats[['count', 'sum', 'mean']])
+
+        percentile_stats = contig.describe(y, q=(25, 75))
+
+        for i in contig.unique_ids:
+            neigh_vals = y[contig[i].index.values]
+            low, high = neigh_vals.describe()[['25%', '75%']]
+            neigh_vals = neigh_vals[(low <= neigh_vals) & (neigh_vals <= high)]
+            expected = neigh_vals.describe()[['count', 'mean', 'std', 'min', 'max']]
+            res = percentile_stats.loc[i][['count', 'mean', 'std', 'min', 'max']]
+            pd.testing.assert_series_equal(res, expected, check_names=False)
+
+
