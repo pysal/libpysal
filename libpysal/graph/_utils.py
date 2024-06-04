@@ -319,7 +319,7 @@ def _compute_stats(grouper, to_compute: list[str] | None = None):
     ----------
     grouper : pandas.GroupBy
         Groupby Object which specifies the aggregations to be performed.
-    to_compute : List[str]
+    to_compute : list[str]
         A list of stats functions to pass to groupby.agg
 
     Returns

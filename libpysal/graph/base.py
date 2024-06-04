@@ -2028,7 +2028,7 @@ class Graph(SetOpsMixin):
             Values must be between 0 and 100 inclusive. When set, values below and above
             the percentiles will be discarded before computation of the statistics.
             The percentiles are computed for each neighborhood. By default None.
-        statistics : List[str] | None
+        statistics : list[str] | None
             A list of stats functions to compute. If None, compute all
             available functions - "count", "mean", "median",
             "std", "min", "max", "sum", "nunique", "mode". By default None.
