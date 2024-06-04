@@ -1132,34 +1132,30 @@ class TestBase:
         )
 
     def test_describe(self):
-        contig = (
-            graph.Graph.build_contiguity(self.guerry, rook=False)
-            .higher_order(k=3, lower_order=True)
-            .assign_self_weight()
-        )
+        contig = graph.Graph.build_knn(self.guerry.geometry.centroid, k=5)
         y = self.guerry.geometry.area
         stats = contig.describe(y)
         pd.testing.assert_series_equal(
             stats["count"],
             contig.cardinalities,
-            check_index_type=False,
             check_names=False,
         )
         pd.testing.assert_series_equal(
             stats["sum"],
             pd.Series(contig.lag(y), index=contig.unique_ids),
-            check_index_type=False,
             check_names=False,
         )
         r_contig = contig.transform("R")
         pd.testing.assert_series_equal(
             stats["mean"],
             pd.Series(r_contig.lag(y), index=contig.unique_ids),
-            check_index_type=False,
             check_names=False,
         )
         ## compute only some statistics
         specific_stats = contig.describe(y, statistics=["count", "sum", "mean"])
+        ## assert only the specified values are computed
+        assert list(specific_stats.columns) == ["count", "sum", "mean"]
+
         pd.testing.assert_frame_equal(
             specific_stats[["count", "sum", "mean"]], stats[["count", "sum", "mean"]]
         )
@@ -1173,3 +1169,27 @@ class TestBase:
             expected = neigh_vals.describe()[["count", "mean", "std", "min", "max"]]
             res = percentile_stats.loc[i][["count", "mean", "std", "min", "max"]]
             pd.testing.assert_series_equal(res, expected, check_names=False)
+
+        # test with isolates and string index
+        nybb_contig = graph.Graph.build_contiguity(self.nybb, rook=False)
+        stats = nybb_contig.describe(
+            self.nybb.geometry.area, statistics=["count", "sum"]
+        )
+        ## all isolate values should be nan
+        assert stats.loc["Staten Island"].isna().all()
+
+        # for easier comparison and na has already been checked.
+        stats = stats.fillna(0)
+
+        pd.testing.assert_series_equal(
+            stats["sum"],
+            pd.Series(nybb_contig.lag(self.nybb.geometry.area), index=self.nybb.index),
+            check_names=False,
+        )
+
+        pd.testing.assert_series_equal(
+            stats["count"].sort_index(),
+            nybb_contig.cardinalities.sort_index(),
+            check_dtype=False,
+            check_names=False,
+        )

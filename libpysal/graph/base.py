@@ -2013,6 +2013,8 @@ class Graph(SetOpsMixin):
 
         Weight values do not affect the calculations, only adjacency does.
 
+        Returns nan for all isolates.
+
         The numba package is used extensively in this function
         to accelerate the computation of statistics.
         Without numba, these computations may become slow on large data.
@@ -2049,6 +2051,9 @@ class Graph(SetOpsMixin):
 
         stat_ = _compute_stats(grouper, statistics)
 
+        stat_.index = self.unique_ids
+        if isinstance(stat_, pd.Series):
+            stat_.name = None
         # NA isolates
         stat_.loc[self.isolates] = np.nan
         return stat_
