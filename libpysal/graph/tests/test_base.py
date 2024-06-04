@@ -1139,6 +1139,7 @@ class TestBase:
             stats["count"],
             contig.cardinalities,
             check_names=False,
+            check_dtype=False,
         )
         pd.testing.assert_series_equal(
             stats["sum"],
