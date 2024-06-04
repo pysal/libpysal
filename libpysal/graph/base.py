@@ -1645,7 +1645,7 @@ class Graph(SetOpsMixin):
         numpy.array
             array of numeric|categorical values for the spatial lag
         """
-        return _lag_spatial(self, y)
+        return _lag_spatial(self, y, categorical=categorical, ties=ties)
 
     def to_parquet(self, path, **kwargs):
         """Save Graph to a Apache Parquet
