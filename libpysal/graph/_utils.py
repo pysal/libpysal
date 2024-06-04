@@ -286,7 +286,7 @@ def _reorder_adjtable_by_ids(adjtable, ids):
 
 
 @njit
-def _mode(values, index):
+def _mode(values, index):  # noqa: ARG001
     """Custom mode function for numba."""
     array = np.sort(values.ravel())
     mask = np.empty(array.shape, dtype=np.bool_)
@@ -299,7 +299,7 @@ def _mode(values, index):
     return unique[np.argmax(counts)]
 
 @njit
-def _limit_range(values, index, low, high):
+def _limit_range(values, index, low, high):  # noqa: ARG001
     nan_tracker = np.isnan(values)
 
     if (not nan_tracker.all()) & (len(values[~nan_tracker]) > 2):

@@ -24,12 +24,12 @@ from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._utils import (
+    _compute_stats,
     _evaluate_index,
     _neighbor_dict_to_edges,
+    _percentile_filtration_grouper,
     _resolve_islands,
     _sparse_to_arrays,
-    _compute_stats,
-    _percentile_filtration_grouper,
 )
 from .io._gal import _read_gal, _to_gal
 from .io._gwt import _read_gwt, _to_gwt
