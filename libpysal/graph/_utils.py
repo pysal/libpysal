@@ -298,6 +298,7 @@ def _mode(values, index):  # noqa: ARG001
     counts = np.diff(idx)
     return unique[np.argmax(counts)]
 
+
 @njit
 def _limit_range(values, index, low, high):  # noqa: ARG001
     nan_tracker = np.isnan(values)
@@ -309,7 +310,8 @@ def _limit_range(values, index, low, high):  # noqa: ARG001
 
     return (lower <= values) & (values <= higher)
 
-def _compute_stats(grouper, to_compute:list[str]|None=None):
+
+def _compute_stats(grouper, to_compute: list[str] | None = None):
     """Fast compute of "count", "mean", "median", "std", "min", "max", \\
     "sum", "nunique" and "mode" within a grouper object. Using numba.
 
@@ -334,13 +336,22 @@ def _compute_stats(grouper, to_compute:list[str]|None=None):
         )
 
     if to_compute is None:
-        to_compute = ["count", "mean", "median",
-                    "std", "min", "max", "sum", "nunique", "mode"]
-    agg_to_compute = [f for f in to_compute if f != 'mode']
+        to_compute = [
+            "count",
+            "mean",
+            "median",
+            "std",
+            "min",
+            "max",
+            "sum",
+            "nunique",
+            "mode",
+        ]
+    agg_to_compute = [f for f in to_compute if f != "mode"]
     stat_ = grouper.agg(agg_to_compute)
-    if 'mode' in to_compute:
+    if "mode" in to_compute:
         if HAS_NUMBA:
-            stat_["mode"] = grouper.agg(_mode, engine='numba')
+            stat_["mode"] = grouper.agg(_mode, engine="numba")
         else:
             stat_["mode"] = grouper.agg(lambda x: _mode(x.values, x.index))
 
@@ -359,17 +370,20 @@ def _percentile_filtration_grouper(y, graph_adjacency_index, q=(25, 75)):
         )
 
     ## need to reset since numba transform has an indexing issue
-    grouper = y.take(graph_adjacency_index.codes[-1]).reset_index(drop=True).groupby(
-        graph_adjacency_index.codes[0]
+    grouper = (
+        y.take(graph_adjacency_index.codes[-1])
+        .reset_index(drop=True)
+        .groupby(graph_adjacency_index.codes[0])
     )
     if HAS_NUMBA:
-        to_keep = grouper.transform(_limit_range, q[0], q[1],
-                                    engine='numba').values.astype(bool)
+        to_keep = grouper.transform(
+            _limit_range, q[0], q[1], engine="numba"
+        ).values.astype(bool)
     else:
         to_keep = grouper.transform(
             lambda x: _limit_range(x.values, x.index, q[0], q[1])
-            ).values.astype(bool)
+        ).values.astype(bool)
     filtered_grouper = y.take(graph_adjacency_index.codes[-1][to_keep]).groupby(
-            graph_adjacency_index.codes[0][to_keep]
-        )
+        graph_adjacency_index.codes[0][to_keep]
+    )
     return filtered_grouper
