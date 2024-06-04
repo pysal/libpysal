@@ -1621,8 +1621,6 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        graph : Graph
-            libpysal.graph.Graph
         y : array
             numpy array with dimensionality conforming to w
         categorical : bool
