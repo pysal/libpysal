@@ -2001,7 +2001,7 @@ class Graph(SetOpsMixin):
         q: tuple[float, float] | None = None,
         statistics: list[str] | None = None,
     ) -> pd.DataFrame:
-        """Describe the distribution of ``y`` values within the graph.
+        """Describe the distribution of ``y`` values within the neighbors of each node.
 
         Given the graph, computes the descriptive statistics of values within the
         neighbourhood of each node. Optionally, the values can be limited to a certain
@@ -2024,7 +2024,7 @@ class Graph(SetOpsMixin):
         q : tuple[float, float] | None, optional
             Tuple of percentages for the percentiles to compute.
             Values must be between 0 and 100 inclusive. When set, values below and above
-            the percentiles will be discarded before computation of the average.
+            the percentiles will be discarded before computation of the statistics.
             The percentiles are computed for each neighborhood. By default None.
         statistics : List[str] | None
             A list of stats functions to compute. If None, compute all
