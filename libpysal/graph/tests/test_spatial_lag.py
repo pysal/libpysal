@@ -36,7 +36,7 @@ class TestLag:
         np.testing.assert_array_almost_equal(yl, ylc)
 
     def test_lag_spatial_categorical(self):
-        yl = _lag_spatial(self.gc, self.yc, categorical=True)
+        yl = _lag_spatial(self.gc, self.yc)
         ylc = np.array(["b", "a", "b", "c", "b", "c", "b", "c", "b"], dtype=object)
         np.testing.assert_array_equal(yl, ylc)
         self.yc[3] = "a"  # create ties
