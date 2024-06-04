@@ -62,6 +62,6 @@ class TestLag:
         assert yls[0] == "a"
 
     def test_ties_raise(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="There are 2 ties that must be broken"):
             self.yc[3] = "a"  # create ties
             _lag_spatial(self.gc, self.yc, categorical=True)
