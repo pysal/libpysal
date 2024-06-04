@@ -1640,7 +1640,7 @@ class Graph(SetOpsMixin):
 
         Returns
         -------
-        numpy.array
+        numpy.ndarray
             array of numeric|categorical values for the spatial lag
         """
         return _lag_spatial(self, y, categorical=categorical, ties=ties)
