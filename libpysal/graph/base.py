@@ -2013,7 +2013,7 @@ class Graph(SetOpsMixin):
 
         Weight values do not affect the calculations, only adjacency does.
 
-        Returns nan for all isolates.
+        Returns numpy.nan for all isolates.
 
         The numba package is used extensively in this function
         to accelerate the computation of statistics.
