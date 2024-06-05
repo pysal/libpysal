@@ -304,7 +304,7 @@ def _limit_range(values, index, low, high):  # noqa: ARG001
     nan_tracker = np.isnan(values)
 
     if (not nan_tracker.all()) & (len(values[~nan_tracker]) > 2):
-        lower, higher = np.percentile(values, (low, high))
+        lower, higher = np.nanpercentile(values, (low, high))
     else:
         return ~nan_tracker
 

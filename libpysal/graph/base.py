@@ -2042,6 +2042,9 @@ class Graph(SetOpsMixin):
         if not isinstance(y, pd.Series):
             y = pd.Series(y, index=self.unique_ids)
 
+        if (y.index != self.unique_ids).all():
+            raise ValueError("The values index is not aligned with the graph index.")
+
         if q is None:
             grouper = y.take(self._adjacency.index.codes[1]).groupby(
                 self._adjacency.index.codes[0]

@@ -1171,6 +1171,13 @@ class TestBase:
             res = percentile_stats.loc[i][["count", "mean", "std", "min", "max"]]
             pd.testing.assert_series_equal(res, expected, check_names=False)
 
+        ## test NA equivalence between filtration and pandas
+        nan_areas = y.copy()
+        nan_areas.iloc[range(0, len(y), 3),] = np.nan
+        res1 = contig.describe(y, statistics=["count"])["count"]
+        res2 = contig.describe(y, statistics=["count"], q=(0, 100))["count"]
+        pd.testing.assert_series_equal(res1, res2)
+
         # test with isolates and string index
         nybb_contig = graph.Graph.build_contiguity(self.nybb, rook=False)
         stats = nybb_contig.describe(
@@ -1208,3 +1215,9 @@ class TestBase:
             check_dtype=False,
             check_names=False,
         )
+
+        ## test index alignment
+        with pytest.raises(
+            ValueError, match="The values index is not aligned with the graph index."
+        ):
+            nybb_contig.describe(self.nybb.geometry.area.reset_index(drop=True))
