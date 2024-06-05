@@ -24,8 +24,10 @@ from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._utils import (
+    _compute_stats,
     _evaluate_index,
     _neighbor_dict_to_edges,
+    _percentile_filtration_grouper,
     _resolve_islands,
     _sparse_to_arrays,
 )
@@ -1992,6 +1994,72 @@ class Graph(SetOpsMixin):
             Aggregated weights
         """
         return self._adjacency.groupby(level=0).agg(func)
+
+    def describe(
+        self,
+        y: np.typing.NDArray[np.float_] | pd.Series,
+        q: tuple[float, float] | None = None,
+        statistics: list[str] | None = None,
+    ) -> pd.DataFrame:
+        """Describe the distribution of ``y`` values within the neighbors of each node.
+
+        Given the graph, computes the descriptive statistics of values within the
+        neighbourhood of each node. Optionally, the values can be limited to a certain
+        quantile range before computing the statistics.
+
+        Notes
+        -----
+        The index of ``values`` must match the index of the graph.
+
+        Weight values do not affect the calculations, only adjacency does.
+
+        Returns numpy.nan for all isolates.
+
+        The numba package is used extensively in this function
+        to accelerate the computation of statistics.
+        Without numba, these computations may become slow on large data.
+
+        Parameters
+        ----------
+        y : NDArray[np.float_] | Series
+            An 1D array of numeric values to be described.
+        q : tuple[float, float] | None, optional
+            Tuple of percentages for the percentiles to compute.
+            Values must be between 0 and 100 inclusive. When set, values below and above
+            the percentiles will be discarded before computation of the statistics.
+            The percentiles are computed for each neighborhood. By default None.
+        statistics : list[str] | None
+            A list of stats functions to compute. If None, compute all
+            available functions - "count", "mean", "median",
+            "std", "min", "max", "sum", "nunique", "mode". By default None.
+
+        Returns
+        -------
+        DataFrame
+            A DataFrame with descriptive statistics.
+        """
+
+        if not isinstance(y, pd.Series):
+            y = pd.Series(y, index=self.unique_ids)
+
+        if (y.index != self.unique_ids).all():
+            raise ValueError("The values index is not aligned with the graph index.")
+
+        if q is None:
+            grouper = y.take(self._adjacency.index.codes[1]).groupby(
+                self._adjacency.index.codes[0]
+            )
+        else:
+            grouper = _percentile_filtration_grouper(y, self._adjacency.index, q=q)
+
+        stat_ = _compute_stats(grouper, statistics)
+
+        stat_.index = self.unique_ids
+        if isinstance(stat_, pd.Series):
+            stat_.name = None
+        # NA isolates
+        stat_.loc[self.isolates] = np.nan
+        return stat_
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):

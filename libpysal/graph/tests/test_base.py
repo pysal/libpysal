@@ -93,6 +93,7 @@ class TestBase:
         self.g_str_unodered = graph.Graph.from_weights_dict(self.W_dict_str_unordered)
 
         self.nybb = gpd.read_file(geodatasets.get_path("nybb")).set_index("BoroName")
+        self.guerry = gpd.read_file(geodatasets.get_path("geoda guerry"))
 
     def test_init(self):
         g = graph.Graph(self.adjacency_int_binary)
@@ -1129,3 +1130,94 @@ class TestBase:
             contig.aggregate(lambda x: np.exp(np.sum(x))),
             expected,
         )
+
+    def test_describe(self):
+        contig = graph.Graph.build_knn(self.guerry.geometry.centroid, k=5)
+        y = self.guerry.geometry.area
+        stats = contig.describe(y)
+        pd.testing.assert_series_equal(
+            stats["count"],
+            contig.cardinalities,
+            check_names=False,
+            check_dtype=False,
+        )
+        pd.testing.assert_series_equal(
+            stats["sum"],
+            pd.Series(contig.lag(y), index=contig.unique_ids),
+            check_names=False,
+        )
+        r_contig = contig.transform("R")
+        pd.testing.assert_series_equal(
+            stats["mean"],
+            pd.Series(r_contig.lag(y), index=contig.unique_ids),
+            check_names=False,
+        )
+        ## compute only some statistics
+        specific_stats = contig.describe(y, statistics=["count", "sum", "mean"])
+        ## assert only the specified values are computed
+        assert list(specific_stats.columns) == ["count", "sum", "mean"]
+
+        pd.testing.assert_frame_equal(
+            specific_stats[["count", "sum", "mean"]], stats[["count", "sum", "mean"]]
+        )
+
+        percentile_stats = contig.describe(y, q=(25, 75))
+
+        for i in contig.unique_ids:
+            neigh_vals = y[contig[i].index.values]
+            low, high = neigh_vals.describe()[["25%", "75%"]]
+            neigh_vals = neigh_vals[(low <= neigh_vals) & (neigh_vals <= high)]
+            expected = neigh_vals.describe()[["count", "mean", "std", "min", "max"]]
+            res = percentile_stats.loc[i][["count", "mean", "std", "min", "max"]]
+            pd.testing.assert_series_equal(res, expected, check_names=False)
+
+        ## test NA equivalence between filtration and pandas
+        nan_areas = y.copy()
+        nan_areas.iloc[range(0, len(y), 3),] = np.nan
+        res1 = contig.describe(y, statistics=["count"])["count"]
+        res2 = contig.describe(y, statistics=["count"], q=(0, 100))["count"]
+        pd.testing.assert_series_equal(res1, res2)
+
+        # test with isolates and string index
+        nybb_contig = graph.Graph.build_contiguity(self.nybb, rook=False)
+        stats = nybb_contig.describe(
+            self.nybb.geometry.area, statistics=["count", "sum"]
+        )
+        ## all isolate values should be nan
+        assert stats.loc["Staten Island"].isna().all()
+
+        # for easier comparison and na has already been checked.
+        stats = stats.fillna(0)
+
+        pd.testing.assert_series_equal(
+            stats["sum"],
+            pd.Series(nybb_contig.lag(self.nybb.geometry.area), index=self.nybb.index),
+            check_names=False,
+        )
+
+        pd.testing.assert_series_equal(
+            stats["count"].sort_index(),
+            nybb_contig.cardinalities.sort_index(),
+            check_dtype=False,
+            check_names=False,
+        )
+
+        ## test passing ndarray
+        stats1 = nybb_contig.describe(self.nybb.geometry.area, statistics=["sum"])[
+            "sum"
+        ]
+        stats2 = nybb_contig.describe(
+            self.nybb.geometry.area.values, statistics=["sum"]
+        )["sum"]
+        pd.testing.assert_series_equal(
+            stats1,
+            stats2,
+            check_dtype=False,
+            check_names=False,
+        )
+
+        ## test index alignment
+        with pytest.raises(
+            ValueError, match="The values index is not aligned with the graph index."
+        ):
+            nybb_contig.describe(self.nybb.geometry.area.reset_index(drop=True))

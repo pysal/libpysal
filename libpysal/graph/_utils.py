@@ -9,6 +9,15 @@ from packaging.version import Version
 GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
 
+try:
+    from numba import njit  # noqa: E401
+
+    HAS_NUMBA = True
+except ModuleNotFoundError:
+    from libpysal.common import jit as njit
+
+    HAS_NUMBA = False
+
 
 class CoplanarError(ValueError):
     """Custom ValueError raised when coplanar points are detected."""
@@ -274,3 +283,107 @@ def _reorder_adjtable_by_ids(adjtable, ids):
         .reindex(ids, level=1)
         .reset_index()
     )
+
+
+@njit
+def _mode(values, index):  # noqa: ARG001
+    """Custom mode function for numba."""
+    array = np.sort(values.ravel())
+    mask = np.empty(array.shape, dtype=np.bool_)
+    mask[:1] = True
+    mask[1:] = array[1:] != array[:-1]
+    unique = array[mask]
+    idx = np.nonzero(mask)[0]
+    idx = np.append(idx, mask.size)
+    counts = np.diff(idx)
+    return unique[np.argmax(counts)]
+
+
+@njit
+def _limit_range(values, index, low, high):  # noqa: ARG001
+    nan_tracker = np.isnan(values)
+
+    if (not nan_tracker.all()) & (len(values[~nan_tracker]) > 2):
+        lower, higher = np.nanpercentile(values, (low, high))
+    else:
+        return ~nan_tracker
+
+    return (lower <= values) & (values <= higher)
+
+
+def _compute_stats(grouper, to_compute: list[str] | None = None):
+    """Fast compute of "count", "mean", "median", "std", "min", "max", \\
+    "sum", "nunique" and "mode" within a grouper object. Using numba.
+
+    Parameters
+    ----------
+    grouper : pandas.GroupBy
+        Groupby Object which specifies the aggregations to be performed.
+    to_compute : list[str]
+        A list of stats functions to pass to groupby.agg
+
+    Returns
+    -------
+    DataFrame
+    """
+
+    if not HAS_NUMBA:
+        warnings.warn(
+            "The numba package is used extensively in this module"
+            " to accelerate the computation of graphs. Without numba,"
+            " these computations may become unduly slow on large data.",
+            stacklevel=3,
+        )
+
+    if to_compute is None:
+        to_compute = [
+            "count",
+            "mean",
+            "median",
+            "std",
+            "min",
+            "max",
+            "sum",
+            "nunique",
+            "mode",
+        ]
+    agg_to_compute = [f for f in to_compute if f != "mode"]
+    stat_ = grouper.agg(agg_to_compute)
+    if "mode" in to_compute:
+        if HAS_NUMBA:
+            stat_["mode"] = grouper.agg(_mode, engine="numba")
+        else:
+            stat_["mode"] = grouper.agg(lambda x: _mode(x.values, x.index))
+
+    return stat_
+
+
+def _percentile_filtration_grouper(y, graph_adjacency_index, q=(25, 75)):
+    """Carry out a filtration of graph neighbours \\
+        based on the quantiles of  ``y``, specified in ``q``"""
+    if not HAS_NUMBA:
+        warnings.warn(
+            "The numba package is used extensively in this module"
+            " to accelerate the computation of graphs. Without numba,"
+            " these computations may become unduly slow on large data.",
+            stacklevel=3,
+        )
+
+    ## need to reset since numba transform has an indexing issue
+    grouper = (
+        y.take(graph_adjacency_index.codes[-1])
+        .reset_index(drop=True)
+        .groupby(graph_adjacency_index.codes[0])
+    )
+    if HAS_NUMBA:
+        to_keep = grouper.transform(
+            _limit_range, q[0], q[1], engine="numba"
+        ).values.astype(bool)
+    else:
+        to_keep = grouper.transform(
+            lambda x: _limit_range(x.values, x.index, q[0], q[1])
+        ).values.astype(bool)
+    filtered_grouper = y.take(graph_adjacency_index.codes[-1][to_keep]).groupby(
+        graph_adjacency_index.codes[0][to_keep]
+    )
+    return filtered_grouper
