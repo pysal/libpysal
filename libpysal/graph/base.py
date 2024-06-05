@@ -2040,7 +2040,7 @@ class Graph(SetOpsMixin):
         """
 
         if not isinstance(y, pd.Series):
-            y = pd.Series(y)
+            y = pd.Series(y, index=self.unique_ids)
 
         if q is None:
             grouper = y.take(self._adjacency.index.codes[1]).groupby(

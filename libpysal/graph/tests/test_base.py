@@ -1194,3 +1194,17 @@ class TestBase:
             check_dtype=False,
             check_names=False,
         )
+
+        ## test passing ndarray
+        stats1 = nybb_contig.describe(self.nybb.geometry.area, statistics=["sum"])[
+            "sum"
+        ]
+        stats2 = nybb_contig.describe(
+            self.nybb.geometry.area.values, statistics=["sum"]
+        )["sum"]
+        pd.testing.assert_series_equal(
+            stats1,
+            stats2,
+            check_dtype=False,
+            check_names=False,
+        )
