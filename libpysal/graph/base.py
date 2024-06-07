@@ -1613,7 +1613,7 @@ class Graph(SetOpsMixin):
             ids=self.unique_ids,
         )
 
-    def lag(self, y, categorical=False, ties='raise'):
+    def lag(self, y, categorical=False, ties="raise"):
         """Spatial lag operator
 
         Constructs spatial lag based on neighbor relations of the graph.
