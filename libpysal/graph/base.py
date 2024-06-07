@@ -1627,24 +1627,37 @@ class Graph(SetOpsMixin):
             ids=self.unique_ids,
         )
 
-    def lag(self, y):
+    def lag(self, y, categorical=False, ties="raise"):
         """Spatial lag operator
 
-        If weights are row standardized, returns the mean of each
-        observation's neighbors; if not, returns the weighted sum
-        of each observation's neighbors.
+        Constructs spatial lag based on neighbor relations of the graph.
+
 
         Parameters
         ----------
-        y : array-like
-            array-like (N,) shape where N is equal to number of observations in self.
+        y : array
+            numpy array with dimensionality conforming to w
+        categorical : bool
+            True if y is categorical, False if y is continuous.
+        ties : {'raise', 'random', 'tryself'}, optional
+            Policy on how to break ties when a focal unit has multiple
+            modes for a categorical lag.
+            - 'raise': This will raise an exception if ties are
+            encountered to alert the user (Default).
+            - 'random': modal label ties Will be broken randomly.
+            - 'tryself': check if focal label breaks the tie between label
+            modes.  If the focal label does not break the modal tie, the
+            tie will be be broken randomly. If the focal unit has a
+            self-weight, focal label is not used to break any tie,
+            rather any tie will be broken randomly.
+
 
         Returns
         -------
         numpy.ndarray
-            array of numeric values for the spatial lag
+            array of numeric|categorical values for the spatial lag
         """
-        return _lag_spatial(self, y)
+        return _lag_spatial(self, y, categorical=categorical, ties=ties)
 
     def to_parquet(self, path, **kwargs):
         """Save Graph to a Apache Parquet
