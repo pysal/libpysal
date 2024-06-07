@@ -643,7 +643,7 @@ def _remote_data():
 
     url = "https://geodacenter.github.io/data-and-lab//"
     try:
-        page = requests.get(url)
+        page = requests.get(url, timeout=10)
     except:  # noqa: E722
         warnings.warn("Remote data sets not available. Check connection.")  # noqa: B028
         return {}
