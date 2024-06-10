@@ -2020,10 +2020,10 @@ class Graph(SetOpsMixin):
 
     def describe(
         self,
-        y: np.typing.NDArray[np.float_] | pd.Series,
-        q: tuple[float, float] | None = None,
-        statistics: list[str] | None = None,
-    ) -> pd.DataFrame:
+        y,
+        q=None,
+        statistics=None,
+    ):
         """Describe the distribution of ``y`` values within the neighbors of each node.
 
         Given the graph, computes the descriptive statistics of values within the
@@ -2044,7 +2044,7 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        y : NDArray[np.float_] | Series
+        y : NDArray[np.float64] | Series
             An 1D array of numeric values to be described.
         q : tuple[float, float] | None, optional
             Tuple of percentages for the percentiles to compute.
