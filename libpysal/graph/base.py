@@ -848,7 +848,7 @@ class Graph(SetOpsMixin):
             on the intersection of bounding boxes. See the documentation of
             ``geopandas.GeoSeries.sindex.query`` for allowed predicates.
         **kwargs
-            Keyword arguments passed to ``geopandas.GeoSeries.buffer``
+            Keyword arguments passed to ``geopandas.GeoSeries.buffer``.
 
         Returns
         -------
