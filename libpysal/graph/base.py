@@ -803,11 +803,7 @@ class Graph(SetOpsMixin):
 
     @classmethod
     def build_fuzzy_contiguity(
-        cls,
-        geometry,
-        tolerance=None,
-        buffer=None,
-        predicate="intersects",
+        cls, geometry, tolerance=None, buffer=None, predicate="intersects", **kwargs
     ):
         """Generate Graph from fuzzy contiguity
 
@@ -851,6 +847,8 @@ class Graph(SetOpsMixin):
             'intersects'. If None is passed, neighbours are determined based
             on the intersection of bounding boxes. See the documentation of
             ``geopandas.GeoSeries.sindex.query`` for allowed predicates.
+        **kwargs
+            Keyword arguments passed to ``geopandas.GeoSeries.buffer``
 
         Returns
         -------
@@ -860,7 +858,12 @@ class Graph(SetOpsMixin):
         ids = _evaluate_index(geometry)
 
         heads, tails, weights = _fuzzy_contiguity(
-            geometry, ids, tolerance=tolerance, buffer=buffer, predicate=predicate
+            geometry,
+            ids,
+            tolerance=tolerance,
+            buffer=buffer,
+            predicate=predicate,
+            **kwargs,
         )
 
         return cls.from_arrays(heads, tails, weights)

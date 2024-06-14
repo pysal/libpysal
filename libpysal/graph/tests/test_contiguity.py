@@ -363,3 +363,17 @@ def test_fuzzy_contiguity():
         _fuzzy_contiguity(
             nybb.set_index("intID"), nybb["intID"], tolerance=0.05, buffer=5000
         )
+
+    # kwargs
+    head, tail, weight = _fuzzy_contiguity(
+        nybb.set_index("intID"), nybb["intID"], buffer=5000, resolution=2
+    )
+    numpy.testing.assert_array_equal(
+        head,
+        [5, 4, 4, 4, 3, 3, 3, 1, 1, 1, 2, 2],
+    )
+    numpy.testing.assert_array_equal(
+        tail,
+        [3, 3, 1, 2, 5, 4, 1, 4, 3, 2, 4, 1],
+    )
+    numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
