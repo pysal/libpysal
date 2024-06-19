@@ -21,7 +21,7 @@ class TestExamples:
     def test_available(self):
         examples = available()
         assert type(examples) == pandas.core.frame.DataFrame
-        assert examples.shape == (98, 3)
+        assert examples.shape == (99, 3)
 
     def test_data_home(self):
         pth = get_data_home()

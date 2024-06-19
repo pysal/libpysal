@@ -736,6 +736,15 @@ def _build_remotes():
     explain_url = "https://raw.githubusercontent.com/sjsrey/newHaven/master/README.md"
     datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
+    # Chicago SDOH
+    name = "chicagoSDOH"
+    description = "Chicago census tract SDOH variables"
+    n = 791
+    k = 65
+    download_url = "https://github.com/lanselin/spreg_sample_data/archive/master.zip"
+    explain_url = "https://raw.githubusercontent.com/lanselin/spreg_sample_data/master/README.md"
+    datasets[name] = Example(name, description, n, k, download_url, explain_url)
+
     # remove Cars dataset as it is broken
     datasets.pop("Cars")
 
