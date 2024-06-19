@@ -99,7 +99,7 @@ def voronoi_regions(vor, radius=None):
 
     center = vor.points.mean(axis=0)
     if radius is None:
-        radius = vor.points.ptp().max() * 2
+        radius = np.ptp(vor.points).max() * 2
 
     all_ridges = {}
     for (p1, p2), (v1, v2) in zip(vor.ridge_points, vor.ridge_vertices, strict=True):

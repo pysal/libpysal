@@ -742,7 +742,9 @@ def _build_remotes():
     n = 791
     k = 65
     download_url = "https://github.com/lanselin/spreg_sample_data/archive/master.zip"
-    explain_url = "https://raw.githubusercontent.com/lanselin/spreg_sample_data/master/README.md"
+    explain_url = (
+        "https://raw.githubusercontent.com/lanselin/spreg_sample_data/master/README.md"
+    )
     datasets[name] = Example(name, description, n, k, download_url, explain_url)
 
     # remove Cars dataset as it is broken
