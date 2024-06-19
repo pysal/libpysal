@@ -245,7 +245,7 @@ def test_ids(ids):
 
 
 def test_kernel():
-    _, _, weight = _delaunay(cau_coords, kernel="gaussian")
+    heads_ix, tails_ix, weight = _delaunay(cau_coords, kernel="gaussian")
     expected = np.array(
         [
             0.1305618,
@@ -266,8 +266,9 @@ def test_kernel():
             0.02004257,
         ]
     )
+    order = np.lexsort((tails_ix, heads_ix))
 
-    np.testing.assert_array_almost_equal(expected, weight)
+    np.testing.assert_array_almost_equal(expected, weight[order])
 
 
 def test_coplanar_raise_voronoi():
