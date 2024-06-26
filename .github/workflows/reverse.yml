@@ -2,9 +2,6 @@ name: Test reverse dependencies
 on:
   push:
     branches: [main]
-  pull_request:
-      branches:
-        - "*"
   schedule:
     - cron: "0 0 * * 1,4"
   workflow_dispatch:
