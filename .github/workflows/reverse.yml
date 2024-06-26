@@ -52,9 +52,6 @@ jobs:
               matplotlib
               statsmodels
               osmnx
-              libopencv
-              opencv
-              py-opencv
             installation_command: >-
               pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()';
             fail_on_failure: true
@@ -63,5 +60,6 @@ jobs:
               mgwr
               tobler
               geosnap
+              pointpats
             verbose: true
             parallel: false
