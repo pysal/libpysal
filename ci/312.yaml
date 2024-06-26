@@ -32,7 +32,6 @@ dependencies:
   - zstd
   - xarray
   # for docs build action (this env only)
-  - mkdocs-jupyter
   - myst-parser
   - nbsphinx
   - numpydoc
