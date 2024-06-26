@@ -23,7 +23,7 @@ jobs:
         with:
             fetch-depth: 0
 
-      - uses: martinfleis/reverse-dependency-testing-action@xfail
+      - uses: scientific-python/reverse-dependency-testing-action@main
         with:
             package_name: libpysal
             ignore: >-
