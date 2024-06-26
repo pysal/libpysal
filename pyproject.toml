@@ -123,5 +123,5 @@ filterwarnings = [
     "ignore:Passing a BlockManager", # https://github.com/geopandas/geopandas/issues/3060
 ]
 markers = [
-    "network: marks tests as that use the network"
+    "network: marks tests that require a network connection"
 ]
