@@ -53,7 +53,7 @@ jobs:
               statsmodels
               osmnx
             install_pip: >-
-              opencv-contrib-python
+              opencv-python
             installation_command: >-
               pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()';
             fail_on_failure: true
