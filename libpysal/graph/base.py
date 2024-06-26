@@ -1151,17 +1151,20 @@ class Graph(SetOpsMixin):
             Clipping method when ``method="voronoi"``. Ignored otherwise.
             Default is ``'bounding_box'``. Options are as follows.
 
-            * ``None`` -- No clip is applied. Voronoi cells may be arbitrarily
-            larger that the source map. Note that this may lead to cells that are many
-            orders of magnitude larger in extent than the original map. Not recommended.
-            * ``'bounding_box'`` -- Clip the voronoi cells to the
-            bounding box of the input points.
-            * ``'convex_hull'`` -- Clip the voronoi cells to the convex hull of
-            the input points.
-            * ``'alpha_shape'`` -- Clip the voronoi cells to the tightest hull that
-            contains all points (e.g. the smallest alpha shape, using
-            :func:`libpysal.cg.alpha_shape_auto`).
-            * ``shapely.Polygon`` -- Clip to an arbitrary Polygon.
+            ``None``
+                No clip is applied. Voronoi cells may be arbitrarily larger that the
+                source map. Note that this may lead to cells that are many orders of
+                magnitude larger in extent than the original map. Not recommended.
+            ``'bounding_box'``
+                Clip the voronoi cells to the bounding box of the input points.
+            ``'convex_hull'``
+                Clip the voronoi cells to the convex hull of the input points.
+            ``'alpha_shape'``
+                Clip the voronoi cells to the tightest hull that contains all points
+                (e.g. the smallest alpha shape, using
+                :func:`libpysal.cg.alpha_shape_auto`).
+            ``shapely.Polygon``
+                Clip to an arbitrary Polygon.
 
         rook : bool, optional
             Contiguity method when ``method="voronoi"``. Ignored otherwise.
