@@ -8,6 +8,7 @@ from libpysal import graph
 from libpysal.graph.tests.test_utils import fetch_map_string
 
 
+@pytest.mark.network
 class TestPlotting:
     def setup_method(self):
         _ = pytest.importorskip("matplotlib")

@@ -17,10 +17,14 @@ import pytest
 from libpysal.graph._matching import _spatial_matching
 from libpysal.graph.base import Graph
 
-stores = geopandas.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
-    index_parts=False
-)
-stores_unique = stores.drop_duplicates(subset="geometry")
+
+@pytest.fixture(scope="session")
+def stores():
+    stores = geopandas.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
+        index_parts=False
+    )
+    return stores
+
 
 np.random.seed(85711)
 simple = np.random.random(size=(5, 2))
@@ -58,7 +62,8 @@ def test_correctness_k1():
     np.testing.assert_array_equal(known, np.column_stack(computed_partial))
 
 
-def test_stores():
+@pytest.mark.network
+def test_stores(stores):
     computed_heads, computed_tails, computed_weights = _spatial_matching(
         stores.head(101), n_matches=3, solver=default_solver
     )

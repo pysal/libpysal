@@ -14,6 +14,7 @@ from scipy import sparse
 from libpysal import graph, weights
 
 
+@pytest.mark.network
 class TestBase:
     def setup_method(self):
         self.neighbor_dict_int = {0: 1, 1: 2, 2: 5, 3: 4, 4: 5, 5: 8, 6: 7, 7: 8, 8: 7}
