@@ -404,8 +404,9 @@ class Queen(W):
     @classmethod
     def from_iterable(cls, iterable, sparse=False, **kwargs):
         """
-        Construct a weights object from a collection of arbitrary polygons. This
-        will cast the polygons to PySAL polygons, then build the W.
+        Construct a weights object from a collection of arbitrary polygons.
+
+        This will cast the polygons to PySAL polygons, then build the W.
 
         Parameters
         ----------
@@ -417,7 +418,7 @@ class Queen(W):
                       optional arguments for  :class:`pysal.weights.W`
 
         See Also
-        ---------
+        --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguiyt.Queen`
         """
