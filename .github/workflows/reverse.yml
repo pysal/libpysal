@@ -2,6 +2,9 @@ name: Test reverse dependencies
 on:
   push:
     branches: [main]
+  pull_request:
+      branches:
+        - "*"
   schedule:
     - cron: "0 0 * * 1,4"
   workflow_dispatch:
@@ -32,6 +35,7 @@ jobs:
               greedy
               pysal
               mesa-geo
+              spvcm
             include: >-
               mapclassify
             install: >-
@@ -47,6 +51,7 @@ jobs:
               kdepy
               matplotlib
               statsmodels
+              osmnx
             installation_command: >-
               pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()';
             fail_on_failure: true
