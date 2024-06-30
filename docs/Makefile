@@ -12,23 +12,18 @@ BUILDDIR      = _build
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile
+
+.PHONY: help Makefile generate-rst
+
+# Custom target to generate rst files
+generate-rst:
+	@echo "Generating custom rst files..."
+	@python ../scripts/w_g_migration.py
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
-	@rsync -r --exclude '.ipynb_checkpoints/' ../notebooks/ ./notebooks/
+%: Makefile generate-rst
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-github:
-	@make html
 
-sync:
-	@rsync -avh _build/html/ ../docs/ --delete
-	@make clean
-	touch .nojekyll
 
-clean:
-	rm -rf $(BUILDDIR)/*
-	rm -rf auto_examples/
-	rm -rf generated/
