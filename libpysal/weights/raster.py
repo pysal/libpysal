@@ -220,6 +220,49 @@ def da2WSP(
     --------
     :class:`libpysal.weights.weights.WSP`
     """
+    sw_tup, ser, n = _da2wsp(
+        da,
+        criterion=criterion,
+        z_value=z_value,
+        coords_labels=coords_labels,
+        k=k,
+        include_nodata=include_nodata,
+        n_jobs=n_jobs,
+    )
+
+    sw = sparse.csr_matrix(
+            sw_tup,
+            shape=(n, n),
+            dtype=np.int8,
+        )
+
+    # Higher_order functionality, this uses idea from
+    # libpysal#313 for adding higher order neighbors.
+    # Since diagonal elements are also added in the result,
+    # this method set the diagonal elements to zero and
+    # then eliminate zeros from the data. This changes the
+    # sparcity of the csr_matrix !!
+    if k > 1 and not include_nodata:
+        sw = sum(sw**x for x in range(1, k + 1))
+        sw.setdiag(0)
+        sw.eliminate_zeros()
+        sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
+
+    index = ser.index
+    wsp = WSP(sw, index=index)
+    return wsp
+
+
+def _da2wsp(
+    da,
+    criterion="queen",
+    z_value=None,
+    coords_labels={},
+    k=1,
+    include_nodata=False,
+    n_jobs=1,
+):
+    """Helper for da2WSP that can be reused in Graph"""
     z_id, coords_labels = _da_checker(da, z_value, coords_labels)
     shape = da.shape
     if z_id:
@@ -285,27 +328,8 @@ def da2WSP(
                 *shape, ids, id_map, criterion, k_nas, dtype, n_jobs
             )  # -> (data, (row, col))
 
-        sw = sparse.csr_matrix(
-            sw_tup,
-            shape=(n, n),
-            dtype=np.int8,
-        )
 
-    # Higher_order functionality, this uses idea from
-    # libpysal#313 for adding higher order neighbors.
-    # Since diagonal elements are also added in the result,
-    # this method set the diagonal elements to zero and
-    # then eliminate zeros from the data. This changes the
-    # sparcity of the csr_matrix !!
-    if k > 1 and not include_nodata:
-        sw = sum(sw**x for x in range(1, k + 1))
-        sw.setdiag(0)
-        sw.eliminate_zeros()
-        sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
-
-    index = ser.index
-    wsp = WSP(sw, index=index)
-    return wsp
+    return sw_tup, ser, n
 
 
 def w2da(data, w, attrs={}, coords=None):
