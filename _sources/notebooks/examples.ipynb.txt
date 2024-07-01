@@ -1,0 +1,1093 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Datasets for use with libpysal\n",
+    "As of version 4.2, libpysal has refactored the `examples` package to:\n",
+    "\n",
+    "- reduce the size of the source installation\n",
+    "- allow the use of remote datasets from the [Center for Spatial Data Science at the Unversity of Chicago](https://spatial.uchicago.edu/), and other remotes\n",
+    "\n",
+    "This notebook highlights the new functionality"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Backwards compatibility is maintained"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "If you were familiar with previous versions of libpysal, the newest version maintains backwards compatibility so any code that relied on the previous API should work. \n",
+    "\n",
+    "For example:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from libpysal.examples import get_path \n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'/home/serge/Documents/p/pysal/src/subpackages/libpysal/libpysal/examples/mexico/mexicojoin.dbf'"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "get_path(\"mexicojoin.dbf\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "An important thing to note here is that the path to the file for this particular example is within the source distribution that was installed. Such an example data set is now referred to as a `builtin` dataset."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import libpysal\n",
+    "dbf = libpysal.io.open(get_path(\"mexicojoin.dbf\"))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['POLY_ID',\n",
+       " 'AREA',\n",
+       " 'CODE',\n",
+       " 'NAME',\n",
+       " 'PERIMETER',\n",
+       " 'ACRES',\n",
+       " 'HECTARES',\n",
+       " 'PCGDP1940',\n",
+       " 'PCGDP1950',\n",
+       " 'PCGDP1960',\n",
+       " 'PCGDP1970',\n",
+       " 'PCGDP1980',\n",
+       " 'PCGDP1990',\n",
+       " 'PCGDP2000',\n",
+       " 'HANSON03',\n",
+       " 'HANSON98',\n",
+       " 'ESQUIVEL99',\n",
+       " 'INEGI',\n",
+       " 'INEGI2',\n",
+       " 'MAXP',\n",
+       " 'GR4000',\n",
+       " 'GR5000',\n",
+       " 'GR6000',\n",
+       " 'GR7000',\n",
+       " 'GR8000',\n",
+       " 'GR9000',\n",
+       " 'LPCGDP40',\n",
+       " 'LPCGDP50',\n",
+       " 'LPCGDP60',\n",
+       " 'LPCGDP70',\n",
+       " 'LPCGDP80',\n",
+       " 'LPCGDP90',\n",
+       " 'LPCGDP00',\n",
+       " 'TEST']"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "dbf.header"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The function `available` is also available but has been updated to return a Pandas DataFrame. In addition to the builtin datasets, `available` will report on what datasets are available, either as builtin or remotes."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from libpysal.examples import available"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = available()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(98, 3)"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.shape"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "98 datasets available, 27 installed, 71 remote.\n"
+     ]
+    }
+   ],
+   "source": [
+    "libpysal.examples.summary()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We see that there are 98 total datasets available for use with PySAL. On an initial install (i.e., `examples` has not been used yet), 27 of these are builtin datasets and 71 are remote. The latter can be downloaded and installed."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Downloading Remote Datasets"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Name</th>\n",
+       "      <th>Description</th>\n",
+       "      <th>Installed</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>10740</td>\n",
+       "      <td>Albuquerque, New Mexico, Census 2000 Tract Dat...</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>AirBnB</td>\n",
+       "      <td>Airbnb rentals, socioeconomics, and crime in C...</td>\n",
+       "      <td>False</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Atlanta</td>\n",
+       "      <td>Atlanta, GA region homicide counts and rates</td>\n",
+       "      <td>False</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Baltimore</td>\n",
+       "      <td>Baltimore house sales prices and hedonics</td>\n",
+       "      <td>False</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Bostonhsg</td>\n",
+       "      <td>Boston housing and neighborhood data</td>\n",
+       "      <td>False</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "        Name                                        Description  Installed\n",
+       "0      10740  Albuquerque, New Mexico, Census 2000 Tract Dat...       True\n",
+       "1     AirBnB  Airbnb rentals, socioeconomics, and crime in C...      False\n",
+       "2    Atlanta       Atlanta, GA region homicide counts and rates      False\n",
+       "3  Baltimore          Baltimore house sales prices and hedonics      False\n",
+       "4  Bostonhsg               Boston housing and neighborhood data      False"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df.head()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The remote `AirBnB` can be installed by calling `load_example`:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Downloading AirBnB to /home/serge/.local/share/pysal/AirBnB\n"
+     ]
+    }
+   ],
+   "source": [
+    "airbnb = libpysal.examples.load_example(\"AirBnB\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "98 datasets available, 28 installed, 70 remote.\n"
+     ]
+    }
+   ],
+   "source": [
+    "libpysal.examples.summary()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And we see that the number of remotes as declined by one and the number of installed has increased by 1."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Trying to load an example that doesn't exist will return None and alert the user:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Example not available: dataset42\n"
+     ]
+    }
+   ],
+   "source": [
+    "libpysal.examples.load_example('dataset42')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Getting remote urls\n",
+    "\n",
+    "If the url, rather than the dataset, is needed this can be obtained on a remote with `get_url`. \n",
+    "As the `Baltimore` dataset has not yet been downloaded in this example, we can grab it's url:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'https://geodacenter.github.io/data-and-lab//data/baltimore.zip'"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "balt_url = libpysal.examples.get_url('Baltimore')\n",
+    "balt_url"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Explaining a dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "taz\n",
+      "===\n",
+      "\n",
+      "Dataset used for regionalization\n",
+      "--------------------------------\n",
+      "\n",
+      "* taz.dbf: attribute data. (k=14)\n",
+      "* taz.shp: Polygon shapefile. (n=4109)\n",
+      "* taz.shx: spatial index.\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "libpysal.examples.explain('taz')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Downloading taz to /home/serge/.local/share/pysal/taz\n"
+     ]
+    }
+   ],
+   "source": [
+    "taz = libpysal.examples.load_example('taz')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['/home/serge/.local/share/pysal/taz/taz-master/taz.dbf',\n",
+       " '/home/serge/.local/share/pysal/taz/taz-master/taz.shp',\n",
+       " '/home/serge/.local/share/pysal/taz/taz-master/README.md',\n",
+       " '/home/serge/.local/share/pysal/taz/taz-master/taz.shx']"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "taz.get_file_list()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "        <iframe\n",
+       "            width=\"700\"\n",
+       "            height=\"350\"\n",
+       "            src=\"https://geodacenter.github.io/data-and-lab//baltim/\"\n",
+       "            frameborder=\"0\"\n",
+       "            allowfullscreen\n",
+       "            \n",
+       "        ></iframe>\n",
+       "        "
+      ],
+      "text/plain": [
+       "<IPython.lib.display.IFrame at 0x7febc3b56c50>"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "libpysal.examples.explain('Baltimore')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Downloading Baltimore to /home/serge/.local/share/pysal/Baltimore\n"
+     ]
+    }
+   ],
+   "source": [
+    "balt = libpysal.examples.load_example('Baltimore')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Name</th>\n",
+       "      <th>Description</th>\n",
+       "      <th>Installed</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>10740</td>\n",
+       "      <td>Albuquerque, New Mexico, Census 2000 Tract Dat...</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>AirBnB</td>\n",
+       "      <td>Airbnb rentals, socioeconomics, and crime in C...</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Atlanta</td>\n",
+       "      <td>Atlanta, GA region homicide counts and rates</td>\n",
+       "      <td>False</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Baltimore</td>\n",
+       "      <td>Baltimore house sales prices and hedonics</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Bostonhsg</td>\n",
+       "      <td>Boston housing and neighborhood data</td>\n",
+       "      <td>False</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>93</th>\n",
+       "      <td>taz</td>\n",
+       "      <td>Traffic Analysis Zones in So. California</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>94</th>\n",
+       "      <td>tokyo</td>\n",
+       "      <td>Tokyo Mortality data</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>95</th>\n",
+       "      <td>us_income</td>\n",
+       "      <td>Per-capita income for the lower 48 US states 1...</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>96</th>\n",
+       "      <td>virginia</td>\n",
+       "      <td>Virginia counties shapefile</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>97</th>\n",
+       "      <td>wmat</td>\n",
+       "      <td>Datasets used for spatial weights testing</td>\n",
+       "      <td>True</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>98 rows × 3 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "         Name                                        Description  Installed\n",
+       "0       10740  Albuquerque, New Mexico, Census 2000 Tract Dat...       True\n",
+       "1      AirBnB  Airbnb rentals, socioeconomics, and crime in C...       True\n",
+       "2     Atlanta       Atlanta, GA region homicide counts and rates      False\n",
+       "3   Baltimore          Baltimore house sales prices and hedonics       True\n",
+       "4   Bostonhsg               Boston housing and neighborhood data      False\n",
+       "..        ...                                                ...        ...\n",
+       "93        taz           Traffic Analysis Zones in So. California       True\n",
+       "94      tokyo                               Tokyo Mortality data       True\n",
+       "95  us_income  Per-capita income for the lower 48 US states 1...       True\n",
+       "96   virginia                        Virginia counties shapefile       True\n",
+       "97       wmat          Datasets used for spatial weights testing       True\n",
+       "\n",
+       "[98 rows x 3 columns]"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "libpysal.examples.available()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Working with an example dataset\n",
+    "\n",
+    "`explain` will render maps for an example if available"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "        <iframe\n",
+       "            width=\"700\"\n",
+       "            height=\"350\"\n",
+       "            src=\"https://geodacenter.github.io/data-and-lab//tampa1/\"\n",
+       "            frameborder=\"0\"\n",
+       "            allowfullscreen\n",
+       "            \n",
+       "        ></iframe>\n",
+       "        "
+      ],
+      "text/plain": [
+       "<IPython.lib.display.IFrame at 0x7febc3b56890>"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from libpysal.examples import explain\n",
+    "explain('Tampa1')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Downloading Tampa1 to /home/serge/.local/share/pysal/Tampa1\n"
+     ]
+    }
+   ],
+   "source": [
+    "from libpysal.examples import load_example\n",
+    "tampa1 = load_example('Tampa1')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "True"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "tampa1.installed"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.shp',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.prj',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/2000 Census Data Variables_Documentation.pdf',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.kml',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.dbf',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.kml',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sbn',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.mif',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.prj',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sqlite',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.shx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sbn',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sbx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.FDO_UUID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByName.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbindexes',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByType.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.spx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByDestItemTypeID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/timestamps',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByName.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbindexes',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByUUID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByParentTypeID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByType.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbindexes',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByForwardLabel.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.FDO_UUID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByUUID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbindexes',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.TablesByName.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByOriginID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbindexes',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbindexes',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.spx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByPhysicalName.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtablx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtable',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/gdb',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbindexes',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.spx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByBackwardLabel.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbindexes',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByDestinationID.atx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.mid',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sbx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.geojson',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.mid',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.xlsx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.mif',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.dbf',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.shp',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.gpkg',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.gpkg',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.xlsx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.shx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sqlite',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.geojson',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._2000 Census Data Variables_Documentation.pdf',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbn',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbn',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbx',\n",
+       " '/home/serge/.local/share/pysal/Tampa1/__MACOSX/._TampaMSA']"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "tampa1.get_file_list()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tampa_counties_shp = tampa1.load('tampa_counties.shp')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<libpysal.io.iohandlers.pyShpIO.PurePyShpWrapper at 0x7febc3b1bd00>"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "tampa_counties_shp"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import geopandas"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tampa_df = geopandas.read_file(tampa1.get_path('tampa_counties.shp'))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<AxesSubplot:>"
+      ]
+     },
+     "execution_count": 28,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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gwf5OI1m+Pw51dfX45FHHsGHH36IkJAQe4feKj7PqaXX+Pj4QCIR+AWSs7OiUFy+fJkNHz6ccRzHxGIxCwsLY6dOnWp1/0OHDjGpVMp27NjR5nFramrYtGnTGAAmkUiYj4/PLV9jL3yc0+HDhxkA5u/vz7788kt28uRJ9uyzzzKZTMYyMzN5OIvm+Po5zZs3jz355JO2r+GglhJj/J3T9SoqKliPHj3YK6+8YoeI+eXWSem1115jANp8HD9+nFksFnb33XezO++8kx08eJClpqayZ555hoWHh7Pi4uKbjnv27FkWFBTE3njjjVvGsHDhQjZy5Ei2a9culpaWxv7+978zlUrF0tPTXfKcfvvtNwaALV26tNn2gQMHspdeesklz2nLli0sJiaG6XQ627auJiVnn9P1NBoNGzVqFJs+fTozGAydPidHceukVF5ezi5cuNDmo6Ghge3atYuJRCKm0WiavT4mJoYlJyc323bu3DmmVqvZyy+/fMv3z8rKYgDY2bNnm22/44472J/+9CeXPKecnBwGgP33v/9ttv3BBx9kjz76qEue0+LFi22tlKsPAEwkErGJEye65DldpdVq2ZgxY9gdd9zBGhoaOnUujibwi8uuCQwMRGBg4C33q6+vB4Cb7h6JRCJYLBbb1+fOncPtt9+Oxx57DMuXL+/0ccVicbPjdoSzz6lnz54ICwtDRkZGs+2ZmZm4884723MKN3H2Ob300kt46qmnmm0bOHAg3nvvPcycObM9p3ATZ58TYC0ON23aNMjlcqSkpEChUHTgDJzI2VlRCMrLy1lAQAC77777WFpaGsvIyGDPP/88k0qlLC0tjTF2rdk8e/ZsVlJSYnuUlZXZjnP58mXWr18/dvToUcYYYwaDgcXExLDx48ezo0ePsqysLLZixQrGcRzbunWrS54TY4y99957zMfHh3333Xfs0qVLbNmyZUyhULCsrCyXPacbwYF33/g4J61Wy0aNGsUGDhzIsrKymr3OZDLxfl5dQUmpyfHjx9nUqVOZv78/UyqVbPTo0Wzbtm2251vrI4iKirLtk5ubywCwPXv22LZlZmay++67j6nVaubp6ckGDRp00xABVzsnxhhLTk5mERERzNPTk40ZM4YdOHDA5c/peo5KSozxc0579uxptS8rNzfXIefVWVS6hBAiKDROiRAiKJSUCCGCQkmJECIolJQIIYJCSYkQIiiUlAghgkJJiRAiKJSUCCGCQkmJECIolJQIIYJCSYkQIiiUlAghgvL/hODAVLRXoYoAAAAASUVORK5CYII=\n",
+      "text/plain": [
+       "<Figure size 640x480 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "%matplotlib inline\n",
+    "tampa_df.plot()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Other Remotes\n",
+    "\n",
+    "In addition to the remote datasets from the GeoData Data Science Center, there are several large remotes available at github repositories. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Rio_Grande_do_Sul\n",
+      "======================\n",
+      "\n",
+      "Cities of the Brazilian State of Rio Grande do Sul\n",
+      "-------------------------------------------------------\n",
+      "\n",
+      "* 43MUE250GC_SIR.dbf: attribute data (k=2)\n",
+      "* 43MUE250GC_SIR.shp: Polygon shapefile (n=499)\n",
+      "* 43MUE250GC_SIR.shx: spatial index\n",
+      "* 43MUE250GC_SIR.cpg: encoding file \n",
+      "* 43MUE250GC_SIR.prj: projection information \n",
+      "* map_RS_BR.dbf: attribute data (k=3)\n",
+      "* map_RS_BR.shp: Polygon shapefile (no lakes) (n=497)\n",
+      "* map_RS_BR.prj: projection information\n",
+      "* map_RS_BR.shx: spatial index\n",
+      "\n",
+      "\n",
+      "\n",
+      "Source: Renan Xavier Cortes \n",
+      "Reference: https://github.com/pysal/pysal/issues/889#issuecomment-396693495\n",
+      "\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "libpysal.examples.explain('Rio Grande do Sul')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Note that the `explain` function generates a textual description of this example dataset - no rendering of the map is done as the source repository does not include that functionality."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Downloading Rio Grande do Sul to /home/serge/.local/share/pysal/Rio_Grande_do_Sul\n"
+     ]
+    }
+   ],
+   "source": [
+    "rio = libpysal.examples.load_example('Rio Grande do Sul')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{'AirBnB': <libpysal.examples.base.Example at 0x7febc78c00d0>,\n",
+       " 'Atlanta': <libpysal.examples.base.Example at 0x7febc4a5efb0>,\n",
+       " 'Baltimore': <libpysal.examples.base.Example at 0x7febc4a5ed40>,\n",
+       " 'Bostonhsg': <libpysal.examples.base.Example at 0x7febc4a5ef50>,\n",
+       " 'Buenosaires': <libpysal.examples.base.Example at 0x7febc4a5efe0>,\n",
+       " 'Charleston1': <libpysal.examples.base.Example at 0x7febc4a5ef80>,\n",
+       " 'Charleston2': <libpysal.examples.base.Example at 0x7febc4a5ee90>,\n",
+       " 'Chicago Health': <libpysal.examples.base.Example at 0x7febc4a5ef20>,\n",
+       " 'Chicago commpop': <libpysal.examples.base.Example at 0x7febc4a5f070>,\n",
+       " 'Chicago parcels': <libpysal.examples.base.Example at 0x7febc4a5f0a0>,\n",
+       " 'Chile Labor': <libpysal.examples.base.Example at 0x7febc4a5f100>,\n",
+       " 'Chile Migration': <libpysal.examples.base.Example at 0x7febc4a5f130>,\n",
+       " 'Cincinnati': <libpysal.examples.base.Example at 0x7febc4a5f1f0>,\n",
+       " 'Cleveland': <libpysal.examples.base.Example at 0x7febc4a5f190>,\n",
+       " 'Columbus': <libpysal.examples.base.Example at 0x7febc4a5f250>,\n",
+       " 'Elections': <libpysal.examples.base.Example at 0x7febc4a5f0d0>,\n",
+       " 'Grid100': <libpysal.examples.base.Example at 0x7febc4a5f220>,\n",
+       " 'Groceries': <libpysal.examples.base.Example at 0x7febc4a5f160>,\n",
+       " 'Guerry': <libpysal.examples.base.Example at 0x7febc4a5f280>,\n",
+       " 'Health+': <libpysal.examples.base.Example at 0x7febc4a5f040>,\n",
+       " 'Health Indicators': <libpysal.examples.base.Example at 0x7febc4a5f2b0>,\n",
+       " 'Hickory1': <libpysal.examples.base.Example at 0x7febc4a5f2e0>,\n",
+       " 'Hickory2': <libpysal.examples.base.Example at 0x7febc4a5f310>,\n",
+       " 'Home Sales': <libpysal.examples.base.Example at 0x7febc4a5f340>,\n",
+       " 'Houston': <libpysal.examples.base.Example at 0x7febc4a5f370>,\n",
+       " 'Juvenile': <libpysal.examples.base.Example at 0x7febc4a5f3a0>,\n",
+       " 'Lansing1': <libpysal.examples.base.Example at 0x7febc4a5f3d0>,\n",
+       " 'Lansing2': <libpysal.examples.base.Example at 0x7febc4a5f400>,\n",
+       " 'Laozone': <libpysal.examples.base.Example at 0x7febc4a5f430>,\n",
+       " 'LasRosas': <libpysal.examples.base.Example at 0x7febc4a5f460>,\n",
+       " 'Liquor Stores': <libpysal.examples.base.Example at 0x7febc4a5f490>,\n",
+       " 'Malaria': <libpysal.examples.base.Example at 0x7febc4a5f4c0>,\n",
+       " 'Milwaukee1': <libpysal.examples.base.Example at 0x7febc4a5f4f0>,\n",
+       " 'Milwaukee2': <libpysal.examples.base.Example at 0x7febc4a5f520>,\n",
+       " 'NCOVR': <libpysal.examples.base.Example at 0x7febc4a5f550>,\n",
+       " 'Natregimes': <libpysal.examples.base.Example at 0x7febc4a5f580>,\n",
+       " 'NDVI': <libpysal.examples.base.Example at 0x7febc4a5f5b0>,\n",
+       " 'Nepal': <libpysal.examples.base.Example at 0x7febc4a5f5e0>,\n",
+       " 'NYC': <libpysal.examples.base.Example at 0x7febc4a5f610>,\n",
+       " 'NYC Earnings': <libpysal.examples.base.Example at 0x7febc4a5f640>,\n",
+       " 'NYC Education': <libpysal.examples.base.Example at 0x7febc4a5f670>,\n",
+       " 'NYC Neighborhoods': <libpysal.examples.base.Example at 0x7febc4a5f6a0>,\n",
+       " 'NYC Socio-Demographics': <libpysal.examples.base.Example at 0x7febc4a5f6d0>,\n",
+       " 'Ohiolung': <libpysal.examples.base.Example at 0x7febc4a5f700>,\n",
+       " 'Orlando1': <libpysal.examples.base.Example at 0x7febc4a5f730>,\n",
+       " 'Orlando2': <libpysal.examples.base.Example at 0x7febc4a5f760>,\n",
+       " 'Oz9799': <libpysal.examples.base.Example at 0x7febc4a5f790>,\n",
+       " 'Phoenix ACS': <libpysal.examples.base.Example at 0x7febc4a5f7c0>,\n",
+       " 'Pittsburgh': <libpysal.examples.base.Example at 0x7febc4a5f7f0>,\n",
+       " 'Police': <libpysal.examples.base.Example at 0x7febc4a5f820>,\n",
+       " 'Sacramento1': <libpysal.examples.base.Example at 0x7febc4a5f850>,\n",
+       " 'Sacramento2': <libpysal.examples.base.Example at 0x7febc4a5f880>,\n",
+       " 'SanFran Crime': <libpysal.examples.base.Example at 0x7febc4a5f8b0>,\n",
+       " 'Savannah1': <libpysal.examples.base.Example at 0x7febc4a5f8e0>,\n",
+       " 'Savannah2': <libpysal.examples.base.Example at 0x7febc4a5f910>,\n",
+       " 'Scotlip': <libpysal.examples.base.Example at 0x7febc4a5f940>,\n",
+       " 'Seattle1': <libpysal.examples.base.Example at 0x7febc4a5f970>,\n",
+       " 'Seattle2': <libpysal.examples.base.Example at 0x7febc4a5f9a0>,\n",
+       " 'SIDS': <libpysal.examples.base.Example at 0x7febc4a5f9d0>,\n",
+       " 'SIDS2': <libpysal.examples.base.Example at 0x7febc4a5fa00>,\n",
+       " 'Snow': <libpysal.examples.base.Example at 0x7febc4a5fa30>,\n",
+       " 'South': <libpysal.examples.base.Example at 0x7febc4a5fa60>,\n",
+       " 'Spirals': <libpysal.examples.base.Example at 0x7febc4a5fa90>,\n",
+       " 'StLouis': <libpysal.examples.base.Example at 0x7febc4a5fac0>,\n",
+       " 'Tampa1': <libpysal.examples.base.Example at 0x7febc4a5faf0>,\n",
+       " 'US SDOH': <libpysal.examples.base.Example at 0x7febc4a5fb20>,\n",
+       " 'Rio Grande do Sul': <libpysal.examples.base.Example at 0x7febc78c0130>,\n",
+       " 'nyc_bikes': <libpysal.examples.base.Example at 0x7febc4a5fb80>,\n",
+       " 'taz': <libpysal.examples.base.Example at 0x7febc4a5fc70>,\n",
+       " 'clearwater': <libpysal.examples.base.Example at 0x7febc4a5fbe0>,\n",
+       " 'newHaven': <libpysal.examples.base.Example at 0x7febc4a5eec0>}"
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "libpysal.examples.remote_datasets.datasets # a listing of all remotes"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

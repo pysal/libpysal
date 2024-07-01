@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>&lt;no title&gt; &#8212; libpysal v4.11.1.dev15+g331dfdd0 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=38b0ce36" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <script src="../_static/documentation_options.js?v=4debc98f"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.11.1.dev15+g331dfdd0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../tutorial.html">Tutorial</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#example-datasets">Example Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#experimental">Experimental</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#graph">graph</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul class="simple">
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/libpysal/blob/master/notebooks/fetch.ipynb">notebooks/fetch.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/libpysal/master?filepath=notebooks/fetch.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import libpysal
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.fetch_all()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+downloading dataset from https://s3.amazonaws.com/geoda/data/guerry.zip to /home/jovyan/pysal_data
+Extracting files....
+downloading dataset from https://github.com/sjsrey/rio_grande_do_sul/archive/master.zip to /home/jovyan/pysal_data
+Extracting files....
+downloading dataset from https://s3.amazonaws.com/geoda/data/ncovr.zip to /home/jovyan/pysal_data
+Extracting files....
+downloading dataset from https://github.com/sjsrey/nyc_bikes/archive/master.zip to /home/jovyan/pysal_data
+Extracting files....
+downloading dataset from https://s3.amazonaws.com/geoda/data/SacramentoMSA2.zip to /home/jovyan/pysal_data
+Extracting files....
+downloading dataset from https://s3.amazonaws.com/geoda/data/south.zip to /home/jovyan/pysal_data
+Extracting files....
+downloading dataset from https://github.com/sjsrey/taz/archive/master.zip to /home/jovyan/pysal_data
+Extracting files....
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples import nat
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nat.fetch_nat()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+already exists, not downloading
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from os import environ
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>environ.get(&quot;PYSALDATA&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/jovyan/pysal_data&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples import south
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sd = south.fetch_south()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+already exists, not downloading
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples import guerry
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>guerry.fetch_guerry()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+already exists, not downloading
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain(&#39;guerry&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+guerry
+======
+
+Andre-Michel Guerry data on &#34;moral statistics&#34; 1930 crime, suicide, literacy and other “moral statistics” in 1830s France.
+
+- Observations = 85
+- Variables = 23
+- Years = 1915-1934
+- Support = polygon
+
+Files
+-----
+Guerry.dbf  Guerry_documentation.html  Guerry.geojson  Guerry.prj  Guerry.shp  Guerry.shx  README.md
+
+
+Variables
+---------
+
+dept, code_de   Department ID: Standard numbers for the departments
+region  Region of France (‘N’=’North’, ‘S’=’South’, ‘E’=’East’, ‘W’=’West’, ‘C’=’Central’). Corsica is coded as NA.
+dprtmnt         Department name: Departments are named according to usage in 1830, but without accents. A factor with levels Ain Aisne Allier … Vosges Yonne
+crm_prs         Population per Crime against persons.   A2. Compte général, 1825-1830
+crm_prp         Population per Crime against property.  Compte général, 1825-1830
+litercy         Percent of military conscripts who can read and write.  A2
+donatns         Donations to the poor.  A2. Bulletin des lois
+infants         Population per illegitimate birth.      A2. Bureau des Longitudes, 1817-1821
+suicids         Population per suicide.         A2. Compte général, 1827-1830
+maincty         Size of principal city (‘1:Sm’, ‘2:Med’, ‘3:Lg’), used as a surrogate for population density. Large refers to the top 10, small to the bottom 10; all the rest are classed Medium.      A1. An ordered factor with levels: 1:Sm &lt; 2:Med &lt; 3:Lg
+wealth  Per capita tax on personal property. A ranked index based on taxes on personal and movable property per inhabitant.     A1
+commerc         Commerce and Industry, measured by the rank of the number of patents / population.      A1
+clergy  Distribution of clergy, measured by the rank of the number of Catholic priests in active service population.    A1. Almanach officiel du clergy, 1829
+crim_prn        Crimes against parents, measured by the rank of the ratio of crimes against parents to all crimes – Average for the years 1825-1830.    A1. Compte général
+infntcd         Infanticides per capita. A ranked ratio of number of infanticides to population – Average for the years 1825-1830.      A1. Compte général
+dntn_cl         Donations to the clergy. A ranked ratio of the number of bequests and donations inter vivios to population – Average for the years 1815-1824.   A1. Bull. des lois, ordunn. d’autorisation
+lottery         Per capita wager on Royal Lottery. Ranked ratio of the proceeds bet on the royal lottery to population — Average for the years 1822-1826.       A1. Compte rendu par le ministre des finances
+desertn         Military desertion, ratio of number of young soldiers accused of desertion to the force of the military contingent, minus the deficit produced by the insufficiency of available billets – Average of the years 1825-1827.      A1. Compte du ministère du guerre, 1829 état V
+instrct         Instruction. Ranks recorded from Guerry’s map of Instruction. Note: this is inversely related to Literacy
+Prsttts         Number of prostitutes registered in Paris from 1816 to 1834, classified by the department of their birth        Parent-Duchatelet (1836), De la prostitution en Paris
+distanc         Distance to Paris (km). Distance of each department centroid to the centroid of the Seine (Paris)       Calculated from department centroids
+area    Area (1000 km^2).       Angeville (1836)
+pop1831         Population in 1831, in 1000s    Taken from Angeville (1836), Essai sur la Statistique de la Population français
+Details
+
+Note that most of the variables (e.g., Crime_pers) are scaled so that more is “better”.
+
+Values for the quantitative variables displayed on Guerry’s maps were taken from Table A2 in the English translation of Guerry (1833) by Whitt and Reinking. Values for the ranked variables were taken from Table A1, with some corrections applied. The maximum is indicated by rank 1, and the minimum by rank 86.
+Sources
+
+Angeville, A. (1836). Essai sur la Statistique de la Population française Paris: F. Doufour.
+
+Guerry, A.-M. (1833). Essai sur la statistique morale de la France Paris: Crochard. English translation: Hugh P. Whitt and Victor W. Reinking, Lewiston, N.Y. : Edwin Mellen Press, 2002.
+
+Parent-Duchatelet, A. (1836). De la prostitution dans la ville de Paris, 3rd ed, 1857, p. 32, 36
+References
+
+Dray, S. and Jombart, T. (2011). A Revisit Of Guerry’s Data: Introducing Spatial Constraints In Multivariate Analysis. The Annals of Applied Statistics, Vol. 5, No. 4, 2278-2299., DOI: 10.1214/10-AOAS356.
+
+Brunsdon, C. and Dykes, J. (2007). Geographically weighted visualization: interactive graphics for scale-varying exploratory analysis. Geographical Information Science Research Conference (GISRUK 07), NUI Maynooth, Ireland, April, 2007.
+
+Friendly, M. (2007). A.-M. Guerry’s Moral Statistics of France: Challenges for Multivariable Spatial Analysis. Statistical Science, 22, 368-399.
+
+Friendly, M. (2007). Data from A.-M. Guerry, Essay on the Moral Statistics of France (1833).
+See Also
+
+The Guerry package for maps of France: gfrance and related data.
+
+Prepared by Center for Spatial Data Science. Last updated July 3, 2017. Data provided “as is,” no warranties.
+
+
+
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.get_path(&#39;Guerry.geojson&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/jovyan/pysal_data/guerry/Guerry.geojson&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain(&#39;south&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+south
+=====
+
+Homicides and selected socio-economic characteristics for Southern U.S. counties.
+---------------------------------------------------------------------------------
+
+- Observations = 1,412
+- Variables = 69
+- Years = 1960-90s
+- Support = polygon
+
+Files
+-----
+south.gdb     README.md  south.dbf      south.gpkg  south.kml  south.mif  south.shp  south.sqlite
+codebook.pdf  south.csv  south.geojson  south.html  south.mid  south.prj  south.shx  south.xlsx
+
+Variables
+---------
+NAME    county name
+STATE_NAME      state name
+STATE_FIPS      state fips code (character)
+CNTY_FIPS       county fips code (character)
+FIPS    combined state and county fips code (character)
+STFIPS  state fips code (numeric)
+COFIPS  county fips code (numeric)
+FIPSNO  fips code as numeric variable
+SOUTH   dummy variable for Southern counties (South = 1)
+HR**    homicide rate per 100,000 (1960, 1970, 1980, 1990)
+HC**    homicide count, three year average centered on 1960, 1970, 1980, 1990
+PO**    county population, 1960, 1970, 1980, 1990
+RD**    resource deprivation 1960, 1970, 1980, 1990 (principal component, see Codebook for details)
+PS**    population structure 1960, 1970, 1980, 1990 (principal component, see Codebook for details)
+UE**    unemployment rate 1960, 1970, 1980, 1990
+DV**    divorce rate 1960, 1970, 1980, 1990 (% males over 14 divorced)
+MA**    median age 1960, 1970, 1980, 1990
+POL**   log of population 1960, 1970, 1980, 1990
+DNL**   log of population density 1960, 1970, 1980, 1990
+MFIL**  log of median family income 1960, 1970, 1980, 1990
+FP**    % families below poverty 1960, 1970, 1980, 1990 (see Codebook for details)
+BLK**   % black 1960, 1970, 1980, 1990
+GI**    Gini index of family income inequality 1960, 1970, 1980, 1990
+FH**    % female headed households 1960, 1970, 1980, 1990
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.get_path(&#39;south.shp&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/jovyan/pysal_data/south/south.shp&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.get_path(&#39;missing.shp&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+missing.shp not found.
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth = libpysal.examples.get_path(&#39;south.shp&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pth
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/jovyan/pysal_data/south/south.shp&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas as gpd
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df = gpd.read_file(pth)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>NAME</th>
+      <th>STATE_NAME</th>
+      <th>STATE_FIPS</th>
+      <th>CNTY_FIPS</th>
+      <th>FIPS</th>
+      <th>STFIPS</th>
+      <th>COFIPS</th>
+      <th>FIPSNO</th>
+      <th>SOUTH</th>
+      <th>HR60</th>
+      <th>...</th>
+      <th>BLK90</th>
+      <th>GI59</th>
+      <th>GI69</th>
+      <th>GI79</th>
+      <th>GI89</th>
+      <th>FH60</th>
+      <th>FH70</th>
+      <th>FH80</th>
+      <th>FH90</th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Hancock</td>
+      <td>West Virginia</td>
+      <td>54</td>
+      <td>029</td>
+      <td>54029</td>
+      <td>54</td>
+      <td>29</td>
+      <td>54029</td>
+      <td>1</td>
+      <td>1.682864</td>
+      <td>...</td>
+      <td>2.557262</td>
+      <td>0.223645</td>
+      <td>0.295377</td>
+      <td>0.332251</td>
+      <td>0.363934</td>
+      <td>9.981297</td>
+      <td>7.8</td>
+      <td>9.785797</td>
+      <td>12.604552</td>
+      <td>POLYGON ((-80.6280517578125 40.39815902709961,...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Brooke</td>
+      <td>West Virginia</td>
+      <td>54</td>
+      <td>009</td>
+      <td>54009</td>
+      <td>54</td>
+      <td>9</td>
+      <td>54009</td>
+      <td>1</td>
+      <td>4.607233</td>
+      <td>...</td>
+      <td>0.748370</td>
+      <td>0.220407</td>
+      <td>0.318453</td>
+      <td>0.314165</td>
+      <td>0.350569</td>
+      <td>10.929337</td>
+      <td>8.0</td>
+      <td>10.214990</td>
+      <td>11.242293</td>
+      <td>POLYGON ((-80.52625274658203 40.16244888305664...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Ohio</td>
+      <td>West Virginia</td>
+      <td>54</td>
+      <td>069</td>
+      <td>54069</td>
+      <td>54</td>
+      <td>69</td>
+      <td>54069</td>
+      <td>1</td>
+      <td>0.974132</td>
+      <td>...</td>
+      <td>3.310334</td>
+      <td>0.272398</td>
+      <td>0.358454</td>
+      <td>0.376963</td>
+      <td>0.390534</td>
+      <td>15.621643</td>
+      <td>12.9</td>
+      <td>14.716681</td>
+      <td>17.574021</td>
+      <td>POLYGON ((-80.52516937255859 40.02275085449219...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Marshall</td>
+      <td>West Virginia</td>
+      <td>54</td>
+      <td>051</td>
+      <td>54051</td>
+      <td>54</td>
+      <td>51</td>
+      <td>54051</td>
+      <td>1</td>
+      <td>0.876248</td>
+      <td>...</td>
+      <td>0.546097</td>
+      <td>0.227647</td>
+      <td>0.319580</td>
+      <td>0.320953</td>
+      <td>0.377346</td>
+      <td>11.962834</td>
+      <td>8.8</td>
+      <td>8.803253</td>
+      <td>13.564159</td>
+      <td>POLYGON ((-80.52446746826172 39.72112655639648...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>New Castle</td>
+      <td>Delaware</td>
+      <td>10</td>
+      <td>003</td>
+      <td>10003</td>
+      <td>10</td>
+      <td>3</td>
+      <td>10003</td>
+      <td>1</td>
+      <td>4.228385</td>
+      <td>...</td>
+      <td>16.480294</td>
+      <td>0.256106</td>
+      <td>0.329678</td>
+      <td>0.365830</td>
+      <td>0.332703</td>
+      <td>12.035714</td>
+      <td>10.7</td>
+      <td>15.169480</td>
+      <td>16.380903</td>
+      <td>POLYGON ((-75.77269744873047 39.38300704956055...</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 70 columns</p>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples.sacramento2 import fetch_sacramento2
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fetch_sacramento2()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+already exists, not downloading
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain(&#39;sacramento2&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+sacramento2
+===========
+
+2000 Census Tract Data for Sacramento MSA
+-----------------------------------------
+
+- Observations = 83
+- Variables = 66
+- Years = 1998, 2001
+- Support = polygon
+
+Files
+-----
+ SacramentoMSA2.gdb       SacramentoMSA2.kml   SacramentoMSA2.shp
+ README.md                SacramentoMSA2.mid   SacramentoMSA2.shx
+ SacramentoMSA2.csv       SacramentoMSA2.mif   SacramentoMSA2.sqlite
+ SacramentoMSA2.dbf       SacramentoMSA2.prj   SacramentoMSA2.xlsx
+ SacramentoMSA2.geojson   SacramentoMSA2.sbn  &#39;Variable Info for Zip Code File.pdf&#39;
+ SacramentoMSA2.gpkg      SacramentoMSA2.sbx
+
+Variables
+---------
+ZIP ZIP code
+PO_NAME         Name of ZIP code area
+STATE   STATE
+MSA     MSA
+CBSA_CODE       CBSA code
+MAN98   1998 total manufacturing establishments (MSA)
+MAN98_12        1998 total manufacturing establishments, 1-9 employees (MSA)
+MAN98_39        1998 total manufacturing establishments 10+ employees (MSA)
+MAN01   2001 total manufacturing establishments (MSA)
+MAN01_12        2001 total manufacturing establishments, 1-9 employees (MSA)
+MAN01_39        2001 total manufacturing establishments, 10+ employees (MSA)
+MAN98US         1998 total manufacturing establishments (US)
+MAN98US12       1998 total manufacturing establishments, 1-9 employees (US)
+MAN98US39       1998 total manufacturing establishments 10+ employees (US)
+MAN01US         2001 total manufacturing establishments (US)
+MAN01US_12      2001 total manufacturing establishments, 1-9 employees (US)
+MAN01US_39      2001 total manufacturing establishments, 10+ employees (US)
+OFF98   1998 total office establishments (MSA)
+OFF98_12        1998 total office establishments, 1-9 employees (MSA)
+OFF98_39        1998 total office establishments, 10+ employees (MSA)
+OFF01   2001 total office establishments (MSA)
+OFF01_12        2001 total office establishments, 1-9 employees (MSA)
+OFF01_39        2001 total office establishments, 10+ employees (MSA)
+OFF98US         1998 total office establishments (US)
+OFF98US12       1998 total office establishments, 1-9 employees (US)
+OFF98US39       1998 total office establishments, 10+ employees (US)
+OFF01US         2001 total office establishments (US)
+OFFUS01_12      2001 total office establishments, 1-9 employees (US)
+OFFUS01_39      2001 total office establishments, 10+ employees (US)
+INFO98  1998 total information establishments (MSA)
+INFO98_12       1998 total information establishments, 1-9 employees (MSA)
+INFO98_39       1998 total information establishments, 10+ employees (MSA)
+INFO01  2001 total information establishments (MSA)
+INFO01_12       2001 total information establishments, 1-9 employees (MSA)
+INFO01_39       2001 total information establishments, 10+ employees (MSA)
+INFO98US        1998 total information establishments (US)
+INFO98US12      1998 total information establishments, 1-9 employees (US)
+INFO98US39      1998 total information establishments, 10+ employees (US)
+INFO01US        2001 total information establishments (US)
+INFO01US_1      2001 total information establishments, 1-9 employees (US)
+INFO01US_3      2001 total information establishments, 10+ employees (US)
+INDEX   Index
+NUMSEC  Number of sectors represented in ZIP code
+EST98   Total establishments in ZIP code, 1998
+EST01   Total establishments in ZIP code, 2001
+PCTNGE  National growth effect, percent (N)
+PCTIME  Industry mix effect, percent (M)
+PCTCSE  Competitive shift effect, percent (S)
+PCTGRO  Percent growth establishments, 1998-2001 (R)
+ID      Unique ZIP code ID for ID variables in weights matrix creation window
+
+Source: US Census Bureau, 2000 Census (Summary File 3). Extracted from http://factfinder.census.gov in April 2004.
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.get_path(&quot;10740.shx&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/jovyan/libpysal/examples/10740/10740.shx&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples.nyc_bikes import fetch_bikes
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fetch_bikes()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+already exists, not downloading
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.get_path(&#39;nyct2010.shp&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/jovyan/pysal_data/nyc_bikes/nyct2010.shp&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples.rio_grande_do_sul import fetch_rio
+fetch_rio()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+already exists, not downloading
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.get_path(&#39;map_RS_BR.shp&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/jovyan/pysal_data/rio_grande_do_sul/map_RS_BR.shp&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples.taz import fetch_taz
+fetch_taz()
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.get_path(&#39;taz.dbf&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/notebooks/fetch.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 7.3.7.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
