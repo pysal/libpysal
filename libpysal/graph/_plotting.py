@@ -28,8 +28,8 @@ def _plot(
         Graph to be plotted
     gdf : geopandas.GeoDataFrame
         Geometries indexed using the same index as Graph. Geometry types other than
-        points are converted to centroids encoding start and end point of Graph
-        edges.
+        points are converted to representative points encoding start and end point of
+        Graph edges.
     focal : hashable | array-like[hashable] | None, optional
         ID or an array-like of IDs of focal geometries whose weights shall be
         plotted. If None, all weights from all focal geometries are plotted.
@@ -93,7 +93,9 @@ def _plot(
     # we need to work on int position to allow fast filtering of duplicated edges and
     # cannot rely on gdf remaining in the same order between Graph creation and
     # plotting
-    coords = shapely.get_coordinates(gdf.reindex(graph_obj.unique_ids).centroid)
+    coords = shapely.get_coordinates(
+        gdf.reindex(graph_obj.unique_ids).representative_point()
+    )
 
     if focal is not None:
         if not pd.api.types.is_list_like(focal):
@@ -188,7 +190,7 @@ def _explore_graph(
     folium.Map
         folium map
     """
-    geoms = gdf.centroid.reindex(g.unique_ids)
+    geoms = gdf.representative_point().reindex(g.unique_ids)
 
     if node_kws is not None:
         if "color" not in node_kws:
