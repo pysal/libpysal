@@ -272,13 +272,13 @@ class GeoBUGSTextIO(fileio.FileIO):
                 weights.extend(obj.weights[i])
 
             self.file.write("list(")
-            self.file.write("num=c(%s)," % ",".join(map(str, cardinalities)))
-            self.file.write("adj=c(%s)," % ",".join(map(str, neighbors)))
+            self.file.write("num=c({}),".format(",".join(map(str, cardinalities))))
+            self.file.write("adj=c({}),".format(",".join(map(str, neighbors))))
             self.file.write("sumNumNeigh=%i)" % sum(cardinalities))
             self.pos += 1
 
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")
 
     def close(self):
         self.file.close()

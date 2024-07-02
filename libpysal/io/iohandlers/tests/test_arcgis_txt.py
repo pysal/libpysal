@@ -31,7 +31,7 @@ class TesttestArcGISTextIO:
                 ) in str(warn[0].message)
         assert w.n == 3
         assert w.mean_neighbors == 2.0
-        assert [0.1, 0.05] == list(w[2].values())
+        assert list(w[2].values()) == [0.1, 0.05]
 
     def test_seek(self):
         self.test_read()

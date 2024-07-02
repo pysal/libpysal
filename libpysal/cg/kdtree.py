@@ -126,8 +126,7 @@ class Arc_KDTree(temp_KDTree):
         if r > 0.5 * self.circumference:
             raise ValueError(
                 "r, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         r = sphere.arcdist2linear(r, self.radius)
         return temp_KDTree.count_neighbors(self, other, r)
@@ -208,8 +207,7 @@ class Arc_KDTree(temp_KDTree):
         if r > 0.5 * self.circumference:
             raise ValueError(
                 "r, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         r = sphere.arcdist2linear(r, self.radius) + FLOAT_EPS * 3
         return temp_KDTree.query_ball_point(self, self._toXYZ(x), r, eps=eps)
@@ -248,8 +246,7 @@ class Arc_KDTree(temp_KDTree):
         if r > 0.5 * self.circumference:
             raise ValueError(
                 "r, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         r = sphere.arcdist2linear(r, self.radius) + FLOAT_EPS * 3
         return temp_KDTree.query_ball_tree(self, other, r, eps=eps)
@@ -277,8 +274,7 @@ class Arc_KDTree(temp_KDTree):
         if r > 0.5 * self.circumference:
             raise ValueError(
                 "r, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         r = sphere.arcdist2linear(r, self.radius) + FLOAT_EPS * 3
         return temp_KDTree.query_pairs(self, r, eps=eps)
@@ -311,8 +307,7 @@ class Arc_KDTree(temp_KDTree):
         if max_distance > 0.5 * self.circumference:
             raise ValueError(
                 "max_distance, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         max_distance = sphere.arcdist2linear(max_distance, self.radius) + FLOAT_EPS * 3
         d = temp_KDTree.sparse_distance_matrix(self, other, max_distance)

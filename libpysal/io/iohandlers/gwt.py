@@ -330,7 +330,7 @@ class GwtIO(FileIO.FileIO):
             self._writelines(obj)
 
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")
 
     def close(self):
         self.file.close()
