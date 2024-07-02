@@ -58,9 +58,7 @@ class SetOpsMixin:
         intersection = self._adjacency.index.drop(self.isolates).intersection(
             right._adjacency.index.drop(right.isolates)
         )
-        if len(intersection) > 0:
-            return True
-        return False
+        return len(intersection) > 0
 
     def intersection(self, right):
         """

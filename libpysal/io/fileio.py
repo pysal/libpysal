@@ -277,7 +277,7 @@ class FileIO(metaclass=FileIO_MetaCls):  # should be a type?
                 except AssertionError:
                     raise TypeError("Cast objects must be callable.") from None
         else:
-            raise KeyError("%s" % key)
+            raise KeyError(f"{key}")
 
     def _cast(self, row) -> list:
         """
@@ -294,7 +294,7 @@ class FileIO(metaclass=FileIO_MetaCls):  # should be a type?
                 r = []
                 for f, v in zip(self._spec, row, strict=True):
                     try:
-                        if not v and f != str:
+                        if not v and not isinstance(f, str):
                             raise ValueError
                         r.append(f(v))
                     except ValueError:

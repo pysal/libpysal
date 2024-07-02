@@ -137,9 +137,7 @@ def _check_ties(focal):
     """
 
     max_count = focal.weight.max()
-    if (focal.weight == max_count).sum() > 1:
-        return True
-    return False
+    return (focal.weight == max_count).sum() > 1
 
 
 def _get_categorical_lag(focal, ties="random"):

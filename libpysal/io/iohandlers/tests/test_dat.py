@@ -22,7 +22,7 @@ class TesttestDatIO:
         w = self.obj.read()
         assert w.n == 49
         assert w.mean_neighbors == 4.7346938775510203
-        assert [0.5, 0.5] == list(w[5.0].values())
+        assert list(w[5.0].values()) == [0.5, 0.5]
 
     def test_seek(self):
         self.test_read()

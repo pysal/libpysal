@@ -22,7 +22,7 @@ class TesttestWk1IO:
         w = self.obj.read()
         assert w.n == 46
         assert w.mean_neighbors == 4.0869565217391308
-        assert [1.0, 1.0, 1.0, 1.0] == list(w[1].values())
+        assert list(w[1].values()) == [1.0, 1.0, 1.0, 1.0]
 
     def test_seek(self):
         self.test_read()

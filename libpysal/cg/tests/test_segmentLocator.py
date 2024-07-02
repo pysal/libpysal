@@ -17,22 +17,22 @@ class TestSegmentGrid:
 
     def test_nearest_1(self):
         # Center
-        assert [0, 1, 2, 3] == self.grid.nearest(Point((5.0, 5.0)))
+        assert self.grid.nearest(Point((5.0, 5.0))) == [0, 1, 2, 3]
         # Left Edge
-        assert [0] == self.grid.nearest(Point((0.0, 5.0)))
+        assert self.grid.nearest(Point((0.0, 5.0))) == [0]
         # Top Edge
-        assert [1] == self.grid.nearest(Point((5.0, 10.0)))
+        assert self.grid.nearest(Point((5.0, 10.0))) == [1]
         # Right Edge
-        assert [2] == self.grid.nearest(Point((10.0, 5.0)))
+        assert self.grid.nearest(Point((10.0, 5.0))) == [2]
         # Bottom Edge
-        assert [3] == self.grid.nearest(Point((5.0, 0.0)))
+        assert self.grid.nearest(Point((5.0, 0.0))) == [3]
 
     def test_nearest_2(self):
         # Left Edge
-        assert [0, 1, 3] == self.grid.nearest(Point((-100000.0, 5.0)))
+        assert self.grid.nearest(Point((-100000.0, 5.0))) == [0, 1, 3]
         # Right Edge
-        assert [1, 2, 3] == self.grid.nearest(Point((100000.0, 5.0)))
+        assert self.grid.nearest(Point((100000.0, 5.0))) == [1, 2, 3]
         # Bottom Edge
-        assert [0, 2, 3] == self.grid.nearest(Point((5.0, -100000.0)))
+        assert self.grid.nearest(Point((5.0, -100000.0))) == [0, 2, 3]
         # Top Edge
-        assert [0, 1, 2] == self.grid.nearest(Point((5.0, 100000.0)))
+        assert self.grid.nearest(Point((5.0, 100000.0))) == [0, 1, 2]

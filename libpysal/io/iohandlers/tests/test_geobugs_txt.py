@@ -27,12 +27,12 @@ class TesttestGeoBUGSTextIO:
         w_scot = self.obj_scot.read()
         assert w_scot.n == 56
         assert w_scot.mean_neighbors == 4.1785714285714288
-        assert [1.0, 1.0, 1.0] == list(w_scot[1].values())
+        assert list(w_scot[1].values()) == [1.0, 1.0, 1.0]
 
         w_col = self.obj_col.read()
         assert w_col.n == 49
         assert w_col.mean_neighbors == 4.6938775510204085
-        assert [0.5, 0.5] == list(w_col[1].values())
+        assert list(w_col[1].values()) == [0.5, 0.5]
 
     def test_seek(self):
         self.test_read()
