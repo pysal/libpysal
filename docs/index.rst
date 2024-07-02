@@ -37,10 +37,15 @@ Introduction
 
 **libpysal** offers four modules that form the building blocks in many upstream packages in the `PySAL family <https://pysal.org>`_:
 
-- Spatial Weights: libpysal.weights
+- Spatial Weights: libpysal.weights (See `migration guide <migration.html>`_)
 - Input-and output: libpysal.io
 - Computational geometry: libpysal.cg
 - Built-in example datasets libpysal.examples
+
+
+.. Note:: A new Graph class is being added to libpysal. For more details see the comparison of `W and Graph Components <migration.html>`_.
+
+
 
 Examples demonstrating some of **libpysal** functionality are available in the `tutorial <tutorial.html>`_.
 
@@ -120,5 +125,6 @@ Core components of the Python Spatial Analysis Library (`PySAL`_)
    Tutorial <tutorial>
    API <api>
    References <references>
+   Migration Guide <migration>
    
 .. _PySAL: https://github.com/pysal/pysal
