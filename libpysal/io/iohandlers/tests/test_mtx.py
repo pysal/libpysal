@@ -22,9 +22,11 @@ class TesttestMtxIO:
         w = self.obj.read()
         assert w.n == 49
         assert w.mean_neighbors == 4.7346938775510203
-        assert list(
-            w[1].values()
-        ) == [0.33329999999999999, 0.33329999999999999, 0.33329999999999999]
+        assert list(w[1].values()) == [
+            0.33329999999999999,
+            0.33329999999999999,
+            0.33329999999999999,
+        ]
         s0 = w.s0
         self.obj.seek(0)
         wsp = self.obj.read(sparse=True)
