@@ -20,6 +20,7 @@ from ._indices import _build_from_h3
 from ._kernel import _distance_band, _kernel
 from ._matching import _spatial_matching
 from ._plotting import _explore_graph, _plot
+from ._raster import _generate_da, _raster_contiguity
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
@@ -869,6 +870,33 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(heads, tails, weights)
 
     @classmethod
+    def build_raster_contiguity(
+        cls,
+        da,
+        rook=False,
+        z_value=None,
+        coords_labels=None,
+        include_nodata=False,
+        n_jobs=1,
+    ):
+        if coords_labels is None:
+            coords_labels = {}
+        criterion = "rook" if rook else "queen"
+
+        heads, tails, weights, names = _raster_contiguity(
+            da=da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+        )
+        contig = cls.from_arrays(heads, tails, weights, is_sorted=True)
+        contig._xarray_index_names = names
+
+        return contig
+
+    @classmethod
     def build_kernel(
         cls,
         data,
@@ -1415,7 +1443,11 @@ class Graph(SetOpsMixin):
         standardized_adjacency = pd.Series(
             standardized, name="weight", index=self._adjacency.index
         )
-        return Graph(standardized_adjacency, transformation, is_sorted=True)
+        transformed = Graph(standardized_adjacency, transformation, is_sorted=True)
+
+        if hasattr(self, "_xarray_index_names"):
+            transformed._xarray_index_names = self._xarray_index_names
+        return transformed
 
     @cached_property
     def _components(self):
@@ -1622,7 +1654,7 @@ class Graph(SetOpsMixin):
         if not diagonal:
             sk = {(i, j) for i, j in sk if i != j}
 
-        return Graph.from_sparse(
+        higher = Graph.from_sparse(
             sparse.coo_array(
                 (
                     np.ones(len(sk), dtype=np.int8),
@@ -1632,6 +1664,10 @@ class Graph(SetOpsMixin):
             ),
             ids=self.unique_ids,
         )
+        if hasattr(self, "_xarray_index_names"):
+            higher._xarray_index_names = self._xarray_index_names
+
+        return higher
 
     def lag(self, y, categorical=False, ties="raise"):
         """Spatial lag operator
@@ -1916,7 +1952,7 @@ class Graph(SetOpsMixin):
         filtered_adj = masked_adj[
             masked_adj.index.get_level_values("neighbor").isin(ids)
         ]
-        return Graph.from_arrays(
+        sub = Graph.from_arrays(
             *_resolve_islands(
                 filtered_adj.index.get_level_values("focal"),
                 filtered_adj.index.get_level_values("neighbor"),
@@ -1924,6 +1960,11 @@ class Graph(SetOpsMixin):
                 filtered_adj.values,
             )
         )
+
+        if hasattr(self, "_xarray_index_names"):
+            sub._xarray_index_names = self._xarray_index_names
+
+        return sub
 
     def eliminate_zeros(self):
         """Remove graph edges with zero weight
@@ -1941,7 +1982,12 @@ class Graph(SetOpsMixin):
         isolates = self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
         # substract isolates from mask of zeros
         zeros = (self._adjacency == 0) != isolates
-        return Graph(self._adjacency[~zeros], is_sorted=True)
+        eliminated = Graph(self._adjacency[~zeros], is_sorted=True)
+
+        if hasattr(self, "_xarray_index_names"):
+            eliminated._xarray_index_names = self._xarray_index_names
+
+        return eliminated
 
     def assign_self_weight(self, weight=1):
         """Assign values to edges representing self-weight.
@@ -1975,7 +2021,12 @@ class Graph(SetOpsMixin):
             .reindex(self.unique_ids, level=0)
             .reindex(self.unique_ids, level=1)
         )
-        return Graph(adj, is_sorted=True)
+        assigned = Graph(adj, is_sorted=True)
+
+        if hasattr(self, "_xarray_index_names"):
+            assigned._xarray_index_names = self._xarray_index_names
+
+        return assigned
 
     def apply(self, y, func, **kwargs):
         """Apply a reduction across the neighbor sets
@@ -2089,6 +2140,9 @@ class Graph(SetOpsMixin):
         # NA isolates
         stat_.loc[self.isolates] = np.nan
         return stat_
+
+    def generate_da(self, y):
+        return _generate_da(self, y)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
