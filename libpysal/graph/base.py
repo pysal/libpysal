@@ -1605,7 +1605,7 @@ class Graph(SetOpsMixin):
         sp = binary.sparse
 
         if lower_order:
-            wk = sum(sparse.linalg.matrix_power(sp, x) for x in range(2, k + 1))
+            wk = sum(sparse.linalg.matrix_power(sp, x) for x in range(1, k + 1))
             shortest_path = False
         else:
             wk = sparse.linalg.matrix_power(sp, k)
