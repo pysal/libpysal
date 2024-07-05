@@ -876,6 +876,7 @@ class Graph(SetOpsMixin):
         rook=False,
         z_value=None,
         coords_labels=None,
+        k=1,
         include_nodata=False,
         n_jobs=1,
     ):
@@ -883,16 +884,23 @@ class Graph(SetOpsMixin):
             coords_labels = {}
         criterion = "rook" if rook else "queen"
 
-        heads, tails, weights, names = _raster_contiguity(
+        heads, tails, weights, xarray_index = _raster_contiguity(
             da=da,
             criterion=criterion,
             z_value=z_value,
             coords_labels=coords_labels,
+            k=k,
             include_nodata=include_nodata,
             n_jobs=n_jobs,
         )
-        contig = cls.from_arrays(heads, tails, weights, is_sorted=True)
-        contig._xarray_index_names = names
+        heads, tails, weights = _resolve_islands(
+            heads, tails, xarray_index.to_numpy(), weights
+        )
+        contig = cls.from_arrays(heads, tails, weights)
+        contig._xarray_index_names = xarray_index.names
+
+        if k > 1 and not include_nodata:
+            contig = contig.higher_order(k, lower_order=True)
 
         return contig
 
@@ -1540,7 +1548,7 @@ class Graph(SetOpsMixin):
     @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
-        return (self._adjacency.drop(self.isolates) > 0).sum()
+        return (self._adjacency > 0).sum()
 
     def asymmetry(self, intrinsic=True):
         r"""Asymmetry check.
@@ -2191,8 +2199,11 @@ def read_parquet(path, **kwargs):
     Graph
         deserialized Graph
     """
-    adjacency, transformation = _read_parquet(path, **kwargs)
-    return Graph(adjacency, transformation, is_sorted=True)
+    adjacency, transformation, xarray_index_names = _read_parquet(path, **kwargs)
+    graph_obj = Graph(adjacency, transformation, is_sorted=True)
+    if xarray_index_names is not None:
+        graph_obj._xarray_index_names = xarray_index_names
+    return graph_obj
 
 
 def read_gal(path):

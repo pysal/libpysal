@@ -9,6 +9,7 @@ def _raster_contiguity(
     criterion="queen",
     z_value=None,
     coords_labels=None,
+    k=1,
     include_nodata=False,
     n_jobs=1,
 ):
@@ -29,6 +30,9 @@ def _raster_contiguity(
         e.g. coords_labels = {"y_label": "latitude",
         "x_label": "longitude", "z_label": "year"}
         Default is {} empty dictionary.
+    k : int
+        Order of contiguity, this will select all neighbors upto kth order.
+        Default is 1.
     include_nodata : boolean
         If True, missing values will be assumed as non-missing when
         selecting higher_order neighbors, Default is False
@@ -42,7 +46,6 @@ def _raster_contiguity(
 
 
     """
-    # TODO: figure out K and include_nodata - do we need k here?
     if coords_labels is None:
         coords_labels = {}
 
@@ -51,7 +54,7 @@ def _raster_contiguity(
         criterion=criterion,
         z_value=z_value,
         coords_labels=coords_labels,
-        k=1,
+        k=k,
         include_nodata=include_nodata,
         n_jobs=n_jobs,
     )
@@ -62,10 +65,10 @@ def _raster_contiguity(
     weight = weight[order]
 
     return (
-        ser.index[head].to_numpy(),
-        ser.index[tail].to_numpy(),
+        ser.index.to_numpy()[head],
+        ser.index.to_numpy()[tail],
         weight,
-        ser.index.names,
+        ser.index,
     )
 
 
