@@ -983,6 +983,15 @@ class TestBase:
         lower = cont.higher_order(2, lower_order=True)
         assert lower == expected
 
+    def test_higher_order_inclusive(self): #GH738
+        contig = graph.Graph.from_arrays(
+            [0, 1, 2, 3, 3, 4, 4], [0, 3, 4, 1, 4, 2, 3], [0, 1, 1, 1, 1, 1, 1]
+        )
+        assert len(contig) == 6
+        higher = contig.higher_order(2, lower_order=True)
+        assert len(higher) == 10
+        assert contig < higher
+
     def test_n_components(self):
         nybb = graph.Graph.build_contiguity(self.nybb)
         assert nybb.n_components == 2
