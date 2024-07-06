@@ -2090,6 +2090,61 @@ class Graph(SetOpsMixin):
         stat_.loc[self.isolates] = np.nan
         return stat_
 
+    @cached_property
+    def s0(self):
+        r"""Sum of all weights
+
+        ``s0`` is defined as
+
+        .. math::
+
+               s0=\sum_i \sum_j w_{i,j}
+
+        Returns
+        -------
+        float
+            sum of weights
+        """
+        return self._adjacency.sum()
+
+    @cached_property
+    def s1(self):
+        r"""What is this???
+
+        ``s1`` is defined as
+
+        .. math::
+
+               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2
+
+        Returns
+        -------
+        float
+            s1
+        """
+        t = self.sparse.transpose()
+        t = t + self.sparse
+        t2 = t.multiply(t)  # element-wise square
+        return t2.sum() / 2.0
+
+    @cached_property
+    def s2(self):
+        r"""What is this???
+
+        ``s2`` is defined as
+
+        .. math::
+
+                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2
+
+        Returns
+        -------
+        float
+            s2
+        """
+        s = self.sparse
+        return (np.array(s.sum(1) + s.sum(0).transpose()) ** 2).sum()
+
 
 def _arrange_arrays(heads, tails, weights, ids=None):
     """

@@ -1242,3 +1242,12 @@ class TestBase:
             ValueError, match="The values index is not aligned with the graph index."
         ):
             nybb_contig.describe(self.nybb.geometry.area.reset_index(drop=True))
+
+    def test_s0(self):
+        assert self.g_int.s0 == pytest.approx(9.6)
+
+    def test_s1(self):
+        assert self.g_int.s1 == pytest.approx(8.33)
+
+    def test_s2(self):
+        assert self.g_int.s2 == pytest.approx(43.97)
