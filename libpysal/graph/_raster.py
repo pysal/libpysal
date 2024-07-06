@@ -79,6 +79,13 @@ def _raster_contiguity(
             n_jobs=n_jobs,
             use_numba=use_numba,
         )
+        order = np.lexsort((tail, head))
+        head = head[order]
+        tail = tail[order]
+        weight = weight[order]
+
+        head = ser.index.to_numpy()[head]
+        tail = ser.index.to_numpy()[tail]
     else:
         sw, ser = _da2wsp(
             da=da,
@@ -92,14 +99,9 @@ def _raster_contiguity(
         )
         head, tail, weight = _sparse_to_arrays(sw, ser.index.to_numpy())
 
-    order = np.lexsort((tail, head))
-    head = head[order]
-    tail = tail[order]
-    weight = weight[order]
-
     return (
-        ser.index.to_numpy()[head],
-        ser.index.to_numpy()[tail],
+        head,
+        tail,
         weight,
         ser.index,
     )

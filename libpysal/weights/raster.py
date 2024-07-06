@@ -252,7 +252,7 @@ def da2WSP(
             dtype=np.int8,
         )
     else:
-        sw = _da2wsp(
+        sw, ser = _da2wsp(
             da,
             criterion=criterion,
             z_value=z_value,
