@@ -983,7 +983,11 @@ class TestBase:
         lower = cont.higher_order(2, lower_order=True)
         assert lower == expected
 
-    def test_higher_order_inclusive(self): #GH738
+    @pytest.mark.skipif(
+        Version(scipy_version) < Version("1.12.0"),
+        reason="sparse matrix power requires scipy>=1.12.0",
+    )
+    def test_higher_order_inclusive(self):  # GH738
         contig = graph.Graph.from_arrays(
             [0, 1, 2, 3, 3, 4, 4], [0, 3, 4, 1, 4, 2, 3], [0, 1, 1, 1, 1, 1, 1]
         )
