@@ -6,7 +6,7 @@ from libpysal import graph
 from libpysal.weights.raster import testDataArray
 
 
-class Testraster:
+class TestRaster:
     def setup_method(self):
         pytest.importorskip("xarray")
         self.da1 = testDataArray()

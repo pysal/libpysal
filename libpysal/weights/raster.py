@@ -220,20 +220,47 @@ def da2WSP(
     --------
     :class:`libpysal.weights.weights.WSP`
     """
-    sw_tup, ser, n = _da2wsp(
-        da,
-        criterion=criterion,
-        z_value=z_value,
-        coords_labels=coords_labels,
-        k=k,
-        include_nodata=include_nodata,
-        n_jobs=n_jobs,
-    )
+    try:
+        import numba  # noqa: F401
 
-    sw = sparse.csr_matrix(
+        use_numba = True
+        include_nodata = False
+    except (ModuleNotFoundError, ImportError):
+        warn(
+            "numba cannot be imported, parallel processing "
+            "and include_nodata functionality will be disabled. "
+            "falling back to slower method",
+            stacklevel=2,
+        )
+        use_numba = False
+
+    if use_numba:
+        sw_tup, ser, n = _da2wsp(
+            da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            k=k,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+            use_numba=use_numba,
+        )
+
+        sw = sparse.csr_matrix(
             sw_tup,
             shape=(n, n),
             dtype=np.int8,
+        )
+    else:
+        sw = _da2wsp(
+            da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            k=k,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+            use_numba=use_numba,
         )
 
     # Higher_order functionality, this uses idea from
@@ -261,6 +288,7 @@ def _da2wsp(
     k=1,
     include_nodata=False,
     n_jobs=1,
+    use_numba=True,
 ):
     """Helper for da2WSP that can be reused in Graph"""
     z_id, coords_labels = _da_checker(da, z_value, coords_labels)
@@ -285,23 +313,7 @@ def _da2wsp(
 
     n = len(ids)
 
-    try:
-        import numba  # noqa: F401
-    except (ModuleNotFoundError, ImportError):
-        warn(
-            "numba cannot be imported, parallel processing "
-            "and include_nodata functionality will be disabled. "
-            "falling back to slower method",
-            stacklevel=2,
-        )
-        include_nodata = False
-        # Fallback method to build sparse matrix
-        sw = lat2SW(*shape, criterion)
-        if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
-            sw = sw[mask]
-            sw = sw[:, mask]
-
-    else:
+    if use_numba:
         k_nas = k if include_nodata else 1
 
         if n_jobs != 1:
@@ -327,8 +339,13 @@ def _da2wsp(
             sw_tup = _parSWbuilder(
                 *shape, ids, id_map, criterion, k_nas, dtype, n_jobs
             )  # -> (data, (row, col))
-
-
+    else:
+        # Fallback method to build sparse matrix
+        sw = lat2SW(*shape, criterion)
+        if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
+            sw = sw[mask]
+            sw = sw[:, mask]
+        return sw, ser
     return sw_tup, ser, n
 
 

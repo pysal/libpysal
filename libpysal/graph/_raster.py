@@ -1,7 +1,12 @@
+from warnings import warn
+
 import numpy as np
 import pandas as pd
 
 from ..weights.raster import _da2wsp
+from ._utils import (
+    _sparse_to_arrays,
+)
 
 
 def _raster_contiguity(
@@ -46,18 +51,46 @@ def _raster_contiguity(
 
 
     """
+    try:
+        import numba  # noqa: F401
+
+        use_numba = True
+        include_nodata = False
+    except (ModuleNotFoundError, ImportError):
+        warn(
+            "numba cannot be imported, parallel processing "
+            "and include_nodata functionality will be disabled. "
+            "falling back to slower method",
+            stacklevel=2,
+        )
+        use_numba = False
+
     if coords_labels is None:
         coords_labels = {}
 
-    (weight, (head, tail)), ser, _ = _da2wsp(
-        da=da,
-        criterion=criterion,
-        z_value=z_value,
-        coords_labels=coords_labels,
-        k=k,
-        include_nodata=include_nodata,
-        n_jobs=n_jobs,
-    )
+    if use_numba:
+        (weight, (head, tail)), ser, _ = _da2wsp(
+            da=da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            k=k,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+            use_numba=use_numba,
+        )
+    else:
+        sw, ser = _da2wsp(
+            da=da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            k=k,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+            use_numba=use_numba,
+        )
+        head, tail, weight = _sparse_to_arrays(sw, ser.index.to_numpy())
 
     order = np.lexsort((tail, head))
     head = head[order]
