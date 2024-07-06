@@ -65,9 +65,8 @@ def _read_parquet(source, **kwargs):
 
     if b"_xarray_index_names" in table.schema.metadata:
         meta = json.loads(table.schema.metadata[b"_xarray_index_names"])
-        xarray_index_names = meta['_xarray_index_names']
+        xarray_index_names = meta["_xarray_index_names"]
     else:
         xarray_index_names = None
-
 
     return table.to_pandas()["weight"], transformation, xarray_index_names
