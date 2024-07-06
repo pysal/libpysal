@@ -17,12 +17,46 @@ class Testraster:
         self.da4.data = np.array([["test"]])
 
     def test_queen(self):
-        g1 = graph.Graph.build_raster_contiguity(self.da1, "queen", k=2, n_jobs=-1)
-        assert w1[(1, -30.0, -180.0)] == {(1, -90.0, 60.0): 1, (1, -90.0, -60.0): 1}
-        assert w1[(1, -30.0, 180.0)] == {(1, -90.0, -60.0): 1, (1, -90.0, 60.0): 1}
-        assert w1.n == 5
-        assert w1.index.names == self.da1.to_series().index.names
-        assert w1.index.tolist()[0] == (1, 90.0, 180.0)
-        assert w1.index.tolist()[1] == (1, -30.0, -180.0)
-        assert w1.index.tolist()[2] == (1, -30.0, 180.0)
-        assert w1.index.tolist()[3] == (1, -90.0, -60.0)
+        g1 = graph.Graph.build_raster_contiguity(self.da1, rook=False, k=2, n_jobs=-1)
+        assert g1[(1, -30.0, -180.0)].to_dict() == {
+            (1, -90.0, 60.0): 1,
+            (1, -90.0, -60.0): 1,
+        }
+        assert g1[(1, -30.0, 180.0)].to_dict() == {
+            (1, -90.0, -60.0): 1,
+            (1, -90.0, 60.0): 1,
+        }
+        assert g1.n == 5
+        assert g1._xarray_index_names == self.da1.to_series().index.names
+        assert (1, 90.0, 180.0) in g1.isolates
+
+    def test_rook(self):
+        g2 = graph.Graph.build_raster_contiguity(self.da2, rook=True)
+        assert g2.neighbors[(1, -90.0, 180.0)] == (
+            (1, -30.0, 180.0),
+            (1, -90.0, 60.0),
+        )
+        assert g2.neighbors[(1, -90.0, 60.0)] == (
+            (1, -30.0, 60.0),
+            (1, -90.0, -60.0),
+            (1, -90.0, 180.0),
+        )
+        assert g2.n == 16
+        assert g2._xarray_index_names == self.da2.to_series().index.names
+
+    def test_labels(self):
+        coords_labels = {
+            "z_label": "layer",
+            "y_label": "latitude",
+            "x_label": "longitude",
+        }
+        g3 = graph.Graph.build_raster_contiguity(
+            self.da3, z_value=1, coords_labels=coords_labels
+        )
+        assert g3.neighbors[(1, -90.0, 180.0)] == (
+            (1, -30.0, 60.0),
+            (1, -30.0, 180.0),
+            (1, -90.0, 60.0),
+        )
+        assert g3.n == 16
+        assert g3._xarray_index_names == self.da3.to_series().index.names
