@@ -1,21 +1,27 @@
 import numpy as np
 import pandas as pd
 import pytest
+from packaging.version import Version
+from scipy import __version__ as scipy_version
 
 from libpysal import graph
-from libpysal.weights.raster import testDataArray
+from libpysal.weights.raster import testDataArray as dummy_array  # noqa: N813
 
 
 class TestRaster:
     def setup_method(self):
         pytest.importorskip("xarray")
-        self.da1 = testDataArray()
-        self.da2 = testDataArray((1, 4, 4), missing_vals=False)
+        self.da1 = dummy_array()
+        self.da2 = dummy_array((1, 4, 4), missing_vals=False)
         self.da3 = self.da2.rename({"band": "layer", "x": "longitude", "y": "latitude"})
         self.data1 = pd.Series(np.ones(5))
-        self.da4 = testDataArray((1, 1), missing_vals=False)
+        self.da4 = dummy_array((1, 1), missing_vals=False)
         self.da4.data = np.array([["test"]])
 
+    @pytest.mark.skipif(
+        Version(scipy_version) < Version("1.12.0"),
+        reason="sparse matrix power requires scipy>=1.12.0",
+    )
     def test_queen(self):
         g1 = graph.Graph.build_raster_contiguity(self.da1, rook=False, k=2, n_jobs=-1)
         assert g1[(1, -30.0, -180.0)].to_dict() == {
