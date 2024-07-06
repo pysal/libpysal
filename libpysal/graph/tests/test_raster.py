@@ -60,3 +60,11 @@ class TestRaster:
         )
         assert g3.n == 16
         assert g3._xarray_index_names == self.da3.to_series().index.names
+
+    def test_generate_da(self):
+        xarray = pytest.importorskip("xarray")
+        g2 = graph.Graph.build_raster_contiguity(self.da2, rook=True, n_jobs=-1)
+        da2 = g2.generate_da(self.da2.data.flatten())
+        # the order may be different but shall be align-able
+        a, b = xarray.align(da2, self.da2)
+        xarray.testing.assert_equal(a, b)

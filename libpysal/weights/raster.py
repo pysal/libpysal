@@ -224,7 +224,6 @@ def da2WSP(
         import numba  # noqa: F401
 
         use_numba = True
-        include_nodata = False
     except (ModuleNotFoundError, ImportError):
         warn(
             "numba cannot be imported, parallel processing "
@@ -233,6 +232,7 @@ def da2WSP(
             stacklevel=2,
         )
         use_numba = False
+        include_nodata = False
 
     if use_numba:
         sw_tup, ser, n = _da2wsp(
@@ -268,7 +268,7 @@ def da2WSP(
     # Since diagonal elements are also added in the result,
     # this method set the diagonal elements to zero and
     # then eliminate zeros from the data. This changes the
-    # sparcity of the csr_matrix !!
+    # sparsity of the csr_matrix !!
     if k > 1 and not include_nodata:
         sw = sum(sw**x for x in range(1, k + 1))
         sw.setdiag(0)

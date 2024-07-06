@@ -880,6 +880,44 @@ class Graph(SetOpsMixin):
         include_nodata=False,
         n_jobs=1,
     ):
+        """Generate Graph from ``xarray.DataArray`` raster object
+
+        Create Graph object encoding contiguity of raster cells from
+        ``xarray.DataArray`` object. The coordinates are flatten to tuples representing
+        the location of each cell within the raster.
+
+        Parameters
+        ----------
+        da : xarray.DataArray
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        rook : bool, optional
+            Contiguity method. If True, two cells are considered neighbours if
+            they share at least one edge. If False, two geometries are considered
+            neighbours if they share at least one vertex. By default True
+        z_value : {int, str, float}, optional
+            Select the z_value of 3D DataArray with multiple layers. By default None
+        coords_labels : dict, optional
+            Pass dimension labels for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. ``coords_labels = {"y_label": "latitude", "x_label": "longitude",
+            "z_label": "year"}``
+            When None, defaults to empty dictionary.
+        k : int, optional
+            Order of contiguity, this will select all neighbors up to k-th order.
+            Default is 1.
+        include_nodata : bool, optional
+            If True, missing values will be assumed as non-missing when
+            selecting higher_order neighbors, Default is False
+        n_jobs : int, optional
+            Number of cores to be used in the sparse weight construction. If -1,
+            all available cores are used. Default is 1. Requires ``joblib``.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding raster contiguity
+        """
+
         if coords_labels is None:
             coords_labels = {}
         criterion = "rook" if rook else "queen"
@@ -1956,7 +1994,7 @@ class Graph(SetOpsMixin):
         Unlike the implementation in ``networkx``, this creates a copy since
         Graphs in ``libpysal`` are immutable.
         """
-        masked_adj = self._adjacency[ids]
+        masked_adj = self._adjacency.loc[ids, :]
         filtered_adj = masked_adj[
             masked_adj.index.get_level_values("neighbor").isin(ids)
         ]
@@ -2150,6 +2188,20 @@ class Graph(SetOpsMixin):
         return stat_
 
     def generate_da(self, y):
+        """Creates xarray.DataArray object from passed data aligned with the Graph.
+
+        Parameters
+        ----------
+        y : array_like
+            flat array that shall be reshaped into a DataArray with dimensionality
+            conforming to Graph
+
+        Returns
+        -------
+        xarray.DataArray
+            instance of xarray.DataArray that can be aligned with the DataArray from
+            which Graph was built
+        """
         return _generate_da(self, y)
 
 

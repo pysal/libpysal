@@ -108,7 +108,33 @@ def _raster_contiguity(
 
 
 def _generate_da(g, y):
-    names = g._xarray_index_names if hasattr(g, "_xarray_index_names") else None
+    """Creates xarray.DataArray object from passed data aligned with the Graph.
+
+    Parameters
+    ----------
+    g : Graph
+        Graph, ideally generated using _raster_contiguity builder to ensure it
+        contains _xarray_index_names attribute.
+    y : array_like
+        flat array that shall be reshaped into a DataArray with dimensionality
+        conforming to Graph
+
+    Returns
+    -------
+    xarray.DataArray
+        instance of xarray.DataArray that can be aligned with the DataArray from which
+        Graph was built
+    """
+    if hasattr(g, "_xarray_index_names"):
+        names = g._xarray_index_names
+    else:
+        warn(
+            UserWarning,
+            "Graph does not store xarray index names."
+            "The output may not align with the original DataArray.",
+            stacklevel=3,
+        )
+        names = None
     return pd.Series(
         y,
         index=pd.MultiIndex.from_tuples(g.unique_ids, names=names),
