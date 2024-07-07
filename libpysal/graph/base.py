@@ -2092,7 +2092,7 @@ class Graph(SetOpsMixin):
 
     @cached_property
     def s0(self):
-        r"""Sum of all weights
+        r"""Global sum of weights
 
         ``s0`` is defined as
 
@@ -2100,16 +2100,24 @@ class Graph(SetOpsMixin):
 
                s0=\sum_i \sum_j w_{i,j}
 
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observation
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
         Returns
         -------
         float
-            sum of weights
+            global sum of weights
+
+        See also
+        --------
+        s1
+        s2
         """
         return self._adjacency.sum()
 
     @cached_property
     def s1(self):
-        r"""What is this???
+        r"""S1 sum of weights
 
         ``s1`` is defined as
 
@@ -2117,19 +2125,27 @@ class Graph(SetOpsMixin):
 
                s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2
 
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observation
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
         Returns
         -------
         float
-            s1
+            s1 sum of weights
+
+        See also
+        --------
+        s0
+        s2
         """
         t = self.sparse.transpose()
         t = t + self.sparse
-        t2 = t.multiply(t)  # element-wise square
+        t2 = t * t
         return t2.sum() / 2.0
 
     @cached_property
     def s2(self):
-        r"""What is this???
+        r"""S2 sum of weights
 
         ``s2`` is defined as
 
@@ -2137,10 +2153,18 @@ class Graph(SetOpsMixin):
 
                 s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2
 
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observation
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
         Returns
         -------
         float
-            s2
+            s2 sum of weights
+
+        See also
+        --------
+        s0
+        s1
         """
         s = self.sparse
         return (np.array(s.sum(1) + s.sum(0).transpose()) ** 2).sum()
