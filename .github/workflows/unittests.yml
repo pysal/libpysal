@@ -31,8 +31,10 @@ jobs:
           - ci/312-dev.yaml
           - ci/312-no-optional.yaml
         include:
-          - environment-file: ci/312.yaml
-            os: macos-latest
+          - environment-file: ci/envs/312-latest.yaml
+            os: macos-13 # Intel
+          - environment-file: ci/envs/312-latest.yaml
+            os: macos-14 # Apple Silicon
           - environment-file: ci/312.yaml
             os: windows-latest
     defaults:
@@ -78,13 +80,3 @@ jobs:
 
       - name: Codecov
         uses: codecov/codecov-action@v4
-
-      - name: Generate and publish the report
-        if: |
-          failure()
-          && steps.status.outcome == 'failure'
-          && github.event_name == 'schedule'
-          && github.repository_owner == 'pysal'
-        uses: xarray-contrib/issue-from-pytest-log@v1
-        with:
-          log-path: pytest-log.jsonl
