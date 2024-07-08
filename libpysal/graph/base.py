@@ -1473,13 +1473,7 @@ class Graph(SetOpsMixin):
         pandas.Index
             Index with a subset of observations that do not have any neighbor
         """
-        nulls = self._adjacency[self._adjacency == 0]
-        # since not all zeros are necessarily isolates, do the focal == neighbor check
-        return (
-            nulls[nulls.index.codes[0] == nulls.index.codes[1]]
-            .index.get_level_values(0)
-            .unique()
-        )
+        return self.cardinalities.index[self.cardinalities == 0]
 
     @cached_property
     def unique_ids(self):
@@ -1972,8 +1966,12 @@ class Graph(SetOpsMixin):
             ),
             name="weight",
         )
+        # drop existing self weights and replace them with a new value
+        existing_self_weights = self._adjacency.index[
+            self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
+        ]
         adj = (
-            pd.concat([self.adjacency.drop(self.isolates), addition])
+            pd.concat([self._adjacency.drop(existing_self_weights), addition])
             .reindex(self.unique_ids, level=0)
             .reindex(self.unique_ids, level=1)
         )

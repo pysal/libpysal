@@ -597,6 +597,9 @@ class TestBase:
         self.g_str._adjacency.iloc[1] = 0  # zero weight, no isolate
         pd.testing.assert_index_equal(self.g_str.isolates, expected)
 
+        with_additional_zeros = self.g_str.assign_self_weight(0)
+        pd.testing.assert_index_equal(with_additional_zeros.isolates, expected)
+
     def test_n(self):
         assert self.g_int.n == 10
         assert self.g_str.n == 10
