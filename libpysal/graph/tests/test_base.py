@@ -186,6 +186,7 @@ class TestBase:
         )
         g_roundtripped = graph.Graph.from_W(w)
         assert self.g_int == g_roundtripped
+        assert isinstance(w.id_order, list)
 
         w = self.g_str.to_W()
         pd.testing.assert_series_equal(
@@ -1003,7 +1004,8 @@ class TestBase:
         )
 
     def test_eliminate_zeros(self):
-        adj = self.adjacency_str_binary.copy()
+        nybb = graph.Graph.build_contiguity(self.nybb)
+        adj = nybb._adjacency.copy()
         adj["Bronx", "Queens"] = 0
         adj["Queens", "Manhattan"] = 0
         with_zero = graph.Graph(adj)

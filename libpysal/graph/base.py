@@ -264,7 +264,9 @@ class Graph(SetOpsMixin):
                 neighbors[ix] = chunk.index.get_level_values("neighbor").tolist()
                 weights[ix] = chunk.tolist()
 
-        return W(neighbors=neighbors, weights=weights, id_order=self.unique_ids)
+        return W(
+            neighbors=neighbors, weights=weights, id_order=self.unique_ids.tolist()
+        )
 
     @classmethod
     def from_adjacency(
