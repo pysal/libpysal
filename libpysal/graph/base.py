@@ -1,4 +1,5 @@
 import math
+import warnings
 from functools import cached_property
 
 import numpy as np
@@ -2091,10 +2092,10 @@ class Graph(SetOpsMixin):
         return stat_
 
     @cached_property
-    def s0(self):
-        r"""Global sum of weights
+    def _s0(self):
+        r"""helper to get S0 in downstream
 
-        ``s0`` is defined as
+         ``s0`` is defined as
 
         .. math::
 
@@ -2107,16 +2108,44 @@ class Graph(SetOpsMixin):
         -------
         float
             global sum of weights
+        """
+        return self._adjacency.sum()
+
+    @cached_property
+    def s0(self):
+        r"""Global sum of weights
+
+        ``s0`` is defined as
+
+        .. math::
+
+               s0=\sum_i \sum_j w_{i,j}
+
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
+        .. deprecated:: 4.12
+           Public property will be removed.
+
+        Returns
+        -------
+        float
+            global sum of weights
 
         See also
         --------
         s1
         s2
         """
-        return self._adjacency.sum()
+        warnings.warn(
+            "The s0 property will be removed from the public API.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._s0
 
     @cached_property
-    def s1(self):
+    def _s1(self):
         r"""S1 sum of weights
 
         ``s1`` is defined as
@@ -2132,11 +2161,6 @@ class Graph(SetOpsMixin):
         -------
         float
             s1 sum of weights
-
-        See also
-        --------
-        s0
-        s2
         """
         t = self.sparse.transpose()
         t = t + self.sparse
@@ -2144,7 +2168,40 @@ class Graph(SetOpsMixin):
         return t2.sum() / 2.0
 
     @cached_property
-    def s2(self):
+    def s1(self):
+        r"""S1 sum of weights
+
+        ``s1`` is defined as
+
+        .. math::
+
+               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2
+
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
+        .. deprecated:: 4.12
+           Public property will be removed.
+
+        Returns
+        -------
+        float
+            s1 sum of weights
+
+        See also
+        --------
+        s0
+        s2
+        """
+        warnings.warn(
+            "The s1 property will be removed from the public API.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._s1
+
+    @cached_property
+    def _s2(self):
         r"""S2 sum of weights
 
         ``s2`` is defined as
@@ -2160,14 +2217,42 @@ class Graph(SetOpsMixin):
         -------
         float
             s2 sum of weights
+        """
+        s = self.sparse
+        return (np.array(s.sum(1) + s.sum(0).transpose()) ** 2).sum()
+
+    @cached_property
+    def s2(self):
+        r"""S2 sum of weights
+
+        ``s2`` is defined as
+
+        .. math::
+
+                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2
+
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
+        .. deprecated:: 4.12
+           Public property will be removed.
+
+        Returns
+        -------
+        float
+            s2 sum of weights
 
         See also
         --------
         s0
         s1
         """
-        s = self.sparse
-        return (np.array(s.sum(1) + s.sum(0).transpose()) ** 2).sum()
+        warnings.warn(
+            "The s2 property will be removed from the public API.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._s2
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
