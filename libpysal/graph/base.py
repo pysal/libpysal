@@ -2100,7 +2100,7 @@ class Graph(SetOpsMixin):
 
                s0=\sum_i \sum_j w_{i,j}
 
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observation
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
         and are used to compute standard errors for spatial autocorrelation estimators.
 
         Returns
@@ -2125,7 +2125,7 @@ class Graph(SetOpsMixin):
 
                s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2
 
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observation
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
         and are used to compute standard errors for spatial autocorrelation estimators.
 
         Returns
@@ -2153,7 +2153,7 @@ class Graph(SetOpsMixin):
 
                 s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2
 
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observation
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
         and are used to compute standard errors for spatial autocorrelation estimators.
 
         Returns
