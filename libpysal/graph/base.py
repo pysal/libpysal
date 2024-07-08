@@ -1933,10 +1933,10 @@ class Graph(SetOpsMixin):
         Graph
             subset of Graph with zero-weight edges eliminated
         """
-        # get a mask for isolates
-        isolates = self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
         # substract isolates from mask of zeros
-        zeros = (self._adjacency == 0) != isolates
+        zeros = (self._adjacency == 0) != np.isin(
+            self._adjacency.index.get_level_values(0), self.isolates
+        )
         return Graph(self._adjacency[~zeros], is_sorted=True)
 
     def assign_self_weight(self, weight=1):

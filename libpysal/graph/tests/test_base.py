@@ -1011,8 +1011,11 @@ class TestBase:
         adj = nybb._adjacency.copy()
         adj["Bronx", "Queens"] = 0
         adj["Queens", "Manhattan"] = 0
+        adj["Queens", "Queens"] = 0
         with_zero = graph.Graph(adj)
-        expected = adj.drop([("Bronx", "Queens"), ("Queens", "Manhattan")])
+        expected = adj.drop(
+            [("Bronx", "Queens"), ("Queens", "Manhattan"), ("Queens", "Queens")]
+        )
         pd.testing.assert_series_equal(with_zero.eliminate_zeros()._adjacency, expected)
 
     def test_subgraph(self):
