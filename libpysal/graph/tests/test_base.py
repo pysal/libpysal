@@ -159,6 +159,43 @@ class TestBase:
         )
         assert repr(nybb) == expected
 
+        h3 = {
+            "821f87fffffffff": ("821fb7fffffffff", "821f97fffffffff"),
+            "821fb7fffffffff": (
+                "821f87fffffffff",
+                "821f97fffffffff",
+                "82186ffffffffff",
+                "821867fffffffff",
+            ),
+            "821f97fffffffff": (
+                "821f87fffffffff",
+                "821fb7fffffffff",
+                "823967fffffffff",
+                "82396ffffffffff",
+                "82186ffffffffff",
+            ),
+            "823967fffffffff": (
+                "821f97fffffffff",
+                "82396ffffffffff",
+                "82186ffffffffff",
+            ),
+            "82396ffffffffff": ("821f97fffffffff", "823967fffffffff"),
+            "82186ffffffffff": (
+                "821fb7fffffffff",
+                "821f97fffffffff",
+                "823967fffffffff",
+                "821867fffffffff",
+            ),
+            "821867fffffffff": ("821fb7fffffffff", "82186ffffffffff"),
+        }
+        h3_g = graph.Graph.from_dicts(h3)
+        expected = (
+            "<Graph of 7 nodes and 22 nonzero edges indexed by\n"
+            " ['821f87fffffffff', '821fb7fffffffff', '821f97fffffffff',"
+            " '823967fffffff...]>"
+        )
+        assert repr(h3_g) == expected
+
     def test_copy(self):
         g_copy = self.g_str.copy()
         assert g_copy == self.g_str
