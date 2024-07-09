@@ -265,7 +265,10 @@ class Graph(SetOpsMixin):
                 weights[ix] = chunk.tolist()
 
         return W(
-            neighbors=neighbors, weights=weights, id_order=self.unique_ids.tolist()
+            neighbors=neighbors,
+            weights=weights,
+            id_order=self.unique_ids.tolist(),
+            silence_warnings=True,
         )
 
     @classmethod
