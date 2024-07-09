@@ -159,6 +159,23 @@ class TestBase:
         )
         assert repr(nybb) == expected
 
+        h3 = [
+            "821f87fffffffff",
+            "821fb7fffffffff",
+            "821f97fffffffff",
+            "823967fffffffff",
+            "82396ffffffffff",
+            "82186ffffffffff",
+            "821867fffffffff",
+        ]
+        h3_g = graph.Graph.build_h3(h3)
+        expected = (
+            "<Graph of 7 nodes and 22 nonzero edges indexed by\n"
+            " ['821f87fffffffff', '821fb7fffffffff', '821f97fffffffff',"
+            " '823967fffffff...]>"
+        )
+        assert repr(h3_g) == expected
+
     def test_copy(self):
         g_copy = self.g_str.copy()
         assert g_copy == self.g_str

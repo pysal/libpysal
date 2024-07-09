@@ -153,7 +153,10 @@ class Graph(SetOpsMixin):
 
     def __repr__(self):
         if len(self.unique_ids) > 5:
-            unique_ids = f"{str(self.unique_ids[:5].tolist())[:-1]}, ...]"
+            ids = str(self.unique_ids[:5].tolist())[:-1] + ", "
+            if len(ids) > 72:
+                ids = str(self.unique_ids[:5].tolist())[:72]
+            unique_ids = f"{ids}...]"
         else:
             unique_ids = self.unique_ids.tolist()
         return (
@@ -1341,7 +1344,7 @@ class Graph(SetOpsMixin):
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
         >>> from tobler.util import h3fy
-        >>> gdf = gpd.read_file(get_path("geoda guerry")
+        >>> gdf = gpd.read_file(get_path("geoda guerry"))
         >>> h3 = h3fy(gdf, resolution=4)
         >>> h3.head()
                                                                   geometry
@@ -1352,13 +1355,13 @@ class Graph(SetOpsMixin):
         8418609ffffffff  POLYGON ((387747.482 2509794.492, 364375.032 2...
         8418491ffffffff  POLYGON ((320872.289 1846157.662, 296923.464 1...
 
-        >>> G = graph.Graph.build_h3(h3.index)
-        >>> G
+        >>> h3_contiguity = graph.Graph.build_h3(h3.index)
+        >>> h3_contiguity
         <Graph of 320 nodes and 1740 nonzero edges indexed by
-         ['841f94dffffffff', '841fa67ffffffff', '84186a3ffffffff', '8418609ffffffff', '8418491ffffffff', ...]>
-        """  # noqa: E501
-        neigbors, weights = _build_from_h3(ids, order=order)
-        g = cls.from_dicts(neigbors, weights)
+         ['841f94dffffffff', '841fa67ffffffff', '84186a3ffffffff', ...]>
+        """
+        neighbors, weights = _build_from_h3(ids, order=order)
+        g = cls.from_dicts(neighbors, weights)
 
         if weight == "distance":
             return g
