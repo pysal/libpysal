@@ -223,7 +223,7 @@ class Graph(SetOpsMixin):
         >>> queen_graph = graph.Graph.from_W(queen_w)
         >>> queen_graph
         <Graph of 5 nodes and 10 nonzero edges indexed by
-        ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+         ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
         """
         return cls.from_weights_dict(dict(w))
 
@@ -906,7 +906,7 @@ class Graph(SetOpsMixin):
         <Graph of 5 nodes and 12 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
 
-        Example using a buffer of 10000:
+        Example using a buffer of 10000 feet (CRS of nybb is in feet):
 
         >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, buffer=10000)
         >>> fuzzy_contiguity
@@ -1680,7 +1680,6 @@ class Graph(SetOpsMixin):
 
         Examples
         --------
-
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
         >>> gdf = gpd.read_file(get_path("geoda guerry"))
@@ -1764,7 +1763,6 @@ class Graph(SetOpsMixin):
 
         Examples
         --------
-
         >>> import numpy as np
         >>> import pandas as pd
         >>> import geopandas as gpd
@@ -1776,11 +1774,13 @@ class Graph(SetOpsMixin):
         >>> contiguity = graph.Graph.build_contiguity(aus)
 
         Spatial lag operator for continuous variables.
+
         >>> y = np.arange(9)
         >>> contiguity.lag(y)
         array([21.,  3.,  9., 13.,  9.,  0.,  9.,  0.,  0.])
 
         You can also perform transformation of weights.
+
         >>> contiguity_r = contiguity.transform("r")
         >>> contiguity_r.lag(y)
         array([4.2, 1.5, 3. , 2.6, 4.5, 0. , 3. , 0. , 0. ])
@@ -1920,7 +1920,7 @@ class Graph(SetOpsMixin):
         [5 rows x 4 columns]
 
         >>> contiguity = graph.Graph.build_contiguity(nybb)
-        >>> nx_graph = contiguity.to_networkx
+        >>> nx_graph = contiguity.to_networkx()
         """
         try:
             import networkx as nx
@@ -2193,7 +2193,7 @@ class Graph(SetOpsMixin):
         [5 rows x 4 columns]
 
         >>> contiguity = graph.Graph.build_contiguity(nybb)
-        >>> contiguity_weights = contiguity.assign_self_weight(weight = 0.5)
+        >>> contiguity_weights = contiguity.assign_self_weight(0.5)
         >>> contiguity_weights.adjacency
         focal          neighbor
         Staten Island  Staten Island    0.5
