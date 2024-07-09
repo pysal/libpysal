@@ -203,7 +203,7 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph from W
- 
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -218,7 +218,7 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         >>> queen_w = weights.Queen.from_dataframe(nybb, use_index=True)
         >>> queen_graph = graph.Graph.from_W(queen_w)
         >>> queen_graph
@@ -875,8 +875,8 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph encoding fuzzy contiguity
-            
-            
+
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -891,28 +891,28 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         Example using the default parameters:
-        
+
         >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb)
         >>> fuzzy_contiguity
         <Graph of 5 nodes and 10 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
-        
+
         Example using the tolerance of 0.05:
-        
+
         >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, tolerance=0.05)
         >>> fuzzy_contiguity
         <Graph of 5 nodes and 12 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
-        
+
         Example using a buffer of 10000:
-        
+
         >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, buffer=10000)
         >>> fuzzy_contiguity
         <Graph of 5 nodes and 14 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
-        
+
         """
         ids = _evaluate_index(geometry)
 
@@ -1335,7 +1335,7 @@ class Graph(SetOpsMixin):
         Returns
         -------
         Graph
-        
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -1345,7 +1345,7 @@ class Graph(SetOpsMixin):
         >>> h3 = h3fy(gdf, resolution=4)
         >>> h3.head()
                                                                   geometry
-        hex_id                                                            
+        hex_id
         841f94dffffffff  POLYGON ((609346.657 2195981.397, 604556.817 2...
         841fa67ffffffff  POLYGON ((722074.162 2561038.244, 717442.706 2...
         84186a3ffffffff  POLYGON ((353695.287 2121176.341, 329999.974 2...
@@ -1356,7 +1356,7 @@ class Graph(SetOpsMixin):
         >>> G
         <Graph of 320 nodes and 1740 nonzero edges indexed by
          ['841f94dffffffff', '841fa67ffffffff', '84186a3ffffffff', '8418609ffffffff', '8418491ffffffff', ...]>
-        """
+        """  # noqa: E501
         neigbors, weights = _build_from_h3(ids, order=order)
         g = cls.from_dicts(neigbors, weights)
 
@@ -1677,25 +1677,25 @@ class Graph(SetOpsMixin):
         -------
         Graph
             higher order weights
-            
+
         Examples
         --------
-        
+
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
         >>> gdf = gpd.read_file(get_path("geoda guerry"))
         >>> contiguity = graph.Graph.build_contiguity(gdf)
         >>> contiguity
         <Graph of 85 nodes and 420 nonzero edges indexed by
-         [0, 1, 2, 3, 4, ...]>    
-         
+         [0, 1, 2, 3, 4, ...]>
+
         >>> contiguity.higher_order(k=2)
         <Graph of 85 nodes and 756 nonzero edges indexed by
          [0, 1, 2, 3, 4, ...]>
-         
+
         >>> contiguity.higher_order(lower_order=True)
         <Graph of 85 nodes and 1176 nonzero edges indexed by
-         [0, 1, 2, 3, 4, ...]>     
+         [0, 1, 2, 3, 4, ...]>
         """
         if not Version(scipy_version) >= Version("1.12.0"):
             raise ImportError("Graph.higher_order() requires scipy>=1.12.0.")
@@ -1761,23 +1761,25 @@ class Graph(SetOpsMixin):
         -------
         numpy.ndarray
             array of numeric|categorical values for the spatial lag
-            
+
         Examples
         --------
-        
+
         >>> import numpy as np
         >>> import pandas as pd
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
-        >>> aus = gpd.read_file(get_path('abs.australia_states_territories')).set_index("STE_NAME21")
+        >>> aus = gpd.read_file(get_path("abs.australia_states_territories")).set_index(
+        ...     "STE_NAME21"
+        ... )
         >>> aus = aus[aus.geometry.notna()]
         >>> contiguity = graph.Graph.build_contiguity(aus)
-        
+
         Spatial lag operator for continuous variables.
         >>> y = np.arange(9)
         >>> contiguity.lag(y)
         array([21.,  3.,  9., 13.,  9.,  0.,  9.,  0.,  0.])
-        
+
         You can also perform transformation of weights.
         >>> contiguity_r = contiguity.transform("r")
         >>> contiguity_r.lag(y)
@@ -1803,7 +1805,7 @@ class Graph(SetOpsMixin):
         See also
         --------
         read_parquet
-        
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -1818,7 +1820,7 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         >>> contiguity = graph.Graph.build_contiguity(nybb)
         >>> contiguity.to_parquet("contiguity.parquet")
         """
@@ -1837,7 +1839,7 @@ class Graph(SetOpsMixin):
         See also
         --------
         read_gal
-        
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -1852,7 +1854,7 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         >>> contiguity = graph.Graph.build_contiguity(nybb)
         >>> contiguity.to_gal("contiguity.gal")
         """
@@ -1871,7 +1873,7 @@ class Graph(SetOpsMixin):
         See also
         --------
         read_gwt
-        
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -1886,7 +1888,7 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         >>> contiguity = graph.Graph.build_contiguity(nybb).transform("r")
         >>> contiguity.to_gwt("contiguity.gwt")
         """
@@ -1901,7 +1903,7 @@ class Graph(SetOpsMixin):
         -------
         networkx.Graph | networkx.DiGraph
             Representation of libpysal Graph as networkx graph
-            
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -1916,7 +1918,7 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         >>> contiguity = graph.Graph.build_contiguity(nybb)
         >>> nx_graph = contiguity.to_networkx
         """
@@ -2098,7 +2100,7 @@ class Graph(SetOpsMixin):
         -------
         Graph
             A new Graph that is a subset of the original
-            
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -2113,7 +2115,7 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         >>> contiguity = graph.Graph.build_contiguity(nybb)
         >>> contiguity.subgraph(["Queens", "Brooklyn", "Manhattan", "Bronx"])
         <Graph of 4 nodes and 10 nonzero edges indexed by
@@ -2174,7 +2176,7 @@ class Graph(SetOpsMixin):
         -------
         Graph
             A new ``Graph`` with added self-weights.
-            
+
         Examples
         --------
         >>> import geopandas as gpd
@@ -2189,11 +2191,11 @@ class Graph(SetOpsMixin):
         Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
         Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
         [5 rows x 4 columns]
-        
+
         >>> contiguity = graph.Graph.build_contiguity(nybb)
         >>> contiguity_weights = contiguity.assign_self_weight(weight = 0.5)
         >>> contiguity_weights.adjacency
-        focal          neighbor     
+        focal          neighbor
         Staten Island  Staten Island    0.5
         Queens         Queens           0.5
                        Brooklyn         1.0
@@ -2384,7 +2386,7 @@ def read_parquet(path, **kwargs):
     -------
     Graph
         deserialized Graph
-        
+
     Examples
     --------
     >>> graph.read_parquet("contiguity.parquet")
@@ -2408,7 +2410,7 @@ def read_gal(path):
     -------
     Graph
         deserialized Graph
-    
+
     Examples
     --------
     >>> graph.read_parquet("contiguity.gal")
@@ -2429,7 +2431,7 @@ def read_gwt(path):
     -------
     Graph
         deserialized Graph
-        
+
     Examples
     --------
     >>> graph.read_parquet("contiguity.gwt")
