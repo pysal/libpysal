@@ -67,7 +67,7 @@ class TestLag:
             _lag_spatial(self.gc, self.yc, categorical=True)
 
     def test_categorical_custom_index(self):
-        expceted = np.array(["bar", "foo", "bar", "foo"])
+        expected = np.array(["bar", "foo", "bar", "foo"])
         np.testing.assert_array_equal(
-            expceted, self.g.lag(["foo", "bar", "foo", "foo"])
+            expected, self.g.lag(["foo", "bar", "foo", "foo"])
         )
