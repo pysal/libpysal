@@ -1597,6 +1597,20 @@ class Graph(SetOpsMixin):
         """Number of nonzero weights."""
         return (self._adjacency.drop(self.isolates) > 0).sum()
 
+    @cached_property
+    def index_pairs(self):
+        """Return focal-neighbor index pairs
+
+        Returns
+        -------
+        tuple(Index, Index)
+            tuple of two aligned pandas.Index objects encoding all edges of the Graph
+            by their nodes
+        """
+        focal = self._adjacency.index.get_level_values("focal")
+        neighbor = self._adjacency.index.get_level_values("neighbor")
+        return (focal, neighbor)
+
     def asymmetry(self, intrinsic=True):
         r"""Asymmetry check.
 
