@@ -1389,7 +1389,10 @@ class Graph(SetOpsMixin):
 
         if transformation == "R":
             standardized = (
-                (self._adjacency / self._adjacency.groupby(level=0).transform("sum"))
+                (
+                    self._adjacency
+                    / self._adjacency.groupby(level=0, sort=False).transform("sum")
+                )
                 .fillna(0)
                 .values
             )  # isolate comes as NaN -> 0
@@ -1401,14 +1404,16 @@ class Graph(SetOpsMixin):
             standardized = self._adjacency.astype(bool).astype(int)
 
         elif transformation == "V":
-            s = self._adjacency.groupby(level=0).transform(
+            s = self._adjacency.groupby(level=0, sort=False).transform(
                 lambda group: group / math.sqrt((group**2).sum())
             )
             n_q = self.n / s.sum()
             standardized = (s * n_q).fillna(0).values  # isolate comes as NaN -> 0
 
         elif callable(transformation):
-            standardized = self._adjacency.groupby(level=0).transform(transformation)
+            standardized = self._adjacency.groupby(level=0, sort=False).transform(
+                transformation
+            )
             transformation = "C"
 
         else:
@@ -1460,7 +1465,7 @@ class Graph(SetOpsMixin):
         pandas.Series
             Series with a number of neighbors per each observation
         """
-        cardinalities = self._adjacency.astype(bool).groupby(level=0).sum()
+        cardinalities = self._adjacency.astype(bool).groupby(level=0, sort=False).sum()
         cardinalities.name = "cardinalities"
         return cardinalities
 
@@ -2001,7 +2006,7 @@ class Graph(SetOpsMixin):
         if not isinstance(y, pd.Series | pd.DataFrame):
             y = pd.DataFrame(y) if hasattr(y, "ndim") and y.ndim == 2 else pd.Series(y)
         grouper = y.take(self._adjacency.index.codes[1]).groupby(
-            self._adjacency.index.codes[0]
+            self._adjacency.index.codes[0], sort=False
         )
         result = grouper.apply(func, **kwargs)
         result.index = self.unique_ids
@@ -2025,7 +2030,7 @@ class Graph(SetOpsMixin):
         pd.Series
             Aggregated weights
         """
-        return self._adjacency.groupby(level=0).agg(func)
+        return self._adjacency.groupby(level=0, sort=False).agg(func)
 
     def describe(
         self,
@@ -2079,7 +2084,7 @@ class Graph(SetOpsMixin):
 
         if q is None:
             grouper = y.take(self._adjacency.index.codes[1]).groupby(
-                self._adjacency.index.codes[0]
+                self._adjacency.index.codes[0], sort=False
             )
         else:
             grouper = _percentile_filtration_grouper(y, self._adjacency.index, q=q)

@@ -1148,9 +1148,9 @@ class TestBase:
     def test_aggregate(self):
         contig = graph.Graph.build_contiguity(self.nybb)
         expected = pd.Series(
-            [7.3890561, 7.3890561, 20.08553692, 20.08553692, 1.0],
+            [1.0, 20.08553692, 7.3890561, 20.08553692, 7.3890561],
             index=pd.Index(
-                ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"],
+                ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
                 name="focal",
             ),
             name="weight",
