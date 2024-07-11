@@ -91,9 +91,12 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
     ):
         categorical = True
     if categorical:
+        if isinstance(y, np.ndarray):
+            y = pd.Series(y, index=graph.unique_ids)
+
         df = pd.DataFrame(data=graph.adjacency)
-        df["neighbor_label"] = y[graph.adjacency.index.get_level_values(1)]
-        df["own_label"] = y[graph.adjacency.index.get_level_values(0)]
+        df["neighbor_label"] = y.loc[graph.adjacency.index.get_level_values(1)].values
+        df["own_label"] = y.loc[graph.adjacency.index.get_level_values(0)].values
         df["neighbor_idx"] = df.index.get_level_values(1)
         df["focal_idx"] = df.index.get_level_values(0)
         gb = df.groupby(["focal", "neighbor_label"]).count().groupby(level="focal")
