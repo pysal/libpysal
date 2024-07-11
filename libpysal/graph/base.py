@@ -288,7 +288,12 @@ class Graph(SetOpsMixin):
                 neighbors[ix] = chunk.index.get_level_values("neighbor").tolist()
                 weights[ix] = chunk.tolist()
 
-        return W(neighbors=neighbors, weights=weights, id_order=self.unique_ids)
+        return W(
+            neighbors=neighbors,
+            weights=weights,
+            id_order=self.unique_ids.tolist(),
+            silence_warnings=True,
+        )
 
     @classmethod
     def from_adjacency(
@@ -1467,7 +1472,10 @@ class Graph(SetOpsMixin):
 
         if transformation == "R":
             standardized = (
-                (self._adjacency / self._adjacency.groupby(level=0).transform("sum"))
+                (
+                    self._adjacency
+                    / self._adjacency.groupby(level=0, sort=False).transform("sum")
+                )
                 .fillna(0)
                 .values
             )  # isolate comes as NaN -> 0
@@ -1479,14 +1487,16 @@ class Graph(SetOpsMixin):
             standardized = self._adjacency.astype(bool).astype(int)
 
         elif transformation == "V":
-            s = self._adjacency.groupby(level=0).transform(
+            s = self._adjacency.groupby(level=0, sort=False).transform(
                 lambda group: group / math.sqrt((group**2).sum())
             )
             n_q = self.n / s.sum()
             standardized = (s * n_q).fillna(0).values  # isolate comes as NaN -> 0
 
         elif callable(transformation):
-            standardized = self._adjacency.groupby(level=0).transform(transformation)
+            standardized = self._adjacency.groupby(level=0, sort=False).transform(
+                transformation
+            )
             transformation = "C"
 
         else:
@@ -1538,7 +1548,7 @@ class Graph(SetOpsMixin):
         pandas.Series
             Series with a number of neighbors per each observation
         """
-        cardinalities = self._adjacency.astype(bool).groupby(level=0).sum()
+        cardinalities = self._adjacency.astype(bool).groupby(level=0, sort=False).sum()
         cardinalities.name = "cardinalities"
         return cardinalities
 
@@ -1554,13 +1564,7 @@ class Graph(SetOpsMixin):
         pandas.Index
             Index with a subset of observations that do not have any neighbor
         """
-        nulls = self._adjacency[self._adjacency == 0]
-        # since not all zeros are necessarily isolates, do the focal == neighbor check
-        return (
-            nulls[nulls.index.codes[0] == nulls.index.codes[1]]
-            .index.get_level_values(0)
-            .unique()
-        )
+        return self.cardinalities.index[self.cardinalities == 0]
 
     @cached_property
     def unique_ids(self):
@@ -2154,10 +2158,10 @@ class Graph(SetOpsMixin):
         Graph
             subset of Graph with zero-weight edges eliminated
         """
-        # get a mask for isolates
-        isolates = self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
         # substract isolates from mask of zeros
-        zeros = (self._adjacency == 0) != isolates
+        zeros = (self._adjacency == 0) != np.isin(
+            self._adjacency.index.get_level_values(0), self.isolates
+        )
         return Graph(self._adjacency[~zeros], is_sorted=True)
 
     def assign_self_weight(self, weight=1):
@@ -2223,8 +2227,12 @@ class Graph(SetOpsMixin):
             ),
             name="weight",
         )
+        # drop existing self weights and replace them with a new value
+        existing_self_weights = self._adjacency.index[
+            self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
+        ]
         adj = (
-            pd.concat([self.adjacency.drop(self.isolates), addition])
+            pd.concat([self._adjacency.drop(existing_self_weights), addition])
             .reindex(self.unique_ids, level=0)
             .reindex(self.unique_ids, level=1)
         )
@@ -2251,7 +2259,7 @@ class Graph(SetOpsMixin):
         if not isinstance(y, pd.Series | pd.DataFrame):
             y = pd.DataFrame(y) if hasattr(y, "ndim") and y.ndim == 2 else pd.Series(y)
         grouper = y.take(self._adjacency.index.codes[1]).groupby(
-            self._adjacency.index.codes[0]
+            self._adjacency.index.codes[0], sort=False
         )
         result = grouper.apply(func, **kwargs)
         result.index = self.unique_ids
@@ -2275,7 +2283,7 @@ class Graph(SetOpsMixin):
         pd.Series
             Aggregated weights
         """
-        return self._adjacency.groupby(level=0).agg(func)
+        return self._adjacency.groupby(level=0, sort=False).agg(func)
 
     def describe(
         self,
@@ -2329,7 +2337,7 @@ class Graph(SetOpsMixin):
 
         if q is None:
             grouper = y.take(self._adjacency.index.codes[1]).groupby(
-                self._adjacency.index.codes[0]
+                self._adjacency.index.codes[0], sort=False
             )
         else:
             grouper = _percentile_filtration_grouper(y, self._adjacency.index, q=q)
