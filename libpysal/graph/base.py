@@ -1597,6 +1597,47 @@ class Graph(SetOpsMixin):
         """Number of nonzero weights."""
         return (self._adjacency.drop(self.isolates) > 0).sum()
 
+    @cached_property
+    def index_pairs(self):
+        """Return focal-neighbor index pairs
+
+        Returns
+        -------
+        tuple(Index, Index)
+            tuple of two aligned pandas.Index objects encoding all edges of the Graph
+            by their nodes
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> focal, neighbor = contiguity.index_pairs
+        >>> focal
+        Index(['Staten Island', 'Queens', 'Queens', 'Queens', 'Brooklyn', 'Brooklyn',
+               'Manhattan', 'Manhattan', 'Manhattan', 'Bronx', 'Bronx'],
+              dtype='object', name='focal')
+
+        >>> neighbor
+        Index(['Staten Island', 'Brooklyn', 'Manhattan', 'Bronx', 'Queens',
+               'Manhattan', 'Queens', 'Brooklyn', 'Bronx', 'Queens', 'Manhattan'],
+              dtype='object', name='neighbor')
+        """
+        focal = self._adjacency.index.get_level_values("focal")
+        neighbor = self._adjacency.index.get_level_values("neighbor")
+        return (focal, neighbor)
+
     def asymmetry(self, intrinsic=True):
         r"""Asymmetry check.
 

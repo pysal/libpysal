@@ -652,6 +652,73 @@ class TestBase:
         assert self.g_int.nonzero == 25
         assert graph.Graph(self.adjacency_int_binary).nonzero == 9
 
+    def test_index_pairs(self):
+        focal, neighbor = self.g_str.index_pairs
+        exp_focal = pd.Index(
+            [
+                "a",
+                "a",
+                "a",
+                "b",
+                "b",
+                "b",
+                "c",
+                "c",
+                "d",
+                "d",
+                "d",
+                "e",
+                "e",
+                "e",
+                "e",
+                "f",
+                "f",
+                "f",
+                "g",
+                "g",
+                "h",
+                "h",
+                "h",
+                "i",
+                "i",
+                "j",
+            ],
+            name="focal",
+        )
+        exp_neighbor = pd.Index(
+            [
+                "a",
+                "b",
+                "d",
+                "a",
+                "c",
+                "e",
+                "b",
+                "f",
+                "a",
+                "e",
+                "g",
+                "b",
+                "d",
+                "f",
+                "h",
+                "c",
+                "e",
+                "i",
+                "d",
+                "h",
+                "e",
+                "g",
+                "i",
+                "f",
+                "h",
+                "j",
+            ],
+            name="neighbor",
+        )
+        pd.testing.assert_index_equal(exp_focal, focal)
+        pd.testing.assert_index_equal(exp_neighbor, neighbor)
+
     def test_transform_r(self):
         expected_w = [
             0.5,
