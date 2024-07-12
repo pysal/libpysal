@@ -23,6 +23,7 @@ from ._matching import _spatial_matching
 from ._plotting import _explore_graph, _plot
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
+from ._summary import GraphSummary
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._utils import (
     _compute_stats,
@@ -152,17 +153,19 @@ class Graph(SetOpsMixin):
             )
         return self._adjacency.loc[item]
 
-    def __repr__(self):
+    def _get_ids_repr(self, chars=72):
         if len(self.unique_ids) > 5:
             ids = str(self.unique_ids[:5].tolist())[:-1] + ", "
-            if len(ids) > 72:
-                ids = str(self.unique_ids[:5].tolist())[:72]
-            unique_ids = f"{ids}...]"
+            if len(ids) > chars:
+                ids = str(self.unique_ids[:5].tolist())[:chars]
+            return f"{ids}...]"
         else:
-            unique_ids = self.unique_ids.tolist()
+            return self.unique_ids.tolist()
+
+    def __repr__(self):
         return (
             f"<Graph of {self.n} nodes and {self.nonzero} nonzero edges indexed by\n"
-            f" {unique_ids}>"
+            f" {self._get_ids_repr()}>"
         )
 
     def copy(self, deep=True):
@@ -1579,12 +1582,12 @@ class Graph(SetOpsMixin):
 
     @cached_property
     def n_nodes(self):
-        """Number of observations."""
+        """Number of nodes."""
         return self.unique_ids.shape[0]
 
     @cached_property
     def n_edges(self):
-        """Number of observations."""
+        """Number of edges."""
         return self._adjacency.shape[0] - self.isolates.shape[0]
 
     @cached_property
@@ -1656,6 +1659,9 @@ class Graph(SetOpsMixin):
                 neighbor, index=pd.Index(focal, name="focal"), name="neighbor"
             ).sort_index()
             return ijs
+
+    def summary(self):
+        return GraphSummary(self)
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order :math:`k`.
@@ -2351,115 +2357,6 @@ class Graph(SetOpsMixin):
         # NA isolates
         stat_.loc[self.isolates] = np.nan
         return stat_
-
-    @cached_property
-    def _s0(self):
-        r"""helper to get S0 in downstream
-
-         ``s0`` is defined as
-
-        .. math::
-
-               s0=\sum_i \sum_j w_{i,j}
-
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
-        and are used to compute standard errors for spatial autocorrelation estimators.
-
-        Returns
-        -------
-        float
-            global sum of weights
-        """
-        return self._adjacency.sum()
-
-    @cached_property
-    def s0(self):
-        r"""Global sum of weights
-
-        ``s0`` is defined as
-
-        .. math::
-
-               s0=\sum_i \sum_j w_{i,j}
-
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
-        and are used to compute standard errors for spatial autocorrelation estimators.
-
-        .. deprecated:: 4.12
-           Public property will be removed.
-
-        Returns
-        -------
-        float
-            global sum of weights
-
-        See also
-        --------
-        s1
-        s2
-        """
-        warnings.warn(
-            "The s0 property will be removed from the public API.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self._s0
-
-    @cached_property
-    def _s1(self):
-        r"""S1 sum of weights
-
-        ``s1`` is defined as
-
-        .. math::
-
-               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2
-
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
-        and are used to compute standard errors for spatial autocorrelation estimators.
-
-        Returns
-        -------
-        float
-            s1 sum of weights
-        """
-        t = self.sparse.transpose()
-        t = t + self.sparse
-        t2 = t * t
-        return t2.sum() / 2.0
-
-    @cached_property
-    def s1(self):
-        r"""S1 sum of weights
-
-        ``s1`` is defined as
-
-        .. math::
-
-               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2
-
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
-        and are used to compute standard errors for spatial autocorrelation estimators.
-
-        .. deprecated:: 4.12
-           Public property will be removed.
-
-        Returns
-        -------
-        float
-            s1 sum of weights
-
-        See also
-        --------
-        s0
-        s2
-        """
-        warnings.warn(
-            "The s1 property will be removed from the public API.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self._s1
 
     @cached_property
     def _s2(self):
