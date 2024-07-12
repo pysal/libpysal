@@ -27,7 +27,7 @@ class TesttestDBF:
     def test_cast(self):
         assert self.dbObj._spec == []
         self.dbObj.cast("FIPSSTCO", float)
-        assert self.dbObj._spec[1] == float
+        assert self.dbObj._spec[1] == float  # noqa: E721
 
     def test_seek(self):
         self.dbObj.seek(0)

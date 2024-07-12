@@ -36,7 +36,7 @@ class DataTable(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
 
     def __repr__(self) -> str:
-        return "DataTable: %s" % self.dataPath
+        return f"DataTable: {self.dataPath}"
 
     def __len__(self):
         """__len__ should be implemented by `DataTable` subclasses."""
@@ -64,7 +64,7 @@ class DataTable(fileio.FileIO):
         if key in self.header:
             return self[:, self.header.index(key)]
         else:
-            raise AttributeError("Field: %s does not exist in header." % key)
+            raise AttributeError(f"Field: {key} does not exist in header.")
 
     def by_col_array(self, *args):
         """Return columns of table as a ``numpy.ndarray``.

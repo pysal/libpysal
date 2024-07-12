@@ -246,7 +246,7 @@ class ArcGISDbfIO(fileio.FileIO):
                     self.pos = self.file.pos
 
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")
 
     def flush(self):
         self._complain_ifclosed(self.closed)

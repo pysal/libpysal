@@ -159,6 +159,43 @@ class TestBase:
         )
         assert repr(nybb) == expected
 
+        h3 = {
+            "821f87fffffffff": ("821fb7fffffffff", "821f97fffffffff"),
+            "821fb7fffffffff": (
+                "821f87fffffffff",
+                "821f97fffffffff",
+                "82186ffffffffff",
+                "821867fffffffff",
+            ),
+            "821f97fffffffff": (
+                "821f87fffffffff",
+                "821fb7fffffffff",
+                "823967fffffffff",
+                "82396ffffffffff",
+                "82186ffffffffff",
+            ),
+            "823967fffffffff": (
+                "821f97fffffffff",
+                "82396ffffffffff",
+                "82186ffffffffff",
+            ),
+            "82396ffffffffff": ("821f97fffffffff", "823967fffffffff"),
+            "82186ffffffffff": (
+                "821fb7fffffffff",
+                "821f97fffffffff",
+                "823967fffffffff",
+                "821867fffffffff",
+            ),
+            "821867fffffffff": ("821fb7fffffffff", "82186ffffffffff"),
+        }
+        h3_g = graph.Graph.from_dicts(h3)
+        expected = (
+            "<Graph of 7 nodes and 22 nonzero edges indexed by\n"
+            " ['821f87fffffffff', '821fb7fffffffff', '821f97fffffffff',"
+            " '823967fffffff...]>"
+        )
+        assert repr(h3_g) == expected
+
     def test_copy(self):
         g_copy = self.g_str.copy()
         assert g_copy == self.g_str
@@ -186,6 +223,7 @@ class TestBase:
         )
         g_roundtripped = graph.Graph.from_W(w)
         assert self.g_int == g_roundtripped
+        assert isinstance(w.id_order, list)
 
         w = self.g_str.to_W()
         pd.testing.assert_series_equal(
@@ -596,6 +634,9 @@ class TestBase:
         self.g_str._adjacency.iloc[1] = 0  # zero weight, no isolate
         pd.testing.assert_index_equal(self.g_str.isolates, expected)
 
+        with_additional_zeros = self.g_str.assign_self_weight(0)
+        pd.testing.assert_index_equal(with_additional_zeros.isolates, expected)
+
     def test_n(self):
         assert self.g_int.n == 10
         assert self.g_str.n == 10
@@ -1003,11 +1044,15 @@ class TestBase:
         )
 
     def test_eliminate_zeros(self):
-        adj = self.adjacency_str_binary.copy()
+        nybb = graph.Graph.build_contiguity(self.nybb)
+        adj = nybb._adjacency.copy()
         adj["Bronx", "Queens"] = 0
         adj["Queens", "Manhattan"] = 0
+        adj["Queens", "Queens"] = 0
         with_zero = graph.Graph(adj)
-        expected = adj.drop([("Bronx", "Queens"), ("Queens", "Manhattan")])
+        expected = adj.drop(
+            [("Bronx", "Queens"), ("Queens", "Manhattan"), ("Queens", "Queens")]
+        )
         pd.testing.assert_series_equal(with_zero.eliminate_zeros()._adjacency, expected)
 
     def test_subgraph(self):
@@ -1140,9 +1185,9 @@ class TestBase:
     def test_aggregate(self):
         contig = graph.Graph.build_contiguity(self.nybb)
         expected = pd.Series(
-            [7.3890561, 7.3890561, 20.08553692, 20.08553692, 1.0],
+            [1.0, 20.08553692, 7.3890561, 20.08553692, 7.3890561],
             index=pd.Index(
-                ["Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"],
+                ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
                 name="focal",
             ),
             name="weight",

@@ -152,7 +152,7 @@ class PurePyShpWrapper(fileio.FileIO):
         """
 
         if TYPE_TO_STRING[type(shape)] != self.type:
-            raise TypeError("This file only supports %s type shapes." % self.type)
+            raise TypeError(f"This file only supports {self.type} type shapes.")
 
         rec = {}
         rec["Shape Type"] = shp_file.SHAPE_TYPES[self.type]

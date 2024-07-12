@@ -218,8 +218,8 @@ class W:
             )
             ni = len(self.islands)
             if ni == 1:
-                message = message + "\n There is 1 island with id: %s." % (
-                    str(self.islands[0])
+                message = (
+                    message + f"\n There is 1 island with id: {str(self.islands[0])}."
                 )
             elif ni > 1:
                 message = message + "\n There are %d islands with ids: %s." % (

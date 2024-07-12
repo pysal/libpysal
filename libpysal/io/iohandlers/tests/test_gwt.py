@@ -23,7 +23,7 @@ class TesttestGwtIO:
         assert w.n == 168
         assert w.mean_neighbors == 16.678571428571427
         w.transform = "B"
-        assert [1.0] == list(w[1].values())
+        assert list(w[1].values()) == [1.0]
 
     def test_seek(self):
         self.test_read()
