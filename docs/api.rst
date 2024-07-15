@@ -263,3 +263,7 @@ graph
    :toctree: generated/
 
    libpysal.graph.Graph
+   libpysal.graph.GraphSummary
+   libpysal.graph.read_parquet
+   libpysal.graph.read_gal
+   libpysal.graph.read_gwt
