@@ -144,7 +144,7 @@ class GraphSummary:
     ==============================================================
     Mean:                       1    25%:                        1
     Standard deviation:         0    50%:                        1
-    Min:                        0    75%:                        1
+    Min:                        1    75%:                        1
     Max:                        1
     --------------------------------------------------------------
     Sum of weights
@@ -195,7 +195,7 @@ class GraphSummary:
         self.cardinalities_max = card_stats["max"]
 
         # statistics of weights
-        weights_stats = self._graph._adjacency.describe()
+        weights_stats = self._graph._adjacency.drop(self._graph.isolates).describe()
         self.weights_mean = weights_stats["mean"]
         self.weights_std = weights_stats["std"]
         self.weights_min = weights_stats["min"]

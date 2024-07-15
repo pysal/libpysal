@@ -1287,3 +1287,8 @@ class TestBase:
             ValueError, match="The values index is not aligned with the graph index."
         ):
             nybb_contig.describe(self.nybb.geometry.area.reset_index(drop=True))
+
+    def test_summary(self):
+        assert isinstance(self.g_int.summary(), graph.GraphSummary)
+        assert isinstance(self.g_str.summary(), graph.GraphSummary)
+        assert isinstance(self.g_str_unodered.summary(), graph.GraphSummary)
