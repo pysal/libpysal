@@ -1,5 +1,4 @@
 import math
-import warnings
 from functools import cached_property
 
 import numpy as np
@@ -2357,60 +2356,6 @@ class Graph(SetOpsMixin):
         # NA isolates
         stat_.loc[self.isolates] = np.nan
         return stat_
-
-    @cached_property
-    def _s2(self):
-        r"""S2 sum of weights
-
-        ``s2`` is defined as
-
-        .. math::
-
-                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2
-
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
-        and are used to compute standard errors for spatial autocorrelation estimators.
-
-        Returns
-        -------
-        float
-            s2 sum of weights
-        """
-        s = self.sparse
-        return (np.array(s.sum(1) + s.sum(0).transpose()) ** 2).sum()
-
-    @cached_property
-    def s2(self):
-        r"""S2 sum of weights
-
-        ``s2`` is defined as
-
-        .. math::
-
-                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2
-
-        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
-        and are used to compute standard errors for spatial autocorrelation estimators.
-
-        .. deprecated:: 4.12
-           Public property will be removed.
-
-        Returns
-        -------
-        float
-            s2 sum of weights
-
-        See also
-        --------
-        s0
-        s1
-        """
-        warnings.warn(
-            "The s2 property will be removed from the public API.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self._s2
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
