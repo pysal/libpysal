@@ -65,3 +65,9 @@ class TestLag:
         with pytest.raises(ValueError, match="There are 2 ties that must be broken"):
             self.yc[3] = "a"  # create ties
             _lag_spatial(self.gc, self.yc, categorical=True)
+
+    def test_categorical_custom_index(self):
+        expected = np.array(["bar", "foo", "bar", "foo"])
+        np.testing.assert_array_equal(
+            expected, self.g.lag(["foo", "bar", "foo", "foo"])
+        )

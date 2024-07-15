@@ -133,4 +133,4 @@ class DatIO(gwt.GwtIO):
         if issubclass(type(obj), W):
             self._writelines(obj)
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")

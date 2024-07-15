@@ -254,7 +254,7 @@ class StataTextIO(fileio.FileIO):
         self._complain_ifclosed(self.closed)
 
         if issubclass(type(obj), W):
-            header = "%s\n" % obj.n
+            header = f"{obj.n}\n"
             self.file.write(header)
             if matrix_form:
 
@@ -271,9 +271,9 @@ class StataTextIO(fileio.FileIO):
 
             for id_ in obj.id_order:
                 line = wgt2line(id_, obj.neighbors[id_], obj.weights[id_])
-                self.file.write("%s\n" % " ".join(line))
+                self.file.write("{}\n".format(" ".join(line)))
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")
 
     def close(self):
         self.file.close()

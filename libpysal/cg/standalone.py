@@ -1277,7 +1277,7 @@ def distance_matrix(X, p=2.0, threshold=5e7):
         X.shape = (X.shape[0], 1)
 
     if X.ndim > 2:
-        msg = "Should be 2D point coordinates: %s dimensions present." % X.ndim
+        msg = f"Should be 2D point coordinates: {X.ndim} dimensions present."
         raise TypeError(msg)
 
     n, k = X.shape

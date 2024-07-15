@@ -10,9 +10,10 @@
 ## libpysal modules
 
 - `libpysal.cg` –  Computational geometry
+- `libpysal.examples` –  Built-in example datasets
+- `libpysal.graph` –  Graph class encoding spatial weights matrices
 - `libpysal.io` –  Input and output
 - `libpysal.weights` –  Spatial weights
-- `libpysal.examples` –  Built-in example datasets
 
 ## Example Notebooks
 

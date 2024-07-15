@@ -142,7 +142,7 @@ class DBF(tables.DataTable):
         """
 
         if key not in self._col_index:
-            raise AttributeError("Field: %s does not exist in header." % key)
+            raise AttributeError(f"Field: {key} does not exist in header.")
 
         prevPos = self.tell()
         idx, offset = self._col_index[key]

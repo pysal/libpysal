@@ -27,12 +27,12 @@ class TesttestStataTextIO:
         w_sparse = self.obj_sparse.read()
         assert w_sparse.n == 56
         assert w_sparse.mean_neighbors == 4.0
-        assert [1.0, 1.0, 1.0, 1.0, 1.0] == list(w_sparse[1].values())
+        assert list(w_sparse[1].values()) == [1.0, 1.0, 1.0, 1.0, 1.0]
 
         w_full = self.obj_full.read()
         assert w_full.n == 56
         assert w_full.mean_neighbors == 4.0
-        assert [0.125, 0.125, 0.125, 0.125, 0.125] == list(w_full[1].values())
+        assert list(w_full[1].values()) == [0.125, 0.125, 0.125, 0.125, 0.125]
 
     def test_seek(self):
         self.test_read()

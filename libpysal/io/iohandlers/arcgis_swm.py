@@ -305,7 +305,7 @@ class ArcGISSwmIO(fileio.FileIO):
         self._complain_ifclosed(self.closed)
 
         if not issubclass(type(obj), W):
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")
 
         if (type(obj.id_order[0]) not in (np.int32, np.int64, int)) and not useIdIndex:
             raise TypeError("ArcGIS SWM files support only integer IDs.")

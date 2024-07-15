@@ -15,7 +15,7 @@ class TesttestGalIO:
         self.obj = GalIO(test_file, "r")
 
     def test___init__(self):
-        assert self.obj._typ == str
+        assert self.obj._typ == str  # noqa: E721
 
     def test_close(self):
         f = self.obj
