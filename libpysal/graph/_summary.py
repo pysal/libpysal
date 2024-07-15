@@ -128,7 +128,7 @@ Traces
                 <tr>
                     <td>Number of connected components:</td>
                     <td>{self.n_components:12.0f}</td>
-                    < /tr>
+                </tr>
                 <tr>
                     <td>Number of isolates:</td>
                     <td>{self.n_isolates:12.0f}</td>
