@@ -2,27 +2,174 @@ import numpy as np
 
 
 class GraphSummary:
-    """
-    s0
-    s1
-    s2
-    n
-    n asymmetries
-    cardinaities stats
-    n_compoments
-    n isolates
-    diagW2
-    diagWtW
-    diagWtW_WW
-    n nonzero
-    perc nonzero
-    weights stats
-    trcW2
-    trcWtW
-    trcWtW_WW
+    r"""Graph Summary
+
+    An object containing the statistical attributes summarising the Graph and its basic
+    properties.
+
+    Attributes
+    ----------
+    n_nodes : int
+        number of Graph nodes
+    n_edges : int
+        number of Graph edges
+    n_components : int
+        number of connected components
+    n_isolates : int
+        number of isolates (nodes with no neighbors)
+    nonzero : int
+        number of edges with nonzero weight
+    pct_nonzero : float
+        percentage of nonzero weights
+    n_asymmetries : int
+        number of intrinsic asymmetries
+    cardinalities_mean : float
+        mean number of neighbors
+    cardinalities_std : float
+        standard deviation of number of neighbors
+    cardinalities_min : float
+        minimal number of neighbors
+    cardinalities_25 : float
+        25th percentile of number of neighbors
+    cardinalities_50 : float
+        50th percentile (median) of number of neighbors
+    cardinalities_75 : float
+        75th percentile of number of neighbors
+    cardinalities_max : float
+        maximal number of neighbors
+    weights_mean : float
+        mean edge weight
+    weights_std : float
+        standard deviation of  edge weights
+    weights_min : float
+        minimal edge weight
+    weights_25 : float
+        25th percentile of edge weights
+    weights_50 : float
+        50th percentile (median) of edge weights
+    weights_75 : float
+        75th percentile of edge weights
+    weights_max : float
+        maximal edge weight
+    s0 : float
+        S0 (global) sum of weights
+
+        ``s0`` is defined as
+
+        .. math::
+               s0=\sum_i \sum_j w_{i,j}
+
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
+
+    s1 : float
+        S1 sum of weights
+
+        ``s1`` is defined as
+
+        .. math::
+               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2
+
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
+    s2 : float
+        S2 sum of weights
+
+        ``s2`` is defined as
+
+        .. math::
+                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2
+
+        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
+        and are used to compute standard errors for spatial autocorrelation estimators.
+
+    diag_g2 : np.ndarray
+        diagonal of :math:`GG`
+    diag_gtg : np.ndarrray
+        diagonal of :math:`G^{'}G`
+    diag_gtg_gg : np.ndarray
+        diagonal of :math:`G^{'}G + GG`
+    trace_g2 : np.ndarray
+        trace of :math:`GG`
+    trace_gtg : np.ndarrray
+        trace of :math:`G^{'}G`
+    trace_gtg_gg : np.ndarray
+        trace of :math:`G^{'}G + GG`
+
+    Examples
+    --------
+    >>> import geopandas as gpd
+    >>> from geodatasets import get_path
+    >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+    >>> nybb
+                    BoroCode  ...                                           geometry
+    BoroName                 ...
+    Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+    Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+    Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+    Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+    Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+    [5 rows x 4 columns]
+
+    >>> contiguity = graph.Graph.build_contiguity(nybb)
+    >>> contiguity
+    <Graph of 5 nodes and 10 nonzero edges indexed by
+        ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+
+    >>> summary = contiguity.summary()
+    >>> summary
+    Graph Summary Statistics
+    ========================
+    Graph indexed by:
+    ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']
+    ==============================================================
+    number of nodes:                                             5
+    number of edges:                                            10
+    number of connected components:                              2
+    number of isolates:                                          1
+    number of non-zero edges:                                   10
+    Percentage of non-zero edges:                           44.00%
+    number of asymmetries:                                       0
+    --------------------------------------------------------------
+    Cardinalities
+    ==============================================================
+    Mean:                       2    25%:                        2
+    Standard deviation:         1    50%:                        2
+    Min:                        0    75%:                        3
+    Max:                        3
+    --------------------------------------------------------------
+    Weights
+    ==============================================================
+    Mean:                       1    25%:                        1
+    Standard deviation:         0    50%:                        1
+    Min:                        0    75%:                        1
+    Max:                        1
+    --------------------------------------------------------------
+    Sum of weights
+    ==============================================================
+    S0:                                                         10
+    S1:                                                         20
+    S2:                                                        104
+    --------------------------------------------------------------
+    Traces
+    ==============================================================
+    GG:                                                         10
+    G'G:                                                        10
+    G'G + GG:                                                   20
+
+    >>> summary.s1
+    20
     """
 
     def __init__(self, graph):
+        """Create GraphSummary
+
+        Parameters
+        ----------
+        graph : Graph
+        """
         self._graph = graph
 
         self.n_nodes = self._graph.n_nodes  # number of nodes / observations

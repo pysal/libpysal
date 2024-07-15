@@ -1660,6 +1660,81 @@ class Graph(SetOpsMixin):
             return ijs
 
     def summary(self):
+        """Summary of the Graph properties
+
+        Returs a :class:`GraphSummary` object with the statistical attributes
+        summarising the Graph and its basic properties. See the docstring of the
+        :class:`GraphSummary` for details and all the available attributes.
+
+        Returns
+        -------
+        GraphSummary
+            a class containing a summary statisitcs about the graph
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity
+        <Graph of 5 nodes and 10 nonzero edges indexed by
+         ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+
+        >>> summary = contiguity.summary()
+        >>> summary
+        Graph Summary Statistics
+        ========================
+        Graph indexed by:
+        ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']
+        ==============================================================
+        Number of nodes:                                             5
+        Number of edges:                                            10
+        Number of connected components:                              2
+        Number of isolates:                                          1
+        Number of non-zero edges:                                   10
+        Percentage of non-zero edges:                           44.00%
+        Number of asymmetries:                                       0
+        --------------------------------------------------------------
+        Cardinalities
+        ==============================================================
+        Mean:                       2    25%:                        2
+        Standard deviation:         1    50%:                        2
+        Min:                        0    75%:                        3
+        Max:                        3
+        --------------------------------------------------------------
+        Weights
+        ==============================================================
+        Mean:                       1    25%:                        1
+        Standard deviation:         0    50%:                        1
+        Min:                        0    75%:                        1
+        Max:                        1
+        --------------------------------------------------------------
+        Sum of weights
+        ==============================================================
+        S0:                                                         10
+        S1:                                                         20
+        S2:                                                        104
+        --------------------------------------------------------------
+        Traces
+        ==============================================================
+        GG:                                                         10
+        G'G:                                                        10
+        G'G + GG:                                                   20
+
+        >>> summary.s1
+        20
+        """
         return GraphSummary(self)
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
