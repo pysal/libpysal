@@ -20,6 +20,7 @@ from ._indices import _build_from_h3
 from ._kernel import _distance_band, _kernel
 from ._matching import _spatial_matching
 from ._plotting import _explore_graph, _plot
+from ._raster import _generate_da, _raster_contiguity
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._summary import GraphSummary
@@ -939,6 +940,79 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(heads, tails, weights)
 
     @classmethod
+    def build_raster_contiguity(
+        cls,
+        da,
+        rook=False,
+        z_value=None,
+        coords_labels=None,
+        k=1,
+        include_nodata=False,
+        n_jobs=1,
+    ):
+        """Generate Graph from ``xarray.DataArray`` raster object
+
+        Create Graph object encoding contiguity of raster cells from
+        ``xarray.DataArray`` object. The coordinates are flatten to tuples representing
+        the location of each cell within the raster.
+
+        Parameters
+        ----------
+        da : xarray.DataArray
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        rook : bool, optional
+            Contiguity method. If True, two cells are considered neighbours if
+            they share at least one edge. If False, two geometries are considered
+            neighbours if they share at least one vertex. By default True
+        z_value : {int, str, float}, optional
+            Select the z_value of 3D DataArray with multiple layers. By default None
+        coords_labels : dict, optional
+            Pass dimension labels for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. ``coords_labels = {"y_label": "latitude", "x_label": "longitude",
+            "z_label": "year"}``
+            When None, defaults to empty dictionary.
+        k : int, optional
+            Order of contiguity, this will select all neighbors up to k-th order.
+            Default is 1.
+        include_nodata : bool, optional
+            If True, missing values will be assumed as non-missing when
+            selecting higher_order neighbors, Default is False
+        n_jobs : int, optional
+            Number of cores to be used in the sparse weight construction. If -1,
+            all available cores are used. Default is 1. Requires ``joblib``.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding raster contiguity
+        """
+
+        if coords_labels is None:
+            coords_labels = {}
+        criterion = "rook" if rook else "queen"
+
+        heads, tails, weights, xarray_index = _raster_contiguity(
+            da=da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            k=k,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+        )
+        heads, tails, weights = _resolve_islands(
+            heads, tails, xarray_index.to_numpy(), weights
+        )
+        contig = cls.from_arrays(heads, tails, weights)
+        contig._xarray_index_names = xarray_index.names
+
+        if k > 1 and not include_nodata:
+            contig = contig.higher_order(k, lower_order=True)
+
+        return contig
+
+    @classmethod
     def build_kernel(
         cls,
         data,
@@ -1511,7 +1585,11 @@ class Graph(SetOpsMixin):
         standardized_adjacency = pd.Series(
             standardized, name="weight", index=self._adjacency.index
         )
-        return Graph(standardized_adjacency, transformation, is_sorted=True)
+        transformed = Graph(standardized_adjacency, transformation, is_sorted=True)
+
+        if hasattr(self, "_xarray_index_names"):
+            transformed._xarray_index_names = self._xarray_index_names
+        return transformed
 
     @cached_property
     def _components(self):
@@ -1598,7 +1676,7 @@ class Graph(SetOpsMixin):
     @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
-        return (self._adjacency.drop(self.isolates) > 0).sum()
+        return (self._adjacency > 0).sum()
 
     @cached_property
     def index_pairs(self):
@@ -1855,7 +1933,7 @@ class Graph(SetOpsMixin):
         if not diagonal:
             sk = {(i, j) for i, j in sk if i != j}
 
-        return Graph.from_sparse(
+        higher = Graph.from_sparse(
             sparse.coo_array(
                 (
                     np.ones(len(sk), dtype=np.int8),
@@ -1865,6 +1943,10 @@ class Graph(SetOpsMixin):
             ),
             ids=self.unique_ids,
         )
+        if hasattr(self, "_xarray_index_names"):
+            higher._xarray_index_names = self._xarray_index_names
+
+        return higher
 
     def lag(self, y, categorical=False, ties="raise"):
         """Spatial lag operator
@@ -2261,11 +2343,11 @@ class Graph(SetOpsMixin):
         Unlike the implementation in ``networkx``, this creates a copy since
         Graphs in ``libpysal`` are immutable.
         """
-        masked_adj = self._adjacency[ids]
+        masked_adj = self._adjacency.loc[ids, :]
         filtered_adj = masked_adj[
             masked_adj.index.get_level_values("neighbor").isin(ids)
         ]
-        return Graph.from_arrays(
+        sub = Graph.from_arrays(
             *_resolve_islands(
                 filtered_adj.index.get_level_values("focal"),
                 filtered_adj.index.get_level_values("neighbor"),
@@ -2273,6 +2355,11 @@ class Graph(SetOpsMixin):
                 filtered_adj.values,
             )
         )
+
+        if hasattr(self, "_xarray_index_names"):
+            sub._xarray_index_names = self._xarray_index_names
+
+        return sub
 
     def eliminate_zeros(self):
         """Remove graph edges with zero weight
@@ -2290,7 +2377,12 @@ class Graph(SetOpsMixin):
         zeros = (self._adjacency == 0) != np.isin(
             self._adjacency.index.get_level_values(0), self.isolates
         )
-        return Graph(self._adjacency[~zeros], is_sorted=True)
+
+        eliminated = Graph(self._adjacency[~zeros], is_sorted=True)
+        if hasattr(self, "_xarray_index_names"):
+            eliminated._xarray_index_names = self._xarray_index_names
+
+        return eliminated
 
     def assign_self_weight(self, weight=1):
         """Assign values to edges representing self-weight.
@@ -2364,7 +2456,12 @@ class Graph(SetOpsMixin):
             .reindex(self.unique_ids, level=0)
             .reindex(self.unique_ids, level=1)
         )
-        return Graph(adj, is_sorted=True)
+        assigned = Graph(adj, is_sorted=True)
+
+        if hasattr(self, "_xarray_index_names"):
+            assigned._xarray_index_names = self._xarray_index_names
+
+        return assigned
 
     def apply(self, y, func, **kwargs):
         """Apply a reduction across the neighbor sets
@@ -2479,6 +2576,23 @@ class Graph(SetOpsMixin):
         stat_.loc[self.isolates] = np.nan
         return stat_
 
+    def generate_da(self, y):
+        """Creates xarray.DataArray object from passed data aligned with the Graph.
+
+        Parameters
+        ----------
+        y : array_like
+            flat array that shall be reshaped into a DataArray with dimensionality
+            conforming to Graph
+
+        Returns
+        -------
+        xarray.DataArray
+            instance of xarray.DataArray that can be aligned with the DataArray from
+            which Graph was built
+        """
+        return _generate_da(self, y)
+
 
 def _arrange_arrays(heads, tails, weights, ids=None):
     """
@@ -2530,8 +2644,11 @@ def read_parquet(path, **kwargs):
     --------
     >>> graph.read_parquet("contiguity.parquet")
     """
-    adjacency, transformation = _read_parquet(path, **kwargs)
-    return Graph(adjacency, transformation, is_sorted=True)
+    adjacency, transformation, xarray_index_names = _read_parquet(path, **kwargs)
+    graph_obj = Graph(adjacency, transformation, is_sorted=True)
+    if xarray_index_names is not None:
+        graph_obj._xarray_index_names = xarray_index_names
+    return graph_obj
 
 
 def read_gal(path):

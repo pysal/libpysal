@@ -220,6 +220,77 @@ def da2WSP(
     --------
     :class:`libpysal.weights.weights.WSP`
     """
+    try:
+        import numba  # noqa: F401
+
+        use_numba = True
+    except (ModuleNotFoundError, ImportError):
+        warn(
+            "numba cannot be imported, parallel processing "
+            "and include_nodata functionality will be disabled. "
+            "falling back to slower method",
+            stacklevel=2,
+        )
+        use_numba = False
+        include_nodata = False
+
+    if use_numba:
+        sw_tup, ser, n = _da2wsp(
+            da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            k=k,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+            use_numba=use_numba,
+        )
+
+        sw = sparse.csr_matrix(
+            sw_tup,
+            shape=(n, n),
+            dtype=np.int8,
+        )
+    else:
+        sw, ser = _da2wsp(
+            da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            k=k,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+            use_numba=use_numba,
+        )
+
+    # Higher_order functionality, this uses idea from
+    # libpysal#313 for adding higher order neighbors.
+    # Since diagonal elements are also added in the result,
+    # this method set the diagonal elements to zero and
+    # then eliminate zeros from the data. This changes the
+    # sparsity of the csr_matrix !!
+    if k > 1 and not include_nodata:
+        sw = sum(sw**x for x in range(1, k + 1))
+        sw.setdiag(0)
+        sw.eliminate_zeros()
+        sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
+
+    index = ser.index
+    wsp = WSP(sw, index=index)
+    return wsp
+
+
+def _da2wsp(
+    da,
+    criterion="queen",
+    z_value=None,
+    coords_labels={},
+    k=1,
+    include_nodata=False,
+    n_jobs=1,
+    use_numba=True,
+):
+    """Helper for da2WSP that can be reused in Graph"""
     z_id, coords_labels = _da_checker(da, z_value, coords_labels)
     shape = da.shape
     if z_id:
@@ -242,23 +313,7 @@ def da2WSP(
 
     n = len(ids)
 
-    try:
-        import numba  # noqa: F401
-    except (ModuleNotFoundError, ImportError):
-        warn(
-            "numba cannot be imported, parallel processing "
-            "and include_nodata functionality will be disabled. "
-            "falling back to slower method",
-            stacklevel=2,
-        )
-        include_nodata = False
-        # Fallback method to build sparse matrix
-        sw = lat2SW(*shape, criterion)
-        if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
-            sw = sw[mask]
-            sw = sw[:, mask]
-
-    else:
+    if use_numba:
         k_nas = k if include_nodata else 1
 
         if n_jobs != 1:
@@ -284,28 +339,14 @@ def da2WSP(
             sw_tup = _parSWbuilder(
                 *shape, ids, id_map, criterion, k_nas, dtype, n_jobs
             )  # -> (data, (row, col))
-
-        sw = sparse.csr_matrix(
-            sw_tup,
-            shape=(n, n),
-            dtype=np.int8,
-        )
-
-    # Higher_order functionality, this uses idea from
-    # libpysal#313 for adding higher order neighbors.
-    # Since diagonal elements are also added in the result,
-    # this method set the diagonal elements to zero and
-    # then eliminate zeros from the data. This changes the
-    # sparcity of the csr_matrix !!
-    if k > 1 and not include_nodata:
-        sw = sum(sw**x for x in range(1, k + 1))
-        sw.setdiag(0)
-        sw.eliminate_zeros()
-        sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
-
-    index = ser.index
-    wsp = WSP(sw, index=index)
-    return wsp
+    else:
+        # Fallback method to build sparse matrix
+        sw = lat2SW(*shape, criterion)
+        if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
+            sw = sw[mask]
+            sw = sw[:, mask]
+        return sw, ser
+    return sw_tup, ser, n
 
 
 def w2da(data, w, attrs={}, coords=None):

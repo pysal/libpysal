@@ -28,6 +28,8 @@ def _to_parquet(graph_obj, destination, **kwargs):
 
     meta = table.schema.metadata
     d = {"transformation": graph_obj.transformation, "version": libpysal.__version__}
+    if hasattr(graph_obj, "_xarray_index_names"):
+        d["_xarray_index_names"] = list(graph_obj._xarray_index_names)
     meta[b"libpysal"] = json.dumps(d).encode("utf-8")
     schema = table.schema.with_metadata(meta)
 
@@ -47,7 +49,7 @@ def _read_parquet(source, **kwargs):
     Returns
     -------
     tuple
-        tuple of adjacency table and transformation
+        tuple of adjacency table, transformation, and xarray_index_names
     """
     try:
         import pyarrow.parquet as pq
@@ -61,4 +63,10 @@ def _read_parquet(source, **kwargs):
     else:
         transformation = "O"
 
-    return table.to_pandas()["weight"], transformation
+    if b"_xarray_index_names" in table.schema.metadata:
+        meta = json.loads(table.schema.metadata[b"_xarray_index_names"])
+        xarray_index_names = meta["_xarray_index_names"]
+    else:
+        xarray_index_names = None
+
+    return table.to_pandas()["weight"], transformation, xarray_index_names
