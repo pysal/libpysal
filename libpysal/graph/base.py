@@ -1707,6 +1707,12 @@ class Graph(SetOpsMixin):
         summarising the Graph and its basic properties. See the docstring of the
         :class:`GraphSummary` for details and all the available attributes.
 
+        Parameters
+        ----------
+        asymmetries : bool
+            whether to compute ``n_asymmetries``, which is considerably more expensive
+            than the other attributes. By default False.
+
         Returns
         -------
         GraphSummary
