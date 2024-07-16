@@ -1700,12 +1700,18 @@ class Graph(SetOpsMixin):
             ).sort_index()
             return ijs
 
-    def summary(self):
+    def summary(self, asymmetries=False):
         """Summary of the Graph properties
 
-        Returs a :class:`GraphSummary` object with the statistical attributes
+        Returns a :class:`GraphSummary` object with the statistical attributes
         summarising the Graph and its basic properties. See the docstring of the
         :class:`GraphSummary` for details and all the available attributes.
+
+        Parameters
+        ----------
+        asymmetries : bool
+            whether to compute ``n_asymmetries``, which is considerably more expensive
+            than the other attributes. By default False.
 
         Returns
         -------
@@ -1732,7 +1738,7 @@ class Graph(SetOpsMixin):
         <Graph of 5 nodes and 10 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
 
-        >>> summary = contiguity.summary()
+        >>> summary = contiguity.summary(asymmetries=True)
         >>> summary
         Graph Summary Statistics
         ========================
@@ -1776,7 +1782,7 @@ class Graph(SetOpsMixin):
         >>> summary.s1
         20
         """
-        return GraphSummary(self)
+        return GraphSummary(self, asymmetries=asymmetries)
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order :math:`k`.
