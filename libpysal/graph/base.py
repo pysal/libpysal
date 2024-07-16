@@ -1703,7 +1703,7 @@ class Graph(SetOpsMixin):
     def summary(self, asymmetries=False):
         """Summary of the Graph properties
 
-        Returs a :class:`GraphSummary` object with the statistical attributes
+        Returns a :class:`GraphSummary` object with the statistical attributes
         summarising the Graph and its basic properties. See the docstring of the
         :class:`GraphSummary` for details and all the available attributes.
 
