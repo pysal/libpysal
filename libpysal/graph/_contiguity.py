@@ -241,11 +241,7 @@ def _block_contiguity(regimes, ids=None):
 
 
 def _fuzzy_contiguity(
-    geoms,
-    ids,
-    tolerance=None,
-    buffer=None,
-    predicate="intersects",
+    geoms, ids, tolerance=None, buffer=None, predicate="intersects", **kwargs
 ):
     """Fuzzy contiguity builder
 
@@ -270,6 +266,8 @@ def _fuzzy_contiguity(
         If None is passed, neighbours are determined based on the intersection of
         bounding boxes. See the documentation of ``geopandas.GeoSeries.sindex.query``
         for allowed predicates.
+    **kwargs
+        Keyword arguments passed to ``geopandas.GeoSeries.buffer``.
 
     Returns
     -------
@@ -289,7 +287,7 @@ def _fuzzy_contiguity(
         buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
 
     if buffer is not None:
-        geoms = geoms.buffer(buffer)
+        geoms = geoms.buffer(buffer, **kwargs)
 
     # query tree based on set predicate
     if GPD_013:

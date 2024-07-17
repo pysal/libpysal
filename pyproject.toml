@@ -57,7 +57,6 @@ dev = [
     "watermark",
 ]
 docs = [
-    "mkdocs-jupyter",
     "myst-parser",
     "nbsphinx",
     "numpydoc",
@@ -121,4 +120,7 @@ filterwarnings = [
     "ignore:invalid value encountered",
     "ignore:Passing a SingleBlockManager", # https://github.com/geopandas/geopandas/issues/3060
     "ignore:Passing a BlockManager", # https://github.com/geopandas/geopandas/issues/3060
+]
+markers = [
+    "network: marks tests that require a network connection"
 ]

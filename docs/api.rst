@@ -6,8 +6,24 @@
 libpysal API reference
 ======================
 
+Spatial Graph
+-------------
+
+Modern implementation of spatial graphs encoding spatial weights matrices.
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.graph.Graph
+   libpysal.graph.GraphSummary
+   libpysal.graph.read_parquet
+   libpysal.graph.read_gal
+   libpysal.graph.read_gwt
+
 Spatial Weights
 ---------------
+
+Legacy implementation of spatial weights matrices.
 
 .. autosummary::
    :toctree: generated/
@@ -251,15 +267,3 @@ examples
    libpysal.examples.get_path
 
 
-Experimental
-------------
-
-Experimental modules with unstable API.
-
-graph
------
-
-.. autosummary::
-   :toctree: generated/
-
-   libpysal.graph.Graph

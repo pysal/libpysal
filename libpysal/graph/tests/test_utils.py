@@ -11,39 +11,58 @@ from libpysal.graph._kernel import _VALID_GEOMETRY_TYPES as kernel_types
 from libpysal.graph._triangulation import _VALID_GEOMETRY_TYPES as triang_types
 from libpysal.graph._utils import _validate_geometry_input
 
-guerry = geopandas.read_file(geodatasets.get_path("geoda guerry"))
-guerry["intID"] = range(len(guerry))
-guerry["strID"] = guerry.intID.astype(str)
-rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers"))
-rivers["strID"] = rivers.NAME
-rivers["intID"] = rivers.index.values + 1
 
-id_types = [None, "intID", "strID"]
-id_type_names = ["no index", "int index", "string index"]
+@pytest.fixture(scope="session")
+def guerry():
+    guerry = geopandas.read_file(geodatasets.get_path("geoda guerry"))
+    guerry["intID"] = range(len(guerry))
+    guerry["strID"] = guerry.intID.astype(str)
+    return guerry
 
-geom_names = ["guerry", "guerry centroids", "rivers"]
-geoms = [guerry, guerry.set_geometry(guerry.geometry.centroid), rivers]
 
-shuffle = [False, True]
-external_ids = [False, True]
-input_type = ["gdf", "gseries", "array"]
+@pytest.fixture(scope="session")
+def rivers():
+    rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers"))
+    rivers["strID"] = rivers.NAME
+    rivers["intID"] = rivers.index.values + 1
+    return rivers
 
-parametrize_inputs = pytest.mark.parametrize("geoms", geoms, ids=geom_names)
-parametrize_idtypes = pytest.mark.parametrize("ids", id_types, ids=id_type_names)
+
+@pytest.fixture(params=["guerry", "guerry centroids", "rivers"])
+def geoms(guerry, rivers, request):
+    if request.param == "guerry":
+        return guerry
+    elif request.param == "guerry centroids":
+        return guerry.set_geometry(guerry.geometry.centroid)
+    elif request.param == "rivers":
+        return rivers
+    else:
+        raise ValueError(
+            "geoms not in supported testing types: "
+            "'guerry', 'guerry centroids', 'rivers'"
+        )
+
+
+parametrize_idtypes = pytest.mark.parametrize(
+    "ids",
+    [None, "intID", "strID"],
+    ids=["no index", "int index", "string index"],
+)
 parametrize_shuffle = pytest.mark.parametrize(
-    "shuffle", shuffle, ids=["input order", "shuffled"]
+    "shuffle", [False, True], ids=["input order", "shuffled"]
 )
 parametrize_input_type = pytest.mark.parametrize(
-    "input_type", input_type, ids=input_type
+    "input_type",
+    ["gdf", "gseries", "array"],
 )
 parametrize_external_ids = pytest.mark.parametrize(
-    "external_ids", external_ids, ids=["use set_index", "use id vector"]
+    "external_ids", [False, True], ids=["use set_index", "use id vector"]
 )
 
 
+@pytest.mark.network
 @parametrize_shuffle
 @parametrize_external_ids
-@parametrize_inputs
 @parametrize_idtypes
 @parametrize_input_type
 def test_validate_input_geoms(geoms, ids, shuffle, external_ids, input_type):
@@ -87,9 +106,10 @@ def test_validate_input_geoms(geoms, ids, shuffle, external_ids, input_type):
         numpy.testing.assert_array_equal(coordinates, coords)
 
 
+@pytest.mark.network
 @parametrize_shuffle
 @parametrize_idtypes
-def test_validate_input_coords(shuffle, ids):
+def test_validate_input_coords(shuffle, ids, guerry):
     """
     Test that input coordinate arrays get validated correctly
     """
@@ -102,7 +122,10 @@ def test_validate_input_coords(shuffle, ids):
     assert coordinates.shape[0] == len(ids)
 
 
+@pytest.mark.network
 def test_validate_raises(
+    guerry,
+    rivers,
     kernel_types=kernel_types,
     contiguity_types=contiguity_types,
     triang_types=triang_types,

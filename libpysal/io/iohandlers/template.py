@@ -72,7 +72,7 @@ class TemplateWriter(FileIO.FileIO):
             self.pos += 1
 
         else:
-            raise TypeError("Expected a string, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a string, got: {type(obj)}.")
 
     # default is to raise "NotImplementedError"
     def flush(self):
@@ -150,7 +150,7 @@ class TemplateReaderWriter(FileIO.FileIO):
             self.fileObj.write(result + "\n")
             self.pos += 1
         else:
-            raise TypeError("Expected a string, got: %s" % (type(obj)))
+            raise TypeError(f"Expected a string, got: {type(obj)}")
 
     def flush(self):
         self._complain_ifclosed(self.closed)

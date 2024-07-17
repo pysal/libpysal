@@ -8,6 +8,7 @@ from libpysal import graph
 from libpysal.graph.tests.test_utils import fetch_map_string
 
 
+@pytest.mark.network
 class TestPlotting:
     def setup_method(self):
         _ = pytest.importorskip("matplotlib")
@@ -21,38 +22,38 @@ class TestPlotting:
         self.expected_paths = [
             np.array(
                 [
-                    [941639.45038754, 150931.99114113],
-                    [941639.45038754, 150931.99114113],
+                    [943802.68511489, 147890.05410767],
+                    [943802.68511489, 147890.05410767],
                 ]
             ),
             np.array(
                 [
-                    [1034578.07840646, 197116.60422991],
-                    [998769.11468895, 174169.76072687],
+                    [1033983.96582281, 196127.39050293],
+                    [998506.94007314, 177674.69769287],
                 ]
             ),
             np.array(
                 [
-                    [1034578.07840646, 197116.60422991],
-                    [993336.96493848, 222451.43672456],
+                    [1033983.96582281, 196127.39050293],
+                    [995258.50398262, 226631.05230713],
                 ]
             ),
             np.array(
                 [
-                    [1034578.07840646, 197116.60422991],
-                    [1021174.78976724, 249937.98006968],
+                    [1033983.96582281, 196127.39050293],
+                    [1021230.82521895, 251186.3362925],
                 ]
             ),
             np.array(
                 [
-                    [998769.11468895, 174169.76072687],
-                    [993336.96493848, 222451.43672456],
+                    [998506.94007314, 177674.69769287],
+                    [995258.50398262, 226631.05230713],
                 ]
             ),
             np.array(
                 [
-                    [993336.96493848, 222451.43672456],
-                    [1021174.78976724, 249937.98006968],
+                    [995258.50398262, 226631.05230713],
+                    [1021230.82521895, 251186.3362925],
                 ]
             ),
         ]
@@ -72,7 +73,7 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid),
+            shapely.get_coordinates(self.nybb.representative_point()),
         )
 
         # edge color
@@ -97,7 +98,7 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid),
+            shapely.get_coordinates(self.nybb.representative_point()),
         )
 
     def test_misaligned(self):
@@ -112,7 +113,7 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid),
+            shapely.get_coordinates(self.nybb.representative_point()),
         )
 
     def test_no_nodes(self):
@@ -138,13 +139,13 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid)[2:],
+            shapely.get_coordinates(self.nybb.representative_point())[2:],
         )
 
         pathcollection_focal = ax.collections[2]
         np.testing.assert_array_equal(
             pathcollection_focal.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid)[[1]],
+            shapely.get_coordinates(self.nybb.representative_point())[[1]],
         )
 
     def test_focal_array(self):
@@ -162,13 +163,13 @@ class TestPlotting:
         pathcollection = ax.collections[1]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid)[1:],
+            shapely.get_coordinates(self.nybb.representative_point())[1:],
         )
 
         pathcollection_focal = ax.collections[2]
         np.testing.assert_array_equal(
             pathcollection_focal.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid)[[1, -1]],
+            shapely.get_coordinates(self.nybb.representative_point())[[1, -1]],
         )
 
     def test_color(self):
@@ -213,7 +214,7 @@ class TestPlotting:
         pathcollection = ax.collections[2]
         np.testing.assert_array_equal(
             pathcollection.get_offsets().data,
-            shapely.get_coordinates(self.nybb.centroid),
+            shapely.get_coordinates(self.nybb.representative_point()),
         )
 
     def test_figsize(self):
@@ -227,8 +228,8 @@ class TestPlotting:
         self.G_str.plot(
             self.nybb_str, focal="Bronx", limit_extent=True, ax=ax, color="red"
         )
-        assert ax.get_ylim() == (194475.53543792566, 252579.0488616723)
-        assert ax.get_xlim() == (991274.9092650851, 1036640.134079854)
+        assert ax.get_ylim() == (193374.44321345096, 253939.28358198277)
+        assert ax.get_xlim() == (993322.2308906089, 1035920.2389148154)
 
     def test_focal_kws(self):
         ax = self.G_str.plot(

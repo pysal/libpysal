@@ -17,6 +17,7 @@ of the underlying data shall be tested in respective constructor test suites.
 """
 
 
+@pytest.mark.network
 class TestContiguity:
     def setup_method(self):
         self.gdf = gpd.read_file(geodatasets.get_path("nybb"))
@@ -140,7 +141,15 @@ class TestContiguity:
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
+    def test_fuzzy_contiguity_kwargs(self):
+        g = graph.Graph.build_fuzzy_contiguity(self.gdf_str, resolution=2)
 
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+
+
+@pytest.mark.network
 class TestTriangulation:
     def setup_method(self):
         gdf = gpd.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
@@ -208,6 +217,7 @@ class TestTriangulation:
         )
 
 
+@pytest.mark.network
 class TestKernel:
     def setup_method(self):
         self.gdf = gpd.read_file(geodatasets.get_path("geoda liquor_stores")).explode(
@@ -279,6 +289,7 @@ class TestKernel:
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
 
+@pytest.mark.network
 class TestDistanceBand:
     def setup_method(self):
         df = gpd.read_file(geodatasets.get_path("nybb"))
@@ -332,6 +343,7 @@ class TestDistanceBand:
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
 
+@pytest.mark.network
 class TestAdjacency:
     def setup_method(self):
         self.gdf = gpd.read_file(geodatasets.get_path("nybb"))

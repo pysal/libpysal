@@ -233,8 +233,8 @@ class ArcGISTextIO(gwt.GwtIO):
                 id2i = obj.id2i
                 obj = remap_ids(obj, id2i)
 
-            header = "%s\n" % self.varName
+            header = f"{self.varName}\n"
             self.file.write(header)
             self._writelines(obj)
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")

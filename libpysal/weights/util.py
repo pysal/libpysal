@@ -523,7 +523,7 @@ def higher_order_sp(
         )
 
     if lower_order:
-        wk = sum(w**x for x in range(2, k + 1))
+        wk = sum(w**x for x in range(1, k + 1))
         shortest_path = False
     else:
         wk = w**k

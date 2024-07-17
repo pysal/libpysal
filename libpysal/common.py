@@ -1,4 +1,5 @@
 import copy
+import importlib
 
 import pandas  #  noqa: F401
 
@@ -92,8 +93,7 @@ def simport(modname):
     """
 
     try:
-        exec(f"import {modname}")
-        _simport = True, eval(modname)
+        _simport = True, importlib.import_module(modname)
     except (ImportError, ModuleNotFoundError):
         _simport = False, None
 

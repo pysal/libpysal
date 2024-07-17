@@ -58,7 +58,7 @@ def asShape(obj):
         geo = obj.__geo_interface__ if hasattr(obj, "__geo_interface__") else obj
 
         if hasattr(geo, "type"):
-            raise TypeError("%r does not appear to be a shape object." % (obj))
+            raise TypeError(f"{obj!r} does not appear to be a shape object.")
 
         geo_type = geo["type"].lower()
 
@@ -68,7 +68,7 @@ def asShape(obj):
         if geo_type in _geoJSON_type_to_Pysal_type:
             obj = _geoJSON_type_to_Pysal_type[geo_type].__from_geo_interface__(geo)
         else:
-            raise NotImplementedError("%s is not supported at this time." % geo_type)
+            raise NotImplementedError(f"{geo_type} is not supported at this time.")
 
     return obj
 
@@ -942,7 +942,7 @@ class Chain(Geometry):
         elif geo["type"].lower() == "multilinestring":
             verts = [list(map(Point, part)) for part in geo["coordinates"]]
         else:
-            raise TypeError("%r is not a Chain." % geo)
+            raise TypeError(f"{geo!r} is not a Chain.")
         return cls(verts)
 
     @property

@@ -8,6 +8,7 @@ from packaging.version import Version
 
 GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
+NUMPY_GE_2 = Version(np.__version__) >= Version("2.0.0")
 
 try:
     from numba import njit  # noqa: E401
@@ -31,6 +32,7 @@ def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True, return_adjacency
     When we know we are dealing with cliques, we don't want to resolve
     isolates here but will do that later once cliques are induced.
     """
+    argsort_kwds = {"stable": True} if NUMPY_GE_2 else {}
     sparray = sparray.tocoo(copy=False)
     if ids is not None:
         ids = np.asarray(ids)
@@ -40,12 +42,12 @@ def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True, return_adjacency
                 f"the shape of sparse {sparray.shape}."
             )
 
-        sorter = sparray.row.argsort()
+        sorter = sparray.row.argsort(**argsort_kwds)
         head = ids[sparray.row][sorter]
         tail = ids[sparray.col][sorter]
         data = sparray.data[sorter]
     else:
-        sorter = sparray.row.argsort()
+        sorter = sparray.row.argsort(**argsort_kwds)
         head = sparray.row[sorter]
         tail = sparray.col[sorter]
         data = sparray.data[sorter]

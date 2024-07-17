@@ -20,8 +20,10 @@ from ._indices import _build_from_h3
 from ._kernel import _distance_band, _kernel
 from ._matching import _spatial_matching
 from ._plotting import _explore_graph, _plot
+from ._raster import _generate_da, _raster_contiguity
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
+from ._summary import GraphSummary
 from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
 from ._utils import (
     _compute_stats,
@@ -151,14 +153,19 @@ class Graph(SetOpsMixin):
             )
         return self._adjacency.loc[item]
 
-    def __repr__(self):
+    def _get_ids_repr(self, chars=72):
         if len(self.unique_ids) > 5:
-            unique_ids = f"{str(self.unique_ids[:5].tolist())[:-1]}, ...]"
+            ids = str(self.unique_ids[:5].tolist())[:-1] + ", "
+            if len(ids) > chars:
+                ids = str(self.unique_ids[:5].tolist())[:chars]
+            return f"{ids}...]"
         else:
-            unique_ids = self.unique_ids.tolist()
+            return self.unique_ids.tolist()
+
+    def __repr__(self):
         return (
             f"<Graph of {self.n} nodes and {self.nonzero} nonzero edges indexed by\n"
-            f" {unique_ids}>"
+            f" {self._get_ids_repr()}>"
         )
 
     def copy(self, deep=True):
@@ -203,6 +210,27 @@ class Graph(SetOpsMixin):
         -------
         Graph
             libpysal.graph.Graph from W
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> queen_w = weights.Queen.from_dataframe(nybb, use_index=True)
+        >>> queen_graph = graph.Graph.from_W(queen_w)
+        >>> queen_graph
+        <Graph of 5 nodes and 10 nonzero edges indexed by
+         ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
         """
         return cls.from_weights_dict(dict(w))
 
@@ -218,7 +246,7 @@ class Graph(SetOpsMixin):
         --------
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
-        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
         >>> nybb
                        BoroCode  ...                                           geometry
         BoroName                 ...
@@ -264,7 +292,12 @@ class Graph(SetOpsMixin):
                 neighbors[ix] = chunk.index.get_level_values("neighbor").tolist()
                 weights[ix] = chunk.tolist()
 
-        return W(neighbors=neighbors, weights=weights, id_order=self.unique_ids)
+        return W(
+            neighbors=neighbors,
+            weights=weights,
+            id_order=self.unique_ids.tolist(),
+            silence_warnings=True,
+        )
 
     @classmethod
     def from_adjacency(
@@ -557,7 +590,7 @@ class Graph(SetOpsMixin):
 
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
-        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
         >>> nybb
                        BoroCode  ...                                           geometry
         BoroName                 ...
@@ -666,7 +699,7 @@ class Graph(SetOpsMixin):
         --------
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
-        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
         >>> nybb
                        BoroCode  ...                                           geometry
         BoroName                 ...
@@ -803,11 +836,7 @@ class Graph(SetOpsMixin):
 
     @classmethod
     def build_fuzzy_contiguity(
-        cls,
-        geometry,
-        tolerance=None,
-        buffer=None,
-        predicate="intersects",
+        cls, geometry, tolerance=None, buffer=None, predicate="intersects", **kwargs
     ):
         """Generate Graph from fuzzy contiguity
 
@@ -851,19 +880,137 @@ class Graph(SetOpsMixin):
             'intersects'. If None is passed, neighbours are determined based
             on the intersection of bounding boxes. See the documentation of
             ``geopandas.GeoSeries.sindex.query`` for allowed predicates.
+        **kwargs
+            Keyword arguments passed to ``geopandas.GeoSeries.buffer``.
 
         Returns
         -------
         Graph
             libpysal.graph.Graph encoding fuzzy contiguity
+
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        Example using the default parameters:
+
+        >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb)
+        >>> fuzzy_contiguity
+        <Graph of 5 nodes and 10 nonzero edges indexed by
+         ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+
+        Example using the tolerance of 0.05:
+
+        >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, tolerance=0.05)
+        >>> fuzzy_contiguity
+        <Graph of 5 nodes and 12 nonzero edges indexed by
+         ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+
+        Example using a buffer of 10000 feet (CRS of nybb is in feet):
+
+        >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, buffer=10000)
+        >>> fuzzy_contiguity
+        <Graph of 5 nodes and 14 nonzero edges indexed by
+         ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+
         """
         ids = _evaluate_index(geometry)
 
         heads, tails, weights = _fuzzy_contiguity(
-            geometry, ids, tolerance=tolerance, buffer=buffer, predicate=predicate
+            geometry,
+            ids,
+            tolerance=tolerance,
+            buffer=buffer,
+            predicate=predicate,
+            **kwargs,
         )
 
         return cls.from_arrays(heads, tails, weights)
+
+    @classmethod
+    def build_raster_contiguity(
+        cls,
+        da,
+        rook=False,
+        z_value=None,
+        coords_labels=None,
+        k=1,
+        include_nodata=False,
+        n_jobs=1,
+    ):
+        """Generate Graph from ``xarray.DataArray`` raster object
+
+        Create Graph object encoding contiguity of raster cells from
+        ``xarray.DataArray`` object. The coordinates are flatten to tuples representing
+        the location of each cell within the raster.
+
+        Parameters
+        ----------
+        da : xarray.DataArray
+            Input 2D or 3D DataArray with shape=(z, y, x)
+        rook : bool, optional
+            Contiguity method. If True, two cells are considered neighbours if
+            they share at least one edge. If False, two geometries are considered
+            neighbours if they share at least one vertex. By default True
+        z_value : {int, str, float}, optional
+            Select the z_value of 3D DataArray with multiple layers. By default None
+        coords_labels : dict, optional
+            Pass dimension labels for coordinates and layers if they do not
+            belong to default dimensions, which are (band/time, y/lat, x/lon)
+            e.g. ``coords_labels = {"y_label": "latitude", "x_label": "longitude",
+            "z_label": "year"}``
+            When None, defaults to empty dictionary.
+        k : int, optional
+            Order of contiguity, this will select all neighbors up to k-th order.
+            Default is 1.
+        include_nodata : bool, optional
+            If True, missing values will be assumed as non-missing when
+            selecting higher_order neighbors, Default is False
+        n_jobs : int, optional
+            Number of cores to be used in the sparse weight construction. If -1,
+            all available cores are used. Default is 1. Requires ``joblib``.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph encoding raster contiguity
+        """
+
+        if coords_labels is None:
+            coords_labels = {}
+        criterion = "rook" if rook else "queen"
+
+        heads, tails, weights, xarray_index = _raster_contiguity(
+            da=da,
+            criterion=criterion,
+            z_value=z_value,
+            coords_labels=coords_labels,
+            k=k,
+            include_nodata=include_nodata,
+            n_jobs=n_jobs,
+        )
+        heads, tails, weights = _resolve_islands(
+            heads, tails, xarray_index.to_numpy(), weights
+        )
+        contig = cls.from_arrays(heads, tails, weights)
+        contig._xarray_index_names = xarray_index.names
+
+        if k > 1 and not include_nodata:
+            contig = contig.higher_order(k, lower_order=True)
+
+        return contig
 
     @classmethod
     def build_kernel(
@@ -978,7 +1125,7 @@ class Graph(SetOpsMixin):
         --------
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
-        >>> nybb = gpd.read_file(get_path('nybb')).set_index('BoroName')
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index('BoroName')
         >>> nybb
                        BoroCode  ...                                           geometry
         BoroName                 ...
@@ -1148,17 +1295,20 @@ class Graph(SetOpsMixin):
             Clipping method when ``method="voronoi"``. Ignored otherwise.
             Default is ``'bounding_box'``. Options are as follows.
 
-            * ``None`` -- No clip is applied. Voronoi cells may be arbitrarily
-            larger that the source map. Note that this may lead to cells that are many
-            orders of magnitude larger in extent than the original map. Not recommended.
-            * ``'bounding_box'`` -- Clip the voronoi cells to the
-            bounding box of the input points.
-            * ``'convex_hull'`` -- Clip the voronoi cells to the convex hull of
-            the input points.
-            * ``'alpha_shape'`` -- Clip the voronoi cells to the tightest hull that
-            contains all points (e.g. the smallest alpha shape, using
-            :func:`libpysal.cg.alpha_shape_auto`).
-            * ``shapely.Polygon`` -- Clip to an arbitrary Polygon.
+            ``None``
+                No clip is applied. Voronoi cells may be arbitrarily larger that the
+                source map. Note that this may lead to cells that are many orders of
+                magnitude larger in extent than the original map. Not recommended.
+            ``'bounding_box'``
+                Clip the voronoi cells to the bounding box of the input points.
+            ``'convex_hull'``
+                Clip the voronoi cells to the convex hull of the input points.
+            ``'alpha_shape'``
+                Clip the voronoi cells to the tightest hull that contains all points
+                (e.g. the smallest alpha shape, using
+                :func:`libpysal.cg.alpha_shape_auto`).
+            ``shapely.Polygon``
+                Clip to an arbitrary Polygon.
 
         rook : bool, optional
             Contiguity method when ``method="voronoi"``. Ignored otherwise.
@@ -1181,7 +1331,7 @@ class Graph(SetOpsMixin):
 
         >>> import geopandas as gpd
         >>> from geodatasets import get_path
-        >>> nybb = gpd.read_file(get_path('nybb')).set_index("BoroName")
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
         >>> nybb
                        BoroCode  ...                                           geometry
         BoroName                 ...
@@ -1270,9 +1420,30 @@ class Graph(SetOpsMixin):
         Returns
         -------
         Graph
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> from tobler.util import h3fy
+        >>> gdf = gpd.read_file(get_path("geoda guerry"))
+        >>> h3 = h3fy(gdf, resolution=4)
+        >>> h3.head()
+                                                                  geometry
+        hex_id
+        841f94dffffffff  POLYGON ((609346.657 2195981.397, 604556.817 2...
+        841fa67ffffffff  POLYGON ((722074.162 2561038.244, 717442.706 2...
+        84186a3ffffffff  POLYGON ((353695.287 2121176.341, 329999.974 2...
+        8418609ffffffff  POLYGON ((387747.482 2509794.492, 364375.032 2...
+        8418491ffffffff  POLYGON ((320872.289 1846157.662, 296923.464 1...
+
+        >>> h3_contiguity = graph.Graph.build_h3(h3.index)
+        >>> h3_contiguity
+        <Graph of 320 nodes and 1740 nonzero edges indexed by
+         ['841f94dffffffff', '841fa67ffffffff', '84186a3ffffffff', ...]>
         """
-        neigbors, weights = _build_from_h3(ids, order=order)
-        g = cls.from_dicts(neigbors, weights)
+        neighbors, weights = _build_from_h3(ids, order=order)
+        g = cls.from_dicts(neighbors, weights)
 
         if weight == "distance":
             return g
@@ -1378,7 +1549,10 @@ class Graph(SetOpsMixin):
 
         if transformation == "R":
             standardized = (
-                (self._adjacency / self._adjacency.groupby(level=0).transform("sum"))
+                (
+                    self._adjacency
+                    / self._adjacency.groupby(level=0, sort=False).transform("sum")
+                )
                 .fillna(0)
                 .values
             )  # isolate comes as NaN -> 0
@@ -1390,14 +1564,16 @@ class Graph(SetOpsMixin):
             standardized = self._adjacency.astype(bool).astype(int)
 
         elif transformation == "V":
-            s = self._adjacency.groupby(level=0).transform(
+            s = self._adjacency.groupby(level=0, sort=False).transform(
                 lambda group: group / math.sqrt((group**2).sum())
             )
             n_q = self.n / s.sum()
             standardized = (s * n_q).fillna(0).values  # isolate comes as NaN -> 0
 
         elif callable(transformation):
-            standardized = self._adjacency.groupby(level=0).transform(transformation)
+            standardized = self._adjacency.groupby(level=0, sort=False).transform(
+                transformation
+            )
             transformation = "C"
 
         else:
@@ -1409,7 +1585,11 @@ class Graph(SetOpsMixin):
         standardized_adjacency = pd.Series(
             standardized, name="weight", index=self._adjacency.index
         )
-        return Graph(standardized_adjacency, transformation, is_sorted=True)
+        transformed = Graph(standardized_adjacency, transformation, is_sorted=True)
+
+        if hasattr(self, "_xarray_index_names"):
+            transformed._xarray_index_names = self._xarray_index_names
+        return transformed
 
     @cached_property
     def _components(self):
@@ -1449,7 +1629,7 @@ class Graph(SetOpsMixin):
         pandas.Series
             Series with a number of neighbors per each observation
         """
-        cardinalities = self._adjacency.astype(bool).groupby(level=0).sum()
+        cardinalities = self._adjacency.astype(bool).groupby(level=0, sort=False).sum()
         cardinalities.name = "cardinalities"
         return cardinalities
 
@@ -1465,13 +1645,7 @@ class Graph(SetOpsMixin):
         pandas.Index
             Index with a subset of observations that do not have any neighbor
         """
-        nulls = self._adjacency[self._adjacency == 0]
-        # since not all zeros are necessarily isolates, do the focal == neighbor check
-        return (
-            nulls[nulls.index.codes[0] == nulls.index.codes[1]]
-            .index.get_level_values(0)
-            .unique()
-        )
+        return self.cardinalities.index[self.cardinalities == 0]
 
     @cached_property
     def unique_ids(self):
@@ -1485,12 +1659,12 @@ class Graph(SetOpsMixin):
 
     @cached_property
     def n_nodes(self):
-        """Number of observations."""
+        """Number of nodes."""
         return self.unique_ids.shape[0]
 
     @cached_property
     def n_edges(self):
-        """Number of observations."""
+        """Number of edges."""
         return self._adjacency.shape[0] - self.isolates.shape[0]
 
     @cached_property
@@ -1502,7 +1676,48 @@ class Graph(SetOpsMixin):
     @cached_property
     def nonzero(self):
         """Number of nonzero weights."""
-        return (self._adjacency.drop(self.isolates) > 0).sum()
+        return (self._adjacency > 0).sum()
+
+    @cached_property
+    def index_pairs(self):
+        """Return focal-neighbor index pairs
+
+        Returns
+        -------
+        tuple(Index, Index)
+            tuple of two aligned pandas.Index objects encoding all edges of the Graph
+            by their nodes
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> focal, neighbor = contiguity.index_pairs
+        >>> focal
+        Index(['Staten Island', 'Queens', 'Queens', 'Queens', 'Brooklyn', 'Brooklyn',
+               'Manhattan', 'Manhattan', 'Manhattan', 'Bronx', 'Bronx'],
+              dtype='object', name='focal')
+
+        >>> neighbor
+        Index(['Staten Island', 'Brooklyn', 'Manhattan', 'Bronx', 'Queens',
+               'Manhattan', 'Queens', 'Brooklyn', 'Bronx', 'Queens', 'Manhattan'],
+              dtype='object', name='neighbor')
+        """
+        focal = self._adjacency.index.get_level_values("focal")
+        neighbor = self._adjacency.index.get_level_values("neighbor")
+        return (focal, neighbor)
 
     def asymmetry(self, intrinsic=True):
         r"""Asymmetry check.
@@ -1563,6 +1778,90 @@ class Graph(SetOpsMixin):
             ).sort_index()
             return ijs
 
+    def summary(self, asymmetries=False):
+        """Summary of the Graph properties
+
+        Returns a :class:`GraphSummary` object with the statistical attributes
+        summarising the Graph and its basic properties. See the docstring of the
+        :class:`GraphSummary` for details and all the available attributes.
+
+        Parameters
+        ----------
+        asymmetries : bool
+            whether to compute ``n_asymmetries``, which is considerably more expensive
+            than the other attributes. By default False.
+
+        Returns
+        -------
+        GraphSummary
+            a class containing a summary statisitcs about the graph
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity
+        <Graph of 5 nodes and 10 nonzero edges indexed by
+         ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+
+        >>> summary = contiguity.summary(asymmetries=True)
+        >>> summary
+        Graph Summary Statistics
+        ========================
+        Graph indexed by:
+        ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']
+        ==============================================================
+        Number of nodes:                                             5
+        Number of edges:                                            10
+        Number of connected components:                              2
+        Number of isolates:                                          1
+        Number of non-zero edges:                                   10
+        Percentage of non-zero edges:                           44.00%
+        Number of asymmetries:                                       0
+        --------------------------------------------------------------
+        Cardinalities
+        ==============================================================
+        Mean:                       2    25%:                        2
+        Standard deviation:         1    50%:                        2
+        Min:                        0    75%:                        3
+        Max:                        3
+        --------------------------------------------------------------
+        Weights
+        ==============================================================
+        Mean:                       1    25%:                        1
+        Standard deviation:         0    50%:                        1
+        Min:                        0    75%:                        1
+        Max:                        1
+        --------------------------------------------------------------
+        Sum of weights
+        ==============================================================
+        S0:                                                         10
+        S1:                                                         20
+        S2:                                                        104
+        --------------------------------------------------------------
+        Traces
+        ==============================================================
+        GG:                                                         10
+        G'G:                                                        10
+        G'G + GG:                                                   20
+
+        >>> summary.s1
+        20
+        """
+        return GraphSummary(self, asymmetries=asymmetries)
+
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order :math:`k`.
 
@@ -1591,6 +1890,24 @@ class Graph(SetOpsMixin):
         -------
         Graph
             higher order weights
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> gdf = gpd.read_file(get_path("geoda guerry"))
+        >>> contiguity = graph.Graph.build_contiguity(gdf)
+        >>> contiguity
+        <Graph of 85 nodes and 420 nonzero edges indexed by
+         [0, 1, 2, 3, 4, ...]>
+
+        >>> contiguity.higher_order(k=2)
+        <Graph of 85 nodes and 756 nonzero edges indexed by
+         [0, 1, 2, 3, 4, ...]>
+
+        >>> contiguity.higher_order(lower_order=True)
+        <Graph of 85 nodes and 1176 nonzero edges indexed by
+         [0, 1, 2, 3, 4, ...]>
         """
         if not Version(scipy_version) >= Version("1.12.0"):
             raise ImportError("Graph.higher_order() requires scipy>=1.12.0.")
@@ -1599,7 +1916,7 @@ class Graph(SetOpsMixin):
         sp = binary.sparse
 
         if lower_order:
-            wk = sum(sparse.linalg.matrix_power(sp, x) for x in range(2, k + 1))
+            wk = sum(sparse.linalg.matrix_power(sp, x) for x in range(1, k + 1))
             shortest_path = False
         else:
             wk = sparse.linalg.matrix_power(sp, k)
@@ -1616,7 +1933,7 @@ class Graph(SetOpsMixin):
         if not diagonal:
             sk = {(i, j) for i, j in sk if i != j}
 
-        return Graph.from_sparse(
+        higher = Graph.from_sparse(
             sparse.coo_array(
                 (
                     np.ones(len(sk), dtype=np.int8),
@@ -1626,6 +1943,10 @@ class Graph(SetOpsMixin):
             ),
             ids=self.unique_ids,
         )
+        if hasattr(self, "_xarray_index_names"):
+            higher._xarray_index_names = self._xarray_index_names
+
+        return higher
 
     def lag(self, y, categorical=False, ties="raise"):
         """Spatial lag operator
@@ -1656,6 +1977,30 @@ class Graph(SetOpsMixin):
         -------
         numpy.ndarray
             array of numeric|categorical values for the spatial lag
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> import pandas as pd
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> aus = gpd.read_file(get_path("abs.australia_states_territories")).set_index(
+        ...     "STE_NAME21"
+        ... )
+        >>> aus = aus[aus.geometry.notna()]
+        >>> contiguity = graph.Graph.build_contiguity(aus)
+
+        Spatial lag operator for continuous variables.
+
+        >>> y = np.arange(9)
+        >>> contiguity.lag(y)
+        array([21.,  3.,  9., 13.,  9.,  0.,  9.,  0.,  0.])
+
+        You can also perform transformation of weights.
+
+        >>> contiguity_r = contiguity.transform("r")
+        >>> contiguity_r.lag(y)
+        array([4.2, 1.5, 3. , 2.6, 4.5, 0. , 3. , 0. , 0. ])
         """
         return _lag_spatial(self, y, categorical=categorical, ties=ties)
 
@@ -1677,6 +2022,24 @@ class Graph(SetOpsMixin):
         See also
         --------
         read_parquet
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity.to_parquet("contiguity.parquet")
         """
         _to_parquet(self, path, **kwargs)
 
@@ -1693,6 +2056,24 @@ class Graph(SetOpsMixin):
         See also
         --------
         read_gal
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity.to_gal("contiguity.gal")
         """
         _to_gal(self, path)
 
@@ -1709,6 +2090,24 @@ class Graph(SetOpsMixin):
         See also
         --------
         read_gwt
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb).transform("r")
+        >>> contiguity.to_gwt("contiguity.gwt")
         """
         _to_gwt(self, path)
 
@@ -1721,6 +2120,24 @@ class Graph(SetOpsMixin):
         -------
         networkx.Graph | networkx.DiGraph
             Representation of libpysal Graph as networkx graph
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> nx_graph = contiguity.to_networkx()
         """
         try:
             import networkx as nx
@@ -1901,16 +2318,36 @@ class Graph(SetOpsMixin):
         Graph
             A new Graph that is a subset of the original
 
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity.subgraph(["Queens", "Brooklyn", "Manhattan", "Bronx"])
+        <Graph of 4 nodes and 10 nonzero edges indexed by
+         ['Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+
         Notes
         -----
         Unlike the implementation in ``networkx``, this creates a copy since
         Graphs in ``libpysal`` are immutable.
         """
-        masked_adj = self._adjacency[ids]
+        masked_adj = self._adjacency.loc[ids, :]
         filtered_adj = masked_adj[
             masked_adj.index.get_level_values("neighbor").isin(ids)
         ]
-        return Graph.from_arrays(
+        sub = Graph.from_arrays(
             *_resolve_islands(
                 filtered_adj.index.get_level_values("focal"),
                 filtered_adj.index.get_level_values("neighbor"),
@@ -1918,6 +2355,11 @@ class Graph(SetOpsMixin):
                 filtered_adj.values,
             )
         )
+
+        if hasattr(self, "_xarray_index_names"):
+            sub._xarray_index_names = self._xarray_index_names
+
+        return sub
 
     def eliminate_zeros(self):
         """Remove graph edges with zero weight
@@ -1931,11 +2373,16 @@ class Graph(SetOpsMixin):
         Graph
             subset of Graph with zero-weight edges eliminated
         """
-        # get a mask for isolates
-        isolates = self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
         # substract isolates from mask of zeros
-        zeros = (self._adjacency == 0) != isolates
-        return Graph(self._adjacency[~zeros], is_sorted=True)
+        zeros = (self._adjacency == 0) != np.isin(
+            self._adjacency.index.get_level_values(0), self.isolates
+        )
+
+        eliminated = Graph(self._adjacency[~zeros], is_sorted=True)
+        if hasattr(self, "_xarray_index_names"):
+            eliminated._xarray_index_names = self._xarray_index_names
+
+        return eliminated
 
     def assign_self_weight(self, weight=1):
         """Assign values to edges representing self-weight.
@@ -1956,6 +2403,42 @@ class Graph(SetOpsMixin):
         -------
         Graph
             A new ``Graph`` with added self-weights.
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> from geodatasets import get_path
+        >>> nybb = gpd.read_file(get_path("nybb")).set_index("BoroName")
+        >>> nybb
+                       BoroCode  ...                                           geometry
+        BoroName                 ...
+        Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....
+        Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...
+        Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...
+        Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....
+        Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...
+        [5 rows x 4 columns]
+
+        >>> contiguity = graph.Graph.build_contiguity(nybb)
+        >>> contiguity_weights = contiguity.assign_self_weight(0.5)
+        >>> contiguity_weights.adjacency
+        focal          neighbor
+        Staten Island  Staten Island    0.5
+        Queens         Queens           0.5
+                       Brooklyn         1.0
+                       Manhattan        1.0
+                       Bronx            1.0
+        Brooklyn       Queens           1.0
+                       Brooklyn         0.5
+                       Manhattan        1.0
+        Manhattan      Queens           1.0
+                       Brooklyn         1.0
+                       Manhattan        0.5
+                       Bronx            1.0
+        Bronx          Queens           1.0
+                       Manhattan        1.0
+                       Bronx            0.5
+        Name: weight, dtype: float64
         """
         addition = pd.Series(
             weight,
@@ -1964,12 +2447,21 @@ class Graph(SetOpsMixin):
             ),
             name="weight",
         )
+        # drop existing self weights and replace them with a new value
+        existing_self_weights = self._adjacency.index[
+            self._adjacency.index.codes[0] == self._adjacency.index.codes[1]
+        ]
         adj = (
-            pd.concat([self.adjacency.drop(self.isolates), addition])
+            pd.concat([self._adjacency.drop(existing_self_weights), addition])
             .reindex(self.unique_ids, level=0)
             .reindex(self.unique_ids, level=1)
         )
-        return Graph(adj, is_sorted=True)
+        assigned = Graph(adj, is_sorted=True)
+
+        if hasattr(self, "_xarray_index_names"):
+            assigned._xarray_index_names = self._xarray_index_names
+
+        return assigned
 
     def apply(self, y, func, **kwargs):
         """Apply a reduction across the neighbor sets
@@ -1992,7 +2484,7 @@ class Graph(SetOpsMixin):
         if not isinstance(y, pd.Series | pd.DataFrame):
             y = pd.DataFrame(y) if hasattr(y, "ndim") and y.ndim == 2 else pd.Series(y)
         grouper = y.take(self._adjacency.index.codes[1]).groupby(
-            self._adjacency.index.codes[0]
+            self._adjacency.index.codes[0], sort=False
         )
         result = grouper.apply(func, **kwargs)
         result.index = self.unique_ids
@@ -2016,7 +2508,7 @@ class Graph(SetOpsMixin):
         pd.Series
             Aggregated weights
         """
-        return self._adjacency.groupby(level=0).agg(func)
+        return self._adjacency.groupby(level=0, sort=False).agg(func)
 
     def describe(
         self,
@@ -2070,7 +2562,7 @@ class Graph(SetOpsMixin):
 
         if q is None:
             grouper = y.take(self._adjacency.index.codes[1]).groupby(
-                self._adjacency.index.codes[0]
+                self._adjacency.index.codes[0], sort=False
             )
         else:
             grouper = _percentile_filtration_grouper(y, self._adjacency.index, q=q)
@@ -2083,6 +2575,23 @@ class Graph(SetOpsMixin):
         # NA isolates
         stat_.loc[self.isolates] = np.nan
         return stat_
+
+    def generate_da(self, y):
+        """Creates xarray.DataArray object from passed data aligned with the Graph.
+
+        Parameters
+        ----------
+        y : array_like
+            flat array that shall be reshaped into a DataArray with dimensionality
+            conforming to Graph
+
+        Returns
+        -------
+        xarray.DataArray
+            instance of xarray.DataArray that can be aligned with the DataArray from
+            which Graph was built
+        """
+        return _generate_da(self, y)
 
 
 def _arrange_arrays(heads, tails, weights, ids=None):
@@ -2130,9 +2639,16 @@ def read_parquet(path, **kwargs):
     -------
     Graph
         deserialized Graph
+
+    Examples
+    --------
+    >>> graph.read_parquet("contiguity.parquet")
     """
-    adjacency, transformation = _read_parquet(path, **kwargs)
-    return Graph(adjacency, transformation, is_sorted=True)
+    adjacency, transformation, xarray_index_names = _read_parquet(path, **kwargs)
+    graph_obj = Graph(adjacency, transformation, is_sorted=True)
+    if xarray_index_names is not None:
+        graph_obj._xarray_index_names = xarray_index_names
+    return graph_obj
 
 
 def read_gal(path):
@@ -2150,6 +2666,10 @@ def read_gal(path):
     -------
     Graph
         deserialized Graph
+
+    Examples
+    --------
+    >>> graph.read_parquet("contiguity.gal")
     """
     neighbors = _read_gal(path)
     return Graph.from_dicts(neighbors)
@@ -2167,6 +2687,10 @@ def read_gwt(path):
     -------
     Graph
         deserialized Graph
+
+    Examples
+    --------
+    >>> graph.read_parquet("contiguity.gwt")
     """
     head, tail, weight = _read_gwt(path)
     return Graph.from_arrays(head, tail, weight)

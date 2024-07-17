@@ -254,7 +254,7 @@ class GalIO(fileio.FileIO):
                 self.file.write(" ".join(map(str, neighbors)) + "\n")
             self.pos += 1
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")
 
     def close(self):
         self.file.close()
