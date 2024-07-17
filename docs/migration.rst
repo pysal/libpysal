@@ -9,6 +9,9 @@ Overview
 This guide compares the members (attributes and methods) from the
 `W` class and the `Graph` class.
 
+It is intended for developers. Users interested in migrating to the
+new Graph class from W should see the `migration guide <user-guide/graph/w_g_migration.html>`_.
+
 
 Members common to W and Graph
 -----------------------------
