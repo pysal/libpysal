@@ -18,7 +18,7 @@ help:
 # Custom target to generate rst files
 generate-rst:
 	@echo "Generating custom rst files..."
-	@python ../scripts/w_g_migration.py
+	@python ../scripts/w_g_comparison.py
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).

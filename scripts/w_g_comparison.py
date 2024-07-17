@@ -2,11 +2,11 @@
 # coding: utf-8
 
 # ## W to GeoGraph Migration Guide
-# 
+#
 # Author: [Serge Rey](http://github.com/sjsrey)
 
 # ### Introduction
-# 
+#
 # - what are Weights
 # - motivation for the GeoGraph
 # - history
@@ -53,7 +53,7 @@ print(g_queen[17][1] == g_queen[1][17])
 
 g_members = set(dir(g_queen))
 w_members = set(dir(w_queen))
-                
+
 
 # filter out private members
 g_members = {attr for attr in g_members if not attr.startswith('_')}
@@ -81,7 +81,7 @@ compat.sort()
 
 
 changed_content = []
-header = "Member, Queen Type, Graph Type"
+header = "Member, W Type, Graph Type"
 changed_content.append(header)
 for member in changed:
     line = [member]
@@ -139,6 +139,9 @@ Overview
 This guide compares the members (attributes and methods) from the
 `W` class and the `Graph` class.
 
+It is intended for developers. Users interested in migrating to the
+new Graph class from W should see the `migration guide <user-guide/graph/w_g_migration.html>`_.
+
 
 Members common to W and Graph
 -----------------------------
@@ -159,9 +162,9 @@ for member in compat:
     if inspect.ismethod(ga):
         label = ":meth"
     gs = f" {gat}"
-    
+
     line.append(gs)
-    
+
     common_content.append(",".join(line))
 
 common_content = [ line.split(",") for line in common_content]
@@ -185,18 +188,18 @@ for member in changed:
     gat = f"{class_type.__module__}.{class_type.__name__}"
     gat = f"`{gat} <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.{member}>`_"
 
-   
+
     gs = f"{gat}"
-    
+
     wa = getattr(w_queen, member)
     class_type = type(wa)
     wat = f"{class_type.__module__}.{class_type.__name__}"
     wat = f"`{wat} <generated/libpysal.weights.W.html#libpysal.weights.W.{member}>`_"
-    
+
     ws = f"{wat}"
     line.append(ws)
     line.append(gs)
-    
+
     changed_content.append(",".join(line))
 
 changed_content = [ line.split(",") for line in changed_content]
@@ -224,12 +227,12 @@ for member in w_only:
     wa = getattr(w_queen, member)
     class_type = type(wa)
     wat = f"{class_type.__module__}.{class_type.__name__}"
-    
+
     ws = f"{wat}"
-    
-    
+
+
     line.append(ws)
-    
+
     w_content.append(",".join(line))
 
 w_content = [ line.split(",") for line in w_content]
@@ -259,12 +262,12 @@ for member in g_only:
     ga = getattr(g_queen, member)
     class_type = type(ga)
     gat = f"{class_type.__module__}.{class_type.__name__}"
-    
+
     gs = f"{gat}"
-    
-    
+
+
     line.append(gs)
-    
+
     g_content.append(",".join(line))
 
 g_content = [ line.split(",") for line in g_content]
