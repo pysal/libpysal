@@ -36,6 +36,7 @@ from ._utils import (
 from .io._gal import _read_gal, _to_gal
 from .io._gwt import _read_gwt, _to_gwt
 from .io._parquet import _read_parquet, _to_parquet
+from ._network import build_travel_graph as _build_travel_graph
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
@@ -1453,6 +1454,34 @@ class Graph(SetOpsMixin):
             return cls(1 / g._adjacency, is_sorted=True)
         else:
             raise ValueError("weight must be one of 'distance', 'binary', or 'inverse'")
+
+    @classmethod
+    def build_travel_distance(cls, df, network, threshold, kernel=None):
+        """Generate a Graph based on shortest travel costs from a pandana.Network
+
+        Parameters
+        ----------
+        df : geopandas.GeoDataFrame
+            geodataframe representing observations which are snapped to the nearest
+            node in the pandana.Network. If passing polygon geometries, the spatial
+            support will be reduced to a point before snapping.
+        network : pandana.Network
+            pandana Network object describing travel costs between nodes in the study area
+        threshold : int
+            threshold representing maximum cost distances
+        kernel : str, optional
+            kernel transformation applied to the weights, by default None
+
+        Returns
+        -------
+        Graph
+        """        
+        adj = _build_travel_graph(df, network, threshold)
+        g = cls.from_adjacency(adj)
+        if kernel is not None:
+            arrays = _kernel(g.sparse, metric='precomputed', kernel=kernel, bandwidth=threshold, resolve_isolates=False, ids=df.index.values)
+            return cls.from_arrays(*arrays)
+        return g
 
     @cached_property
     def neighbors(self):
