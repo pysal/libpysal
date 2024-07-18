@@ -68,7 +68,8 @@ def build_travel_graph(
 ):
     """Compute the shortest path between gdf centroids via a pandana.Network
     and return an adjacency list with weight=cost. Note unlike distance_band,
-    :math:`G_ij` and :math:`G_ji` are often different because travel networks may be directed.
+    :math:`G_{ij}` and :math:`G_{ji}` are often different because travel networks
+    may be directed.
 
     Parameters
     ----------
