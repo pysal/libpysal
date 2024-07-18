@@ -1,5 +1,5 @@
 import numpy as np
-import shapely
+
 from ._utils import _induce_cliques, _validate_geometry_input
 
 
