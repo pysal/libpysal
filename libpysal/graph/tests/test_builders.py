@@ -512,7 +512,8 @@ class TestTravelNetwork:
             "https://spatial-ucr.s3.amazonaws.com/osm/metro_networks_8k/17140.h5",
             known_hash=None,
         )
-        self.df = gpd.read_file(geodatasets.get_path("geoda cincinnati")).to_crs(4326)
+        df = gpd.read_file(geodatasets.get_path("geoda cincinnati")).to_crs(4326)
+        self.df = df.set_geometry(df.centroid)
         self.network = pandana.Network.from_hdf5(self.net_path)
 
     def test_build_travel_network(self):
