@@ -1484,6 +1484,42 @@ class Graph(SetOpsMixin):
         Returns
         -------
         Graph
+
+        Examples
+        ---------
+        >>> import geodatasets
+        >>> import geopandas as gpd
+        >>> import osmnx as ox
+        >>> import pandana as pdna
+        >>> from libpysal.graph import Graph
+
+        >>> # read an example geodataframe
+        >>> df = gpd.read_file(geodatasets.get_path("geoda Cincinnati")).to_crs(4326)
+
+        >>> # download a walk network using osmnx
+        >>> osm_graph = ox.graph_from_polygon(df.unary_union, network_type="walk")
+        >>> nodes, edges = ox.utils_graph.graph_to_gdfs(osm_graph)
+        >>> edges = edges.reset_index()
+
+        >>> # generate a routable pandana network from the OSM nodes and edges
+        >>> network = pdna.Network(
+        >>>     edge_from=edges["u"],
+        >>>     edge_to=edges["v"],
+        >>>     edge_weights=edges[["length"]],
+        >>>     node_x=nodes["x"],
+        >>>     node_y=nodes["y"],)
+
+        >>> # use the pandana network to compute shortest paths between gdf centroids
+        >>> G = Graph.build_travel_cost(df.set_geometry(df.centroid), network, 500)
+        >>> G.adjacency.head()
+
+        focal  neighbor
+        0       62          385.609009
+                65          309.471985
+                115         346.858002
+                116           0.000000
+                117         333.639008
+        Name: weight, dtype: float64
         """
         adj = _build_travel_graph(df, network, threshold)
         g = cls.from_adjacency(adj)
