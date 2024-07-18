@@ -3,6 +3,7 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pytest
+import sys
 from numpy.testing import assert_array_almost_equal
 from scipy.sparse import csr_matrix
 from shapely import get_coordinates
@@ -497,6 +498,9 @@ class TestMatching:
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
 @pytest.mark.network
+@pytest.mark.skipif(
+    sys.platform.startswith("win"), reason="pandana has dtype issues on windows"
+)
 class TestTravelNetwork:
     def setup_method(self):
         pandana = pytest.importorskip("pandana")
