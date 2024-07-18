@@ -1491,7 +1491,6 @@ class Graph(SetOpsMixin):
         >>> import geopandas as gpd
         >>> import osmnx as ox
         >>> import pandana as pdna
-        >>> from libpysal.graph import Graph
 
         Read an example geodataframe:
 
