@@ -516,9 +516,9 @@ class TestTravelNetwork:
         self.network = pandana.Network.from_hdf5(self.net_path)
 
     def test_build_travel_network(self):
-        G = graph.Graph.build_travel_distance(self.df, self.network, 500)
+        g = graph.Graph.build_travel_distance(self.df, self.network, 500)
         assert_array_almost_equal(
-            G.adjacency.head(10).to_numpy(),
+            g.adjacency.head(10).to_numpy(),
             np.array(
                 [
                     418.28601074,
@@ -536,11 +536,11 @@ class TestTravelNetwork:
         )
 
     def test_build_travel_network_kernel(self):
-        G = graph.Graph.build_travel_distance(
+        g = graph.Graph.build_travel_distance(
             self.df, self.network, 500, kernel="triangular"
         )
         assert_array_almost_equal(
-            G.adjacency.head(10).to_numpy(),
+            g.adjacency.head(10).to_numpy(),
             np.array(
                 [
                     0.16342798,
