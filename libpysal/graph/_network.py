@@ -1,5 +1,6 @@
-from ._utils import _induce_cliques
 import numpy as np
+
+from ._utils import _induce_cliques
 
 
 def _build_coplanarity_node_lookup(geoms):

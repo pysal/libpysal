@@ -1,9 +1,10 @@
+import sys
+
 import geodatasets
 import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pytest
-import sys
 from numpy.testing import assert_array_almost_equal
 from scipy.sparse import csr_matrix
 from shapely import get_coordinates

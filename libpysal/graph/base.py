@@ -19,6 +19,7 @@ from ._contiguity import (
 from ._indices import _build_from_h3
 from ._kernel import _distance_band, _kernel
 from ._matching import _spatial_matching
+from ._network import build_travel_graph as _build_travel_graph
 from ._plotting import _explore_graph, _plot
 from ._raster import _generate_da, _raster_contiguity
 from ._set_ops import SetOpsMixin
@@ -36,7 +37,6 @@ from ._utils import (
 from .io._gal import _read_gal, _to_gal
 from .io._gwt import _read_gwt, _to_gwt
 from .io._parquet import _read_parquet, _to_parquet
-from ._network import build_travel_graph as _build_travel_graph
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
@@ -1466,7 +1466,8 @@ class Graph(SetOpsMixin):
             node in the pandana.Network. If passing polygon geometries, the spatial
             support will be reduced to a point before snapping.
         network : pandana.Network
-            pandana Network object describing travel costs between nodes in the study area
+            pandana Network object describing travel costs between nodes in the study
+            area
         threshold : int
             threshold representing maximum cost distances
         kernel : str, optional
