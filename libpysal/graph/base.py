@@ -1475,11 +1475,18 @@ class Graph(SetOpsMixin):
         Returns
         -------
         Graph
-        """        
+        """
         adj = _build_travel_graph(df, network, threshold)
         g = cls.from_adjacency(adj)
         if kernel is not None:
-            arrays = _kernel(g.sparse, metric='precomputed', kernel=kernel, bandwidth=threshold, resolve_isolates=False, ids=df.index.values)
+            arrays = _kernel(
+                g.sparse,
+                metric="precomputed",
+                kernel=kernel,
+                bandwidth=threshold,
+                resolve_isolates=False,
+                ids=df.index.values,
+            )
             return cls.from_arrays(*arrays)
         return g
 

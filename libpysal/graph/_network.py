@@ -6,7 +6,7 @@ def _build_coplanarity_node_lookup(geoms):
     """
     Identify coplanar points and create a look-up table for the coplanar geometries.
     """
-    #geoms = geoms.reset_index(drop=True)
+    # geoms = geoms.reset_index(drop=True)
     coplanar = []
     nearest = []
     r = geoms.groupby(geoms).groups
@@ -66,7 +66,11 @@ def pdna_to_adj(origins, network, threshold, reindex=True, drop_nonorigins=True)
     return adj
 
 
-def build_travel_graph(df, network, threshold,):
+def build_travel_graph(
+    df,
+    network,
+    threshold,
+):
     df = df.copy()
     df["node_ids"] = network.get_node_ids(
         df.geometry.centroid.x, df.geometry.centroid.y
@@ -82,8 +86,12 @@ def build_travel_graph(df, network, threshold,):
         nearest=nearest,
     )
 
-    adj_cliques = adj_cliques.groupby(["focal", "neighbor"]).first().reindex(
-        df.index, level=0
-    ).reindex(df.index, level=1).reset_index()        
+    adj_cliques = (
+        adj_cliques.groupby(["focal", "neighbor"])
+        .first()
+        .reindex(df.index, level=0)
+        .reindex(df.index, level=1)
+        .reset_index()
+    )
 
     return adj_cliques
