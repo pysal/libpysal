@@ -61,11 +61,7 @@ def pdna_to_adj(origins, network, node_ids, threshold):
     return adj
 
 
-def build_travel_graph(
-    df,
-    network,
-    threshold,
-):
+def build_travel_graph(df, network, threshold, mapping_distance):
     """Compute the shortest path between gdf centroids via a pandana.Network
     and return an adjacency list with weight=cost. Note unlike distance_band,
     :math:`G_{ij}` and :math:`G_{ji}` are often different because travel networks
@@ -81,6 +77,10 @@ def build_travel_graph(
         Network that encodes travel costs. See <https://udst.github.io/pandana/>
     threshold : int
         maximum travel cost to consider neighbors
+    mapping_distance : int
+        snapping tolerance passed to ``pandana.Network.get_node_ids`` that defines
+        the maximum range at which observations are snapped to nearest nodes in the
+        network. Default is None
 
     Returns
     -------
@@ -89,7 +89,9 @@ def build_travel_graph(
     """
     df = df.copy()
     _validate_geometry_input(df.geometry, ids=None, valid_geometry_types="Point")
-    df["node_ids"] = network.get_node_ids(df.geometry.x, df.geometry.y)
+    df["node_ids"] = network.get_node_ids(
+        df.geometry.x, df.geometry.y, mapping_distance
+    )
 
     # depending on density of the graph nodes / observations, it is common to have
     # multiple observations snapped to the same network node, so use the clique
