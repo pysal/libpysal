@@ -1456,7 +1456,7 @@ class Graph(SetOpsMixin):
             raise ValueError("weight must be one of 'distance', 'binary', or 'inverse'")
 
     @classmethod
-    def build_travel_distance(cls, df, network, threshold, kernel=None):
+    def build_travel_cost(cls, df, network, threshold, kernel=None):
         """Generate a Graph based on shortest travel costs from a pandana.Network
 
         Parameters
@@ -1464,14 +1464,22 @@ class Graph(SetOpsMixin):
         df : geopandas.GeoDataFrame
             geodataframe representing observations which are snapped to the nearest
             node in the pandana.Network. If passing polygon geometries, the spatial
-            support will be reduced to a point before snapping.
+            support will be reduced to Points (via centroid) before snapping.
         network : pandana.Network
             pandana Network object describing travel costs between nodes in the study
             area
         threshold : int
-            threshold representing maximum cost distances
-        kernel : str, optional
-            kernel transformation applied to the weights, by default None
+            threshold representing maximum cost distances. This is measured in the same
+            units as the pandana.Network (not influenced by the df.crs in any way). For
+            travel modes with relatively constant speeds like walking or biking, this is
+            usually distance (e.g. meters if the Network is constructed from OSM). For a
+            a multimodal or auto network with variable travel speeds, this is usually
+            some measure of travel time
+        kernel : str or callable, optional
+            kernel transformation applied to the weights. See 
+            libpysal.graph.Graph.build_kernel for more information on kernel
+            transformation options. Default is None, in which case the Graph weight
+            is pure distance between focal and neighbor
 
         Returns
         -------
