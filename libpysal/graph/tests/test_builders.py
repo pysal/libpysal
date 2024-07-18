@@ -495,3 +495,52 @@ class TestMatching:
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+
+@pytest.mark.network
+class TestTravelNetwork:
+    def setup(self):
+        pandana = pytest.importorskip("pandana")
+        import pooch        
+        self.net_path = pooch.retrieve(
+            "https://spatial-ucr.s3.amazonaws.com/osm/metro_networks_8k/17140.h5",
+            known_hash=None,
+        )
+        self.df = gpd.read_file(geodatasets.get_path("geoda cincinnati")).to_crs(4326)
+        self.network = pandana.Network.from_hdf5(self.net_path)
+
+    def test_build_travel_network(self):
+        G = graph.Graph.build_travel_distance(self.df, self.network, 500)
+        assert_array_almost_equal(G.adjacency.head(10).to_numpy(), np.array(
+            [
+                418.28601074,
+                228.23899841,
+                196.0269928,
+                0.0,
+                341.73498535,
+                478.47799683,
+                298.91699219,
+                445.60501099,
+                174.64199829,
+                0.0,
+            ]
+        ))
+
+    def test_build_travel_network_kernel(self):
+        G = graph.Graph.build_travel_distance(self.df, self.network, 500, kernel='triangular')
+        assert_array_almost_equal(
+            G.adjacency.head(10).to_numpy(),
+            np.array(
+                [
+                    0.16342798,
+                    0.543522,
+                    0.60794601,
+                    1.0,
+                    0.31653003,
+                    0.04304401,
+                    0.40216602,
+                    0.10878998,
+                    0.650716,
+                    1.0,
+                ]
+            ),
+        )

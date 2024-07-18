@@ -31,6 +31,7 @@ dependencies:
   - sqlalchemy
   - xarray
   - zstd
+  - pandana
   - pip
   - pip:
       - pulp

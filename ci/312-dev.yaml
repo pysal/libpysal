@@ -28,6 +28,7 @@ dependencies:
   - pyproj
   - sqlalchemy
   - zstd
+  - pandana
   - pip
   - pip:
       # dev versions of packages
