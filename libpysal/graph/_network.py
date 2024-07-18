@@ -87,7 +87,6 @@ def build_travel_graph(
     _validate_geometry_input(df.geometry, ids=None, valid_geometry_types="Point")
     df["node_ids"] = network.get_node_ids(df.geometry.x, df.geometry.y)
 
-
     # depending on density of the graph nodes / observations, it is common to have
     # multiple observations snapped to the same network node, so use the clique
     # expansion logic to handle these cases
