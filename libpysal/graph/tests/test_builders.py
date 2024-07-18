@@ -558,4 +558,3 @@ class TestTravelNetwork:
             ),
         )
         assert g.n == self.df.shape[0]
-
