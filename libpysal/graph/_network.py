@@ -33,6 +33,10 @@ def pdna_to_adj(origins, network, node_ids, threshold):
         Geodataframe of origin geometries to begin routing.
     network : pandana.Network
         pandana.Network instance that stores the local travel network
+    node_ids:
+        array of node_ids in the pandana.Network aligned with the input
+        observations in `origins`. This is created via a call like
+        `pandana.Network.get_node_ids(df.geometry.x, df.geometry.y)`
     threshold : int
         maximum travel distance (inclusive)
 
