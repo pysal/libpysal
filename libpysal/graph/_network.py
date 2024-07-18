@@ -6,6 +6,7 @@ from ._utils import _induce_cliques
 def _build_coplanarity_node_lookup(geoms):
     """
     Identify coplanar points and create a look-up table for the coplanar geometries.
+    Same function as in graph._utils, but need to keep the index to use as graph ids
     """
     # geoms = geoms.reset_index(drop=True)
     coplanar = []
@@ -72,13 +73,38 @@ def build_travel_graph(
     network,
     threshold,
 ):
+    """Compute the shortest path between gdf centroids via a pandana.Network
+    and return an adjacency list with weight=cost
+
+    Parameters
+    ----------
+    df : geopandas.GeoDataFrame
+        geodataframe of observations. CRS should be the same as the locations
+        of node_x and node_y in the pandana.Network (usually 4326 if network
+        comes from OSM, but sometimes projected to improve snapping quality).
+    network : pandana.Network
+        Network that encodes travel costs. See <https://udst.github.io/pandana/>
+    threshold : int
+        maximum travel cost to consider neighbors
+
+    Returns
+    -------
+    pandas.Series
+        adjacency formatted as multiindexed (focal, neighbor) series
+    """
     df = df.copy()
     df["node_ids"] = network.get_node_ids(
         df.geometry.centroid.x, df.geometry.centroid.y
     )
+    # depending on density of the graph nodes / observations, it is common to have
+    # multiple observations snapped to the same network node, so use the clique
+    # expansion logic to handle these cases
 
+    # get indices of multi-observations at unique nodes
     coplanar, nearest = _build_coplanarity_node_lookup(df["node_ids"])
+    # create adjacency on unique nodes
     adj = pdna_to_adj(df, network, threshold, reindex=True, drop_nonorigins=True)
+    # add clique members back to adjacency
     adj_cliques = _induce_cliques(
         adj.rename(
             columns={"origin": "focal", "destination": "neighbor", "cost": "weight"}
@@ -86,7 +112,7 @@ def build_travel_graph(
         coplanar=coplanar,
         nearest=nearest,
     )
-
+    # reorder, drop induced dupes, and return
     adj_cliques = (
         adj_cliques.groupby(["focal", "neighbor"])
         .first()

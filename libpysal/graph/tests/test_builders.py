@@ -534,6 +534,7 @@ class TestTravelNetwork:
                 ]
             ),
         )
+        assert g.n == self.df.shape[0]
 
     def test_build_travel_network_kernel(self):
         g = graph.Graph.build_travel_cost(
@@ -556,3 +557,5 @@ class TestTravelNetwork:
                 ]
             ),
         )
+        assert g.n == self.df.shape[0]
+
