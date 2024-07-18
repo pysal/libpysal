@@ -19,6 +19,7 @@ from ._contiguity import (
 from ._indices import _build_from_h3
 from ._kernel import _distance_band, _kernel
 from ._matching import _spatial_matching
+from ._network import build_travel_graph as _build_travel_graph
 from ._plotting import _explore_graph, _plot
 from ._raster import _generate_da, _raster_contiguity
 from ._set_ops import SetOpsMixin
@@ -1453,6 +1454,89 @@ class Graph(SetOpsMixin):
             return cls(1 / g._adjacency, is_sorted=True)
         else:
             raise ValueError("weight must be one of 'distance', 'binary', or 'inverse'")
+
+    @classmethod
+    def build_travel_cost(cls, df, network, threshold, kernel=None):
+        """Generate a Graph based on shortest travel costs from a pandana.Network
+
+        Parameters
+        ----------
+        df : geopandas.GeoDataFrame
+            geodataframe representing observations which are snapped to the nearest
+            node in the pandana.Network. If passing polygon geometries, the spatial
+            support will be reduced to Points (via centroid) before snapping.
+        network : pandana.Network
+            pandana Network object describing travel costs between nodes in the study
+            area
+        threshold : int
+            threshold representing maximum cost distances. This is measured in the same
+            units as the pandana.Network (not influenced by the df.crs in any way). For
+            travel modes with relatively constant speeds like walking or biking, this is
+            usually distance (e.g. meters if the Network is constructed from OSM). For a
+            a multimodal or auto network with variable travel speeds, this is usually
+            some measure of travel time
+        kernel : str or callable, optional
+            kernel transformation applied to the weights. See
+            libpysal.graph.Graph.build_kernel for more information on kernel
+            transformation options. Default is None, in which case the Graph weight
+            is pure distance between focal and neighbor
+
+        Returns
+        -------
+        Graph
+
+        Examples
+        ---------
+        >>> import geodatasets
+        >>> import geopandas as gpd
+        >>> import osmnx as ox
+        >>> import pandana as pdna
+
+        Read an example geodataframe:
+
+        >>> df = gpd.read_file(geodatasets.get_path("geoda Cincinnati")).to_crs(4326)
+
+        Download a walk network using osmnx
+
+        >>> osm_graph = ox.graph_from_polygon(df.union_all(), network_type="walk")
+        >>> nodes, edges = ox.utils_graph.graph_to_gdfs(osm_graph)
+        >>> edges = edges.reset_index()
+
+        Generate a routable pandana network from the OSM nodes and edges
+
+        >>> network = pdna.Network(
+        >>>     edge_from=edges["u"],
+        >>>     edge_to=edges["v"],
+        >>>     edge_weights=edges[["length"]],
+        >>>     node_x=nodes["x"],
+        >>>     node_y=nodes["y"],)
+
+        Use the pandana network to compute shortest paths between gdf centroids and
+        generate a Graph
+
+        >>> G = Graph.build_travel_cost(df.set_geometry(df.centroid), network, 500)
+        >>> G.adjacency.head()
+        focal  neighbor
+        0       62          385.609009
+                65          309.471985
+                115         346.858002
+                116           0.000000
+                117         333.639008
+        Name: weight, dtype: float64
+        """
+        adj = _build_travel_graph(df, network, threshold)
+        g = cls.from_adjacency(adj)
+        if kernel is not None:
+            arrays = _kernel(
+                g.sparse,
+                metric="precomputed",
+                kernel=kernel,
+                bandwidth=threshold,
+                resolve_isolates=False,
+                ids=df.index.values,
+            )
+            return cls.from_arrays(*arrays)
+        return g
 
     @cached_property
     def neighbors(self):

@@ -30,6 +30,7 @@ dependencies:
   - scikit-learn
   - sqlalchemy
   - zstd
+  - pandana
   - xarray
   # for docs build action (this env only)
   - myst-parser
