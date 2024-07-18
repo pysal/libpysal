@@ -19,7 +19,7 @@ libpysal: Python Spatial Analysis Library Core
         <div class="col-sm-1 col-xs-hidden">
         </div>
         <div class="col-sm-10 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/main/notebooks/weights.ipynb" class="thumbnail">
+            <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/main/docs/user-guide/weights/weights.ipynb" class="thumbnail">
                 <img src="_static/images/npweights.png" class="img-responsive center-block">
                 <div class="caption text-center">
                 <h6>Weights for nonplanar enforced geometries</h6>
@@ -35,14 +35,24 @@ libpysal: Python Spatial Analysis Library Core
 Introduction
 ************
 
-**libpysal** offers four modules that form the building blocks in many upstream packages in the `PySAL family <https://pysal.org>`_:
+**libpysal** offers five modules that form the building blocks in many upstream packages in the `PySAL family <https://pysal.org>`_:
 
-- Spatial Weights: libpysal.weights
+- Spatial Weights: libpysal.weights 
+- Spatial Graphs: libpysal.graph 
 - Input-and output: libpysal.io
 - Computational geometry: libpysal.cg
 - Built-in example datasets libpysal.examples
 
-Examples demonstrating some of **libpysal** functionality are available in the `tutorial <tutorial.html>`_.
+
+.. Note:: A new Graph class is being added to libpysal. For users interested in
+	  migration from using Weights to the new Graph class, see the
+	  `migration guide <user-guide/graph/w_g_migration.html>`_. For
+	  developers interested in the technical details details see   `W and Graph Components <migration.html>`_.
+
+
+
+Examples demonstrating some of **libpysal** functionality are available in the
+`User Guide <user-guide.html>`_.
 
 Details are available in the `libpysal api <api.html>`_.
 
@@ -111,14 +121,15 @@ libpysal
 
 Core components of the Python Spatial Analysis Library (`PySAL`_)
 
+Documentation contents
+----------------------
 .. toctree::
-   :hidden:
-   :maxdepth: 4
-   :caption: Contents:
+   :maxdepth: 1
 
-   Installation <installation>
-   Tutorial <tutorial>
-   API <api>
-   References <references>
-   
+   Home <self>
+   API reference <api>
+   references
+   user-guide/intro
+
+
 .. _PySAL: https://github.com/pysal/pysal

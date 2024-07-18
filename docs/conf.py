@@ -160,7 +160,7 @@ html_theme_options = {
     "navbar_links": [
         # ("Gallery", "auto_examples/index"),
         ("Installation", "installation"),
-        ("Tutorial", "tutorial"),
+        ("User Guide", "user-guide/intro"),
         ("API", "api"),
         ("References", "references"),
     ],
