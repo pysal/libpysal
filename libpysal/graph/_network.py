@@ -43,9 +43,6 @@ def pdna_to_adj(origins, network, node_ids, threshold):
     """
 
     # map node ids in the network to index in the gdf
-    _validate_geometry_input(
-        origins.geometry, ids=None, valid_geometry_types="Point"
-    )
 
     mapper = dict(zip(node_ids, origins.index.values, strict=False))
 
@@ -87,9 +84,10 @@ def build_travel_graph(
         adjacency formatted as multiindexed (focal, neighbor) series
     """
     df = df.copy()
-    df["node_ids"] = network.get_node_ids(
-        df.geometry.centroid.x, df.geometry.centroid.y
-    )
+    _validate_geometry_input(df.geometry, ids=None, valid_geometry_types="Point")
+    df["node_ids"] = network.get_node_ids(df.geometry.x, df.geometry.y)
+
+
     # depending on density of the graph nodes / observations, it is common to have
     # multiple observations snapped to the same network node, so use the clique
     # expansion logic to handle these cases
