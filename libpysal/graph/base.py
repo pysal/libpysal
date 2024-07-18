@@ -1498,7 +1498,7 @@ class Graph(SetOpsMixin):
         >>> df = gpd.read_file(geodatasets.get_path("geoda Cincinnati")).to_crs(4326)
 
         >>> # download a walk network using osmnx
-        >>> osm_graph = ox.graph_from_polygon(df.unary_union, network_type="walk")
+        >>> osm_graph = ox.graph_from_polygon(df.union_all(), network_type="walk")
         >>> nodes, edges = ox.utils_graph.graph_to_gdfs(osm_graph)
         >>> edges = edges.reset_index()
 
