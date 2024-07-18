@@ -1476,7 +1476,7 @@ class Graph(SetOpsMixin):
             a multimodal or auto network with variable travel speeds, this is usually
             some measure of travel time
         kernel : str or callable, optional
-            kernel transformation applied to the weights. See 
+            kernel transformation applied to the weights. See
             libpysal.graph.Graph.build_kernel for more information on kernel
             transformation options. Default is None, in which case the Graph weight
             is pure distance between focal and neighbor
