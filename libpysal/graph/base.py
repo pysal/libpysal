@@ -1493,7 +1493,8 @@ class Graph(SetOpsMixin):
         >>> import pandana as pdna
         >>> from libpysal.graph import Graph
 
-        >>> # read an example geodataframe
+        Read an example geodataframe:
+
         >>> df = gpd.read_file(geodatasets.get_path("geoda Cincinnati")).to_crs(4326)
 
         >>> # download a walk network using osmnx
