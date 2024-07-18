@@ -74,7 +74,7 @@ def build_travel_graph(
     ----------
     df : geopandas.GeoDataFrame
         geodataframe of observations. CRS should be the same as the locations
-        of node_x and node_y in the pandana.Network (usually 4326 if network
+        of ``node_x`` and ``node_y`` in the pandana.Network (usually 4326 if network
         comes from OSM, but sometimes projected to improve snapping quality).
     network : pandana.Network
         Network that encodes travel costs. See <https://udst.github.io/pandana/>
