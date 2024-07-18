@@ -1496,12 +1496,14 @@ class Graph(SetOpsMixin):
 
         >>> df = gpd.read_file(geodatasets.get_path("geoda Cincinnati")).to_crs(4326)
 
-        >>> # download a walk network using osmnx
+        Download a walk network using osmnx
+
         >>> osm_graph = ox.graph_from_polygon(df.union_all(), network_type="walk")
         >>> nodes, edges = ox.utils_graph.graph_to_gdfs(osm_graph)
         >>> edges = edges.reset_index()
 
-        >>> # generate a routable pandana network from the OSM nodes and edges
+        Generate a routable pandana network from the OSM nodes and edges
+
         >>> network = pdna.Network(
         >>>     edge_from=edges["u"],
         >>>     edge_to=edges["v"],
@@ -1509,7 +1511,9 @@ class Graph(SetOpsMixin):
         >>>     node_x=nodes["x"],
         >>>     node_y=nodes["y"],)
 
-        >>> # use the pandana network to compute shortest paths between gdf centroids
+        Use the pandana network to compute shortest paths between gdf centroids and
+        generate a Graph
+
         >>> G = Graph.build_travel_cost(df.set_geometry(df.centroid), network, 500)
         >>> G.adjacency.head()
         focal  neighbor
