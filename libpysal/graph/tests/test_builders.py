@@ -498,7 +498,7 @@ class TestMatching:
 
 @pytest.mark.network
 class TestTravelNetwork:
-    def setup(self):
+    def setup_method(self):
         pandana = pytest.importorskip("pandana")
         import pooch        
         self.net_path = pooch.retrieve(
