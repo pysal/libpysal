@@ -1512,7 +1512,6 @@ class Graph(SetOpsMixin):
         >>> # use the pandana network to compute shortest paths between gdf centroids
         >>> G = Graph.build_travel_cost(df.set_geometry(df.centroid), network, 500)
         >>> G.adjacency.head()
-
         focal  neighbor
         0       62          385.609009
                 65          309.471985
