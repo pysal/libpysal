@@ -6,7 +6,7 @@ from ._utils import _induce_cliques, _validate_geometry_input
 def _build_coplanarity_node_lookup(geoms):
     """
     Identify coplanar points and create a look-up table for the coplanar geometries.
-    Same function as in graph._utils, but need to keep the index to use as graph ids
+    Same function as in ``graph._utils``, but need to keep the index to use as graph ids
     """
     # geoms = geoms.reset_index(drop=True)
     coplanar = []
