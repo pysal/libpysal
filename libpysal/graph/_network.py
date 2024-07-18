@@ -47,7 +47,6 @@ def pdna_to_adj(origins, network, node_ids, threshold):
     """
 
     # map node ids in the network to index in the gdf
-
     mapper = dict(zip(node_ids, origins.index.values, strict=False))
 
     namer = {"source": "origin", network.impedance_names[0]: "cost"}
