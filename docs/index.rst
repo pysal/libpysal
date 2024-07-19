@@ -127,9 +127,11 @@ Documentation contents
    :maxdepth: 1
 
    Home <self>
+   installation
    API reference <api>
    references
    user-guide/intro
+   migration
 
 
 .. _PySAL: https://github.com/pysal/pysal
