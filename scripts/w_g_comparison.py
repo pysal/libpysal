@@ -115,7 +115,7 @@ Members common to W and Graph
 
 
 common_content = []
-header = "Member,  Typee"
+header = "Member,  Type"
 common_content.append(header)
 for member in compat:
 
