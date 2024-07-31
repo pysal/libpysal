@@ -1352,7 +1352,7 @@ class TestBase:
         for i in nybb_contig.unique_ids:
             neigh_vals = y.loc[nybb_contig[i].index.values]
             expected = neigh_vals.mode().iloc[0] if neigh_vals.shape[0] else 0
-            res = stats.loc[i]['mode']
+            res = stats.loc[i]["mode"]
             assert res == expected
 
         ## test passing ndarray
