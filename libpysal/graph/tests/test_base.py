@@ -1327,7 +1327,7 @@ class TestBase:
         # test with isolates and string index
         nybb_contig = graph.Graph.build_contiguity(self.nybb, rook=False)
         stats = nybb_contig.describe(
-            self.nybb.geometry.area, statistics=["count", "sum"]
+            self.nybb.geometry.area, statistics=["count", "sum", "mode"]
         )
         ## all isolate values should be nan
         assert stats.loc["Staten Island"].isna().all()
@@ -1347,6 +1347,13 @@ class TestBase:
             check_dtype=False,
             check_names=False,
         )
+
+        y = self.nybb.geometry.area
+        for i in nybb_contig.unique_ids:
+            neigh_vals = y.loc[nybb_contig[i].index.values]
+            expected = neigh_vals.mode().iloc[0] if neigh_vals.shape[0] else 0
+            res = stats.loc[i]["mode"]
+            assert res == expected
 
         ## test passing ndarray
         stats1 = nybb_contig.describe(self.nybb.geometry.area, statistics=["sum"])[

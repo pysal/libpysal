@@ -2651,6 +2651,10 @@ class Graph(SetOpsMixin):
         if (y.index != self.unique_ids).all():
             raise ValueError("The values index is not aligned with the graph index.")
 
+        # reset numerical index to enable numba functionality
+        if not isinstance(y.index.dtype, int | float):
+            y = y.reset_index(drop=True)
+
         if q is None:
             grouper = y.take(self._adjacency.index.codes[1]).groupby(
                 self._adjacency.index.codes[0], sort=False
