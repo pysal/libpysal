@@ -2652,8 +2652,8 @@ class Graph(SetOpsMixin):
             raise ValueError("The values index is not aligned with the graph index.")
 
         # reset numerical index to enable numba functionality
-        if isinstance(y.index.dtype, object):
-            y.index = np.arange(len(y.index))
+        if not isinstance(y.index.dtype, int | float):
+            y = y.reset_index(drop=True)
 
         if q is None:
             grouper = y.take(self._adjacency.index.codes[1]).groupby(
