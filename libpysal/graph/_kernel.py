@@ -47,6 +47,11 @@ def _cosine(distances, bandwidth):
     return (numpy.pi / 4) * numpy.cos(numpy.pi / 2 * u)
 
 
+def _exponential(distances, bandwidth):
+    u = distances / bandwidth
+    return numpy.exp(-u)
+
+
 def _boxcar(distances, bandwidth):
     r = (distances < bandwidth).astype(int)
     return r
@@ -64,6 +69,7 @@ _kernel_functions = {
     "cosine": _cosine,
     "boxcar": _boxcar,
     "discrete": _boxcar,
+    "exponential": _exponential,
     "identity": _identity,
     None: _identity,
 }
@@ -106,6 +112,7 @@ def _kernel(
             - gaussian:
             - bisquare:
             - cosine:
+            - exponential:
             - boxcar/discrete: all distances less than `bandwidth` are 1, and all
                 other distances are 0
             - identity/None : do nothing, weight similarity based on raw distance

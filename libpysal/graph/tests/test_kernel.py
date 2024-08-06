@@ -224,6 +224,9 @@ def test_kernels(kernel, grocs):
     elif kernel in ["identity", None]:
         assert weight.mean() == pytest.approx(39758.007361814016)
         assert weight.max() == pytest.approx(127937.75271993055)
+    elif kernel in ["exponential", None]:
+        assert weight.mean() == pytest.approx(0.25104208195691335)
+        assert weight.max() == pytest.approx(0.9875261386315732)
     else:  # function
         assert weight.mean() == pytest.approx(0.6880384553732511)
         assert weight.max() == pytest.approx(0.9855481738848647)
