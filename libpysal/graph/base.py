@@ -1098,7 +1098,7 @@ class Graph(SetOpsMixin):
         data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
             geometries over which to compute a kernel. If a geopandas object with Point
             geometry is provided, the .geometry attribute is used. If a numpy.ndarray
-            with shapely geome is used, then the coordinates are extracted and used.
+            with shapely geometry is used, then the coordinates are extracted and used.
             If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
             coordinates.
         k : int
