@@ -1090,15 +1090,15 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
-    def build_knn(cls, data, k, metric="euclidean", p=2, coplanar="raise"):
+    def build_knn(cls, data, k, metric="euclidean", p=2, binary=True, coplanar="raise"):
         """Generate Graph from geometry data based on k-nearest neighbors search
 
         Parameters
         ----------
         data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
             geometries over which to compute a kernel. If a geopandas object with Point
-            geoemtry is provided, the .geometry attribute is used. If a numpy.ndarray
-            with shapely geoemtry is used, then the coordinates are extracted and used.
+            geometry is provided, the .geometry attribute is used. If a numpy.ndarray
+            with shapely geome is used, then the coordinates are extracted and used.
             If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
             coordinates.
         k : int
@@ -1110,6 +1110,10 @@ class Graph(SetOpsMixin):
             only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         p : int (default: 2)
             parameter for minkowski metric, ignored if metric != "minkowski".
+        binary: bool default is True
+            If True :math:`w_{ij}=1` if :math:`d_{i,j}<=threshold`, otherwise
+            :math:`w_{i,j}=0`.
+            If False :math:`wij=dij^{alpha}`, by default True.
         coplanar: str, optional (default "raise")
             Method for handling coplanar points. Options include
             ``'raise'`` (raising an exception when coplanar points are present),
@@ -1170,12 +1174,13 @@ class Graph(SetOpsMixin):
         Name: weight, dtype: int32
         """
         ids = _evaluate_index(data)
+        kernel = "identity" if binary is False else "boxcar"
 
         head, tail, weight = _kernel(
             data,
             bandwidth=np.inf,
             metric=metric,
-            kernel="boxcar",
+            kernel=kernel,
             k=k,
             p=p,
             ids=ids,
