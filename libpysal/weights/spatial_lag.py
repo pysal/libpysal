@@ -85,7 +85,7 @@ def lag_spatial(w, y):
            [6.        , 2.        ],
            [6.        , 2.        ]])
     """
-    return w.sparse * y
+    return w.sparse @ y
 
 
 def lag_categorical(w, y, ties="tryself"):
