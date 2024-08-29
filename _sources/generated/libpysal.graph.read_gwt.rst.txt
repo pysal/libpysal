@@ -1,0 +1,6 @@
+﻿libpysal.graph.read\_gwt
+========================
+
+.. currentmodule:: libpysal.graph
+
+.. autofunction:: read_gwt
