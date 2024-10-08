@@ -82,12 +82,27 @@ include = ["libpysal", "libpysal.*"]
 line-length = 88
 lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
 target-version = "py310"
-exclude = ["libpysal/tests/*", "docs/*"]
+exclude = [
+    "libpysal/tests/*",
+    "libpysal/cg/tests/fast_point_in_polygon_algorithm.ipynb"
+]
+include = ["*.py", "*.ipynb"]
+
 [tool.ruff.lint.per-file-ignores]
 "*__init__.py" = [
     "F401",  # imported but unused
     "F403",  # star import; unable to detect undefined names
 ]
+"*.ipynb" = [
+    "C408",  # Unnecessary `dict` call
+    "E402",  # Module level import not at top of cell
+]
+"docs/conf.py" = [
+    "A001",  # Variable `copyright` is shadowing a Python builtin
+    "E501",  #Line too long
+    "UP031",  # Use format specifiers instead of percent format
+]
+
 
 
 [tool.coverage.run]

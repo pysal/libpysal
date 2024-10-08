@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # libpysal documentation build configuration file, created by
 # sphinx-quickstart on Wed Jun  6 15:54:22 2018.
 #
@@ -17,8 +15,8 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import sphinx_bootstrap_theme
-import libpysal
 
+import libpysal
 
 # -- General configuration ------------------------------------------------
 
