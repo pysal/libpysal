@@ -20,7 +20,7 @@ original_makedirs = os.makedirs
 class TestExamples:
     def test_available(self):
         examples = available()
-        assert type(examples) == pandas.core.frame.DataFrame
+        assert isinstance(examples, pandas.DataFrame)
         assert examples.shape == (99, 3)
 
     def test_data_home(self):
