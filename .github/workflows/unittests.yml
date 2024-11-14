@@ -79,4 +79,4 @@ jobs:
           pytest -v --color yes -n auto --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
 
       - name: Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
