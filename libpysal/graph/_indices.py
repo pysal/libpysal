@@ -1,3 +1,6 @@
+from packaging.version import Version
+
+
 def _build_from_h3(ids, order=1):
     """Generate Graph from H3 hexagons.
 
@@ -30,14 +33,23 @@ def _build_from_h3(ids, order=1):
 
     neighbors = {}
     weights = {}
-    for ix in ids:
-        rings = h3.hex_range_distances(ix, order)
-        for i, ring in enumerate(rings):
-            if i == 0:
-                neighbors[ix] = []
-                weights[ix] = []
-            else:
+    if Version(h3.__version__) > Version("4.0"):
+        for ix in ids:
+            neighbors[ix] = []
+            weights[ix] = []
+            for i in range(1, order + 1):
+                ring = h3.grid_ring(ix, i)
                 neighbors[ix].extend(list(ring))
                 weights[ix].extend([i] * len(ring))
+    else:
+        for ix in ids:
+            rings = h3.hex_range_distances(ix, order)
+            for i, ring in enumerate(rings):
+                if i == 0:
+                    neighbors[ix] = []
+                    weights[ix] = []
+                else:
+                    neighbors[ix].extend(list(ring))
+                    weights[ix].extend([i] * len(ring))
 
     return neighbors, weights
