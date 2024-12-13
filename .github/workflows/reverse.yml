@@ -33,6 +33,7 @@ jobs:
               pysal
               mesa-geo
               spvcm
+              neatnet
             include: >-
               mapclassify
             install: >-
