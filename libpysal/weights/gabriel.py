@@ -191,7 +191,7 @@ class Gabriel(Delaunay):
             edges,
             dt.points,
         )
-        output = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist))))
+        output = numpy.vstack(list(set(map(tuple, edges)).difference(set(droplist))))
         ids = kwargs.get("ids")
         if ids is not None:
             ids = numpy.asarray(ids)
