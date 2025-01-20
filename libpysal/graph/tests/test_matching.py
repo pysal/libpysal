@@ -40,14 +40,14 @@ default_solver = getattr(pulp, default_solver[0])()
 
 def test_correctness_k1():
     # manual solution for simple k=1 by hungarian method
-    known = np.row_stack([(0, 3), (1, 4), (2, 3), (3, 0), (3, 2), (4, 1)])
+    known = np.vstack([(0, 3), (1, 4), (2, 3), (3, 0), (3, 2), (4, 1)])
     computed = _spatial_matching(simple, n_matches=1, solver=default_solver)
     np.testing.assert_array_equal(known, np.column_stack((computed[0], computed[1])))
     computed_partial = _spatial_matching(
         simple, n_matches=1, allow_partial_match=True, solver=default_solver
     )
     # manual solution by relaxing the above
-    known = np.row_stack(
+    known = np.vstack(
         [
             (0, 2, 0.5),
             (0, 3, 0.5),

@@ -262,7 +262,7 @@ def _gabriel(coordinates, coplanar):
         edges,
         points,
     )
-    edges = numpy.row_stack(list(set(map(tuple, edges)).difference(set(droplist))))
+    edges = numpy.vstack(list(set(map(tuple, edges)).difference(set(droplist))))
     heads_ix, tails_ix = edges.T
     order = numpy.lexsort((tails_ix, heads_ix))
     sorted_heads_ix = heads_ix[order]
