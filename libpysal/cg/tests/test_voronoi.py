@@ -222,7 +222,7 @@ class TestVoronoi:
             voronoi_frames(self.points2, clip=clip)
 
     # GH776
-    def test_union_fallback():
+    def test_union_fallback(self):
         data = {
             "type": "FeatureCollection",
             "features": [
