@@ -220,3 +220,75 @@ class TestVoronoi:
             match=f"The '{clip}' option for the 'clip' parameter is deprecated",
         ):
             voronoi_frames(self.points2, clip=clip)
+
+    # GH776
+    def test_union_fallback():
+        data = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "id": "0",
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": (
+                            (
+                                (575361.23, 115796.88),
+                                (575364.42, 115767.29),
+                                (575343.54, 115765.04),
+                                (575341.61, 115782.98),
+                                (575347.84, 115783.65),
+                                (575348.94, 115773.43),
+                                (575356.99, 115774.3),
+                                (575354.63, 115796.16),
+                                (575361.23, 115796.88),
+                            ),
+                        ),
+                    },
+                    "bbox": (575341.61, 115765.04, 575364.42, 115796.88),
+                },
+                {
+                    "id": "1",
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": (
+                            (
+                                (575365.47, 115821.98),
+                                (575375.28, 115823.68),
+                                (575379.67, 115798.26),
+                                (575369.86, 115796.56),
+                                (575365.47, 115821.98),
+                            ),
+                        ),
+                    },
+                    "bbox": (575365.47, 115796.56, 575379.67, 115823.68),
+                },
+                {
+                    "id": "2",
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": (
+                            (
+                                (575344.39, 115825.85),
+                                (575343.47, 115831.29),
+                                (575348.91, 115832.21),
+                                (575349.83, 115826.77),
+                                (575344.39, 115825.85),
+                            ),
+                        ),
+                    },
+                    "bbox": (575343.47, 115825.85, 575349.83, 115832.21),
+                },
+            ],
+            "bbox": (575341.61, 115765.04, 575379.67, 115832.21),
+        }
+        geometry = gpd.GeoDataFrame.from_features(data)
+        vf = voronoi_frames(
+            geometry, shrink=0.4, segment=0.5, return_input=False, as_gdf=False
+        )
+        assert vf.shape == (3,)
