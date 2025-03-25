@@ -13,6 +13,7 @@ import numpy.typing as npt
 import shapely
 from packaging.version import Version
 from scipy.spatial import Voronoi
+from shapely.errors import GEOSException
 
 __author__ = "Serge Rey <sjsrey@gmail.com>"
 
@@ -455,7 +456,7 @@ def voronoi_frames(
         polygons = (
             polygons.iloc[ids_polygons]
             .groupby(objects.index.take(ids_objects))
-            .agg(shapely.coverage_union_all)
+            .agg(_union_with_fallback)
         )
         if geometry.crs is not None:
             polygons = polygons.set_crs(geometry.crs)
@@ -495,6 +496,20 @@ def voronoi_frames(
         return polygons, geometry
 
     return polygons
+
+
+def _union_with_fallback(arr):
+    """
+    Coverage union is finnicky with floating point precision and tends to occasionally
+    raise an error from within GEOS we have no control over. It is not a data issue
+    typically. Falling back to unary union if that happens.
+    """
+    try:
+        r = shapely.coverage_union_all(arr)
+    except GEOSException:
+        r = shapely.union_all(arr)
+
+    return r
 
 
 def _get_limit(points, clip):
