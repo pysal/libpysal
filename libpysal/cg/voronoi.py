@@ -463,6 +463,11 @@ def voronoi_frames(
     else:
         polygons = polygons.iloc[ids_polygons].reset_index(drop=True)
 
+    # ensure validity as union can occasionally produce invalid polygons that may
+    # break the intersection below
+    if not polygons.is_valid.all():
+        polygons = polygons.make_valid()
+
     # Clip polygons if limit is provided
     if limit is not None:
         to_be_clipped = polygons.sindex.query(limit.boundary, "intersects")
