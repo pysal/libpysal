@@ -1,0 +1,153 @@
+# A .txt file that when renamed conftest.py will allow pytest to flag sparray troubles.
+#================== Added to check spmatrix usage ========================
+import scipy
+
+def flag_this_call(*args, **kwds):
+    raise ValueError("Old spmatrix version of bmat called")
+
+scipy.sparse._construct.bmat = flag_this_call
+scipy.sparse._construct.rand = flag_this_call
+scipy.sparse._construct.rand = flag_this_call
+
+class _strict_mul_mixin:
+    def __mul__(self, other):
+        if not scipy.sparse._sputils.isscalarlike(other):
+            raise ValueError('Operator * used here! Change to @?')
+        return super().__mul__(other)
+
+    def __rmul__(self, other):
+        if not scipy.sparse._sputils.isscalarlike(other):
+            raise ValueError('Operator * used here! Change to @?')
+        return super().__rmul__(other)
+
+    def __imul__(self, other):
+        if not scipy.sparse._sputils.isscalarlike(other):
+            raise ValueError('Operator * used here! Change to @?')
+        return super().__imul__(other)
+
+    def __pow__(self, *args, **kwargs):
+        raise ValueError('spmatrix ** found! Use linalg.matrix_power?')
+
+    @property
+    def A(self):
+        raise TypeError('spmatrix A property found! Use .toarray()')
+
+    @property
+    def H(self):
+        raise TypeError('spmatrix H property found! Use .conjugate().T')
+
+    def asfptype(self):
+        raise TypeError('spmatrix asfptype found! rewrite needed')
+
+    def get_shape(self):
+        raise TypeError('spmatrix get_shape found! Use .shape')
+
+    def getformat(self):
+        raise TypeError('spmatrix getformat found! Use .shape')
+
+    def getmaxprint(self):
+        raise TypeError('spmatrix getmaxprint found! Use .shape')
+
+    def getnnz(self):
+        raise TypeError('spmatrix getnnz found! Use .shape')
+
+    def getH(self):
+        raise TypeError('spmatrix getH found! Use .shape')
+
+    def getrow(self):
+        raise TypeError('spmatrix getrow found! Use .shape')
+
+    def getcol(self):
+        raise TypeError('spmatrix getcol found! Use .shape')
+
+    def sum(self, *args, axis=None, **kwds):
+        if axis is not None:
+            raise TypeError(f'spmatrix sum found using axis={axis}!')
+        return super().sum(*args, **kwds)
+
+    def sum(self, *args, axis=None, **kwds):
+        if axis is not None:
+            raise TypeError(f'spmatrix sum found using axis={axis}!')
+        return super().sum(*args, **kwds)
+
+    def mean(self, *args, axis=None, **kwds):
+        if axis is not None:
+            raise TypeError(f'spmatrix sum found using axis={axis}!')
+        return super().sum(*args, **kwds)
+
+    def min(self, *args, axis=None, **kwds):
+        if axis is not None:
+            raise TypeError(f'spmatrix sum found using axis={axis}!')
+        return super().sum(*args, **kwds)
+
+    def max(self, *args, axis=None, **kwds):
+        if axis is not None:
+            raise TypeError(f'spmatrix sum found using axis={axis}!')
+        return super().sum(*args, **kwds)
+
+    def argmin(self, *args, axis=None, **kwds):
+        if axis is not None:
+            raise TypeError(f'spmatrix sum found using axis={axis}!')
+        return super().sum(*args, **kwds)
+
+    def argmax(self, *args, axis=None, **kwds):
+        if axis is not None:
+            raise TypeError(f'spmatrix sum found using axis={axis}!')
+        return super().sum(*args, **kwds)
+
+
+class _strict_coo_matrix(_strict_mul_mixin, scipy.sparse.coo_matrix):
+    pass
+
+class _strict_bsr_matrix(_strict_mul_mixin, scipy.sparse.bsr_matrix):
+    pass
+
+class _strict_csr_matrix(_strict_mul_mixin, scipy.sparse.csr_matrix):
+    pass
+
+class _strict_csc_matrix(_strict_mul_mixin, scipy.sparse.csc_matrix):
+    pass
+
+class _strict_dok_matrix(_strict_mul_mixin, scipy.sparse.dok_matrix):
+    pass
+
+class _strict_lil_matrix(_strict_mul_mixin, scipy.sparse.lil_matrix):
+    pass
+
+class _strict_dia_matrix(_strict_mul_mixin, scipy.sparse.dia_matrix):
+    pass
+
+scipy.sparse.coo_matrix = scipy.sparse._coo.coo_matrix = _strict_coo_matrix
+scipy.sparse.bsr_matrix = scipy.sparse._bsr.bsr_matrix = _strict_bsr_matrix
+scipy.sparse.csr_matrix = scipy.sparse._csr.csr_matrix = _strict_csr_matrix
+scipy.sparse.csc_matrix = scipy.sparse._csc.csc_matrix = _strict_csc_matrix
+scipy.sparse.dok_matrix = scipy.sparse._dok.dok_matrix = _strict_dok_matrix
+scipy.sparse.lil_matrix = scipy.sparse._lil.lil_matrix = _strict_lil_matrix
+scipy.sparse.dia_matrix = scipy.sparse._dia.dia_matrix = _strict_dia_matrix
+
+scipy.sparse._compressed.csr_matrix = _strict_csr_matrix
+
+scipy.sparse._construct.bsr_matrix = _strict_bsr_matrix
+scipy.sparse._construct.coo_matrix = _strict_coo_matrix
+scipy.sparse._construct.csc_matrix = _strict_csc_matrix
+scipy.sparse._construct.csr_matrix = _strict_csr_matrix
+scipy.sparse._construct.dia_matrix = _strict_dia_matrix
+
+scipy.sparse._extract.coo_matrix = _strict_coo_matrix
+
+scipy.sparse._matrix.bsr_matrix = _strict_bsr_matrix
+scipy.sparse._matrix.coo_matrix = _strict_coo_matrix
+scipy.sparse._matrix.csc_matrix = _strict_csc_matrix
+scipy.sparse._matrix.csr_matrix = _strict_csr_matrix
+scipy.sparse._matrix.dia_matrix = _strict_dia_matrix
+scipy.sparse._matrix.dok_matrix = _strict_dok_matrix
+scipy.sparse._matrix.lil_matrix = _strict_lil_matrix
+
+del _strict_coo_matrix
+del _strict_bsr_matrix
+del _strict_csr_matrix
+del _strict_csc_matrix
+del _strict_dok_matrix
+del _strict_lil_matrix
+del _strict_dia_matrix
+#==========================================
