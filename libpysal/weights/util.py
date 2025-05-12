@@ -511,7 +511,7 @@ def higher_order_sp(
             w = w.sparse
         else:
             raise ValueError("Weights are not binary (0,1)")
-    elif scipy.sparse.isspmatrix_csr(w):
+    elif scipy.sparse.issparse(w) and w.format == "csr":
         if not np.unique(w.data) == np.array([1.0]):
             raise ValueError(
                 "Sparse weights matrix is not binary (0,1) weights matrix."
@@ -523,17 +523,17 @@ def higher_order_sp(
         )
 
     if lower_order:
-        wk = sum(w**x for x in range(1, k + 1))
+        wk = sum(sparse.linalg.matrix_power(w, k) for k in range(1, k+1))
         shortest_path = False
     else:
-        wk = w**k
+        wk = sparse.linalg.matrix_power(w, k)
 
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck, strict=True))
 
     if shortest_path:
         for j in range(1, k):
-            wj = w**j
+            wj = sparse.linalg.matrix_power(w, j)
             rj, cj = wj.nonzero()
             sj = set(zip(rj, cj, strict=True))
             sk.difference_update(sj)
@@ -1225,7 +1225,7 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8)
     m = m + m.T
     if row_st:
-        m = sparse.spdiags(1.0 / m.sum(1).T, 0, *m.shape) * m
+        m = sparse.dia_matrix(((1.0 / m.sum(1).T), [0]), shape=m.shape) @ m
     m = m.tocsc()
     m.eliminate_zeros()
     return m

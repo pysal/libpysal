@@ -270,7 +270,7 @@ def da2WSP(
     # then eliminate zeros from the data. This changes the
     # sparsity of the csr_matrix !!
     if k > 1 and not include_nodata:
-        sw = sum(sw**x for x in range(1, k + 1))
+        sw = sum(sparse.linalg.matrix_power(sw, x) for x in range(1, k + 1))
         sw.setdiag(0)
         sw.eliminate_zeros()
         sw.data[:] = np.ones_like(sw.data, dtype=np.int8)
