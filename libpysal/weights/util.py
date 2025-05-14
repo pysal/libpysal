@@ -524,14 +524,14 @@ def higher_order_sp(
 
     if lower_order:
         shortest_path = False
-        #### Could be as follows after scipy >=1.12 is required
+        #### Can be this one-liner after scipy >=1.12 is assured
         # wk = sum(sparse.linalg.matrix_power(w, k) for k in range(1, k+1))
         wk = w.copy()
         for _ in range(k - 1):
             wk = wk @ w + w
         ####
     else:
-        #### Could be as follows after scipy >=1.12 is required
+        #### Can be this one-liner after scipy >=1.12 is assured
         # wk = sparse.linalg.matrix_power(w, k)
         wk = w.copy()
         x = 1
@@ -548,7 +548,7 @@ def higher_order_sp(
 
     if shortest_path:
         for j in range(1, k):
-            #### Could be as follows after scipy >=1.12 is required
+            #### Can be this one-liner after scipy >=1.12 is assured
             # wj = sparse.linalg.matrix_power(w, j)
             wj = w.copy()
             x = 1

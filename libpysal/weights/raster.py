@@ -270,7 +270,7 @@ def da2WSP(
     # then eliminate zeros from the data. This changes the
     # sparsity of the csr_matrix !!
     if k > 1 and not include_nodata:
-        #### Could be as follows after scipy >=1.12 is required
+        #### Can be this one-liner after scipy >=1.12 is assured
         # sw = sum(sparse.linalg.matrix_power(sw, x) for x in range(1, k + 1))
         tmp = sw.copy()
         for _ in range(k - 1):
