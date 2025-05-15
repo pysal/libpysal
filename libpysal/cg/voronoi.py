@@ -466,7 +466,7 @@ def voronoi_frames(
     # ensure validity as union can occasionally produce invalid polygons that may
     # break the intersection below
     if not polygons.is_valid.all():
-        polygons = polygons.make_valid()
+        polygons = shapely.make_valid(polygons)
 
     # Clip polygons if limit is provided
     if limit is not None:
