@@ -12,7 +12,7 @@ __author__ = (
 import copy
 
 from numpy import ones
-from scipy.sparse import isspmatrix_csr
+from scipy.sparse import issparse
 
 from .weights import WSP, W
 
@@ -501,9 +501,9 @@ def w_clip(w1, w2, outSP=True, **kwargs):  # noqa: N803
     if not w1.id_order:
         w1.id_order = None
     id_order = w1.id_order
-    if not isspmatrix_csr(w1):
+    if not issparse(w1):
         w1 = w1.sparse
-    if not isspmatrix_csr(w2):
+    if not issparse(w2):
         w2 = w2.sparse
     w2.data = ones(w2.data.shape)
     wc = w1.multiply(w2)

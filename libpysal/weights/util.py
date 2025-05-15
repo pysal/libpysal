@@ -511,7 +511,7 @@ def higher_order_sp(
             w = w.sparse
         else:
             raise ValueError("Weights are not binary (0,1)")
-    elif scipy.sparse.isspmatrix_csr(w):
+    elif scipy.sparse.issparse(w) and w.format == "csr":
         if not np.unique(w.data) == np.array([1.0]):
             raise ValueError(
                 "Sparse weights matrix is not binary (0,1) weights matrix."
@@ -523,17 +523,42 @@ def higher_order_sp(
         )
 
     if lower_order:
-        wk = sum(w**x for x in range(1, k + 1))
         shortest_path = False
+        #### Can be this one-liner after scipy >=1.12 is assured
+        # wk = sum(sparse.linalg.matrix_power(w, k) for k in range(1, k+1))
+        wk = w.copy()
+        for _ in range(k - 1):
+            wk = wk @ w + w
+        ####
     else:
-        wk = w**k
+        #### Can be this one-liner after scipy >=1.12 is assured
+        # wk = sparse.linalg.matrix_power(w, k)
+        wk = w.copy()
+        x = 1
+        while 2 * x < k:
+            wk = wk @ wk
+            x *= 2
+        while x < k:
+            wk = wk @ w
+            x += 1
+        ####
 
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck, strict=True))
 
     if shortest_path:
         for j in range(1, k):
-            wj = w**j
+            #### Can be this one-liner after scipy >=1.12 is assured
+            # wj = sparse.linalg.matrix_power(w, j)
+            wj = w.copy()
+            x = 1
+            while 2 * x < j:
+                wj = wj @ wj
+                x *= 2
+            while x < j:
+                wj = wj @ w
+                x += 1
+            ####
             rj, cj = wj.nonzero()
             sj = set(zip(rj, cj, strict=True))
             sk.difference_update(sj)
@@ -1225,7 +1250,7 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
     m = sparse.dia_matrix((data, offsets), shape=(n, n), dtype=np.int8)
     m = m + m.T
     if row_st:
-        m = sparse.spdiags(1.0 / m.sum(1).T, 0, *m.shape) * m
+        m = sparse.dia_matrix(((1.0 / m.sum(1).T), [0]), shape=m.shape) @ m
     m = m.tocsc()
     m.eliminate_zeros()
     return m

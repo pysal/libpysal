@@ -721,7 +721,7 @@ class W:
         trcW2
         """
         if "diagw2" not in self._cache:
-            self._diagW2 = (self.sparse * self.sparse).diagonal()
+            self._diagW2 = (self.sparse @ self.sparse).diagonal()
             self._cache["diagW2"] = self._diagW2
         return self._diagW2
 
@@ -734,7 +734,7 @@ class W:
         trcWtW
         """
         if "diagWtW" not in self._cache:
-            self._diagWtW = (self.sparse.transpose() * self.sparse).diagonal()
+            self._diagWtW = (self.sparse.transpose() @ self.sparse).diagonal()
             self._cache["diagWtW"] = self._diagWtW
         return self._diagWtW
 
@@ -757,7 +757,7 @@ class W:
         if "diagWtW_WW" not in self._cache:
             wt = self.sparse.transpose()
             w = self.sparse
-            self._diagWtW_WW = (wt * w + w * w).diagonal()
+            self._diagWtW_WW = (wt @ w + w @ w).diagonal()
             self._cache["diagWtW_WW"] = self._diagWtW_WW
         return self._diagWtW_WW
 
@@ -1603,7 +1603,7 @@ class WSP:
         if "diagWtW_WW" not in self._cache:
             wt = self.sparse.transpose()
             w = self.sparse
-            self._diagWtW_WW = (wt * w + w * w).diagonal()
+            self._diagWtW_WW = (wt @ w + w @ w).diagonal()
             self._cache["diagWtW_WW"] = self._diagWtW_WW
         return self._diagWtW_WW
 
