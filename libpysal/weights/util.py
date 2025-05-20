@@ -524,41 +524,16 @@ def higher_order_sp(
 
     if lower_order:
         shortest_path = False
-        #### Can be this one-liner after scipy >=1.12 is assured
-        # wk = sum(sparse.linalg.matrix_power(w, k) for k in range(1, k+1))
-        wk = w.copy()
-        for _ in range(k - 1):
-            wk = wk @ w + w
-        ####
+        wk = sum(sparse.linalg.matrix_power(w, k) for k in range(1, k + 1))
     else:
-        #### Can be this one-liner after scipy >=1.12 is assured
-        # wk = sparse.linalg.matrix_power(w, k)
-        wk = w.copy()
-        x = 1
-        while 2 * x < k:
-            wk = wk @ wk
-            x *= 2
-        while x < k:
-            wk = wk @ w
-            x += 1
-        ####
+        wk = sparse.linalg.matrix_power(w, k)
 
     rk, ck = wk.nonzero()
     sk = set(zip(rk, ck, strict=True))
 
     if shortest_path:
         for j in range(1, k):
-            #### Can be this one-liner after scipy >=1.12 is assured
-            # wj = sparse.linalg.matrix_power(w, j)
-            wj = w.copy()
-            x = 1
-            while 2 * x < j:
-                wj = wj @ wj
-                x *= 2
-            while x < j:
-                wj = wj @ w
-                x += 1
-            ####
+            wj = sparse.linalg.matrix_power(w, j)
             rj, cj = wj.nonzero()
             sj = set(zip(rj, cj, strict=True))
             sk.difference_update(sj)
