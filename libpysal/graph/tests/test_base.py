@@ -7,8 +7,6 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pytest
-from packaging.version import Version
-from scipy import __version__ as scipy_version
 from scipy import sparse
 
 from libpysal import graph, weights
@@ -1014,10 +1012,6 @@ class TestBase:
         with pytest.raises(ValueError, match="The length of `y`"):
             self.g_str.lag(list(range(1, 15)))
 
-    @pytest.mark.skipif(
-        Version(scipy_version) < Version("1.12.0"),
-        reason="sparse matrix power requires scipy>=1.12.0",
-    )
     def test_higher_order(self):
         cont = graph.Graph.build_contiguity(self.nybb)
         k2 = cont.higher_order(2)
@@ -1091,10 +1085,6 @@ class TestBase:
         lower = cont.higher_order(2, lower_order=True)
         assert lower == expected
 
-    @pytest.mark.skipif(
-        Version(scipy_version) < Version("1.12.0"),
-        reason="sparse matrix power requires scipy>=1.12.0",
-    )
     def test_higher_order_inclusive(self):  # GH738
         contig = graph.Graph.from_arrays(
             [0, 1, 2, 3, 3, 4, 4], [0, 3, 4, 1, 4, 2, 3], [0, 1, 1, 1, 1, 1, 1]

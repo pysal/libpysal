@@ -25,13 +25,21 @@ class Testutil:
         assert w9[0] == {1: 1.0, 3: 1.0}
         assert w9[3] == {0: 1.0, 4: 1.0, 6: 1.0}
 
-    def test_lat2_sw(self):
-        w9 = util.lat2SW(3, 3)
+    @pytest.mark.parametrize("row_st", [True, False])
+    def test_lat2_sw(self, row_st):
+        w9 = util.lat2SW(3, 3, row_st=row_st)
         rows, cols = w9.shape
         n = rows * cols
         assert w9.nnz == 24
         pct_nonzero = w9.nnz / float(n)
         assert pct_nonzero == 0.29629629629629628
+        if row_st:
+            #### Can be this one-liner after scipy >=1.15 is assured
+            # w9 = (w9.T.multiply(w9.tocsr().count_nonzero(axis=1))).T
+            w9csr = w9.tocsr()
+            nnz_by_axis1 = np.diff(w9csr.indptr)
+            w9 = (w9csr.T.multiply(nnz_by_axis1)).T
+            ####
         data = w9.todense().tolist()
         assert data[0] == [0, 1, 0, 1, 0, 0, 0, 0, 0]
         assert data[1] == [1, 0, 1, 0, 1, 0, 0, 0, 0]

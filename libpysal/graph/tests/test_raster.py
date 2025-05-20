@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
 import pytest
-from packaging.version import Version
-from scipy import __version__ as scipy_version
 
 from libpysal import graph
 from libpysal.weights.raster import testDataArray as dummy_array  # noqa: N813
@@ -18,10 +16,6 @@ class TestRaster:
         self.da4 = dummy_array((1, 1), missing_vals=False)
         self.da4.data = np.array([["test"]])
 
-    @pytest.mark.skipif(
-        Version(scipy_version) < Version("1.12.0"),
-        reason="sparse matrix power requires scipy>=1.12.0",
-    )
     def test_queen(self):
         g1 = graph.Graph.build_raster_contiguity(self.da1, rook=False, k=2, n_jobs=-1)
         assert g1[(1, -30.0, -180.0)].to_dict() == {
