@@ -3,8 +3,6 @@ from functools import cached_property
 
 import numpy as np
 import pandas as pd
-from packaging.version import Version
-from scipy import __version__ as scipy_version
 from scipy import sparse
 
 from libpysal.weights import W
@@ -2000,9 +1998,6 @@ class Graph(SetOpsMixin):
         <Graph of 85 nodes and 1176 nonzero edges indexed by
          [0, 1, 2, 3, 4, ...]>
         """
-        if not Version(scipy_version) >= Version("1.12.0"):
-            raise ImportError("Graph.higher_order() requires scipy>=1.12.0.")
-
         binary = self.transform("B")
         sp = binary.sparse
 
