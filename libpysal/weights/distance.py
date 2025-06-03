@@ -372,8 +372,8 @@ class Kernel(W):
     bandwidth   : float
                   or array-like (optional)
                   the bandwidth :math:`h_i` for the kernel.
-    fixed       : binary
-                  If true then :math:`h_i=h \\forall i`. If false then
+    fixed       : bool
+                  If True then :math:`h_i=h \\forall i`. If False then
                   bandwidth is adaptive across observations.
     k           : int
                   the number of nearest neighbors to use for determining
