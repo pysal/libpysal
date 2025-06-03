@@ -425,8 +425,9 @@ class Kernel(W):
                   adjustment to ensure knn distance range is closed on the
                   knnth observations
     normalize   : bool
-                  If True (default) gaussian kernel integrates to 1.
+                  If True (default) Gaussian kernel is normalized to integrate to 1.
                   If False K(0)=1.
+                  
 
     Attributes
     ----------
