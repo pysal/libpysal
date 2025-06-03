@@ -424,6 +424,9 @@ class Kernel(W):
     eps         : float
                   adjustment to ensure knn distance range is closed on the
                   knnth observations
+    normalize   : bool
+                  If True (default) gaussian kernel integrates to 1.
+                  If False K(0)=1.
 
     Attributes
     ----------
@@ -530,8 +533,10 @@ class Kernel(W):
         diagonal=False,
         distance_metric="euclidean",
         radius=None,
+        normalize=True,
         **kwargs,
     ):
+        self._normalize = normalize
         if radius is not None:
             distance_metric = "arc"
         if isKDTree(data):
@@ -697,6 +702,8 @@ class Kernel(W):
         elif self.function == "gaussian":
             c = np.pi * 2
             c = c ** (-0.5)
+            if self._normalize is False:
+                c = 1
             self.kernel = [c * np.exp(-(zi**2) / 2.0) for zi in zs]
         else:
             print(("Unsupported kernel function", self.function))
