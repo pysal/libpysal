@@ -1085,7 +1085,7 @@ class Graph(SetOpsMixin):
             coplanar=coplanar,
         )
 
-        return cls.from_arrays(head, tail, weight)
+        return cls.from_arrays(head, tail, weight, is_sorted=True)
 
     @classmethod
     def build_knn(cls, data, k, metric="euclidean", p=2, coplanar="raise"):
