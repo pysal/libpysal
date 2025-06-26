@@ -1,9 +1,10 @@
 import numpy
 
-def _triangular(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return 1 - u
 
+def _triangular(distances, bandwidth):
+    u = distances/bandwidth
+    u = 1-numpy.clip(u, 0,1)
+    return u/bandwidth
 
 def _parabolic(distances, bandwidth):
     u = numpy.clip(distances / bandwidth, 0, 1)
@@ -12,10 +13,10 @@ def _parabolic(distances, bandwidth):
 
 def _gaussian(distances, bandwidth):
     u = distances / bandwidth
-    exponent_term =  -0.5 * (u ** 2)
+    exponent_term = -0.5 * (u**2)
     c = 1 / (bandwidth * numpy.sqrt(2 * numpy.pi))
     return c * numpy.exp(exponent_term)
-             
+
 
 def _bisquare(distances, bandwidth):
     u = numpy.clip(distances / bandwidth, 0, 1)
@@ -55,17 +56,18 @@ _kernel_functions = {
 }
 
 
-def _kernel(distances,
-            bandwidth,
-            kernel='gaussian',
-            ):
+def _kernel(
+    distances,
+    bandwidth,
+    kernel="gaussian",
+):
     """
     distances: array-like
     bandwidth  float
-    kernel: string or callable 
+    kernel: string or callable
 
     """
-    
+
     if callable(kernel):
         k = kernel(distances, bandwidth)
     else:
