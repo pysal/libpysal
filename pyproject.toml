@@ -23,18 +23,19 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    "beautifulsoup4>=4.10",
-    "geopandas>=0.10.0",
-    "numpy>=1.22",
-    "packaging>=22",
-    "pandas>=1.4",
-    "platformdirs>=2.0.2",
-    "requests>=2.27",
-    "scipy>=1.12",
-    "shapely>=2.0.1",
-    "scikit-learn>=1.1",
+    "beautifulsoup4>=4.13.0",
+    "geopandas>=0.14.0",
+    "jinja2",
+    "numpy>=1.26.0",
+    "packaging>=23.2",
+    "pandas>=2.1.0",
+    "platformdirs>=3.11.0",
+    "requests>=2.32.0",
+    "scikit-learn>=1.4.0",
+    "scipy>=1.12.0",
+    "shapely>=2.0",
 ]
 
 [project.urls]
@@ -43,12 +44,13 @@ Repository = "https://github.com/pysal/libpysal"
 
 [project.optional-dependencies]
 plus = [
-    "joblib>=1.2",
-    "networkx>=2.7",
-    "numba>=0.55",
-    "pyarrow>=7.0",
+    "joblib>=1.4.0",
+    "networkx>=3.2",
+    "numba>=0.58",
+    "pandana", # not compatible with Python 3.13 as of 2025-06
+    "pyarrow>=11.0",
     "sqlalchemy>=2.0",
-    "xarray>=2022.3",
+    "xarray>=2023.6",
     "zstd",
 ]
 dev = [
@@ -67,8 +69,8 @@ docs = [
 ]
 tests = [
     "codecov",
-    "geodatasets>=2023.3.0",
-    "matplotlib>=3.6",
+    "geodatasets>=2023.12.0",
+    "matplotlib>=3.8",
     "pytest",
     "pytest-mpl",
     "pytest-cov",

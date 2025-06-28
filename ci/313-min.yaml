@@ -2,36 +2,22 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.10
+  - python=3.13
   - beautifulsoup4
-  - geopandas
+  - fiona
+  - geopandas-base>=0.14.0  # base to avoid pulling sklearn
   - jinja2
-  - packaging
   - pandas
   - platformdirs
   - requests
   - scipy
-  - shapely
   # testing
   - codecov
   - matplotlib
-  - tobler
-  - h3-py
+  - scikit-learn
   - pytest
   - pytest-cov
   - pytest-mpl
   - pytest-xdist
-  # optional
+  # optional used in ci
   - geodatasets
-  - joblib
-  - networkx
-  - numba
-  - pyarrow
-  - scikit-learn
-  - sqlalchemy
-  - xarray
-  - zstd
-  - pandana
-  - pip
-  - pip:
-      - pulp

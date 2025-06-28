@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.13
   - beautifulsoup4
   - geopandas
   - jinja2
@@ -29,9 +29,17 @@ dependencies:
   - pyarrow
   - scikit-learn
   - sqlalchemy
-  - xarray
   - zstd
-  - pandana
+  #- pandana # not compatible with Python 3.13 as of 2025-06
+  - xarray
+  # for docs build action (this env only)
+  - myst-parser
+  - nbsphinx
+  - numpydoc
+  - pandoc
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx_bootstrap_theme
   - pip
   - pip:
     - pulp

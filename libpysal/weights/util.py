@@ -10,7 +10,6 @@ import numpy as np
 # ruff: noqa: N802, N803
 import scipy
 import scipy.spatial
-from packaging.version import Version
 from scipy import sparse
 from scipy.spatial import KDTree
 
@@ -20,9 +19,8 @@ from .set_operations import w_subset
 from .weights import WSP, W
 
 try:
-    import geopandas as gpd
+    import geopandas  # noqa: F401 -- needed to determine availability
 
-    GPD_013 = Version(gpd.__version__) >= Version("0.13.0")
 except ImportError:
     warn("geopandas not available. Some functionality will be disabled.", stacklevel=2)
 
@@ -1595,11 +1593,8 @@ def fuzzy_contiguity(
         gdf.set_geometry("_buffer", inplace=True)
 
     neighbors = {}
-    if GPD_013:
-        # query tree based on set predicate
-        inp, res = gdf.sindex.query(gdf.geometry, predicate=predicate)
-    else:
-        inp, res = gdf.sindex.query_bulk(gdf.geometry, predicate=predicate)
+    inp, res = gdf.sindex.query(gdf.geometry, predicate=predicate)
+
     # remove self hits
     itself = inp == res
     inp = inp[~itself]

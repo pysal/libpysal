@@ -6,7 +6,6 @@ import pandas as pd
 import shapely
 from packaging.version import Version
 
-GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 PANDAS_GE_21 = Version(pd.__version__) >= Version("2.1.0")
 NUMPY_GE_2 = Version(np.__version__) >= Version("2.0.0")
 
@@ -172,7 +171,7 @@ def _build_coplanarity_lookup(geoms):
     geoms = geoms.reset_index(drop=True)
     coplanar = []
     nearest = []
-    r = geoms.groupby(geoms).groups if GPD_013 else geoms.groupby(geoms.to_wkb()).groups
+    r = geoms.groupby(geoms).groups
     for g in r.values():
         if len(g) == 2:
             coplanar.append(g[0])
