@@ -26,7 +26,7 @@ dependencies:
   - pyproj
   - sqlalchemy
   - zstd
-  - pandana
+  #- pandana # not compatible with Python 3.13 as of 2025-06
   - pip
   - pip:
     # dev versions of packages
