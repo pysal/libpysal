@@ -21,7 +21,7 @@ dependencies:
   - pytest-mpl
   - pytest-xdist
   # optional
-  - geodatasets=2023.12.0
+  - geodatasets
   - joblib=1.4.0
   - networkx=3.2
   - numba=0.58
