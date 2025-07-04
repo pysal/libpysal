@@ -2,13 +2,10 @@ import os
 
 import geopandas
 import numpy as np
-from packaging.version import Version
 from shapely import geometry
 
 from ...examples import get_path
 from ..alpha_shapes import alpha_shape, alpha_shape_auto
-
-GPD_013 = Version(geopandas.__version__) >= Version("0.13")
 
 this_directory = os.path.dirname(__file__)
 
@@ -105,19 +102,12 @@ class TestAlphaShapes:
         holes = geopandas.GeoSeries(geoms.interiors.explode()).reset_index(drop=True)
         assert len(holes) == 30
         # No holes are within the shape (shape has holes already)
-        if GPD_013:
-            result = geoms.sindex.query(holes.centroid, predicate="within")
-        else:
-            result = geoms.sindex.query_bulk(holes.centroid, predicate="within")
+        result = geoms.sindex.query(holes.centroid, predicate="within")
 
         assert result.shape == (2, 0)
         # All holes are within the exterior
         shell = geopandas.GeoSeries(geoms.exterior.apply(geometry.Polygon))
-        if GPD_013:
-            within, outside = shell.sindex.query(holes.centroid, predicate="within")
-        else:
-            within, outside = shell.sindex.query_bulk(
-                holes.centroid, predicate="within"
-            )
+        within, outside = shell.sindex.query(holes.centroid, predicate="within")
+
         assert (outside == 0).all()
         np.testing.assert_array_equal(within, np.arange(30))

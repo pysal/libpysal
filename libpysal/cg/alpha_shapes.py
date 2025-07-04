@@ -11,7 +11,6 @@ Author(s):
 
 import numpy as np
 import scipy.spatial as spat
-from packaging.version import Version
 from scipy import sparse
 
 from ..common import HAS_JIT, jit, requires
@@ -25,8 +24,6 @@ if not HAS_JIT:
 
 try:
     import shapely
-
-    assert Version(shapely.__version__) >= Version("2")
 
     HAS_SHAPELY = True
 except (ModuleNotFoundError, AssertionError):
@@ -653,7 +650,6 @@ def _filter_holes(geoms, points):  # noqa: ARG001
     """
     Filter hole polygons using a computational geometry solution
     """
-    import geopandas
 
     if (geoms.interiors.apply(len) > 0).any():
         from shapely.geometry import Polygon
@@ -661,10 +657,7 @@ def _filter_holes(geoms, points):  # noqa: ARG001
         # Extract the "shell", or outer ring of the polygon.
         shells = geoms.exterior.apply(Polygon)
         # Compute which original geometries are within each shell, self-inclusive
-        if Version(geopandas.__version__) >= Version("0.13"):
-            inside, outside = shells.sindex.query(geoms, predicate="within")
-        else:
-            inside, outside = shells.sindex.query_bulk(geoms, predicate="within")
+        inside, outside = shells.sindex.query(geoms, predicate="within")
 
         # Now, create the sparse matrix relating the inner geom (rows)
         # to the outer shell (cols) and take the sum.
