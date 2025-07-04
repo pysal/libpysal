@@ -1529,19 +1529,11 @@ class Graph(SetOpsMixin):
                 117         333.639008
         Name: weight, dtype: float64
         """
-        adj = _build_travel_graph(df, network, threshold, mapping_distance)
-        g = cls.from_adjacency(adj)
-        if kernel is not None:
-            arrays = _kernel(
-                g.sparse,
-                metric="precomputed",
-                kernel=kernel,
-                bandwidth=threshold,
-                resolve_isolates=False,
-                ids=df.index.values,
-            )
-            return cls.from_arrays(*arrays)
-        return g
+        adj = _build_travel_graph(
+            df, network, threshold, mapping_distance, kernel=kernel
+        )
+
+        return cls.from_adjacency(adj)
 
     @cached_property
     def neighbors(self):
