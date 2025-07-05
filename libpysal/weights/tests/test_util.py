@@ -103,7 +103,7 @@ class Testutil:
             8: [4, 5],
         }
         assert w.neighbors == wn
-        ids = ["id-%i" % i for i in range(len(regimes))]
+        ids = [f"id-{i}" for i in range(len(regimes))]
         w = util.block_weights(regimes, ids=np.array(ids))
         w0 = {"id-1": 1.0}
         assert w["id-0"] == w0

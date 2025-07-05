@@ -18,9 +18,9 @@ class TestWIO:
             f1 = libpysal.io.open(file)
             w1 = f1.read()
 
-            f = tempfile.NamedTemporaryFile(suffix=".swm")
-            fname = f.name
-            f.close()
+            with tempfile.NamedTemporaryFile(suffix=".swm") as f:
+                fname = f.name
+                f.close()
 
             f2 = libpysal.io.open(fname, "w")
             f2.varName = f1.varName
