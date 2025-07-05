@@ -210,9 +210,9 @@ def adjlist_map(
         funcs = (funcs,)
     if len(funcs) == 1:
         funcs = [funcs[0] for _ in range(data.shape[1])]
-    assert data.shape[1] == len(
-        funcs
-    ), "shape of data does not match the number of functions provided"
+    assert data.shape[1] == len(funcs), (
+        "shape of data does not match the number of functions provided"
+    )
     w, alist = _get_W_and_alist(W, alist, to_adjlist_kws)
     fnames = {f.__name__ for f in funcs}
     for i, (column, function) in enumerate(zip(data.T, funcs, strict=True)):
