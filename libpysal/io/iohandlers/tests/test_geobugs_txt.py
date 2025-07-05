@@ -45,9 +45,9 @@ class TesttestGeoBUGSTextIO:
     def test_write(self):
         for obj in [self.obj_scot, self.obj_col]:
             w = obj.read()
-            f = tempfile.NamedTemporaryFile(suffix="")
-            fname = f.name
-            f.close()
+            with tempfile.NamedTemporaryFile(suffix="") as f:
+                fname = f.name
+                f.close()
             o = FileIO(fname, "w", "geobugs_text")
             o.write(w)
             o.close()

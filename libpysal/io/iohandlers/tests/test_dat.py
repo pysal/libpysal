@@ -32,9 +32,9 @@ class TesttestDatIO:
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix=".dat")
-        fname = f.name
-        f.close()
+        with tempfile.NamedTemporaryFile(suffix=".dat") as f:
+            fname = f.name
+            f.close()
         o = FileIO(fname, "w")
         o.write(w)
         o.close()

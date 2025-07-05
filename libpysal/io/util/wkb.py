@@ -59,13 +59,13 @@ def load_ring_little(dat) -> list:
     }
     """
     npts = struct.unpack("<I", dat.read(4))[0]
-    xy = struct.unpack("<%dd" % (npts * 2), dat.read(npts * 2 * 8))
+    xy = struct.unpack(f"<{(npts * 2)}d", dat.read(npts * 2 * 8))
     return [cg.Point(xy[i : i + 2]) for i in range(0, npts * 2, 2)]
 
 
 def load_ring_big(dat) -> list:
     npts = struct.unpack(">I", dat.read(4))[0]
-    xy = struct.unpack(">%dd" % (npts * 2), dat.read(npts * 2 * 8))
+    xy = struct.unpack(f">{(npts * 2)}d", dat.read(npts * 2 * 8))
     return [cg.Point(xy[i : i + 2]) for i in range(0, npts * 2, 2)]
 
 
@@ -124,7 +124,7 @@ def loads(s: str):
         }
         """
         n = struct.unpack(endian + "I", dat.read(4))[0]
-        xy = struct.unpack(endian + "%dd" % (n * 2), dat.read(n * 2 * 8))
+        xy = struct.unpack(endian + f"{(n * 2)}d", dat.read(n * 2 * 8))
         geom = cg.Chain([cg.Point(xy[i : i + 2]) for i in range(0, n * 2, 2)])
 
     elif typ == 3:
@@ -200,7 +200,7 @@ def loads(s: str):
     try:
         return geom
     except NameError:
-        raise TypeError("Type (%d) is unknown or unsupported." % typ) from None
+        raise TypeError(f"Type ({typ}) is unknown or unsupported.") from None
 
 
 # if __name__ == "__main__":

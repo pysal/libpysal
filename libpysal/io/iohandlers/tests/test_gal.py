@@ -38,9 +38,9 @@ class TesttestGalIO:
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix=".gal")
-        fname = f.name
-        f.close()
+        with tempfile.NamedTemporaryFile(suffix=".gal") as f:
+            fname = f.name
+            f.close()
         o = FileIO(fname, "w")
         o.write(w)
         o.close()

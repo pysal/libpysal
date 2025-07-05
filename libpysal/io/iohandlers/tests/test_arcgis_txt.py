@@ -49,9 +49,9 @@ class TesttestArcGISTextIO:
                     "DBF relating to ArcGIS TEXT was not found, "
                     "proceeding with unordered string IDs."
                 ) in str(warn[0].message)
-        f = tempfile.NamedTemporaryFile(suffix=".txt")
-        fname = f.name
-        f.close()
+        with tempfile.NamedTemporaryFile(suffix=".txt") as f:
+            fname = f.name
+            f.close()
         o = FileIO(fname, "w", "arcgis_text")
         o.write(w)
         o.close()

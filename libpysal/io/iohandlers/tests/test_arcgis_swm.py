@@ -32,9 +32,9 @@ class TesttestArcGISSwmIO:
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix=".swm")
-        fname = f.name
-        f.close()
+        with tempfile.NamedTemporaryFile(suffix=".swm") as f:
+            fname = f.name
+            f.close()
         o = FileIO(fname, "w")
         o.write(w)
         o.close()

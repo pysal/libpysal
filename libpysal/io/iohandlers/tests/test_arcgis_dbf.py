@@ -49,9 +49,9 @@ class TesttestArcGISDbfIO:
                     "Missing Value Found, setting value to libpysal.MISSINGVALUE."
                     in str(warn[0].message)
                 )
-        f = tempfile.NamedTemporaryFile(suffix=".dbf")
-        fname = f.name
-        f.close()
+        with tempfile.NamedTemporaryFile(suffix=".dbf") as f:
+            fname = f.name
+            f.close()
         o = FileIO(fname, "w", "arcgis_dbf")
         o.write(w)
         o.close()

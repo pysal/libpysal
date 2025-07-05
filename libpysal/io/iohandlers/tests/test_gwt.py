@@ -38,9 +38,9 @@ class TesttestGwtIO:
     def test_write(self):
         with pytest.warns(RuntimeWarning, match="DBF relating to GWT was not found"):
             w = self.obj.read()
-            f = tempfile.NamedTemporaryFile(suffix=".gwt")
-            fname = f.name
-            f.close()
+            with tempfile.NamedTemporaryFile(suffix=".gwt") as f:
+                fname = f.name
+                f.close()
             o = FileIO(fname, "w")
             # copy the shapefile and ID variable names from the old gwt.
             # this is only available after the read() method has been called.

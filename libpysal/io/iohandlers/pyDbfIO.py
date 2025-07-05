@@ -82,7 +82,7 @@ class DBF(tables.DataTable):
                 # eliminate NULs from string
                 self._col_index[name] = (idx, record_size)
                 # alt: str(size) + 's'
-                fmt += "%ds" % size
+                fmt += f"{size}s"
 
                 record_size += size
                 self.field_info.append((name, typ, size, deci))
@@ -278,7 +278,7 @@ class DBF(tables.DataTable):
             self._firstWrite()
 
         if len(obj) != len(self.header):
-            raise TypeError("Rows must contains %d fields." % len(self.header))
+            raise TypeError(f"Rows must contains {len(self.header)} fields.")
 
         self.numrec += 1
 
@@ -293,7 +293,7 @@ class DBF(tables.DataTable):
                 # # if len(v) == size:
                 # #    value = v
                 # # else:
-                value = (("%" + "%d.%d" % (size, deci) + "f") % (value))[:size]
+                value = (("%" + f"{size}.{deci}" + "f") % (value))[:size]
             elif typ == "D":
                 value = value.strftime("%Y%m%d")
             elif typ == "L":

@@ -45,9 +45,9 @@ class TesttestStataTextIO:
     def test_write(self):
         for obj in [self.obj_sparse, self.obj_full]:
             w = obj.read()
-            f = tempfile.NamedTemporaryFile(suffix=".txt")
-            fname = f.name
-            f.close()
+            with tempfile.NamedTemporaryFile(suffix=".txt") as f:
+                fname = f.name
+                f.close()
             o = FileIO(fname, "w", "stata_text")
             if obj == self.obj_sparse:
                 o.write(w)
