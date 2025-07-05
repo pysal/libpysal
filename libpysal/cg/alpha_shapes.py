@@ -566,7 +566,7 @@ def alpha_shape_auto(
     geoms_prev = _alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
     points = shapely.points(xys) if HAS_SHAPELY else [geom.Point(pnt) for pnt in xys]
     if verbose:
-        print("Step set to %i" % step)
+        print(f"Step set to {step}")
     for i in range(0, len(radii), step):
         radi = radii[i]
         alpha = (1 / radi) - EPS

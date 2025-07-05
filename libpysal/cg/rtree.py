@@ -1197,7 +1197,7 @@ def k_means_cluster(root, k, nodes):
         for c in clusters:
             if len(c) == 0:
                 print("Error....")
-                print("Nodes: %d, centers: %s." % (len(ns), repr(cluster_centers)))
+                print(f"Nodes: {len(ns)}, centers: {repr(cluster_centers)}.")
 
             assert len(c) > 0
 
