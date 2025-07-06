@@ -51,7 +51,6 @@ class TesttestArcGISDbfIO:
                 )
         with tempfile.NamedTemporaryFile(suffix=".dbf") as f:
             fname = f.name
-            f.close()
         o = FileIO(fname, "w", "arcgis_dbf")
         o.write(w)
         o.close()

@@ -51,7 +51,6 @@ class TesttestArcGISTextIO:
                 ) in str(warn[0].message)
         with tempfile.NamedTemporaryFile(suffix=".txt") as f:
             fname = f.name
-            f.close()
         o = FileIO(fname, "w", "arcgis_text")
         o.write(w)
         o.close()

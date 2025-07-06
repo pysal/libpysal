@@ -35,7 +35,6 @@ class TesttestMatIO:
         w = self.obj.read()
         with tempfile.NamedTemporaryFile(suffix=".mat") as f:
             fname = f.name
-            f.close()
         o = FileIO(fname, "w")
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter("always")

@@ -47,7 +47,6 @@ class TesttestStataTextIO:
             w = obj.read()
             with tempfile.NamedTemporaryFile(suffix=".txt") as f:
                 fname = f.name
-                f.close()
             o = FileIO(fname, "w", "stata_text")
             if obj == self.obj_sparse:
                 o.write(w)

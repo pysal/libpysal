@@ -40,7 +40,6 @@ class TesttestGwtIO:
             w = self.obj.read()
             with tempfile.NamedTemporaryFile(suffix=".gwt") as f:
                 fname = f.name
-                f.close()
             o = FileIO(fname, "w")
             # copy the shapefile and ID variable names from the old gwt.
             # this is only available after the read() method has been called.

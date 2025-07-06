@@ -34,7 +34,6 @@ class TesttestWk1IO:
         w = self.obj.read()
         with tempfile.NamedTemporaryFile(suffix=".wk1") as f:
             fname = f.name
-            f.close()
         o = FileIO(fname, "w")
         o.write(w)
         o.close()

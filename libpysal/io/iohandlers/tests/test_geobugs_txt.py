@@ -47,7 +47,6 @@ class TesttestGeoBUGSTextIO:
             w = obj.read()
             with tempfile.NamedTemporaryFile(suffix="") as f:
                 fname = f.name
-                f.close()
             o = FileIO(fname, "w", "geobugs_text")
             o.write(w)
             o.close()

@@ -34,7 +34,6 @@ class TesttestDatIO:
         w = self.obj.read()
         with tempfile.NamedTemporaryFile(suffix=".dat") as f:
             fname = f.name
-            f.close()
         o = FileIO(fname, "w")
         o.write(w)
         o.close()
