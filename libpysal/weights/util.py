@@ -1,3 +1,5 @@
+# ruff: noqa: N802, N803
+
 import copy
 import numbers
 import os
@@ -6,12 +8,11 @@ from itertools import tee
 from warnings import warn
 
 import numpy as np
-
-# ruff: noqa: N802, N803
 import scipy
 import scipy.spatial
 from scipy import sparse
 from scipy.spatial import KDTree
+from shapely.geometry.base import BaseGeometry
 
 from ..common import requires
 from ..io.fileio import FileIO
@@ -24,12 +25,6 @@ try:
 except ImportError:
     warn("geopandas not available. Some functionality will be disabled.", stacklevel=2)
 
-try:
-    from shapely.geometry.base import BaseGeometry
-
-    HAS_SHAPELY = True
-except ImportError:
-    HAS_SHAPELY = False
 
 __all__ = [
     "lat2W",
@@ -1045,17 +1040,14 @@ def get_points_array(iterable):
     """
     first_choice, backup = tee(iterable)
     try:
-        if HAS_SHAPELY:
-            data = np.vstack(
-                [
-                    np.array(shape.centroid.coords)[0]
-                    if isinstance(shape, BaseGeometry)
-                    else np.array(shape.centroid)
-                    for shape in first_choice
-                ]
-            )
-        else:
-            data = np.vstack([np.array(shape.centroid) for shape in first_choice])
+        data = np.vstack(
+            [
+                np.array(shape.centroid.coords)[0]
+                if isinstance(shape, BaseGeometry)
+                else np.array(shape.centroid)
+                for shape in first_choice
+            ]
+        )
     except AttributeError:
         data = np.vstack(list(backup))
     return data
