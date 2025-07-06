@@ -11,6 +11,7 @@ Author(s):
 
 import numpy as np
 import scipy.spatial as spat
+import shapely
 from scipy import sparse
 
 from ..common import HAS_JIT, jit, requires
@@ -21,13 +22,6 @@ if not HAS_JIT:
     NUMBA_WARN = (
         "Numba not imported, so alpha shape construction may be slower than expected."
     )
-
-try:
-    import shapely
-
-    HAS_SHAPELY = True
-except (ModuleNotFoundError, AssertionError):
-    HAS_SHAPELY = False
 
 
 EPS = np.finfo(float).eps
@@ -464,10 +458,7 @@ def _valid_hull(geoms, points):
     if geoms.shape[0] != 1:
         return False
     # if any (xys) points do not intersect the polygon
-    if HAS_SHAPELY:
-        return shapely.intersects(geoms[0], points).all()
-    else:
-        return all(point.intersects(geoms[0]) for point in points)
+    return shapely.intersects(geoms[0], points).all()
 
 
 @requires("geopandas", "shapely")
@@ -564,7 +555,7 @@ def alpha_shape_auto(
     triangles = triangulation.simplices[radii_sorted_i][::-1]
     radii = radii[radii_sorted_i][::-1]
     geoms_prev = _alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
-    points = shapely.points(xys) if HAS_SHAPELY else [geom.Point(pnt) for pnt in xys]
+    points = shapely.points(xys)
     if verbose:
         print("Step set to %i" % step)
     for i in range(0, len(radii), step):
