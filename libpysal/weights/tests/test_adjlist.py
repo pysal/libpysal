@@ -64,7 +64,7 @@ class TestAdjlist:
         full_alist = grid.to_adjlist(drop_islands=True)
         all_possible = {tuple(t) for t in full_alist[["focal", "neighbor"]].values}
         assert tuples.issubset(all_possible), (
-            "the de-duped adjlist has links " "not in the duplicated adjlist."
+            "the de-duped adjlist has links not in the duplicated adjlist."
         )
         complements = all_possible.difference(tuples)
         reversed_complements = {t[::-1] for t in complements}

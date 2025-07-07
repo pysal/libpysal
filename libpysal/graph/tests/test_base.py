@@ -139,8 +139,7 @@ class TestBase:
 
     def test___repr__(self):
         expected = (
-            "<Graph of 10 nodes and 25 nonzero edges indexed by\n"
-            " [0, 1, 2, 3, 4, ...]>"
+            "<Graph of 10 nodes and 25 nonzero edges indexed by\n [0, 1, 2, 3, 4, ...]>"
         )
         assert repr(self.g_int) == expected
 
@@ -371,9 +370,9 @@ class TestBase:
             ],
             np.ones(10),
         )
-        assert (
-            g == expected
-        ), "sparse csr nybb with ids does not match arrays constructor"
+        assert g == expected, (
+            "sparse csr nybb with ids does not match arrays constructor"
+        )
         np.testing.assert_array_equal(g.sparse.todense(), sp.todense())
 
         with pytest.raises(ValueError, match="The length of ids "):

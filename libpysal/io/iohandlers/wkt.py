@@ -102,7 +102,7 @@ class WKTReader(fileio.FileIO):
             while pos not in self.__idx:
                 s = self._read()
                 if not s:
-                    msg = "%d not in range(0,%d)." % (pos, max(self.__idx.keys()))
+                    msg = f"{pos} not in range(0,{max(self.__idx.keys())})."
                     raise IndexError(msg)
             self.pos = pos
             self.__pos = pos

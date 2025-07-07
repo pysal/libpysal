@@ -43,9 +43,8 @@ class TesttestMtxIO:
         for i in [False, True]:
             self.obj.seek(0)
             w = self.obj.read(sparse=i)
-            f = tempfile.NamedTemporaryFile(suffix=".mtx")
-            fname = f.name
-            f.close()
+            with tempfile.NamedTemporaryFile(suffix=".mtx") as f:
+                fname = f.name
             o = FileIO(fname, "w")
             o.write(w)
             o.close()

@@ -690,7 +690,7 @@ class shx_file:
         self.fileObj = open(self.fileName + ".shx", "rb")
         self._header = _unpackDict(UHEADERSTRUCT, self.fileObj)
         self.numRecords = numRecords = (self._header["File Length"] - 50) // 4
-        fmt = ">%di" % (2 * numRecords)
+        fmt = f">{2 * numRecords}i"
         size = calcsize(fmt)
         dat = unpack(fmt, self.fileObj.read(size))
         self.index = [(dat[i] * 2, dat[i + 1] * 2) for i in range(0, len(dat), 2)]
@@ -784,7 +784,7 @@ class shx_file:
             header["File Length"] = (self.numRecords * calcsize(">ii") + 100) // 2
             self.fileObj.seek(0)
             self.fileObj.write(_packDict(HEADERSTRUCT, header))
-            fmt = ">%di" % (2 * self.numRecords)
+            fmt = f">{2 * self.numRecords}i"
             values = []
             for off, size in self.index:
                 values.extend([off // 2, size // 2])
@@ -974,8 +974,8 @@ class PolyLine:
     def pack(cls, record: dict) -> str:
         rheader = _packDict(cls.STRUCT, record)
         content_struct = (
-            ("Parts Index", "%di" % record["NumParts"], "<"),
-            ("Vertices", "%dd" % (2 * record["NumPoints"]), "<"),
+            ("Parts Index", f"{record['NumParts']}i", "<"),
+            ("Vertices", f"{2 * record['NumPoints']}d", "<"),
         )
         content = {}
         content["Parts Index"] = record["Parts Index"]
@@ -1058,14 +1058,14 @@ class PolyLineZ:
     def pack(cls, record: dict) -> str:
         rheader = _packDict(cls.STRUCT, record)
         content_struct = (
-            ("Parts Index", "%di" % record["NumParts"], "<"),
-            ("Vertices", "%dd" % (2 * record["NumPoints"]), "<"),
+            ("Parts Index", f"{record['NumParts']}i", "<"),
+            ("Vertices", f"{2 * record['NumPoints']}d", "<"),
             ("Zmin", "d", "<"),
             ("Zmax", "d", "<"),
-            ("Zarray", "%dd" % (record["NumPoints"]), "<"),
+            ("Zarray", f"{record['NumPoints']}d", "<"),
             ("Mmin", "d", "<"),
             ("Mmax", "d", "<"),
-            ("Marray", "%dd" % (record["NumPoints"]), "<"),
+            ("Marray", f"{record['NumPoints']}d", "<"),
         )
 
         content = {}

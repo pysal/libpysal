@@ -193,13 +193,13 @@ class DataTable(fileio.FileIO):
             cols = None
         elif len(key) > 2:
             raise TypeError(
-                "DataTables support two dimmensional slicing, % d slices provided."
-                % len(key)
+                "DataTables support two dimmensional slicing, "
+                f"{len(key)} d slices provided."
             )
         elif len(key) == 2:
             rows, cols = key
         else:
-            raise TypeError("Key: % r, is confusing me. I don't know what to do." % key)
+            raise TypeError(f"Key: {key} r, is confusing me. I don't know what to do.")
 
         if isinstance(rows, slice):
             row_start, row_stop, row_step = rows.indices(len(self))

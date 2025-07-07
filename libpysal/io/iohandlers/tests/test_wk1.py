@@ -32,9 +32,8 @@ class TesttestWk1IO:
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix=".wk1")
-        fname = f.name
-        f.close()
+        with tempfile.NamedTemporaryFile(suffix=".wk1") as f:
+            fname = f.name
         o = FileIO(fname, "w")
         o.write(w)
         o.close()

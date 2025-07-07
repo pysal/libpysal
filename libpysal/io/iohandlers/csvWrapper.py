@@ -92,7 +92,7 @@ class csvWrapper(tables.DataTable):
             if self._determineHeader(data):
                 self.header = data.pop(0)
             else:
-                self.header = ["field_%d" % i for i in range(len(data[0]))]
+                self.header = [f"field_{i}" for i in range(len(data[0]))]
             self._spec = self._determineSpec(data)
             self.data = data
             self.fileObj.close()

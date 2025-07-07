@@ -140,9 +140,9 @@ def _kernel(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
     else:
-        assert (
-            coordinates.shape[0] == coordinates.shape[1]
-        ), "coordinates should represent a distance matrix if metric='precomputed'"
+        assert coordinates.shape[0] == coordinates.shape[1], (
+            "coordinates should represent a distance matrix if metric='precomputed'"
+        )
         if ids is None:
             ids = numpy.arange(coordinates.shape[0])
 

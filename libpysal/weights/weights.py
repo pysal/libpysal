@@ -214,7 +214,7 @@ class W:
         if (not self.silence_warnings) and (self.n_components > 1):
             message = (
                 "The weights matrix is not fully connected: "
-                "\n There are %d disconnected components." % self.n_components
+                f"\n There are {self.n_components} disconnected components."
             )
             ni = len(self.islands)
             if ni == 1:
@@ -222,10 +222,8 @@ class W:
                     message + f"\n There is 1 island with id: {str(self.islands[0])}."
                 )
             elif ni > 1:
-                message = message + "\n There are %d islands with ids: %s." % (
-                    ni,
-                    ", ".join(str(island) for island in self.islands),
-                )
+                iids = ", ".join(str(island) for island in self.islands)
+                message = message + f"\n There are {ni} islands with ids: {iids}."
             warnings.warn(message, stacklevel=2)
 
     def _reset(self):

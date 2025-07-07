@@ -163,10 +163,10 @@ class ArcGISSwmIO(fileio.FileIO):
 
             if no_nghs > 0:
                 neighbors[origin] = list(
-                    unpack("<%il" % no_nghs, self.file.read(4 * no_nghs))
+                    unpack(f"<{no_nghs}l", self.file.read(4 * no_nghs))
                 )
                 weights[origin] = list(
-                    unpack("<%id" % no_nghs, self.file.read(8 * no_nghs))
+                    unpack(f"<{no_nghs}d", self.file.read(8 * no_nghs))
                 )
                 _ = list(unpack("<d", self.file.read(8)))[0]
 
@@ -220,14 +220,14 @@ class ArcGISSwmIO(fileio.FileIO):
 
             if no_nghs > 0:
                 neighbors[origin] = list(
-                    unpack("<%il" % no_nghs, self.file.read(4 * no_nghs))
+                    unpack(f"<{no_nghs}l", self.file.read(4 * no_nghs))
                 )
 
                 if fixedWeights:
                     weights[origin] = list(unpack("<d", self.file.read(8))) * no_nghs
                 else:
                     weights[origin] = list(
-                        unpack("<%id" % no_nghs, self.file.read(8 * no_nghs))
+                        unpack(f"<{no_nghs}d", self.file.read(8 * no_nghs))
                     )
                 _ = list(unpack("<d", self.file.read(8)))[0]
 

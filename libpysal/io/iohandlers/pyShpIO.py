@@ -247,7 +247,7 @@ class PurePyShpWrapper(fileio.FileIO):
                 shp = self.type(vertices)
             else:
                 warn(
-                    "Polygon %d has zero parts." % self.pos,
+                    f"Polygon {self.pos} has zero parts.",
                     RuntimeWarning,
                     stacklevel=2,
                 )

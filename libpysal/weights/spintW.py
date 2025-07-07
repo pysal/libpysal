@@ -150,9 +150,7 @@ def netW(link_list, share="A", transform="r", **kwargs):
                 ):
                     neighbors[key].append(neigh)
             else:
-                raise AttributeError(
-                    "Parameter 'share' must be 'O', 'D'," " 'OD', or 'C'"
-                )
+                raise AttributeError("Parameter 'share' must be 'O', 'D', 'OD', or 'C'")
     net_w = W(neighbors, **kwargs)
     net_w.tranform = transform
     return net_w

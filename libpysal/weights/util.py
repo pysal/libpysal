@@ -1224,11 +1224,11 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
 def write_gal(file, k=10):
     with open(file, "w") as f:
         n = k * k
-        f.write("0 %d" % n)
+        f.write(f"0 {n}")
         for i in range(n):
             neighs = [i - i, i + 1, i - k, i + k]
             neighs = [j for j in neighs if j >= 0 and j < n]
-            f.write("\n%d %d\n" % (i, len(neighs)))
+            f.write(f"\n{i} {len(neighs)}\n")
             f.write(" ".join(map(str, neighs)))
         f.close()
 

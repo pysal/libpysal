@@ -246,11 +246,11 @@ class GalIO(fileio.FileIO):
 
         if issubclass(type(obj), W):
             ids = obj.id_order
-            self.file.write("%d\n" % (obj.n))
+            self.file.write(f"{obj.n}\n")
 
             for id_ in ids:
                 neighbors = obj.neighbors[id_]
-                self.file.write("%s %d\n" % (str(id_), len(neighbors)))
+                self.file.write(f"{str(id_)} {len(neighbors)}\n")
                 self.file.write(" ".join(map(str, neighbors)) + "\n")
             self.pos += 1
         else:

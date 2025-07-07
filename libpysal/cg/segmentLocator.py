@@ -367,11 +367,11 @@ def brute_check(segments, qpoints):  # noqa: ARG001
     t0 = time.time()
     g2 = BruteSegmentLocator(segs)
     t1 = time.time()
-    print("Created Brute in %0.4f seconds" % (t1 - t0))
+    print(f"Created Brute in {t1 - t0:0.4f} seconds")
     t2 = time.time()
     q = list(map(g2.nearest, qpoints))
     t3 = time.time()
-    print("Brute Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2))
+    print(f"Brute Found {len(qpoints)} matches in {t3 - t2:0.4f} seconds")
     print("Total Brute Time:", t3 - t0)
     print()
     return q
@@ -383,8 +383,8 @@ def grid_check(bins, segments, qpoints, visualize=False):
     t1 = time.time()
     g.grid.kd  # noqa: B018
     t2 = time.time()
-    print("Created Grid in %0.4f seconds" % (t1 - t0))
-    print("Created KDTree in %0.4f seconds" % (t2 - t1))
+    print(f"Created Grid in {t1 - t0:0.4f} seconds")
+    print(f"Created KDTree in {t2 - t1:0.4f} seconds")
     if visualize:
         pylab.matshow(
             g.grid.mask, origin="lower", extent=g.grid.x_range + g.grid.y_range
@@ -393,7 +393,7 @@ def grid_check(bins, segments, qpoints, visualize=False):
     t2 = time.time()
     list(map(g.nearest, qpoints))
     t3 = time.time()
-    print("Grid Found %d matches in %0.4f seconds" % (len(qpoints), t3 - t2))
+    print(f"Grid Found {len(qpoints)} matches in {t3 - t2:0.4f} seconds")
     print("Total Grid Time:", t3 - t0)
     qps = len(qpoints) / (t3 - t2)
     print("q/s:", qps)
