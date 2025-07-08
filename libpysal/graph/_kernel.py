@@ -2,7 +2,7 @@ import numpy
 import pandas
 from scipy import optimize, sparse, spatial, stats
 
-from .._kernels import _kernel as kernels
+from ..kernels import kernel as kernels
 
 from ._utils import (
     CoplanarError,

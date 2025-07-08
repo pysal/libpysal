@@ -56,7 +56,7 @@ _kernel_functions = {
 }
 
 
-def _kernel(
+def kernel(
     distances,
     bandwidth,
     kernel="gaussian",
