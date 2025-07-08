@@ -2,6 +2,8 @@ import numpy
 import pandas
 from scipy import optimize, sparse, spatial, stats
 
+from .._kernels import _kernel as kernels
+
 from ._utils import (
     CoplanarError,
     _build_coplanarity_lookup,
@@ -22,56 +24,18 @@ except ImportError:
 _VALID_GEOMETRY_TYPES = ["Point"]
 
 
-def _triangular(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return 1 - u
-
-
-def _parabolic(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return 0.75 * (1 - u**2)
-
-
-def _gaussian(distances, bandwidth):
-    u = distances / bandwidth
-    return numpy.exp(-((u / 2) ** 2)) / (numpy.sqrt(2) * numpy.pi)
-
-
-def _bisquare(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return (15 / 16) * (1 - u**2) ** 2
-
-
-def _cosine(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return (numpy.pi / 4) * numpy.cos(numpy.pi / 2 * u)
-
-
-def _exponential(distances, bandwidth):
-    u = distances / bandwidth
-    return numpy.exp(-u)
-
-
-def _boxcar(distances, bandwidth):
-    r = (distances < bandwidth).astype(int)
-    return r
-
-
-def _identity(distances, _):
-    return distances
-
 
 _kernel_functions = {
-    "triangular": _triangular,
-    "parabolic": _parabolic,
-    "gaussian": _gaussian,
-    "bisquare": _bisquare,
-    "cosine": _cosine,
-    "boxcar": _boxcar,
-    "discrete": _boxcar,
-    "exponential": _exponential,
-    "identity": _identity,
-    None: _identity,
+    "triangular": kernels._triangular,
+    "parabolic": kernels._parabolic,
+    "gaussian": kernels._gaussian,
+    "bisquare": kernels._bisquare,
+    "cosine": kernels._cosine,
+    "boxcar": kernels._boxcar,
+    "discrete": kernels._boxcar,
+    "exponential": kernels._exponential,
+    "identity": kernels._identity,
+    None: kernels._identity,
 }
 
 

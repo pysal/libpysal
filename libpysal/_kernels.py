@@ -62,10 +62,22 @@ def _kernel(
     kernel="gaussian",
 ):
     """
-    distances: array-like
-    bandwidth  float
-    kernel: string or callable
+    Compute a kernel function over distances
 
+
+    Parameters
+    ----------
+    distances : numpy.ndarray
+
+    bandwidth : float
+    
+    kernel: string or callable (default: 'gaussian')
+
+
+    Returns
+    -------
+    k : numpy.ndarray
+      Ordinates of the kernel evaluated at distances
     """
 
     if callable(kernel):
