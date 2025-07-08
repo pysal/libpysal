@@ -11,15 +11,12 @@ import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 import shapely
-from packaging.version import Version
 from scipy.spatial import Voronoi
 from shapely.errors import GEOSException
 
 __author__ = "Serge Rey <sjsrey@gmail.com>"
 
 __all__ = ["voronoi_frames"]
-
-GPD_GE_013 = Version(gpd.__version__) >= Version("0.13.0")
 
 
 def voronoi(points, radius=None):
@@ -406,11 +403,6 @@ def voronoi_frames(
             if segment != 0:
                 objects.loc[mask_line] = shapely.segmentize(objects[mask_line], segment)
 
-            if not GPD_GE_013:
-                raise ImportError(
-                    "Voronoi tessellation of lines requires geopandas 0.13.0 or later."
-                )
-
             # Remove duplicate coordinates from lines
             objects.loc[mask_line] = (
                 objects.loc[mask_line]
@@ -443,14 +435,8 @@ def voronoi_frames(
 
     # Assign to each input geometry the corresponding Voronoi polygon
     # TODO: check if we still need indexing after shapely/shapely#1968 is released
-    if GPD_GE_013:
-        ids_objects, ids_polygons = polygons.sindex.query(
-            objects, predicate="intersects"
-        )
-    else:
-        ids_objects, ids_polygons = polygons.sindex.query_bulk(
-            objects, predicate="intersects"
-        )
+    ids_objects, ids_polygons = polygons.sindex.query(objects, predicate="intersects")
+
     if mask_poly.any() or mask_line.any():
         # Dissolve polygons
         polygons = (

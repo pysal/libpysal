@@ -227,10 +227,10 @@ class GraphSummary:
     def __repr__(self):
         n_asymmetries = f"{self.n_asymmetries:>12.0f}" if self.asymmetries else "NA"
         return f"""Graph Summary Statistics
-{'='*24}
+{"=" * 24}
 Graph indexed by:
  {self._graph._get_ids_repr(57)}
-{'='*62}
+{"=" * 62}
 {"Number of nodes:":<50}{self.n_nodes:>12.0f}
 {"Number of edges:":<50}{self.n_edges:>12.0f}
 {"Number of connected components:":<50}{self.n_components:>12.0f}
@@ -238,29 +238,29 @@ Graph indexed by:
 {"Number of non-zero edges:":<50}{self.nonzero:>12.0f}
 {"Percentage of non-zero edges:":<50}{self.pct_nonzero:>11.2f}%
 {"Number of asymmetries:":<50}{n_asymmetries}
-{'-'*62}
+{"-" * 62}
 Cardinalities
-{'='*62}
+{"=" * 62}
 {"Mean:":<20}{self.cardinalities_mean:>9.0f}    {"25%:":<20}{self.cardinalities_25:>9.0f}
 {"Standard deviation:":<20}{self.cardinalities_std:>9.0f}    {"50%:":<20}{self.cardinalities_50:>9.0f}
 {"Min:":<20}{self.cardinalities_min:>9.0f}    {"75%:":<20}{self.cardinalities_75:>9.0f}
 {"Max:":<20}{self.cardinalities_max:>9.0f}
-{'-'*62}
+{"-" * 62}
 Weights
-{'='*62}
+{"=" * 62}
 {"Mean:":<20}{self.weights_mean:>9.0f}    {"25%:":<20}{self.weights_25:>9.0f}
 {"Standard deviation:":<20}{self.weights_std:>9.0f}    {"50%:":<20}{self.weights_50:>9.0f}
 {"Min:":<20}{self.weights_min:>9.0f}    {"75%:":<20}{self.weights_75:>9.0f}
 {"Max:":<20}{self.weights_max:>9.0f}
-{'-'*62}
+{"-" * 62}
 Sum of weights
-{'='*62}
+{"=" * 62}
 {"S0:":<50}{self.s0:>12.0f}
 {"S1:":<50}{self.s1:>12.0f}
 {"S2:":<50}{self.s2:>12.0f}
-{'-'*62}
+{"-" * 62}
 Traces
-{'='*62}
+{"=" * 62}
 {"GG:":<50}{self.trace_g2:>12.0f}
 {"G'G:":<50}{self.trace_gtg:>12.0f}
 {"G'G + GG:":<50}{self.trace_gtg_gg:>12.0f}

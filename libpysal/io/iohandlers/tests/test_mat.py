@@ -33,9 +33,8 @@ class TesttestMatIO:
 
     def test_write(self):
         w = self.obj.read()
-        f = tempfile.NamedTemporaryFile(suffix=".mat")
-        fname = f.name
-        f.close()
+        with tempfile.NamedTemporaryFile(suffix=".mat") as f:
+            fname = f.name
         o = FileIO(fname, "w")
         with warnings.catch_warnings(record=True) as warn:
             warnings.simplefilter("always")

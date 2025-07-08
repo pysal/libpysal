@@ -32,14 +32,6 @@ dependencies:
   - zstd
   - pandana
   - xarray
-  # for docs build action (this env only)
-  - myst-parser
-  - nbsphinx
-  - numpydoc
-  - pandoc
-  - sphinx
-  - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
   - pip
   - pip:
-      - pulp
+    - pulp

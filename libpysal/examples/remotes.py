@@ -20,7 +20,7 @@ _remote_dict = {
     },
     "Atlanta": {
         "download_url": (
-            "https://geodacenter.github.io/data-and-lab/" "/data/atlanta_hom.zip"
+            "https://geodacenter.github.io/data-and-lab//data/atlanta_hom.zip"
         ),
         "explain_url": "https://geodacenter.github.io/data-and-lab//atlanta_old/",
         "n": "90",
@@ -197,8 +197,7 @@ _remote_dict = {
             "https://geodacenter.github.io/data-and-lab//data/income_diversity.zip"
         ),
         "explain_url": (
-            "https://geodacenter.github.io/data-and-lab/"
-            "/co_income_diversity_variables/"
+            "https://geodacenter.github.io/data-and-lab//co_income_diversity_variables/"
         ),
         "n": " 3,984",
         "k": " 64",
@@ -507,15 +506,13 @@ _remote_dict = {
     },
     "SanFran Crime": {
         "download_url": (
-            "https://geodacenter.github.io/data-and-lab/"
-            "/data/SFCrime_July_Dec2012.zip"
+            "https://geodacenter.github.io/data-and-lab//data/SFCrime_July_Dec2012.zip"
         ),
         "explain_url": "https://geodacenter.github.io/data-and-lab//SFcrimes_vars/",
         "n": " 3,384",
         "k": " 13",
         "description": (
-            " July-Dec 2012 crime incidents in San Francisco "
-            "(points + area) - for CAST"
+            " July-Dec 2012 crime incidents in San Francisco (points + area) - for CAST"
         ),
     },
     "Savannah1": {

@@ -323,7 +323,7 @@ class GwtIO(FileIO.FileIO):
             if hasattr(obj, "_varName"):
                 self.varName = obj._varName
 
-            header = "%s %i %s %s\n" % ("0", obj.n, self.shpName, self.varName)
+            header = f"0 {obj.n} {self.shpName} {self.varName}\n"
             self.file.write(header)
             # obj.transform = transform
 

@@ -80,9 +80,8 @@ class TesttestWeightConverter:
             for ext, dataformat in self.fileformats:
                 if f.lower().endswith(ext):
                     continue
-                temp_f = tempfile.NamedTemporaryFile(suffix=f".{ext}")
-                temp_fname = temp_f.name
-                temp_f.close()
+                with tempfile.NamedTemporaryFile(suffix=f".{ext}") as temp_f:
+                    temp_fname = temp_f.name
 
                 with warnings.catch_warnings(record=True):
                     # note: we are just suppressing the warnings here;
@@ -135,9 +134,8 @@ class TesttestWeightConverter:
             for ext, dataformat in self.fileformats:
                 if f.lower().endswith(ext):
                     continue
-                temp_f = tempfile.NamedTemporaryFile(suffix=f".{ext}")
-                out_file = temp_f.name
-                temp_f.close()
+                with tempfile.NamedTemporaryFile(suffix=f".{ext}") as temp_f:
+                    out_file = temp_f.name
                 out_data_format, use_id_index, matrix_form = dataformat, False, False
                 if ext == "swm" or dataformat in ["arcgis_dbf", "arcgis_text"]:
                     use_id_index = True

@@ -274,7 +274,7 @@ class GeoBUGSTextIO(fileio.FileIO):
             self.file.write("list(")
             self.file.write("num=c({}),".format(",".join(map(str, cardinalities))))
             self.file.write("adj=c({}),".format(",".join(map(str, neighbors))))
-            self.file.write("sumNumNeigh=%i)" % sum(cardinalities))
+            self.file.write(f"sumNumNeigh={sum(cardinalities)})")
             self.pos += 1
 
         else:

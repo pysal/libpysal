@@ -11,7 +11,7 @@ Author(s):
 
 import numpy as np
 import scipy.spatial as spat
-from packaging.version import Version
+import shapely
 from scipy import sparse
 
 from ..common import HAS_JIT, jit, requires
@@ -22,15 +22,6 @@ if not HAS_JIT:
     NUMBA_WARN = (
         "Numba not imported, so alpha shape construction may be slower than expected."
     )
-
-try:
-    import shapely
-
-    assert Version(shapely.__version__) >= Version("2")
-
-    HAS_SHAPELY = True
-except (ModuleNotFoundError, AssertionError):
-    HAS_SHAPELY = False
 
 
 EPS = np.finfo(float).eps
@@ -467,10 +458,7 @@ def _valid_hull(geoms, points):
     if geoms.shape[0] != 1:
         return False
     # if any (xys) points do not intersect the polygon
-    if HAS_SHAPELY:
-        return shapely.intersects(geoms[0], points).all()
-    else:
-        return all(point.intersects(geoms[0]) for point in points)
+    return shapely.intersects(geoms[0], points).all()
 
 
 @requires("geopandas", "shapely")
@@ -567,9 +555,9 @@ def alpha_shape_auto(
     triangles = triangulation.simplices[radii_sorted_i][::-1]
     radii = radii[radii_sorted_i][::-1]
     geoms_prev = _alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
-    points = shapely.points(xys) if HAS_SHAPELY else [geom.Point(pnt) for pnt in xys]
+    points = shapely.points(xys)
     if verbose:
-        print("Step set to %i" % step)
+        print(f"Step set to {step}")
     for i in range(0, len(radii), step):
         radi = radii[i]
         alpha = (1 / radi) - EPS
@@ -653,7 +641,6 @@ def _filter_holes(geoms, points):  # noqa: ARG001
     """
     Filter hole polygons using a computational geometry solution
     """
-    import geopandas
 
     if (geoms.interiors.apply(len) > 0).any():
         from shapely.geometry import Polygon
@@ -661,10 +648,7 @@ def _filter_holes(geoms, points):  # noqa: ARG001
         # Extract the "shell", or outer ring of the polygon.
         shells = geoms.exterior.apply(Polygon)
         # Compute which original geometries are within each shell, self-inclusive
-        if Version(geopandas.__version__) >= Version("0.13"):
-            inside, outside = shells.sindex.query(geoms, predicate="within")
-        else:
-            inside, outside = shells.sindex.query_bulk(geoms, predicate="within")
+        inside, outside = shells.sindex.query(geoms, predicate="within")
 
         # Now, create the sparse matrix relating the inner geom (rows)
         # to the outer shell (cols) and take the sum.
