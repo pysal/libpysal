@@ -2,7 +2,7 @@ import numpy
 import pandas
 from scipy import optimize, sparse, spatial, stats
 
-from ..kernels import kernel as kernels
+from ..kernels import _kernel_functions 
 
 from ._utils import (
     CoplanarError,
@@ -24,19 +24,6 @@ except ImportError:
 _VALID_GEOMETRY_TYPES = ["Point"]
 
 
-
-_kernel_functions = {
-    "triangular": kernels._triangular,
-    "parabolic": kernels._parabolic,
-    "gaussian": kernels._gaussian,
-    "bisquare": kernels._bisquare,
-    "cosine": kernels._cosine,
-    "boxcar": kernels._boxcar,
-    "discrete": kernels._boxcar,
-    "exponential": kernels._exponential,
-    "identity": kernels._identity,
-    None: kernels._identity,
-}
 
 
 def _kernel(
