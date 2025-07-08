@@ -152,10 +152,6 @@ def _kernel(
             data = sq.flatten()
             i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
             j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
-            # remove diagonal
-            data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
-            i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
-            j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
             # construct sparse
             d = sparse.csc_array((data, (i, j)))
         else:
