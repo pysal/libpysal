@@ -36,6 +36,8 @@ from .io._gal import _read_gal, _to_gal
 from .io._gwt import _read_gwt, _to_gwt
 from .io._parquet import _read_parquet, _to_parquet
 
+cached_property = property  # remove cache for benchmark purposes  # noqa: F811
+
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
 # listed alphabetically
