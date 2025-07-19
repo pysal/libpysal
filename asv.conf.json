@@ -21,11 +21,11 @@
     // Customizable commands for building the project.
     // See asv.conf.json documentation.
     // To build the package using pyproject.toml (PEP518), uncomment the following lines
-    // "build_command": [
-    //     "python -m pip install build",
-    //     "python -m build",
-    //     "python -mpip wheel -w {build_cache_dir} {build_dir}"
-    // ],
+    "build_command": [
+        "python -m pip install build",
+        "python -m build",
+        "python -mpip wheel -w {build_cache_dir} {build_dir} --no-deps"
+    ],
     // To build the package using setuptools and a setup.py file, uncomment the following lines
     // "build_command": [
     //     "python setup.py build",
@@ -39,7 +39,7 @@
 
     // List of branches to benchmark. If not provided, defaults to "main"
     // (for git) or "default" (for mercurial).
-    // "branches": ["main"], // for git
+    "branches": ["main"], // for git
     // "branches": ["default"],    // for mercurial
 
     // The DVCS being used.  If not set, it will be automatically
@@ -54,7 +54,7 @@
     // If missing or the empty string, the tool will be automatically
     // determined by looking for tools on the PATH environment
     // variable.
-    "environment_type": "existing",
+    "environment_type": "virtualenv",
 
     // timeout in seconds for installing any dependencies in environment
     // defaults to 10 min
@@ -72,7 +72,7 @@
     // "conda_channels": ["conda-forge", "defaults"],
 
     // A conda environment file that is used for environment creation.
-    "conda_environment_file": "ci/313-latest.yaml",
+    // "conda_environment_file": "ci/313-latest.yaml",
 
     // The matrix of dependencies to test.  Each key of the "req"
     // requirements dictionary is the name of a package (in PyPI) and
@@ -94,15 +94,31 @@
     // new environments.  A value of ``null`` means that the variable
     // will not be set for the current combination.
     //
-    // "matrix": {
-    //     "req": {
-    //         "numpy": ["1.6", "1.7"],
-    //         "six": ["", null],  // test with and without six installed
-    //         "pip+emcee": [""]   // emcee is only available for install with pip.
-    //     },
-    //     "env": {"ENV_VAR_1": ["val1", "val2"]},
-    //     "env_nobuild": {"ENV_VAR_2": ["val3", null]},
-    // },
+    "matrix": {
+        "req": {
+            "numpy": "2.2",
+            "beautifulsoup4": "",
+            "geopandas": "",
+            "jinja2": "",
+            "packaging": "",
+            "pandas": "",
+            "platformdirs": "",
+            "requests": "",
+            "scikit-learn": "",
+            "scipy": "",
+            "shapely": "",
+            "numba": "",
+            "joblib": "",
+            "networkx": "",
+            "pyarrow": "",
+            "sqlalchemy": "",
+            "xarray": "",
+            "zstd": "",
+            "pandana": "",
+            "geodatasets": "",
+            "matplotlib": ""
+        }
+    },
 
     // Combinations of libraries/python versions can be excluded/included
     // from the set to test. Each entry is a dictionary containing additional
