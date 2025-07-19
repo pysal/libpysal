@@ -6,11 +6,6 @@ from libpysal.graph import Graph
 
 
 class TimeSuite:
-    """
-    An example benchmark that times the performance of various kinds
-    of iterating over dictionaries in Python.
-    """
-
     def setup(self, *args, **kwargs):
         self.gdf = gpd.read_file(get_path("geoda south"))
         self.gdf_str = self.gdf.set_index(self.gdf.NAME + " " + self.gdf.STATE_NAME)
