@@ -1,14 +1,14 @@
 """
 kernels.py
 
-This module defines a collection of common kernel functions used for 
-distance-based weighting in spatial analysis, nonparametric regression, 
+This module defines a collection of common kernel functions used for
+distance-based weighting in spatial analysis, nonparametric regression,
 and density estimation.
 
-Each kernel function takes as input an array of distances and a bandwidth 
+Each kernel function takes as input an array of distances and a bandwidth
 parameter and returns an array of weights according to the shape of the kernel.
 
-A general ``kernel()`` dispatcher is provided to apply a named kernel or a 
+A general ``kernel()`` dispatcher is provided to apply a named kernel or a
 user-supplied callable.
 
 Available kernels:
@@ -35,6 +35,7 @@ All kernels are evaluated as:
 - For :math:`z > 1`, all kernels return :math:`K(z) = 0`.
 
 """
+
 import numpy
 
 
@@ -230,6 +231,7 @@ _kernel_functions = {
     "identity": _identity,
     None: _identity,
 }
+
 
 def kernel(distances, bandwidth, kernel="gaussian"):
     """

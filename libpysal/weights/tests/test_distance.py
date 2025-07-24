@@ -352,13 +352,17 @@ class TestKernel(DistanceMixin):
             np.testing.assert_allclose(v, self.known_w5[k + 1], rtol=RTOL)
 
     def test_w_normalize(self):
-        wg = d.Kernel.from_array(self.points, function='gaussian')
-        np.testing.assert_allclose(wg.weights[0], [0.3989422804014327, 0.35206533556593145, 0.3412334260702758], rtol=RTOL)
-        wgun = d.Kernel.from_array(self.points, function='gaussian', normalize=False)
-        np.testing.assert_allclose(wgun.weights[0], [1.0, 0.8824969246470149, 0.8553453540369604], rtol=RTOL)
-        
+        wg = d.Kernel.from_array(self.points, function="gaussian")
+        np.testing.assert_allclose(
+            wg.weights[0],
+            [0.3989422804014327, 0.35206533556593145, 0.3412334260702758],
+            rtol=RTOL,
+        )
+        wgun = d.Kernel.from_array(self.points, function="gaussian", normalize=False)
+        np.testing.assert_allclose(
+            wgun.weights[0], [1.0, 0.8824969246470149, 0.8553453540369604], rtol=RTOL
+        )
 
-        
     ##########################
     # Function/User tests    #
     ##########################
