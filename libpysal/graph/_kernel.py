@@ -34,7 +34,7 @@ def _parabolic(distances, bandwidth):
 
 def _gaussian(distances, bandwidth):
     u = distances / bandwidth
-    return numpy.exp(-((u / 2) ** 2)) / (numpy.sqrt(2 * numpy.pi))
+    return numpy.exp(-(u**2)/2)  / (numpy.sqrt(2 * numpy.pi))
 
 
 def _bisquare(distances, bandwidth):
