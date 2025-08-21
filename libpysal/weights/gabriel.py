@@ -334,7 +334,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
     3. for each edge of the delaunay (i,j), prune
        if any dkmax is smaller than d(i,j)
     """
-    n = edges.max()
+    n = len(coordinates)
     out = []
     r = []
     for edge in edges:
