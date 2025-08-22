@@ -345,7 +345,7 @@ def _filter_relativehood(edges, coordinates, return_dkmax=False):
         dij = ((pi - pj) ** 2).sum() ** 0.5
         prune = False
         for k in range(n):
-            if k == i or k == j:
+            if k in (i, j):
                 continue
             pk = coordinates[k]
             dik = ((pi - pk) ** 2).sum() ** 0.5
