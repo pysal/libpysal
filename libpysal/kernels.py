@@ -115,8 +115,9 @@ def _gaussian(distances, bandwidth):
     """
     z = distances / bandwidth
     exponent_term = -0.5 * (z**2)
-    c = 1 / (bandwidth * numpy.sqrt(2 * numpy.pi))
-    return c * numpy.exp(exponent_term)
+    c = 1 / numpy.sqrt(2 * numpy.pi)
+    k = c * numpy.exp(exponent_term)
+    return numpy.where(z <= 1, k, 0)
 
 
 def _bisquare(distances, bandwidth):
