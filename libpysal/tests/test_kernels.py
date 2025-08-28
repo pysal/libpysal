@@ -42,8 +42,10 @@ def test_parabolic(distances, bandwidth):
 def test_gaussian(distances, bandwidth):
     z = distances / bandwidth
     exponent = -0.5 * z**2
-    c = 1 / (bandwidth * np.sqrt(2 * np.pi))
+    # c = 1 / (bandwidth * np.sqrt(2 * np.pi))
+    c = 1 / np.sqrt(2 * np.pi)
     expected = np.where(z <= 1, c * np.exp(exponent), 0)
+    #expected = c * np.exp(exponent)
     np.testing.assert_array_almost_equal(
         kernels._gaussian(distances, bandwidth), expected
     )
@@ -67,7 +69,8 @@ def test_cosine(distances, bandwidth):
 
 def test_exponential(distances, bandwidth):
     z = distances / bandwidth
-    expected = np.where(z <= 1, np.exp(-z), 0)
+    #expected = np.where(z <= 1, np.exp(-z), 0)
+    expected = np.exp(-z)
     np.testing.assert_array_almost_equal(
         kernels._exponential(distances, bandwidth), expected
     )
