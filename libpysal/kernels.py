@@ -116,8 +116,7 @@ def _gaussian(distances, bandwidth):
     z = distances / bandwidth
     exponent_term = -0.5 * (z**2)
     c = 1 / (bandwidth * numpy.sqrt(2 * numpy.pi))
-    k = c * numpy.exp(exponent_term)
-    return numpy.where(z <= 1, k, 0)
+    return c * numpy.exp(exponent_term)
 
 
 def _bisquare(distances, bandwidth):
@@ -177,8 +176,7 @@ def _exponential(distances, bandwidth):
         Exponential kernel weights.
     """
     z = distances / bandwidth
-    k = numpy.exp(-z)
-    return numpy.where(z <= 1, k, 0)
+    return numpy.exp(-z)
 
 
 def _boxcar(distances, bandwidth):
@@ -233,7 +231,7 @@ _kernel_functions = {
 }
 
 
-def kernel(distances, bandwidth, kernel="gaussian"):
+def kernel(distances, bandwidth, kernel="gaussian", taper=None, decay=False):
     """
     Evaluate a kernel function over a distance array.
 
@@ -249,17 +247,47 @@ def kernel(distances, bandwidth, kernel="gaussian"):
         'cosine', 'boxcar', 'discrete', 'exponential', 'identity'.
         If callable, it should have the signature `(distances, bandwidth)`.
         If None, the 'identity' kernel is used.
+    taper : bool (default: None)
+        remove edges in the graph depending on their distance. If True,
+        edges are removed if points are separated more than the bandwidth.
+        If False, no edges are pruned. If a float is provided, all edges with
+        points separated by more than "taper" are removed.
+    as_decay: bool (default: False)
+        whether to calculate the kernel using the decay formulation. In the
+        decay form, a kernel measures the distance decay in similarity between
+        observations. It varies from from maximal similarity (1) at a distance
+        of zero to minimal similarity (0 or negative) at some very large
+        (possibly infinite) distance. Otherwise, kernel functions are treated as
+        proper volume-preserving probability distributions.
 
     Returns
     -------
     ndarray
-        Kernel weights.
+        Kernel function evaluated at distance values.
+
+    Notes:
+    ------
+    Some kernels ("gaussian","exponential") are defined as un-tapered kernels
+    by default. This is because they are supported over all real values. In
+    contrast, many other kernels (e.g. "triangular", "parabolic"), are tapered
+    when distances are greater than the bandwidth.
     """
+    if taper is None:
+        # only taper if we're not using built-in gaussian/exponential
+        taper = kernel not in ("gaussian", "exponential")
     if callable(kernel):
-        return kernel(distances, bandwidth)
+        func = kernel
     elif kernel is None:
         func = _kernel_functions[None]
     else:
         func = _kernel_functions[kernel.lower()]
 
-    return func(distances, bandwidth)
+    k = func(distances, bandwidth)
+
+    if decay:
+        k /= func(0, bandwidth)
+
+    if taper:
+        k[distances > bandwidth] = 0
+
+    return k
