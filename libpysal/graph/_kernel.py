@@ -34,6 +34,7 @@ def _kernel(
     taper=True,
     coplanar="raise",
     resolve_isolates=True,
+    exclude_loops=True
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -82,6 +83,8 @@ def _kernel(
         remove links with a weight equal to zero
     resolve_isolates : bool
         Try to resolve isolates. Can be disabled if we are dealing with cliques later.
+    exclude_loops : bool (default: True)
+        Remove self-loops
     """
     if metric != "precomputed":
         coordinates, ids, _ = _validate_geometry_input(
@@ -145,6 +148,12 @@ def _kernel(
             # j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
 
             # construct sparse
+            if exclude_loops:
+                mask = i != j
+                data = data[mask]
+                i = i[mask]
+                j = j[mask]
+
             d = sparse.csc_array((data, (i, j)))
         else:
             d = sparse.csc_array(coordinates)
