@@ -329,7 +329,7 @@ def test_coplanar(grocs):
         [grocs, grocs.iloc[:10], grocs.iloc[:3]], ignore_index=True
     )
     # plain kernel
-    head, tail, weight = _kernel(grocs_duplicated)
+    head, tail, weight = _kernel(grocs_duplicated, taper=False)
     assert head.shape[0] == len(grocs_duplicated) * (len(grocs_duplicated) - 1)
     assert tail.shape == head.shape
     assert weight.shape == head.shape
@@ -347,7 +347,7 @@ def test_coplanar(grocs):
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
     # k, clique
-    head, tail, weight = _kernel(grocs_duplicated, k=2, coplanar="clique")
+    head, tail, weight = _kernel(grocs_duplicated, k=2, coplanar="clique", taper=False)
     assert head.shape[0] >= len(grocs_duplicated) * 2
     assert tail.shape == head.shape
     assert weight.shape == head.shape
