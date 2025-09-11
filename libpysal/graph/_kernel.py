@@ -34,7 +34,7 @@ def _kernel(
     taper=True,
     coplanar="raise",
     resolve_isolates=True,
-    exclude_loops=True
+    exclude_self_weights=True
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -83,8 +83,8 @@ def _kernel(
         remove links with a weight equal to zero
     resolve_isolates : bool
         Try to resolve isolates. Can be disabled if we are dealing with cliques later.
-    exclude_loops : bool (default: True)
-        Remove self-loops
+    exclude_self_weights : bool (default: True)
+        Remove self-weights
     """
     if metric != "precomputed":
         coordinates, ids, _ = _validate_geometry_input(
@@ -140,19 +140,11 @@ def _kernel(
             i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
             j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
 
-            # NOTE: This is handled elsewhere now
-            # remove diagonal to ensure that self-distance is dropped 
-            # but 0 between co-located pts not
-            # data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
-            # i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
-            # j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
 
-            # construct sparse
-            if exclude_loops:
-                mask = i != j
-                data = data[mask]
-                i = i[mask]
-                j = j[mask]
+            if exclude_self_weights:
+                data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
+                i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
+                j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
 
             d = sparse.csc_array((data, (i, j)))
         else:

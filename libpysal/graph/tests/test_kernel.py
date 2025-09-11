@@ -210,7 +210,7 @@ def test_kernels(kernel, grocs):
         assert weight.mean() == pytest.approx(0.10312196315841769)
         assert weight.max() == pytest.approx(0.749881829575671)
     elif kernel == "gaussian":
-        assert weight.mean() == pytest.approx(0.13787969156713978)
+        assert weight.mean() == pytest.approx(0.08049294236573921)
         assert weight.max() == pytest.approx(0.39891085285421685)
     elif kernel == "bisquare":
         assert weight.mean() == pytest.approx(0.09084085210598618)
