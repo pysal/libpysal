@@ -1,6 +1,7 @@
 import numpy
 import pandas
 from scipy import optimize, sparse, spatial, stats
+from libpysal.kernels import _kernel_functions
 
 from ._utils import (
     CoplanarError,
@@ -22,59 +23,6 @@ except ImportError:
 _VALID_GEOMETRY_TYPES = ["Point"]
 
 
-def _triangular(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return 1 - u
-
-
-def _parabolic(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return 0.75 * (1 - u**2)
-
-
-def _gaussian(distances, bandwidth):
-    u = distances / bandwidth
-    return numpy.exp(-((u / 2) ** 2)) / (numpy.sqrt(2 * numpy.pi))
-
-
-def _bisquare(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return (15 / 16) * (1 - u**2) ** 2
-
-
-def _cosine(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return (numpy.pi / 4) * numpy.cos(numpy.pi / 2 * u)
-
-
-def _exponential(distances, bandwidth):
-    u = distances / bandwidth
-    return numpy.exp(-u)
-
-
-def _boxcar(distances, bandwidth):
-    r = (distances < bandwidth).astype(int)
-    return r
-
-
-def _identity(distances, _):
-    return distances
-
-
-_kernel_functions = {
-    "triangular": _triangular,
-    "parabolic": _parabolic,
-    "gaussian": _gaussian,
-    "bisquare": _bisquare,
-    "cosine": _cosine,
-    "boxcar": _boxcar,
-    "discrete": _boxcar,
-    "exponential": _exponential,
-    "identity": _identity,
-    None: _identity,
-}
-
-
 def _kernel(
     coordinates,
     bandwidth=None,
@@ -86,6 +34,7 @@ def _kernel(
     taper=True,
     coplanar="raise",
     resolve_isolates=True,
+    exclude_self_weights=True
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -134,15 +83,17 @@ def _kernel(
         remove links with a weight equal to zero
     resolve_isolates : bool
         Try to resolve isolates. Can be disabled if we are dealing with cliques later.
+    exclude_self_weights : bool (default: True)
+        Remove self-weights
     """
     if metric != "precomputed":
         coordinates, ids, _ = _validate_geometry_input(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
     else:
-        assert coordinates.shape[0] == coordinates.shape[1], (
-            "coordinates should represent a distance matrix if metric='precomputed'"
-        )
+        assert (
+            coordinates.shape[0] == coordinates.shape[1]
+        ), "coordinates should represent a distance matrix if metric='precomputed'"
         if ids is None:
             ids = numpy.arange(coordinates.shape[0])
 
@@ -188,11 +139,13 @@ def _kernel(
             data = sq.flatten()
             i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
             j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
-            # remove diagonal
-            data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
-            i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
-            j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
-            # construct sparse
+
+
+            if exclude_self_weights:
+                data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
+                i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
+                j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
+
             d = sparse.csc_array((data, (i, j)))
         else:
             d = sparse.csc_array(coordinates)
