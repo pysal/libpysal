@@ -1,4 +1,5 @@
 import math
+import os
 from functools import cached_property
 
 import numpy as np
@@ -35,6 +36,9 @@ from ._utils import (
 from .io._gal import _read_gal, _to_gal
 from .io._gwt import _read_gwt, _to_gwt
 from .io._parquet import _read_parquet, _to_parquet
+
+if os.environ.get("ASV", "false") == "true":
+    cached_property = property  # remove cache for benchmark purposes  # noqa: F811
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
