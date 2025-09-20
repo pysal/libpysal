@@ -42,10 +42,8 @@ def test_parabolic(distances, bandwidth):
 def test_gaussian(distances, bandwidth):
     z = distances / bandwidth
     exponent = -0.5 * z**2
-    # c = 1 / (bandwidth * np.sqrt(2 * np.pi))
     c = 1 / np.sqrt(2 * np.pi)
-    expected = np.where(z <= 1, c * np.exp(exponent), 0)
-    #expected = c * np.exp(exponent)
+    expected = c * np.exp(exponent)
     np.testing.assert_array_almost_equal(
         kernels._gaussian(distances, bandwidth), expected
     )
