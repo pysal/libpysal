@@ -10,7 +10,9 @@ on:
         description: Manual reverse dependency testing
         default: test
         required: false
-
+  pull_request:
+      branches:
+        - "*"
 jobs:
   reverse_dependencies:
     name: Reverse dependency testing
@@ -44,12 +46,14 @@ jobs:
               astropy
               geodatasets
               bokeh
-              pulp
               dask-geopandas
               kdepy
               matplotlib
               statsmodels
               osmnx
+              fast_hdbscan
+              numba
+            install_pip: pulp
             installation_command: >-
               pip install -e .; python -c 'import libpysal; libpysal.examples.fetch_all()';
             fail_on_failure: true
