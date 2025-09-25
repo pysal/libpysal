@@ -118,7 +118,6 @@ def _gaussian(distances, bandwidth):
     c = 1 / numpy.sqrt(2 * numpy.pi)
     k = c * numpy.exp(exponent_term)
     return k
-    #return numpy.where(z <= 1, k, 0)
 
 
 def _bisquare(distances, bandwidth):
@@ -197,6 +196,7 @@ def _boxcar(distances, bandwidth):
     ndarray
         Binary weights: 1 if distance < bandwidth, else 0.
     """
+    distances = numpy.asarray(distances)
     return (distances < bandwidth).astype(int)
 
 
@@ -233,9 +233,9 @@ _kernel_functions = {
 }
 
 
-def kernel(distances, bandwidth, kernel="gaussian", taper=True,decay=False):
-    """
-    Evaluate a kernel function over a distance array.
+def kernel(distances, bandwidth, kernel="gaussian", taper=True,
+           decay=False):
+    """Evaluate a kernel function over a distance array.
 
     Parameters
     ----------
@@ -249,40 +249,38 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True,decay=False):
         'cosine', 'boxcar', 'discrete', 'exponential', 'identity'.
         If callable, it should have the signature `(distances, bandwidth)`.
         If None, the 'identity' kernel is used.
-    decay: bool (default: False)
-        whether to calculate the kernel using the decay formulation. In the
-        decay form, a kernel measures the distance decay in similarity between
-        observations. It varies from from maximal similarity (1) at a distance
-        of zero to minimal similarity (0 or negative) at some very large
-        (possibly infinite) distance. Otherwise, kernel functions are treated as
-        proper volume-preserving probability distributions.
+    taper : bool (default: True)
+        Set kernel = 0 for all distances exceeding the bandwith. To
+        evaluate kernel beyond bandwith set taper=False.
+    decay : bool (default: False)
+        whether to calculate the kernel using the decay formulation.
+        In the decay form, a kernel measures the distance decay in
+        similarity between observations. It varies from from maximal
+        similarity (1) at a distance of zero to minimal similarity (0
+        or negative) at some very large (possibly infinite) distance.
+        Otherwise, kernel functions are treated as proper
+        volume-preserving probability distributions.
 
     Returns
     -------
     ndarray
         Kernel function evaluated at distance values.
 
-    Notes:
-    ------
-    All kernels are tapered by default.
-    Some kernels ("gaussian","exponential") can be supported over all real values. In
-    contrast, many other kernels (e.g. "triangular", "parabolic"), are tapered
-    when distances are greater than the bandwidth.
     """
-
+    box = False
     if callable(kernel):
         func = kernel
     elif kernel is None:
         func = _kernel_functions[None]
     else:
-        func = _kernel_functions[kernel.lower()]
-
+        func = _kernel_functions[kernel]
+        if kernel.lower() == 'boxcar':
+            box = True
     k = func(distances, bandwidth)
-
     if taper:
-        k[distances > bandwidth] = 0
+        k[distances > bandwidth] = 0.0
 
-    if decay:
-        k /= func(0, bandwidth)
-    
+    if decay and not box:
+        k /= func(0.0, bandwidth)
+
     return k
