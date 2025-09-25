@@ -10,9 +10,7 @@ on:
         description: Manual reverse dependency testing
         default: test
         required: false
-  pull_request:
-      branches:
-        - "*"
+
 jobs:
   reverse_dependencies:
     name: Reverse dependency testing
