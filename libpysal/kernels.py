@@ -197,7 +197,7 @@ def _boxcar(distances, bandwidth):
         Binary weights: 1 if distance < bandwidth, else 0.
     """
     distances = numpy.asarray(distances)
-    return (distances < bandwidth).astype(int)
+    return (distances < bandwidth).astype(float)
 
 
 def _identity(distances, _):
@@ -267,20 +267,18 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True,
         Kernel function evaluated at distance values.
 
     """
-    box = False
     if callable(kernel):
         func = kernel
     elif kernel is None:
         func = _kernel_functions[None]
     else:
         func = _kernel_functions[kernel]
-        if kernel.lower() == 'boxcar':
-            box = True
+
     k = func(distances, bandwidth)
     if taper:
         k[distances > bandwidth] = 0.0
 
-    if decay and not box:
+    if decay:
         k /= func(0.0, bandwidth)
 
     return k
