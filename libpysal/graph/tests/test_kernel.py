@@ -210,8 +210,8 @@ def test_kernels(kernel, grocs):
         assert weight.mean() == pytest.approx(0.10312196315841769)
         assert weight.max() == pytest.approx(0.749881829575671)
     elif kernel == "gaussian":
-        assert weight.mean() == pytest.approx(0.19932294761630429)
-        assert weight.max() == pytest.approx(0.3989265663183409)
+        assert weight.mean() == pytest.approx(0.13787969156713978)
+        assert weight.max() == pytest.approx(0.39891085285421685)
     elif kernel == "bisquare":
         assert weight.mean() == pytest.approx(0.09084085210598618)
         assert weight.max() == pytest.approx(0.9372045972129259)
@@ -329,7 +329,7 @@ def test_coplanar(grocs):
         [grocs, grocs.iloc[:10], grocs.iloc[:3]], ignore_index=True
     )
     # plain kernel
-    head, tail, weight = _kernel(grocs_duplicated)
+    head, tail, weight = _kernel(grocs_duplicated, taper=False)
     assert head.shape[0] == len(grocs_duplicated) * (len(grocs_duplicated) - 1)
     assert tail.shape == head.shape
     assert weight.shape == head.shape
@@ -347,7 +347,7 @@ def test_coplanar(grocs):
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
     # k, clique
-    head, tail, weight = _kernel(grocs_duplicated, k=2, coplanar="clique")
+    head, tail, weight = _kernel(grocs_duplicated, k=2, coplanar="clique", taper=False)
     assert head.shape[0] >= len(grocs_duplicated) * 2
     assert tail.shape == head.shape
     assert weight.shape == head.shape
