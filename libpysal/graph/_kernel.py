@@ -1,6 +1,7 @@
 import numpy
 import pandas
 from scipy import optimize, sparse, spatial, stats
+
 from libpysal.kernels import _kernel_functions
 
 from ._utils import (
