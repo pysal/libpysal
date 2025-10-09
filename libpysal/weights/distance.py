@@ -1,4 +1,3 @@
-
 # ruff: noqa: N802, N803
 
 __all__ = ["KNN", "Kernel", "DistanceBand"]

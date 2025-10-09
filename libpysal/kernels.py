@@ -233,8 +233,7 @@ _kernel_functions = {
 }
 
 
-def kernel(distances, bandwidth, kernel="gaussian", taper=True,
-           decay=False):
+def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
     """Evaluate a kernel function over a distance array.
 
     Parameters

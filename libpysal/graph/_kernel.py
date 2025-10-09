@@ -34,7 +34,7 @@ def _kernel(
     taper=True,
     coplanar="raise",
     resolve_isolates=True,
-    exclude_self_weights=True
+    exclude_self_weights=True,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -91,9 +91,9 @@ def _kernel(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
     else:
-        assert (
-            coordinates.shape[0] == coordinates.shape[1]
-        ), "coordinates should represent a distance matrix if metric='precomputed'"
+        assert coordinates.shape[0] == coordinates.shape[1], (
+            "coordinates should represent a distance matrix if metric='precomputed'"
+        )
         if ids is None:
             ids = numpy.arange(coordinates.shape[0])
 
@@ -139,7 +139,6 @@ def _kernel(
             data = sq.flatten()
             i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
             j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
-
 
             if exclude_self_weights:
                 data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
