@@ -4,7 +4,7 @@ import importlib
 import pandas  #  noqa: F401
 
 try:
-    from patsy import PatsyError
+    from patsy import PatsyError  ## Should patsy be a hard dependency?
 except ImportError:
     PatsyError = Exception
 
