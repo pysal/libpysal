@@ -228,6 +228,7 @@ class TestKernel:
         self.gdf_str = self.gdf.set_index("placeid")
 
     def test_kernel_precompute(self):
+        pyproj = pytest.importorskup("pyproj")
         sklearn = pytest.importorskip("sklearn")
         df = gpd.read_file(geodatasets.get_path("nybb"))
         df = df.to_crs(df.estimate_utm_crs())
