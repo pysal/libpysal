@@ -255,7 +255,7 @@ def test_bandwidth(data, bandwidth):
     ],
 )
 def test_metric(metric, grocs):
-    pyproj = pytest.importorskip("pyproj")
+    pytest.importorskip("pyproj")
     data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
@@ -294,7 +294,7 @@ def test_metric(metric, grocs):
     ],
 )
 def test_metric_k(metric, grocs):
-    pyproj = pytest.importorskip("pyproj")
+    pytest.importorskip("pyproj")
     data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
