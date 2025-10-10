@@ -167,7 +167,9 @@ class Graph(SetOpsMixin):
 
     def __repr__(self):
         return (
-            f"<Graph of {self.n} nodes and {self.nonzero} nonzero edges indexed by\n"
+            f"<Graph of {self.n} nodes and {self.nonzero} nonzero edges compososed of"
+            f" {self.n_components} components and {len(self.isolates)} isolates"
+            " indexed by\n"
             f" {self._get_ids_repr()}>"
         )
 
