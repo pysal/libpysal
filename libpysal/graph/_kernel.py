@@ -34,7 +34,7 @@ def _parabolic(distances, bandwidth):
 
 def _gaussian(distances, bandwidth):
     u = distances / bandwidth
-    return numpy.exp(-(u**2)/2)  / (numpy.sqrt(2 * numpy.pi))
+    return numpy.exp(-(u**2) / 2) / (numpy.sqrt(2 * numpy.pi))
 
 
 def _bisquare(distances, bandwidth):
@@ -140,9 +140,9 @@ def _kernel(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
     else:
-        assert (
-            coordinates.shape[0] == coordinates.shape[1]
-        ), "coordinates should represent a distance matrix if metric='precomputed'"
+        assert coordinates.shape[0] == coordinates.shape[1], (
+            "coordinates should represent a distance matrix if metric='precomputed'"
+        )
         if ids is None:
             ids = numpy.arange(coordinates.shape[0])
 
