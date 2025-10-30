@@ -692,7 +692,8 @@ class Kernel(W):
             z.append(zi)
         zs = z
 
-        # functions follow Anselin and Rey (2014) Modern Spatial Econometircs in Practice. Pg 78
+        # functions follow Anselin and Rey (2014) Modern Spatial Econometircs
+        # in Practice. Pg 78
 
         if self.function == "triangular":
             self.kernel = [1 - zi for zi in zs]
