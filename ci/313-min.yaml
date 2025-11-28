@@ -6,6 +6,7 @@ dependencies:
   - beautifulsoup4
   - fiona
   - geopandas-base>=0.14.0  # base to avoid pulling sklearn
+  - pyproj  # since we need to_crs but install geopandas-base
   - jinja2
   - pandas
   - platformdirs
