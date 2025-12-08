@@ -22,10 +22,11 @@ def guerry():
 
 @pytest.fixture(scope="session")
 def rivers():
-    rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers"))
-    rivers["strID"] = rivers.NAME
-    rivers["intID"] = rivers.index.values + 1
-    return rivers
+    pytest.skip("eea large rivers not accessible")
+    # rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers"))
+    # rivers["strID"] = rivers.NAME
+    # rivers["intID"] = rivers.index.values + 1
+    # return rivers
 
 
 @pytest.fixture(params=["guerry", "guerry centroids", "rivers"])
