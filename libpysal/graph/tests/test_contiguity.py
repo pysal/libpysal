@@ -27,14 +27,13 @@ from libpysal.graph._contiguity import (
 
 @pytest.fixture(scope="session")
 def rivers():
-    pytest.skip("eea large rivers not accessible")
-    # numpy.random.seed(111211)
-    # rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers")).sample(
-    #     frac=1, replace=False
-    # )
-    # rivers["strID"] = rivers.NAME
-    # rivers["intID"] = rivers.index.values + 2
-    # return rivers
+    numpy.random.seed(111211)
+    rivers = geopandas.read_file(geodatasets.get_path("eea large_rivers")).sample(
+        frac=1, replace=False
+    )
+    rivers["strID"] = rivers.NAME
+    rivers["intID"] = rivers.index.values + 2
+    return rivers
 
 
 @pytest.fixture(scope="session")
