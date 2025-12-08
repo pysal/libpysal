@@ -143,7 +143,7 @@ def _neighbor_dict_to_edges(neighbors, weights=None):
                 FutureWarning,
             )
             idxs = idxs.fillna(pd.Series(idxs.index, index=idxs.index))  # self-loops
-    heads, tails = idxs.index.values, idxs.values
+    heads, tails = idxs.index.to_numpy(), idxs.to_numpy()
     tails = tails.astype(heads.dtype)
     if weights is not None:
         with warnings.catch_warnings():
