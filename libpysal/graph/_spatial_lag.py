@@ -84,46 +84,84 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
         y = np.array(y)
 
     if (
-        isinstance(y.dtype, pd.CategoricalDtype)
+        categorical
+        or isinstance(y.dtype, pd.CategoricalDtype)
         or pd.api.types.is_object_dtype(y.dtype)
         or pd.api.types.is_bool_dtype(y.dtype)
         or pd.api.types.is_string_dtype(y.dtype)
     ):
-        categorical = True
-    if categorical:
-        if isinstance(y, np.ndarray):
-            y = pd.Series(y, index=graph.unique_ids)
-
-        df = pd.DataFrame(data=graph.adjacency)
-        df["neighbor_label"] = y.loc[graph.adjacency.index.get_level_values(1)].values
-        df["own_label"] = y.loc[graph.adjacency.index.get_level_values(0)].values
-        df["neighbor_idx"] = df.index.get_level_values(1)
-        df["focal_idx"] = df.index.get_level_values(0)
-        gb = df.groupby(["focal", "neighbor_label"]).count().groupby(level="focal")
-        n_ties = gb.apply(_check_ties).sum()
-        if n_ties and ties == "raise":
-            raise ValueError(
-                f"There are {n_ties} ties that must be broken "
-                f"to define the categorical "
-                "spatial lag for these observations. To address this "
-                "issue, consider setting `ties='tryself'` "
-                "or `ties='random'` or consult the documentation "
-                "about ties and the categorical spatial lag."
-            )
-        # either there are ties and random|tryself specified or
-        # there are no ties
-        gb = df.groupby(by=["focal"])
-        if ties == "random" or ties == "raise":
-            return gb.apply(_get_categorical_lag).values
-        elif ties == "tryself" or ties == "raise":
-            return gb.apply(_get_categorical_lag, ties="tryself").values
-        else:
-            raise ValueError(
-                f"Received option ties='{ties}', but only options "
-                "'raise','random','tryself' are supported."
-            )
+        return _categorical(graph, y, ties=ties)
 
     return sp @ y
+
+
+def _categorical(graph, y, ties):
+    """
+    Compute the categorical spatial lag for each observation in a graph.
+
+    Parameters
+    ----------
+    graph : object
+    y : array-like (numpy.ndarray or pandas.Series)
+        Categorical labels for each observation.
+    ties : {'raise', 'random', 'tryself'}
+        How to handle ties when multiple neighbor categories are equally frequent:
+          - 'raise' : raise a ValueError if any tie exists.
+          - 'random': break ties uniformly at random.
+          - 'tryself': if the focal unit's own label is among the tied labels,
+                       choose the focal label; otherwise break ties (deterministic
+                       choice defined by helper routine).
+
+    Returns
+    -------
+    numpy.ndarray
+        An array of categorical spatial lag values aligned with graph.unique_ids.
+
+    Raises
+    ------
+    ValueError
+        - If ties are present and ties == 'raise'.
+        - If ties is not one of 'raise', 'random', or 'tryself'.
+
+    Notes
+    -----
+    The implementation groups adjacency entries by focal unit and counts neighbor
+    labels to determine the modal category per focal. Tie detection and
+    resolution are delegated to the helper functions _check_ties and
+    _get_categorical_lag. Using 'random' produces nondeterministic outputs unless
+    a random seed is fixed externally.
+    """
+    if isinstance(y, np.ndarray):
+        y = pd.Series(y, index=graph.unique_ids)
+
+    df = pd.DataFrame(data=graph.adjacency)
+    df["neighbor_label"] = y.loc[graph.adjacency.index.get_level_values(1)].values
+    df["own_label"] = y.loc[graph.adjacency.index.get_level_values(0)].values
+    df["neighbor_idx"] = df.index.get_level_values(1)
+    df["focal_idx"] = df.index.get_level_values(0)
+    gb = df.groupby(["focal", "neighbor_label"]).count().groupby(level="focal")
+    n_ties = gb.apply(_check_ties).sum()
+    if n_ties and ties == "raise":
+        raise ValueError(
+            f"There are {n_ties} ties that must be broken "
+            f"to define the categorical "
+            "spatial lag for these observations. To address this "
+            "issue, consider setting `ties='tryself'` "
+            "or `ties='random'` or consult the documentation "
+            "about ties and the categorical spatial lag."
+        )
+    # either there are ties and random|tryself specified or
+    # there are no ties
+    gb = df.groupby(by=["focal"])
+    if ties == "random" or ties == "raise":
+        return gb.apply(_get_categorical_lag).values
+    elif ties == "tryself" or ties == "raise":
+        return gb.apply(_get_categorical_lag, ties="tryself").values
+    else:
+        raise ValueError(
+            f"Received option ties='{ties}', but only options "
+            "'raise','random','tryself' are supported."
+        )
 
 
 def _check_ties(focal):
