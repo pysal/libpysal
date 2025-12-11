@@ -1853,8 +1853,13 @@ class Graph(SetOpsMixin):
                 zip(np.arange(self.unique_ids.shape[0]), self.unique_ids, strict=True)
             )
             focal, neighbor = np.nonzero(wd)
-            focal = focal.astype(self._adjacency.index.dtypes["focal"])
-            neighbor = neighbor.astype(self._adjacency.index.dtypes["focal"])
+            dtype = (
+                self._adjacency.index.dtypes["focal"]
+                if self._adjacency.index.dtypes["focal"] != "str"
+                else "object"
+            )
+            focal = focal.astype(dtype)
+            neighbor = neighbor.astype(dtype)
             for i in i2id:
                 focal[focal == i] = i2id[i]
                 neighbor[neighbor == i] = i2id[i]
