@@ -3,9 +3,9 @@
 libpysal: Python Spatial Analysis Library Core
 ==============================================
 
-.. image:: https://github.com/pysal/libpysal/workflows/.github/workflows/unittests.yml/badge.svg
-   :target: https://github.com/pysal/libpysal/actions?query=workflow%3A.github%2Fworkflows%2Funittests.yml
-
+.. image:: https://github.com/pysal/libpysal/actions/workflows/.github/workflows/unittests.yml/badge.svg
+   :target: https://github.com/pysal/libpysal/actions/workflows/unittests.yml
+      
 .. image:: https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc
    :target: https://discord.gg/BxFTEPFFZn
 
