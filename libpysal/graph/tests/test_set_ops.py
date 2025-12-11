@@ -99,10 +99,12 @@ class TestSetOps:
     def test___eq__(self):
         assert self.distance2500 == self.distance2500.copy()
         assert not self.distance2500 == self.distance2500_id  # noqa: SIM201
+        assert not self.distance2500 == None  # noqa: E711, SIM201
 
     def test___ne__(self):
         assert not self.distance2500 != self.distance2500.copy()  # noqa: SIM202
         assert self.distance2500 != self.distance2500_id
+        assert self.distance2500 != None  # noqa: E711
 
     def test___and__(self):
         result = self.distance2500 & self.knn3
