@@ -56,7 +56,8 @@ class TestBase:
             self.weight_dict_str_binary.values(),
             name="weight",
             index=pd.MultiIndex.from_arrays(
-                [self.index_str, self.neighbor_dict_str.values()],
+                # list() to allow pandas to coerce the data to its StringDtype
+                [list(self.index_str), self.neighbor_dict_str.values()],
                 names=["focal", "neighbor"],
             ),
         )
@@ -461,7 +462,8 @@ class TestBase:
         pd.testing.assert_series_equal(
             g._adjacency,
             self.adjacency_str_binary,
-            check_dtype=False,
+            check_dtype=True,
+            check_index_type=False,
         )
 
     @pytest.mark.parametrize("y", [3, 5])
@@ -621,7 +623,6 @@ class TestBase:
             [3, 3, 2, 3, 4, 3, 2, 3, 2, 0],
             index=pd.Index(
                 ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"],
-                dtype="object",
                 name="focal",
             ),
             name="cardinalities",
