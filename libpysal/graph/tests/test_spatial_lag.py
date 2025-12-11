@@ -71,3 +71,27 @@ class TestLag:
         np.testing.assert_array_equal(
             expected, self.g.lag(["foo", "bar", "foo", "foo"])
         )
+
+    def test_2d_array(self):
+        ys = np.arange(27).reshape(9, 3)
+        lag = self.gc.lag(ys)
+
+        expected = np.array(
+            [
+                [6.0, 7.0, 8.0],
+                [6.0, 7.0, 8.0],
+                [9.0, 10.0, 11.0],
+                [10.0, 11.0, 12.0],
+                [12.0, 13.0, 14.0],
+                [14.0, 15.0, 16.0],
+                [15.0, 16.0, 17.0],
+                [18.0, 19.0, 20.0],
+                [18.0, 19.0, 20.0],
+            ]
+        )
+
+        np.testing.assert_array_almost_equal(lag, expected)
+
+        # test equality to 1d
+        for i in range(2):
+            np.testing.assert_array_equal(self.gc.lag(ys[:, i]), lag[:, i])

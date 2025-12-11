@@ -13,7 +13,8 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
     graph : Graph
         libpysal.graph.Graph
     y : array
-        numpy array with dimensionality conforming to w
+        numpy array with dimensionality conforming to w. Can be 2D if all
+        columns are numerical.
     categorical : bool
         True if y is categorical, False if y is continuous.
     ties : {'raise', 'random', 'tryself'}, optional
@@ -83,7 +84,7 @@ def _lag_spatial(graph, y, categorical=False, ties="raise"):
     if isinstance(y, list):
         y = np.array(y)
 
-    if (
+    if y.ndim == 1 and (
         categorical
         or isinstance(y.dtype, pd.CategoricalDtype)
         or pd.api.types.is_object_dtype(y.dtype)
