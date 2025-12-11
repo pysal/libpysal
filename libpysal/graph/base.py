@@ -166,8 +166,12 @@ class Graph(SetOpsMixin):
             return self.unique_ids.tolist()
 
     def __repr__(self):
+        n_isolates = len(self.isolates)
+
         return (
-            f"<Graph of {self.n} nodes and {self.nonzero} nonzero edges indexed by\n"
+            f"<Graph of {self.n} nodes and {self.nonzero} nonzero edges "
+            f"({self.n_components} component{'s'[: self.n_components ^ 1]}, "
+            f"{n_isolates} isolate{'s'[: n_isolates ^ 1]}) indexed by\n"
             f" {self._get_ids_repr()}>"
         )
 
