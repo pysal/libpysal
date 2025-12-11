@@ -2035,7 +2035,7 @@ class Graph(SetOpsMixin):
 
         return higher
 
-    def lag(self, y, categorical=False, ties="raise"):
+    def lag(self, y, categorical=None, ties="raise"):
         """Spatial lag operator
 
         Constructs spatial lag based on neighbor relations of the graph.
@@ -2043,10 +2043,12 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        y : array
-            numpy array with dimensionality conforming to w
+        y : array_like
+            Array-like aligned with the graph. Can be 2-dimensional if
+            all columns are numerical.
         categorical : bool
-            True if y is categorical, False if y is continuous.
+            True if y is categorical, False if y is continuous. If None, it is
+            derived from the dtype of ``y``.
         ties : {'raise', 'random', 'tryself'}, optional
             Policy on how to break ties when a focal unit has multiple
             modes for a categorical lag.
