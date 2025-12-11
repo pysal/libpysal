@@ -139,19 +139,22 @@ class TestBase:
 
     def test___repr__(self):
         expected = (
-            "<Graph of 10 nodes and 25 nonzero edges indexed by\n [0, 1, 2, 3, 4, ...]>"
+            "<Graph of 10 nodes and 25 nonzero edges (2 components, 1 isolate)"
+            " indexed by\n [0, 1, 2, 3, 4, ...]>"
         )
         assert repr(self.g_int) == expected
 
         expected = (
-            "<Graph of 10 nodes and 25 nonzero edges indexed by\n"
+            "<Graph of 10 nodes and 25 nonzero edges (2 components, 1 isolate)"
+            " indexed by\n"
             " ['a', 'b', 'c', 'd', 'e', ...]>"
         )
         assert repr(self.g_str) == expected
 
         nybb = graph.Graph.build_contiguity(self.nybb)
         expected = (
-            "<Graph of 5 nodes and 10 nonzero edges indexed by\n"
+            "<Graph of 5 nodes and 10 nonzero edges (2 components, 1 isolate) "
+            "indexed by\n"
             " ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>"
         )
         assert repr(nybb) == expected
@@ -187,7 +190,8 @@ class TestBase:
         }
         h3_g = graph.Graph.from_dicts(h3)
         expected = (
-            "<Graph of 7 nodes and 22 nonzero edges indexed by\n"
+            "<Graph of 7 nodes and 22 nonzero edges (1 component, 0 isolates) "
+            "indexed by\n"
             " ['821f87fffffffff', '821fb7fffffffff', '821f97fffffffff',"
             " '823967fffffff...]>"
         )
