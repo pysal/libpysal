@@ -33,6 +33,7 @@ def _kernel(
     ids=None,
     p=2,
     taper=True,
+    decay=False,
     coplanar="raise",
     resolve_isolates=True,
     exclude_self_weights=True,
