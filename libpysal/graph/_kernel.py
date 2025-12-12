@@ -82,6 +82,14 @@ def _kernel(
         parameter for minkowski metric, ignored if metric != "minkowski".
     taper : bool (default: True)
         remove links with a weight equal to zero
+    decay : bool (default: False)
+        whether to calculate the kernel using the decay formulation.
+        In the decay form, a kernel measures the distance decay in
+        similarity between observations. It varies from from maximal
+        similarity (1) at a distance of zero to minimal similarity (0
+        or negative) at some very large (possibly infinite) distance.
+        Otherwise, kernel functions are treated as proper
+        volume-preserving probability distributions.
     resolve_isolates : bool
         Try to resolve isolates. Can be disabled if we are dealing with cliques later.
     exclude_self_weights : bool (default: True)
@@ -92,9 +100,9 @@ def _kernel(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
         )
     else:
-        assert coordinates.shape[0] == coordinates.shape[1], (
-            "coordinates should represent a distance matrix if metric='precomputed'"
-        )
+        assert (
+            coordinates.shape[0] == coordinates.shape[1]
+        ), "coordinates should represent a distance matrix if metric='precomputed'"
         if ids is None:
             ids = numpy.arange(coordinates.shape[0])
 
@@ -159,7 +167,7 @@ def _kernel(
     if callable(kernel):
         d.data = kernel(d.data, bandwidth)
     else:
-        d.data = _kernel_functions[kernel](d.data, bandwidth)
+        d.data = _kernel_functions[kernel](d.data, bandwidth, taper=taper, decay=decay)
 
     if taper:
         d.eliminate_zeros()
