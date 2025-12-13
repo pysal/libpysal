@@ -124,7 +124,6 @@ def _kernel(
     if k is not None:
         if metric != "precomputed":
             d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
-            print(d.shape, type(d))
         else:
             d = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
     else:
@@ -164,7 +163,6 @@ def _kernel(
             bandwidth = numpy.percentile(d.data, 25)
         else:
             bandwidth = d.data.max()
-        print(f"setting bw {bandwidth=}")
     elif bandwidth == "auto":
         if (kernel == "identity") or (kernel is None):
             bandwidth = numpy.nan  # ignored by identity
@@ -173,18 +171,9 @@ def _kernel(
     if callable(kernel):
         d.data = kernel(d.data, bandwidth)
     else:
-        # d.data = _kernel_functions[kernel](d.data, bandwidth, taper=taper, decay=decay)
-        print(f"{type(d)=}")
-        print(f"{type(d.data)=}")
-        print(f"Before lps {(d.data!=0).sum()=}")
-        print(f"{bandwidth=}")
         d.data = _lps_kernel(d.data, bandwidth, kernel=kernel, taper=taper, decay=decay)
-        print(f"{type(d)=}")
-        print(f"{taper=}")
-        print(f"After lps {(d.data!=0).sum()=}")
     if taper:
         d.eliminate_zeros()
-    print(f"{(d.data!=0).sum()=}")
     return _sparse_to_arrays(d, ids=ids, resolve_isolates=resolve_isolates)
 
 
@@ -204,18 +193,12 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise"):
             # sklearn haversine works with (lat,lng) in radians...
             coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
         query = _prepare_tree_query(coordinates, metric, p=p)
-        print(coordinates.shape, k)
         d_linear, ixs = query(coordinates, k=k + 1)
-        print(f"{d_linear.shape=}, {ixs.shape=}")
         self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
-        print(f"{self_ix.shape=}, {neighbor_ix.shape=}")
         d_linear = d_linear[:, 1:]
         self_ix_flat = numpy.repeat(self_ix, k)
         neighbor_ix_flat = neighbor_ix.flatten()
         d_linear_flat = d_linear.flatten()
-        print(
-            f"{d_linear_flat.shape=}, {self_ix_flat.shape=}, {neighbor_ix_flat.shape=}"
-        )
         if metric == "haversine":
             d_linear_flat * 6371  # express haversine distances in kilometers
         d = sparse.csr_array(

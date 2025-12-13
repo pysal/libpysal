@@ -20,6 +20,7 @@ from libpysal.graph._kernel import (
     HAS_SKLEARN,
     _distance_band,
     _kernel,
+    _lps_kernel,
     _kernel_functions,
 )
 from libpysal.graph._utils import CoplanarError
@@ -126,7 +127,7 @@ def test_ids(ids, grocs):
 
 @pytest.mark.network
 def test_distance(grocs):
-    _, _, weight = _kernel(grocs, kernel="identity")
+    _, _, weight = _kernel(grocs, kernel="identity", taper=False)
     known = np.linspace(9, weight.shape[0], 10, dtype=int, endpoint=False)
     np.testing.assert_array_almost_equal(
         weight[known],
@@ -146,7 +147,7 @@ def test_distance(grocs):
         ),
     )
 
-    _, _, weight = _kernel(lap_coords, kernel="identity")
+    _, _, weight = _kernel(lap_coords, kernel="identity", taper=False)
     known = np.linspace(9, weight.shape[0], 10, dtype=int, endpoint=False)
     np.testing.assert_array_almost_equal(
         weight[known],
@@ -166,7 +167,7 @@ def test_distance(grocs):
         ),
     )
 
-    _, _, weight = _kernel(cau_coords, kernel="identity")
+    _, _, weight = _kernel(cau_coords, kernel="identity", taper=False)
     known = np.linspace(9, weight.shape[0], 10, dtype=int, endpoint=False)
     np.testing.assert_array_almost_equal(
         weight[known],
@@ -259,7 +260,9 @@ def test_metric(metric, grocs):
     data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
-    head, tail, weight = _kernel(data, metric=metric, kernel="identity", p=1.5)
+    head, tail, weight = _kernel(
+        data, metric=metric, kernel="identity", p=1.5, taper=False
+    )
     assert head.shape[0] == len(data) * (len(data) - 1)
     assert tail.shape == head.shape
     assert weight.shape == head.shape

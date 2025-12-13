@@ -279,5 +279,4 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
 
     if decay:
         k /= func(0.0, bandwidth)
-
     return k
