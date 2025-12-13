@@ -2,8 +2,9 @@ import numpy
 import pandas
 from scipy import optimize, sparse, spatial, stats
 
-from libpysal.kernels import kernel as _lps_kernel
 from libpysal.kernels import _kernel_functions
+from libpysal.kernels import kernel as _lps_kernel
+
 from ._utils import (
     CoplanarError,
     _build_coplanarity_lookup,
@@ -159,10 +160,7 @@ def _kernel(
         else:
             d = sparse.csc_array(coordinates)
     if bandwidth is None:
-        if k is None:
-            bandwidth = numpy.percentile(d.data, 25)
-        else:
-            bandwidth = d.data.max()
+        bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
     elif bandwidth == "auto":
         if (kernel == "identity") or (kernel is None):
             bandwidth = numpy.nan  # ignored by identity

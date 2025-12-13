@@ -20,7 +20,6 @@ from libpysal.graph._kernel import (
     HAS_SKLEARN,
     _distance_band,
     _kernel,
-    _lps_kernel,
     _kernel_functions,
 )
 from libpysal.graph._utils import CoplanarError
