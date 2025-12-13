@@ -1083,6 +1083,7 @@ class Graph(SetOpsMixin):
             bandwidth=bandwidth,
             metric=metric,
             kernel=kernel,
+            taper=False,
             k=k,
             p=p,
             ids=ids,

@@ -7,9 +7,10 @@ This user guide covers essential features of libpysal, mostly in the form of int
 - work with built-in example spatial data sets
 - how to use spatial weights
 - how to use spatial graphs
+- how to use kernels
 
 Notebooks cover just a small selection of functions as an illustration of
-principles. For a full overview of momepy capabilities, head to the `API <../api.rst>`_.
+principles. For a full overview of libpysal's capabilities, head to the `API <../api.rst>`_.
 
 
 .. toctree::
@@ -18,3 +19,4 @@ principles. For a full overview of momepy capabilities, head to the `API <../api
    Datasets <data/examples>
    Weights <weights/intro>
    Graphs  <graph/intro>
+   Kernels <kernels>
