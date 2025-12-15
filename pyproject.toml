@@ -47,7 +47,7 @@ plus = [
     "joblib>=1.4.0",
     "networkx>=3.2",
     "numba>=0.58",
-    "pandana", # not compatible with Python 3.13 as of 2025-06
+    "pandarm",
     "pyarrow>=11.0",
     "sqlalchemy>=2.0",
     "xarray>=2023.6",

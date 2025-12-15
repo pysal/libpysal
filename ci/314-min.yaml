@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python=3.14
   - beautifulsoup4
   - fiona
   - geopandas-base>=0.14.0  # base to avoid pulling sklearn

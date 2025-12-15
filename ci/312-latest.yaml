@@ -30,7 +30,7 @@ dependencies:
   - scikit-learn
   - sqlalchemy
   - zstd
-  - pandana
+  - pandarm
   - xarray
   - pip
   - pip:

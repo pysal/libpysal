@@ -29,7 +29,7 @@ dependencies:
   - sqlalchemy=2.0
   - zstd
   - xarray=2023.6
-  - pandana
+  - pandarm
   - h3-py<4
   - pip
   - pip:
