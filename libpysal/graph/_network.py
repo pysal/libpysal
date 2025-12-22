@@ -1,6 +1,6 @@
 import numpy as np
 
-from ._kernel import _kernel_functions
+from ._kernel import _lps_kernel
 from ._utils import _induce_cliques, _validate_geometry_input
 
 
@@ -141,8 +141,12 @@ def build_travel_graph(
             adj_cliques["weight"], threshold, decay=decay, taper=taper
         )
     else:
-        adj_cliques["weight"] = _kernel_functions[kernel](
-            adj_cliques["weight"], threshold, decay=decay, taper=taper
+        adj_cliques["weight"] = _lps_kernel(
+            adj_cliques["weight"].values,
+            kernel=kernel,
+            bandwidth=threshold,
+            decay=decay,
+            taper=taper,
         )
 
     return adj_cliques
