@@ -1524,7 +1524,7 @@ class Graph(SetOpsMixin):
         kernel=None,
         mapping_distance=None,
         taper=True,
-        dcay=False,
+        decay=False,
     ):
         """Generate a Graph based on shortest travel costs from a pandana.Network
 
