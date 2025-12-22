@@ -1322,6 +1322,8 @@ class Graph(SetOpsMixin):
         clip="bounding_box",
         rook=True,
         coplanar="raise",
+        taper=True,
+        decay=False,
     ):
         """Generate Graph from geometry based on triangulation
 
@@ -1377,6 +1379,16 @@ class Graph(SetOpsMixin):
             ``'raise'`` (raising an exception when coplanar points are present),
             ``'jitter'`` (randomly displace coplanar points to produce uniqueness), &
             ``'clique'`` (induce fully-connected sub cliques for coplanar points).
+        taper : bool (default: True)
+            remove links with a weight equal to zero
+        decay : bool (default: False)
+            whether to calculate the kernel using the decay formulation.
+            In the decay form, a kernel measures the distance decay in
+            similarity between observations. It varies from from maximal
+            similarity (1) at a distance of zero to minimal similarity (0
+            or negative) at some very large (possibly infinite) distance.
+            Otherwise, kernel functions are treated as proper
+            volume-preserving probability distributions.
 
         Returns
         -------
