@@ -1442,18 +1442,38 @@ class Graph(SetOpsMixin):
                 bandwidth=bandwidth,
                 kernel=kernel,
                 coplanar=coplanar,
+                decay=decay,
+                taper=taper,
             )
         elif method == "gabriel":
             head, tail, weights = _gabriel(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coplanar=coplanar
+                data,
+                ids=ids,
+                bandwidth=bandwidth,
+                kernel=kernel,
+                coplanar=coplanar,
+                decay=decay,
+                taper=taper,
             )
         elif method == "relative_neighborhood":
             head, tail, weights = _relative_neighborhood(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coplanar=coplanar
+                data,
+                ids=ids,
+                bandwidth=bandwidth,
+                kernel=kernel,
+                coplanar=coplanar,
+                decay=decay,
+                taper=taper,
             )
         elif method == "voronoi":
             head, tail, weights = _voronoi(
-                data, ids=ids, clip=clip, rook=rook, coplanar=coplanar
+                data,
+                ids=ids,
+                clip=clip,
+                rook=rook,
+                coplanar=coplanar,
+                decay=decay,
+                taper=taper,
             )
         else:
             raise ValueError(
