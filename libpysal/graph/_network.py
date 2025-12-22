@@ -63,7 +63,7 @@ def pdna_to_adj(origins, network, node_ids, threshold):
 
 
 def build_travel_graph(
-    df, network, threshold, mapping_distance, kernel=None, tape=True, decay=False
+    df, network, threshold, mapping_distance, kernel=None, taper=True, decay=False
 ):
     """Compute the shortest path between gdf centroids via a pandana.Network
     and return an adjacency list with weight=cost. Note unlike distance_band,
