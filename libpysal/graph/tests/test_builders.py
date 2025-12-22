@@ -235,7 +235,7 @@ class TestKernel:
         distmat = csr_matrix(
             sklearn.metrics.pairwise.euclidean_distances(get_coordinates(df.centroid))
         )
-        g = graph.Graph.build_kernel(distmat, metric="precomputed")
+        g = graph.Graph.build_kernel(distmat, metric="precomputed", taper=False)
         expected = np.array(
             [
                 0.04,

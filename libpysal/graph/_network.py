@@ -62,7 +62,9 @@ def pdna_to_adj(origins, network, node_ids, threshold):
     return adj
 
 
-def build_travel_graph(df, network, threshold, mapping_distance, kernel=None):
+def build_travel_graph(
+    df, network, threshold, mapping_distance, kernel=None, tape=True, decay=False
+):
     """Compute the shortest path between gdf centroids via a pandana.Network
     and return an adjacency list with weight=cost. Note unlike distance_band,
     :math:`G_{ij}` and :math:`G_{ji}` are often different because travel networks
@@ -87,6 +89,16 @@ def build_travel_graph(df, network, threshold, mapping_distance, kernel=None):
         libpysal.graph.Graph.build_kernel for more information on kernel
         transformation options. Default is None, in which case the Graph weight
         is pure distance between focal and neighbor
+    taper : bool (default: True)
+        remove links with a weight equal to zero
+    decay : bool (default: False)
+        whether to calculate the kernel using the decay formulation.
+        In the decay form, a kernel measures the distance decay in
+        similarity between observations. It varies from from maximal
+        similarity (1) at a distance of zero to minimal similarity (0
+        or negative) at some very large (possibly infinite) distance.
+        Otherwise, kernel functions are treated as proper
+        volume-preserving probability distributions.
 
     Returns
     -------
@@ -125,10 +137,12 @@ def build_travel_graph(df, network, threshold, mapping_distance, kernel=None):
     )
 
     if callable(kernel):
-        adj_cliques["weight"] = kernel(adj_cliques["weight"], threshold)
+        adj_cliques["weight"] = kernel(
+            adj_cliques["weight"], threshold, decay=decay, taper=taper
+        )
     else:
         adj_cliques["weight"] = _kernel_functions[kernel](
-            adj_cliques["weight"], threshold
+            adj_cliques["weight"], threshold, decay=decay, taper=taper
         )
 
     return adj_cliques

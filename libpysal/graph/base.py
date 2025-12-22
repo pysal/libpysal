@@ -659,7 +659,15 @@ class Graph(SetOpsMixin):
 
     @classmethod
     def build_distance_band(
-        cls, data, threshold, binary=True, alpha=-1.0, kernel=None, bandwidth=None
+        cls,
+        data,
+        threshold,
+        binary=True,
+        alpha=-1.0,
+        kernel=None,
+        bandwidth=None,
+        taper=True,
+        decay=False,
     ):
         """Generate Graph from geometry based on a distance band
 
@@ -688,7 +696,16 @@ class Graph(SetOpsMixin):
         bandwidth : float (default: None)
             distance to use in the kernel computation. Should be on the same scale as
             the input coordinates. Ignored if ``binary=True`` or ``kernel=None``.
-
+        taper : bool (default: True)
+            remove links with a weight equal to zero
+        decay : bool (default: False)
+            whether to calculate the kernel using the decay formulation.
+            In the decay form, a kernel measures the distance decay in
+            similarity between observations. It varies from from maximal
+            similarity (1) at a distance of zero to minimal similarity (0
+            or negative) at some very large (possibly infinite) distance.
+            Otherwise, kernel functions are treated as proper
+            volume-preserving probability distributions.
         Returns
         -------
         Graph
@@ -795,6 +812,8 @@ class Graph(SetOpsMixin):
                 metric="precomputed",
                 ids=ids,
                 bandwidth=np.inf,
+                taper=taper,
+                decay=decay,
             )
         elif kernel is not None:
             head, tail, weight = _kernel(
@@ -803,6 +822,8 @@ class Graph(SetOpsMixin):
                 metric="precomputed",
                 ids=ids,
                 bandwidth=bandwidth,
+                taper=taper,
+                decay=decay,
             )
         else:
             head, tail, weight = _kernel(
@@ -811,6 +832,8 @@ class Graph(SetOpsMixin):
                 metric="precomputed",
                 ids=ids,
                 bandwidth=alpha,
+                taper=taper,
+                decay=decay,
             )
 
         adjacency = pd.DataFrame.from_dict(
@@ -1021,6 +1044,8 @@ class Graph(SetOpsMixin):
         metric="euclidean",
         p=2,
         coplanar="raise",
+        taper=True,
+        decay=False,
     ):
         """Generate Graph from geometry data based on a kernel function
 
@@ -1066,6 +1091,16 @@ class Graph(SetOpsMixin):
             ``'raise'`` (raising an exception when coplanar points are present),
             ``'jitter'`` (randomly displace coplanar points to produce uniqueness), &
             ``'clique'`` (induce fully-connected sub cliques for coplanar points).
+        taper : bool (default: True)
+            remove links with a weight equal to zero
+        decay : bool (default: False)
+            whether to calculate the kernel using the decay formulation.
+            In the decay form, a kernel measures the distance decay in
+            similarity between observations. It varies from from maximal
+            similarity (1) at a distance of zero to minimal similarity (0
+            or negative) at some very large (possibly infinite) distance.
+            Otherwise, kernel functions are treated as proper
+            volume-preserving probability distributions.
 
         Returns
         -------
@@ -1079,17 +1114,27 @@ class Graph(SetOpsMixin):
             bandwidth=bandwidth,
             metric=metric,
             kernel=kernel,
-            taper=False,
             k=k,
             p=p,
             ids=ids,
             coplanar=coplanar,
+            decay=decay,
+            taper=taper,
         )
 
         return cls.from_arrays(head, tail, weight, is_sorted=True)
 
     @classmethod
-    def build_knn(cls, data, k, metric="euclidean", p=2, coplanar="raise"):
+    def build_knn(
+        cls,
+        data,
+        k,
+        metric="euclidean",
+        p=2,
+        coplanar="raise",
+        taper=True,
+        decay=False,
+    ):
         """Generate Graph from geometry data based on k-nearest neighbors search
 
         Parameters
@@ -1114,6 +1159,16 @@ class Graph(SetOpsMixin):
             ``'raise'`` (raising an exception when coplanar points are present),
             ``'jitter'`` (randomly displace coplanar points to produce uniqueness), &
             ``'clique'`` (induce fully-connected sub cliques for coplanar points).
+        taper : bool (default: True)
+            remove links with a weight equal to zero
+        decay : bool (default: False)
+            whether to calculate the kernel using the decay formulation.
+            In the decay form, a kernel measures the distance decay in
+            similarity between observations. It varies from from maximal
+            similarity (1) at a distance of zero to minimal similarity (0
+            or negative) at some very large (possibly infinite) distance.
+            Otherwise, kernel functions are treated as proper
+            volume-preserving probability distributions.
 
 
         Returns
@@ -1179,6 +1234,8 @@ class Graph(SetOpsMixin):
             p=p,
             ids=ids,
             coplanar=coplanar,
+            taper=taper,
+            decay=decay,
         )
 
         return cls.from_arrays(head, tail, weight)
@@ -1368,7 +1425,11 @@ class Graph(SetOpsMixin):
 
         if method == "delaunay":
             head, tail, weights = _delaunay(
-                data, ids=ids, bandwidth=bandwidth, kernel=kernel, coplanar=coplanar
+                data,
+                ids=ids,
+                bandwidth=bandwidth,
+                kernel=kernel,
+                coplanar=coplanar,
             )
         elif method == "gabriel":
             head, tail, weights = _gabriel(
@@ -1456,7 +1517,14 @@ class Graph(SetOpsMixin):
 
     @classmethod
     def build_travel_cost(
-        cls, df, network, threshold, kernel=None, mapping_distance=None
+        cls,
+        df,
+        network,
+        threshold,
+        kernel=None,
+        mapping_distance=None,
+        taper=True,
+        dcay=False,
     ):
         """Generate a Graph based on shortest travel costs from a pandana.Network
 
@@ -1486,6 +1554,16 @@ class Graph(SetOpsMixin):
             snapping tolerance passed to ``pandana.Network.get_node_ids`` that defines
             the maximum range at which observations are snapped to nearest nodes in the
             network. Default is None
+        taper : bool (default: True)
+            remove links with a weight equal to zero
+        decay : bool (default: False)
+            whether to calculate the kernel using the decay formulation.
+            In the decay form, a kernel measures the distance decay in
+            similarity between observations. It varies from from maximal
+            similarity (1) at a distance of zero to minimal similarity (0
+            or negative) at some very large (possibly infinite) distance.
+            Otherwise, kernel functions are treated as proper
+            volume-preserving probability distributions.
 
         Returns
         -------
@@ -1531,7 +1609,13 @@ class Graph(SetOpsMixin):
         Name: weight, dtype: float64
         """
         adj = _build_travel_graph(
-            df, network, threshold, mapping_distance, kernel=kernel
+            df,
+            network,
+            threshold,
+            mapping_distance,
+            kernel=kernel,
+            decay=decay,
+            taper=taper,
         )
 
         return cls.from_adjacency(adj)
