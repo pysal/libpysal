@@ -70,7 +70,7 @@ jobs:
           geodatasets.fetch("nybb")
           geodatasets.fetch("geoda liquor_stores")
           geodatasets.fetch("eea large_rivers")
-          print(geodatasets.eea.large_rivers.path)
+          print(geodatasets.data.eea.large_rivers.path)
           geodatasets.fetch("geoda groceries")
           geodatasets.fetch("geoda guerry")
           libpysal.examples.fetch_all()
