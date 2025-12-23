@@ -1,4 +1,5 @@
 import math
+import os
 from functools import cached_property
 
 import numpy as np
@@ -35,6 +36,9 @@ from ._utils import (
 from .io._gal import _read_gal, _to_gal
 from .io._gwt import _read_gwt, _to_gwt
 from .io._parquet import _read_parquet, _to_parquet
+
+if os.environ.get("ASV", "false") == "true":
+    cached_property = property  # remove cache for benchmark purposes  # noqa: F811
 
 ALLOWED_TRANSFORMATIONS = ("O", "B", "R", "D", "V", "C")
 
@@ -1966,8 +1970,13 @@ class Graph(SetOpsMixin):
                 zip(np.arange(self.unique_ids.shape[0]), self.unique_ids, strict=True)
             )
             focal, neighbor = np.nonzero(wd)
-            focal = focal.astype(self._adjacency.index.dtypes["focal"])
-            neighbor = neighbor.astype(self._adjacency.index.dtypes["focal"])
+            dtype = (
+                self._adjacency.index.dtypes["focal"]
+                if self._adjacency.index.dtypes["focal"] != "str"
+                else "object"
+            )
+            focal = focal.astype(dtype)
+            neighbor = neighbor.astype(dtype)
             for i in i2id:
                 focal[focal == i] = i2id[i]
                 neighbor[neighbor == i] = i2id[i]
@@ -2143,7 +2152,7 @@ class Graph(SetOpsMixin):
 
         return higher
 
-    def lag(self, y, categorical=False, ties="raise"):
+    def lag(self, y, categorical=None, ties="raise"):
         """Spatial lag operator
 
         Constructs spatial lag based on neighbor relations of the graph.
@@ -2151,10 +2160,12 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        y : array
-            numpy array with dimensionality conforming to w
+        y : array_like
+            Array-like aligned with the graph. Can be 2-dimensional if
+            all columns are numerical.
         categorical : bool
-            True if y is categorical, False if y is continuous.
+            True if y is categorical, False if y is continuous. If None, it is
+            derived from the dtype of ``y``.
         ties : {'raise', 'random', 'tryself'}, optional
             Policy on how to break ties when a focal unit has multiple
             modes for a categorical lag.

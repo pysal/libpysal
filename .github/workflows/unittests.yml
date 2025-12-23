@@ -32,9 +32,9 @@ jobs:
           - ci/313-dev.yaml
         include:
           - environment-file: ci/313-latest.yaml
-            os: macos-13 # Intel
+            os: macos-15-intel # Intel
           - environment-file: ci/313-latest.yaml
-            os: macos-14 # Apple Silicon
+            os: macos-latest # Apple Silicon
           - environment-file: ci/313-latest.yaml
             os: windows-latest
     defaults:
@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Fetch all history for all branches and tags.
 

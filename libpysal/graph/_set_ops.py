@@ -181,7 +181,7 @@ class SetOpsMixin:
             pandas.testing.assert_series_equal(
                 self._adjacency, right._adjacency, check_dtype=False
             )
-        except AssertionError:
+        except (AssertionError, AttributeError):
             return False
         return True
 
