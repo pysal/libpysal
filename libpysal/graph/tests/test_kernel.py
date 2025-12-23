@@ -121,7 +121,7 @@ def test_ids(ids, grocs):
     data = grocs.set_index(ids) if ids else grocs
     head, tail, _ = _kernel(data)
     np.testing.assert_array_equal(pd.unique(head), data.index)
-    assert np.in1d(tail, data.index).all()
+    assert np.isin(tail, data.index).all()
 
 
 @pytest.mark.network
