@@ -1,6 +1,5 @@
 import os
 import tempfile
-import warnings
 
 import geopandas
 import numpy as np
@@ -406,9 +405,8 @@ class TestW:
     def test_plot(self):
         pytest.importorskip("matplotlib")
         df = geopandas.read_file(examples.get_path("10740.shp"))
-        with warnings.catch_warnings(record=True) as record:
-            self.w.plot(df)
-        assert len(record) == 0
+        f, ax = self.w.plot(df)
+        assert len(ax.collections) == 1
 
     def test_to_sparse(self):
         sparse = self.w_islands.to_sparse()
