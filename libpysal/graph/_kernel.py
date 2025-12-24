@@ -2,6 +2,9 @@ import numpy
 import pandas
 from scipy import optimize, sparse, spatial, stats
 
+from libpysal.kernels import _kernel_functions
+from libpysal.kernels import kernel as _lps_kernel
+
 from ._utils import (
     CoplanarError,
     _build_coplanarity_lookup,
@@ -22,59 +25,6 @@ except ImportError:
 _VALID_GEOMETRY_TYPES = ["Point"]
 
 
-def _triangular(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return 1 - u
-
-
-def _parabolic(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return 0.75 * (1 - u**2)
-
-
-def _gaussian(distances, bandwidth):
-    u = distances / bandwidth
-    return numpy.exp(-((u / 2) ** 2)) / (numpy.sqrt(2 * numpy.pi))
-
-
-def _bisquare(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return (15 / 16) * (1 - u**2) ** 2
-
-
-def _cosine(distances, bandwidth):
-    u = numpy.clip(distances / bandwidth, 0, 1)
-    return (numpy.pi / 4) * numpy.cos(numpy.pi / 2 * u)
-
-
-def _exponential(distances, bandwidth):
-    u = distances / bandwidth
-    return numpy.exp(-u)
-
-
-def _boxcar(distances, bandwidth):
-    r = (distances < bandwidth).astype(int)
-    return r
-
-
-def _identity(distances, _):
-    return distances
-
-
-_kernel_functions = {
-    "triangular": _triangular,
-    "parabolic": _parabolic,
-    "gaussian": _gaussian,
-    "bisquare": _bisquare,
-    "cosine": _cosine,
-    "boxcar": _boxcar,
-    "discrete": _boxcar,
-    "exponential": _exponential,
-    "identity": _identity,
-    None: _identity,
-}
-
-
 def _kernel(
     coordinates,
     bandwidth=None,
@@ -84,8 +34,10 @@ def _kernel(
     ids=None,
     p=2,
     taper=True,
+    decay=False,
     coplanar="raise",
     resolve_isolates=True,
+    exclude_self_weights=True,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -132,8 +84,18 @@ def _kernel(
         parameter for minkowski metric, ignored if metric != "minkowski".
     taper : bool (default: True)
         remove links with a weight equal to zero
+    decay : bool (default: False)
+        whether to calculate the kernel using the decay formulation.
+        In the decay form, a kernel measures the distance decay in
+        similarity between observations. It varies from from maximal
+        similarity (1) at a distance of zero to minimal similarity (0
+        or negative) at some very large (possibly infinite) distance.
+        Otherwise, kernel functions are treated as proper
+        volume-preserving probability distributions.
     resolve_isolates : bool
         Try to resolve isolates. Can be disabled if we are dealing with cliques later.
+    exclude_self_weights : bool (default: True)
+        Remove self-weights
     """
     if metric != "precomputed":
         coordinates, ids, _ = _validate_geometry_input(
@@ -188,16 +150,17 @@ def _kernel(
             data = sq.flatten()
             i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
             j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
-            # remove diagonal
-            data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
-            i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
-            j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
-            # construct sparse
+
+            if exclude_self_weights:
+                data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
+                i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
+                j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
+
             d = sparse.csc_array((data, (i, j)))
         else:
             d = sparse.csc_array(coordinates)
     if bandwidth is None:
-        bandwidth = numpy.percentile(d.data, 25)
+        bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
     elif bandwidth == "auto":
         if (kernel == "identity") or (kernel is None):
             bandwidth = numpy.nan  # ignored by identity
@@ -206,11 +169,9 @@ def _kernel(
     if callable(kernel):
         d.data = kernel(d.data, bandwidth)
     else:
-        d.data = _kernel_functions[kernel](d.data, bandwidth)
-
+        d.data = _lps_kernel(d.data, bandwidth, kernel=kernel, taper=taper, decay=decay)
     if taper:
         d.eliminate_zeros()
-
     return _sparse_to_arrays(d, ids=ids, resolve_isolates=resolve_isolates)
 
 

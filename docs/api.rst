@@ -255,6 +255,17 @@ io
    libpysal.io.fileio.FileIO
 
 
+kernels
+-------
+
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.kernels.kernel
+
+   
+
 examples
 --------
 

@@ -126,7 +126,7 @@ def test_ids(ids, grocs):
 
 @pytest.mark.network
 def test_distance(grocs):
-    _, _, weight = _kernel(grocs, kernel="identity")
+    _, _, weight = _kernel(grocs, kernel="identity", taper=False)
     known = np.linspace(9, weight.shape[0], 10, dtype=int, endpoint=False)
     np.testing.assert_array_almost_equal(
         weight[known],
@@ -146,7 +146,7 @@ def test_distance(grocs):
         ),
     )
 
-    _, _, weight = _kernel(lap_coords, kernel="identity")
+    _, _, weight = _kernel(lap_coords, kernel="identity", taper=False)
     known = np.linspace(9, weight.shape[0], 10, dtype=int, endpoint=False)
     np.testing.assert_array_almost_equal(
         weight[known],
@@ -166,7 +166,7 @@ def test_distance(grocs):
         ),
     )
 
-    _, _, weight = _kernel(cau_coords, kernel="identity")
+    _, _, weight = _kernel(cau_coords, kernel="identity", taper=False)
     known = np.linspace(9, weight.shape[0], 10, dtype=int, endpoint=False)
     np.testing.assert_array_almost_equal(
         weight[known],
@@ -210,8 +210,8 @@ def test_kernels(kernel, grocs):
         assert weight.mean() == pytest.approx(0.10312196315841769)
         assert weight.max() == pytest.approx(0.749881829575671)
     elif kernel == "gaussian":
-        assert weight.mean() == pytest.approx(0.19932294761630429)
-        assert weight.max() == pytest.approx(0.3989265663183409)
+        assert weight.mean() == pytest.approx(0.13787969156713978)
+        assert weight.max() == pytest.approx(0.39891085285421685)
     elif kernel == "bisquare":
         assert weight.mean() == pytest.approx(0.09084085210598618)
         assert weight.max() == pytest.approx(0.9372045972129259)
@@ -255,10 +255,13 @@ def test_bandwidth(data, bandwidth):
     ],
 )
 def test_metric(metric, grocs):
+    pytest.importorskip("pyproj")
     data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
-    head, tail, weight = _kernel(data, metric=metric, kernel="identity", p=1.5)
+    head, tail, weight = _kernel(
+        data, metric=metric, kernel="identity", p=1.5, taper=False
+    )
     assert head.shape[0] == len(data) * (len(data) - 1)
     assert tail.shape == head.shape
     assert weight.shape == head.shape
@@ -293,6 +296,7 @@ def test_metric(metric, grocs):
     ],
 )
 def test_metric_k(metric, grocs):
+    pytest.importorskip("pyproj")
     data = grocs.to_crs(4326) if metric == "haversine" else grocs
     if not HAS_SKLEARN and metric in ["chebyshev", "haversine"]:
         pytest.skip("metric not supported by scipy")
@@ -329,7 +333,7 @@ def test_coplanar(grocs):
         [grocs, grocs.iloc[:10], grocs.iloc[:3]], ignore_index=True
     )
     # plain kernel
-    head, tail, weight = _kernel(grocs_duplicated)
+    head, tail, weight = _kernel(grocs_duplicated, taper=False)
     assert head.shape[0] == len(grocs_duplicated) * (len(grocs_duplicated) - 1)
     assert tail.shape == head.shape
     assert weight.shape == head.shape
@@ -347,7 +351,7 @@ def test_coplanar(grocs):
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
 
     # k, clique
-    head, tail, weight = _kernel(grocs_duplicated, k=2, coplanar="clique")
+    head, tail, weight = _kernel(grocs_duplicated, k=2, coplanar="clique", taper=False)
     assert head.shape[0] >= len(grocs_duplicated) * 2
     assert tail.shape == head.shape
     assert weight.shape == head.shape

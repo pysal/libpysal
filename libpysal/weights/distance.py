@@ -372,8 +372,8 @@ class Kernel(W):
     bandwidth   : float
                   or array-like (optional)
                   the bandwidth :math:`h_i` for the kernel.
-    fixed       : binary
-                  If true then :math:`h_i=h \\forall i`. If false then
+    fixed       : bool
+                  If True then :math:`h_i=h \\forall i`. If False then
                   bandwidth is adaptive across observations.
     k           : int
                   the number of nearest neighbors to use for determining
@@ -424,6 +424,10 @@ class Kernel(W):
     eps         : float
                   adjustment to ensure knn distance range is closed on the
                   knnth observations
+    normalize   : bool
+                  If True (default) Gaussian kernel is normalized to integrate to 1.
+                  If False K(0)=1.
+
 
     Attributes
     ----------
@@ -530,8 +534,10 @@ class Kernel(W):
         diagonal=False,
         distance_metric="euclidean",
         radius=None,
+        normalize=True,
         **kwargs,
     ):
+        self._normalize = normalize
         if radius is not None:
             distance_metric = "arc"
         if isKDTree(data):
@@ -685,7 +691,10 @@ class Kernel(W):
             )
             z.append(zi)
         zs = z
-        # functions follow Anselin and Rey (2010) table 5.4
+
+        # functions follow Anselin and Rey (2014) Modern Spatial Econometircs
+        # in Practice. Pg 78
+
         if self.function == "triangular":
             self.kernel = [1 - zi for zi in zs]
         elif self.function == "uniform":
@@ -697,6 +706,8 @@ class Kernel(W):
         elif self.function == "gaussian":
             c = np.pi * 2
             c = c ** (-0.5)
+            if self._normalize is False:
+                c = 1
             self.kernel = [c * np.exp(-(zi**2) / 2.0) for zi in zs]
         else:
             print(("Unsupported kernel function", self.function))

@@ -228,35 +228,36 @@ class TestKernel:
         self.gdf_str = self.gdf.set_index("placeid")
 
     def test_kernel_precompute(self):
+        pytest.importorskip("pyproj")
         sklearn = pytest.importorskip("sklearn")
         df = gpd.read_file(geodatasets.get_path("nybb"))
         df = df.to_crs(df.estimate_utm_crs())
         distmat = csr_matrix(
             sklearn.metrics.pairwise.euclidean_distances(get_coordinates(df.centroid))
         )
-        g = graph.Graph.build_kernel(distmat, metric="precomputed")
+        g = graph.Graph.build_kernel(distmat, metric="precomputed", taper=False)
         expected = np.array(
             [
-                0.126,
-                0.266,
-                0.174,
-                0.071,
-                0.126,
-                0.329,
-                0.311,
-                0.291,
-                0.266,
-                0.329,
-                0.31,
-                0.205,
-                0.174,
-                0.311,
-                0.31,
-                0.339,
-                0.071,
-                0.291,
-                0.205,
-                0.339,
+                0.04,
+                0.177,
+                0.076,
+                0.013,
+                0.04,
+                0.271,
+                0.242,
+                0.212,
+                0.177,
+                0.271,
+                0.241,
+                0.105,
+                0.076,
+                0.242,
+                0.241,
+                0.288,
+                0.013,
+                0.212,
+                0.105,
+                0.288,
             ]
         )
 
