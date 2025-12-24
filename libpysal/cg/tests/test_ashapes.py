@@ -1,23 +1,17 @@
-from unittest import TestCase, skipIf
-from ...examples import get_path
-from ..alpha_shapes import alpha_shape, alpha_shape_auto
-import numpy as np
 import os
 
-try:
-    import geopandas
-    from shapely import geometry
+import geopandas
+import numpy as np
+from shapely import geometry
 
-    GEOPANDAS_EXTINCT = False
-except ImportError:
-    GEOPANDAS_EXTINCT = True
+from ...examples import get_path
+from ..alpha_shapes import alpha_shape, alpha_shape_auto
 
 this_directory = os.path.dirname(__file__)
 
 
-@skipIf(GEOPANDAS_EXTINCT, "Geopandas is missing, so test will not run.")
-class Test_Alpha_Shapes(TestCase):
-    def setUp(self):
+class TestAlphaShapes:
+    def setup_method(self):
         eberly = geopandas.read_file(get_path("eberly_net.shp"))
         eberly_vertices = eberly.geometry.apply(
             lambda x: np.hstack(x.xy).reshape(2, 2).T
@@ -98,3 +92,22 @@ class Test_Alpha_Shapes(TestCase):
         ashape, radius, centers = alpha_shape_auto(self.vertices, return_circles=True)
         np.testing.assert_allclose(radius, self.circle_radii)
         np.testing.assert_allclose(centers, self.circle_verts)
+
+    def test_holes(self):
+        np.random.seed(seed=100)
+        points = np.random.rand(1000, 2) * 100
+        inv_alpha = 3.5
+        geoms = alpha_shape(points, 1 / inv_alpha)
+        assert len(geoms) == 1
+        holes = geopandas.GeoSeries(geoms.interiors.explode()).reset_index(drop=True)
+        assert len(holes) == 30
+        # No holes are within the shape (shape has holes already)
+        result = geoms.sindex.query(holes.centroid, predicate="within")
+
+        assert result.shape == (2, 0)
+        # All holes are within the exterior
+        shell = geopandas.GeoSeries(geoms.exterior.apply(geometry.Polygon))
+        within, outside = shell.sindex.query(holes.centroid, predicate="within")
+
+        assert (outside == 0).all()
+        np.testing.assert_array_equal(within, np.arange(30))

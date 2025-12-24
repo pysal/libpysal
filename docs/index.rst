@@ -3,11 +3,11 @@
 libpysal: Python Spatial Analysis Library Core
 ==============================================
 
-.. image:: https://github.com/pysal/libpysal/workflows/.github/workflows/unittests.yml/badge.svg
-   :target: https://github.com/pysal/libpysal/actions?query=workflow%3A.github%2Fworkflows%2Funittests.yml
-
-.. image:: https://badges.gitter.im/pysal/pysal.svg
-   :target: https://gitter.im/pysal/pysal
+.. image:: https://github.com/pysal/libpysal/actions/workflows/.github/workflows/unittests.yml/badge.svg
+   :target: https://github.com/pysal/libpysal/actions/workflows/unittests.yml
+      
+.. image:: https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc
+   :target: https://discord.gg/BxFTEPFFZn
 
 .. image:: https://badge.fury.io/py/libpysal.svg
     :target: https://badge.fury.io/py/libpysal
@@ -19,7 +19,7 @@ libpysal: Python Spatial Analysis Library Core
         <div class="col-sm-1 col-xs-hidden">
         </div>
         <div class="col-sm-10 col-xs-12">
-            <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/master/notebooks/weights.ipynb" class="thumbnail">
+            <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/main/docs/user-guide/weights/weights.ipynb" class="thumbnail">
                 <img src="_static/images/npweights.png" class="img-responsive center-block">
                 <div class="caption text-center">
                 <h6>Weights for nonplanar enforced geometries</h6>
@@ -31,20 +31,28 @@ libpysal: Python Spatial Analysis Library Core
       </div>
     </div>
 
-
 ************
 Introduction
 ************
 
-**libpysal** offers four modules that form the building blocks in many upstream packages in the `PySAL family <https://pysal.org>`_:
+**libpysal** offers five modules that form the building blocks in many upstream packages in the `PySAL family <https://pysal.org>`_:
 
 - Spatial Weights: libpysal.weights 
-- Input-and output: libpysal.io 
-- Computational geometry: libpysal.cg  
-- Built-in example datasets libpysal.examples  
+- Spatial Graphs: libpysal.graph 
+- Input-and output: libpysal.io
+- Computational geometry: libpysal.cg
+- Built-in example datasets libpysal.examples
 
 
-Examples demonstrating some of **libpysal** functionality are available in the `tutorial <tutorial.html>`_.
+.. Note:: A new Graph class is being added to libpysal. For users interested in
+	  migration from using Weights to the new Graph class, see the
+	  `migration guide <user-guide/graph/w_g_migration.html>`_. For
+	  developers interested in the technical details details see   `W and Graph Components <migration.html>`_.
+
+
+
+Examples demonstrating some of **libpysal** functionality are available in the
+`User Guide <user-guide.html>`_.
 
 Details are available in the `libpysal api <api.html>`_.
 
@@ -60,9 +68,9 @@ libpysal development is hosted on github_.
 
 Discussions of development occurs on the
 `developer list <http://groups.google.com/group/pysal-dev>`_
-as well as gitter_.
+as well as discord_.
 
-.. _gitter : https://gitter.im/pysal/pysal?
+.. _discord : https://discord.gg/BxFTEPFFZn
 
 ****************
 Getting Involved
@@ -71,7 +79,6 @@ Getting Involved
 If you are interested in contributing to PySAL please see our
 `development guidelines  <https://github.com/pysal/pysal/wiki>`_.
 
-
 ***********
 Bug reports
 ***********
@@ -79,7 +86,6 @@ Bug reports
 To search for or report bugs, please see libpysal's issues_.
 
 .. _issues :  http://github.com/pysal/libpysal/issues
-
 
 ***************
 Citing libpysal
@@ -102,8 +108,6 @@ If you use PySAL in a scientific publication, we would appreciate citations to t
         keywords={Open Source; Software; Spatial}
       }
 
-
-
 *******************
 License information
 *******************
@@ -112,22 +116,22 @@ See the file "LICENSE.txt" for information on the history of this
 software, terms & conditions for usage, and a DISCLAIMER OF ALL
 WARRANTIES.
 
-
 libpysal
 ========
 
 Core components of the Python Spatial Analysis Library (`PySAL`_)
 
-
-
+Documentation contents
+----------------------
 .. toctree::
-   :hidden:
-   :maxdepth: 4
-   :caption: Contents:
+   :maxdepth: 1
 
-   Installation <installation>
-   Tutorial <tutorial>
-   API <api>
-   References <references>
-   
+   Home <self>
+   installation
+   API reference <api>
+   references
+   user-guide/intro
+   migration
+
+
 .. _PySAL: https://github.com/pysal/pysal

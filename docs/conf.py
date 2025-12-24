@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # libpysal documentation build configuration file, created by
 # sphinx-quickstart on Wed Jun  6 15:54:22 2018.
 #
@@ -16,14 +14,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import sys, os
 import sphinx_bootstrap_theme
 
-
-sys.path.insert(0, os.path.abspath("../"))
-
 import libpysal
-
 
 # -- General configuration ------------------------------------------------
 
@@ -87,7 +80,7 @@ release = libpysal.__version__
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -165,7 +158,7 @@ html_theme_options = {
     "navbar_links": [
         # ("Gallery", "auto_examples/index"),
         ("Installation", "installation"),
-        ("Tutorial", "tutorial"),
+        ("User Guide", "user-guide/intro"),
         ("API", "api"),
         ("References", "references"),
     ],
@@ -210,8 +203,8 @@ latex_documents = [
     (
         master_doc,
         "%s.tex" % project,
-        u"%s Documentation" % project,
-        u"pysal developers",
+        "%s Documentation" % project,
+        "pysal developers",
         "manual",
     ),
 ]
@@ -221,7 +214,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, project, u"%s Documentation" % project, [author], 1)]
+man_pages = [(master_doc, project, "%s Documentation" % project, [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -233,7 +226,7 @@ texinfo_documents = [
     (
         master_doc,
         project,
-        u"%s Documentation" % project,
+        "%s Documentation" % project,
         author,
         project,
         "One line description of project.",
@@ -278,14 +271,14 @@ def setup(app):
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "geopandas": ("https://geopandas.readthedocs.io/en/latest/", None),
+    "geopandas": ("https://geopandas.org/en/latest/", None),
     "libpysal": ("https://pysal.org/libpysal/", None),
-    "matplotlib": ("https://matplotlib.org/", None),
-    "networkx": ("https://networkx.github.io/documentation/stable/", None),
-    "numpy": ("https://docs.scipy.org/doc/numpy", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "networkx": ("https://networkx.org/documentation/stable/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
-    "python": ("https://docs.python.org/3.10/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "python": ("https://docs.python.org/3.12/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
 }
 
 
@@ -328,6 +321,6 @@ nbsphinx_execute_arguments = [
     "--InlineBackend.rc={'figure.dpi': 96}",
 ]
 
-mathjax_config = {
+mathjax3_config = {
     "TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": True}},
 }

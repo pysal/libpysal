@@ -1,11 +1,13 @@
 """Segment Locator Unittest."""
-from ..shapes import *
+
+# ruff: noqa: F403, F405, N999
+
 from ..segmentLocator import *
-import unittest
+from ..shapes import *
 
 
-class SegmentGrid_Tester(unittest.TestCase):
-    def setUp(self):
+class TestSegmentGrid:
+    def setup_method(self):
         # 10x10 grid with four line segments, one for each edge of the grid.
         self.grid = SegmentGrid(Rectangle(0, 0, 10, 10), 1)
         self.grid.add(LineSegment(Point((0.0, 0.0)), Point((0.0, 10.0))), 0)
@@ -15,33 +17,22 @@ class SegmentGrid_Tester(unittest.TestCase):
 
     def test_nearest_1(self):
         # Center
-        self.assertEqual([0, 1, 2, 3], self.grid.nearest(Point((5.0, 5.0))))
+        assert self.grid.nearest(Point((5.0, 5.0))) == [0, 1, 2, 3]
         # Left Edge
-        self.assertEqual([0], self.grid.nearest(Point((0.0, 5.0))))
+        assert self.grid.nearest(Point((0.0, 5.0))) == [0]
         # Top Edge
-        self.assertEqual([1], self.grid.nearest(Point((5.0, 10.0))))
+        assert self.grid.nearest(Point((5.0, 10.0))) == [1]
         # Right Edge
-        self.assertEqual([2], self.grid.nearest(Point((10.0, 5.0))))
+        assert self.grid.nearest(Point((10.0, 5.0))) == [2]
         # Bottom Edge
-        self.assertEqual([3], self.grid.nearest(Point((5.0, 0.0))))
+        assert self.grid.nearest(Point((5.0, 0.0))) == [3]
 
     def test_nearest_2(self):
         # Left Edge
-        self.assertEqual([0, 1, 3], self.grid.nearest(Point((-100000.0, 5.0))))
+        assert self.grid.nearest(Point((-100000.0, 5.0))) == [0, 1, 3]
         # Right Edge
-        self.assertEqual([1, 2, 3], self.grid.nearest(Point((100000.0, 5.0))))
+        assert self.grid.nearest(Point((100000.0, 5.0))) == [1, 2, 3]
         # Bottom Edge
-        self.assertEqual([0, 2, 3], self.grid.nearest(Point((5.0, -100000.0))))
+        assert self.grid.nearest(Point((5.0, -100000.0))) == [0, 2, 3]
         # Top Edge
-        self.assertEqual([0, 1, 2], self.grid.nearest(Point((5.0, 100000.0))))
-
-
-suite = unittest.TestSuite()
-test_classes = [SegmentGrid_Tester]
-for i in test_classes:
-    a = unittest.TestLoader().loadTestsFromTestCase(i)
-    suite.addTest(a)
-
-if __name__ == "__main__":
-    runner = unittest.TextTestRunner()
-    runner.run(suite)
+        assert self.grid.nearest(Point((5.0, 100000.0))) == [0, 1, 2]

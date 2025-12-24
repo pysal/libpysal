@@ -1,58 +1,82 @@
- on:
-   push:
-     branches:
-     - '*'
-   pull_request:
-     branches:
-     - '*'
-   schedule:
-     - cron: '59 21 * * *'
+name: Tests
 
- jobs:
-   unittests:
-     name: ${{ matrix.os }}, ${{ matrix.environment-file }}
-     runs-on: ${{ matrix.os }}
-     env:
-       FETCH_EXAMPLES: python -c 'import libpysal; libpysal.examples.fetch_all()'
-       RUN_TEST: pytest -v -n auto libpysal --cov libpysal --cov-config .coveragerc --cov-report xml --color yes --cov-append --cov-report term-missing
-     #timeout-minutes: 25
-     strategy:
-       matrix:
-         os: ['ubuntu-latest']
-         environment-file: [ci/37.yaml, ci/38.yaml, ci/39.yaml, ci/310.yaml]
-         include:
-           - environment-file: ci/310.yaml
-             os: macos-latest
-           - environment-file: ci/310.yaml
-             os: windows-latest
-     
-     steps:
-       - name: checkout repo
-         uses: actions/checkout@v2
-       
-       - name: setup micromamba
-         uses: mamba-org/provision-with-micromamba@main
-         with:
-           environment-file: ${{ matrix.environment-file }}
-           micromamba-version: 'latest'
-      
-       - name: run tests - bash
-         shell: bash -l {0}
-         run: |
-           ${{ env.FETCH_EXAMPLES }}
-           ${{ env.RUN_TEST }}
-         if: matrix.os != 'windows-latest'
-       
-       - name: run tests - powershell
-         shell: powershell
-         run: |
-           ${{ env.FETCH_EXAMPLES }}
-           ${{ env.RUN_TEST }}
-         if: matrix.os == 'windows-latest'
-      
-       - name: codecov
-         uses: codecov/codecov-action@v2 
-         with:
-           token: ${{ secrets.CODECOV_TOKEN }}
-           file: ./coverage.xml
-           name: libpysal-codecov
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches:
+      - "*"
+  schedule:
+    - cron: "0 0 * * 1,4"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Manual Unittest Run
+        default: test
+        required: false
+
+jobs:
+  Test:
+    name: ${{ matrix.os }}, ${{ matrix.environment-file }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        environment-file:
+          - ci/311-oldest.yaml
+          - ci/311-latest.yaml
+          - ci/312-latest.yaml
+          - ci/313-min.yaml
+          - ci/313-latest.yaml
+          - ci/313-dev.yaml
+        include:
+          - environment-file: ci/313-latest.yaml
+            os: macos-15-intel # Intel
+          - environment-file: ci/313-latest.yaml
+            os: macos-latest # Apple Silicon
+          - environment-file: ci/313-latest.yaml
+            os: windows-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # Fetch all history for all branches and tags.
+
+      - name: Setup micromamba
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: ${{ matrix.environment-file }}
+          micromamba-version: "latest"
+
+      - name: Install libpysal
+        run: |
+          pip install .
+
+      - name: Spatial versions
+        run: |
+          python -c 'import geopandas; geopandas.show_versions();'
+
+      - name: Download test files
+        run: |
+          python -c '
+          import geodatasets
+          import libpysal
+
+          geodatasets.fetch("nybb")
+          geodatasets.fetch("geoda liquor_stores")
+          geodatasets.fetch("eea large_rivers")
+          geodatasets.fetch("geoda groceries")
+          geodatasets.fetch("geoda guerry")
+          libpysal.examples.fetch_all()
+          '
+      - name: Test libpysal
+        run: |
+          pytest -v --color yes -n auto --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
+
+      - name: Codecov
+        uses: codecov/codecov-action@v5

@@ -1,6 +1,9 @@
+# ruff: noqa: SIM115
+
 import scipy.io as sio
+
+from ...weights.weights import WSP, W
 from .. import fileio
-from ...weights.weights import W, WSP
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["MtxIO"]
@@ -19,7 +22,7 @@ class MtxIO(fileio.FileIO):
 
     With the above assumptions, the structure of a MTX file containing a spatial
     weights matrix can be defined as follows:
-    
+
     ```
     %%MatrixMarket matrix coordinate real general <--- header 1 (constant)
     % Comments starts                             <---
@@ -30,7 +33,7 @@ class MtxIO(fileio.FileIO):
     ...                                              | L entry lines
     IL   JL   A(IL,JL)                            <---
     ```
-    
+
     In the MTX format, the index for rows or columns starts with 1.
 
     PySAL uses ``mtx`` tools in
@@ -40,7 +43,7 @@ class MtxIO(fileio.FileIO):
 
     References
     ----------
-    
+
     `MTX format specification <http://math.nist.gov/MatrixMarket/formats.html>`_
 
     `Matrix Market files
@@ -56,9 +59,9 @@ class MtxIO(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode + "b")
 
-    def read(self, n=-1, sparse=False):
+    def read(self, n=-1, sparse=False):  # noqa: ARG002
         """
-        
+
         Parameters
         ----------
         n : int
@@ -66,12 +69,12 @@ class MtxIO(fileio.FileIO):
         sparse : bool
             Flag for returning a sparse weights matrix (``True``).
             Default is ``False``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         self._sparse = sparse
@@ -85,17 +88,17 @@ class MtxIO(fileio.FileIO):
 
     def _read(self):
         """Reads MatrixMarket ``.mtx`` file.
-        
+
         Returns
         -------
         w : {libpysal.weights.W, libpysal.weights.WSP}
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -143,7 +146,7 @@ class MtxIO(fileio.FileIO):
           0.     0.     0.     0.     0.     0.     0.     0.     0.     0.
           0.     0.     0.     0.     0.     0.     0.     0.     0.     0.
           0.     0.     0.     0.     0.     0.     0.     0.     0.    ]]
-        
+
         """
 
         if self.pos > 0:
@@ -154,10 +157,7 @@ class MtxIO(fileio.FileIO):
         ids = list(range(1, mtx.shape[0] + 1))
         wsp = WSP(mtx, ids)
 
-        if self._sparse:
-            w = wsp
-        else:
-            w = wsp.to_W()
+        w = wsp if self._sparse else wsp.to_W()
         self.pos += 1
 
         return w
@@ -169,7 +169,7 @@ class MtxIO(fileio.FileIO):
         ----------
         obj : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         TypeError
@@ -256,7 +256,7 @@ class MtxIO(fileio.FileIO):
             )
             self.pos += 1
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")
 
     def close(self):
         self.file.close()

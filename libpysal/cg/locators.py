@@ -5,16 +5,19 @@ Computational geometry code for PySAL: Python Spatial Analysis Library.
 __author__ = "Sergio J. Rey, Xinyue Ye, Charles Schmidt, Andrew Winslow"
 __credits__ = "Copyright (c) 2005-2011 Sergio J. Rey"
 
-import math
+# ruff: noqa: B028, F403, F405
+
 import copy
+import math
 import warnings
+
 from .rtree import *
-from .standalone import *
 from .shapes import *
+from .standalone import *
 
 __all__ = ["Grid", "BruteForcePointLocator", "PointLocator", "PolygonLocator"]
 
-dep_msg = "is deprecated and will be reoved in libpysal 4.4.0"
+dep_msg = "is deprecated and will be removed in a future version of libpysal"
 
 
 class Grid:
@@ -38,7 +41,7 @@ class Grid:
         TODO: complete this doctest
         >>> g = Grid(Rectangle(0, 0, 10, 10), 1)
         """
-        warnings.warn("Grid " + dep_msg, DeprecationWarning)
+        warnings.warn("Grid " + dep_msg, FutureWarning)
         if resolution == 0:
             raise Exception("Cannot create grid with resolution 0")
         self.res = resolution
@@ -52,7 +55,7 @@ class Grid:
             self.j_range = int(
                 math.ceil((self.y_range[1] - self.y_range[0]) / self.res)
             )
-        except Exception:
+        except Exception as e:
             raise Exception(
                 "Invalid arguments for Grid(): ("
                 + str(x_range)
@@ -61,7 +64,7 @@ class Grid:
                 + ", "
                 + str(res)
                 + ")"
-            )
+            ) from e
 
     def in_grid(self, loc):
         """
@@ -92,7 +95,6 @@ class Grid:
 
         Examples
         --------
-
         >>> g = Grid(Rectangle(0, 0, 10, 10), 1)
         >>> g.add('A', Point((4.2, 8.7)))
         'A'
@@ -121,7 +123,6 @@ class Grid:
 
         Examples
         --------
-
         >>> g = Grid(Rectangle(0, 0, 10, 10), 1)
         >>> g.add('A', Point((4.2, 8.7)))
         'A'
@@ -151,7 +152,6 @@ class Grid:
 
         Examples
         --------
-
         >>> g = Grid(Rectangle(0, 0, 10, 10), 1)
         >>> g.add('A', Point((1.0, 1.0)))
         'A'
@@ -187,7 +187,8 @@ class Grid:
 
     def proximity(self, pt, r):
         """
-        Returns a list of items found in the grid within a specified distance of a point.
+        Returns a list of items found in the grid
+        within a specified distance of a point.
 
         proximity(Point, number) -> x list
 
@@ -294,7 +295,7 @@ class BruteForcePointLocator:
         --------
         >>> pl = BruteForcePointLocator([Point((0, 0)), Point((5, 0)), Point((0, 10))])
         """
-        warnings.warn("BruteForcePointLocator " + dep_msg, DeprecationWarning)
+        warnings.warn("BruteForcePointLocator " + dep_msg, FutureWarning)
         self._points = points
 
     def nearest(self, query_point):
@@ -388,7 +389,7 @@ class PointLocator:
         >>> points = [Point((0, 0)), Point((1, 6)), Point((5.4, 1.4))]
         >>> pl = PointLocator(points)
         """
-        warnings.warn("PointLocator " + dep_msg, DeprecationWarning)
+        warnings.warn("PointLocator " + dep_msg, FutureWarning)
         self._locator = BruteForcePointLocator(points)
 
     def nearest(self, query_point):
@@ -486,16 +487,16 @@ class PolygonLocator:
         >>> isinstance(pl, PolygonLocator)
         True
         """
-        warnings.warn("PolygonLocator " + dep_msg, DeprecationWarning)
+        warnings.warn("PolygonLocator " + dep_msg, FutureWarning)
         self._locator = polygons
         # create and rtree
         self._rtree = RTree()
         for polygon in polygons:
             x = polygon.bounding_box.left
             y = polygon.bounding_box.lower
-            X = polygon.bounding_box.right
-            Y = polygon.bounding_box.upper
-            self._rtree.insert(polygon, Rect(x, y, X, Y))
+            _x = polygon.bounding_box.right
+            _y = polygon.bounding_box.upper
+            self._rtree.insert(polygon, Rect(x, y, _x, _y))
 
     def inside(self, query_rectangle):
         """
@@ -503,7 +504,6 @@ class PolygonLocator:
 
         Examples
         --------
-
         >>> p1 = Polygon([Point((0, 1)), Point((4, 5)), Point((5, 1))])
         >>> p2 = Polygon([Point((3, 9)), Point((6, 7)), Point((1, 1))])
         >>> p3 = Polygon([Point((7, 1)), Point((8, 7)), Point((9, 1))])
@@ -527,7 +527,6 @@ class PolygonLocator:
 
         Notes
         -----
-
         inside means the intersection of the query rectangle and a
         polygon is not empty and is equal to the area of the polygon
         """
@@ -550,16 +549,15 @@ class PolygonLocator:
             ]
         )
         ip = []
-        GPPI = get_polygon_point_intersect
+        gppi = get_polygon_point_intersect
         for poly in res:
-            flag = True
             lower = poly.bounding_box.lower
             right = poly.bounding_box.right
             upper = poly.bounding_box.upper
             left = poly.bounding_box.left
             p1 = Point((left, lower))
             p2 = Point((right, upper))
-            if GPPI(qp, p1) and GPPI(qp, p2):
+            if gppi(qp, p1) and gppi(qp, p2):
                 ip.append(poly)
         return ip
 
@@ -569,7 +567,6 @@ class PolygonLocator:
 
         Examples
         --------
-
         >>> p1 = Polygon([Point((0, 1)), Point((4, 5)), Point((5, 1))])
         >>> p2 = Polygon([Point((3, 9)), Point((6, 7)), Point((1, 1))])
         >>> p3 = Polygon([Point((7, 1)), Point((8, 7)), Point((9, 1))])
@@ -662,16 +659,12 @@ class PolygonLocator:
                 tail = vertices[i + 1]
                 edge = LineSegment(head, tail)
                 li = get_segments_intersect(edge, left_edge)
-                if li:
-                    overlapping.append(polygon)
-                    break
-                elif get_segments_intersect(edge, right_edge):
-                    overlapping.append(polygon)
-                    break
-                elif get_segments_intersect(edge, lower_edge):
-                    overlapping.append(polygon)
-                    break
-                elif get_segments_intersect(edge, upper_edge):
+                if (
+                    li
+                    or get_segments_intersect(edge, right_edge)
+                    or get_segments_intersect(edge, lower_edge)
+                    or get_segments_intersect(edge, upper_edge)
+                ):
                     overlapping.append(polygon)
                     break
         # check remaining for explicit containment of the bounding rectangle
@@ -681,16 +674,12 @@ class PolygonLocator:
         ne = Point(ne)
         nw = Point(nw)
         for polygon in cs:
-            if get_polygon_point_intersect(polygon, sw):
-                overlapping.append(polygon)
-                break
-            elif get_polygon_point_intersect(polygon, se):
-                overlapping.append(polygon)
-                break
-            elif get_polygon_point_intersect(polygon, ne):
-                overlapping.append(polygon)
-                break
-            elif get_polygon_point_intersect(polygon, nw):
+            if (
+                get_polygon_point_intersect(polygon, sw)
+                or get_polygon_point_intersect(polygon, se)
+                or get_polygon_point_intersect(polygon, ne)
+                or get_polygon_point_intersect(polygon, nw)
+            ):
                 overlapping.append(polygon)
                 break
         return list(set(overlapping))
@@ -720,7 +709,7 @@ class PolygonLocator:
         >>> try: n = pl.nearest(Point((-1, 1)))
         ... except NotImplementedError: print("future test: str(min(n.vertices())) == (0.0, 1.0)")
         future test: str(min(n.vertices())) == (0.0, 1.0)
-        """
+        """  # noqa: E501
         raise NotImplementedError
 
     def region(self, region_rect):
@@ -755,7 +744,6 @@ class PolygonLocator:
         """
         Returns polygons that contain point
 
-
         Parameters
         ----------
         point: point (x,y)
@@ -785,7 +773,6 @@ class PolygonLocator:
         (3.3333333333333335, 1.3333333333333333)
         >>> pl.contains_point((1,1))[0].centroid
         (3.3333333333333335, 1.3333333333333333)
-
         """
         # bbounding box containment
         res = [r.leaf_obj() for r in self._rtree.query_point(point) if r.is_leaf()]

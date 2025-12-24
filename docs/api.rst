@@ -6,8 +6,24 @@
 libpysal API reference
 ======================
 
+Spatial Graph
+-------------
+
+Modern implementation of spatial graphs encoding spatial weights matrices.
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.graph.Graph
+   libpysal.graph.GraphSummary
+   libpysal.graph.read_parquet
+   libpysal.graph.read_gal
+   libpysal.graph.read_gwt
+
 Spatial Weights
 ---------------
+
+Legacy implementation of spatial weights matrices.
 
 .. autosummary::
    :toctree: generated/
@@ -123,7 +139,7 @@ Spatial Lag
 
    libpysal.weights.lag_spatial
    libpysal.weights.lag_categorical
-          
+
 
 cg: Computational Geometry
 --------------------------
@@ -230,7 +246,7 @@ kdtree
 
 
 io
--- 
+--
 
 .. autosummary::
    :toctree: generated/
@@ -238,6 +254,17 @@ io
    libpysal.io.open
    libpysal.io.fileio.FileIO
 
+
+kernels
+-------
+
+
+.. autosummary::
+   :toctree: generated/
+
+   libpysal.kernels.kernel
+
+   
 
 examples
 --------
@@ -249,3 +276,5 @@ examples
    libpysal.examples.available
    libpysal.examples.explain
    libpysal.examples.get_path
+
+

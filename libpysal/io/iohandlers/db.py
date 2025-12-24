@@ -1,32 +1,25 @@
+from shapely import wkb
+
 from .. import fileio
 
 errmsg = ""
 
 try:
-    try:
-        from geomet import wkb
-    except ImportError:
-        from shapely import wkb
-except ImportError:
-    wkb = None
-    errmsg += "No WKB parser found. Please install one of the following packages "
-    errmsg += "to enable this functionality: [geomet, shapely].\n"
-
-try:
-    from sqlalchemy.ext.automap import automap_base
     from sqlalchemy import create_engine
+    from sqlalchemy.ext.automap import automap_base
     from sqlalchemy.orm import Session
 
     nosql_mode = False
 except ImportError:
     nosql_mode = True
-    errmsg += "No module named sqlalchemy. Please install"
-    errmsg += " sqlalchemy to enable this functionality."
+    errmsg += (
+        "No module named sqlalchemy. Please install"
+        " sqlalchemy to enable this functionality."
+    )
 
 
 class SQLConnection(fileio.FileIO):
-    """Reads an SQL mappable.
-    """
+    """Reads an SQL mappable."""
 
     FORMATS = ["sqlite", "db"]
     MODES = ["r"]
@@ -41,7 +34,7 @@ class SQLConnection(fileio.FileIO):
         self.dbname = args[0]
         self.Base = automap_base()
         self._engine = create_engine(self.dbname)
-        self.Base.prepare(self._engine, reflect=True)
+        self.Base.prepare(autoload_with=self._engine)
         self.metadata = self.Base.metadata
 
     def read(self, *args, **kwargs):
@@ -58,11 +51,9 @@ class SQLConnection(fileio.FileIO):
         fileio.FileIO.close(self)
 
     def _get_gjson(self, tablename: str, geom_column="GEOMETRY"):
-
         gjson = {"type": "FeatureCollection", "features": []}
 
         for row in self.session.query(self.metadata.tables[tablename]):
-
             feat = {"type": "Feature", "geometry": {}, "properties": {}}
             feat["GEOMETRY"] = wkb.loads(getattr(row, geom_column))
 
@@ -76,7 +67,6 @@ class SQLConnection(fileio.FileIO):
 
     @property
     def tables(self) -> list:
-
         if not hasattr(self, "_tables"):
             self._tables = list(self.metadata.tables.keys())
 
@@ -85,12 +75,12 @@ class SQLConnection(fileio.FileIO):
     @property
     def session(self):
         """Create an ``sqlalchemy.orm.Session`` instance.
-        
+
         Returns
         -------
         self._session : sqlalchemy.orm.Session
             An ``sqlalchemy.orm.Session`` instance.
-            
+
         """
 
         # What happens if the session is externally closed?  Check for None?

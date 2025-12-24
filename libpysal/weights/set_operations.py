@@ -2,12 +2,19 @@
 Set-like manipulation of weights matrices.
 """
 
-__author__ = "Sergio J. Rey <srey@asu.edu>, Charles Schmidt <schmidtc@gmail.com>, David Folch <david.folch@asu.edu>, Dani Arribas-Bel <darribas@asu.edu>"
+__author__ = (
+    "Sergio J. Rey <srey@asu.edu>, "
+    "Charles Schmidt <schmidtc@gmail.com>, "
+    "David Folch <david.folch@asu.edu>, "
+    "Dani Arribas-Bel <darribas@asu.edu>"
+)
 
 import copy
-from .weights import W, WSP
-from scipy.sparse import isspmatrix_csr
+
 from numpy import ones
+from scipy.sparse import issparse
+
+from .weights import WSP, W
 
 __all__ = [
     "w_union",
@@ -26,7 +33,6 @@ def w_union(w1, w2, **kwargs):
 
     Parameters
     ----------
-
     w1                      : W
                               object
     w2                      : W
@@ -36,7 +42,6 @@ def w_union(w1, w2, **kwargs):
 
     Returns
     -------
-
     w       : W
               object
 
@@ -48,7 +53,6 @@ def w_union(w1, w2, **kwargs):
 
     Examples
     --------
-
     Construct rook weights matrices for two regions, one is 4x4 (16 areas)
     and the other is 6x4 (24 areas). A union of these two weights matrices
     results in the new weights matrix matching the larger one.
@@ -65,7 +69,6 @@ def w_union(w1, w2, **kwargs):
     [11, 14, 19]
     >>> w.neighbors[15]
     [19, 11, 14]
-
     """
     neighbors = dict(list(w1.neighbors.items()))
     for i in w2.neighbors:
@@ -84,22 +87,21 @@ def w_intersection(w1, w2, w_shape="w1", **kwargs):
 
     Parameters
     ----------
-
     w1                      : W
                               object
     w2                      : W
                               object
     w_shape                 : string
-                              Defines the shape of the returned weights matrix. 'w1' returns a
-                              matrix with the same IDs as w1; 'all' returns a matrix with all
-                              the unique IDs from w1 and w2; and 'min' returns a matrix with
-                              only the IDs occurring in both w1 and w2.
+                              Defines the shape of the returned weights matrix.
+                              'w1' returns a matrix with the same IDs as w1; 'all'
+                              returns a matrix with all the unique IDs from w1 and w2;
+                              and 'min' returns a matrix with only the IDs occurring in
+                              both w1 and w2.
     **kwargs                : keyword arguments
                               optional arguments for :class:`pysal.weights.W`
 
     Returns
     -------
-
     w       : W
               object
 
@@ -110,7 +112,6 @@ def w_intersection(w1, w2, w_shape="w1", **kwargs):
 
     Examples
     --------
-
     Construct rook weights matrices for two regions, one is 4x4 (16 areas)
     and the other is 6x4 (24 areas). An intersection of these two weights
     matrices results in the new weights matrix matching the smaller one.
@@ -127,7 +128,6 @@ def w_intersection(w1, w2, w_shape="w1", **kwargs):
     [11, 14, 19]
     >>> w.neighbors[15]
     [11, 14]
-
     """
 
     if w_shape == "w1":
@@ -158,27 +158,26 @@ def w_difference(w1, w2, w_shape="w1", constrained=True, **kwargs):
 
     Parameters
     ----------
-
     w1                      : W
                               object
     w2                      : W
                               object
     w_shape                 : string
-                              Defines the shape of the returned weights matrix. 'w1' returns a
-                              matrix with the same IDs as w1; 'all' returns a matrix with all
-                              the unique IDs from w1 and w2; and 'min' returns a matrix with
-                              the IDs occurring in w1 and not in w2.
+                              Defines the shape of the returned weights matrix.
+                              'w1' returns a matrix with the same IDs as w1; 'all'
+                              returns a matrix with all the unique IDs from w1 and w2;
+                              and 'min' returns a matrix with the IDs occurring in w1
+                              and not in w2.
     constrained             : boolean
-                              If False then the full set of neighbor pairs in w1 that are
-                              not in w2 are returned. If True then those pairs that would
-                              not be possible if w_shape='min' are dropped. Ignored if
-                              w_shape is set to 'min'.
+                              If False then the full set of neighbor pairs in w1 that
+                              are not in w2 are returned. If True then those pairs that
+                              would not be possible if w_shape='min' are dropped.
+                              Ignored if w_shape is set to 'min'.
     **kwargs                : keyword arguments
                               optional arguments for :class:`pysal.weights.W`
 
     Returns
     -------
-
     w       : W
               object
 
@@ -189,7 +188,6 @@ def w_difference(w1, w2, w_shape="w1", constrained=True, **kwargs):
 
     Examples
     --------
-
     Construct rook (w2) and queen (w1) weights matrices for two 4x4 regions
     (16 areas). A queen matrix has all the joins a rook matrix does plus joins
     between areas that share a corner. The new matrix formed by the difference
@@ -209,7 +207,6 @@ def w_difference(w1, w2, w_shape="w1", constrained=True, **kwargs):
     [11, 14]
     >>> w.neighbors[15]
     [10]
-
     """
 
     if w_shape == "w1":
@@ -253,14 +250,14 @@ def w_symmetric_difference(w1, w2, w_shape="all", constrained=True, **kwargs):
 
     Parameters
     ----------
-
     w1                      : W
                               object
     w2                      : W
                               object
     w_shape                 : string
-                              Defines the shape of the returned weights matrix. 'all' returns a
-                              matrix with all the unique IDs from w1 and w2; and 'min' returns
+                              Defines the shape of the returned weights matrix.
+                              'all' returns a matrix with all the unique IDs
+                              from w1 and w2; and 'min' returns
                               a matrix with the IDs not shared by w1 and w2.
     constrained             : boolean
                               If False then the full set of neighbor pairs that are not
@@ -272,7 +269,6 @@ def w_symmetric_difference(w1, w2, w_shape="all", constrained=True, **kwargs):
 
     Returns
     -------
-
     w       : W
               object
 
@@ -283,7 +279,6 @@ def w_symmetric_difference(w1, w2, w_shape="all", constrained=True, **kwargs):
 
     Examples
     --------
-
     Construct queen weights matrix for a 4x4 (16 areas) region (w1) and a rook
     matrix for a 6x4 (24 areas) region (w2). The symmetric difference of these
     two matrices (with w_shape set to 'all' and constrained set to False)
@@ -302,7 +297,6 @@ def w_symmetric_difference(w1, w2, w_shape="all", constrained=True, **kwargs):
     [11, 14, 19]
     >>> set(w.neighbors[15]) == set([10, 19])
     True
-
     """
 
     if w_shape == "all":
@@ -347,24 +341,21 @@ def w_subset(w1, ids, **kwargs):
 
     Parameters
     ----------
-
     w1                      : W
                               object
     ids                     : list
-                              A list containing the IDs to be include in the returned weights
-                              object.
+                              A list containing the IDs to be include
+                              in the returned weights object.
     **kwargs                : keyword arguments
                               optional arguments for :class:`pysal.weights.W`
 
     Returns
     -------
-
     w       : W
               object
 
     Examples
     --------
-
     Construct a rook weights matrix for a 6x4 region (24 areas). By default
     PySAL assigns integer IDs to the areas in a region. By passing in a list
     of integers from 0 to 15, the first 16 areas are extracted from the
@@ -381,11 +372,10 @@ def w_subset(w1, ids, **kwargs):
     [11, 14, 19]
     >>> w.neighbors[15]
     [11, 14]
-
     """
 
     neighbors = {}
-    ids_set = set(list(ids))
+    ids_set = set(ids)
     for i in ids:
         if i in w1.neighbors:
             neigh_add = ids_set.intersection(set(w1.neighbors[i]))
@@ -396,7 +386,7 @@ def w_subset(w1, ids, **kwargs):
     return W(neighbors, id_order=list(ids), **kwargs)
 
 
-def w_clip(w1, w2, outSP=True, **kwargs):
+def w_clip(w1, w2, outSP=True, **kwargs):  # noqa: N803
     """
     Clip a continuous W object (w1) with a different W object (w2) so only cells where
     w2 has a non-zero value remain with non-zero values in w1.
@@ -408,16 +398,18 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     ----------
     w1                      : W
                               W, scipy.sparse.csr.csr_matrix
-                              Potentially continuous weights matrix to be clipped. The clipped
-                              matrix wc will have at most the same elements as w1.
+                              Potentially continuous weights matrix to be clipped.
+                              The clipped matrix wc will have at most the same
+                              elements as w1.
     w2                      : W
                               W, scipy.sparse.csr.csr_matrix
                               Weights matrix to use as shell to clip w1. Automatically
-                              converted to binary format. Only non-zero elements in w2 will be
-                              kept non-zero in wc. NOTE: assumed to be of the same shape as w1
+                              converted to binary format. Only non-zero
+                              elements in w2 will be kept non-zero in wc.
+                              NOTE: assumed to be of the same shape as w1
     outSP                   : boolean
-                              If True (default) return sparse version of the clipped W, if
-                              False, return W object of the clipped matrix
+                              If True (default) return sparse version of the clipped W,
+                              if False, return W object of the clipped matrix
     **kwargs                : keyword arguments
                               optional arguments for :class:`pysal.weights.W`
 
@@ -425,7 +417,8 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     -------
     wc      : W
               W, scipy.sparse.csr.csr_matrix
-              Clipped W object (sparse if outSP=Ture). It inherits ``id_order`` from w1.
+              Clipped W object (sparse if outSP=Ture).
+              It inherits ``id_order`` from w1.
 
     Examples
     --------
@@ -474,7 +467,6 @@ def w_clip(w1, w2, outSP=True, **kwargs):
            [0.        , 0.        , 0.        , 0.        , 0.        ,
             0.        ]])
 
-
     If we wanted an original W object, we can control that with the argument
     ``outSP``:
 
@@ -502,7 +494,6 @@ def w_clip(w1, w2, outSP=True, **kwargs):
            [ True,  True,  True,  True,  True,  True],
            [ True,  True,  True,  True,  True,  True],
            [ True,  True,  True,  True,  True,  True]])
-
     """
 
     from .util import WSP2W
@@ -510,9 +501,9 @@ def w_clip(w1, w2, outSP=True, **kwargs):
     if not w1.id_order:
         w1.id_order = None
     id_order = w1.id_order
-    if not isspmatrix_csr(w1):
+    if not issparse(w1):
         w1 = w1.sparse
-    if not isspmatrix_csr(w2):
+    if not issparse(w2):
         w2 = w2.sparse
     w2.data = ones(w2.data.shape)
     wc = w1.multiply(w2)

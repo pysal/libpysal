@@ -1,5 +1,7 @@
-from .. import fileio
+# ruff: noqa: SIM115
+
 from ...weights import W
+from .. import fileio
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
 __all__ = ["StataTextIO"]
@@ -26,7 +28,7 @@ class StataTextIO(fileio.FileIO):
     its export options in STATA.
 
     Structure 1: Encoding using the list of neighbor IDs.
-    
+
     ```
     [Line 1]    [Number_of_Observations]
     [Line 2]    [ID_of_Obs_1] [ID_of_Neighbor_1_of_Obs_1] [ID_of_Neighbor_2_of_Obs_1] ... [ID_of_Neighbor_m_of_Obs_1]
@@ -34,11 +36,11 @@ class StataTextIO(fileio.FileIO):
     [Line 4]    [ID_of_Obs_3] [ID_of_Neighbor_1_of_Obs_3] [ID_of_Neighbor_2_of_Obs_3]
     ...
     ```
-    
+
     Note that for island observations their IDs are still recorded.
-    
+
     Structure 2: Encoding using a full matrix format.
-    
+
     ```
     [Line 1]    [Number_of_Observations]
     [Line 2]    [ID_of_Obs_1] [w_11] [w_12] ... [w_1n]
@@ -47,25 +49,25 @@ class StataTextIO(fileio.FileIO):
     ...
     [Line n+1]  [ID_of_Obs_n] [w_n1] [w_n2] ... [w_nn]
     ```
-    
+
     where :math:`w_{ij}` can be a form of general weight. That is, :math:`w_ij`
     can be both a binary value or a general numeric value. If an observation
     is an island, all of its ``w`` columns contain 0.
 
     References
     ----------
-    
+
     Drukker D.M., Peng H., Prucha I.R., and Raciborski R. (2011)
     "Creating and managing spatial-weighting matrices using the spmat command"
 
     Notes
     -----
-    
+
     The ``spmat`` command allows users to add any note to a spatial weights
     matrix object in STATA. However, all those notes are lost when the matrix
     is exported. PySAL also does not take care of those notes.
 
-    """
+    """  # noqa: E501
 
     FORMATS = ["stata_text"]
     MODES = ["r", "w"]
@@ -75,19 +77,19 @@ class StataTextIO(fileio.FileIO):
         fileio.FileIO.__init__(self, *args, **kwargs)
         self.file = open(self.dataPath, self.mode)
 
-    def read(self, n=-1):
+    def read(self, n=-1):  # noqa: ARG002
         """
-        
+
         Parameters
         ----------
         n : int
             Read at most ``n`` objects. Default is ``-1``.
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
@@ -101,17 +103,17 @@ class StataTextIO(fileio.FileIO):
     def _read(self):
         """Reads STATA Text file
         Returns a pysal.weights.weights.W object
-        
+
         Returns
         -------
         w : libpysal.weights.W
             A PySAL `W` object.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
 
@@ -170,14 +172,14 @@ class StataTextIO(fileio.FileIO):
 
         id_order = []
         weights, neighbors = {}, {}
-        l = line1
+        l_ = line1
 
-        for i in range(n):
-            obs, ngh, wgt = line2wgt(l)
+        for _ in range(n):
+            obs, ngh, wgt = line2wgt(l_)
             id_order.append(obs)
             neighbors[obs] = ngh
             weights[obs] = wgt
-            l = self.file.readline()
+            l_ = self.file.readline()
 
         if matrix_form:
             for obs in neighbors:
@@ -198,12 +200,12 @@ class StataTextIO(fileio.FileIO):
             A PySAL `W` object.
         matrix_form : bool
             Flag for matrix form (``True``). Default is ``False``.
-        
+
         Raises
         ------
         TypeError
             Raised when the input ``obj`` is not a PySAL `W`.
-        
+
         Examples
         --------
 
@@ -246,32 +248,32 @@ class StataTextIO(fileio.FileIO):
         Clean up the temporary file created for this example.
 
         >>> os.remove(fname)
-        
+
         """
 
         self._complain_ifclosed(self.closed)
 
         if issubclass(type(obj), W):
-            header = "%s\n" % obj.n
+            header = f"{obj.n}\n"
             self.file.write(header)
             if matrix_form:
 
                 def wgt2line(obs_id, neighbor, weight):
                     w = ["0.0"] * obj.n
-                    for ngh, wgt in zip(neighbor, weight):
+                    for ngh, wgt in zip(neighbor, weight, strict=True):
                         w[obj.id2i[ngh]] = str(wgt)
                     return [str(obs_id)] + w
 
             else:
 
-                def wgt2line(obs_id, neighbor, weight):
+                def wgt2line(obs_id, neighbor, _):
                     return [str(obs_id)] + [str(ngh) for ngh in neighbor]
 
-            for id in obj.id_order:
-                line = wgt2line(id, obj.neighbors[id], obj.weights[id])
-                self.file.write("%s\n" % " ".join(line))
+            for id_ in obj.id_order:
+                line = wgt2line(id_, obj.neighbors[id_], obj.weights[id_])
+                self.file.write("{}\n".format(" ".join(line)))
         else:
-            raise TypeError("Expected a PySAL weights object, got: %s." % (type(obj)))
+            raise TypeError(f"Expected a PySAL weights object, got: {type(obj)}.")
 
     def close(self):
         self.file.close()

@@ -6,12 +6,15 @@ by Tim Kittel (@timkittel) available at:
 
 Author(s):
     Dani Arribas-Bel daniel.arribas.bel@gmail.com
+    Levi John Wolf levi.john.wolf@gmail.com
 """
 
 import numpy as np
 import scipy.spatial as spat
+import shapely
+from scipy import sparse
 
-from ..common import requires, jit, HAS_JIT
+from ..common import HAS_JIT, jit, requires
 
 if not HAS_JIT:
     from warnings import warn
@@ -20,52 +23,40 @@ if not HAS_JIT:
         "Numba not imported, so alpha shape construction may be slower than expected."
     )
 
-try:
-    import pygeos
-
-    HAS_PYGEOS = True
-except ModuleNotFoundError:
-    HAS_PYGEOS = False
-
 
 EPS = np.finfo(float).eps
 
 __all__ = ["alpha_shape", "alpha_shape_auto"]
 
 
-@jit
+@jit(nopython=True)
 def nb_dist(x, y):
     """numba implementation of distance between points `x` and `y`
 
     Parameters
     ----------
-
     x : ndarray
         Coordinates of point `x`
-
     y : ndarray
         Coordinates of point `y`
 
     Returns
     -------
-
     dist : float
         Distance between `x` and `y`
 
     Examples
     --------
-
     >>> x = np.array([0, 0])
     >>> y = np.array([1, 1])
     >>> dist = nb_dist(x, y)
     >>> dist
     1.4142135623730951
-
     """
-    sum = 0
-    for x_i, y_i in zip(x, y):
-        sum += (x_i - y_i) ** 2
-    dist = np.sqrt(sum)
+    sum_ = 0
+    for x_i, y_i in zip(x, y):  # noqa: B905
+        sum_ += (x_i - y_i) ** 2
+    dist = np.sqrt(sum_)
     return dist
 
 
@@ -75,7 +66,6 @@ def r_circumcircle_triangle_single(a, b, c):
 
     Parameters
     ----------
-
     a : ndarray
         (2,) Array with coordinates of vertex `a` of the triangle
     b : ndarray
@@ -85,29 +75,23 @@ def r_circumcircle_triangle_single(a, b, c):
 
     Returns
     -------
-
     r : float
         Circumcircle of the triangle
 
     Notes
     -----
-
     Source for equations:
-
     > https://www.mathopenref.com/trianglecircumcircle.html
-
     [Last accessed July 11th. 2018]
 
     Examples
     --------
-
     >>> a = np.array([0, 0])
     >>> b = np.array([0.5, 0])
     >>> c = np.array([0.25, 0.25])
     >>> r = r_circumcircle_triangle_single(a, b, c)
     >>> r
     0.2500000000000001
-
     """
     ab = nb_dist(a, b)
     bc = nb_dist(b, c)
@@ -127,7 +111,6 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
 
     Parameters
     ----------
-
     a_s : ndarray
         (N, 2) array with coordinates of vertices `a` of the triangles
     b_s : ndarray
@@ -137,20 +120,17 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
 
     Returns
     -------
-
     radii : ndarray
         (N,) array with circumcircles for every triangle
 
     Examples
     --------
-
     >>> a_s = np.array([[0, 0], [2, 1], [3, 2]])
     >>> b_s = np.array([[1, 0], [5, 1], [2, 4]])
     >>> c_s = np.array([[0, 7], [1, 3], [4, 2]])
     >>> rs = r_circumcircle_triangle(a_s, b_s, c_s)
     >>> rs
     array([3.53553391, 2.5       , 1.58113883])
-
     """
     len_a = len(a_s)
     r2 = np.zeros((len_a,))
@@ -159,33 +139,29 @@ def r_circumcircle_triangle(a_s, b_s, c_s):
     return r2
 
 
-@jit
+@jit(nopython=True)
 def get_faces(triangle):
     """Extract faces from a single triangle
 
     Parameters
     ----------
-
     triangles : ndarray
         (3,) array with the vertex indices for a triangle
 
     Returns
     -------
-
     faces : ndarray
         (3, 2) array with a row for each face containing the indices of the two
         points that make up the face
 
     Examples
     --------
-
     >>> triangle = np.array([3, 1, 4], dtype=np.int32)
     >>> faces = get_faces(triangle)
     >>> faces
     array([[3., 1.],
            [1., 4.],
            [4., 3.]])
-
     """
     faces = np.zeros((3, 2))
     for i, (i0, i1) in enumerate([(0, 1), (1, 2), (2, 0)]):
@@ -193,36 +169,30 @@ def get_faces(triangle):
     return faces
 
 
-@jit
+@jit(nopython=True)
 def build_faces(faces, triangles_is, num_triangles, num_faces_single):
     """Build facing triangles
 
     Parameters
     ----------
-
     faces : ndarray
         (num_triangles * num_faces_single, 2) array of zeroes in int form
-
     triangles_is : ndarray
         (D, 3) array, where D is the number of Delaunay triangles, with the
         vertex indices for each triangle
-
     num_triangles : int
         Number of triangles
-
     num_faces_single : int
         Number of faces a triangle has (i.e. 3)
 
     Returns
     -------
-
     faces : ndarray
         Two dimensional array with a row for every facing segment containing
         the indices of the coordinate points
 
     Examples
     --------
-
     >>> import scipy.spatial as spat
     >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> triangulation = spat.Delaunay(pts)
@@ -235,7 +205,9 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
     >>> num_faces = num_triangles * num_faces_single
     >>> faces = np.zeros((num_faces, 2), dtype=np.int_)
     >>> mask = np.ones((num_faces,), dtype=np.bool_)
-    >>> faces = build_faces(faces, triangulation.simplices, num_triangles, num_faces_single)
+    >>> faces = build_faces(
+    ...     faces, triangulation.simplices, num_triangles, num_faces_single
+    ... )
     >>> faces
     array([[3, 1],
            [1, 4],
@@ -246,7 +218,6 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
            [2, 1],
            [1, 0],
            [0, 2]])
-
     """
     for i in range(num_triangles):
         from_i = num_faces_single * i
@@ -255,33 +226,33 @@ def build_faces(faces, triangles_is, num_triangles, num_faces_single):
     return faces
 
 
-@jit
+@jit(nopython=True)
 def nb_mask_faces(mask, faces):
     """Run over each row in `faces`, if the face in the following row is the
     same, then mark both as False on `mask`
 
     Parameters
     ----------
-
     mask : ndarray
         One-dimensional boolean array set to True with as many observations as
         rows in `faces`
-
     faces : ndarray
         Sorted sequence of faces for all triangles (ie. triangles split by each
         segment)
 
     Returns
     -------
-
     masked : ndarray
          Sequence of outward-facing faces
 
     Examples
     --------
-
     >>> import numpy as np
-    >>> faces = np.array([[0, 1], [0, 2], [1, 2], [1, 2], [1, 3], [1, 4], [1, 4], [2, 4], [3, 4]])
+    >>> faces = np.array(
+    ...     [
+    ...         [0, 1], [0, 2], [1, 2], [1, 2], [1, 3], [1, 4], [1, 4], [2, 4], [3, 4]
+    ...     ]
+    ... )
     >>> mask = np.ones((faces.shape[0], ), dtype=np.bool_)
     >>> masked = nb_mask_faces(mask, faces)
     >>> masked
@@ -290,13 +261,11 @@ def nb_mask_faces(mask, faces):
            [1, 3],
            [2, 4],
            [3, 4]])
-
     """
     for k in range(faces.shape[0] - 1):
-        if mask[k]:
-            if np.all(faces[k] == faces[k + 1]):
-                mask[k] = False
-                mask[k + 1] = False
+        if mask[k] and np.all(faces[k] == faces[k + 1]):
+            mask[k] = False
+            mask[k + 1] = False
     return faces[mask]
 
 
@@ -305,19 +274,16 @@ def get_single_faces(triangles_is):
 
     Parameters
     ----------
-
     triangles_is : ndarray
         (D, 3) array, where D is the number of Delaunay triangles, with the
         vertex indices for each triangle
 
     Returns
     -------
-
     single_faces : ndarray
 
     Examples
     --------
-
     >>> import scipy.spatial as spat
     >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> alpha = 0.33
@@ -332,7 +298,6 @@ def get_single_faces(triangles_is):
            [1, 3],
            [2, 4],
            [3, 4]])
-
     """
     num_faces_single = 3
     num_triangles = triangles_is.shape[0]
@@ -342,7 +307,7 @@ def get_single_faces(triangles_is):
 
     faces = build_faces(faces, triangles_is, num_triangles, num_faces_single)
 
-    orderlist = ["x{}".format(i) for i in range(faces.shape[1])]
+    orderlist = [f"x{i}" for i in range(faces.shape[1])]
     dtype_list = [(el, faces.dtype.str) for el in orderlist]
     # Arranging each face so smallest vertex is first
     faces.sort(axis=1)
@@ -354,37 +319,31 @@ def get_single_faces(triangles_is):
 
 
 @requires("geopandas", "shapely")
-def alpha_geoms(alpha, triangles, radii, xys):
+def _alpha_geoms(alpha, triangles, radii, xys):
     """Generate alpha-shape polygon(s) from `alpha` value, vertices of
     `triangles`, the `radii` for all points, and the points themselves
 
     Parameters
     ----------
-
     alpha : float
         Alpha value to delineate the alpha-shape
-
     triangles : ndarray
          (D, 3) array, where D is the number of Delaunay triangles, with the
          vertex indices for each triangle
-
     radii : ndarray
         (N,) array with circumcircles for every triangle
-
     xys : ndarray
         (N, 2) array with one point per row and coordinates structured as X and Y
 
     Returns
     -------
-
     geoms : GeoSeries
-        Polygon(s) resulting from the alpha shape algorithm. The GeoSeries
-        object remains so even if only a single polygon is returned. There is
-        no CRS included in the object.
+        Polygon(s) resulting from the alpha shape algorithm, in a GeoSeries.
+        The output is a GeoSeries even if only a single polygon is returned. There is
+        no CRS included in the returned GeoSeries.
 
     Examples
     --------
-
     >>> import scipy.spatial as spat
     >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> alpha = 0.33
@@ -410,11 +369,10 @@ def alpha_geoms(alpha, triangles, radii, xys):
     >>> geoms
     0    POLYGON ((0.00000 1.00000, 3.00000 5.00000, 4....
     dtype: geometry
-
     """
+    from geopandas import GeoSeries
     from shapely.geometry import LineString
     from shapely.ops import polygonize
-    from geopandas import GeoSeries
 
     triangles_reduced = triangles[radii < 1 / alpha]
     outer_triangulation = get_single_faces(triangles_reduced)
@@ -425,29 +383,26 @@ def alpha_geoms(alpha, triangles, radii, xys):
 
 @requires("geopandas", "shapely")
 def alpha_shape(xys, alpha):
-    """Alpha-shape delineation (Edelsbrunner, Kirkpatrick & Seidel, 1983) from a collection of points
+    """Alpha-shape delineation (Edelsbrunner, Kirkpatrick & Seidel, 1983)
+    from a collection of points
 
     Parameters
     ----------
-
     xys : ndarray
-        (N, 2) array with one point per row and coordinates structured as X and
-        Y
-
+        (N, 2) array with one point per row and coordinates structured as X and Y
     alpha : float
         Alpha value to delineate the alpha-shape
 
     Returns
     -------
-
     shapes : GeoSeries
          Polygon(s) resulting from the alpha shape algorithm. The GeoSeries
          object remains so even if only a single polygon is returned. There is
-         no CRS included in the object.
+         no CRS included in the object. Note that the returned shape(s) may
+         have holes, as per the definition of the shape in Edselbrunner et al. (1983)
 
     Examples
     --------
-
     >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> alpha = 0.1
     >>> poly = alpha_shape(pts, alpha)
@@ -458,19 +413,17 @@ def alpha_shape(xys, alpha):
     0    POINT (4.69048 3.45238)
     dtype: geometry
 
-
     References
     ----------
-
     Edelsbrunner, H., Kirkpatrick, D., & Seidel, R. (1983). On the shape of
         a set of points in the plane. IEEE Transactions on information theory,
         29(4), 551-559.
-
     """
     if not HAS_JIT:
-        warn(NUMBA_WARN)
+        warn(NUMBA_WARN, stacklevel=2)
     if xys.shape[0] < 4:
-        from shapely import ops, geometry as geom
+        from shapely import geometry as geom
+        from shapely import ops
 
         return ops.unary_union([geom.Point(xy) for xy in xys]).convex_hull.buffer(0)
     triangulation = spat.Delaunay(xys)
@@ -480,7 +433,8 @@ def alpha_shape(xys, alpha):
     c_pts = triangles[:, 2, :]
     radii = r_circumcircle_triangle(a_pts, b_pts, c_pts)
     del triangles, a_pts, b_pts, c_pts
-    geoms = alpha_geoms(alpha, triangulation.simplices, radii, xys)
+    geoms = _alpha_geoms(alpha, triangulation.simplices, radii, xys)
+    geoms = _filter_holes(geoms, xys)
     return geoms
 
 
@@ -490,32 +444,21 @@ def _valid_hull(geoms, points):
 
     Parameters
     ----------
-
     geoms : GeoSeries
         See alpha_geoms()
-
     points : list
         xys parameter cast as shapely.geometry.Point objects
 
     Returns
     -------
-
     flag : bool
         Valid hull for alpha shape [True] or not [False]
-
     """
-    flag = True
     # if there is not exactly one polygon
     if geoms.shape[0] != 1:
         return False
     # if any (xys) points do not intersect the polygon
-    if HAS_PYGEOS:
-        return pygeos.intersects(pygeos.from_shapely(geoms[0]), points).all()
-    else:
-        for point in points:
-            if not point.intersects(geoms[0]):
-                return False
-        return True
+    return shapely.intersects(geoms[0], points).all()
 
 
 @requires("geopandas", "shapely")
@@ -526,26 +469,25 @@ def alpha_shape_auto(
 
     This method uses the algorithm proposed by  Edelsbrunner, Kirkpatrick &
     Seidel (1983) to return the tightest polygon that contains all points in
-    `xys`. The algorithm ranks every point based on its radious and iterates
+    `xys`. The algorithm ranks every point based on its radius and iterates
     over each point, checking whether the maximum alpha that would keep the
     point and all the other ones in the set with smaller radii results in a
     single polygon. If that is the case, it moves to the next point;
     otherwise, it retains the previous alpha value and returns the polygon
-    as `shapely` geometry.
+    as `shapely` geometry. Note that this geometry may have holes.
 
     Parameters
     ----------
 
     xys : ndarray
         Nx2 array with one point per row and coordinates structured as X and Y
-
     step : int
         [Optional. Default=1] Number of points in `xys` to jump ahead after
         checking whether the largest possible alpha that includes the point and
         all the other ones with smaller radii
-
     verbose : Boolean
-        [Optional. Default=False] If True, it prints alpha values being tried at every step.
+        [Optional. Default=False] If True, it prints alpha values
+        being tried at every step.
 
     Returns
     -------
@@ -554,7 +496,6 @@ def alpha_shape_auto(
 
     Examples
     --------
-
     >>> pts = np.array([[0, 1], [3, 5], [4, 1], [6, 7], [9, 3]])
     >>> poly = alpha_shape_auto(pts)
     >>> poly.bounds
@@ -564,24 +505,21 @@ def alpha_shape_auto(
 
     References
     ----------
-
     Edelsbrunner, H., Kirkpatrick, D., & Seidel, R. (1983). On the shape of
         a set of points in the plane. IEEE Transactions on information theory,
         29(4), 551-559.
 
     """
     if not HAS_JIT:
-        warn(NUMBA_WARN)
+        warn(NUMBA_WARN, stacklevel=2)
     from shapely import geometry as geom
 
     if return_circles:
         return_radius = True
     if xys.shape[0] < 4:
-        from shapely import ops
-
         if xys.shape[0] == 3:
-            multipoint = ops.cascaded_union([geom.Point(xy) for xy in xys])
-            alpha_shape = multipoint.convex_hull.buffer(0)
+            multipoint = geom.MultiPoint(xys)
+            alpha_shape = multipoint.convex_hull
         else:
             alpha_shape = geom.Polygon([])
         if xys.shape[0] == 1:
@@ -616,19 +554,16 @@ def alpha_shape_auto(
     radii_sorted_i = radii.argsort()
     triangles = triangulation.simplices[radii_sorted_i][::-1]
     radii = radii[radii_sorted_i][::-1]
-    geoms_prev = alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
-    if HAS_PYGEOS:
-        points = pygeos.points(xys)
-    else:
-        points = [geom.Point(pnt) for pnt in xys]
+    geoms_prev = _alpha_geoms((1 / radii.max()) - EPS, triangles, radii, xys)
+    points = shapely.points(xys)
     if verbose:
-        print("Step set to %i" % step)
+        print(f"Step set to {step}")
     for i in range(0, len(radii), step):
         radi = radii[i]
         alpha = (1 / radi) - EPS
         if verbose:
-            print("%.2f%% | Trying a = %f" % ((i + 1) / radii.shape[0], alpha))
-        geoms = alpha_geoms(alpha, triangles, radii, xys)
+            print(f"{(i + 1) / radii.shape[0]:.2f}% | Trying a = {alpha:f}")
+        geoms = _alpha_geoms(alpha, triangles, radii, xys)
         if _valid_hull(geoms, points):
             geoms_prev = geoms
             radi_prev = radi
@@ -653,7 +588,6 @@ def construct_bounding_circles(alpha_shape, radius):
     ----------
     alpha_shape : shapely.Polygon
         An alpha-hull with the input radius.
-
     radius : float
         The radius of the input alpha_shape.
 
@@ -661,7 +595,6 @@ def construct_bounding_circles(alpha_shape, radius):
     -------
     center : numpy.ndarray of shape (n,2)
         The centers of the circles defining the alpha_shape.
-
     """
     coordinates = list(alpha_shape.boundary.coords)
     n_coordinates = len(coordinates)
@@ -704,11 +637,46 @@ def _construct_centers(a, b, radius):
         return down_x, down_y
 
 
-if __name__ == "__main__":
+def _filter_holes(geoms, points):  # noqa: ARG001
+    """
+    Filter hole polygons using a computational geometry solution
+    """
 
-    import matplotlib.pyplot as plt
+    if (geoms.interiors.apply(len) > 0).any():
+        from shapely.geometry import Polygon
+
+        # Extract the "shell", or outer ring of the polygon.
+        shells = geoms.exterior.apply(Polygon)
+        # Compute which original geometries are within each shell, self-inclusive
+        inside, outside = shells.sindex.query(geoms, predicate="within")
+
+        # Now, create the sparse matrix relating the inner geom (rows)
+        # to the outer shell (cols) and take the sum.
+        # A z-order of 1 means the polygon is only inside if its own exterior.
+        #   This means it's not a hole.
+        # A z-order of 2 means the polygon is inside of exactly one other exterior.
+        #   Because the hull generation method is restricted to be planar, this
+        #   means the polygon is a hole.
+        # In general, an even z-order means that the polygon is always exactly
+        #   matched to one exterior, plus some number of intermediate
+        #   exterior-hole pairs. Therefore, the polygon is a hole.
+        # In general, an odd z-order means that there is an uneven number of exteriors.
+        #   This means the polygon is not a hole.
+        zorder = sparse.csc_matrix((np.ones_like(inside), (inside, outside))).sum(
+            axis=1
+        )
+        zorder = np.asarray(zorder).flatten()
+        # Keep only the odd z-orders
+        to_include = (zorder % 2).astype(bool)
+        geoms = geoms[to_include]
+    return geoms
+
+
+if __name__ == "__main__":
     import time
+
     import geopandas as gpd
+    import matplotlib.pyplot as plt
 
     plt.close("all")
     xys = np.random.random((1000, 2))

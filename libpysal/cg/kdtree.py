@@ -3,10 +3,15 @@ KDTree for PySAL: Python Spatial Analysis Library.
 
 Adds support for Arc Distance to scipy.spatial.KDTree.
 """
+
+# ruff: noqa: ARG002, N801, N802, N816
+
 import math
-import scipy.spatial
+
 import numpy
-from scipy import inf
+import scipy.spatial
+from numpy import inf
+
 from . import sphere
 from .sphere import RADIUS_EARTH_KM
 
@@ -30,18 +35,15 @@ def KDTree(data, leafsize=10, distance_metric="Euclidean", radius=RADIUS_EARTH_K
     data : array
         The data points to be indexed. This array is not copied, and so
         modifying this data will result in bogus results. Typically nx2.
-
     leafsize : int
-        The number of points at which the algorithm switches over to brute-force. Has to be positive. Optional, default is 10.
-
+        The number of points at which the algorithm switches
+        over to brute-force. Has to be positive. Optional, default is 10.
     distance_metric : string
         Options: "Euclidean" (default) and "Arc".
-
     radius : float
         Radius of the sphere on which to compute distances. Assumes data in
         latitude and longitude. Ignored if distance_metric="Euclidean". Typical
         values: pysal.cg.RADIUS_EARTH_KM (default) pysal.cg.RADIUS_EARTH_MILES
-
     """
 
     if distance_metric.lower() == "euclidean":
@@ -124,8 +126,7 @@ class Arc_KDTree(temp_KDTree):
         if r > 0.5 * self.circumference:
             raise ValueError(
                 "r, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         r = sphere.arcdist2linear(r, self.radius)
         return temp_KDTree.count_neighbors(self, other, r)
@@ -157,7 +158,6 @@ class Arc_KDTree(temp_KDTree):
         True
         >>> (i == i2).all()
         True
-
         """
         eps = sphere.arcdist2linear(eps, self.radius)
         if distance_upper_bound != inf:
@@ -198,17 +198,16 @@ class Arc_KDTree(temp_KDTree):
         >>> kd.query_ball_point(pts, circumference/2.)
         array([list([0, 1, 2, 3]), list([0, 1, 2, 3]), list([0, 1, 2, 3]),
                list([0, 1, 2, 3])], dtype=object)
-
         """
         eps = sphere.arcdist2linear(eps, self.radius)
-        # scipy.sphere.KDTree.query_ball_point appears to ignore the eps argument.
-        # we have some floating point errors moving back and forth between cordinate systems,
-        # so we'll account for that be adding some to our radius, 3*float's eps value.
+        # scipy.sphere.KDTree.query_ball_point appears to ignore
+        # the eps argument. we have some floating point errors moving
+        # back and forth between cordinate systems, so we'll account
+        # for that be adding some to our radius, 3*float's eps value.
         if r > 0.5 * self.circumference:
             raise ValueError(
                 "r, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         r = sphere.arcdist2linear(r, self.radius) + FLOAT_EPS * 3
         return temp_KDTree.query_ball_point(self, self._toXYZ(x), r, eps=eps)
@@ -225,23 +224,29 @@ class Arc_KDTree(temp_KDTree):
         --------
         >>> pts = [(0,90), (0,0), (180,0), (0,-90)]
         >>> kd = Arc_KDTree(pts, radius = sphere.RADIUS_EARTH_KM)
-        >>> kd.query_ball_tree(kd, kd.circumference/4.) == [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]]
+        >>> (
+        ...     kd.query_ball_tree(kd, kd.circumference/4.)
+        ...     == [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]]
+        ... )
         True
-        >>> kd.query_ball_tree(kd, kd.circumference/2.) == [[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3]]
+        >>> (
+        ...     kd.query_ball_tree(kd, kd.circumference/2.)
+        ...     == [[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3]]
+        ... )
         True
 
         """
         eps = sphere.arcdist2linear(eps, self.radius)
         # scipy.sphere.KDTree.query_ball_point appears to ignore the eps argument.
-        # we have some floating point errors moving back and forth between cordinate systems,
-        # so we'll account for that be adding some to our radius, 3*float's eps value.
+        # we have some floating point errors moving back and forth between
+        # coordinate systems, so we'll account for that be adding some
+        # to our radius, 3*float's eps value.
         if self.radius != other.radius:
             raise ValueError("Both trees must have the same radius.")
         if r > 0.5 * self.circumference:
             raise ValueError(
                 "r, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         r = sphere.arcdist2linear(r, self.radius) + FLOAT_EPS * 3
         return temp_KDTree.query_ball_tree(self, other, r, eps=eps)
@@ -260,15 +265,16 @@ class Arc_KDTree(temp_KDTree):
         >>> kd = Arc_KDTree(pts, radius = sphere.RADIUS_EARTH_KM)
         >>> kd.query_pairs(kd.circumference/4.) == set([(0, 1), (1, 3), (2, 3), (0, 2)])
         True
-        >>> kd.query_pairs(kd.circumference/2.) == set([(0, 1), (1, 2), (1, 3), (2, 3), (0, 3), (0, 2)])
+        >>> (
+        ...     kd.query_pairs(kd.circumference/2.)
+        ...     == set([(0, 1), (1, 2), (1, 3), (2, 3), (0, 3), (0, 2)])
+        ... )
         True
-
         """
         if r > 0.5 * self.circumference:
             raise ValueError(
                 "r, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         r = sphere.arcdist2linear(r, self.radius) + FLOAT_EPS * 3
         return temp_KDTree.query_pairs(self, r, eps=eps)
@@ -295,20 +301,18 @@ class Arc_KDTree(temp_KDTree):
                 [10007.54339801,     0.        , 20015.08679602, 10007.54339801],
                 [10007.54339801, 20015.08679602,     0.        , 10007.54339801],
                 [20015.08679602, 10007.54339801, 10007.54339801,     0.        ]])
-
         """
         if self.radius != other.radius:
             raise ValueError("Both trees must have the same radius.")
         if max_distance > 0.5 * self.circumference:
             raise ValueError(
                 "max_distance, must not exceed 1/2 circumference of the sphere (%f)."
-                % self.circumference
-                * 0.5
+                % (self.circumference * 0.5)
             )
         max_distance = sphere.arcdist2linear(max_distance, self.radius) + FLOAT_EPS * 3
-        D = temp_KDTree.sparse_distance_matrix(self, other, max_distance)
-        D = D.tocoo()
-        # print D.data
-        a2l = lambda x: sphere.linear2arcdist(x, self.radius)
-        # print map(a2l,D.data)
-        return scipy.sparse.coo_matrix((list(map(a2l, D.data)), (D.row, D.col))).todok()
+        d = temp_KDTree.sparse_distance_matrix(self, other, max_distance)
+        d = d.tocoo()
+        # print d.data
+        a2l = lambda x: sphere.linear2arcdist(x, self.radius)  # noqa: E731
+        # print map(a2l,d.data)
+        return scipy.sparse.coo_matrix((list(map(a2l, d.data)), (d.row, d.col))).todok()

@@ -1,0 +1,24 @@
+name: test
+channels:
+  - conda-forge
+dependencies:
+  - python=3.13
+  - beautifulsoup4
+  - fiona
+  - geopandas-base>=0.14.0  # base to avoid pulling sklearn
+  - pyproj  # since we need to_crs but install geopandas-base
+  - jinja2
+  - pandas
+  - platformdirs
+  - requests
+  - scipy
+  # testing
+  - codecov
+  - matplotlib
+  - scikit-learn
+  - pytest
+  - pytest-cov
+  - pytest-mpl
+  - pytest-xdist
+  # optional used in ci
+  - geodatasets

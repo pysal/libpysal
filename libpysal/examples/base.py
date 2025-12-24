@@ -7,37 +7,40 @@ Base class for managing example datasets.
 
 import io
 import os
+import tempfile
 import webbrowser
-from os import environ, makedirs
-from os.path import exists, expanduser, join
-from appdirs import user_data_dir
 import zipfile
-import requests
+
 import pandas
+import requests
 from bs4 import BeautifulSoup
+from platformdirs import user_data_dir
+
 from ..io import open as ps_open
 
 
-from typing import Union
-
-
-
 def get_data_home():
-    """Return the path of the ``libpysal`` data directory. This folder is platform specific.
-    If the folder does not already exist, it is automatically created.
+    """Return the path of the ``libpysal`` data directory. This folder is platform
+    specific. If the folder does not already exist, it is automatically created.
 
     Returns
     -------
     data_home : str
         The system path where the data is/will be stored.
-
     """
 
     appname = "pysal"
     appauthor = "pysal"
-    data_home =  user_data_dir(appname, appauthor) 
-    if not exists(data_home):
-        makedirs(data_home, exist_ok=True)
+    data_home = user_data_dir(appname, appauthor)
+
+    try:
+        if not os.path.exists(data_home):
+            os.makedirs(data_home, exist_ok=True)
+    except OSError:
+        # Try to fall back to a tmp directory
+        data_home = os.path.join(tempfile.gettempdir(), "pysal")
+        os.makedirs(data_home, exist_ok=True)
+
     return data_home
 
 
@@ -58,11 +61,10 @@ def get_list_of_files(dir_name):
     ------
     FileNotFoundError
         If the file or directory is not found.
-
     """
 
     # names in the given directory
-    all_files = list()
+    all_files = []
     try:
         file_list = os.listdir(dir_name)
         # Iterate over all the entries
@@ -84,12 +86,12 @@ def type_of_script() -> str:
     """Helper function to determine run context."""
 
     try:
-        ipy_str = str(type(get_ipython()))
+        ipy_str = str(type(get_ipython()))  # noqa: F821
         if "zmqshell" in ipy_str:
             return "jupyter"
         if "terminal" in ipy_str:
             return "ipython"
-    except:
+    except NameError:
         return "terminal"
 
 
@@ -119,10 +121,10 @@ class Example:
         ``True`` if the example is installed, otherwise ``False``.
     zipfile : zipfile.ZipFile
         The archived dataset.
-
     """
 
     def __init__(self, name, description, n, k, download_url, explain_url):
+        """Initialze Example."""
         self.name = name
         self.description = description
         self.n = n
@@ -132,26 +134,24 @@ class Example:
         self.root = name.replace(" ", "_")
         self.installed = self.downloaded()
 
-    def get_local_path(self, path=get_data_home()) -> str:
+    def get_local_path(self, path=None) -> str:
         """Get the local path for example."""
+        path = path or get_data_home()
+        return os.path.join(path, self.root)
 
-        return join(path, self.root)
-
-    def get_path(self, file_name, verbose=True) -> Union[str, None]:
+    def get_path(self, file_name, verbose=True) -> str | None:
         """Get the path for local file."""
-
         file_list = self.get_file_list()
         for file_path in file_list:
             base_name = os.path.basename(file_path)
             if file_name == base_name:
                 return file_path
         if verbose:
-            print(f'{file_name} is not a file in this example.')
+            print(f"{file_name} is not a file in this example.")
         return None
 
     def downloaded(self) -> bool:
         """Check if the example has already been installed."""
-
         path = self.get_local_path()
         if os.path.isdir(path):
             self.installed = True
@@ -174,19 +174,23 @@ class Example:
 
         return IFrame(self.explain_url, width=700, height=350)
 
-    def download(self, path=get_data_home()):
+    def download(self, path=None):
         """Download the files for the example."""
+        path = path or get_data_home()
 
         if not self.downloaded():
-            request = requests.get(self.download_url)
-            archive = zipfile.ZipFile(io.BytesIO(request.content))
-            target = join(path, self.root)
-            print("Downloading {} to {}".format(self.name, target))
-            archive.extractall(path=target)
-            self.zipfile = archive
-            self.installed = True
+            try:
+                request = requests.get(self.download_url)
+                archive = zipfile.ZipFile(io.BytesIO(request.content))
+                target = os.path.join(path, self.root)
+                print(f"Downloading {self.name} to {target}")
+                archive.extractall(path=target)
+                self.zipfile = archive
+                self.installed = True
+            except requests.exceptions.RequestException as e:
+                raise SystemExit(e) from e
 
-    def get_file_list(self) -> Union[list, None]:
+    def get_file_list(self) -> list | None:
         """Get the list of local files for the example."""
         path = self.get_local_path()
         if os.path.isdir(path):
@@ -213,8 +217,8 @@ class Example:
 class Examples:
     """Manager for pysal example datasets."""
 
-    def __init__(self):
-        self.datasets = {}
+    def __init__(self, datasets={}):  # noqa: B006
+        self.datasets = datasets
 
     def add_examples(self, examples):
         """Add examples to the set of datasets available."""
@@ -252,7 +256,7 @@ class Examples:
                 example.download()
                 return example
         else:
-            print(f'Example not available: {example_name}')
+            print(f"Example not available: {example_name}")
             return None
 
     def download_remotes(self):
@@ -265,13 +269,30 @@ class Examples:
             example = self.remotes[name]
             try:
                 example.download()
-            except:
-                print(f'Example not downloaded: {name}.')
+            except:  # noqa: E722
+                print(f"Example not downloaded: {name}.")
 
     def get_installed_names(self) -> list:
         """Return names of all currently installed datasets."""
         ds = self.datasets
         return [name for name in ds if ds[name].installed]
+
+    def get_remote_url(self, name):
+        if name in self.datasets:
+            try:
+                return self.datasets[name].download_url
+            except:  # noqa: E722
+                print(f"{name} is a built-in dataset, no url.")
+        else:
+            print(f"{name} is not an available dataset.")
+
+    def summary(self):
+        """Report on datasets."""
+        available = self.available()
+        n = available.shape[0]
+        n_installed = available.Installed.sum()
+        n_remote = n - n_installed
+        print(f"{n} datasets available, {n_installed} installed, {n_remote} remote.")
 
 
 example_manager = Examples()

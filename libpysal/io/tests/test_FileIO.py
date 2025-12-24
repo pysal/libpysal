@@ -1,5 +1,7 @@
-from ..fileio import FileIO
+# ruff: noqa: N999
+
 from ...examples import get_path
+from ..fileio import FileIO
 
 
 def test_by_col_exists():

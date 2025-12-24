@@ -1,11 +1,12 @@
-from .. import tables
-from ...common import MISSINGVALUE
+# ruff: noqa: N802, N806, N816, N999, SIM115
+
 import datetime
-import struct
 import os
+import struct
 import time
 
-from typing import Union
+from ...common import MISSINGVALUE
+from .. import tables
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ["DBF"]
@@ -14,14 +15,14 @@ __all__ = ["DBF"]
 class DBF(tables.DataTable):
     """PySAL DBF Reader/Writer. This DBF handler implements the PySAL DataTable
     interface and initializes an instance of the PySAL's DBF handler.
-    
+
     Parameters
     -----------
     dataPath : str
         Path to file, including file name and extension.
     mode : str
         Mode for file interaction; either ``'r'`` or ``'w'``.
-    
+
     Attributes
     ----------
     header : list
@@ -41,7 +42,7 @@ class DBF(tables.DataTable):
     >>> dbf = libpysal.io.open(libpysal.examples.get_path('juvenile.dbf'), 'r')
     >>> dbf.header
     ['ID', 'X', 'Y']
-    
+
     >>> dbf.field_spec
     [('N', 9, 0), ('N', 9, 0), ('N', 9, 0)]
 
@@ -51,7 +52,6 @@ class DBF(tables.DataTable):
     MODES = ["r", "w"]
 
     def __init__(self, *args, **kwargs):
-
         tables.DataTable.__init__(self, *args, **kwargs)
 
         if self.mode == "r":
@@ -70,9 +70,8 @@ class DBF(tables.DataTable):
             fmt = "s"
 
             self._col_index = {}
-            idx = 0
 
-            for fieldno in range(numfields):
+            for idx in range(numfields):
                 # again, check struct for fmt def.
                 name, typ, size, deci = struct.unpack("<11sc4xBB14x", f.read(32))
                 # forces to unicode in 2, to str in 3
@@ -82,9 +81,8 @@ class DBF(tables.DataTable):
                 name = name.replace("\0", "")
                 # eliminate NULs from string
                 self._col_index[name] = (idx, record_size)
-                idx += 1
                 # alt: str(size) + 's'
-                fmt += "%ds" % size
+                fmt += f"{size}s"
 
                 record_size += size
                 self.field_info.append((name, typ, size, deci))
@@ -99,7 +97,7 @@ class DBF(tables.DataTable):
             self.header = [fInfo[0] for fInfo in self.field_info[1:]]
             field_spec = []
 
-            for fname, ftype, flen, fpre in self.field_info[1:]:
+            for _, ftype, flen, fpre in self.field_info[1:]:
                 field_spec.append((ftype, flen, fpre))
 
             self.field_spec = field_spec
@@ -115,17 +113,17 @@ class DBF(tables.DataTable):
 
     def __len__(self) -> int:
         """
-        
+
         Raises
         ------
         IOError
             Raised when a file is open ``'w'`` mode.
-        
+
         """
 
         if self.mode != "r":
             msg = "Invalid operation, cannot read from a file opened in 'w' mode."
-            raise IOError(msg)
+            raise OSError(msg)
 
         return self.n_records
 
@@ -135,16 +133,16 @@ class DBF(tables.DataTable):
 
     def _get_col(self, key: str) -> list:
         """Return the column vector.
-        
+
         Raises
         ------
         AttributeError
             Raised when a field does not exist in the header.
-        
+
         """
 
         if key not in self._col_index:
-            raise AttributeError("Field: %s does not exist in header." % key)
+            raise AttributeError(f"Field: {key} does not exist in header.")
 
         prevPos = self.tell()
         idx, offset = self._col_index[key]
@@ -183,11 +181,8 @@ class DBF(tables.DataTable):
                 value = (value in "YyTt" and "T") or (value in "NnFf" and "F") or "?"
             elif typ == "F":
                 value = value.replace("\0", "").lstrip()
-                if value == "":
-                    value = MISSINGVALUE
-                else:
-                    value = float(value)
-            if isinstance(value, str) or isinstance(value, str):
+                value = MISSINGVALUE if value == "" else float(value)
+            if isinstance(value, str | str):
                 value = value.rstrip()
             col[i] = value
 
@@ -196,7 +191,6 @@ class DBF(tables.DataTable):
         return col
 
     def read_record(self, i: int) -> list:
-
         self.seek(i)
 
         rec = list(struct.unpack(self.record_fmt, self.f.read(self.record_size)))
@@ -206,7 +200,7 @@ class DBF(tables.DataTable):
             return self.read_record(i + 1)
         result = []
 
-        for (name, typ, size, deci), value in zip(self.field_info, rec):
+        for (name, typ, _, deci), value in zip(self.field_info, rec, strict=True):
             if name == "DeletionFlag":
                 continue
             if typ == "N":
@@ -234,29 +228,26 @@ class DBF(tables.DataTable):
                 value = (value in "YyTt" and "T") or (value in "NnFf" and "F") or "?"
             elif typ == "F":
                 value = value.replace("\0", "").lstrip()
-                if value == "":
-                    value = MISSINGVALUE
-                else:
-                    value = float(value)
-            if isinstance(value, str) or isinstance(value, str):
+                value = MISSINGVALUE if value == "" else float(value)
+            if isinstance(value, str | str):
                 value = value.rstrip()
             result.append(value)
 
         return result
 
-    def _read(self) -> Union[list, None]:
+    def _read(self) -> list | None:
         """
-        
+
         Raises
         ------
         IOError
             Raised when a file is open ``'w'`` mode.
-        
+
         """
 
         if self.mode != "r":
             msg = "Invalid operation, cannot read from a file opened in 'w' mode."
-            raise IOError(msg)
+            raise OSError(msg)
 
         if self.pos < len(self):
             rec = self.read_record(self.pos)
@@ -267,45 +258,42 @@ class DBF(tables.DataTable):
 
     def write(self, obj: list):
         """
-        
+
         Raises
         ------
         IOError
             Raised when a file is open ``'r'`` mode.
         TypeError
             Raised when a row length and header length are not equivalent.
-        
+
         """
 
         self._complain_ifclosed(self.closed)
 
         if self.mode != "w":
             msg = "Invalid operation, cannot read from a file opened in 'r' mode."
-            raise IOError(msg)
+            raise OSError(msg)
 
         if self.FIRST_WRITE:
             self._firstWrite()
 
         if len(obj) != len(self.header):
-            raise TypeError("Rows must contains %d fields." % len(self.header))
+            raise TypeError(f"Rows must contains {len(self.header)} fields.")
 
         self.numrec += 1
 
         # deletion flag
-        self.f.write(" ".encode())
+        self.f.write(b" ")
 
-        for (typ, size, deci), value in zip(self.field_spec, obj):
+        for (typ, size, deci), value in zip(self.field_spec, obj, strict=True):
             if value is None:
-                if typ == "C":
-                    value = " " * size
-                else:
-                    value = "\0" * size
+                value = " " * size if typ == "C" else "\x00" * size
             elif typ == "N" or typ == "F":
-                v = str(value).rjust(size, " ")
-                # if len(v) == size:
-                #    value = v
-                # else:
-                value = (("%" + "%d.%d" % (size, deci) + "f") % (value))[:size]
+                # v = str(value).rjust(size, " ")
+                # # if len(v) == size:
+                # #    value = v
+                # # else:
+                value = (("%" + f"{size}.{deci}" + "f") % (value))[:size]
             elif typ == "D":
                 value = value.strftime("%Y%m%d")
             elif typ == "L":
@@ -326,31 +314,30 @@ class DBF(tables.DataTable):
         self.f.flush()
 
     def close(self):
-
         if self.mode == "w":
             self.flush()
             # End of file
-            self.f.write("\x1A".encode())
+            self.f.write(b"\x1a")
         self.f.close()
 
         tables.DataTable.close(self)
 
     def _firstWrite(self):
         """
-        
+
         Raises
         ------
         IOError
             Raised when there is no specified header.
         IOError
             Raised when there is no field specification.
-        
+
         """
 
         if not self.header:
-            raise IOError("No header, DBF files require a header.")
+            raise OSError("No header, DBF files require a header.")
         if not self.field_spec:
-            raise IOError("No field_spec, DBF files require a specification.")
+            raise OSError("No field_spec, DBF files require a specification.")
 
         self._writeHeader()
 
@@ -380,7 +367,7 @@ class DBF(tables.DataTable):
         self.f.write(hdr)
 
         # field specs
-        for name, (typ, size, deci) in zip(self.header, self.field_spec):
+        for name, (typ, size, deci) in zip(self.header, self.field_spec, strict=True):
             typ = typ.encode()
             name = name.ljust(11, "\x00")
             name = name.encode()
@@ -388,7 +375,7 @@ class DBF(tables.DataTable):
             self.f.write(fld)
 
         # terminator
-        term = "\r".encode()
+        term = b"\r"
         self.f.write(term)
         if self.f.tell() != POS and not self.FIRST_WRITE:
             self.f.seek(POS)

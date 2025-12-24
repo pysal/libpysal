@@ -12,22 +12,17 @@ Contact:
 
 """
 
+# ruff: noqa: N801, N802, N803, N806, SIM115
+
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 
-from struct import calcsize, unpack, pack
-
-from itertools import islice
 import array
-import sys
 import io
+import sys
+from itertools import islice
+from struct import calcsize, pack, unpack
 
-from typing import Union
-
-
-if sys.byteorder == "little":
-    SYS_BYTE_ORDER = "<"
-else:
-    SYS_BYTE_ORDER = ">"
+SYS_BYTE_ORDER = "<" if sys.byteorder == "little" else ">"
 
 STRUCT_ITEMSIZE = {}
 STRUCT_ITEMSIZE["i"] = calcsize("i")
@@ -40,9 +35,6 @@ __all__ = ["shp_file", "shx_file"]
 
 def struct2arrayinfo(struct: tuple) -> list:
     struct = list(struct)
-    names = [x[0] for x in struct]
-    types = [x[1] for x in struct]
-    orders = [x[2] for x in struct]
     lname, ltype, lorder = struct.pop(0)
     groups = {}
     g = 0
@@ -54,21 +46,21 @@ def struct2arrayinfo(struct: tuple) -> list:
     }
 
     while struct:
-        name, type, order = struct.pop(0)
+        name, type_, order = struct.pop(0)
 
         if order == lorder:
             groups[g]["names"].append(name)
-            groups[g]["size"] += STRUCT_ITEMSIZE[type]
-            groups[g]["fmt"] += type
+            groups[g]["size"] += STRUCT_ITEMSIZE[type_]
+            groups[g]["fmt"] += type_
         else:
             g += 1
             groups[g] = {
                 "names": [name],
-                "size": STRUCT_ITEMSIZE[type],
-                "fmt": type,
+                "size": STRUCT_ITEMSIZE[type_],
+                "fmt": type_,
                 "order": order,
             }
-        lname, ltype, lorder = name, type, order
+        lname, ltype, lorder = name, type_, order
 
     return [groups[x] for x in range(g + 1)]
 
@@ -97,7 +89,7 @@ RHEADERSTRUCT = (("Record Number", "i", ">"), ("Content Length", "i", ">"))
 URHEADERSTRUCT = struct2arrayinfo(RHEADERSTRUCT)
 
 
-def noneMax(a: Union[float, None], b: Union[float, None]) -> float:
+def noneMax(a: float | None, b: float | None) -> float:
     if a is None:
         return b
     if b is None:
@@ -105,7 +97,7 @@ def noneMax(a: Union[float, None], b: Union[float, None]) -> float:
     return max(a, b)
 
 
-def noneMin(a: Union[float, None], b: Union[float, None]) -> float:
+def noneMin(a: float | None, b: float | None) -> float:
     if a is None:
         return b
     if b is None:
@@ -116,7 +108,7 @@ def noneMin(a: Union[float, None], b: Union[float, None]) -> float:
 def _unpackDict(structure, fileObj):
     """Utility function that requires a tuple of tuples that
     describe the element structure.
-    
+
     Parameters
     ----------
     structure : tuple
@@ -124,20 +116,18 @@ def _unpackDict(structure, fileObj):
         ``(('FieldName 1','type','byteOrder'),('FieldName 2','type','byteOrder'))``.
     fileObj : file
         An open file at the correct position.
-    
+
     Returns
     -------
     d : dict
         Dictionary in the form: ``{'FieldName 1': value, 'FieldName 2': value}``.
-    
+
     Notes
     -----
-    
     The file is at new position.
-    
+
     Examples
     --------
-    
     >>> import libpysal
     >>> _unpackDict(
     ...     UHEADERSTRUCT,
@@ -164,7 +154,6 @@ def _unpackDict(structure, fileObj):
     ...     'File Length': 830
     ... }
     True
-    
     """
 
     d = {}
@@ -179,7 +168,7 @@ def _unpackDict(structure, fileObj):
 
 def _unpackDict2(d, structure, fileObj):
     """Utility Function, used arrays instead from struct.
-    
+
     Parameters
     ----------
     d : dict
@@ -189,12 +178,11 @@ def _unpackDict2(d, structure, fileObj):
         ``(('FieldName 1','type','byteOrder'),('FieldName 2','type','byteOrder'))``.
     fileObj : file
         An open file at the correct position.
-    
+
     Returns
     -------
     d : dict
         The updated dictionary.
-    
     """
 
     for name, dtype, order in structure:
@@ -210,7 +198,7 @@ def _unpackDict2(d, structure, fileObj):
 
 def _packDict(structure, d) -> str:
     """Utility Function for packing a dictionary with byte strings.
-    
+
     Parameters
     ----------
     structure : tuple
@@ -218,20 +206,18 @@ def _packDict(structure, d) -> str:
         ``(('FieldName 1','type','byteOrder'),('FieldName 2','type','byteOrder'))``.
     d : dict
         Dictionary in the form: ``{'FieldName 1': value, 'FieldName 2': value}``.
-    
+
     Examples
     --------
-    
     >>> s = _packDict(
     ...     (('FieldName 1', 'i', '<'), ('FieldName 2', 'i', '<')),
     ...     {'FieldName 1': 1, 'FieldName 2': 2}
     ... )
     >>> s == pack('<ii', 1, 2)
     True
-    
+
     >>> unpack('<ii', s)
     (1, 2)
-    
     """
 
     string = b""
@@ -247,7 +233,7 @@ def _packDict(structure, d) -> str:
 
 class shp_file:
     """Reads and writes the SHP compenent of a shapefile.
-    
+
     Parameters
     ----------
     filename : str
@@ -260,17 +246,16 @@ class shp_file:
         ``'ARC'``, ``'ARCZ'``, ``'ARCM'``, ``'POLYGON'``, ``'POLYGONZ'``,
         ``'POLYGONM'``, ``'MULTIPOINT'``, ``'MULTIPOINTZ'``, ``'MULTIPOINTM'``,
         ``'MULTIPATCH'``. Default is ``None``.
-    
+
     Attributes
     ----------
     header : dict
         Contents of the SHP header. For contents see ``HEADERSTRUCT``.
     shape : int
         See ``SHAPE_TYPES`` and ``TYPE_DISPATCH``.
-    
+
     Examples
     --------
-    
     >>> import libpysal
     >>> shp = shp_file(libpysal.examples.get_path('10740.shp'))
     >>> shp.header == {
@@ -293,15 +278,13 @@ class shp_file:
     ...     'File Length': 260534
     ... }
     True
-    
+
     >>> len(shp)
     195
-    
+
     Notes
     -----
-    
     The header of both the SHP and SHX files are indentical.
-    
     """
 
     SHAPE_TYPES = {
@@ -322,46 +305,43 @@ class shp_file:
 
     def __iswritable(self) -> bool:
         """
-        
+
         Raises
         ------
         IOError
             Raised when a bad file name is passed in.
-        
         """
 
         try:
             assert self.__mode == "w"
         except AssertionError:
-            raise IOError("[Errno 9] Bad file descriptor.")
+            raise OSError("[Errno 9] Bad file descriptor.") from None
         return True
 
     def __isreadable(self) -> bool:
         """
-        
+
         Raises
         ------
         IOError
             Raised when a bad file name is passed in.
-        
         """
 
         try:
             assert self.__mode == "r"
         except AssertionError:
-            raise IOError("[Errno 9] Bad file descriptor.")
+            raise OSError("[Errno 9] Bad file descriptor.") from None
         return True
 
     def __init__(self, fileName, mode="r", shape_type=None):
         """
-        
+
         Raises
         ------
         Exception
             Raised when an invalid shape type is passed in.
         Exception
             Raised when an invalid mode is passed in.
-        
         """
 
         self.__mode = mode
@@ -405,10 +385,9 @@ class shp_file:
 
     def _create_shp_file(self, shape_type: str):
         """Creates a shp/shx file.
-        
+
         Examples
         --------
-        
         >>> import libpysal, os
         >>> shp = shp_file('test', 'w', 'POINT')
         >>> p = shp_file(libpysal.examples.get_path('Point.shp'))
@@ -419,15 +398,14 @@ class shp_file:
         ...     libpysal.examples.get_path('Point.shp'), 'rb'
         ... ).read()
         True
-        
+
         >>> open('test.shx', 'rb').read() == open(
         ...     libpysal.examples.get_path('Point.shx'), 'rb'
         ... ).read()
         True
-        
+
         >>> os.remove('test.shx')
         >>> os.remove('test.shp')
-        
         """
 
         self.__iswritable()
@@ -462,20 +440,19 @@ class shp_file:
     def __iter__(self):
         return self
 
-    def type(self) -> str:
+    def type(self) -> str:  # noqa: A003
         return self.shape.String_Type
 
     def __next__(self) -> int:
         """Returns the next shape in the shapefile.
-        
+
         Raises
         ------
         StopIteration
             Raised at the EOF.
-        
+
         Examples
         --------
-        
         >>> import libpysal
         >>> list(shp_file(libpysal.examples.get_path('Point.shp'))) == [
         ...     {
@@ -525,7 +502,6 @@ class shp_file:
         ...     }
         ... ]
         True
-        
         """
 
         self.__isreadable()
@@ -612,7 +588,7 @@ class shp_file:
 
 class shx_file:
     """Reads and writes the SHX compenent of a shapefile.
-    
+
     Parameters
     ----------
     filename : str
@@ -621,17 +597,16 @@ class shx_file:
         ``'.shx'``, ``'.shp'`` and append ``'.shx'``.
     mode : str
         The mode for file interaction. Must be ``'r'`` (read).
-    
+
     Attributes
     ----------
     index : list
         Contains the file offset and length of each recond in the SHP component.
     numRecords : int
         The number of records.
-    
+
     Examples
     --------
-    
     >>> import libpysal
     >>> shx = shx_file(libpysal.examples.get_path('10740.shx'))
     >>> shx._header == {
@@ -654,46 +629,43 @@ class shx_file:
     ...     'File Length': 830
     ... }
     True
-    
+
     >>> len(shx.index)
     195
-    
+
     >>> shx = shx_file(libpysal.examples.get_path('Point.shx'))
     >>> isinstance(shx, shx_file)
     True
-    
     """
 
     def __iswritable(self) -> bool:
         """
-        
+
         Raises
         ------
         IOError
             Raised when a bad file name is passed in.
-        
         """
 
         try:
             assert self.__mode == "w"
         except AssertionError:
-            raise IOError("[Errno 9] Bad file descriptor.")
+            raise OSError("[Errno 9] Bad file descriptor.") from None
         return True
 
     def __isreadable(self) -> bool:
         """
-        
+
         Raises
         ------
         IOError
             Raised when a bad file name is passed in.
-        
         """
 
         try:
             assert self.__mode == "r"
         except AssertionError:
-            raise IOError("[Errno 9] Bad file descriptor.")
+            raise OSError("[Errno 9] Bad file descriptor.") from None
         return True
 
     def __init__(self, fileName=None, mode="r"):
@@ -718,8 +690,7 @@ class shx_file:
         self.fileObj = open(self.fileName + ".shx", "rb")
         self._header = _unpackDict(UHEADERSTRUCT, self.fileObj)
         self.numRecords = numRecords = (self._header["File Length"] - 50) // 4
-        index = {}
-        fmt = ">%di" % (2 * numRecords)
+        fmt = f">{2 * numRecords}i"
         size = calcsize(fmt)
         dat = unpack(fmt, self.fileObj.read(size))
         self.index = [(dat[i] * 2, dat[i + 1] * 2) for i in range(0, len(dat), 2)]
@@ -739,27 +710,25 @@ class shx_file:
 
     def add_record(self, size: int):
         """Add a record to the shx index.
-        
+
         Parameters
         ----------
         size : int
             The length of the record in bytes NOT including the 8-byte record header.
-        
+
         Returns
         -------
         rec_id : int
             The sequential record ID, 1-based.
         pos : int
             See ``self.__offset`` in ``_create_shx_file``.
-        
+
         Notes
         -----
-        
         The SHX records contain (Offset, Length) in 16-bit words.
-        
+
         Examples
         --------
-        
         >>> import libpysal, os
         >>> shx = shx_file(libpysal.examples.get_path('Point.shx'))
         >>> shx.index
@@ -772,7 +741,7 @@ class shx_file:
          (268, 20),
          (296, 20),
          (324, 20)]
-        
+
         >>> shx2 = shx_file('test', 'w')
         >>> [shx2.add_record(rec[1]) for rec in shx.index]
         [(1, 100),
@@ -784,18 +753,17 @@ class shx_file:
          (7, 268),
          (8, 296),
          (9, 324)]
-        
+
         >>> shx2.index == shx.index
         True
-        
+
         >>> shx2.close(shx._header)
         >>> open('test.shx', 'rb').read() == open(
         ...     libpysal.examples.get_path('Point.shx'), 'rb'
         ... ).read()
         True
-        
+
         >>> os.remove('test.shx')
-        
         """
 
         self.__iswritable()
@@ -816,7 +784,7 @@ class shx_file:
             header["File Length"] = (self.numRecords * calcsize(">ii") + 100) // 2
             self.fileObj.seek(0)
             self.fileObj.write(_packDict(HEADERSTRUCT, header))
-            fmt = ">%di" % (2 * self.numRecords)
+            fmt = f">{2 * self.numRecords}i"
             values = []
             for off, size in self.index:
                 values.extend([off // 2, size // 2])
@@ -832,28 +800,28 @@ class NullShape:
     def unpack(self) -> None:
         return None
 
-    def pack(self, x=None) -> str:
+    def pack(self, x=None) -> str:  # noqa: ARG002
         return pack("<i", 0)
 
 
-class Point(object):
+class Point:
     """Packs and unpacks a shapefile Point type.
-    
+
     Examples
     --------
-    
     >>> import libpysal
     >>> shp = shp_file(libpysal.examples.get_path('Point.shp'))
     >>> rec = shp.get_shape(0)
-    >>> rec == {'Y': -0.25904661905760773, 'X': -0.00068176617532103578, 'Shape Type': 1}
+    >>> rec == (
+    ...     {'Y': -0.25904661905760773, 'X': -0.00068176617532103578, 'Shape Type': 1}
+    ... )
     True
-    
+
     >>> # +8 byte record header
     >>> pos = shp.fileObj.seek(shp._shx.index[0][0] + 8)
     >>> dat = shp.fileObj.read(shp._shx.index[0][1])
     >>> dat == Point.pack(rec)
     True
-    
     """
 
     Shape_Type = 1
@@ -906,10 +874,9 @@ class PointZ(Point):
 
 class PolyLine:
     """Packs and unpacks a shapefile PolyLine type.
-    
+
     Examples
     --------
-    
     >>> import libpysal
     >>> shp = shp_file(libpysal.examples.get_path('Line.shp'))
     >>> rec = shp.get_shape(0)
@@ -929,13 +896,12 @@ class PolyLine:
     ...     'Parts Index': [0]
     ... }
     True
-    
+
     >>> # +8 byte record header
     >>> pos = shp.fileObj.seek(shp._shx.index[0][0] + 8)
     >>> dat = shp.fileObj.read(shp._shx.index[0][1])
     >>> dat == PolyLine.pack(rec)
     True
-    
     """
 
     HASZ = False
@@ -970,20 +936,19 @@ class PolyLine:
     @classmethod
     def unpack(cls, dat) -> dict:
         """
-        
+
         Parameters
         ----------
         dat : file
             An open file at the correct position.
-        
         """
 
         record = _unpackDict(cls.USTRUCT, dat)
-        contentStruct = (
+        content_struct = (
             ("Parts Index", ("i", record["NumParts"]), "<"),
             ("Vertices", ("d", 2 * record["NumPoints"]), "<"),
         )
-        _unpackDict2(record, contentStruct, dat)
+        _unpackDict2(record, content_struct, dat)
 
         # record['Vertices'] = [
         #    (record['Vertices'][i], record['Vertices'][i+1])
@@ -993,7 +958,7 @@ class PolyLine:
 
         # Next line is equivalent to: zip(verts[::2],verts[1::2])
         record["Vertices"] = list(
-            zip(islice(verts, 0, None, 2), islice(verts, 1, None, 2))
+            zip(islice(verts, 0, None, 2), islice(verts, 1, None, 2), strict=True)
         )
         if not record["Parts Index"]:
             record["Parts Index"] = [0]
@@ -1008,21 +973,21 @@ class PolyLine:
     @classmethod
     def pack(cls, record: dict) -> str:
         rheader = _packDict(cls.STRUCT, record)
-        contentStruct = (
-            ("Parts Index", "%di" % record["NumParts"], "<"),
-            ("Vertices", "%dd" % (2 * record["NumPoints"]), "<"),
+        content_struct = (
+            ("Parts Index", f"{record['NumParts']}i", "<"),
+            ("Vertices", f"{2 * record['NumPoints']}d", "<"),
         )
         content = {}
         content["Parts Index"] = record["Parts Index"]
         verts = []
         [verts.extend(vert) for vert in record["Vertices"]]
         content["Vertices"] = verts
-        content = _packDict(contentStruct, content)
+        content = _packDict(content_struct, content)
 
         return rheader + content
 
 
-class PolyLineZ(object):
+class PolyLineZ:
     HASZ = True
     HASM = True
     String_Type = "ARC"
@@ -1055,16 +1020,15 @@ class PolyLineZ(object):
     @classmethod
     def unpack(cls, dat) -> dict:
         """
-        
+
         Parameters
         ----------
         dat : file
             An open file at the correct position.
-        
         """
 
         record = _unpackDict(cls.USTRUCT, dat)
-        contentStruct = (
+        content_struct = (
             ("Parts Index", ("i", record["NumParts"]), "<"),
             ("Vertices", ("d", 2 * record["NumPoints"]), "<"),
             ("Zmin", ("d", 1), "<"),
@@ -1075,10 +1039,10 @@ class PolyLineZ(object):
             ("Marray", ("d", record["NumPoints"]), "<"),
         )
 
-        _unpackDict2(record, contentStruct, dat)
+        _unpackDict2(record, content_struct, dat)
         verts = record["Vertices"]
         record["Vertices"] = list(
-            zip(islice(verts, 0, None, 2), islice(verts, 1, None, 2))
+            zip(islice(verts, 0, None, 2), islice(verts, 1, None, 2), strict=True)
         )
 
         if not record["Parts Index"]:
@@ -1093,15 +1057,15 @@ class PolyLineZ(object):
     @classmethod
     def pack(cls, record: dict) -> str:
         rheader = _packDict(cls.STRUCT, record)
-        contentStruct = (
-            ("Parts Index", "%di" % record["NumParts"], "<"),
-            ("Vertices", "%dd" % (2 * record["NumPoints"]), "<"),
+        content_struct = (
+            ("Parts Index", f"{record['NumParts']}i", "<"),
+            ("Vertices", f"{2 * record['NumPoints']}d", "<"),
             ("Zmin", "d", "<"),
             ("Zmax", "d", "<"),
-            ("Zarray", "%dd" % (record["NumPoints"]), "<"),
+            ("Zarray", f"{record['NumPoints']}d", "<"),
             ("Mmin", "d", "<"),
             ("Mmax", "d", "<"),
-            ("Marray", "%dd" % (record["NumPoints"]), "<"),
+            ("Marray", f"{record['NumPoints']}d", "<"),
         )
 
         content = {}
@@ -1110,17 +1074,16 @@ class PolyLineZ(object):
         verts = []
         [verts.extend(vert) for vert in record["Vertices"]]
         content["Vertices"] = verts
-        content = _packDict(contentStruct, content)
+        content = _packDict(content_struct, content)
 
         return rheader + content
 
 
 class Polygon(PolyLine):
     """Packs and unpacks a shapefile Polygon type identical to PolyLine.
-    
+
     Examples
     --------
-    
     >>> import libpysal
     >>> shp = shp_file(libpysal.examples.get_path('Polygon.shp'))
     >>> rec = shp.get_shape(1)
@@ -1144,13 +1107,12 @@ class Polygon(PolyLine):
     ...     'Parts Index': [0]
     ...     }
     True
-    
+
     >>> # +8 byte record header
     >>> pos = shp.fileObj.seek(shp._shx.index[1][0] + 8)
     >>> dat = shp.fileObj.read(shp._shx.index[1][1])
     >>> dat == Polygon.pack(rec)
     True
-    
     """
 
     String_Type = "POLYGON"

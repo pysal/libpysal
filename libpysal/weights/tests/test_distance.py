@@ -1,32 +1,30 @@
-from ...common import RTOL, ATOL, pandas
-from ...cg.kdtree import KDTree, RADIUS_EARTH_KM
-from ..util import get_points_array
-from ... import cg
-from ... import weights
-from .. import raster
-from .. import distance as d, contiguity as c
-from ...io import geotable as pdio
-from ...io.fileio import FileIO as psopen
 import numpy as np
-from ... import examples as pysal_examples
-import unittest as ut
 
-PANDAS_EXTINCT = pandas is None
+from ... import cg
+from ... import examples as pysal_examples
+from ...cg.kdtree import KDTree
+from ...common import RTOL
+from ...io import geotable as pdio
+from ...io.fileio import FileIO
+from .. import contiguity as c
+from .. import distance as d
+from ..util import get_points_array
+
 # All instances should test these four methods, and define their own functional
 # tests based on common codepaths/estimated weights use cases.
 
 
-class Distance_Mixin(object):
+class DistanceMixin:
     polygon_path = pysal_examples.get_path("columbus.shp")
     arc_path = pysal_examples.get_path("stl_hom.shp")
     points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
     euclidean_kdt = KDTree(points, distance_metric="euclidean")
 
-    polygon_f = psopen(polygon_path)  # our file handler
+    polygon_f = FileIO(polygon_path)  # our file handler
     poly_centroids = get_points_array(polygon_f)  # our iterable
     polygon_f.seek(0)  # go back to head of file
 
-    arc_f = psopen(arc_path)
+    arc_f = FileIO(arc_path)
     arc_points = get_points_array(arc_f)
     arc_f.seek(0)
     arc_kdt = KDTree(
@@ -35,14 +33,14 @@ class Distance_Mixin(object):
 
     cls = object  # class constructor
     known_wi = None  # index of known w entry to compare
-    known_w = dict()  # actual w entry
+    known_w = {}  # actual w entry
     known_name = known_wi
 
-    def setUp(self):
+    def setup_method(self):
         self.__dict__.update(
             {
                 k: v
-                for k, v in list(Distance_Mixin.__dict__.items())
+                for k, v in list(DistanceMixin.__dict__.items())
                 if not k.startswith("_")
             }
         )
@@ -50,31 +48,31 @@ class Distance_Mixin(object):
     def test_init(self):
         # test vanilla, named
         raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
+            "You need to implement this test before this module will pass"
         )
 
     def test_from_shapefile(self):
         # test vanilla, named, sparse
         raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
+            "You need to implement this test before this module will pass"
         )
 
     def test_from_array(self):
         # test named, sparse
         raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
+            "You need to implement this test before this module will pass"
         )
 
     def test_from_dataframe(self):
         # test named, columnar, defau
         raise NotImplementedError(
-            "You need to implement this test " "before this module will pass"
+            "You need to implement this test before this module will pass"
         )
 
 
-class Test_KNN(ut.TestCase, Distance_Mixin):
-    def setUp(self):
-        Distance_Mixin.setUp(self)
+class TestKNN(DistanceMixin):
+    def setup_method(self):
+        DistanceMixin.setup_method(self)
 
         self.known_wi0 = 7
         self.known_w0 = [3, 6, 12, 11]
@@ -92,36 +90,38 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
 
     def test_init(self):
         w = d.KNN(self.euclidean_kdt, k=2)
-        self.assertEqual(w.neighbors[0], [1, 3])
+        assert w.neighbors[0] == [1, 3]
 
-    @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         df = pdio.read_files(self.polygon_path)
         w = d.KNN.from_dataframe(df, k=4)
-        self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
-        self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+        assert w.neighbors[self.known_wi0] == self.known_w0
+        assert w.neighbors[self.known_wi1] == self.known_w1
 
         # named geometry
         df.rename(columns={"geometry": "the_geom"}, inplace=True)
         w = d.KNN.from_dataframe(df, k=4, geom_col="the_geom")
-        self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
-        self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+        assert w.neighbors[self.known_wi0] == self.known_w0
+        assert w.neighbors[self.known_wi1] == self.known_w1
 
+    def test_from_geodataframe(self):
+        df = pdio.read_files(self.polygon_path)
         # named active geometry
+        df.rename(columns={"geometry": "the_geom"}, inplace=True)
         df = df.set_geometry("the_geom")
         w = d.KNN.from_dataframe(df, k=4)
-        self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
-        self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+        assert w.neighbors[self.known_wi0] == self.known_w0
+        assert w.neighbors[self.known_wi1] == self.known_w1
 
     def test_from_array(self):
         w = d.KNN.from_array(self.poly_centroids, k=4)
-        self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
-        self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+        assert w.neighbors[self.known_wi0] == self.known_w0
+        assert w.neighbors[self.known_wi1] == self.known_w1
 
     def test_from_shapefile(self):
         w = d.KNN.from_shapefile(self.polygon_path, k=4)
-        self.assertEqual(w.neighbors[self.known_wi0], self.known_w0)
-        self.assertEqual(w.neighbors[self.known_wi1], self.known_w1)
+        assert w.neighbors[self.known_wi0] == self.known_w0
+        assert w.neighbors[self.known_wi1] == self.known_w1
 
     ##########################
     # Function/User tests    #
@@ -131,7 +131,7 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
         w = d.KNN(self.points, k=2)
         new_point = [(21, 21)]
         wnew = w.reweight(k=4, p=1, new_data=new_point, inplace=False)
-        self.assertEqual(wnew[0], {1: 1.0, 3: 1.0, 4: 1.0, 6: 1.0})
+        assert wnew[0] == {1: 1.0, 3: 1.0, 4: 1.0, 6: 1.0}
 
     def test_arcdata(self):
         w = d.KNN.from_shapefile(
@@ -140,15 +140,15 @@ class Test_KNN(ut.TestCase, Distance_Mixin):
             distance_metric="Arc",
             radius=cg.sphere.RADIUS_EARTH_KM,
         )
-        self.assertEqual(w.data.shape[1], 3)
+        assert w.data.shape[1] == 3
 
 
-class Test_DistanceBand(ut.TestCase, Distance_Mixin):
-    def setUp(self):
-        Distance_Mixin.setUp(self)
+class TestDistanceBand(DistanceMixin):
+    def setup_method(self):
+        DistanceMixin.setup_method(self)
         self.grid_path = pysal_examples.get_path("lattice10x10.shp")
         self.grid_rook_w = c.Rook.from_shapefile(self.grid_path)
-        self.grid_f = psopen(self.grid_path)
+        self.grid_f = FileIO(self.grid_path)
         self.grid_points = get_points_array(self.grid_f)
         self.grid_f.seek(0)
 
@@ -161,42 +161,50 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
     def test_init(self):
         w = d.DistanceBand(self.grid_kdt, 1)
         for k, v in w:
-            self.assertEqual(v, self.grid_rook_w[k])
+            assert v == self.grid_rook_w[k]
 
     def test_from_shapefile(self):
         w = d.DistanceBand.from_shapefile(self.grid_path, 1)
         for k, v in w:
-            self.assertEqual(v, self.grid_rook_w[k])
+            assert v == self.grid_rook_w[k]
 
     def test_from_array(self):
         w = d.DistanceBand.from_array(self.grid_points, 1)
         for k, v in w:
-            self.assertEqual(v, self.grid_rook_w[k])
+            assert v == self.grid_rook_w[k]
 
-    @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         import pandas as pd
-        import geopandas as gpd
 
         geom_series = pdio.shp.shp2series(self.grid_path)
         random_data = np.random.random(size=len(geom_series))
         df = pd.DataFrame({"obs": random_data, "geometry": geom_series})
         w = d.DistanceBand.from_dataframe(df, 1)
         for k, v in w:
-            self.assertEqual(v, self.grid_rook_w[k])
+            assert v == self.grid_rook_w[k]
 
+    def test_from_geodataframe(self):
+        import geopandas as gpd
+        import pandas as pd
+
+        geom_series = pdio.shp.shp2series(self.grid_path)
+        random_data = np.random.random(size=len(geom_series))
+        df = pd.DataFrame({"obs": random_data, "geometry": geom_series})
+        w = d.DistanceBand.from_dataframe(df, 1)
+        for k, v in w:
+            assert v == self.grid_rook_w[k]
         # named geometry
         df = gpd.GeoDataFrame(df)
         df.rename(columns={"geometry": "the_geom"}, inplace=True)
         w = d.DistanceBand.from_dataframe(df, 1, geom_col="the_geom")
         for k, v in w:
-            self.assertEqual(v, self.grid_rook_w[k])
+            assert v == self.grid_rook_w[k]
 
         # named active geometry
         df = df.set_geometry("the_geom")
         w = d.DistanceBand.from_dataframe(df, 1)
         for k, v in w:
-            self.assertEqual(v, self.grid_rook_w[k])
+            assert v == self.grid_rook_w[k]
 
     ##########################
     # Function/User tests    #
@@ -209,7 +217,7 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         self.grid_f.seek(0)
         grid_dbw = d.DistanceBand(grid_integers, 1)
         for k, v in grid_dbw:
-            self.assertEqual(v, self.grid_rook_w[k])
+            assert v == self.grid_rook_w[k]
 
     def test_arcdist(self):
         arc = cg.sphere.arcdist
@@ -226,18 +234,17 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         maxdist = full.max()
         w = d.DistanceBand(kdt, maxdist, binary=False, alpha=1.0)
         np.testing.assert_allclose(w.sparse.todense(), full)
-        self.assertEqual(w.data.shape[1], 3)
+        assert w.data.shape[1] == 3
 
     def test_dense(self):
         w_rook = c.Rook.from_shapefile(pysal_examples.get_path("lattice10x10.shp"))
-        polys = psopen(pysal_examples.get_path("lattice10x10.shp"))
+        polys = FileIO(pysal_examples.get_path("lattice10x10.shp"))
         centroids = [p.centroid for p in polys]
         w_db = d.DistanceBand(centroids, 1, build_sp=False)
 
         for k in w_db.id_order:
             np.testing.assert_equal(w_db[k], w_rook[k])
 
-    @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_named(self):
         import pandas as pd
 
@@ -247,11 +254,13 @@ class Test_DistanceBand(ut.TestCase, Distance_Mixin):
         df = pd.DataFrame({"obs": random_data, "geometry": geom_series, "names": names})
         w = d.DistanceBand.from_dataframe(df, 1, ids=df.names)
 
+        for k, o1, o2 in zip(names, df["names"].values, w.id_order, strict=True):
+            assert k == o1 == o2
 
-class Test_Kernel(ut.TestCase, Distance_Mixin):
-    def setUp(self):
 
-        Distance_Mixin.setUp(self)
+class TestKernel(DistanceMixin):
+    def setup_method(self):
+        DistanceMixin.setup_method(self)
         self.known_wi0 = 0
         self.known_w0 = {0: 1, 1: 0.500000049999995, 3: 0.4409830615267465}
 
@@ -322,13 +331,14 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
         for k, v in list(w[self.known_wi0].items()):
             np.testing.assert_allclose(v, self.known_w0[k], rtol=RTOL)
 
-    @ut.skipIf(PANDAS_EXTINCT, "Missing pandas")
     def test_from_dataframe(self):
         df = pdio.read_files(self.polygon_path)
         w = d.Kernel.from_dataframe(df)
         for k, v in list(w[self.known_wi5 - 1].items()):
             np.testing.assert_allclose(v, self.known_w5[k + 1], rtol=RTOL)
 
+    def test_from_geodataframe(self):
+        df = pdio.read_files(self.polygon_path)
         # named geometry
         df.rename(columns={"geometry": "the_geom"}, inplace=True)
         w = d.Kernel.from_dataframe(df, geom_col="the_geom")
@@ -340,6 +350,18 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
         w = d.Kernel.from_dataframe(df)
         for k, v in list(w[self.known_wi5 - 1].items()):
             np.testing.assert_allclose(v, self.known_w5[k + 1], rtol=RTOL)
+
+    def test_w_normalize(self):
+        wg = d.Kernel.from_array(self.points, function="gaussian")
+        np.testing.assert_allclose(
+            wg.weights[0],
+            [0.3989422804014327, 0.35206533556593145, 0.3412334260702758],
+            rtol=RTOL,
+        )
+        wgun = d.Kernel.from_array(self.points, function="gaussian", normalize=False)
+        np.testing.assert_allclose(
+            wgun.weights[0], [1.0, 0.8824969246470149, 0.8553453540369604], rtol=RTOL
+        )
 
     ##########################
     # Function/User tests    #
@@ -378,13 +400,4 @@ class Test_Kernel(ut.TestCase, Distance_Mixin):
             distance_metric="Arc",
             radius=cg.sphere.RADIUS_EARTH_KM,
         )
-        self.assertEqual(w.data.shape[1], 3)
-
-
-knn = ut.TestLoader().loadTestsFromTestCase(Test_KNN)
-kern = ut.TestLoader().loadTestsFromTestCase(Test_Kernel)
-db = ut.TestLoader().loadTestsFromTestCase(Test_DistanceBand)
-suite = ut.TestSuite([knn, kern, db])
-if __name__ == "__main__":
-    runner = ut.TextTestRunner()
-    runner.run(suite)
+        assert w.data.shape[1] == 3

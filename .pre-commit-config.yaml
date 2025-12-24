@@ -1,6 +1,11 @@
-repos: 
--   repo: https://github.com/psf/black
-    rev: 21.12b0
+files: "libpysal\/|docs\/"
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.13.3"
     hooks:
-    - id: black
-      language_version: python3.9
+      - id: ruff-check
+      - id: ruff-format
+
+ci:
+  autofix_prs: false
+  autoupdate_schedule: quarterly

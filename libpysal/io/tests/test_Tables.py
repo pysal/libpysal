@@ -1,25 +1,24 @@
-import numpy as np
-from ..fileio import FileIO as psopen
-from ...common import pandas
+# ruff: noqa: N999
 
-# import pysal_examples
+import numpy as np
+
 from ... import examples as pysal_examples
-import unittest as ut
+from ...common import pandas
+from ..fileio import FileIO
 
 PANDAS_EXTINCT = pandas is None
 
 
-class Test_Table(ut.TestCase):
-    def setUp(self):
-        self.filehandler = psopen(pysal_examples.get_path("columbus.dbf"))
+class TestTable:
+    def setup_method(self):
+        self.filehandler = FileIO(pysal_examples.get_path("columbus.dbf"))
         self.df = self.filehandler.to_df()
         self.filehandler.seek(0)
-        self.shapefile = psopen(pysal_examples.get_path("columbus.shp"))
-        self.csvhandler = psopen(pysal_examples.get_path("usjoin.csv"))
+        self.shapefile = FileIO(pysal_examples.get_path("columbus.shp"))
+        self.csvhandler = FileIO(pysal_examples.get_path("usjoin.csv"))
         self.csv_df = self.csvhandler.to_df()
         self.csvhandler.seek(0)
 
-    @ut.skipIf(PANDAS_EXTINCT, "Missing pandas.")
     def test_to_df(self):
         for column in self.csv_df.columns:
             if column.lower() == "name":

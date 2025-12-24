@@ -1,3 +1,5 @@
+# ruff: noqa: SIM115
+
 from .. import fileio
 from ..util import WKTParser
 
@@ -16,7 +18,7 @@ class WKTReader(fileio.FileIO):
 
     Examples
     --------
-    
+
     Read in WKT-formatted file.
 
     >>> import libpysal
@@ -49,7 +51,7 @@ class WKTReader(fileio.FileIO):
         self.__pos = 0
         self.__open()
 
-    def open(self):
+    def open(self):  # noqa: A003
         self.__open()
 
     def __open(self):
@@ -100,7 +102,7 @@ class WKTReader(fileio.FileIO):
             while pos not in self.__idx:
                 s = self._read()
                 if not s:
-                    msg = "%d not in range(0,%d)." % (pos, max(self.__idx.keys()))
+                    msg = f"{pos} not in range(0,{max(self.__idx.keys())})."
                     raise IndexError(msg)
             self.pos = pos
             self.__pos = pos

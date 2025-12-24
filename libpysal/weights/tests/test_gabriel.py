@@ -1,6 +1,8 @@
-from .. import gabriel
+import geopandas
+import numpy
+
 from ... import examples
-import geopandas, numpy
+from .. import gabriel
 
 path = examples.get_path("columbus.shp")
 df = geopandas.read_file(path)
@@ -29,6 +31,7 @@ def test_gabriel():
         dneighbors = c2[focal]
         assert set(neighbors) <= set(dneighbors)
 
+
 def test_rng():
     e = gabriel.Relative_Neighborhood(coords)
     f = gabriel.Relative_Neighborhood.from_dataframe(df.centroid)
@@ -36,8 +39,12 @@ def test_rng():
 
     assert e.neighbors == f.neighbors
 
+    # RNG should be a subgraph of Delaunay
+    for k, neighbors in e.neighbors.items():
+        assert set(neighbors) <= set(dty[k])
+
     assert e[1] != dty[1]
-    assert list(e[1].keys()) == [0,3,6,30,38]
+    assert list(e[1].keys()) == [0, 3]
     for focal, neighbors in e.neighbors.items():
         dneighbors = dty[focal]
         assert set(neighbors) <= set(dneighbors)

@@ -1,43 +1,40 @@
+# ruff: noqa: N802, N806, SIM115
+
 from .. import tables
 
 __author__ = "Charles R Schmidt <schmidtc@gmail.com>"
 __all__ = ["GeoDaTxtReader"]
 
-from typing import Union
-
 
 class GeoDaTxtReader(tables.DataTable):
     """GeoDa Text File Export Format.
-    
+
     Examples
     --------
-    
+
     >>> import libpysal
     >>> f = libpysal.io.open(libpysal.examples.get_path('stl_hom.txt'),'r')
     >>> f.header
     ['FIPSNO', 'HR8488', 'HR8893', 'HC8488']
-    
+
     >>> len(f)
     78
-    
+
     >>> f.dat[0]
     ['17107', '1.290722', '1.624458', '2']
-    
+
     >>> f.dat[-1]
     ['29223', '0', '8.451537', '0']
-    
+
     >>> f._spec
     [int, float, float, int]
 
     """
 
-    __doc__ = tables.DataTable.__doc__
-
     FORMATS = ["geoda_txt"]
     MODES = ["r"]
 
     def __init__(self, *args, **kwargs):
-
         tables.DataTable.__init__(self, *args, **kwargs)
         self.__idx = {}
         self.__len = None
@@ -46,17 +43,16 @@ class GeoDaTxtReader(tables.DataTable):
 
     def _open(self):
         """
-        
+
         Raises
         ------
         TypeError
             Raised when the input 'geoda_txt' is not valid.
-        
+
         """
 
         if self.mode == "r":
-
-            self.fileObj = open(self.dataPath, "r")
+            self.fileObj = open(self.dataPath)
             n, k = self.fileObj.readline().strip().split(",")
             n, k = int(n), int(k)
             header = self.fileObj.readline().strip().split(",")
@@ -65,7 +61,7 @@ class GeoDaTxtReader(tables.DataTable):
             try:
                 assert len(self.header) == k
             except AssertionError:
-                raise TypeError("This is not a valid 'geoda_txt' file.")
+                raise TypeError("This is not a valid 'geoda_txt' file.") from None
 
             dat = self.fileObj.readlines()
 
@@ -76,7 +72,7 @@ class GeoDaTxtReader(tables.DataTable):
     def __len__(self) -> int:
         return self.__len
 
-    def _read(self) -> Union[list, None]:
+    def _read(self) -> list | None:
         if self.pos < len(self):
             row = self.dat[self.pos]
             self.pos += 1
@@ -114,3 +110,6 @@ class GeoDaTxtReader(tables.DataTable):
                 spec.append(str)
 
         return spec
+
+
+GeoDaTxtReader.__doc__ = tables.DataTable.__doc__

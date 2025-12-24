@@ -1,24 +1,14 @@
-import unittest as ut
-from .. import tabular as ta
-from ....common import RTOL, ATOL, pandas, requires as _requires
-from ....examples import get_path
-from ...shapes import Polygon
-from ....io import geotable as pdio
-from ... import ops as GIS
 import numpy as np
 
-try:
-    import shapely as shp
-except ImportError:
-    shp = None
-
-PANDAS_EXTINCT = pandas is None
-SHAPELY_EXTINCT = shp is None
+from ....common import requires as _requires
+from ....examples import get_path
+from ....io import geotable as pdio
+from ... import ops as GIS  # noqa: N812
+from ...shapes import Polygon
 
 
-@ut.skipIf(PANDAS_EXTINCT or SHAPELY_EXTINCT, "Missing pandas or shapely.")
-class Test_Tabular(ut.TestCase):
-    def setUp(self):
+class TestTabular:
+    def setup_method(self):
         import pandas as pd
 
         self.columbus = pdio.read_files(get_path("columbus.shp"))
@@ -40,11 +30,11 @@ class Test_Tabular(ut.TestCase):
         import pandas as pd
 
         geodf = GIS.tabular.to_gdf(self.columbus)
-        self.assertIsInstance(geodf, gpd.GeoDataFrame)
+        assert isinstance(geodf, gpd.GeoDataFrame)
         new_df = GIS.tabular.to_df(geodf)
-        self.assertIsInstance(new_df, pd.DataFrame)
-        for new, old in zip(new_df.geometry, self.columbus.geometry):
-            self.assertEqual(new, old)
+        assert isinstance(new_df, pd.DataFrame)
+        for new, old in zip(new_df.geometry, self.columbus.geometry, strict=True):
+            assert new == old
 
     def test_spatial_join(self):
         pass
@@ -54,18 +44,17 @@ class Test_Tabular(ut.TestCase):
 
     def test_dissolve(self):
         out = GIS.tabular.dissolve(self.exdf, by="regime")
-        self.assertEqual(out[0].area, 2.0)
-        self.assertEqual(out[1].area, 2.0)
+        assert out[0].area == 2.0
+        assert out[1].area == 2.0
 
-        answer_vertices0 = set([(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)])
-        answer_vertices1 = set([(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (2, 1)])
+        answer_vertices0 = {(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)}
+        answer_vertices1 = {(2, 1), (2, 0), (1, 0), (1, 1), (1, 2), (2, 2), (2, 1)}
 
-        s0 = set([tuple(map(int,t)) for t in out[0].vertices])
-        s1 = set([tuple(map(int,t)) for t in out[1].vertices])
+        s0 = {tuple(map(int, t)) for t in out[0].vertices}
+        s1 = {tuple(map(int, t)) for t in out[1].vertices}
 
-        self.assertTrue(s0==answer_vertices0)
-        self.assertTrue(s1==answer_vertices1)
-
+        assert s0 == answer_vertices0
+        assert s1 == answer_vertices1
 
     def test_clip(self):
         pass
@@ -75,7 +64,7 @@ class Test_Tabular(ut.TestCase):
 
     def test_union(self):
         new_geom = GIS.tabular.union(self.exdf)
-        self.assertEqual(new_geom.area, 4)
+        assert new_geom.area == 4
 
     def test_intersection(self):
         pass

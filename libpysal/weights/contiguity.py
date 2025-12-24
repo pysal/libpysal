@@ -1,16 +1,20 @@
+# ruff: noqa: B006, N802, N803, N813
+
 import itertools
+import warnings
 
 import numpy
 
 from ..cg import voronoi_frames
 from ..io.fileio import FileIO
 from ._contW_lists import ContiguityWeightsLists
+from .raster import da2W, da2WSP
 from .util import get_ids, get_points_array
 from .weights import WSP, W
-from .raster import da2W, da2WSP
 
 try:
     from shapely.geometry import Point as shapely_point
+
     from ..cg.shapes import Point as pysal_point
 
     point_type = (shapely_point, pysal_point)
@@ -26,7 +30,8 @@ __all__ = ["Rook", "Queen", "Voronoi"]
 
 class Rook(W):
     """
-    Construct a weights object from a collection of pysal polygons that share at least one edge.
+    Construct a weights object from a collection of pysal
+    polygons that share at least one edge.
 
     Parameters
     ----------
@@ -38,7 +43,7 @@ class Rook(W):
                 optional arguments for :class:`pysal.weights.W`
 
     See Also
-    ---------
+    --------
     :class:`libpysal.weights.weights.W`
     """
 
@@ -48,8 +53,10 @@ class Rook(W):
         polygons, backup = itertools.tee(polygons)
         first_shape = next(iter(backup))
         if isinstance(first_shape, point_type):
-            polygons, vertices = voronoi_frames(get_points_array(polygons))
-            polygons = list(polygons.geometry)
+            polygons = voronoi_frames(
+                get_points_array(polygons), return_input=False, as_gdf=False
+            )
+            polygons = list(polygons)
         neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
 
@@ -60,7 +67,6 @@ class Rook(W):
 
         Parameters
         ----------
-
         shapefile : string
                     name of polygon shapefile including suffix.
         sparse    : boolean
@@ -69,7 +75,6 @@ class Rook(W):
 
         Returns
         -------
-
         w          : W
                      instance of spatial weights
 
@@ -80,7 +85,9 @@ class Rook(W):
         >>> wr=Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), "POLYID")
         >>> "%.3f"%wr.pct_nonzero
         '8.330'
-        >>> wr=Rook.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
+        >>> wr=Rook.from_shapefile(
+        ...     libpysal.examples.get_path("columbus.shp"), sparse=True
+        ... )
         >>> pct_sp = wr.sparse.nnz *1. / wr.n**2
         >>> "%.3f"%pct_sp
         '0.083'
@@ -97,10 +104,7 @@ class Rook(W):
         :class:`libpysal.weights.contiguity.Rook`
         """
         sparse = kwargs.pop("sparse", False)
-        if idVariable is not None:
-            ids = get_ids(filepath, idVariable)
-        else:
-            ids = None
+        ids = get_ids(filepath, idVariable) if idVariable is not None else None
         w = cls(FileIO(filepath), ids=ids, **kwargs)
         w.set_shapefile(filepath, idVariable=idVariable, full=full)
         if sparse:
@@ -120,6 +124,7 @@ class Rook(W):
                       support iteration. Can be either Shapely or PySAL shapes.
         **kw        : keyword arguments
                       optional arguments for  :class:`pysal.weights.W`
+
         See Also
         --------
         :class:`libpysal.weights.weights.W`
@@ -133,10 +138,17 @@ class Rook(W):
 
     @classmethod
     def from_dataframe(
-        cls, df, geom_col=None, idVariable=None, ids=None, id_order=None, **kwargs
+        cls,
+        df,
+        geom_col=None,
+        idVariable=None,
+        ids=None,
+        id_order=None,
+        use_index=None,
+        **kwargs,
     ):
         """
-        Construct a weights object from a pandas dataframe with a geometry
+        Construct a weights object from a (geo)pandas dataframe with a geometry
         column. This will cast the polygons to PySAL polygons, then build the W
         using ids from the dataframe.
 
@@ -149,16 +161,24 @@ class Rook(W):
                       the name of the column in `df` that contains the
                       geometries. Defaults to active geometry column.
         idVariable  : string
+                      DEPRECATED - use `ids` instead.
                       the name of the column to use as IDs. If nothing is
                       provided, the dataframe index is used
-        ids         : list
-                      a list of ids to use to index the spatial weights object.
-                      Order is not respected from this list.
+        ids         : list-like, string
+                      a list-like of ids to use to index the spatial weights object or
+                      the name of the column to use as IDs. If nothing is
+                      provided, the dataframe index is used if `use_index=True` or
+                      a positional index is used if `use_index=False`.
+                      Order of the resulting W is not respected from this list.
         id_order    : list
-                      an ordered list of ids to use to index the spatial weights
+                      DEPRECATED - argument is deprecated and will be removed.
+                      An ordered list of ids to use to index the spatial weights
                       object. If used, the resulting weights object will iterate
                       over results in the order of the names provided in this
-                      argument. 
+                      argument.
+        use_index   : bool
+                      use index of `df` as `ids` to index the spatial weights object.
+                      Defaults to False but in future will default to True.
 
         See Also
         --------
@@ -167,17 +187,62 @@ class Rook(W):
         """
         if geom_col is None:
             geom_col = df.geometry.name
+
         if id_order is not None:
+            warnings.warn(
+                "`id_order` is deprecated and will be removed in future.",
+                FutureWarning,
+                stacklevel=2,
+            )
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
                 # idVariable column
                 id_order = list(df.get(idVariable, ids))
             else:
                 id_order = df.get(id_order, ids)
-        elif idVariable is not None:
-            ids = df.get(idVariable).tolist()
-        elif isinstance(ids, str):
-            ids = df.get(ids).tolist()
+
+        if idVariable is not None:
+            if ids is None:
+                warnings.warn(
+                    "`idVariable` is deprecated and will be removed in future. "
+                    "Use `ids` instead.",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                ids = idVariable
+            else:
+                warnings.warn(
+                    "Both `idVariable` and `ids` passed, using `ids`.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+
+        if ids is None:
+            if use_index is None:
+                warnings.warn(
+                    "`use_index` defaults to False but will default to True in future. "
+                    "Set True/False directly to control this behavior and silence this "
+                    "warning",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                use_index = False
+            if use_index:
+                ids = df.index.tolist()
+
+        else:
+            if isinstance(ids, str):
+                ids = df[ids]
+
+            if not isinstance(ids, list):
+                ids = ids.tolist()
+
+            if len(ids) != len(df):
+                raise ValueError("The length of `ids` does not match the length of df.")
+
+        if id_order is None:
+            id_order = ids
+
         return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
@@ -190,7 +255,7 @@ class Rook(W):
         coords_labels={},
         k=1,
         include_nodata=False,
-        n_jobs=1,
+        n_jobs=1,  # noqa: ARG003
         sparse=True,
         **kwargs,
     ):
@@ -208,10 +273,12 @@ class Rook(W):
         coords_labels : dictionary
             Pass dimension labels for coordinates and layers if they do not
             belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+            e.g. coords_labels = {"y_label": "latitude",
+            "x_label": "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
-            type of weight object. Default is True. For libpysal.weights.W, sparse = False
+            type of weight object. Default is True.
+            For libpysal.weights.W, sparse = False
         k : int
             Order of contiguity, this will select all neighbors upto kth order.
             Default is 1.
@@ -227,7 +294,7 @@ class Rook(W):
         Returns
         -------
         w : libpysal.weights.W/libpysal.weights.WSP
-            instance of spatial weights class W or WSP with an index attribute 
+            instance of spatial weights class W or WSP with an index attribute
 
         Notes
         -----
@@ -249,7 +316,8 @@ class Rook(W):
 
 class Queen(W):
     """
-    Construct a weights object from a collection of pysal polygons that share at least one vertex.
+    Construct a weights object from a collection of pysal
+    polygons that share at least one vertex.
 
     Parameters
     ----------
@@ -271,8 +339,10 @@ class Queen(W):
         polygons, backup = itertools.tee(polygons)
         first_shape = next(iter(backup))
         if isinstance(first_shape, point_type):
-            polygons, vertices = voronoi_frames(get_points_array(polygons))
-            polygons = list(polygons.geometry)
+            polygons = voronoi_frames(
+                get_points_array(polygons), return_input=False, as_gdf=False
+            )
+            polygons = list(polygons)
         neighbors, ids = _build(polygons, criterion=criterion, ids=ids)
         W.__init__(self, neighbors, ids=ids, **kw)
 
@@ -283,7 +353,6 @@ class Queen(W):
 
         Parameters
         ----------
-
         shapefile   : string
                       name of polygon shapefile including suffix.
         idVariable  : string
@@ -291,9 +360,9 @@ class Queen(W):
         sparse      : boolean
                       If True return WSP instance
                       If False return W instance
+
         Returns
         -------
-
         w            : W
                        instance of spatial weights
 
@@ -307,13 +376,15 @@ class Queen(W):
         >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"),"POLYID")
         >>> "%.3f"%wq.pct_nonzero
         '9.829'
-        >>> wq=Queen.from_shapefile(libpysal.examples.get_path("columbus.shp"), sparse=True)
+        >>> wq=Queen.from_shapefile(
+        ...     libpysal.examples.get_path("columbus.shp"), sparse=True
+        ... )
         >>> pct_sp = wq.sparse.nnz *1. / wq.n**2
         >>> "%.3f"%pct_sp
         '0.098'
 
         Notes
-
+        -----
         Queen contiguity defines as neighbors any pair of polygons that share at
         least one vertex in their polygon definitions.
 
@@ -323,10 +394,7 @@ class Queen(W):
         :class:`libpysal.weights.contiguity.Queen`
         """
         sparse = kwargs.pop("sparse", False)
-        if idVariable is not None:
-            ids = get_ids(filepath, idVariable)
-        else:
-            ids = None
+        ids = get_ids(filepath, idVariable) if idVariable is not None else None
         w = cls(FileIO(filepath), ids=ids, **kwargs)
         w.set_shapefile(filepath, idVariable=idVariable, full=full)
         if sparse:
@@ -336,18 +404,21 @@ class Queen(W):
     @classmethod
     def from_iterable(cls, iterable, sparse=False, **kwargs):
         """
-        Construct a weights object from a collection of arbitrary polygons. This
-        will cast the polygons to PySAL polygons, then build the W.
+        Construct a weights object from a collection of arbitrary polygons.
+
+        This will cast the polygons to PySAL polygons, then build the W.
 
         Parameters
         ----------
         iterable    : iterable
-                      a collection of of shapes to be cast to PySAL shapes. Must
-                      support iteration. Contents may either be a shapely or PySAL shape.
+                      a collection of of shapes to be cast to PySAL shapes.
+                      Must support iteration. Contents may either be
+                      a shapely or PySAL shape.
         **kw        : keyword arguments
                       optional arguments for  :class:`pysal.weights.W`
+
         See Also
-        ---------
+        --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguiyt.Queen`
         """
@@ -358,9 +429,18 @@ class Queen(W):
         return w
 
     @classmethod
-    def from_dataframe(cls, df, geom_col=None, **kwargs):
+    def from_dataframe(
+        cls,
+        df,
+        geom_col=None,
+        idVariable=None,
+        ids=None,
+        id_order=None,
+        use_index=None,
+        **kwargs,
+    ):
         """
-        Construct a weights object from a pandas dataframe with a geometry
+        Construct a weights object from a (geo)pandas dataframe with a geometry
         column. This will cast the polygons to PySAL polygons, then build the W
         using ids from the dataframe.
 
@@ -371,46 +451,93 @@ class Queen(W):
                       for spatial weights
         geom_col    : string
                       the name of the column in `df` that contains the
-                      geometries. Defaults to active geometry column
+                      geometries. Defaults to active geometry column.
         idVariable  : string
+                      DEPRECATED - use `ids` instead.
                       the name of the column to use as IDs. If nothing is
                       provided, the dataframe index is used
-        ids         : list
-                      a list of ids to use to index the spatial weights object.
-                      Order is not respected from this list.
+        ids         : list-like, string
+                      a list-like of ids to use to index the spatial weights object or
+                      the name of the column to use as IDs. If nothing is
+                      provided, the dataframe index is used if `use_index=True` or
+                      a positional index is used if `use_index=False`.
+                      Order of the resulting W is not respected from this list.
         id_order    : list
-                      an ordered list of ids to use to index the spatial weights
+                      DEPRECATED - argument is deprecated and will be removed.
+                      An ordered list of ids to use to index the spatial weights
                       object. If used, the resulting weights object will iterate
                       over results in the order of the names provided in this
-                      argument. 
+                      argument.
+        use_index   : bool
+                      use index of `df` as `ids` to index the spatial weights object.
+                      Defaults to False but in future will default to True.
 
         See Also
         --------
         :class:`libpysal.weights.weights.W`
         :class:`libpysal.weights.contiguity.Queen`
         """
-        idVariable = kwargs.pop("idVariable", None)
-        ids = kwargs.pop("ids", None)
-        id_order = kwargs.pop("id_order", None)
         if geom_col is None:
             geom_col = df.geometry.name
+
         if id_order is not None:
+            warnings.warn(
+                "`id_order` is deprecated and will be removed in future.",
+                FutureWarning,
+                stacklevel=2,
+            )
             if id_order is True and ((idVariable is not None) or (ids is not None)):
                 # if idVariable is None, we want ids. Otherwise, we want the
                 # idVariable column
-                ids = list(df.get(idVariable, ids))
-                id_order = ids
-            elif isinstance(id_order, str):
-                ids = df.get(id_order, ids)
-                id_order = ids
-        elif idVariable is not None:
-            ids = df.get(idVariable).tolist()
-        elif isinstance(ids, str):
-            ids = df.get(ids).tolist()
-        w = cls.from_iterable(
+                id_order = list(df.get(idVariable, ids))
+            else:
+                id_order = df.get(id_order, ids)
+
+        if idVariable is not None:
+            if ids is None:
+                warnings.warn(
+                    "`idVariable` is deprecated and will be removed in future. "
+                    "Use `ids` instead.",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                ids = idVariable
+            else:
+                warnings.warn(
+                    "Both `idVariable` and `ids` passed, using `ids`.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+
+        if ids is None:
+            if use_index is None:
+                warnings.warn(
+                    "`use_index` defaults to False but will default to True in future. "
+                    "Set True/False directly to control this behavior and silence this "
+                    "warning",
+                    FutureWarning,
+                    stacklevel=2,
+                )
+                use_index = False
+            if use_index:
+                ids = df.index.tolist()
+
+        else:
+            if isinstance(ids, str):
+                ids = df[ids]
+
+            if not isinstance(ids, list):
+                ids = ids.tolist()
+
+            if len(ids) != len(df):
+                raise ValueError("The length of `ids` does not match the length of df.")
+
+        if id_order is None:
+            id_order = ids
+
+        return cls.from_iterable(
             df[geom_col].tolist(), ids=ids, id_order=id_order, **kwargs
         )
-        return w
 
     @classmethod
     def from_xarray(
@@ -420,7 +547,7 @@ class Queen(W):
         coords_labels={},
         k=1,
         include_nodata=False,
-        n_jobs=1,
+        n_jobs=1,  # noqa: ARG003
         sparse=True,
         **kwargs,
     ):
@@ -438,10 +565,12 @@ class Queen(W):
         coords_labels : dictionary
             Pass dimension labels for coordinates and layers if they do not
             belong to default dimensions, which are (band/time, y/lat, x/lon)
-            e.g. coords_labels = {"y_label": "latitude", "x_label": "longitude", "z_label": "year"}
+            e.g. coords_labels = {"y_label": "latitude", "x_label":
+            "longitude", "z_label": "year"}
             Default is {} empty dictionary.
         sparse : boolean
-            type of weight object. Default is True. For libpysal.weights.W, sparse = False
+            type of weight object. Default is True.
+            For libpysal.weights.W, sparse = False
         k : int
             Order of contiguity, this will select all neighbors upto kth order.
             Default is 1.
@@ -457,7 +586,7 @@ class Queen(W):
         Returns
         -------
         w : libpysal.weights.W/libpysal.weights.WSP
-            instance of spatial weights class W or WSP with an index attribute 
+            instance of spatial weights class W or WSP with an index attribute
 
         Notes
         -----
@@ -477,17 +606,14 @@ class Queen(W):
         return w
 
 
-def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
+def Voronoi(points, criterion="rook", clip="alpha_shape", **kwargs):
     """
     Voronoi weights for a 2-d point set
 
-
     Points are Voronoi neighbors if their polygons share an edge or vertex.
-
 
     Parameters
     ----------
-
     points      : array
                   (n,2)
                   coordinates for point locations
@@ -495,7 +621,6 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
 
     Returns
     -------
-
     w           : W
                   instance of spatial weights
 
@@ -511,32 +636,32 @@ def Voronoi(points, criterion="rook", clip="ahull", **kwargs):
     """
     from ..cg.voronoi import voronoi_frames
 
-    region_df, _ = voronoi_frames(points, clip=clip)
+    region_df = voronoi_frames(points, clip=clip, return_input=False, as_gdf=True)
     if criterion.lower() == "queen":
         cls = Queen
     elif criterion.lower() == "rook":
         cls = Rook
     else:
         raise ValueError(
-            "Contiguity criterion {} not supported. "
-            'Only "rook" and "queen" are supported.'.format(criterion)
+            f"Contiguity criterion {criterion} not supported. "
+            "Only 'rook' and 'queen' are supported."
         )
     return cls.from_dataframe(region_df, **kwargs)
 
 
 def _from_dataframe(df, **kwargs):
     """
-    Construct a voronoi contiguity weight directly from a dataframe. 
+    Construct a voronoi contiguity weight directly from a dataframe.
     Note that if criterion='rook', this is identical to the delaunay
-    graph for the points. 
+    graph for the points if no clipping of the voronoi cells is applied.
 
     If the input dataframe is of any other geometry type than "Point",
-    a value error is raised. 
+    a value error is raised.
 
     Parameters
     ----------
     df          :   pandas.DataFrame
-                    dataframe containing point geometries for a 
+                    dataframe containing point geometries for a
                     voronoi diagram.
 
     Returns
@@ -551,7 +676,7 @@ def _from_dataframe(df, **kwargs):
             "Voronoi weights are only"
             " implemented for point geometries. "
             "You may consider using df.centroid."
-        )
+        ) from None
     coords = numpy.column_stack((x, y))
     return Voronoi(coords, **kwargs)
 
@@ -561,14 +686,15 @@ Voronoi.from_dataframe = _from_dataframe
 
 def _build(polygons, criterion="rook", ids=None):
     """
-    This is a developer-facing function to construct a spatial weights object. 
+    This is a developer-facing function to construct a spatial weights object.
 
     Parameters
     ----------
     polygons    : list
                   list of pysal polygons to use to build contiguity
     criterion   : string
-                  option of which kind of contiguity to build. Is either "rook" or "queen" 
+                  option of which kind of contiguity to build.
+                  Is either "rook" or "queen"
     ids         : list
                   list of ids to use to index the neighbor dictionary
 
@@ -576,12 +702,14 @@ def _build(polygons, criterion="rook", ids=None):
     -------
     tuple containing (neighbors, ids), where neighbors is a dictionary
     describing contiguity relations and ids is the list of ids used to index
-    that dictionary. 
+    that dictionary.
 
-    NOTE: this is different from the prior behavior of buildContiguity, which
-          returned an actual weights object. Since this just dispatches for the
-          classes above, this returns the raw ingredients for a spatial weights
-          object, not the object itself. 
+    Notes
+    -----
+    This is different from the prior behavior of buildContiguity, which
+    returned an actual weights object. Since this just dispatches for the
+    classes above, this returns the raw ingredients for a spatial weights
+    object, not the object itself.
     """
     if ids and len(ids) != len(set(ids)):
         raise ValueError(
@@ -610,7 +738,13 @@ def _build(polygons, criterion="rook", ids=None):
             neighbors[key] = set(neighbor_data[key])
     return (
         dict(
-            list(zip(list(neighbors.keys()), list(map(list, list(neighbors.values())))))
+            list(
+                zip(
+                    list(neighbors.keys()),
+                    list(map(list, list(neighbors.values()))),
+                    strict=True,
+                )
+            )
         ),
         ids,
     )
@@ -621,7 +755,7 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     This is a deprecated function.
 
     It builds a contiguity W from the polygons provided. As such, it is now
-    identical to calling the class constructors for Rook or Queen. 
+    identical to calling the class constructors for Rook or Queen.
     """
     # Warn('This function is deprecated. Please use the Rook or Queen classes',
     #        UserWarning)
@@ -630,4 +764,4 @@ def buildContiguity(polygons, criterion="rook", ids=None):
     elif criterion.lower() == "queen":
         return Queen(polygons, ids=ids)
     else:
-        raise Exception('Weights criterion "{}" was not found.'.format(criterion))
+        raise ValueError(f"Weights criterion '{criterion}' was not found.")

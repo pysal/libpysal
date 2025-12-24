@@ -1,11 +1,13 @@
-import unittest
+# ruff: noqa: N999
+
 import numpy as np
-from ..spintW import ODW, netW, mat2L, vecW
+
+from ..spintW import ODW, mat2L, netW, vecW
 from ..util import lat2W
 
 
-class TestODWeights(unittest.TestCase):
-    def setUp(self):
+class TestODWeights:
+    def setup_method(self):
         self.O = lat2W(2, 2)
         self.D = lat2W(2, 2)
         self.ODW = np.array(
@@ -301,13 +303,13 @@ class TestODWeights(unittest.TestCase):
             ]
         )
 
-    def test_ODW_full(self):
-        W = ODW(self.O, self.D)
-        np.testing.assert_allclose(self.ODW, W.full()[0])
+    def test_odw_full(self):
+        w = ODW(self.O, self.D)
+        np.testing.assert_allclose(self.ODW, w.full()[0])
 
 
-class TestNetW(unittest.TestCase):
-    def setUp(self):
+class TestNetW:
+    def setup_method(self):
         self.link_list = [
             ("a", "b"),
             ("a", "c"),
@@ -410,34 +412,34 @@ class TestNetW(unittest.TestCase):
 
         self.edge_list = [(0, 1), (0, 2), (1, 0), (1, 2), (2, 0), (2, 1)]
 
-    def test_netOD(self):
-        netW_OD = netW(self.link_list, share="OD")
-        np.testing.assert_allclose(netW_OD.full()[0], self.OD)
+    def test_net_od(self):
+        netw_od = netW(self.link_list, share="OD")
+        np.testing.assert_allclose(netw_od.full()[0], self.OD)
 
-    def test_netO(self):
-        netW_O = netW(self.link_list, share="O")
-        np.testing.assert_allclose(netW_O.full()[0], self.O)
+    def test_net_o(self):
+        netw_o = netW(self.link_list, share="O")
+        np.testing.assert_allclose(netw_o.full()[0], self.O)
 
-    def test_netD(self):
-        netW_D = netW(self.link_list, share="D")
-        np.testing.assert_allclose(netW_D.full()[0], self.D)
+    def test_net_d(self):
+        netw_d = netW(self.link_list, share="D")
+        np.testing.assert_allclose(netw_d.full()[0], self.D)
 
-    def test_netC(self):
-        netW_C = netW(self.link_list, share="C")
-        np.testing.assert_allclose(netW_C.full()[0], self.C)
+    def test_net_c(self):
+        netw_c = netW(self.link_list, share="C")
+        np.testing.assert_allclose(netw_c.full()[0], self.C)
 
     def test_net_all(self):
-        netW_all = netW(self.link_list, share="A")
-        np.testing.assert_allclose(netW_all.full()[0], self._all)
+        netw_all = netW(self.link_list, share="A")
+        np.testing.assert_allclose(netw_all.full()[0], self._all)
 
-    def test_mat2L(self):
+    def test_mat2_l(self):
         mat = np.array([[0, 1, 1], [1, 0, 1], [1, 1, 0]])
         edge_list = mat2L(mat)
-        self.assertEqual(edge_list, self.edge_list)
+        assert edge_list == self.edge_list
 
 
-class TestVecW(unittest.TestCase):
-    def setUp(self):
+class TestVecW:
+    def setup_method(self):
         self.origin_x = np.array([2, 6, 9, 2])
         self.origin_y = np.array([4, 8, 2, 5])
         self.dest_x = np.array([9, 1, 6, 3])
@@ -451,8 +453,8 @@ class TestVecW(unittest.TestCase):
             ]
         )
 
-    def test_vecW(self):
-        W = vecW(
+    def test_vec_w(self):
+        w = vecW(
             self.origin_x,
             self.origin_y,
             self.dest_x,
@@ -460,4 +462,4 @@ class TestVecW(unittest.TestCase):
             threshold=np.inf,
             binary=False,
         )
-        np.testing.assert_allclose(self.continuous, W.full()[0])
+        np.testing.assert_allclose(self.continuous, w.full()[0])

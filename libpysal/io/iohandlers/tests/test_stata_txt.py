@@ -1,13 +1,15 @@
-import unittest
-from .... import examples as pysal_examples
-from ..stata_txt import StataTextIO
-from ...fileio import FileIO as psopen
-import tempfile
 import os
+import tempfile
+
+import pytest
+
+from .... import examples as pysal_examples
+from ...fileio import FileIO
+from ..stata_txt import StataTextIO
 
 
-class test_StataTextIO(unittest.TestCase):
-    def setUp(self):
+class TesttestStataTextIO:
+    def setup_method(self):
         self.test_file_sparse = test_file_sparse = pysal_examples.get_path(
             "stata_sparse.txt"
         )
@@ -19,23 +21,23 @@ class test_StataTextIO(unittest.TestCase):
         for obj in [self.obj_sparse, self.obj_full]:
             f = obj
             f.close()
-            self.assertRaises(ValueError, f.read)
+            pytest.raises(ValueError, f.read)
 
     def test_read(self):
         w_sparse = self.obj_sparse.read()
-        self.assertEqual(56, w_sparse.n)
-        self.assertEqual(4.0, w_sparse.mean_neighbors)
-        self.assertEqual([1.0, 1.0, 1.0, 1.0, 1.0], list(w_sparse[1].values()))
+        assert w_sparse.n == 56
+        assert w_sparse.mean_neighbors == 4.0
+        assert list(w_sparse[1].values()) == [1.0, 1.0, 1.0, 1.0, 1.0]
 
         w_full = self.obj_full.read()
-        self.assertEqual(56, w_full.n)
-        self.assertEqual(4.0, w_full.mean_neighbors)
-        self.assertEqual([0.125, 0.125, 0.125, 0.125, 0.125], list(w_full[1].values()))
+        assert w_full.n == 56
+        assert w_full.mean_neighbors == 4.0
+        assert list(w_full[1].values()) == [0.125, 0.125, 0.125, 0.125, 0.125]
 
     def test_seek(self):
         self.test_read()
-        self.assertRaises(StopIteration, self.obj_sparse.read)
-        self.assertRaises(StopIteration, self.obj_full.read)
+        pytest.raises(StopIteration, self.obj_sparse.read)
+        pytest.raises(StopIteration, self.obj_full.read)
         self.obj_sparse.seek(0)
         self.obj_full.seek(0)
         self.test_read()
@@ -43,19 +45,14 @@ class test_StataTextIO(unittest.TestCase):
     def test_write(self):
         for obj in [self.obj_sparse, self.obj_full]:
             w = obj.read()
-            f = tempfile.NamedTemporaryFile(suffix=".txt")
-            fname = f.name
-            f.close()
-            o = psopen(fname, "w", "stata_text")
+            with tempfile.NamedTemporaryFile(suffix=".txt") as f:
+                fname = f.name
+            o = FileIO(fname, "w", "stata_text")
             if obj == self.obj_sparse:
                 o.write(w)
             else:
                 o.write(w, matrix_form=True)
             o.close()
-            wnew = psopen(fname, "r", "stata_text").read()
-            self.assertEqual(wnew.pct_nonzero, w.pct_nonzero)
+            wnew = FileIO(fname, "r", "stata_text").read()
+            assert wnew.pct_nonzero == w.pct_nonzero
             os.remove(fname)
-
-
-if __name__ == "__main__":
-    unittest.main()

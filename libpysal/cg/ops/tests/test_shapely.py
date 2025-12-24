@@ -1,18 +1,20 @@
-import unittest as ut
-from .. import _shapely as sht
-from ...shapes import Point, Chain, Polygon
-
-# from ... import  comparators as comp
-# from ... import shapely as she
-from ....io.geotable import read_files as rf
-from ....examples import get_path
-import numpy as np
 from warnings import warn
 
+import numpy as np
+import pytest
 
-@ut.skip("Skipping shapely during reorg.")
-class Test_Shapely(ut.TestCase):
-    def setUp(self):
+from ....examples import get_path
+from ....io.geotable import read_files as rf
+
+# from ... import comparators as comp
+# from ... import shapely as she
+from ...shapes import Chain
+from .. import _shapely as sht
+
+
+@pytest.mark.skip("Skipping shapely during reorg.")
+class TestShapely:
+    def setup_method(self):
         self.polygons = rf(get_path("Polygon.shp"))
         self.points = rf(get_path("Point.shp"))
         self.lines = rf(get_path("Line.shp"))
@@ -25,20 +27,20 @@ class Test_Shapely(ut.TestCase):
 
     def compare(self, func_name, df, **kwargs):
         geom_list = df.geometry.tolist()
-        shefunc = she.__dict__[func_name]
-        shtfunc = sht.__dict__[func_name]
+        shefunc = she.__dict__[func_name]  # noqa: F821
+        shtfunc = sht.__dict__[func_name]  # noqa: F821
 
         try:
             she_vals = (shefunc(geom, **kwargs) for geom in geom_list)
             sht_vals = shtfunc(df, inplace=False, **kwargs)
-            sht_list = sht_vals["shape_{}".format(func_name)].tolist()
-            for tabular, shapely in zip(sht_list, she_vals):
-                if comp.is_shape(tabular) and comp.is_shape(shapely):
-                    comp.equal(tabular, shapely)
+            sht_list = sht_vals[f"shape_{func_name}"].tolist()
+            for tabular, shapely in zip(sht_list, she_vals, strict=True):
+                if comp.is_shape(tabular) and comp.is_shape(shapely):  # noqa: F821
+                    comp.equal(tabular, shapely)  # noqa: F821
                 else:
-                    self.assertEqual(tabular, shapely)
+                    assert tabular == shapely
         except NotImplementedError as e:
-            warn("The shapely/PySAL bridge is not implemented: {}.".format(e))
+            warn(f"The shapely/PySAL bridge is not implemented: {e}.", stacklevel=2)
             return True
 
     def test_to_wkb(self):
@@ -123,13 +125,13 @@ class Test_Shapely(ut.TestCase):
     def test_is_empty(self):
         """
         PySAL doesn't really support empty shapes. Like, the following errors out:
-        
+
         ```
         ps.cg.Polygon([[]])
         ```
-        
+
         and you can make it work by:
-        
+
         ```
         ps.cg.Polygon([[()]])
         ```
@@ -137,7 +139,7 @@ class Test_Shapely(ut.TestCase):
         but that won't convert over to shapely.
 
         So, we're only testing the negative here.
-        
+
         """
         for df in self.dframes:
             self.compare("is_empty", df)
@@ -219,5 +221,5 @@ class Test_Shapely(ut.TestCase):
             if isinstance(df.geometry[0], Chain):
                 self.compare("interpolate", df, distance=np.random.randint(10))
             else:
-                with self.assertRaises(TypeError):
+                with pytest.raises(TypeError):
                     self.compare("interpolate", df, distance=np.random.randint(10))
