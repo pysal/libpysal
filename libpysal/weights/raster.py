@@ -140,7 +140,7 @@ def get_nodata(da):
     NOTE: follows guidance from https://corteva.github.io/rioxarray/stable/getting_started/nodata_management.html
     ...
 
-    Arguments
+    Parameters
     ---------
     da : xarray.DataArray
         Input 2D or 3D DataArray with shape=(z, y, x)
@@ -164,7 +164,7 @@ def nodata_from_attrs(attrs):
     NOTE: follows guidance from https://corteva.github.io/rioxarray/stable/getting_started/nodata_management.html
     ...
 
-    Arguments
+    Parameters
     ---------
     attrs : dict
            `DataArray.attrs` dictionary
