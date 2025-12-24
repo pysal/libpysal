@@ -141,15 +141,14 @@ def get_nodata(da):
     ...
 
     Parameters
-    ---------
+    ----------
     da : xarray.DataArray
         Input 2D or 3D DataArray with shape=(z, y, x)
 
     Returns
     -------
     nodata : int/float
-            Value used for nodata pixels. If no value is available, `None` is
-            returned
+        Value used for nodata pixels. If no value is available, `None` is returned.
     """
     if hasattr(da, "rio"):
         return da.rio.nodata
@@ -172,8 +171,7 @@ def nodata_from_attrs(attrs):
     Returns
     -------
     nodata : int/float
-            Value used for nodata pixels. If no value is available, `None` is
-            returned
+        Value used for nodata pixels. If no value is available, `None` is returned
     """
     candidates = ["_FillValue", "missing_value", "fill_value", "nodata", "nodatavals"]
     for i in candidates:
