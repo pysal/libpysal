@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from libpysal.weights import Queen
+
 from .. import raster
 
 
@@ -93,3 +95,13 @@ class Testraster:
 
     def test_da_checker(self):
         pytest.raises(ValueError, raster.da2W, self.da4)
+
+    @pytest.mark.network
+    def test_dataarray(self):
+        rioxarray = pytest.importorskip("rioxarray")
+
+        da = rioxarray.open_rasterio(
+            "https://geographicdata.science/book/_downloads/5263090bd0bdbd7d1635505ff7d36d04/ghsl_sao_paulo.tif"
+        )
+        w = Queen.from_xarray(da)
+        assert w.n == 97232
