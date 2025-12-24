@@ -50,6 +50,8 @@ def _validate_coplanar(triangulator):
         kernel=None,
         bandwidth=None,
         seed=None,
+        decay=False,
+        taper=False,
         **kwargs,
     ):
         if coplanar not in ["raise", "jitter", "clique"]:
@@ -85,8 +87,9 @@ def _validate_coplanar(triangulator):
                 metric="precomputed",
                 kernel=kernel,
                 bandwidth=bandwidth,
-                taper=False,
+                taper=taper,
                 resolve_isolates=False,  # no isolates in triangulation
+                decay=decay,
             )
         # create adjacency
         adjtable = pandas.DataFrame.from_dict(
