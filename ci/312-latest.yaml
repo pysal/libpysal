@@ -17,6 +17,7 @@ dependencies:
   - matplotlib
   - tobler
   - h3-py
+  - rioxarray
   - pytest
   - pytest-cov
   - pytest-mpl
