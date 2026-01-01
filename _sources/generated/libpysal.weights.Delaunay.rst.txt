@@ -1,0 +1,76 @@
+﻿libpysal.weights.Delaunay
+=========================
+
+.. currentmodule:: libpysal.weights
+
+.. autoclass:: Delaunay
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Delaunay.__init__
+      ~Delaunay.asymmetry
+      ~Delaunay.from_WSP
+      ~Delaunay.from_adjlist
+      ~Delaunay.from_dataframe
+      ~Delaunay.from_file
+      ~Delaunay.from_networkx
+      ~Delaunay.from_shapefile
+      ~Delaunay.from_sparse
+      ~Delaunay.full
+      ~Delaunay.get_transform
+      ~Delaunay.plot
+      ~Delaunay.remap_ids
+      ~Delaunay.set_shapefile
+      ~Delaunay.set_transform
+      ~Delaunay.symmetrize
+      ~Delaunay.to_WSP
+      ~Delaunay.to_adjlist
+      ~Delaunay.to_file
+      ~Delaunay.to_networkx
+      ~Delaunay.to_sparse
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Delaunay.asymmetries
+      ~Delaunay.cardinalities
+      ~Delaunay.component_labels
+      ~Delaunay.diagW2
+      ~Delaunay.diagWtW
+      ~Delaunay.diagWtW_WW
+      ~Delaunay.histogram
+      ~Delaunay.id2i
+      ~Delaunay.id_order
+      ~Delaunay.id_order_set
+      ~Delaunay.islands
+      ~Delaunay.max_neighbors
+      ~Delaunay.mean_neighbors
+      ~Delaunay.min_neighbors
+      ~Delaunay.n
+      ~Delaunay.n_components
+      ~Delaunay.neighbor_offsets
+      ~Delaunay.nonzero
+      ~Delaunay.pct_nonzero
+      ~Delaunay.s0
+      ~Delaunay.s1
+      ~Delaunay.s2
+      ~Delaunay.s2array
+      ~Delaunay.sd
+      ~Delaunay.sparse
+      ~Delaunay.transform
+      ~Delaunay.trcW2
+      ~Delaunay.trcWtW
+      ~Delaunay.trcWtW_WW
+   
+   
