@@ -16,11 +16,12 @@
 - `libpysal.io` –  Input and output
 - `libpysal.weights` –  Spatial weights
 
-## Example Notebooks
 
-- [Spatial Weights](notebooks/weights.ipynb)
-- [Voronoi](notebooks/voronoi.ipynb)
-- [Input and Output](notebooks/io.ipynb)
+## Documentation
+
+- [User Guide](https://pysal.org/libpysal/user-guide/intro.html)
+- [API](https://pysal.org/libpysal/api.html)
+
 
 ## Development
 
