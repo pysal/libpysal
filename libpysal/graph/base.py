@@ -1130,7 +1130,7 @@ class Graph(SetOpsMixin):
             taper=taper,
         )
 
-        return cls.from_arrays(head, tail, weight, is_sorted=True)
+        return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_knn(
