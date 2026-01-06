@@ -291,6 +291,12 @@ class TestKernel:
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
+    def test_code_consistency(self):
+        gdf = gpd.read_file(geodatasets.get_path("geoda guerry"))
+        g = graph.Graph.build_kernel(gdf.centroid, k=2)
+
+        assert g.sparse.shape == (85, 85)
+
 
 @pytest.mark.network
 class TestDistanceBand:
