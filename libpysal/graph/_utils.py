@@ -31,6 +31,7 @@ def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True, return_adjacency
     When we know we are dealing with cliques, we don't want to resolve
     isolates here but will do that later once cliques are induced.
     """
+    argsort_kwds = {"stable": True} if NUMPY_GE_2 else {}
     sparray = sparray.tocoo(copy=False)
     if ids is not None:
         ids = np.asarray(ids)
@@ -40,13 +41,15 @@ def _sparse_to_arrays(sparray, ids=None, resolve_isolates=True, return_adjacency
                 f"the shape of sparse {sparray.shape}."
             )
 
-        head = ids[sparray.row]
-        tail = ids[sparray.col]
-        data = sparray.data
+        sorter = sparray.row.argsort(**argsort_kwds)
+        head = ids[sparray.row][sorter]
+        tail = ids[sparray.col][sorter]
+        data = sparray.data[sorter]
     else:
-        head = sparray.row
-        tail = sparray.col
-        data = sparray.data
+        sorter = sparray.row.argsort(**argsort_kwds)
+        head = sparray.row[sorter]
+        tail = sparray.col[sorter]
+        data = sparray.data[sorter]
         ids = np.arange(sparray.shape[0], dtype=int)
 
     if resolve_isolates:
