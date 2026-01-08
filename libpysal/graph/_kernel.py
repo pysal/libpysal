@@ -63,6 +63,7 @@ def _kernel(
             - parabolic:
             - gaussian:
             - bisquare:
+            - tricube:
             - cosine:
             - exponential:
             - boxcar/discrete: all distances less than `bandwidth` are 1, and all
