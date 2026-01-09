@@ -679,7 +679,8 @@ class Kernel(W):
                 ]
             elif isinstance(self.taper, (float, int)):
                 neighbors = [
-                    kdtq(self.data[i], r=float(self.taper)) for i in range(len(self.data))
+                    kdtq(self.data[i], r=float(self.taper))
+                    for i in range(len(self.data))
                 ]
             else:
                 neighbors = [list(range(len(self.data))) for i in range(len(self.data))]
