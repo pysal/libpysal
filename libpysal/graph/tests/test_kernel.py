@@ -215,6 +215,9 @@ def test_kernels(kernel, grocs):
     elif kernel == "bisquare":
         assert weight.mean() == pytest.approx(0.09084085210598618)
         assert weight.max() == pytest.approx(0.9372045972129259)
+    elif kernel == "tricube":
+        assert weight.mean() == pytest.approx(0.0925592973486846)
+        assert weight.max() == pytest.approx(0.8641924033756005)
     elif kernel == "cosine":
         assert weight.mean() == pytest.approx(0.1008306468068958)
         assert weight.max() == pytest.approx(0.7852455006403666)
