@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>libpysal.cg.voronoi &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../../../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for libpysal.cg.voronoi</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Voronoi tesslation of 2-d point sets.</span>
+
+<span class="sd">Adapted from https://gist.github.com/pv/8036995</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shapely</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">Voronoi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapely.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">GEOSException</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Serge Rey &lt;sjsrey@gmail.com&gt;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;voronoi_frames&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">voronoi</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine finite Voronoi diagram for a 2-d point set.</span>
+<span class="sd">    See also ``voronoi_regions()``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points : array_like</span>
+<span class="sd">        An nx2 array of points.</span>
+<span class="sd">    radius : float (optional)</span>
+<span class="sd">        The distance to &#39;points at infinity&#39;. Default is ``None.``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    vor : tuple</span>
+<span class="sd">        A two-element tuple consisting of a list and an array. Each element of</span>
+<span class="sd">        the list contains the sequence of the indices of Voronoi vertices</span>
+<span class="sd">        composing a Voronoi polygon (region), whereas the array contains</span>
+<span class="sd">        the Voronoi vertex coordinates.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; points = [(10.2, 5.1), (4.7, 2.2), (5.3, 5.7), (2.7, 5.3)]</span>
+<span class="sd">    &gt;&gt;&gt; regions, coordinates = voronoi(points)</span>
+<span class="sd">    &gt;&gt;&gt; regions</span>
+<span class="sd">    [[1, 3, 2], [4, 5, 1, 0], [0, 1, 7, 6], [9, 0, 8]]</span>
+
+<span class="sd">    &gt;&gt;&gt; coordinates</span>
+<span class="sd">    array([[  4.21783296,   4.08408578],</span>
+<span class="sd">           [  7.51956025,   3.51807539],</span>
+<span class="sd">           [  9.4642193 ,  19.3994576 ],</span>
+<span class="sd">           [ 14.98210684, -10.63503022],</span>
+<span class="sd">           [ -9.22691341,  -4.58994414],</span>
+<span class="sd">           [ 14.98210684, -10.63503022],</span>
+<span class="sd">           [  1.78491801,  19.89803294],</span>
+<span class="sd">           [  9.4642193 ,  19.3994576 ],</span>
+<span class="sd">           [  1.78491801,  19.89803294],</span>
+<span class="sd">           [ -9.22691341,  -4.58994414]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;The &#39;voronoi&#39; function is considered private and will be &quot;</span>
+        <span class="s2">&quot;removed in a future release.&quot;</span><span class="p">,</span>
+        <span class="ne">FutureWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">vor</span> <span class="o">=</span> <span class="n">voronoi_regions</span><span class="p">(</span><span class="n">Voronoi</span><span class="p">(</span><span class="n">points</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">vor</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">voronoi_regions</span><span class="p">(</span><span class="n">vor</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finite voronoi regions for a 2-d point set. See also ``voronoi()``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vor : scipy.spatial.Voronoi</span>
+<span class="sd">        A planar Voronoi diagram.</span>
+<span class="sd">    radius : float (optional)</span>
+<span class="sd">        Distance to &#39;points at infinity&#39;. Default is ``None.``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    regions_vertices : tuple</span>
+<span class="sd">        A two-element tuple consisting of a list of finite voronoi regions</span>
+<span class="sd">        and an array Voronoi vertex coordinates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;The &#39;voronoi_regions&#39; function is considered private and will be &quot;</span>
+        <span class="s2">&quot;removed in a future release.&quot;</span><span class="p">,</span>
+        <span class="ne">FutureWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">new_regions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">new_vertices</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">vertices</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="n">center</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="mi">2</span>
+
+    <span class="n">all_ridges</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">),</span> <span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">vor</span><span class="o">.</span><span class="n">ridge_points</span><span class="p">,</span> <span class="n">vor</span><span class="o">.</span><span class="n">ridge_vertices</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">all_ridges</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">p2</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">))</span>
+        <span class="n">all_ridges</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">p1</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">p1</span><span class="p">,</span> <span class="n">region</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vor</span><span class="o">.</span><span class="n">point_region</span><span class="p">):</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">region</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">):</span>
+            <span class="n">new_regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">ridges</span> <span class="o">=</span> <span class="n">all_ridges</span><span class="p">[</span><span class="n">p1</span><span class="p">]</span>
+        <span class="n">new_region</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vertices</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">p2</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">ridges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v2</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">v2</span><span class="p">,</span> <span class="n">v1</span>
+            <span class="k">if</span> <span class="n">v1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">t</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">p2</span><span class="p">]</span> <span class="o">-</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">p1</span><span class="p">]</span>
+            <span class="n">t</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+            <span class="n">midpoint</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">points</span><span class="p">[[</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">midpoint</span> <span class="o">-</span> <span class="n">center</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span> <span class="o">*</span> <span class="n">n</span>
+            <span class="n">far_point</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="n">v2</span><span class="p">]</span> <span class="o">+</span> <span class="n">direction</span> <span class="o">*</span> <span class="n">radius</span>
+
+            <span class="n">new_region</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_vertices</span><span class="p">))</span>
+            <span class="n">new_vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">far_point</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+        <span class="n">vs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">new_vertices</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_region</span><span class="p">])</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">vs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">vs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">new_region</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_region</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">angles</span><span class="p">)]</span>
+
+        <span class="n">new_regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_region</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+    <span class="n">regions_vertices</span> <span class="o">=</span> <span class="n">new_regions</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">new_vertices</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">regions_vertices</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">as_dataframes</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to store finite Voronoi regions and</span>
+<span class="sd">    originator points as ``geopandas`` (or ``pandas``) dataframes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    regions : list</span>
+<span class="sd">        Each element of the list contains sequence of the indexes of</span>
+<span class="sd">        voronoi vertices composing a vornoi polygon (region).</span>
+<span class="sd">    vertices : array_like</span>
+<span class="sd">        The coordinates of the vornoi vertices.</span>
+<span class="sd">    points : array_like</span>
+<span class="sd">        The originator points.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    region_df : geopandas.GeoDataFrame</span>
+<span class="sd">        Finite Voronoi polygons as geometries.</span>
+<span class="sd">    points_df : geopandas.GeoDataFrame</span>
+<span class="sd">        Originator points as geometries.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        Raised when ``geopandas`` is not available.</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        Raised when ``shapely`` is not available.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;The &#39;as_dataframes&#39; function is considered private and will be &quot;</span>
+        <span class="s2">&quot;removed in a future release.&quot;</span><span class="p">,</span>
+        <span class="ne">FutureWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="n">gpd</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">shapely.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">Polygon</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span><span class="p">,</span> <span class="n">Polygon</span>
+
+    <span class="k">if</span> <span class="n">gpd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">region_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">(</span><span class="n">Polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="n">region</span><span class="p">])</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">point_df</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="n">pnt</span><span class="p">)</span> <span class="k">for</span> <span class="n">pnt</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+        <span class="n">region_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">region_df</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Polygon</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="n">region</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">regions</span>
+        <span class="p">]</span>
+        <span class="n">point_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">point_df</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Point</span><span class="p">(</span><span class="n">pnt</span><span class="p">)</span> <span class="k">for</span> <span class="n">pnt</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">region_df</span><span class="p">,</span> <span class="n">point_df</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clip_voronoi_frames_to_extent</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="s2">&quot;extent&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a geopandas.GeoDataFrame of Voronoi cells clipped to</span>
+<span class="sd">    a specified extent.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    regions : geopandas.GeoDataFrame</span>
+<span class="sd">        A (geo)dataframe containing voronoi cells to clip.</span>
+<span class="sd">    vertices : geopandas.GeoDataFrame</span>
+<span class="sd">        A (geo)dataframe containing vertices used to build voronoi cells.</span>
+<span class="sd">    clip : str, shapely.geometry.Polygon</span>
+<span class="sd">        An overloaded option about how to clip the voronoi cells.</span>
+<span class="sd">        The options are:</span>
+<span class="sd">          - &#39;none&#39;/None: No clip is applied. Voronoi cells may be arbitrarily</span>
+<span class="sd">            larger that the source map. Note that this may lead to cells that</span>
+<span class="sd">            are many orders of magnitude larger in extent than</span>
+<span class="sd">            the original map. Not recommended.</span>
+<span class="sd">          - &#39;bbox&#39;/&#39;extent&#39;/&#39;bounding box&#39;: Clip the voronoi cells to the</span>
+<span class="sd">            bounding box of the input points.</span>
+<span class="sd">          - &#39;chull&#39;/&#39;convex hull&#39;: Clip the voronoi cells to the</span>
+<span class="sd">            convex hull of the input points.</span>
+<span class="sd">          - &#39;ashape&#39;/&#39;ahull&#39;: Clip the voronoi cells to the tightest hull that</span>
+<span class="sd">            contains all points (e.g. the smallest alphashape,</span>
+<span class="sd">            using ``libpysal.cg.alpha_shape_auto``).</span>
+<span class="sd">          - Polygon: Clip to an arbitrary Polygon.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    clipped_regions : geopandas.GeoDataFrame</span>
+<span class="sd">        A ``geopandas.GeoDataFrame`` of clipped voronoi regions.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        Raised when ``shapely`` is not available.</span>
+<span class="sd">    ImportError</span>
+<span class="sd">        Raised when ``geopandas`` is not available.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Raised when in invalid value for ``clip`` is passed in.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;The &#39;clip_voronoi_frames_to_extent&#39; function is considered private &quot;</span>
+        <span class="s2">&quot;and will be removed in a future release.&quot;</span><span class="p">,</span>
+        <span class="ne">FutureWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">shapely.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Polygon</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Shapely is required to clip voronoi regions.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;Geopandas is required to clip voronoi regions.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="n">Polygon</span><span class="p">):</span>
+        <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">clip</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">clip</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">regions</span>
+    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;bounds&quot;</span><span class="p">,</span> <span class="s2">&quot;bounding box&quot;</span><span class="p">,</span> <span class="s2">&quot;bbox&quot;</span><span class="p">,</span> <span class="s2">&quot;extent&quot;</span><span class="p">):</span>
+        <span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">,</span> <span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">vertices</span><span class="o">.</span><span class="n">total_bounds</span>
+        <span class="n">bounding_poly</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">max_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">min_x</span><span class="p">,</span> <span class="n">min_y</span><span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">bounding_poly</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;chull&quot;</span><span class="p">,</span> <span class="s2">&quot;convex hull&quot;</span><span class="p">,</span> <span class="s2">&quot;convex_hull&quot;</span><span class="p">):</span>
+        <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">vertices</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">unary_union</span><span class="o">.</span><span class="n">convex_hull</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="s2">&quot;ahull&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha hull&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_hull&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ashape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha shape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_shape&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..weights.distance</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_points_array</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.alpha_shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">alpha_shape_auto</span>
+
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">get_points_array</span><span class="p">(</span><span class="n">vertices</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="n">clipper</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="p">[</span><span class="n">alpha_shape_auto</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Clip type &#39;</span><span class="si">{</span><span class="n">clip</span><span class="si">}</span><span class="s2">&#39; not understood. Try one of the supported options: &quot;</span>
+            <span class="s2">&quot;[None, &#39;extent&#39;, &#39;chull&#39;, &#39;ahull&#39;].&quot;</span>
+        <span class="p">)</span>
+    <span class="n">clipped_regions</span> <span class="o">=</span> <span class="n">geopandas</span><span class="o">.</span><span class="n">overlay</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span> <span class="n">clipper</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;intersection&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">clipped_regions</span>
+
+
+<div class="viewcode-block" id="voronoi_frames">
+<a class="viewcode-back" href="../../../generated/libpysal.cg.voronoi_frames.html#libpysal.cg.voronoi_frames">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">voronoi_frames</span><span class="p">(</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span> <span class="o">|</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">|</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">clip</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">shapely</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;bounding_box&quot;</span><span class="p">,</span>
+    <span class="n">shrink</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">segment</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">grid_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="n">return_input</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">as_gdf</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create Voronoi polygons from a GeoSeries of points, lines, or polygons.</span>
+
+<span class="sd">    This is a wrapper around ``shapely.voronoi_polygons`` that handles not only</span>
+<span class="sd">    points but also lines and polygons through their discretization and dissolution</span>
+<span class="sd">    of the resulting polygons.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geometry : GeoSeries | GeoDataFrame | array_like</span>
+<span class="sd">        A GeoSeries of points, lines, or polygons or an array of coordinates.</span>
+<span class="sd">    radius : float, optional</span>
+<span class="sd">        Deprecated. Has no effect any longer.</span>
+<span class="sd">    clip : str, shapely.geometry.Polygon, optional</span>
+<span class="sd">        Polygon used to clip the Voronoi polygons, by default &quot;bounding_box&quot;</span>
+<span class="sd">        The options are:</span>
+
+<span class="sd">        * ``None`` -- No clip is applied. Voronoi cells may be arbitrarily</span>
+<span class="sd">          larger that the source map. Note that this may lead to cells that are many</span>
+<span class="sd">          orders of magnitude larger in extent than the original map. Not recommended.</span>
+<span class="sd">        * ``&#39;bounding_box&#39;`` -- Clip the voronoi cells to the</span>
+<span class="sd">          bounding box of the input points.</span>
+<span class="sd">        * ``&#39;convex_hull&#39;`` -- Clip the voronoi cells to the convex hull of</span>
+<span class="sd">          the input points.</span>
+<span class="sd">        * ``&#39;alpha_shape&#39;`` -- Clip the voronoi cells to the tightest hull that</span>
+<span class="sd">          contains all points (e.g. the smallest alpha shape, using</span>
+<span class="sd">          :func:`libpysal.cg.alpha_shape_auto`).</span>
+<span class="sd">        * ``shapely.Polygon`` -- Clip to an arbitrary Polygon.</span>
+
+<span class="sd">    shrink : float, optional</span>
+<span class="sd">        Distance for the negative buffer of polygons required when there are polygons</span>
+<span class="sd">        sharing portion of their exterior, by default 0</span>
+<span class="sd">    segment : float, optional</span>
+<span class="sd">        Distance for the segmentation of lines used to add coordinates to lines or</span>
+<span class="sd">        polygons prior Voronoi tessellation, by default 0</span>
+<span class="sd">    grid_size : float, optional</span>
+<span class="sd">        Grid size precision under which the voronoi algorithm is generated,</span>
+<span class="sd">        by default 1e-5</span>
+<span class="sd">    return_input : bool, optional</span>
+<span class="sd">        Whether to return the input geometry, defaults to True</span>
+<span class="sd">    as_gdf : bool, optional</span>
+<span class="sd">        Whether to return the output as a GeoDataFrame (True) or GeoSeries (False),</span>
+<span class="sd">        defaults to True</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    GeoSeries | GeoDataFrame | tuple</span>
+<span class="sd">        GeoSeries of Voronoi polygons with index allowing to link back to the input</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;radius&#39; parameter is deprecated and will be removed in a future &quot;</span>
+            <span class="s2">&quot;release. It has no effect any longer.&quot;</span><span class="p">,</span>
+            <span class="ne">FutureWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span> <span class="o">|</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">):</span>
+        <span class="c1"># Check if the input geometry is in a geographic CRS</span>
+        <span class="k">if</span> <span class="n">geometry</span><span class="o">.</span><span class="n">crs</span> <span class="ow">and</span> <span class="n">geometry</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">is_geographic</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Geometry is in a geographic CRS. &quot;</span>
+                <span class="s2">&quot;Use &#39;GeoSeries.to_crs()&#39; to re-project geometries to a &quot;</span>
+                <span class="s2">&quot;projected CRS before using voronoi_polygons.&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Set precision of the input geometry (avoids GEOS precision issues)</span>
+        <span class="n">objects</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">set_precision</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">grid_size</span><span class="p">)</span>
+
+        <span class="n">geom_types</span> <span class="o">=</span> <span class="n">objects</span><span class="o">.</span><span class="n">geom_type</span>
+        <span class="n">mask_poly</span> <span class="o">=</span> <span class="n">geom_types</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;Polygon&quot;</span><span class="p">,</span> <span class="s2">&quot;MultiPolygon&quot;</span><span class="p">])</span>
+        <span class="n">mask_line</span> <span class="o">=</span> <span class="n">objects</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;LineString&quot;</span><span class="p">,</span> <span class="s2">&quot;MultiLineString&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">mask_poly</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="c1"># Shrink polygons if required</span>
+            <span class="k">if</span> <span class="n">shrink</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">objects</span><span class="p">[</span><span class="n">mask_poly</span><span class="p">]</span> <span class="o">=</span> <span class="n">objects</span><span class="p">[</span><span class="n">mask_poly</span><span class="p">]</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span>
+                    <span class="o">-</span><span class="n">shrink</span><span class="p">,</span> <span class="n">cap_style</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">join_style</span><span class="o">=</span><span class="mi">2</span>
+                <span class="p">)</span>
+            <span class="c1"># Segmentize polygons if required</span>
+            <span class="k">if</span> <span class="n">segment</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">objects</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_poly</span><span class="p">]</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">segmentize</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="n">mask_poly</span><span class="p">],</span> <span class="n">segment</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mask_line</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">segment</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">objects</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_line</span><span class="p">]</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">segmentize</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="n">mask_line</span><span class="p">],</span> <span class="n">segment</span><span class="p">)</span>
+
+            <span class="c1"># Remove duplicate coordinates from lines</span>
+            <span class="n">objects</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_line</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">objects</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask_line</span><span class="p">]</span>
+                <span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">index_parts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">multipoints</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">values</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+        <span class="n">objects</span> <span class="o">=</span> <span class="n">geometry</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span><span class="o">.</span><span class="n">from_xy</span><span class="p">(</span><span class="n">geometry</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">geometry</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">mask_poly</span> <span class="o">=</span> <span class="n">mask_line</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">False</span><span class="p">])</span>
+
+    <span class="n">limit</span> <span class="o">=</span> <span class="n">_get_limit</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
+
+    <span class="c1"># Compute Voronoi polygons</span>
+    <span class="n">voronoi</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">voronoi_polygons</span><span class="p">(</span>
+        <span class="n">shapely</span><span class="o">.</span><span class="n">GeometryCollection</span><span class="p">(</span><span class="n">objects</span><span class="o">.</span><span class="n">values</span><span class="p">),</span> <span class="n">extend_to</span><span class="o">=</span><span class="n">limit</span>
+    <span class="p">)</span>
+    <span class="c1"># Get individual polygons out of the collection</span>
+    <span class="n">polygons</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoSeries</span><span class="p">(</span>
+        <span class="n">shapely</span><span class="o">.</span><span class="n">make_valid</span><span class="p">(</span><span class="n">shapely</span><span class="o">.</span><span class="n">get_parts</span><span class="p">(</span><span class="n">voronoi</span><span class="p">)),</span> <span class="n">crs</span><span class="o">=</span><span class="n">geometry</span><span class="o">.</span><span class="n">crs</span>
+    <span class="p">)</span>
+
+    <span class="c1"># temporary fix for libgeos/geos#1062</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">polygons</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Polygon&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="n">polygons</span> <span class="o">=</span> <span class="n">polygons</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">polygons</span> <span class="o">=</span> <span class="n">polygons</span><span class="p">[</span><span class="n">polygons</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s2">&quot;Polygon&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Assign to each input geometry the corresponding Voronoi polygon</span>
+    <span class="c1"># TODO: check if we still need indexing after shapely/shapely#1968 is released</span>
+    <span class="n">ids_objects</span><span class="p">,</span> <span class="n">ids_polygons</span> <span class="o">=</span> <span class="n">polygons</span><span class="o">.</span><span class="n">sindex</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s2">&quot;intersects&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mask_poly</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">or</span> <span class="n">mask_line</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="c1"># Dissolve polygons</span>
+        <span class="n">polygons</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">polygons</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ids_polygons</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">objects</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">ids_objects</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">_union_with_fallback</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">geometry</span><span class="o">.</span><span class="n">crs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="n">polygons</span><span class="o">.</span><span class="n">set_crs</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">polygons</span> <span class="o">=</span> <span class="n">polygons</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">ids_polygons</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># ensure validity as union can occasionally produce invalid polygons that may</span>
+    <span class="c1"># break the intersection below</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">polygons</span><span class="o">.</span><span class="n">is_valid</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="n">polygons</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">make_valid</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+
+    <span class="c1"># Clip polygons if limit is provided</span>
+    <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">to_be_clipped</span> <span class="o">=</span> <span class="n">polygons</span><span class="o">.</span><span class="n">sindex</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">limit</span><span class="o">.</span><span class="n">boundary</span><span class="p">,</span> <span class="s2">&quot;intersects&quot;</span><span class="p">)</span>
+        <span class="n">polygons</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">to_be_clipped</span><span class="p">]</span> <span class="o">=</span> <span class="n">polygons</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">to_be_clipped</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">as_gdf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">as_gdf</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;as_gdf&#39; parameter currently defaults to True but will &quot;</span>
+            <span class="s2">&quot;default to False in a future release. Set it explicitly to avoid &quot;</span>
+            <span class="s2">&quot;this warning.&quot;</span><span class="p">,</span>
+            <span class="ne">FutureWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">as_gdf</span><span class="p">:</span>
+        <span class="n">polygons</span> <span class="o">=</span> <span class="n">polygons</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">return_input</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;return_input&#39; parameter currently defaults to True but will &quot;</span>
+            <span class="s2">&quot;default to False in a future release. Set it explicitly to avoid &quot;</span>
+            <span class="s2">&quot;this warning.&quot;</span><span class="p">,</span>
+            <span class="ne">FutureWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_input</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">polygons</span><span class="p">,</span> <span class="n">geometry</span>
+
+    <span class="k">return</span> <span class="n">polygons</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_union_with_fallback</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coverage union is finnicky with floating point precision and tends to occasionally</span>
+<span class="sd">    raise an error from within GEOS we have no control over. It is not a data issue</span>
+<span class="sd">    typically. Falling back to unary union if that happens.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">coverage_union_all</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">GEOSException</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">union_all</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">r</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_limit</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">clip</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="n">shapely</span><span class="o">.</span><span class="n">Geometry</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">clip</span>
+    <span class="k">if</span> <span class="n">clip</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">clip</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The &#39;none&#39; option for the &#39;clip&#39; parameter is deprecated and will &quot;</span>
+            <span class="s2">&quot;be removed in a future release. Use None or False instead.&quot;</span><span class="p">,</span>
+            <span class="ne">FutureWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;bounding_box&quot;</span><span class="p">,</span> <span class="s2">&quot;bounds&quot;</span><span class="p">,</span> <span class="s2">&quot;bounding box&quot;</span><span class="p">,</span> <span class="s2">&quot;bbox&quot;</span><span class="p">,</span> <span class="s2">&quot;extent&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;bounding_box&quot;</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The &#39;</span><span class="si">{</span><span class="n">clip</span><span class="si">}</span><span class="s2">&#39; option for the &#39;clip&#39; parameter is deprecated and &quot;</span>
+                <span class="s2">&quot;will be removed in a future release. Use &#39;bounding_box&#39; instead.&quot;</span><span class="p">,</span>
+                <span class="ne">FutureWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">shapely</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="o">*</span><span class="n">points</span><span class="o">.</span><span class="n">total_bounds</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;chull&quot;</span><span class="p">,</span> <span class="s2">&quot;convex hull&quot;</span><span class="p">,</span> <span class="s2">&quot;convex_hull&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;convex_hull&quot;</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The &#39;</span><span class="si">{</span><span class="n">clip</span><span class="si">}</span><span class="s2">&#39; option for the &#39;clip&#39; parameter is deprecated and &quot;</span>
+                <span class="s2">&quot;will be removed in a future release. Use &#39;convex_hull&#39; instead.&quot;</span><span class="p">,</span>
+                <span class="ne">FutureWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">points</span><span class="o">.</span><span class="n">unary_union</span><span class="o">.</span><span class="n">convex_hull</span>
+
+    <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="s2">&quot;ahull&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha hull&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_hull&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ashape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha shape&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;alpha_shape&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">clip</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;alpha_shape&quot;</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The &#39;</span><span class="si">{</span><span class="n">clip</span><span class="si">}</span><span class="s2">&#39; option for the &#39;clip&#39; parameter is deprecated and &quot;</span>
+                <span class="s2">&quot;will be removed in a future release. Use &#39;alpha_shape&#39; instead.&quot;</span><span class="p">,</span>
+                <span class="ne">FutureWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.alpha_shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">alpha_shape_auto</span>
+
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">alpha_shape_auto</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Clip type &#39;</span><span class="si">{</span><span class="n">clip</span><span class="si">}</span><span class="s2">&#39; not understood. Try one of the supported options: &quot;</span>
+        <span class="s2">&quot;[None, &#39;bounding_box&#39;, &#39;convex_hull&#39;, &#39;alpha_shape&#39;, shapely.Polygon].&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

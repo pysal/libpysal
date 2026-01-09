@@ -1,0 +1,76 @@
+﻿libpysal.weights.Relative\_Neighborhood
+=======================================
+
+.. currentmodule:: libpysal.weights
+
+.. autoclass:: Relative_Neighborhood
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Relative_Neighborhood.__init__
+      ~Relative_Neighborhood.asymmetry
+      ~Relative_Neighborhood.from_WSP
+      ~Relative_Neighborhood.from_adjlist
+      ~Relative_Neighborhood.from_dataframe
+      ~Relative_Neighborhood.from_file
+      ~Relative_Neighborhood.from_networkx
+      ~Relative_Neighborhood.from_shapefile
+      ~Relative_Neighborhood.from_sparse
+      ~Relative_Neighborhood.full
+      ~Relative_Neighborhood.get_transform
+      ~Relative_Neighborhood.plot
+      ~Relative_Neighborhood.remap_ids
+      ~Relative_Neighborhood.set_shapefile
+      ~Relative_Neighborhood.set_transform
+      ~Relative_Neighborhood.symmetrize
+      ~Relative_Neighborhood.to_WSP
+      ~Relative_Neighborhood.to_adjlist
+      ~Relative_Neighborhood.to_file
+      ~Relative_Neighborhood.to_networkx
+      ~Relative_Neighborhood.to_sparse
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Relative_Neighborhood.asymmetries
+      ~Relative_Neighborhood.cardinalities
+      ~Relative_Neighborhood.component_labels
+      ~Relative_Neighborhood.diagW2
+      ~Relative_Neighborhood.diagWtW
+      ~Relative_Neighborhood.diagWtW_WW
+      ~Relative_Neighborhood.histogram
+      ~Relative_Neighborhood.id2i
+      ~Relative_Neighborhood.id_order
+      ~Relative_Neighborhood.id_order_set
+      ~Relative_Neighborhood.islands
+      ~Relative_Neighborhood.max_neighbors
+      ~Relative_Neighborhood.mean_neighbors
+      ~Relative_Neighborhood.min_neighbors
+      ~Relative_Neighborhood.n
+      ~Relative_Neighborhood.n_components
+      ~Relative_Neighborhood.neighbor_offsets
+      ~Relative_Neighborhood.nonzero
+      ~Relative_Neighborhood.pct_nonzero
+      ~Relative_Neighborhood.s0
+      ~Relative_Neighborhood.s1
+      ~Relative_Neighborhood.s2
+      ~Relative_Neighborhood.s2array
+      ~Relative_Neighborhood.sd
+      ~Relative_Neighborhood.sparse
+      ~Relative_Neighborhood.transform
+      ~Relative_Neighborhood.trcW2
+      ~Relative_Neighborhood.trcWtW
+      ~Relative_Neighborhood.trcWtW_WW
+   
+   

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libpysal.weights.w_clip &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal.weights.lag_spatial" href="libpysal.weights.lag_spatial.html" />
+    <link rel="prev" title="libpysal.weights.w_subset" href="libpysal.weights.w_subset.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">libpysal.weights.w_clip</a><ul>
+<li><a class="reference internal" href="#libpysal.weights.w_clip"><code class="docutils literal notranslate"><span class="pre">w_clip()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="libpysal-weights-w-clip">
+<h1>libpysal.weights.w_clip<a class="headerlink" href="#libpysal-weights-w-clip" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="libpysal.weights.w_clip">
+<span class="sig-prename descclassname"><span class="pre">libpysal.weights.</span></span><span class="sig-name descname"><span class="pre">w_clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outSP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/set_operations.html#w_clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.weights.w_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Clip a continuous W object (w1) with a different W object (w2) so only cells where
+w2 has a non-zero value remain with non-zero values in w1.</p>
+<p>Checks on w1 and w2 are performed to make sure they conform to the
+appropriate format and, if not, they are converted.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>w1</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a></span></dt><dd><p>W, scipy.sparse.csr.csr_matrix
+Potentially continuous weights matrix to be clipped.
+The clipped matrix wc will have at most the same
+elements as w1.</p>
+</dd>
+<dt><strong>w2</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a></span></dt><dd><p>W, scipy.sparse.csr.csr_matrix
+Weights matrix to use as shell to clip w1. Automatically
+converted to binary format. Only non-zero
+elements in w2 will be kept non-zero in wc.
+NOTE: assumed to be of the same shape as w1</p>
+</dd>
+<dt><strong>outSP</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.12)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>If True (default) return sparse version of the clipped W,
+if False, return W object of the clipped matrix</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/keyword.html#module-keyword" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyword</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">arguments</span></code></span></dt><dd><p>optional arguments for <code class="xref py py-class docutils literal notranslate"><span class="pre">pysal.weights.W</span></code></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>wc</strong><span class="classifier"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">W</span></code></a></span></dt><dd><p>W, scipy.sparse.csr.csr_matrix
+Clipped W object (sparse if outSP=Ture).
+It inherits <code class="docutils literal notranslate"><span class="pre">id_order</span></code> from w1.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">lat2W</span>
+</pre></div>
+</div>
+<p>First create a W object from a lattice using queen contiguity and
+row-standardize it (note that these weights will stay when we clip the
+object, but they will not neccesarily represent a row-standardization
+anymore):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w1</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w1</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+</pre></div>
+</div>
+<p>We will clip that geography assuming observations 0, 2, 3 and 4 belong to
+one group and 1, 5 belong to another group and we don’t want both groups
+to interact with each other in our weights (i.e. w_ij = 0 if i and j in
+different groups). For that, we use the following method:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">block_weights</span><span class="p">([</span><span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r2&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r2&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To illustrate that w2 will only be considered as binary even when the
+object passed is not, we can row-standardize it</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+</pre></div>
+</div>
+<p>The clipped object <code class="docutils literal notranslate"><span class="pre">wc</span></code> will contain only the spatial queen
+relationships that occur within one group (‘r1’ or ‘r2’) but will have
+gotten rid of those that happen across groups</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">w_clip</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">outSP</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will create a sparse object (recommended when n is large).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+<span class="go">array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.        , 0.        , 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.2       , 0.        , 0.        , 0.2       , 0.2       ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.2       , 0.        , 0.2       , 0.        , 0.2       ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.        , 0.        , 0.        ,</span>
+<span class="go">        0.        ]])</span>
+</pre></div>
+</div>
+<p>If we wanted an original W object, we can control that with the argument
+<code class="docutils literal notranslate"><span class="pre">outSP</span></code>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">w_clip</span><span class="p">(</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">outSP</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wc</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">array([[0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.        , 0.        , 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.2       , 0.        , 0.        , 0.2       , 0.2       ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.2       , 0.        , 0.2       , 0.        , 0.2       ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.33333333, 0.33333333, 0.        ,</span>
+<span class="go">        0.        ],</span>
+<span class="go">       [0.        , 0.        , 0.        , 0.        , 0.        ,</span>
+<span class="go">        0.        ]])</span>
+</pre></div>
+</div>
+<p>You can check they are actually the same:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wcs</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">==</span> <span class="n">wc</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">array([[ True,  True,  True,  True,  True,  True],</span>
+<span class="go">       [ True,  True,  True,  True,  True,  True],</span>
+<span class="go">       [ True,  True,  True,  True,  True,  True],</span>
+<span class="go">       [ True,  True,  True,  True,  True,  True],</span>
+<span class="go">       [ True,  True,  True,  True,  True,  True],</span>
+<span class="go">       [ True,  True,  True,  True,  True,  True]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/libpysal.weights.w_clip.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

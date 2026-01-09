@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libpysal.cg.PolygonLocator &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal.cg.KDTree" href="libpysal.cg.KDTree.html" />
+    <link rel="prev" title="libpysal.cg.PointLocator" href="libpysal.cg.PointLocator.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">libpysal.cg.PolygonLocator</a><ul>
+<li><a class="reference internal" href="#libpysal.cg.PolygonLocator"><code class="docutils literal notranslate"><span class="pre">PolygonLocator</span></code></a><ul>
+<li><a class="reference internal" href="#libpysal.cg.PolygonLocator.__init__"><code class="docutils literal notranslate"><span class="pre">PolygonLocator.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.PolygonLocator.contains_point"><code class="docutils literal notranslate"><span class="pre">PolygonLocator.contains_point()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.PolygonLocator.inside"><code class="docutils literal notranslate"><span class="pre">PolygonLocator.inside()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.PolygonLocator.nearest"><code class="docutils literal notranslate"><span class="pre">PolygonLocator.nearest()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.PolygonLocator.overlapping"><code class="docutils literal notranslate"><span class="pre">PolygonLocator.overlapping()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.PolygonLocator.proximity"><code class="docutils literal notranslate"><span class="pre">PolygonLocator.proximity()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.PolygonLocator.region"><code class="docutils literal notranslate"><span class="pre">PolygonLocator.region()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="libpysal-cg-polygonlocator">
+<h1>libpysal.cg.PolygonLocator<a class="headerlink" href="#libpysal-cg-polygonlocator" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="libpysal.cg.PolygonLocator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">libpysal.cg.</span></span><span class="sig-name descname"><span class="pre">PolygonLocator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator" title="Link to this definition">¶</a></dt>
+<dd><p>An abstract representation of a polygon indexing data structure.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.PolygonLocator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a polygon locator object.</p>
+<p>__init__(Polygon list) -&gt; PolygonLocator</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>polygons</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygons</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pl</span><span class="p">,</span> <span class="n">PolygonLocator</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.__init__" title="libpysal.cg.PolygonLocator.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(polygons)</p></td>
+<td><p>Returns a polygon locator object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.contains_point" title="libpysal.cg.PolygonLocator.contains_point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains_point</span></code></a>(point)</p></td>
+<td><p>Returns polygons that contain point</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.inside" title="libpysal.cg.PolygonLocator.inside"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inside</span></code></a>(query_rectangle)</p></td>
+<td><p>Returns polygons that are inside query_rectangle</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.nearest" title="libpysal.cg.PolygonLocator.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a>(query_point[, rule])</p></td>
+<td><p>Returns the nearest polygon indexed to a query point based on various rules.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.overlapping" title="libpysal.cg.PolygonLocator.overlapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlapping</span></code></a>(query_rectangle)</p></td>
+<td><p>Returns list of polygons that overlap query_rectangle</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.proximity" title="libpysal.cg.PolygonLocator.proximity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">proximity</span></code></a>(origin, r[, rule])</p></td>
+<td><p>Returns the indexed polygons located within some distance of an origin point based on various rules.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.PolygonLocator.region" title="libpysal.cg.PolygonLocator.region"><code class="xref py py-obj docutils literal notranslate"><span class="pre">region</span></code></a>(region_rect)</p></td>
+<td><p>Returns the indexed polygons located inside a rectangular query region.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.PolygonLocator.contains_point">
+<span class="sig-name descname"><span class="pre">contains_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.contains_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.contains_point" title="Link to this definition">¶</a></dt>
+<dd><p>Returns polygons that contain point</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>point: point (x,y)</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygons</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">containing</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)))</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span><span class="o">.</span><span class="n">centroid</span>
+<span class="go">(3.3333333333333335, 1.3333333333333333)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span>
+<span class="go">(3.3333333333333335, 1.3333333333333333)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.PolygonLocator.inside">
+<span class="sig-name descname"><span class="pre">inside</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_rectangle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.inside"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.inside" title="Link to this definition">¶</a></dt>
+<dd><p>Returns polygons that are inside query_rectangle</p>
+<p class="rubric">Notes</p>
+<p>inside means the intersection of the query rectangle and a
+polygon is not empty and is equal to the area of the polygon</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p3</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">inside</span><span class="p">(</span> <span class="n">qr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">inside</span><span class="p">(</span> <span class="n">qr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">inside</span><span class="p">(</span> <span class="n">qr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">inside</span><span class="p">(</span> <span class="n">qr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.PolygonLocator.nearest">
+<span class="sig-name descname"><span class="pre">nearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertex'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.nearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.nearest" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the nearest polygon indexed to a query point based on
+various rules.</p>
+<p>nearest(Polygon) -&gt; Polygon</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>query_point</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <a class="reference internal" href="#libpysal.cg.PolygonLocator.nearest" title="libpysal.cg.PolygonLocator.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">indexed</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></span></dt><dd></dd>
+<dt><strong>rule</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> <a class="reference internal" href="#libpysal.cg.PolygonLocator.nearest" title="libpysal.cg.PolygonLocator.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a> query.</span></dt><dd><p>vertex – measures distance between vertices and query_point
+centroid – measures distance between centroid and
+query_point
+edge   – measures the distance between edges and query_point</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span> <span class="n">n</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;future test: str(min(n.vertices())) == (0.0, 1.0)&quot;</span><span class="p">)</span>
+<span class="go">future test: str(min(n.vertices())) == (0.0, 1.0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.PolygonLocator.overlapping">
+<span class="sig-name descname"><span class="pre">overlapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_rectangle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.overlapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.overlapping" title="Link to this definition">¶</a></dt>
+<dd><p>Returns list of polygons that overlap query_rectangle</p>
+<p class="rubric">Notes</p>
+<p>overlapping means the intersection of the query rectangle and a
+polygon is not empty and is no larger than the area of the polygon</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p3</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">overlapping</span><span class="p">(</span> <span class="n">qr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">overlapping</span><span class="p">(</span> <span class="n">qr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">overlapping</span><span class="p">(</span> <span class="n">qr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">overlapping</span><span class="p">(</span> <span class="n">qr</span> <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qr</span> <span class="o">=</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">res</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">overlapping</span><span class="p">(</span><span class="n">qr</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.PolygonLocator.proximity">
+<span class="sig-name descname"><span class="pre">proximity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rule</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertex'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.proximity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.proximity" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the indexed polygons located within some distance of an
+origin point based on various rules.</p>
+<p>proximity(Polygon, number) -&gt; Polygon list</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>origin</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">indexed</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygons</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">near</span></code></span></dt><dd></dd>
+<dt><strong>r</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">maximum</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">indexed</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">from</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code></span></dt><dd></dd>
+<dt><strong>rule</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">point</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">for</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygon</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code> <a class="reference internal" href="#libpysal.cg.PolygonLocator.nearest" title="libpysal.cg.PolygonLocator.nearest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nearest</span></code></a> query.</span></dt><dd><p>vertex – measures distance between vertices and query_point
+centroid – measures distance between centroid and
+query_point
+edge   – measures the distance between edges and query_point</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">len</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">proximity</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;future test: len(pl.proximity(Point((0, 0)), 2)) == 2&quot;</span><span class="p">)</span>
+<span class="go">future test: len(pl.proximity(Point((0, 0)), 2)) == 2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.PolygonLocator.region">
+<span class="sig-name descname"><span class="pre">region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region_rect</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/locators.html#PolygonLocator.region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.region" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the indexed polygons located inside a rectangular query region.</p>
+<p>region(Rectangle) -&gt; Polygon list</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>region_rect</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">the</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">rectangular</span></code> <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#range" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">range</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">find</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">indexed</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">polygons</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">in</span></code></span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">p1</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">region</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/libpysal.cg.PolygonLocator.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

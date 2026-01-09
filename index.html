@@ -1,110 +1,275 @@
-
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <title>Welcome to No Errors Test Project’s documentation! &#8212; No Errors Test Project  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libpysal: Python Spatial Analysis Library Core &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css?v=38b0ce36" />
+    <script src="_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="_static/pysal_favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="next" title="Installation" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
 
   </head><body>
-  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
 
-          <div class="body" role="main">
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
             
-  <div class="section" id="welcome-to-no-errors-test-project-s-documentation">
-<h1>Welcome to No Errors Test Project’s documentation!<a class="headerlink" href="#welcome-to-no-errors-test-project-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="user-guide/intro.html">User Guide</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
 </ul>
-</div>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">libpysal: Python Spatial Analysis Library Core</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#development">Development</a></li>
+<li><a class="reference internal" href="#getting-involved">Getting Involved</a></li>
+<li><a class="reference internal" href="#bug-reports">Bug reports</a></li>
+<li><a class="reference internal" href="#citing-libpysal">Citing libpysal</a></li>
+<li><a class="reference internal" href="#license-information">License information</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#libpysal">libpysal</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
 
-
-          </div>
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
           
         </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">No Errors Test Project</a></h1>
+    </div>
+  </div>
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="#">Documentation overview</a><ul>
-  </ul></li>
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="libpysal-python-spatial-analysis-library-core">
+<h1>libpysal: Python Spatial Analysis Library Core<a class="headerlink" href="#libpysal-python-spatial-analysis-library-core" title="Link to this heading">¶</a></h1>
+<a class="reference external image-reference" href="https://github.com/pysal/libpysal/actions/workflows/unittests.yml"><img alt="https://github.com/pysal/libpysal/actions/workflows/.github/workflows/unittests.yml/badge.svg" src="https://github.com/pysal/libpysal/actions/workflows/.github/workflows/unittests.yml/badge.svg" />
+</a>
+<a class="reference external image-reference" href="https://discord.gg/BxFTEPFFZn"><img alt="https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&amp;logo=discord&amp;logoColor=cccccc" src="https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&amp;logo=discord&amp;logoColor=cccccc" />
+</a>
+<a class="reference external image-reference" href="https://badge.fury.io/py/libpysal"><img alt="https://badge.fury.io/py/libpysal.svg" src="https://badge.fury.io/py/libpysal.svg" />
+</a>
+<div class="container-fluid">
+  <div class="row equal-height">
+    <div class="col-sm-1 col-xs-hidden">
+    </div>
+    <div class="col-sm-10 col-xs-12">
+        <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/main/docs/user-guide/weights/weights.ipynb" class="thumbnail">
+            <img src="_static/images/npweights.png" class="img-responsive center-block">
+            <div class="caption text-center">
+            <h6>Weights for nonplanar enforced geometries</h6>
+            </div>
+        </a>
+    </div>
+    <div class="col-sm-1 col-xs-hidden">
+    </div>
+  </div>
+</div><section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p><strong>libpysal</strong> offers five modules that form the building blocks in many upstream packages in the <a class="reference external" href="https://pysal.org">PySAL family</a>:</p>
+<ul class="simple">
+<li><p>Spatial Weights: libpysal.weights</p></li>
+<li><p>Spatial Graphs: libpysal.graph</p></li>
+<li><p>Input-and output: libpysal.io</p></li>
+<li><p>Computational geometry: libpysal.cg</p></li>
+<li><p>Built-in example datasets libpysal.examples</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A new Graph class is being added to libpysal. For users interested in
+migration from using Weights to the new Graph class, see the
+<a class="reference external" href="user-guide/graph/w_g_migration.html">migration guide</a>. For
+developers interested in the technical details details see   <a class="reference external" href="migration.html">W and Graph Components</a>.</p>
+</div>
+<p>Examples demonstrating some of <strong>libpysal</strong> functionality are available in the
+<a class="reference external" href="user-guide.html">User Guide</a>.</p>
+<p>Details are available in the <a class="reference external" href="api.html">libpysal api</a>.</p>
+<p>For background information see <span id="id1">[<a class="reference internal" href="references.html#id3" title="Sergio J. Rey and Luc Anselin. PySAL: A Python Library of Spatial Analytical Methods. The Review of Regional Studies, 37(1):5-27, 2007.">RA07</a>]</span>.</p>
+</section>
+<section id="development">
+<h2>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h2>
+<p>libpysal development is hosted on <a class="reference external" href="https://github.com/pysal/libpysal">github</a>.</p>
+<p>Discussions of development occurs on the
+<a class="reference external" href="http://groups.google.com/group/pysal-dev">developer list</a>
+as well as <a class="reference external" href="https://discord.gg/BxFTEPFFZn">discord</a>.</p>
+</section>
+<section id="getting-involved">
+<h2>Getting Involved<a class="headerlink" href="#getting-involved" title="Link to this heading">¶</a></h2>
+<p>If you are interested in contributing to PySAL please see our
+<a class="reference external" href="https://github.com/pysal/pysal/wiki">development guidelines</a>.</p>
+</section>
+<section id="bug-reports">
+<h2>Bug reports<a class="headerlink" href="#bug-reports" title="Link to this heading">¶</a></h2>
+<p>To search for or report bugs, please see libpysal’s <a class="reference external" href="http://github.com/pysal/libpysal/issues">issues</a>.</p>
+</section>
+<section id="citing-libpysal">
+<h2>Citing libpysal<a class="headerlink" href="#citing-libpysal" title="Link to this heading">¶</a></h2>
+<p>If you use PySAL in a scientific publication, we would appreciate citations to the following paper:</p>
+<blockquote>
+<div><p><a class="reference external" href="http://journal.srsa.org/ojs/index.php/RRS/article/view/134/85">PySAL: A Python Library of Spatial Analytical Methods</a>, <em>Rey, S.J. and L. Anselin</em>, Review of Regional Studies 37, 5-27 2007.</p>
+<p>Bibtex entry:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@Article</span><span class="p">{</span><span class="n">pysal2007</span><span class="p">,</span>
+  <span class="n">author</span><span class="o">=</span><span class="p">{</span><span class="n">Rey</span><span class="p">,</span> <span class="n">Sergio</span> <span class="n">J</span><span class="o">.</span> <span class="ow">and</span> <span class="n">Anselin</span><span class="p">,</span> <span class="n">Luc</span><span class="p">},</span>
+  <span class="n">title</span><span class="o">=</span><span class="p">{{</span><span class="n">PySAL</span><span class="p">:</span> <span class="n">A</span> <span class="n">Python</span> <span class="n">Library</span> <span class="n">of</span> <span class="n">Spatial</span> <span class="n">Analytical</span> <span class="n">Methods</span><span class="p">}},</span>
+  <span class="n">journal</span><span class="o">=</span><span class="p">{</span><span class="n">The</span> <span class="n">Review</span> <span class="n">of</span> <span class="n">Regional</span> <span class="n">Studies</span><span class="p">},</span>
+  <span class="n">year</span><span class="o">=</span><span class="mi">2007</span><span class="p">,</span>
+  <span class="n">volume</span><span class="o">=</span><span class="p">{</span><span class="mi">37</span><span class="p">},</span>
+  <span class="n">number</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">},</span>
+  <span class="n">pages</span><span class="o">=</span><span class="p">{</span><span class="mi">5</span><span class="o">-</span><span class="mi">27</span><span class="p">},</span>
+  <span class="n">keywords</span><span class="o">=</span><span class="p">{</span><span class="n">Open</span> <span class="n">Source</span><span class="p">;</span> <span class="n">Software</span><span class="p">;</span> <span class="n">Spatial</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="license-information">
+<h2>License information<a class="headerlink" href="#license-information" title="Link to this heading">¶</a></h2>
+<p>See the file “LICENSE.txt” for information on the history of this
+software, terms &amp; conditions for usage, and a DISCLAIMER OF ALL
+WARRANTIES.</p>
+</section>
+</section>
+<section id="libpysal">
+<h1>libpysal<a class="headerlink" href="#libpysal" title="Link to this heading">¶</a></h1>
+<p>Core components of the Python Spatial Analysis Library (<a class="reference external" href="https://github.com/pysal/pysal">PySAL</a>)</p>
+<div class="toctree-wrapper compound">
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-guide/intro.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">W to Graph Member Comparisions</a></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
+</section>
+
+
     </div>
+      
+  </div>
 </div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2019, sphinx-action Test Suite.
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
       
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/index.rst.txt"
+     rel="nofollow">Source</a>
+</div>
       
-      |
-      <a href="_sources/index.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
   </body>
 </html>

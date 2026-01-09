@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libpysal.graph.GraphSummary &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal.graph.read_parquet" href="libpysal.graph.read_parquet.html" />
+    <link rel="prev" title="libpysal.graph.Graph" href="libpysal.graph.Graph.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">libpysal.graph.GraphSummary</a><ul>
+<li><a class="reference internal" href="#libpysal.graph.GraphSummary"><code class="docutils literal notranslate"><span class="pre">GraphSummary</span></code></a><ul>
+<li><a class="reference internal" href="#libpysal.graph.GraphSummary.__init__"><code class="docutils literal notranslate"><span class="pre">GraphSummary.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="libpysal-graph-graphsummary">
+<h1>libpysal.graph.GraphSummary<a class="headerlink" href="#libpysal-graph-graphsummary" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="libpysal.graph.GraphSummary">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">libpysal.graph.</span></span><span class="sig-name descname"><span class="pre">GraphSummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asymmetries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/graph/_summary.html#GraphSummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.graph.GraphSummary" title="Link to this definition">¶</a></dt>
+<dd><p>Graph Summary</p>
+<p>An object containing the statistical attributes summarising the Graph and its basic
+properties.</p>
+<dl class="field-list">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>n_nodes</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of Graph nodes</p>
+</dd>
+<dt><strong>n_edges</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of Graph edges</p>
+</dd>
+<dt><strong>n_components</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of connected components</p>
+</dd>
+<dt><strong>n_isolates</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of isolates (nodes with no neighbors)</p>
+</dd>
+<dt><strong>nonzero</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of edges with nonzero weight</p>
+</dd>
+<dt><strong>pct_nonzero</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>percentage of nonzero weights</p>
+</dd>
+<dt><strong>n_asymmetries</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#int" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">int</span></code></a></span></dt><dd><p>number of intrinsic asymmetries</p>
+</dd>
+<dt><strong>cardinalities_mean</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>mean number of neighbors</p>
+</dd>
+<dt><strong>cardinalities_std</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standard deviation of number of neighbors</p>
+</dd>
+<dt><strong>cardinalities_min</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimal number of neighbors</p>
+</dd>
+<dt><strong>cardinalities_25</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>25th percentile of number of neighbors</p>
+</dd>
+<dt><strong>cardinalities_50</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>50th percentile (median) of number of neighbors</p>
+</dd>
+<dt><strong>cardinalities_75</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>75th percentile of number of neighbors</p>
+</dd>
+<dt><strong>cardinalities_max</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximal number of neighbors</p>
+</dd>
+<dt><strong>weights_mean</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>mean edge weight</p>
+</dd>
+<dt><strong>weights_std</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>standard deviation of  edge weights</p>
+</dd>
+<dt><strong>weights_min</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>minimal edge weight</p>
+</dd>
+<dt><strong>weights_25</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>25th percentile of edge weights</p>
+</dd>
+<dt><strong>weights_50</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>50th percentile (median) of edge weights</p>
+</dd>
+<dt><strong>weights_75</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>75th percentile of edge weights</p>
+</dd>
+<dt><strong>weights_max</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>maximal edge weight</p>
+</dd>
+<dt><strong>s0</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>S0 (global) sum of weights</p>
+<p><code class="docutils literal notranslate"><span class="pre">s0</span></code> is defined as</p>
+<div class="math notranslate nohighlight">
+\[s0=\sum_i \sum_j w_{i,j}\]</div>
+<p><code class="xref py py-attr docutils literal notranslate"><span class="pre">s0</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">s1</span></code>, and <code class="xref py py-attr docutils literal notranslate"><span class="pre">s2</span></code> reflect interaction between observations
+and are used to compute standard errors for spatial autocorrelation estimators.</p>
+</dd>
+<dt><strong>s1</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>S1 sum of weights</p>
+<p><code class="docutils literal notranslate"><span class="pre">s1</span></code> is defined as</p>
+<div class="math notranslate nohighlight">
+\[s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2\]</div>
+<p><code class="xref py py-attr docutils literal notranslate"><span class="pre">s0</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">s1</span></code>, and <code class="xref py py-attr docutils literal notranslate"><span class="pre">s2</span></code> reflect interaction between observations
+and are used to compute standard errors for spatial autocorrelation estimators.</p>
+</dd>
+<dt><strong>s2</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>S2 sum of weights</p>
+<p><code class="docutils literal notranslate"><span class="pre">s2</span></code> is defined as</p>
+<div class="math notranslate nohighlight">
+\[s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2\]</div>
+<p><code class="xref py py-attr docutils literal notranslate"><span class="pre">s0</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">s1</span></code>, and <code class="xref py py-attr docutils literal notranslate"><span class="pre">s2</span></code> reflect interaction between observations
+and are used to compute standard errors for spatial autocorrelation estimators.</p>
+</dd>
+<dt><strong>diag_g2</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a></span></dt><dd><p>diagonal of <span class="math notranslate nohighlight">\(GG\)</span></p>
+</dd>
+<dt><strong>diag_gtg</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarrray</span></code></span></dt><dd><p>diagonal of <span class="math notranslate nohighlight">\(G^{'}G\)</span></p>
+</dd>
+<dt><strong>diag_gtg_gg</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a></span></dt><dd><p>diagonal of <span class="math notranslate nohighlight">\(G^{'}G + GG\)</span></p>
+</dd>
+<dt><strong>trace_g2</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a></span></dt><dd><p>trace of <span class="math notranslate nohighlight">\(GG\)</span></p>
+</dd>
+<dt><strong>trace_gtg</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarrray</span></code></span></dt><dd><p>trace of <span class="math notranslate nohighlight">\(G^{'}G\)</span></p>
+</dd>
+<dt><strong>trace_gtg_gg</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np.ndarray</span></code></a></span></dt><dd><p>trace of <span class="math notranslate nohighlight">\(G^{'}G + GG\)</span></p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">geopandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gpd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">geodatasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_path</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nybb</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;nybb&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;BoroName&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nybb</span>
+<span class="go">                BoroCode  ...                                           geometry</span>
+<span class="go">BoroName                 ...</span>
+<span class="go">Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....</span>
+<span class="go">Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...</span>
+<span class="go">Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...</span>
+<span class="go">Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....</span>
+<span class="go">Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...</span>
+<span class="go">[5 rows x 4 columns]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">contiguity</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">Graph</span><span class="o">.</span><span class="n">build_contiguity</span><span class="p">(</span><span class="n">nybb</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">contiguity</span>
+<span class="go">&lt;Graph of 5 nodes and 10 nonzero edges indexed by</span>
+<span class="go">    [&#39;Staten Island&#39;, &#39;Queens&#39;, &#39;Brooklyn&#39;, &#39;Manhattan&#39;, &#39;Bronx&#39;]&gt;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span> <span class="o">=</span> <span class="n">contiguity</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="n">asymmetries</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span>
+<span class="go">Graph Summary Statistics</span>
+<span class="go">========================</span>
+<span class="go">Graph indexed by:</span>
+<span class="go">[&#39;Staten Island&#39;, &#39;Queens&#39;, &#39;Brooklyn&#39;, &#39;Manhattan&#39;, &#39;Bronx&#39;]</span>
+<span class="go">==============================================================</span>
+<span class="go">number of nodes:                                             5</span>
+<span class="go">number of edges:                                            10</span>
+<span class="go">number of connected components:                              2</span>
+<span class="go">number of isolates:                                          1</span>
+<span class="go">number of non-zero edges:                                   10</span>
+<span class="go">Percentage of non-zero edges:                           44.00%</span>
+<span class="go">number of asymmetries:                                       0</span>
+<span class="go">--------------------------------------------------------------</span>
+<span class="go">Cardinalities</span>
+<span class="go">==============================================================</span>
+<span class="go">Mean:                       2    25%:                        2</span>
+<span class="go">Standard deviation:         1    50%:                        2</span>
+<span class="go">Min:                        0    75%:                        3</span>
+<span class="go">Max:                        3</span>
+<span class="go">--------------------------------------------------------------</span>
+<span class="go">Weights</span>
+<span class="go">==============================================================</span>
+<span class="go">Mean:                       1    25%:                        1</span>
+<span class="go">Standard deviation:         0    50%:                        1</span>
+<span class="go">Min:                        1    75%:                        1</span>
+<span class="go">Max:                        1</span>
+<span class="go">--------------------------------------------------------------</span>
+<span class="go">Sum of weights</span>
+<span class="go">==============================================================</span>
+<span class="go">S0:                                                         10</span>
+<span class="go">S1:                                                         20</span>
+<span class="go">S2:                                                        104</span>
+<span class="go">--------------------------------------------------------------</span>
+<span class="go">Traces</span>
+<span class="go">==============================================================</span>
+<span class="go">GG:                                                         10</span>
+<span class="go">G&#39;G:                                                        10</span>
+<span class="go">G&#39;G + GG:                                                   20</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span><span class="o">.</span><span class="n">s1</span>
+<span class="go">20</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.graph.GraphSummary.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asymmetries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/graph/_summary.html#GraphSummary.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.graph.GraphSummary.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Create GraphSummary</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>graph</strong><span class="classifier"><a class="reference internal" href="libpysal.graph.Graph.html#libpysal.graph.Graph" title="libpysal.graph.Graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Graph</span></code></a></span></dt><dd></dd>
+<dt><strong>asymmetries</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.12)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>whether to compute <code class="docutils literal notranslate"><span class="pre">n_asymmetries</span></code>, which is considerably more expensive
+than the other attributes. By default False.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.graph.GraphSummary.__init__" title="libpysal.graph.GraphSummary.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(graph[, asymmetries])</p></td>
+<td><p>Create GraphSummary</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/libpysal.graph.GraphSummary.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

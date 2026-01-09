@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libpysal.weights.Delaunay &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal.weights.Relative_Neighborhood" href="libpysal.weights.Relative_Neighborhood.html" />
+    <link rel="prev" title="libpysal.weights.Gabriel" href="libpysal.weights.Gabriel.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">libpysal.weights.Delaunay</a><ul>
+<li><a class="reference internal" href="#libpysal.weights.Delaunay"><code class="docutils literal notranslate"><span class="pre">Delaunay</span></code></a><ul>
+<li><a class="reference internal" href="#libpysal.weights.Delaunay.__init__"><code class="docutils literal notranslate"><span class="pre">Delaunay.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.weights.Delaunay.from_dataframe"><code class="docutils literal notranslate"><span class="pre">Delaunay.from_dataframe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="libpysal-weights-delaunay">
+<h1>libpysal.weights.Delaunay<a class="headerlink" href="#libpysal-weights-delaunay" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="libpysal.weights.Delaunay">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">libpysal.weights.</span></span><span class="sig-name descname"><span class="pre">Delaunay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/gabriel.html#Delaunay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.weights.Delaunay" title="Link to this definition">¶</a></dt>
+<dd><p>Constructor of the Delaunay graph of a set of input points.
+Relies on scipy.spatial.Delaunay and numba to quickly construct
+a graph from the input set of points. Will be slower without numba,
+and will warn if this is missing.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>coordinates</strong><span class="classifier"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">of</span></code> <code class="xref py py-obj docutils literal notranslate"><span class="pre">points</span></code>, (N,2)</span></dt><dd><p>numpy array of coordinates containing locations to compute the
+delaunay triangulation</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/keyword.html#module-keyword" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyword</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">argument</span></code> <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#list" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">list</span></code></a></span></dt><dd><p>keyword arguments passed directly to weights.W</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The Delaunay triangulation can result in quite a few non-local links among
+spatial coordinates. For a more useful graph, consider the weights.Voronoi
+constructor or the Gabriel graph.</p>
+<p>The weights.Voronoi class builds a voronoi diagram among the points, clips the
+Voronoi cells, and then constructs an adjacency graph among the clipped cells.
+This graph among the clipped Voronoi cells generally represents the structure
+of local adjacencies better than the “raw” Delaunay graph.</p>
+<p>The weights.gabriel.Gabriel graph constructs a Delaunay graph, but only
+includes the “short” links in the Delaunay graph.</p>
+<p>However, if the unresricted Delaunay triangulation is needed, this class
+will compute it much more quickly than Voronoi(coordinates, clip=None).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.weights.Delaunay.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/gabriel.html#Delaunay.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.weights.Delaunay.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.Delaunay.__init__" title="libpysal.weights.Delaunay.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(coordinates, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">asymmetry</span></code>([intrinsic])</p></td>
+<td><p>Asymmetry check.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_WSP</span></code>(WSP[, silence_warnings])</p></td>
+<td><p>Create a pysal W from a pysal WSP object (thin weights matrix).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_adjlist</span></code>(adjlist[, focal_col, ...])</p></td>
+<td><p>Return an adjacency list representation of a weights object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.weights.Delaunay.from_dataframe" title="libpysal.weights.Delaunay.from_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dataframe</span></code></a>(df[, geom_col, ids, use_index])</p></td>
+<td><p>Construct a Delaunay triangulation from a geopandas GeoDataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_file</span></code>([path, format])</p></td>
+<td><p>Read a weights file into a W object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_networkx</span></code>(graph[, weight_col])</p></td>
+<td><p>Convert a <code class="docutils literal notranslate"><span class="pre">networkx</span></code> graph to a PySAL <code class="docutils literal notranslate"><span class="pre">W</span></code> object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_shapefile</span></code>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_sparse</span></code>(sparse)</p></td>
+<td><p>Convert a <code class="docutils literal notranslate"><span class="pre">scipy.sparse</span></code> array to a PySAL <code class="docutils literal notranslate"><span class="pre">W</span></code> object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">full</span></code>()</p></td>
+<td><p>Generate a full <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code>()</p></td>
+<td><p>Getter for transform property.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>(gdf[, indexed_on, ax, color, node_kws, ...])</p></td>
+<td><p>Plot spatial weights objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remap_ids</span></code>(new_ids)</p></td>
+<td><p>In place modification throughout <code class="docutils literal notranslate"><span class="pre">W</span></code> of id values from <code class="docutils literal notranslate"><span class="pre">w.id_order</span></code> to <code class="docutils literal notranslate"><span class="pre">new_ids</span></code> in all.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_shapefile</span></code>(shapefile[, idVariable, full])</p></td>
+<td><p>Adding metadata for writing headers of <code class="docutils literal notranslate"><span class="pre">.gal</span></code> and <code class="docutils literal notranslate"><span class="pre">.gwt</span></code> files.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code>([value])</p></td>
+<td><p>Transformations of weights.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">symmetrize</span></code>([inplace])</p></td>
+<td><p>Construct a symmetric KNN weight.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_WSP</span></code>()</p></td>
+<td><p>Generate a <code class="docutils literal notranslate"><span class="pre">WSP</span></code> object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_adjlist</span></code>([remove_symmetric, drop_islands, ...])</p></td>
+<td><p>Compute an adjacency list representation of a weights object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_file</span></code>([path, format])</p></td>
+<td><p>Write a weights to a file.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_networkx</span></code>()</p></td>
+<td><p>Convert a weights object to a <code class="docutils literal notranslate"><span class="pre">networkx</span></code> graph.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_sparse</span></code>([fmt])</p></td>
+<td><p>Generate a <code class="docutils literal notranslate"><span class="pre">scipy.sparse</span></code> array object from a pysal W.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">asymmetries</span></code></p></td>
+<td><p>List of id pairs with asymmetric weights sorted in ascending <em>index location</em> order.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cardinalities</span></code></p></td>
+<td><p>Number of neighbors for each observation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">component_labels</span></code></p></td>
+<td><p>Store the graph component in which each observation falls.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagW2</span></code></p></td>
+<td><p>Diagonal of <span class="math notranslate nohighlight">\(WW\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagWtW</span></code></p></td>
+<td><p>Diagonal of <span class="math notranslate nohighlight">\(W^{'}W\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">diagWtW_WW</span></code></p></td>
+<td><p>Diagonal of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">histogram</span></code></p></td>
+<td><p>Cardinality histogram as a dictionary where key is the id and value is the number of neighbors for that unit.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">id2i</span></code></p></td>
+<td><p>Dictionary where the key is an ID and the value is that ID's index in <code class="docutils literal notranslate"><span class="pre">W.id_order</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">id_order</span></code></p></td>
+<td><p>Returns the ids for the observations in the order in which they would be encountered if iterating over the weights.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">id_order_set</span></code></p></td>
+<td><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if user has set <code class="docutils literal notranslate"><span class="pre">id_order</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code> if not.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">islands</span></code></p></td>
+<td><p>List of ids without any neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_neighbors</span></code></p></td>
+<td><p>Largest number of neighbors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_neighbors</span></code></p></td>
+<td><p>Average number of neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_neighbors</span></code></p></td>
+<td><p>Minimum number of neighbors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">n</span></code></p></td>
+<td><p>Number of units.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_components</span></code></p></td>
+<td><p>Store whether the adjacency matrix is fully connected.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">neighbor_offsets</span></code></p></td>
+<td><p>Given the current <code class="docutils literal notranslate"><span class="pre">id_order</span></code>, <code class="docutils literal notranslate"><span class="pre">neighbor_offsets[id]</span></code> is the offsets of the id's neighbors in <code class="docutils literal notranslate"><span class="pre">id_order</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">nonzero</span></code></p></td>
+<td><p>Number of nonzero weights.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pct_nonzero</span></code></p></td>
+<td><p>Percentage of nonzero weights.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">s0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">s0</span></code> is defined as</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">s1</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">s1</span></code> is defined as</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">s2</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">s2</span></code> is defined as</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">s2array</span></code></p></td>
+<td><p>Individual elements comprising <code class="docutils literal notranslate"><span class="pre">s2</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sd</span></code></p></td>
+<td><p>Standard deviation of number of neighbors.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparse</span></code></p></td>
+<td><p>Sparse matrix object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></p></td>
+<td><p>Getter for transform property.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcW2</span></code></p></td>
+<td><p>Trace of <span class="math notranslate nohighlight">\(WW\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW</span></code></p></td>
+<td><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trcWtW_WW</span></code></p></td>
+<td><p>Trace of <span class="math notranslate nohighlight">\(W^{'}W + WW\)</span>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.weights.Delaunay.from_dataframe">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geom_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/weights/gabriel.html#Delaunay.from_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.weights.Delaunay.from_dataframe" title="Link to this definition">¶</a></dt>
+<dd><p>Construct a Delaunay triangulation from a geopandas GeoDataFrame.
+Not that the input geometries in the dataframe must be Points.
+Polygons or lines must be converted to points (e.g. using
+df.geometry.centroid).</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>df</strong><span class="classifier"><a class="reference external" href="https://geopandas.org/en/latest/docs/reference/api/geopandas.GeoDataFrame.html#geopandas.GeoDataFrame" title="(in GeoPandas v1.1.2.dev58.dev+gfd4ce6534)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geopandas.GeoDataFrame</span></code></a></span></dt><dd><p>GeoDataFrame containing points to construct the Delaunay
+Triangulation.</p>
+</dd>
+<dt><strong>geom_col</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>the name of the column in <cite>df</cite> that contains the
+geometries. Defaults to active geometry column.</p>
+</dd>
+<dt><strong>ids</strong><span class="classifier">list-like, <a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">str</span></code></a></span></dt><dd><p>a list-like of ids to use to index the spatial weights object or
+the name of the column to use as IDs. If nothing is
+provided, the dataframe index is used if <cite>use_index=True</cite> or
+a positional index is used if <cite>use_index=False</cite>.
+Order of the resulting W is not respected from this list.</p>
+</dd>
+<dt><strong>use_index</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.12)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p>use index of <cite>df</cite> as <cite>ids</cite> to index the spatial weights object.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/keyword.html#module-keyword" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">keyword</span></code></a> <code class="xref py py-obj docutils literal notranslate"><span class="pre">arguments</span></code></span></dt><dd><p>Keyword arguments that are passed downwards to the weights.W
+constructor.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/libpysal.weights.Delaunay.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>libpysal.kernels &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for libpysal.kernels</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;kernels.py</span>
+
+<span class="sd">This module defines a collection of common kernel functions used for</span>
+<span class="sd">distance-based weighting in spatial analysis, nonparametric regression,</span>
+<span class="sd">and density estimation.</span>
+
+<span class="sd">Each kernel function takes as input an array of distances and a</span>
+<span class="sd">bandwidth parameter and returns an array of values for the kernel</span>
+<span class="sd">evaluated over the distances with the specified bandwidth.</span>
+
+<span class="sd">A general ``kernel()`` dispatcher is provided to apply a named kernel or a</span>
+<span class="sd">user-supplied callable.</span>
+
+<span class="sd">Available kernels:</span>
+<span class="sd">    - ``triangular``</span>
+<span class="sd">    - ``parabolic`` (Epanechnikov)</span>
+<span class="sd">    - ``gaussian``</span>
+<span class="sd">    - ``bisquare`` (quartic)</span>
+<span class="sd">    - ``cosine``</span>
+<span class="sd">    - ``exponential``</span>
+<span class="sd">    - ``boxcar`` (uniform)</span>
+<span class="sd">    - ``identity`` (raw distances)</span>
+
+<span class="sd">Mathematical Formulation</span>
+<span class="sd">------------------------</span>
+
+<span class="sd">All kernels are evaluated as:</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">    K(z), \\quad \\text{where} \\ z = \\frac{d}{h}</span>
+
+<span class="sd">- :math:`d` is the distance.</span>
+<span class="sd">- :math:`h` is the kernel bandwidth.</span>
+<span class="sd">- For :math:`z &gt; 1`, all kernels return :math:`K(z) = 0`.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_trim</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize and clip distances to the range [0, 1].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    d : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Bandwidth parameter.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Clipped and normalized distances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">bandwidth</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_triangular</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Triangular kernel function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Kernel bandwidth.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Triangular kernel weights.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">_trim</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parabolic</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parabolic (Epanechnikov) kernel function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Kernel bandwidth.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Parabolic kernel weights.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">_trim</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_gaussian</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gaussian kernel function (truncated at z=1).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Kernel bandwidth.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Gaussian kernel weights.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">/</span> <span class="n">bandwidth</span>
+    <span class="n">exponent_term</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent_term</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">k</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_bisquare</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bisquare (quartic) kernel function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Kernel bandwidth.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Bisquare kernel weights.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">distances</span> <span class="o">/</span> <span class="n">bandwidth</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">15</span> <span class="o">/</span> <span class="mi">16</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_cosine</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cosine kernel function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Kernel bandwidth.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Cosine kernel weights.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">distances</span> <span class="o">/</span> <span class="n">bandwidth</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_exponential</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exponential kernel function, truncated at z=1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Kernel bandwidth.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Exponential kernel weights.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">/</span> <span class="n">bandwidth</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_boxcar</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Boxcar (uniform) kernel function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Kernel bandwidth.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Binary weights: 1 if distance &lt; bandwidth, else 0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">distances</span> <span class="o">&lt;</span> <span class="n">bandwidth</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_identity</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identity kernel (no weighting, returns raw distances).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    _ : float</span>
+<span class="sd">        Unused bandwidth parameter.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        The raw input distances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">distances</span>
+
+
+<span class="n">_kernel_functions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;triangular&quot;</span><span class="p">:</span> <span class="n">_triangular</span><span class="p">,</span>
+    <span class="s2">&quot;parabolic&quot;</span><span class="p">:</span> <span class="n">_parabolic</span><span class="p">,</span>
+    <span class="s2">&quot;gaussian&quot;</span><span class="p">:</span> <span class="n">_gaussian</span><span class="p">,</span>
+    <span class="s2">&quot;bisquare&quot;</span><span class="p">:</span> <span class="n">_bisquare</span><span class="p">,</span>
+    <span class="s2">&quot;cosine&quot;</span><span class="p">:</span> <span class="n">_cosine</span><span class="p">,</span>
+    <span class="s2">&quot;boxcar&quot;</span><span class="p">:</span> <span class="n">_boxcar</span><span class="p">,</span>
+    <span class="s2">&quot;discrete&quot;</span><span class="p">:</span> <span class="n">_boxcar</span><span class="p">,</span>
+    <span class="s2">&quot;exponential&quot;</span><span class="p">:</span> <span class="n">_exponential</span><span class="p">,</span>
+    <span class="s2">&quot;identity&quot;</span><span class="p">:</span> <span class="n">_identity</span><span class="p">,</span>
+    <span class="kc">None</span><span class="p">:</span> <span class="n">_identity</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="kernel">
+<a class="viewcode-back" href="../../generated/libpysal.kernels.kernel.html#libpysal.kernels.kernel">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">kernel</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decay</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Evaluate a kernel function over a distance array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distances : ndarray</span>
+<span class="sd">        Array of distances.</span>
+<span class="sd">    bandwidth : float</span>
+<span class="sd">        Kernel bandwidth.</span>
+<span class="sd">    kernel : str or callable, optional</span>
+<span class="sd">        The kernel function to use. If a string, must be one of the predefined</span>
+<span class="sd">        kernel names: &#39;triangular&#39;, &#39;parabolic&#39;, &#39;gaussian&#39;, &#39;bisquare&#39;,</span>
+<span class="sd">        &#39;cosine&#39;, &#39;boxcar&#39;, &#39;discrete&#39;, &#39;exponential&#39;, &#39;identity&#39;.</span>
+<span class="sd">        If callable, it should have the signature `(distances, bandwidth)`.</span>
+<span class="sd">        If None, the &#39;identity&#39; kernel is used.</span>
+<span class="sd">    taper : bool (default: True)</span>
+<span class="sd">        Set kernel = 0 for all distances exceeding the bandwith. To</span>
+<span class="sd">        evaluate kernel beyond bandwith set taper=False.</span>
+<span class="sd">    decay : bool (default: False)</span>
+<span class="sd">        whether to calculate the kernel using the decay formulation.</span>
+<span class="sd">        In the decay form, a kernel measures the distance decay in</span>
+<span class="sd">        similarity between observations. It varies from from maximal</span>
+<span class="sd">        similarity (1) at a distance of zero to minimal similarity (0</span>
+<span class="sd">        or negative) at some very large (possibly infinite) distance.</span>
+<span class="sd">        Otherwise, kernel functions are treated as proper</span>
+<span class="sd">        volume-preserving probability distributions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ndarray</span>
+<span class="sd">        Kernel function evaluated at distance values.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">kernel</span>
+    <span class="k">elif</span> <span class="n">kernel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">_kernel_functions</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">_kernel_functions</span><span class="p">[</span><span class="n">kernel</span><span class="p">]</span>
+
+    <span class="n">k</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">taper</span><span class="p">:</span>
+        <span class="n">k</span><span class="p">[</span><span class="n">distances</span> <span class="o">&gt;</span> <span class="n">bandwidth</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">if</span> <span class="n">decay</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">/=</span> <span class="n">func</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">k</span></div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

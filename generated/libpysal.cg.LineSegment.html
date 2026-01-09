@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libpysal.cg.LineSegment &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="libpysal.cg.Line" href="libpysal.cg.Line.html" />
+    <link rel="prev" title="libpysal.cg.Point" href="libpysal.cg.Point.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">libpysal.cg.LineSegment</a><ul>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment"><code class="docutils literal notranslate"><span class="pre">LineSegment</span></code></a><ul>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.__init__"><code class="docutils literal notranslate"><span class="pre">LineSegment.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.bounding_box"><code class="docutils literal notranslate"><span class="pre">LineSegment.bounding_box</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.get_swap"><code class="docutils literal notranslate"><span class="pre">LineSegment.get_swap()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.intersect"><code class="docutils literal notranslate"><span class="pre">LineSegment.intersect()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.is_ccw"><code class="docutils literal notranslate"><span class="pre">LineSegment.is_ccw()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.is_cw"><code class="docutils literal notranslate"><span class="pre">LineSegment.is_cw()</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.len"><code class="docutils literal notranslate"><span class="pre">LineSegment.len</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.line"><code class="docutils literal notranslate"><span class="pre">LineSegment.line</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.p1"><code class="docutils literal notranslate"><span class="pre">LineSegment.p1</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.p2"><code class="docutils literal notranslate"><span class="pre">LineSegment.p2</span></code></a></li>
+<li><a class="reference internal" href="#libpysal.cg.LineSegment.sw_ccw"><code class="docutils literal notranslate"><span class="pre">LineSegment.sw_ccw()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="libpysal-cg-linesegment">
+<h1>libpysal.cg.LineSegment<a class="headerlink" href="#libpysal-cg-linesegment" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">libpysal.cg.</span></span><span class="sig-name descname"><span class="pre">LineSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_pt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_pt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#LineSegment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.LineSegment" title="Link to this definition">¶</a></dt>
+<dd><p>Geometric representation of line segment objects.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>start_pt</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>The point where the segment begins.</p>
+</dd>
+<dt><strong>end_pt</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>The point where the segment ends.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><a class="reference internal" href="#libpysal.cg.LineSegment.p1" title="libpysal.cg.LineSegment.p1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">p1</span></code></a><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p><strong>HELPER METHOD. DO NOT CALL.</strong></p>
+</dd>
+<dt><a class="reference internal" href="#libpysal.cg.LineSegment.p2" title="libpysal.cg.LineSegment.p2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">p2</span></code></a><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Point</span></code></a></span></dt><dd><p><strong>HELPER METHOD. DO NOT CALL.</strong></p>
+</dd>
+<dt><a class="reference internal" href="#libpysal.cg.LineSegment.bounding_box" title="libpysal.cg.LineSegment.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a><span class="classifier"><a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a></span></dt><dd><p>Returns the minimum bounding box of a <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object.</p>
+</dd>
+<dt><a class="reference internal" href="#libpysal.cg.LineSegment.len" title="libpysal.cg.LineSegment.len"><code class="xref py py-obj docutils literal notranslate"><span class="pre">len</span></code></a><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><code class="docutils literal notranslate"><span class="pre">float</span></code></a></span></dt><dd><p>Returns the length of a <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object.</p>
+</dd>
+<dt><a class="reference internal" href="#libpysal.cg.LineSegment.line" title="libpysal.cg.LineSegment.line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">line</span></code></a><span class="classifier"><a class="reference internal" href="libpysal.cg.Line.html#libpysal.cg.Line" title="libpysal.cg.Line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Line</span></code></a></span></dt><dd><p>Returns a <code class="docutils literal notranslate"><span class="pre">Line</span></code> object of the line on which the segment lies.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_pt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_pt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#LineSegment.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.LineSegment.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.__init__" title="libpysal.cg.LineSegment.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(start_pt, end_pt)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.get_swap" title="libpysal.cg.LineSegment.get_swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_swap</span></code></a>()</p></td>
+<td><p>Returns a <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object which has its endpoints swapped.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.intersect" title="libpysal.cg.LineSegment.intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intersect</span></code></a>(other)</p></td>
+<td><p>Test whether segment intersects with other segment (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or not (<code class="docutils literal notranslate"><span class="pre">False</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.is_ccw" title="libpysal.cg.LineSegment.is_ccw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_ccw</span></code></a>(pt)</p></td>
+<td><p>Returns whether a point is counterclockwise of the segment (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or not (<code class="docutils literal notranslate"><span class="pre">False</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.is_cw" title="libpysal.cg.LineSegment.is_cw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_cw</span></code></a>(pt)</p></td>
+<td><p>Returns whether a point is clockwise of the segment (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or not (<code class="docutils literal notranslate"><span class="pre">False</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.sw_ccw" title="libpysal.cg.LineSegment.sw_ccw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sw_ccw</span></code></a>(pt)</p></td>
+<td><p>Sedgewick test for <code class="docutils literal notranslate"><span class="pre">pt</span></code> being ccw of segment.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.bounding_box" title="libpysal.cg.LineSegment.bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bounding_box</span></code></a></p></td>
+<td><p>Returns the minimum bounding box of a <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.len" title="libpysal.cg.LineSegment.len"><code class="xref py py-obj docutils literal notranslate"><span class="pre">len</span></code></a></p></td>
+<td><p>Returns the length of a <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.line" title="libpysal.cg.LineSegment.line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">line</span></code></a></p></td>
+<td><p>Returns a <code class="docutils literal notranslate"><span class="pre">Line</span></code> object of the line on which the segment lies.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.p1" title="libpysal.cg.LineSegment.p1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">p1</span></code></a></p></td>
+<td><p><a href="#id1"><span class="problematic" id="id2">**</span></a>HELPER METHOD.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.cg.LineSegment.p2" title="libpysal.cg.LineSegment.p2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">p2</span></code></a></p></td>
+<td><p><a href="#id3"><span class="problematic" id="id4">**</span></a>HELPER METHOD.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.bounding_box">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bounding_box</span></span><a class="headerlink" href="#libpysal.cg.LineSegment.bounding_box" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the minimum bounding box of a <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>self._bounding_box</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a></span></dt><dd><p>The bounding box of the line segment.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">left</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">lower</span>
+<span class="go">2.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">right</span>
+<span class="go">5.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">bounding_box</span><span class="o">.</span><span class="n">upper</span>
+<span class="go">6.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.get_swap">
+<span class="sig-name descname"><span class="pre">get_swap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#LineSegment.get_swap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.LineSegment.get_swap" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object which has its endpoints swapped.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>line_seg</strong><span class="classifier"><a class="reference internal" href="#libpysal.cg.LineSegment" title="libpysal.cg.LineSegment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.LineSegment</span></code></a></span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object which has its endpoints swapped.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">swap</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">get_swap</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">swap</span><span class="o">.</span><span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">5.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">swap</span><span class="o">.</span><span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">6.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">swap</span><span class="o">.</span><span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">swap</span><span class="o">.</span><span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">2.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.intersect">
+<span class="sig-name descname"><span class="pre">intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#LineSegment.intersect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.LineSegment.intersect" title="Link to this definition">¶</a></dt>
+<dd><p>Test whether segment intersects with other segment (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or
+not (<code class="docutils literal notranslate"><span class="pre">False</span></code>). Handles endpoints of segments being on other segment.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>other</strong><span class="classifier"><a class="reference internal" href="#libpysal.cg.LineSegment" title="libpysal.cg.LineSegment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.LineSegment</span></code></a></span></dt><dd><p>Another line segment to check against.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls1</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">ls1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls2</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">ls2</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls2</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">intersect</span><span class="p">(</span><span class="n">ls2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.is_ccw">
+<span class="sig-name descname"><span class="pre">is_ccw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#LineSegment.is_ccw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.LineSegment.is_ccw" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether a point is counterclockwise of the
+segment (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or not (<code class="docutils literal notranslate"><span class="pre">False</span></code>). Exclusive.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>pt</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>A point lying ccw or cw of a segment.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">is_ccw</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">is_ccw</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.is_cw">
+<span class="sig-name descname"><span class="pre">is_cw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pt</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#LineSegment.is_cw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.LineSegment.is_cw" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether a point is clockwise of the
+segment (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or not (<code class="docutils literal notranslate"><span class="pre">False</span></code>). Exclusive.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>pt</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>A point lying ccw or cw of a segment.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">is_cw</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">is_cw</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.len">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">len</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></em><a class="headerlink" href="#libpysal.cg.LineSegment.len" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the length of a <code class="docutils literal notranslate"><span class="pre">LineSegment</span></code> object.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span><span class="o">.</span><span class="n">len</span>
+<span class="go">3.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.line">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">line</span></span><a class="headerlink" href="#libpysal.cg.LineSegment.line" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a <code class="docutils literal notranslate"><span class="pre">Line</span></code> object of the line on which the segment lies.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>self._line</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Line.html#libpysal.cg.Line" title="libpysal.cg.Line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Line</span></code></a></span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">Line</span></code> object of the line on which the segment lies.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">line</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">m</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">b</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.p1">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">p1</span></span><a class="headerlink" href="#libpysal.cg.LineSegment.p1" title="Link to this definition">¶</a></dt>
+<dd><p><strong>HELPER METHOD. DO NOT CALL.</strong>
+Returns the <code class="docutils literal notranslate"><span class="pre">p1</span></code> attribute of the line segment.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>self._p1</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">_p1</span></code> attribute.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">_get_p1</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">==</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.p2">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">p2</span></span><a class="headerlink" href="#libpysal.cg.LineSegment.p2" title="Link to this definition">¶</a></dt>
+<dd><p><strong>HELPER METHOD. DO NOT CALL.</strong>
+Returns the <code class="docutils literal notranslate"><span class="pre">p2</span></code> attribute of the line segment.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>self._p2</strong><span class="classifier"><a class="reference internal" href="libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a></span></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">_p2</span></code> attribute.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ls</span> <span class="o">=</span> <span class="n">LineSegment</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">_get_p2</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">==</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="libpysal.cg.LineSegment.sw_ccw">
+<span class="sig-name descname"><span class="pre">sw_ccw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libpysal/cg/shapes.html#LineSegment.sw_ccw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.LineSegment.sw_ccw" title="Link to this definition">¶</a></dt>
+<dd><p>Sedgewick test for <code class="docutils literal notranslate"><span class="pre">pt</span></code> being ccw of segment.</p>
+<dl class="field-list">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>is_ccw</strong><span class="classifier"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#bltin-boolean-values" title="(in Python v3.12)"><span class="xref std std-ref">bool</span></a></span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">1</span></code> if turn from <code class="docutils literal notranslate"><span class="pre">self.p1</span></code> to <code class="docutils literal notranslate"><span class="pre">self.p2</span></code> to <code class="docutils literal notranslate"><span class="pre">pt</span></code> is ccw.
+<code class="docutils literal notranslate"><span class="pre">-1</span></code> if turn from <code class="docutils literal notranslate"><span class="pre">self.p1</span></code> to <code class="docutils literal notranslate"><span class="pre">self.p2</span></code> to <code class="docutils literal notranslate"><span class="pre">pt</span></code> is cw.
+<code class="docutils literal notranslate"><span class="pre">-1</span></code> if the points are collinear and <code class="docutils literal notranslate"><span class="pre">self.p1</span></code> is in the middle.
+<code class="docutils literal notranslate"><span class="pre">1</span></code> if the points are collinear and <code class="docutils literal notranslate"><span class="pre">self.p2</span></code> is in the middle.
+<code class="docutils literal notranslate"><span class="pre">0</span></code> if the points are collinear and <code class="docutils literal notranslate"><span class="pre">pt</span></code> is in the middle.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/generated/libpysal.cg.LineSegment.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

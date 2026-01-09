@@ -1,0 +1,76 @@
+﻿libpysal.weights.Gabriel
+========================
+
+.. currentmodule:: libpysal.weights
+
+.. autoclass:: Gabriel
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Gabriel.__init__
+      ~Gabriel.asymmetry
+      ~Gabriel.from_WSP
+      ~Gabriel.from_adjlist
+      ~Gabriel.from_dataframe
+      ~Gabriel.from_file
+      ~Gabriel.from_networkx
+      ~Gabriel.from_shapefile
+      ~Gabriel.from_sparse
+      ~Gabriel.full
+      ~Gabriel.get_transform
+      ~Gabriel.plot
+      ~Gabriel.remap_ids
+      ~Gabriel.set_shapefile
+      ~Gabriel.set_transform
+      ~Gabriel.symmetrize
+      ~Gabriel.to_WSP
+      ~Gabriel.to_adjlist
+      ~Gabriel.to_file
+      ~Gabriel.to_networkx
+      ~Gabriel.to_sparse
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Gabriel.asymmetries
+      ~Gabriel.cardinalities
+      ~Gabriel.component_labels
+      ~Gabriel.diagW2
+      ~Gabriel.diagWtW
+      ~Gabriel.diagWtW_WW
+      ~Gabriel.histogram
+      ~Gabriel.id2i
+      ~Gabriel.id_order
+      ~Gabriel.id_order_set
+      ~Gabriel.islands
+      ~Gabriel.max_neighbors
+      ~Gabriel.mean_neighbors
+      ~Gabriel.min_neighbors
+      ~Gabriel.n
+      ~Gabriel.n_components
+      ~Gabriel.neighbor_offsets
+      ~Gabriel.nonzero
+      ~Gabriel.pct_nonzero
+      ~Gabriel.s0
+      ~Gabriel.s1
+      ~Gabriel.s2
+      ~Gabriel.s2array
+      ~Gabriel.sd
+      ~Gabriel.sparse
+      ~Gabriel.transform
+      ~Gabriel.trcW2
+      ~Gabriel.trcWtW
+      ~Gabriel.trcWtW_WW
+   
+   

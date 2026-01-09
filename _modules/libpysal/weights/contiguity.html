@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>libpysal.weights.contiguity &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../../../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for libpysal.weights.contiguity</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ruff: noqa: B006, N802, N803, N813</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..cg</span><span class="w"> </span><span class="kn">import</span> <span class="n">voronoi_frames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..io.fileio</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileIO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._contW_lists</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContiguityWeightsLists</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.raster</span><span class="w"> </span><span class="kn">import</span> <span class="n">da2W</span><span class="p">,</span> <span class="n">da2WSP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_ids</span><span class="p">,</span> <span class="n">get_points_array</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">WSP</span><span class="p">,</span> <span class="n">W</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">shapely.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span> <span class="k">as</span> <span class="n">shapely_point</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..cg.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span> <span class="k">as</span> <span class="n">pysal_point</span>
+
+    <span class="n">point_type</span> <span class="o">=</span> <span class="p">(</span><span class="n">shapely_point</span><span class="p">,</span> <span class="n">pysal_point</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..cg.shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point</span> <span class="k">as</span> <span class="n">point_type</span>
+
+<span class="n">WT_TYPE</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;rook&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;queen&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>  <span class="c1"># for _contW_Binning</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Sergio J. Rey &lt;srey@asu.edu&gt; , Levi John Wolf &lt;levi.john.wolf@gmail.com&gt;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Rook&quot;</span><span class="p">,</span> <span class="s2">&quot;Queen&quot;</span><span class="p">,</span> <span class="s2">&quot;Voronoi&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Rook">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Rook.html#libpysal.weights.Rook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Rook</span><span class="p">(</span><span class="n">W</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a weights object from a collection of pysal</span>
+<span class="sd">    polygons that share at least one edge.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    polygons    : list</span>
+<span class="sd">                a collection of PySAL shapes to build weights from</span>
+<span class="sd">    ids         : list</span>
+<span class="sd">                a list of names to use to build the weights</span>
+<span class="sd">    **kw        : keyword arguments</span>
+<span class="sd">                optional arguments for :class:`pysal.weights.W`</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :class:`libpysal.weights.weights.W`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Rook.__init__">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Rook.html#libpysal.weights.Rook.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polygons</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="s2">&quot;rook&quot;</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ids&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">polygons</span><span class="p">,</span> <span class="n">backup</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">tee</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+        <span class="n">first_shape</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">backup</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first_shape</span><span class="p">,</span> <span class="n">point_type</span><span class="p">):</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="n">voronoi_frames</span><span class="p">(</span>
+                <span class="n">get_points_array</span><span class="p">(</span><span class="n">polygons</span><span class="p">),</span> <span class="n">return_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_gdf</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+        <span class="n">neighbors</span><span class="p">,</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">_build</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="n">criterion</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">)</span>
+        <span class="n">W</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Rook.from_shapefile">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Rook.html#libpysal.weights.Rook.from_shapefile">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_shapefile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">idVariable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rook contiguity weights from a polygon shapefile.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shapefile : string</span>
+<span class="sd">                    name of polygon shapefile including suffix.</span>
+<span class="sd">        sparse    : boolean</span>
+<span class="sd">                    If True return WSP instance</span>
+<span class="sd">                    If False return W instance</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w          : W</span>
+<span class="sd">                     instance of spatial weights</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from libpysal.weights import Rook</span>
+<span class="sd">        &gt;&gt;&gt; import libpysal</span>
+<span class="sd">        &gt;&gt;&gt; wr=Rook.from_shapefile(libpysal.examples.get_path(&quot;columbus.shp&quot;), &quot;POLYID&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; &quot;%.3f&quot;%wr.pct_nonzero</span>
+<span class="sd">        &#39;8.330&#39;</span>
+<span class="sd">        &gt;&gt;&gt; wr=Rook.from_shapefile(</span>
+<span class="sd">        ...     libpysal.examples.get_path(&quot;columbus.shp&quot;), sparse=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; pct_sp = wr.sparse.nnz *1. / wr.n**2</span>
+<span class="sd">        &gt;&gt;&gt; &quot;%.3f&quot;%pct_sp</span>
+<span class="sd">        &#39;0.083&#39;</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Rook contiguity defines as neighbors any pair of polygons that share a</span>
+<span class="sd">        common edge in their polygon definitions.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`libpysal.weights.weights.W`</span>
+<span class="sd">        :class:`libpysal.weights.contiguity.Rook`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sparse</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;sparse&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">get_ids</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">idVariable</span><span class="p">)</span> <span class="k">if</span> <span class="n">idVariable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">FileIO</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">set_shapefile</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">idVariable</span><span class="o">=</span><span class="n">idVariable</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="n">full</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">to_WSP</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="Rook.from_iterable">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Rook.html#libpysal.weights.Rook.from_iterable">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_iterable</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a weights object from a collection of arbitrary polygons. This</span>
+<span class="sd">        will cast the polygons to PySAL polygons, then build the W.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iterable    : iterable</span>
+<span class="sd">                      a collection of of shapes to be cast to PySAL shapes. Must</span>
+<span class="sd">                      support iteration. Can be either Shapely or PySAL shapes.</span>
+<span class="sd">        **kw        : keyword arguments</span>
+<span class="sd">                      optional arguments for  :class:`pysal.weights.W`</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`libpysal.weights.weights.W`</span>
+<span class="sd">        :class:`libpysal.weights.contiguity.Rook`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_iterable</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">new_iterable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">WSP</span><span class="o">.</span><span class="n">from_W</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="Rook.from_dataframe">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Rook.html#libpysal.weights.Rook.from_dataframe">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dataframe</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">geom_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">idVariable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">id_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a weights object from a (geo)pandas dataframe with a geometry</span>
+<span class="sd">        column. This will cast the polygons to PySAL polygons, then build the W</span>
+<span class="sd">        using ids from the dataframe.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df          : DataFrame</span>
+<span class="sd">                      a :class: `pandas.DataFrame` containing geometries to use</span>
+<span class="sd">                      for spatial weights</span>
+<span class="sd">        geom_col    : string</span>
+<span class="sd">                      the name of the column in `df` that contains the</span>
+<span class="sd">                      geometries. Defaults to active geometry column.</span>
+<span class="sd">        idVariable  : string</span>
+<span class="sd">                      DEPRECATED - use `ids` instead.</span>
+<span class="sd">                      the name of the column to use as IDs. If nothing is</span>
+<span class="sd">                      provided, the dataframe index is used</span>
+<span class="sd">        ids         : list-like, string</span>
+<span class="sd">                      a list-like of ids to use to index the spatial weights object or</span>
+<span class="sd">                      the name of the column to use as IDs. If nothing is</span>
+<span class="sd">                      provided, the dataframe index is used if `use_index=True` or</span>
+<span class="sd">                      a positional index is used if `use_index=False`.</span>
+<span class="sd">                      Order of the resulting W is not respected from this list.</span>
+<span class="sd">        id_order    : list</span>
+<span class="sd">                      DEPRECATED - argument is deprecated and will be removed.</span>
+<span class="sd">                      An ordered list of ids to use to index the spatial weights</span>
+<span class="sd">                      object. If used, the resulting weights object will iterate</span>
+<span class="sd">                      over results in the order of the names provided in this</span>
+<span class="sd">                      argument.</span>
+<span class="sd">        use_index   : bool</span>
+<span class="sd">                      use index of `df` as `ids` to index the spatial weights object.</span>
+<span class="sd">                      Defaults to False but in future will default to True.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`libpysal.weights.weights.W`</span>
+<span class="sd">        :class:`libpysal.weights.contiguity.Rook`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">geom_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">geom_col</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">if</span> <span class="n">id_order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;`id_order` is deprecated and will be removed in future.&quot;</span><span class="p">,</span>
+                <span class="ne">FutureWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">id_order</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="p">((</span><span class="n">idVariable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
+                <span class="c1"># if idVariable is None, we want ids. Otherwise, we want the</span>
+                <span class="c1"># idVariable column</span>
+                <span class="n">id_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idVariable</span><span class="p">,</span> <span class="n">ids</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">id_order</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_order</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">idVariable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;`idVariable` is deprecated and will be removed in future. &quot;</span>
+                    <span class="s2">&quot;Use `ids` instead.&quot;</span><span class="p">,</span>
+                    <span class="ne">FutureWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">idVariable</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;Both `idVariable` and `ids` passed, using `ids`.&quot;</span><span class="p">,</span>
+                    <span class="ne">UserWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">use_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;`use_index` defaults to False but will default to True in future. &quot;</span>
+                    <span class="s2">&quot;Set True/False directly to control this behavior and silence this &quot;</span>
+                    <span class="s2">&quot;warning&quot;</span><span class="p">,</span>
+                    <span class="ne">FutureWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">use_index</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">use_index</span><span class="p">:</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The length of `ids` does not match the length of df.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">id_order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">id_order</span> <span class="o">=</span> <span class="n">ids</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">geom_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">id_order</span><span class="o">=</span><span class="n">id_order</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Rook.from_xarray">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Rook.html#libpysal.weights.Rook.from_xarray">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_xarray</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">da</span><span class="p">,</span>
+        <span class="n">z_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">coords_labels</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">include_nodata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># noqa: ARG003</span>
+        <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a weights object from a xarray.DataArray with an additional</span>
+<span class="sd">        attribute index containing coordinate values of the raster</span>
+<span class="sd">        in the form of Pandas.Index/MultiIndex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        da : xarray.DataArray</span>
+<span class="sd">            Input 2D or 3D DataArray with shape=(z, y, x)</span>
+<span class="sd">        z_value : int/string/float</span>
+<span class="sd">            Select the z_value of 3D DataArray with multiple layers.</span>
+<span class="sd">        coords_labels : dictionary</span>
+<span class="sd">            Pass dimension labels for coordinates and layers if they do not</span>
+<span class="sd">            belong to default dimensions, which are (band/time, y/lat, x/lon)</span>
+<span class="sd">            e.g. coords_labels = {&quot;y_label&quot;: &quot;latitude&quot;,</span>
+<span class="sd">            &quot;x_label&quot;: &quot;longitude&quot;, &quot;z_label&quot;: &quot;year&quot;}</span>
+<span class="sd">            Default is {} empty dictionary.</span>
+<span class="sd">        sparse : boolean</span>
+<span class="sd">            type of weight object. Default is True.</span>
+<span class="sd">            For libpysal.weights.W, sparse = False</span>
+<span class="sd">        k : int</span>
+<span class="sd">            Order of contiguity, this will select all neighbors upto kth order.</span>
+<span class="sd">            Default is 1.</span>
+<span class="sd">        include_nodata : boolean</span>
+<span class="sd">            If True, missing values will be assumed as non-missing when</span>
+<span class="sd">            selecting higher_order neighbors, Default is False</span>
+<span class="sd">        n_jobs : int</span>
+<span class="sd">            Number of cores to be used in the sparse weight construction. If -1,</span>
+<span class="sd">            all available cores are used. Default is 1.</span>
+<span class="sd">        **kwargs : keyword arguments</span>
+<span class="sd">            optional arguments passed when sparse = False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : libpysal.weights.W/libpysal.weights.WSP</span>
+<span class="sd">            instance of spatial weights class W or WSP with an index attribute</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        1. Lower order contiguities are also selected.</span>
+<span class="sd">        2. Returned object contains `index` attribute that includes a</span>
+<span class="sd">           `Pandas.MultiIndex` object from the DataArray.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`libpysal.weights.weights.W`</span>
+<span class="sd">        :class:`libpysal.weights.weights.WSP`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">da2WSP</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="s2">&quot;rook&quot;</span><span class="p">,</span> <span class="n">z_value</span><span class="p">,</span> <span class="n">coords_labels</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">include_nodata</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">da2W</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="s2">&quot;rook&quot;</span><span class="p">,</span> <span class="n">z_value</span><span class="p">,</span> <span class="n">coords_labels</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">include_nodata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Queen">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Queen</span><span class="p">(</span><span class="n">W</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a weights object from a collection of pysal</span>
+<span class="sd">    polygons that share at least one vertex.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    polygons    : list</span>
+<span class="sd">                  a collection of PySAL shapes to build weights from</span>
+<span class="sd">    ids         : list</span>
+<span class="sd">                  a list of names to use to build the weights</span>
+<span class="sd">    **kw        : keyword arguments</span>
+<span class="sd">                  optional arguments for :class:`pysal.weights.W`</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :class:`libpysal.weights.weights.W`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Queen.__init__">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polygons</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="s2">&quot;queen&quot;</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ids&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">polygons</span><span class="p">,</span> <span class="n">backup</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">tee</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+        <span class="n">first_shape</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">backup</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first_shape</span><span class="p">,</span> <span class="n">point_type</span><span class="p">):</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="n">voronoi_frames</span><span class="p">(</span>
+                <span class="n">get_points_array</span><span class="p">(</span><span class="n">polygons</span><span class="p">),</span> <span class="n">return_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_gdf</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">polygons</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">polygons</span><span class="p">)</span>
+        <span class="n">neighbors</span><span class="p">,</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">_build</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="n">criterion</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">)</span>
+        <span class="n">W</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">neighbors</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Queen.from_shapefile">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_shapefile">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_shapefile</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">idVariable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Queen contiguity weights from a polygon shapefile.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        shapefile   : string</span>
+<span class="sd">                      name of polygon shapefile including suffix.</span>
+<span class="sd">        idVariable  : string</span>
+<span class="sd">                      name of a column in the shapefile&#39;s DBF to use for ids.</span>
+<span class="sd">        sparse      : boolean</span>
+<span class="sd">                      If True return WSP instance</span>
+<span class="sd">                      If False return W instance</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w            : W</span>
+<span class="sd">                       instance of spatial weights</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from libpysal.weights import Queen</span>
+<span class="sd">        &gt;&gt;&gt; import libpysal</span>
+<span class="sd">        &gt;&gt;&gt; wq=Queen.from_shapefile(libpysal.examples.get_path(&quot;columbus.shp&quot;))</span>
+<span class="sd">        &gt;&gt;&gt; &quot;%.3f&quot;%wq.pct_nonzero</span>
+<span class="sd">        &#39;9.829&#39;</span>
+<span class="sd">        &gt;&gt;&gt; wq=Queen.from_shapefile(libpysal.examples.get_path(&quot;columbus.shp&quot;),&quot;POLYID&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; &quot;%.3f&quot;%wq.pct_nonzero</span>
+<span class="sd">        &#39;9.829&#39;</span>
+<span class="sd">        &gt;&gt;&gt; wq=Queen.from_shapefile(</span>
+<span class="sd">        ...     libpysal.examples.get_path(&quot;columbus.shp&quot;), sparse=True</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; pct_sp = wq.sparse.nnz *1. / wq.n**2</span>
+<span class="sd">        &gt;&gt;&gt; &quot;%.3f&quot;%pct_sp</span>
+<span class="sd">        &#39;0.098&#39;</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Queen contiguity defines as neighbors any pair of polygons that share at</span>
+<span class="sd">        least one vertex in their polygon definitions.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`libpysal.weights.weights.W`</span>
+<span class="sd">        :class:`libpysal.weights.contiguity.Queen`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sparse</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;sparse&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">get_ids</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">idVariable</span><span class="p">)</span> <span class="k">if</span> <span class="n">idVariable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">FileIO</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">set_shapefile</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">idVariable</span><span class="o">=</span><span class="n">idVariable</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="n">full</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">to_WSP</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="Queen.from_iterable">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_iterable">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_iterable</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a weights object from a collection of arbitrary polygons.</span>
+
+<span class="sd">        This will cast the polygons to PySAL polygons, then build the W.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        iterable    : iterable</span>
+<span class="sd">                      a collection of of shapes to be cast to PySAL shapes.</span>
+<span class="sd">                      Must support iteration. Contents may either be</span>
+<span class="sd">                      a shapely or PySAL shape.</span>
+<span class="sd">        **kw        : keyword arguments</span>
+<span class="sd">                      optional arguments for  :class:`pysal.weights.W`</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`libpysal.weights.weights.W`</span>
+<span class="sd">        :class:`libpysal.weights.contiguiyt.Queen`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_iterable</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">new_iterable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">WSP</span><span class="o">.</span><span class="n">from_W</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+
+
+<div class="viewcode-block" id="Queen.from_dataframe">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_dataframe">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dataframe</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">df</span><span class="p">,</span>
+        <span class="n">geom_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">idVariable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">id_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">use_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a weights object from a (geo)pandas dataframe with a geometry</span>
+<span class="sd">        column. This will cast the polygons to PySAL polygons, then build the W</span>
+<span class="sd">        using ids from the dataframe.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df          : DataFrame</span>
+<span class="sd">                      a :class: `pandas.DataFrame` containing geometries to use</span>
+<span class="sd">                      for spatial weights</span>
+<span class="sd">        geom_col    : string</span>
+<span class="sd">                      the name of the column in `df` that contains the</span>
+<span class="sd">                      geometries. Defaults to active geometry column.</span>
+<span class="sd">        idVariable  : string</span>
+<span class="sd">                      DEPRECATED - use `ids` instead.</span>
+<span class="sd">                      the name of the column to use as IDs. If nothing is</span>
+<span class="sd">                      provided, the dataframe index is used</span>
+<span class="sd">        ids         : list-like, string</span>
+<span class="sd">                      a list-like of ids to use to index the spatial weights object or</span>
+<span class="sd">                      the name of the column to use as IDs. If nothing is</span>
+<span class="sd">                      provided, the dataframe index is used if `use_index=True` or</span>
+<span class="sd">                      a positional index is used if `use_index=False`.</span>
+<span class="sd">                      Order of the resulting W is not respected from this list.</span>
+<span class="sd">        id_order    : list</span>
+<span class="sd">                      DEPRECATED - argument is deprecated and will be removed.</span>
+<span class="sd">                      An ordered list of ids to use to index the spatial weights</span>
+<span class="sd">                      object. If used, the resulting weights object will iterate</span>
+<span class="sd">                      over results in the order of the names provided in this</span>
+<span class="sd">                      argument.</span>
+<span class="sd">        use_index   : bool</span>
+<span class="sd">                      use index of `df` as `ids` to index the spatial weights object.</span>
+<span class="sd">                      Defaults to False but in future will default to True.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`libpysal.weights.weights.W`</span>
+<span class="sd">        :class:`libpysal.weights.contiguity.Queen`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">geom_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">geom_col</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">if</span> <span class="n">id_order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;`id_order` is deprecated and will be removed in future.&quot;</span><span class="p">,</span>
+                <span class="ne">FutureWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">id_order</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="p">((</span><span class="n">idVariable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
+                <span class="c1"># if idVariable is None, we want ids. Otherwise, we want the</span>
+                <span class="c1"># idVariable column</span>
+                <span class="n">id_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">idVariable</span><span class="p">,</span> <span class="n">ids</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">id_order</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_order</span><span class="p">,</span> <span class="n">ids</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">idVariable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;`idVariable` is deprecated and will be removed in future. &quot;</span>
+                    <span class="s2">&quot;Use `ids` instead.&quot;</span><span class="p">,</span>
+                    <span class="ne">FutureWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">idVariable</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;Both `idVariable` and `ids` passed, using `ids`.&quot;</span><span class="p">,</span>
+                    <span class="ne">UserWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">use_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;`use_index` defaults to False but will default to True in future. &quot;</span>
+                    <span class="s2">&quot;Set True/False directly to control this behavior and silence this &quot;</span>
+                    <span class="s2">&quot;warning&quot;</span><span class="p">,</span>
+                    <span class="ne">FutureWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">use_index</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">use_index</span><span class="p">:</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The length of `ids` does not match the length of df.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">id_order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">id_order</span> <span class="o">=</span> <span class="n">ids</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">geom_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="n">id_order</span><span class="o">=</span><span class="n">id_order</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Queen.from_xarray">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_xarray">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_xarray</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">da</span><span class="p">,</span>
+        <span class="n">z_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">coords_labels</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">include_nodata</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># noqa: ARG003</span>
+        <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a weights object from a xarray.DataArray with an additional</span>
+<span class="sd">        attribute index containing coordinate values of the raster</span>
+<span class="sd">        in the form of Pandas.Index/MultiIndex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        da : xarray.DataArray</span>
+<span class="sd">            Input 2D or 3D DataArray with shape=(z, y, x)</span>
+<span class="sd">        z_value : int/string/float</span>
+<span class="sd">            Select the z_value of 3D DataArray with multiple layers.</span>
+<span class="sd">        coords_labels : dictionary</span>
+<span class="sd">            Pass dimension labels for coordinates and layers if they do not</span>
+<span class="sd">            belong to default dimensions, which are (band/time, y/lat, x/lon)</span>
+<span class="sd">            e.g. coords_labels = {&quot;y_label&quot;: &quot;latitude&quot;, &quot;x_label&quot;:</span>
+<span class="sd">            &quot;longitude&quot;, &quot;z_label&quot;: &quot;year&quot;}</span>
+<span class="sd">            Default is {} empty dictionary.</span>
+<span class="sd">        sparse : boolean</span>
+<span class="sd">            type of weight object. Default is True.</span>
+<span class="sd">            For libpysal.weights.W, sparse = False</span>
+<span class="sd">        k : int</span>
+<span class="sd">            Order of contiguity, this will select all neighbors upto kth order.</span>
+<span class="sd">            Default is 1.</span>
+<span class="sd">        include_nodata : boolean</span>
+<span class="sd">            If True, missing values will be assumed as non-missing when</span>
+<span class="sd">            selecting higher_order neighbors, Default is False</span>
+<span class="sd">        n_jobs : int</span>
+<span class="sd">            Number of cores to be used in the sparse weight construction. If -1,</span>
+<span class="sd">            all available cores are used. Default is 1.</span>
+<span class="sd">        **kwargs : keyword arguments</span>
+<span class="sd">            optional arguments passed when sparse = False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        w : libpysal.weights.W/libpysal.weights.WSP</span>
+<span class="sd">            instance of spatial weights class W or WSP with an index attribute</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        1. Lower order contiguities are also selected.</span>
+<span class="sd">        2. Returned object contains `index` attribute that includes a</span>
+<span class="sd">           `Pandas.MultiIndex` object from the DataArray.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`libpysal.weights.weights.W`</span>
+<span class="sd">        :class:`libpysal.weights.weights.WSP`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">da2WSP</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="s2">&quot;queen&quot;</span><span class="p">,</span> <span class="n">z_value</span><span class="p">,</span> <span class="n">coords_labels</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">include_nodata</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">da2W</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="s2">&quot;queen&quot;</span><span class="p">,</span> <span class="n">z_value</span><span class="p">,</span> <span class="n">coords_labels</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">include_nodata</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Voronoi">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Voronoi.html#libpysal.weights.Voronoi">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">Voronoi</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;rook&quot;</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="s2">&quot;alpha_shape&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Voronoi weights for a 2-d point set</span>
+
+<span class="sd">    Points are Voronoi neighbors if their polygons share an edge or vertex.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    points      : array</span>
+<span class="sd">                  (n,2)</span>
+<span class="sd">                  coordinates for point locations</span>
+<span class="sd">    kwargs      : arguments to pass to Rook, the underlying contiguity class.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    w           : W</span>
+<span class="sd">                  instance of spatial weights</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from libpysal.weights import Voronoi</span>
+<span class="sd">    &gt;&gt;&gt; np.random.seed(12345)</span>
+<span class="sd">    &gt;&gt;&gt; points= np.random.random((5,2))*10 + 10</span>
+<span class="sd">    &gt;&gt;&gt; w = Voronoi(points)</span>
+<span class="sd">    &gt;&gt;&gt; w.neighbors</span>
+<span class="sd">    {0: [2, 3, 4], 1: [2], 2: [0, 1, 4], 3: [0, 4], 4: [0, 2, 3]}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..cg.voronoi</span><span class="w"> </span><span class="kn">import</span> <span class="n">voronoi_frames</span>
+
+    <span class="n">region_df</span> <span class="o">=</span> <span class="n">voronoi_frames</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="n">clip</span><span class="p">,</span> <span class="n">return_input</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_gdf</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">criterion</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;queen&quot;</span><span class="p">:</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">Queen</span>
+    <span class="k">elif</span> <span class="n">criterion</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;rook&quot;</span><span class="p">:</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">Rook</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Contiguity criterion </span><span class="si">{</span><span class="n">criterion</span><span class="si">}</span><span class="s2"> not supported. &quot;</span>
+            <span class="s2">&quot;Only &#39;rook&#39; and &#39;queen&#39; are supported.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">region_df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct a voronoi contiguity weight directly from a dataframe.</span>
+<span class="sd">    Note that if criterion=&#39;rook&#39;, this is identical to the delaunay</span>
+<span class="sd">    graph for the points if no clipping of the voronoi cells is applied.</span>
+
+<span class="sd">    If the input dataframe is of any other geometry type than &quot;Point&quot;,</span>
+<span class="sd">    a value error is raised.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df          :   pandas.DataFrame</span>
+<span class="sd">                    dataframe containing point geometries for a</span>
+<span class="sd">                    voronoi diagram.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    w           :   W</span>
+<span class="sd">                    instance of spatial weights.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;Voronoi weights are only&quot;</span>
+            <span class="s2">&quot; implemented for point geometries. &quot;</span>
+            <span class="s2">&quot;You may consider using df.centroid.&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">Voronoi</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="n">Voronoi</span><span class="o">.</span><span class="n">from_dataframe</span> <span class="o">=</span> <span class="n">_from_dataframe</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;rook&quot;</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a developer-facing function to construct a spatial weights object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    polygons    : list</span>
+<span class="sd">                  list of pysal polygons to use to build contiguity</span>
+<span class="sd">    criterion   : string</span>
+<span class="sd">                  option of which kind of contiguity to build.</span>
+<span class="sd">                  Is either &quot;rook&quot; or &quot;queen&quot;</span>
+<span class="sd">    ids         : list</span>
+<span class="sd">                  list of ids to use to index the neighbor dictionary</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple containing (neighbors, ids), where neighbors is a dictionary</span>
+<span class="sd">    describing contiguity relations and ids is the list of ids used to index</span>
+<span class="sd">    that dictionary.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is different from the prior behavior of buildContiguity, which</span>
+<span class="sd">    returned an actual weights object. Since this just dispatches for the</span>
+<span class="sd">    classes above, this returns the raw ingredients for a spatial weights</span>
+<span class="sd">    object, not the object itself.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ids</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ids</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;The argument to the ids parameter contains duplicate entries.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">wttype</span> <span class="o">=</span> <span class="n">WT_TYPE</span><span class="p">[</span><span class="n">criterion</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="n">geo</span> <span class="o">=</span> <span class="n">polygons</span>
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">geo</span><span class="p">),</span> <span class="n">FileIO</span><span class="p">):</span>
+        <span class="n">geo</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># Make sure we read from the beginning of the file.</span>
+
+    <span class="n">neighbor_data</span> <span class="o">=</span> <span class="n">ContiguityWeightsLists</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">wttype</span><span class="o">=</span><span class="n">wttype</span><span class="p">)</span><span class="o">.</span><span class="n">w</span>
+
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># weights={}</span>
+    <span class="k">if</span> <span class="n">ids</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">neighbor_data</span><span class="p">:</span>
+            <span class="n">ida</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ida</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
+                <span class="n">neighbors</span><span class="p">[</span><span class="n">ida</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">neighbors</span><span class="p">[</span><span class="n">ida</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">ids</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">neighbor_data</span><span class="p">[</span><span class="n">key</span><span class="p">]])</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
+            <span class="n">neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">neighbor_data</span><span class="p">:</span>
+            <span class="n">neighbors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">neighbor_data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">dict</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">neighbors</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">neighbors</span><span class="o">.</span><span class="n">values</span><span class="p">()))),</span>
+                    <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">ids</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">buildContiguity</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;rook&quot;</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a deprecated function.</span>
+
+<span class="sd">    It builds a contiguity W from the polygons provided. As such, it is now</span>
+<span class="sd">    identical to calling the class constructors for Rook or Queen.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Warn(&#39;This function is deprecated. Please use the Rook or Queen classes&#39;,</span>
+    <span class="c1">#        UserWarning)</span>
+    <span class="k">if</span> <span class="n">criterion</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;rook&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Rook</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">criterion</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;queen&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Queen</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Weights criterion &#39;</span><span class="si">{</span><span class="n">criterion</span><span class="si">}</span><span class="s2">&#39; was not found.&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

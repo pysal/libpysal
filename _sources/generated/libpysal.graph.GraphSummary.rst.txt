@@ -1,0 +1,22 @@
+﻿libpysal.graph.GraphSummary
+===========================
+
+.. currentmodule:: libpysal.graph
+
+.. autoclass:: GraphSummary
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GraphSummary.__init__
+   
+   
+
+   
+   
+   

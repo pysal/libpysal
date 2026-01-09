@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>libpysal.graph._summary &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../../../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for libpysal.graph._summary</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<div class="viewcode-block" id="GraphSummary">
+<a class="viewcode-back" href="../../../generated/libpysal.graph.GraphSummary.html#libpysal.graph.GraphSummary">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GraphSummary</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Graph Summary</span>
+
+<span class="sd">    An object containing the statistical attributes summarising the Graph and its basic</span>
+<span class="sd">    properties.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_nodes : int</span>
+<span class="sd">        number of Graph nodes</span>
+<span class="sd">    n_edges : int</span>
+<span class="sd">        number of Graph edges</span>
+<span class="sd">    n_components : int</span>
+<span class="sd">        number of connected components</span>
+<span class="sd">    n_isolates : int</span>
+<span class="sd">        number of isolates (nodes with no neighbors)</span>
+<span class="sd">    nonzero : int</span>
+<span class="sd">        number of edges with nonzero weight</span>
+<span class="sd">    pct_nonzero : float</span>
+<span class="sd">        percentage of nonzero weights</span>
+<span class="sd">    n_asymmetries : int</span>
+<span class="sd">        number of intrinsic asymmetries</span>
+<span class="sd">    cardinalities_mean : float</span>
+<span class="sd">        mean number of neighbors</span>
+<span class="sd">    cardinalities_std : float</span>
+<span class="sd">        standard deviation of number of neighbors</span>
+<span class="sd">    cardinalities_min : float</span>
+<span class="sd">        minimal number of neighbors</span>
+<span class="sd">    cardinalities_25 : float</span>
+<span class="sd">        25th percentile of number of neighbors</span>
+<span class="sd">    cardinalities_50 : float</span>
+<span class="sd">        50th percentile (median) of number of neighbors</span>
+<span class="sd">    cardinalities_75 : float</span>
+<span class="sd">        75th percentile of number of neighbors</span>
+<span class="sd">    cardinalities_max : float</span>
+<span class="sd">        maximal number of neighbors</span>
+<span class="sd">    weights_mean : float</span>
+<span class="sd">        mean edge weight</span>
+<span class="sd">    weights_std : float</span>
+<span class="sd">        standard deviation of  edge weights</span>
+<span class="sd">    weights_min : float</span>
+<span class="sd">        minimal edge weight</span>
+<span class="sd">    weights_25 : float</span>
+<span class="sd">        25th percentile of edge weights</span>
+<span class="sd">    weights_50 : float</span>
+<span class="sd">        50th percentile (median) of edge weights</span>
+<span class="sd">    weights_75 : float</span>
+<span class="sd">        75th percentile of edge weights</span>
+<span class="sd">    weights_max : float</span>
+<span class="sd">        maximal edge weight</span>
+<span class="sd">    s0 : float</span>
+<span class="sd">        S0 (global) sum of weights</span>
+
+<span class="sd">        ``s0`` is defined as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">               s0=\sum_i \sum_j w_{i,j}</span>
+
+<span class="sd">        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations</span>
+<span class="sd">        and are used to compute standard errors for spatial autocorrelation estimators.</span>
+
+
+<span class="sd">    s1 : float</span>
+<span class="sd">        S1 sum of weights</span>
+
+<span class="sd">        ``s1`` is defined as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2</span>
+
+<span class="sd">        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations</span>
+<span class="sd">        and are used to compute standard errors for spatial autocorrelation estimators.</span>
+
+<span class="sd">    s2 : float</span>
+<span class="sd">        S2 sum of weights</span>
+
+<span class="sd">        ``s2`` is defined as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2</span>
+
+<span class="sd">        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations</span>
+<span class="sd">        and are used to compute standard errors for spatial autocorrelation estimators.</span>
+
+<span class="sd">    diag_g2 : np.ndarray</span>
+<span class="sd">        diagonal of :math:`GG`</span>
+<span class="sd">    diag_gtg : np.ndarrray</span>
+<span class="sd">        diagonal of :math:`G^{&#39;}G`</span>
+<span class="sd">    diag_gtg_gg : np.ndarray</span>
+<span class="sd">        diagonal of :math:`G^{&#39;}G + GG`</span>
+<span class="sd">    trace_g2 : np.ndarray</span>
+<span class="sd">        trace of :math:`GG`</span>
+<span class="sd">    trace_gtg : np.ndarrray</span>
+<span class="sd">        trace of :math:`G^{&#39;}G`</span>
+<span class="sd">    trace_gtg_gg : np.ndarray</span>
+<span class="sd">        trace of :math:`G^{&#39;}G + GG`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import geopandas as gpd</span>
+<span class="sd">    &gt;&gt;&gt; from geodatasets import get_path</span>
+<span class="sd">    &gt;&gt;&gt; nybb = gpd.read_file(get_path(&quot;nybb&quot;)).set_index(&quot;BoroName&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; nybb</span>
+<span class="sd">                    BoroCode  ...                                           geometry</span>
+<span class="sd">    BoroName                 ...</span>
+<span class="sd">    Staten Island         5  ...  MULTIPOLYGON (((970217.022 145643.332, 970227....</span>
+<span class="sd">    Queens                4  ...  MULTIPOLYGON (((1029606.077 156073.814, 102957...</span>
+<span class="sd">    Brooklyn              3  ...  MULTIPOLYGON (((1021176.479 151374.797, 102100...</span>
+<span class="sd">    Manhattan             1  ...  MULTIPOLYGON (((981219.056 188655.316, 980940....</span>
+<span class="sd">    Bronx                 2  ...  MULTIPOLYGON (((1012821.806 229228.265, 101278...</span>
+<span class="sd">    [5 rows x 4 columns]</span>
+
+<span class="sd">    &gt;&gt;&gt; contiguity = graph.Graph.build_contiguity(nybb)</span>
+<span class="sd">    &gt;&gt;&gt; contiguity</span>
+<span class="sd">    &lt;Graph of 5 nodes and 10 nonzero edges indexed by</span>
+<span class="sd">        [&#39;Staten Island&#39;, &#39;Queens&#39;, &#39;Brooklyn&#39;, &#39;Manhattan&#39;, &#39;Bronx&#39;]&gt;</span>
+
+<span class="sd">    &gt;&gt;&gt; summary = contiguity.summary(asymmetries=True)</span>
+<span class="sd">    &gt;&gt;&gt; summary</span>
+<span class="sd">    Graph Summary Statistics</span>
+<span class="sd">    ========================</span>
+<span class="sd">    Graph indexed by:</span>
+<span class="sd">    [&#39;Staten Island&#39;, &#39;Queens&#39;, &#39;Brooklyn&#39;, &#39;Manhattan&#39;, &#39;Bronx&#39;]</span>
+<span class="sd">    ==============================================================</span>
+<span class="sd">    number of nodes:                                             5</span>
+<span class="sd">    number of edges:                                            10</span>
+<span class="sd">    number of connected components:                              2</span>
+<span class="sd">    number of isolates:                                          1</span>
+<span class="sd">    number of non-zero edges:                                   10</span>
+<span class="sd">    Percentage of non-zero edges:                           44.00%</span>
+<span class="sd">    number of asymmetries:                                       0</span>
+<span class="sd">    --------------------------------------------------------------</span>
+<span class="sd">    Cardinalities</span>
+<span class="sd">    ==============================================================</span>
+<span class="sd">    Mean:                       2    25%:                        2</span>
+<span class="sd">    Standard deviation:         1    50%:                        2</span>
+<span class="sd">    Min:                        0    75%:                        3</span>
+<span class="sd">    Max:                        3</span>
+<span class="sd">    --------------------------------------------------------------</span>
+<span class="sd">    Weights</span>
+<span class="sd">    ==============================================================</span>
+<span class="sd">    Mean:                       1    25%:                        1</span>
+<span class="sd">    Standard deviation:         0    50%:                        1</span>
+<span class="sd">    Min:                        1    75%:                        1</span>
+<span class="sd">    Max:                        1</span>
+<span class="sd">    --------------------------------------------------------------</span>
+<span class="sd">    Sum of weights</span>
+<span class="sd">    ==============================================================</span>
+<span class="sd">    S0:                                                         10</span>
+<span class="sd">    S1:                                                         20</span>
+<span class="sd">    S2:                                                        104</span>
+<span class="sd">    --------------------------------------------------------------</span>
+<span class="sd">    Traces</span>
+<span class="sd">    ==============================================================</span>
+<span class="sd">    GG:                                                         10</span>
+<span class="sd">    G&#39;G:                                                        10</span>
+<span class="sd">    G&#39;G + GG:                                                   20</span>
+
+<span class="sd">    &gt;&gt;&gt; summary.s1</span>
+<span class="sd">    20</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GraphSummary.__init__">
+<a class="viewcode-back" href="../../../generated/libpysal.graph.GraphSummary.html#libpysal.graph.GraphSummary.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">asymmetries</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create GraphSummary</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : Graph</span>
+<span class="sd">        asymmetries : bool</span>
+<span class="sd">            whether to compute ``n_asymmetries``, which is considerably more expensive</span>
+<span class="sd">            than the other attributes. By default False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">asymmetries</span> <span class="o">=</span> <span class="n">asymmetries</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">n_nodes</span>  <span class="c1"># number of nodes / observations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">n_edges</span>  <span class="c1"># number of edges excluding isolates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">n_components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_isolates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">isolates</span><span class="p">)</span>
+
+        <span class="c1"># nonzero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nonzero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">nonzero</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pct_nonzero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">pct_nonzero</span>
+
+        <span class="c1"># intrinsic assymetries</span>
+        <span class="k">if</span> <span class="n">asymmetries</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_asymmetries</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">asymmetry</span><span class="p">())</span>
+
+        <span class="c1"># statistics of cardinalities</span>
+        <span class="n">card_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">cardinalities</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_mean</span> <span class="o">=</span> <span class="n">card_stats</span><span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_std</span> <span class="o">=</span> <span class="n">card_stats</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_min</span> <span class="o">=</span> <span class="n">card_stats</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_25</span> <span class="o">=</span> <span class="n">card_stats</span><span class="p">[</span><span class="s2">&quot;25%&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_50</span> <span class="o">=</span> <span class="n">card_stats</span><span class="p">[</span><span class="s2">&quot;50%&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_75</span> <span class="o">=</span> <span class="n">card_stats</span><span class="p">[</span><span class="s2">&quot;75%&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_max</span> <span class="o">=</span> <span class="n">card_stats</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span>
+
+        <span class="c1"># statistics of weights</span>
+        <span class="n">weights_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">_adjacency</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">isolates</span><span class="p">)</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_mean</span> <span class="o">=</span> <span class="n">weights_stats</span><span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_std</span> <span class="o">=</span> <span class="n">weights_stats</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_min</span> <span class="o">=</span> <span class="n">weights_stats</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_25</span> <span class="o">=</span> <span class="n">weights_stats</span><span class="p">[</span><span class="s2">&quot;25%&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_50</span> <span class="o">=</span> <span class="n">weights_stats</span><span class="p">[</span><span class="s2">&quot;50%&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_75</span> <span class="o">=</span> <span class="n">weights_stats</span><span class="p">[</span><span class="s2">&quot;75%&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights_max</span> <span class="o">=</span> <span class="n">weights_stats</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]</span>
+
+        <span class="c1"># sum of weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s0</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">()</span>
+
+        <span class="c1"># diags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diag_g2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diag_g2</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diag_gtg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diag_gtg</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diag_gtg_gg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diag_gtg_gg</span><span class="p">()</span>
+
+        <span class="c1"># traces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace_g2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag_g2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace_gtg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag_gtg</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace_gtg_gg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diag_gtg_gg</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n_asymmetries</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_asymmetries</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">asymmetries</span> <span class="k">else</span> <span class="s2">&quot;NA&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Graph Summary Statistics</span>
+<span class="si">{</span><span class="s2">&quot;=&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">24</span><span class="si">}</span>
+<span class="s2">Graph indexed by:</span>
+<span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">_get_ids_repr</span><span class="p">(</span><span class="mi">57</span><span class="p">)</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;=&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Number of nodes:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Number of edges:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_edges</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Number of connected components:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Number of isolates:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_isolates</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Number of non-zero edges:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">nonzero</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Percentage of non-zero edges:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">pct_nonzero</span><span class="si">:</span><span class="s2">&gt;11.2f</span><span class="si">}</span><span class="s2">%</span>
+<span class="si">{</span><span class="s2">&quot;Number of asymmetries:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="n">n_asymmetries</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;-&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="s2">Cardinalities</span>
+<span class="si">{</span><span class="s2">&quot;=&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Mean:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_mean</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="s2">&quot;25%:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_25</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Standard deviation:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_std</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="s2">&quot;50%:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_50</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Min:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_min</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="s2">&quot;75%:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_75</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Max:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_max</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;-&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="s2">Weights</span>
+<span class="si">{</span><span class="s2">&quot;=&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Mean:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_mean</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="s2">&quot;25%:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_25</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Standard deviation:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_std</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="s2">&quot;50%:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_50</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Min:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_min</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span><span class="s2">    </span><span class="si">{</span><span class="s2">&quot;75%:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_75</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;Max:&quot;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_max</span><span class="si">:</span><span class="s2">&gt;9.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;-&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="s2">Sum of weights</span>
+<span class="si">{</span><span class="s2">&quot;=&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;S0:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">s0</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;S1:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">s1</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;S2:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;-&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="s2">Traces</span>
+<span class="si">{</span><span class="s2">&quot;=&quot;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">62</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;GG:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">trace_g2</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;G&#39;G:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">trace_gtg</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="si">{</span><span class="s2">&quot;G&#39;G + GG:&quot;</span><span class="si">:</span><span class="s2">&lt;50</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">trace_gtg_gg</span><span class="si">:</span><span class="s2">&gt;12.0f</span><span class="si">}</span>
+<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">n_asymmetries</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_asymmetries</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">asymmetries</span> <span class="k">else</span> <span class="s2">&quot;NA&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            &lt;table&gt;</span>
+<span class="s2">                &lt;caption&gt;Graph Summary Statistics&lt;/caption&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Number of nodes:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Number of edges:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_edges</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Number of connected components:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Number of isolates:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_isolates</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Number of non-zero edges:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nonzero</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Percentage of non-zero edges:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pct_nonzero</span><span class="si">:</span><span class="s2">11.2f</span><span class="si">}</span><span class="s2">%&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Number of asymmetries:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="n">n_asymmetries</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">            &lt;/table&gt;</span>
+<span class="s2">            &lt;table&gt;</span>
+<span class="s2">                &lt;caption&gt;Cardinalities&lt;/caption&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Mean:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_mean</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;25%:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_25</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Standard deviation:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_std</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;50%&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_50</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span>
+<span class="s2">                    &lt;td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Min:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_min</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;75%:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_75</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Max:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cardinalities_max</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">            &lt;/table&gt;</span>
+<span class="s2">            &lt;table&gt;</span>
+<span class="s2">                &lt;caption&gt;Weights&lt;/caption&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Mean:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_mean</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;25%:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_25</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Standard deviation:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_std</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;50%&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_50</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Min:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_min</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;75%:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_75</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;Max:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_max</span><span class="si">:</span><span class="s2">9.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">            &lt;/table&gt;</span>
+<span class="s2">            &lt;table&gt;</span>
+<span class="s2">                &lt;caption&gt;Sum of weights and Traces&lt;/caption&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;S0:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">s0</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;GG:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">trace_g2</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;S1:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">s1</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;G&#39;G:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">trace_gtg</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">                &lt;tr&gt;</span>
+<span class="s2">                    &lt;td&gt;S3:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;G&#39;G + GG:&lt;/td&gt;</span>
+<span class="s2">                    &lt;td&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">trace_gtg_gg</span><span class="si">:</span><span class="s2">12.0f</span><span class="si">}</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">                &lt;/tr&gt;</span>
+<span class="s2">            &lt;/table&gt;</span>
+<span class="s2">            &lt;div&gt;</span>
+<span class="s2">                Graph indexed by: &lt;code&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">_get_ids_repr</span><span class="p">(</span><span class="mi">57</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/code&gt;</span>
+<span class="s2">            &lt;/div&gt;</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_s0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;helper to get S0 in downstream</span>
+
+<span class="sd">         ``s0`` is defined as</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">               s0=\sum_i \sum_j w_{i,j}</span>
+
+<span class="sd">        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations</span>
+<span class="sd">        and are used to compute standard errors for spatial autocorrelation estimators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            global sum of weights</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">_adjacency</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_s1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;S1 sum of weights</span>
+
+<span class="sd">        ``s1`` is defined as</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2</span>
+
+<span class="sd">        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations</span>
+<span class="sd">        and are used to compute standard errors for spatial autocorrelation estimators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            s1 sum of weights</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span>
+        <span class="n">t2</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">t</span>
+        <span class="k">return</span> <span class="n">t2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_s2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;S2 sum of weights</span>
+
+<span class="sd">        ``s2`` is defined as</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2</span>
+
+<span class="sd">        :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations</span>
+<span class="sd">        and are used to compute standard errors for spatial autocorrelation estimators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            s2 sum of weights</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_diag_g2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Diagonal of :math:`GG`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_diag_gtg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Diagonal of :math:`G^{&#39;}G`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_diag_gtg_gg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Diagonal of :math:`G^{&#39;}G + GG`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="o">.</span><span class="n">sparse</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">gt</span> <span class="o">@</span> <span class="n">g</span> <span class="o">+</span> <span class="n">g</span> <span class="o">@</span> <span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span></div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

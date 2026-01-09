@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Raster awareness API &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=38b0ce36" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Voronoi Polygons for 2-D Point Sets" href="voronoi.html" />
+    <link rel="prev" title="Spatial Weights" href="weights.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../intro.html">User Guide</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../intro.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../data/examples.html">Datasets</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Raster awareness API</a><ul>
+<li><a class="reference internal" href="#Loading-Data">Loading Data</a><ul>
+<li><a class="reference internal" href="#Using-xarray-example-dataset">Using xarray example dataset</a></li>
+<li><a class="reference internal" href="#Using-local-NetCDF-dataset">Using local <code class="docutils literal notranslate"><span class="pre">NetCDF</span></code> dataset</a></li>
+<li><a class="reference internal" href="#Using-local-GeoTIFF-dataset">Using local <code class="docutils literal notranslate"><span class="pre">GeoTIFF</span></code> dataset</a></li>
+<li><a class="reference internal" href="#higher_order-neighbors"><code class="docutils literal notranslate"><span class="pre">higher_order</span></code> neighbors</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Additional-resources">Additional resources</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/libpysal/blob/master/user-guide/weights/Raster_awareness_API.ipynb">user-guide/weights/Raster_awareness_API.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/libpysal/master?filepath=user-guide/weights/Raster_awareness_API.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Raster-awareness-API">
+<h1>Raster awareness API<a class="headerlink" href="#Raster-awareness-API" title="Link to this heading">¶</a></h1>
+<p>This notebook will give an overview of newly developed raster interface. We’ll cover basic usage of the functionality offered by the interface which mainly involves:</p>
+<ol class="arabic simple">
+<li><p>converting <code class="docutils literal notranslate"><span class="pre">xarray.DataArray</span></code> object to the PySAL’s weights object (<code class="docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code>/<code class="docutils literal notranslate"><span class="pre">WSP</span></code>).</p></li>
+<li><p>going back to the <code class="docutils literal notranslate"><span class="pre">xarray.DataArray</span></code> from weights object.</p></li>
+</ol>
+<p>using different datasets:</p>
+<ul class="simple">
+<li><p>with missing values.</p></li>
+<li><p>with multiple layers.</p></li>
+<li><p>with non conventional dimension names.</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+import matplotlib.pyplot as plt
+import numpy as np
+import xarray as xr
+from esda import Moran_Local
+from splot import libpysal as splot
+
+from libpysal.weights import Queen, Rook, raster
+</pre></div>
+</div>
+</div>
+<section id="Loading-Data">
+<h2>Loading Data<a class="headerlink" href="#Loading-Data" title="Link to this heading">¶</a></h2>
+<p><em>The interface only accepts ``xarray.DataArray``</em>, this can be easily obtained from raster data format using <code class="docutils literal notranslate"><span class="pre">xarray</span></code>’s I/O functionality which can read from a variety of data formats some of them are listed below:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://svn.osgeo.org/gdal/tags/gdal_1_2_5/frmts/formats_list.html">GDAL Raster Formats</a> via <code class="docutils literal notranslate"><span class="pre">open_rasterio</span></code> method.</p></li>
+<li><p><a class="reference external" href="https://www.unidata.ucar.edu/software/netcdf/">NetCDF</a> via <code class="docutils literal notranslate"><span class="pre">open_dataset</span></code> method.</p></li>
+</ul>
+<p>In this notebook we’ll work with <code class="docutils literal notranslate"><span class="pre">NetCDF</span></code> and <code class="docutils literal notranslate"><span class="pre">GeoTIFF</span></code> data.</p>
+<section id="Using-xarray-example-dataset">
+<h3>Using xarray example dataset<a class="headerlink" href="#Using-xarray-example-dataset" title="Link to this heading">¶</a></h3>
+<p>First lets load up a <code class="docutils literal notranslate"><span class="pre">netCDF</span></code> dataset offered by xarray.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># -&gt; returns a xarray.Dataset object
+ds = xr.tutorial.open_dataset(&quot;air_temperature.nc&quot;)
+da = ds[&quot;air&quot;]  # we&#39;ll use the &quot;air&quot; data variable for further analysis
+print(da)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;xarray.DataArray &#39;air&#39; (time: 2920, lat: 25, lon: 53)&gt;
+[3869000 values with dtype=float32]
+Coordinates:
+  * lat      (lat) float32 75.0 72.5 70.0 67.5 65.0 ... 25.0 22.5 20.0 17.5 15.0
+  * lon      (lon) float32 200.0 202.5 205.0 207.5 ... 322.5 325.0 327.5 330.0
+  * time     (time) datetime64[ns] 2013-01-01 ... 2014-12-31T18:00:00
+Attributes:
+    long_name:     4xDaily Air temperature at sigma level 995
+    units:         degK
+    precision:     2
+    GRIB_id:       11
+    GRIB_name:     TMP
+    var_desc:      Air temperature
+    dataset:       NMC Reanalysis
+    level_desc:    Surface
+    statistic:     Individual Obs
+    parent_stat:   Other
+    actual_range:  [185.16 322.1 ]
+</pre></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">xarray</span></code>’s data structures like <code class="docutils literal notranslate"><span class="pre">Dataset</span></code> and <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> provides <code class="docutils literal notranslate"><span class="pre">pandas</span></code> like functionality for multidimensional-array or ndarray.</p>
+<p>In our case we’ll mainly deal with <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>, we can see above that the <code class="docutils literal notranslate"><span class="pre">da</span></code> holds the data for air temperature, it has 2 dims coordinate dimensions <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>, and it’s layered on <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension so in total 3 dims (<code class="docutils literal notranslate"><span class="pre">time</span></code>, <code class="docutils literal notranslate"><span class="pre">lat</span></code>, <code class="docutils literal notranslate"><span class="pre">lon</span></code>).</p>
+<p>We’ll now group <code class="docutils literal notranslate"><span class="pre">da</span></code> by month and take average over the <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>da = da.groupby(&quot;time.month&quot;).mean()
+print(da.coords)  # as a result time dim is replaced by month
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Coordinates:
+  * lat      (lat) float32 75.0 72.5 70.0 67.5 65.0 ... 25.0 22.5 20.0 17.5 15.0
+  * lon      (lon) float32 200.0 202.5 205.0 207.5 ... 322.5 325.0 327.5 330.0
+  * month    (month) int64 1 2 3 4 5 6 7 8 9 10 11 12
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># let&#39;s plot over month, each facet will represent
+# the mean air temperature in a given month.
+da.plot(
+    col=&quot;month&quot;,
+    col_wrap=4,
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;xarray.plot.facetgrid.FacetGrid at 0x7f68f71b8100&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_weights_Raster_awareness_API_6_1.png" src="../../_images/user-guide_weights_Raster_awareness_API_6_1.png" />
+</div>
+</div>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">from_xarray</span></code> method from the contiguity classes like <code class="docutils literal notranslate"><span class="pre">Rook</span></code> and <code class="docutils literal notranslate"><span class="pre">Queen</span></code>, and also from <code class="docutils literal notranslate"><span class="pre">KNN</span></code>.</p>
+<p>This uses a util function in <code class="docutils literal notranslate"><span class="pre">raster.py</span></code> file called <code class="docutils literal notranslate"><span class="pre">da2W</span></code>, which can also be called directly to build <code class="docutils literal notranslate"><span class="pre">W</span></code> object, similarly <code class="docutils literal notranslate"><span class="pre">da2WSP</span></code> for building <code class="docutils literal notranslate"><span class="pre">WSP</span></code> object.</p>
+<p><strong>Weight builders (``from_xarray``, ``da2W``, ``da2WSP``) can recognise dimensions belonging to this list ``[band, time, lat, y, lon, x]``, if any of the dimension in the ``DataArray`` does not belong to the mentioned list then we need to pass a dictionary (specifying that dimension’s name) to the weight builder.</strong></p>
+<p>e.g. <code class="docutils literal notranslate"><span class="pre">dims</span></code> dictionary:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">dims</span>                  <span class="c1"># none of the dimension belong to the default dimension list</span>
+<span class="go">(&#39;year&#39;, &#39;height&#39;, &#39;width&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords_labels</span> <span class="o">=</span> <span class="p">{</span>                 <span class="c1"># dimension values should be properly aligned with the following keys</span>
+<span class="go">        &quot;z_label&quot;: &quot;year&quot;,</span>
+<span class="go">        &quot;y_label&quot;: &quot;height&quot;,</span>
+<span class="go">        &quot;x_label&quot;: &quot;width&quot;</span>
+<span class="go">    }</span>
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>coords_labels = {}
+# since month does not belong to the default list we
+# need to pass it using a dictionary
+coords_labels[&quot;z_label&quot;] = &quot;month&quot;
+w_queen = Queen.from_xarray(
+    da, z_value=12, coords_labels=coords_labels, sparse=False
+)  # We&#39;ll use data from 12th layer (in our case layer=month)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/data/GSoC/libpysal/libpysal/weights/raster.py:119: UserWarning: You are trying to build a full W object from xarray.DataArray (raster) object. This computation can be very slow and not scale well. It is recommended, if possible, to instead build WSP object, which is more efficient and faster. You can do this by using da2WSP method.
+  warn(
+</pre></div></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">index</span></code> is a newly added attribute to the weights object, this holds the multi-indices of the non-missing values belonging to <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> created from the passed <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>, this series can be easily obtained using <code class="docutils literal notranslate"><span class="pre">DataArray.to_series()</span></code> method.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w_queen.index[:5]  # indices are aligned to the ids of the weight object
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MultiIndex([(12, 75.0, 200.0),
+            (12, 75.0, 202.5),
+            (12, 75.0, 205.0),
+            (12, 75.0, 207.5),
+            (12, 75.0, 210.0)],
+           names=[&#39;month&#39;, &#39;lat&#39;, &#39;lon&#39;])
+</pre></div></div>
+</div>
+<p>We can then obtain raster data by converting the <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> to <code class="docutils literal notranslate"><span class="pre">Series</span></code> and then using indices from <code class="docutils literal notranslate"><span class="pre">index</span></code> attribute to get non-missing values by subsetting the <code class="docutils literal notranslate"><span class="pre">Series</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data = da.to_series()[w_queen.index]
+</pre></div>
+</div>
+</div>
+<p>We now have the required data for further analysis (we can now use methods such as ESDA/spatial regression), for this example let’s compute a local Moran statistic for the extracted data.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Quickly computing and loading a LISA
+np.random.seed(12345)
+lisa = Moran_Local(np.array(data, dtype=np.float64), w_queen)
+</pre></div>
+</div>
+</div>
+<p>After getting our calculated results it’s time to store them back to the <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>, we can use <code class="docutils literal notranslate"><span class="pre">w2da</span></code> function directly to convert the <code class="docutils literal notranslate"><span class="pre">W</span></code> object back to <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>.</p>
+<p><em>Your use case might differ but the steps for using the interface will be similar to this example.</em></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Converting obtained data back to DataArray
+moran_da = raster.w2da(
+    lisa.p_sim, w_queen
+)  # w2da accepts list/1d array/pd.Series and a weight object aligned to passed data
+print(moran_da)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;xarray.DataArray (month: 1, lat: 25, lon: 53)&gt;
+array([[[0.018, 0.001, 0.001, ..., 0.001, 0.001, 0.001],
+        [0.001, 0.001, 0.001, ..., 0.001, 0.001, 0.001],
+        [0.003, 0.001, 0.001, ..., 0.001, 0.001, 0.001],
+        ...,
+        [0.002, 0.001, 0.001, ..., 0.001, 0.001, 0.003],
+        [0.001, 0.001, 0.001, ..., 0.001, 0.001, 0.003],
+        [0.002, 0.001, 0.001, ..., 0.001, 0.002, 0.006]]])
+Coordinates:
+  * month    (month) int64 12
+  * lat      (lat) float64 75.0 72.5 70.0 67.5 65.0 ... 25.0 22.5 20.0 17.5 15.0
+  * lon      (lon) float64 200.0 202.5 205.0 207.5 ... 322.5 325.0 327.5 330.0
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>moran_da.plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.collections.QuadMesh at 0x7f68f4044940&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_weights_Raster_awareness_API_17_1.png" src="../../_images/user-guide_weights_Raster_awareness_API_17_1.png" />
+</div>
+</div>
+</section>
+<section id="Using-local-NetCDF-dataset">
+<h3>Using local <code class="docutils literal notranslate"><span class="pre">NetCDF</span></code> dataset<a class="headerlink" href="#Using-local-NetCDF-dataset" title="Link to this heading">¶</a></h3>
+<p>In the earlier example we used an example dataset from xarray for building weights object. Additonally, we had to pass the custom layer name to the builder.</p>
+<p>In this small example we’ll build <code class="docutils literal notranslate"><span class="pre">KNN</span></code> distance weight object using a local <code class="docutils literal notranslate"><span class="pre">NetCDF</span></code> dataset with different dimensions names which doesn’t belong to the default list of dimensions.</p>
+<p>We’ll also see how to speed up the reverse journey (from weights object to <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>) by passing prebuilt <code class="docutils literal notranslate"><span class="pre">coords</span></code> and <code class="docutils literal notranslate"><span class="pre">attrs</span></code> to <code class="docutils literal notranslate"><span class="pre">w2da</span></code> method.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Lets load a netCDF Surface dataset
+ds = xr.open_dataset(
+    &quot;ECMWF_ERA-40_subset.nc&quot;
+)  # After loading netCDF dataset we obtained a xarray.Dataset object
+print(ds)  # This Dataset object containes several data variables
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;xarray.Dataset&gt;
+Dimensions:    (latitude: 73, longitude: 144, time: 62)
+Coordinates:
+  * longitude  (longitude) float32 0.0 2.5 5.0 7.5 ... 350.0 352.5 355.0 357.5
+  * latitude   (latitude) float32 90.0 87.5 85.0 82.5 ... -85.0 -87.5 -90.0
+  * time       (time) datetime64[ns] 2002-07-01T12:00:00 ... 2002-07-31T18:00:00
+Data variables:
+    tcw        (time, latitude, longitude) float32 ...
+    tcwv       (time, latitude, longitude) float32 ...
+    lsp        (time, latitude, longitude) float32 ...
+    cp         (time, latitude, longitude) float32 ...
+    msl        (time, latitude, longitude) float32 ...
+    blh        (time, latitude, longitude) float32 ...
+    tcc        (time, latitude, longitude) float32 ...
+    p10u       (time, latitude, longitude) float32 ...
+    p10v       (time, latitude, longitude) float32 ...
+    p2t        (time, latitude, longitude) float32 ...
+    p2d        (time, latitude, longitude) float32 ...
+    e          (time, latitude, longitude) float32 ...
+    lcc        (time, latitude, longitude) float32 ...
+    mcc        (time, latitude, longitude) float32 ...
+    hcc        (time, latitude, longitude) float32 ...
+    tco3       (time, latitude, longitude) float32 ...
+    tp         (time, latitude, longitude) float32 ...
+Attributes:
+    Conventions:  CF-1.0
+    history:      2004-09-15 17:04:29 GMT by mars2netcdf-0.92
+</pre></div></div>
+</div>
+<p>Out of 17 data variables we’ll use <code class="docutils literal notranslate"><span class="pre">p2t</span></code> for our analysis. This will give us our desired <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> object <code class="docutils literal notranslate"><span class="pre">da</span></code>, we will further group <code class="docutils literal notranslate"><span class="pre">da</span></code> by day, taking average over the <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># this will give us the required DataArray with p2t
+# (2 metre temperature) data variable
+da = ds[&quot;p2t&quot;]
+da = da.groupby(&quot;time.day&quot;).mean()
+print(da.dims)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&#39;day&#39;, &#39;latitude&#39;, &#39;longitude&#39;)
+</pre></div></div>
+</div>
+<p><strong>We can see that the none of dimensions of ``da`` matches with the default dimensions (``[band, time, lat, y, lon, x]``)</strong></p>
+<p>This means we have to create a dictionary mentioning the dimensions and ship it to weight builder, similar to our last example.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>coords_labels = {}
+coords_labels[&quot;y_label&quot;] = &quot;latitude&quot;
+coords_labels[&quot;x_label&quot;] = &quot;longitude&quot;
+coords_labels[&quot;z_label&quot;] = &quot;day&quot;
+w_rook = Rook.from_xarray(da, z_value=13, coords_labels=coords_labels, sparse=True)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>data = da.to_series()[
+    w_rook.index
+]  # we derived the data from DataArray similar to our last example
+</pre></div>
+</div>
+</div>
+<p>In the last example we only passed the <code class="docutils literal notranslate"><span class="pre">data</span></code> values and weight object to <code class="docutils literal notranslate"><span class="pre">w2da</span></code> method, which then created the necessary <code class="docutils literal notranslate"><span class="pre">coords</span></code> to build our required <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>. This process can be speed up by passing <code class="docutils literal notranslate"><span class="pre">coords</span></code> from the existing <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> <code class="docutils literal notranslate"><span class="pre">da</span></code> which we used earlier.</p>
+<p>Along with <code class="docutils literal notranslate"><span class="pre">coords</span></code> we can also pass <code class="docutils literal notranslate"><span class="pre">attrs</span></code> of the same <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> this will help <code class="docutils literal notranslate"><span class="pre">w2da</span></code> to retain all the properties of original <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>.</p>
+<p>Let’s compare the <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> returned by <code class="docutils literal notranslate"><span class="pre">w2da</span></code> and original <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>. For this we’ll ship the derived data straight to <code class="docutils literal notranslate"><span class="pre">w2da</span></code> without any statistical analysis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>da1 = raster.wsp2da(data, w_rook, attrs=da.attrs, coords=da[12:13].coords)
+xr.DataArray.equals(
+    da[12:13], da1
+)  # method to compare 2 DataArray, if true then w2da was successfull
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+</section>
+<section id="Using-local-GeoTIFF-dataset">
+<h3>Using local <code class="docutils literal notranslate"><span class="pre">GeoTIFF</span></code> dataset<a class="headerlink" href="#Using-local-GeoTIFF-dataset" title="Link to this heading">¶</a></h3>
+<p>Up until now we’ve only played with <code class="docutils literal notranslate"><span class="pre">netCDF</span></code> datasets but in this example we’ll use a <code class="docutils literal notranslate"><span class="pre">raster.tif</span></code> file to see how interface interacts with it. We’ll also see how these methods handle missing data.</p>
+<p>Unlike earlier we’ll use weight builder methods from <code class="docutils literal notranslate"><span class="pre">raster.py</span></code>, which we can call directly. Just a reminder that <code class="docutils literal notranslate"><span class="pre">from_xarray</span></code> uses methods from <code class="docutils literal notranslate"><span class="pre">raster.py</span></code> and therefore only difference exists in the API.</p>
+<p>To access GDAL Raster Formats <code class="docutils literal notranslate"><span class="pre">xarray</span></code> offers <code class="docutils literal notranslate"><span class="pre">open_rasterio</span></code> method which uses <code class="docutils literal notranslate"><span class="pre">rasterio</span></code> as backend. It loads metadata, coordinate values from the raster file and assign them to the <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Loading raster data with missing values
+da = xr.open_rasterio(&quot;/data/Downloads/lux_ppp_2019.tif&quot;)
+print(da)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;xarray.DataArray (band: 1, y: 880, x: 940)&gt;
+[827200 values with dtype=float32]
+Coordinates:
+  * band     (band) int64 1
+  * y        (y) float64 50.18 50.18 50.18 50.18 ... 49.45 49.45 49.45 49.45
+  * x        (x) float64 5.745 5.746 5.747 5.747 ... 6.525 6.526 6.527 6.527
+Attributes:
+    transform:      (0.0008333333297872345, 0.0, 5.744583325, 0.0, -0.0008333...
+    crs:            +init=epsg:4326
+    res:            (0.0008333333297872345, 0.0008333333295454553)
+    is_tiled:       0
+    nodatavals:     (-99999.0,)
+    scales:         (1.0,)
+    offsets:        (0.0,)
+    AREA_OR_POINT:  Area
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>da.where(
+    da.values &gt; da.attrs[&quot;nodatavals&quot;][0]
+).plot()  # we can see that the DataArray contains missing values.
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.collections.QuadMesh at 0x7f68ef4c5ca0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_weights_Raster_awareness_API_29_1.png" src="../../_images/user-guide_weights_Raster_awareness_API_29_1.png" />
+</div>
+</div>
+<p>We’ll look at how weight builders handle missing values. Firstly we’ll slice the <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> to reduce overall size for easier visualization.</p>
+<p>This time we’ll create <code class="docutils literal notranslate"><span class="pre">WSP</span></code> object using <code class="docutils literal notranslate"><span class="pre">da2WSP</span></code> method inside <code class="docutils literal notranslate"><span class="pre">raster.py</span></code>. Since our DataArray is single banded and all of its dimensions belong to the default list, we only have to ship the DataArray and the type of contiguity we need.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Slicing the dataarray
+da_s = da[:, 330:340, 129:139]
+w_queen = raster.da2WSP(da_s)  # default contiguity is queen
+w_rook = raster.da2WSP(da_s, &quot;rook&quot;)
+</pre></div>
+</div>
+</div>
+<p>After plotting both contiguities and sliced <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>, we can see that the missing values are ignored by the <code class="docutils literal notranslate"><span class="pre">da2WSP</span></code> method and only indices of non missing values are stored in <code class="docutils literal notranslate"><span class="pre">index</span></code> attribute of <code class="docutils literal notranslate"><span class="pre">WSP</span></code> object.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>f, ax = plt.subplots(1, 3, figsize=(4 * 4, 4), subplot_kw=dict(aspect=&quot;equal&quot;))
+da_s.where(da_s.values &gt; da_s.attrs[&quot;nodatavals&quot;][0]).plot(ax=ax[0])
+ax[0].set_title(&quot;Sliced raster&quot;)
+splot.plot_spatial_weights(w_rook, data=da_s, ax=ax[1])
+ax[1].set_title(&quot;Rook contiguity&quot;)
+splot.plot_spatial_weights(w_queen, data=da_s, ax=ax[2])
+ax[2].set_title(&quot;Queen contiguity&quot;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_weights_Raster_awareness_API_33_0.png" src="../../_images/user-guide_weights_Raster_awareness_API_33_0.png" />
+</div>
+</div>
+</section>
+<section id="higher_order-neighbors">
+<h3><code class="docutils literal notranslate"><span class="pre">higher_order</span></code> neighbors<a class="headerlink" href="#higher_order-neighbors" title="Link to this heading">¶</a></h3>
+<p>In some cases <code class="docutils literal notranslate"><span class="pre">Rook</span></code> and <code class="docutils literal notranslate"><span class="pre">Queen</span></code> contiguities don’t provide sufficient neighbors when performing spatial analysis on a raster data, this is because <code class="docutils literal notranslate"><span class="pre">Rook</span></code> contiguity provides max 4 neighbors and <code class="docutils literal notranslate"><span class="pre">Queen</span></code> provides max 8.</p>
+<p>Therefore we’ve added <code class="docutils literal notranslate"><span class="pre">higher_order</span></code> functionality inside the builder method. We can now pass <code class="docutils literal notranslate"><span class="pre">k</span></code> value to the weight builder to obtain upto kth order neighbors. Since this can be computionally expensive we can take advantage of parallel processing using <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> argument. Now lets take a look at this functionality.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Building a test DataArray
+da_s = raster.testDataArray((1, 5, 10), rand=True)
+</pre></div>
+</div>
+</div>
+<p>Below we can see that builder selected all the neighbors of order less than equal to 2, with <code class="docutils literal notranslate"><span class="pre">rook</span></code> contiguity</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w_rook2 = raster.da2WSP(da_s, &quot;rook&quot;, k=2, n_jobs=-1)
+splot.plot_spatial_weights(w_rook2, data=da_s)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/opt/anaconda/lib/python3.8/site-packages/scipy/sparse/_index.py:124: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&lt;Figure size 720x720 with 1 Axes&gt;, &lt;AxesSubplot:&gt;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_weights_Raster_awareness_API_37_2.png" src="../../_images/user-guide_weights_Raster_awareness_API_37_2.png" />
+</div>
+</div>
+<p>Few times we require the kth order neighbors for our analysis even if lower order neighbors are absent, hence we can use <code class="docutils literal notranslate"><span class="pre">include_nas</span></code> argument to do the same.</p>
+<p>We can also look in both the examples we used <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> parameter, and assigned -1 which equats to all the cores present in the computer for multithreading</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>w_rook2 = raster.da2WSP(da_s, &quot;rook&quot;, k=2, n_jobs=-1, include_nodata=True)
+splot.plot_spatial_weights(w_rook2, data=da_s)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&lt;Figure size 720x720 with 1 Axes&gt;, &lt;AxesSubplot:&gt;)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_weights_Raster_awareness_API_39_1.png" src="../../_images/user-guide_weights_Raster_awareness_API_39_1.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Additional-resources">
+<h2>Additional resources<a class="headerlink" href="#Additional-resources" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="http://xarray.pydata.org/en/stable/io.html">Reading and writing files using Xarray</a></p></li>
+<li><p><a class="reference external" href="http://xarray.pydata.org/en/stable/data-structures.html">Xarray Data Structures</a></p></li>
+<li><p>Dataset links:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.unidata.ucar.edu/software/netcdf/examples/files.html">ECMWF_ERA-40_subset.nc</a></p></li>
+<li><p><a class="reference external" href="https://data.humdata.org/dataset/worldpop-population-counts-for-luxembourg">lux_ppp_2019.tif</a></p></li>
+</ul>
+</li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../../_sources/user-guide/weights/Raster_awareness_API.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

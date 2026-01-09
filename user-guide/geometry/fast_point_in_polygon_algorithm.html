@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title># Fast Point in Polygon Testing Method &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=38b0ce36" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../intro.html">User Guide</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#"># Fast Point in Polygon Testing Method</a></li>
+<li><a class="reference internal" href="#Content">Content</a></li>
+<li><a class="reference internal" href="#Introduction">Introduction</a></li>
+<li><a class="reference internal" href="#How-to-Use">How to Use</a><ul>
+<li><a class="reference internal" href="#Data-preparing">Data preparing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#The-process-of-building-quadtree">The process of building quadtree</a><ul>
+<li><a class="reference internal" href="#Quadtree-building-process---visualize-the-building-result">Quadtree building process - visualize the building result</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Visualizing-the-result-of-%22Point-in-Polygon%22-test">Visualizing the result of “Point in Polygon” test</a><ul>
+<li><a class="reference internal" href="#Test-the-performance-of-this-quad-tree-structure">Test the performance of this quad-tree-structure</a></li>
+<li><a class="reference internal" href="#Validate-the-correctness-of-this-quad-tree-structure">Validate the correctness of this quad-tree-structure</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Algorithm-for-building-quadtree-cells-for-study-area">Algorithm for building quadtree cells for study area</a><ul>
+<li><a class="reference internal" href="#Process-of-duadtree-dividing-of-the-study-area:">Process of duadtree dividing of the study area:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Reference">Reference</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/libpysal/blob/master/user-guide/geometry/fast_point_in_polygon_algorithm.ipynb">user-guide/geometry/fast_point_in_polygon_algorithm.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/libpysal/master?filepath=user-guide/geometry/fast_point_in_polygon_algorithm.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="#-Fast-Point-in-Polygon-Testing-Method">
+<h1># Fast Point in Polygon Testing Method<a class="headerlink" href="##-Fast-Point-in-Polygon-Testing-Method" title="Link to this heading">¶</a></h1>
+<p><strong>Author: Hu Shao</strong> <a class="reference external" href="mailto:shaohutiger&#37;&#52;&#48;gmail&#46;com">shaohutiger<span>&#64;</span>gmail<span>&#46;</span>com</a></p>
+</section>
+<section id="Content">
+<h1>Content<a class="headerlink" href="#Content" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="#Introduction"><span class="std std-ref">Introduction</span></a></p></li>
+<li><p><a class="reference internal" href="#How-to-Use"><span class="std std-ref">How to Use</span></a></p></li>
+<li><p><a class="reference internal" href="#The-process-of-building-quadtree"><span class="std std-ref">The process of building quadtree</span></a></p></li>
+<li><p><a class="reference internal" href="#Visualizing-the-result-of-%22Point-in-Polygon%22-test"><span class="std std-ref">Visualizing the result of “Point in Polygon” test</span></a></p></li>
+<li><p><a class="reference internal" href="#Test-the-performance-of-this-quad-tree-structure"><span class="std std-ref">Test the performance of this quad-tree-structure</span></a></p></li>
+<li><p><a class="reference internal" href="#Validate-the-correctness-of-this-quad-tree-structure"><span class="std std-ref">Validate the correctness of this quad-tree-structure</span></a></p></li>
+<li><p>Algorithm of building quadtree cells for study area</p></li>
+<li><p><a class="reference internal" href="#Reference"><span class="std std-ref">Reference</span></a></p></li>
+</ul>
+</section>
+<section id="Introduction">
+<h1>Introduction<a class="headerlink" href="#Introduction" title="Link to this heading">¶</a></h1>
+<div class="line-block">
+<div class="line">Testing whether a point locates inside a polygon is a time consuming work. Especially when the point number is huge and the boundary of study area is complex.</div>
+<div class="line">Here we implement a “Fast Point in Polygon Testing Method” to help users determine whether a point is inside a specific polygon rapidly.</div>
+</div>
+<div class="line-block">
+<div class="line">The Quadtree structure is employed to divide a polygon into plenty of lattices. During the dividing, each lattices is marked as <strong>in</strong>, <strong>out</strong> or <strong>maybe</strong>, which means “totally lies inside the polygon”, “totally lies out side the polygon” and “intersect with the boundary if the polygon”.</div>
+<div class="line">For each point, we firstly allocate it into a lattice. If the lattice is marked as “in” or “out”, we will immediately know the result; if the lattice is marked as “maybe”, we then need to do some further calculation, which won’t be complex.</div>
+<div class="line">Once the quadtree structure is constructed, the “point in polygon testing” will be very fast.</div>
+</div>
+<p>This method is suitable for the situations where point numbers are huge, polygon numbers are small and polygon boundary is complex. E.g., simulation in point pattern analysis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Import essential libraries for following calculation
+import numpy as np
+
+from libpysal.cg.polygonQuadTreeStructure import QuadTreeStructureSingleRing
+from libpysal.cg.shapes import Polygon, Ring
+
+%matplotlib inline
+# import codecs
+# import shapely
+# from pysal.cg.shapes import Polygon, Point
+# from shapely.geometry import Polygon as spPolygon
+# from shapely.geometry import Point as spPoint
+# import time
+import random
+import time
+
+import matplotlib
+import matplotlib.pyplot as plt
+
+print(&quot;import finished!&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+import finished!
+</pre></div></div>
+</div>
+</section>
+<section id="How-to-Use">
+<h1>How to Use<a class="headerlink" href="#How-to-Use" title="Link to this heading">¶</a></h1>
+<section id="Data-preparing">
+<h2>Data preparing<a class="headerlink" href="#Data-preparing" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>def get_ring_from_file(path):
+    vertices = []
+    with open(path) as file:
+        for line in file:
+            if len(line) &lt; 2:
+                continue
+            coordinates = line.split(&quot;,&quot;)
+            x = float(coordinates[0])
+            y = float(coordinates[1])
+            vertices.append((x, y))
+    return vertices
+
+
+# Prepare the polygons for future use.
+Texas = Polygon(get_ring_from_file(&quot;data/texas_points.txt&quot;))
+Pecos = Polygon(get_ring_from_file(&quot;data/pecos_points.txt&quot;))
+San_Saba = Polygon(get_ring_from_file(&quot;data/san_saba_points.txt&quot;))
+Texas_with_holes = Polygon(Texas.vertices, [Pecos.vertices, San_Saba.vertices])
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Build the quadtree structure
+Texas.build_quad_tree_structure()
+print(&quot;quad tree build finished&quot;)
+# create some random point and test if these points locate in the polygon
+for _ in range(0, 10):
+    x = random.uniform(Texas.bbox[0], Texas.bbox[2])
+    y = random.uniform(Texas.bbox[1], Texas.bbox[3])
+    print(x, y, Texas.contains_point([x, y]))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+quad tree build finished
+(-101.88926984960028, 33.54910494748045, True)
+(-101.9324657625388, 30.99562838608417, True)
+(-96.66509999476706, 31.769415333990857, True)
+(-106.04482267119155, 29.30860980945098, False)
+(-102.05124458612478, 28.377630545869593, False)
+(-95.7952998307517, 33.2606998037955, True)
+(-105.3043106118911, 29.64211319980175, False)
+(-96.07086614456198, 36.43497839388729, False)
+(-93.8102383176018, 35.720624066002756, False)
+(-101.27867134062416, 31.762914510273433, True)
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="The-process-of-building-quadtree">
+<h1>The process of building quadtree<a class="headerlink" href="#The-process-of-building-quadtree" title="Link to this heading">¶</a></h1>
+<section id="Quadtree-building-process---visualize-the-building-result">
+<h2>Quadtree building process - visualize the building result<a class="headerlink" href="#Quadtree-building-process---visualize-the-building-result" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># The region of Texas, to make the steps more clear, here we only use the main region
+texas_main_vertices = Texas.parts[0]
+fig, ax = plt.subplots(figsize=(16, 11))
+qts_singlering = QuadTreeStructureSingleRing(Ring(texas_main_vertices))
+patches = []
+color_array = []
+cells_to_draw = [qts_singlering.root_cell]
+while len(cells_to_draw) &gt; 0:
+    cell = cells_to_draw.pop()
+
+    if cell.children_l_b is None:
+        # this is a leaf in the quad tree structure, draw it
+        verts = [
+            [cell.min_x, cell.min_y],
+            [cell.min_x, cell.min_y + cell.length_y],
+            [cell.min_x + cell.length_x, cell.min_y + cell.length_y],
+            [cell.min_x + cell.length_x, cell.min_y],
+            [cell.min_x, cell.min_y],
+        ]
+        patches.append(verts)
+        if cell.status == &quot;in&quot;:
+            color_array.append(&quot;#c8e6c9&quot;)  # in color green
+        elif cell.status == &quot;out&quot;:
+            color_array.append(&quot;#b0bec5&quot;)  # in color grey
+        else:  # means &quot;maybe&quot;
+            color_array.append(&quot;#ffa726&quot;)  # in color orange
+    else:
+        cells_to_draw.append(cell.children_l_b)
+        cells_to_draw.append(cell.children_l_t)
+        cells_to_draw.append(cell.children_r_b)
+        cells_to_draw.append(cell.children_r_t)
+coll = matplotlib.collections.PolyCollection(
+    np.array(patches), facecolors=color_array, edgecolors=&quot;#eceff1&quot;
+)
+ax.add_collection(coll)
+point_x_list = []
+point_y_list = []
+for point in texas_main_vertices:
+    point_x_list.append(point[0])
+    point_y_list.append(point[1])
+plt.plot(point_x_list, point_y_list)
+ax.autoscale_view()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_geometry_fast_point_in_polygon_algorithm_7_0.png" src="../../_images/user-guide_geometry_fast_point_in_polygon_algorithm_7_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Visualizing-the-result-of-%22Point-in-Polygon%22-test">
+<h1>Visualizing the result of “Point in Polygon” test<a class="headerlink" href="#Visualizing-the-result-of-%22Point-in-Polygon%22-test" title="Link to this heading">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plt.figure(figsize=(16, 12))
+
+for vertices in Texas_with_holes.parts:
+    line_x_list = []
+    line_y_list = []
+    for point in vertices:
+        line_x_list.append(point[0])
+        line_y_list.append(point[1])
+    plt.plot(line_x_list, line_y_list, c=&quot;#6a1b9a&quot;)
+for vertices in Texas_with_holes.holes:
+    line_x_list = []
+    line_y_list = []
+    for point in vertices:
+        line_x_list.append(point[0])
+        line_y_list.append(point[1])
+    plt.plot(line_x_list, line_y_list, c=&quot;#1565c0&quot;)
+
+point_x_list = []
+point_y_list = []
+point_colors = []
+bbox = Texas_with_holes.bbox
+for _ in range(0, 1000):
+    x = random.uniform(bbox[0], bbox[2])
+    y = random.uniform(bbox[1], bbox[3])
+    point_x_list.append(x)
+    point_y_list.append(y)
+    if Texas_with_holes.contains_point([x, y]):
+        point_colors.append(&quot;#e57373&quot;)  # inside, red
+    else:
+        point_colors.append(&quot;#4db6ac&quot;)  # outside, green
+
+plt.scatter(point_x_list, point_y_list, c=point_colors, linewidth=0)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_geometry_fast_point_in_polygon_algorithm_9_0.png" src="../../_images/user-guide_geometry_fast_point_in_polygon_algorithm_9_0.png" />
+</div>
+</div>
+<section id="Test-the-performance-of-this-quad-tree-structure">
+<h2>Test the performance of this quad-tree-structure<a class="headerlink" href="#Test-the-performance-of-this-quad-tree-structure" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># construct a study area with 3000+ vertices
+Huangshan = Polygon(get_ring_from_file(&quot;data/study_region_huangshan_point.txt&quot;))
+points = []
+bbox = Huangshan.bounding_box
+for _ in range(0, 10000):
+    x = random.uniform(bbox[0], bbox[2])
+    y = random.uniform(bbox[1], bbox[3])
+    points.append((x, y))
+print(str(len(points)) + &quot; random points generated&quot;)
+print(&quot;------------------------------&quot;)
+print(&quot;Begin test without quad-tree-structure&quot;)
+time_begin = int(round(time.time() * 1000))
+for point in points:
+    Huangshan.contains_point(point)
+time_end = int(round(time.time() * 1000))
+print(
+    &quot;Test without quad-tree-structure finished, time used = &quot;
+    + str((time_end - time_begin) / 1000.0)
+    + &quot;s&quot;
+)
+print(&quot;------------------------------&quot;)
+print(&quot;Begin test with quad-tree-structure&quot;)
+time_begin = int(round(time.time() * 1000))
+Huangshan.build_quad_tree_structure()
+count_error = 0
+for point in points:
+    Huangshan.contains_point(point)
+time_end = int(round(time.time() * 1000))
+print(
+    &quot;Test with quad-tree-structure finished, time used = &quot;
+    + str((time_end - time_begin) / 1000.0)
+    + &quot;s&quot;
+)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+10000 random points generated
+------------------------------
+Begin test without quad-tree-structure
+Test without quad-tree-structure finished, time used = 23.204s
+------------------------------
+Begin test with quad-tree-structure
+Test with quad-tree-structure finished, time used = 0.451s
+</pre></div></div>
+</div>
+</section>
+<section id="Validate-the-correctness-of-this-quad-tree-structure">
+<h2>Validate the correctness of this quad-tree-structure<a class="headerlink" href="#Validate-the-correctness-of-this-quad-tree-structure" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># polygons = ps.open(&quot;data/Huangshan_region.shp&quot;)  # read the research region shape file
+# research_region = polygons[0]  # set the first polygon as research polygon
+# len(research_region.vertices)
+vertices = get_ring_from_file(&quot;data/study_region_huangshan_point.txt&quot;)
+print(&quot;Study region read finished, with vertices of &quot; + str(len(vertices)))
+huangshan = Ring(vertices)
+
+points = []
+bbox = huangshan.bounding_box
+for _ in range(0, 1000):
+    x = random.uniform(bbox[0], bbox[2])
+    y = random.uniform(bbox[1], bbox[3])
+    points.append([x, y, True])
+print(str(len(points)) + &quot; random points generated&quot;)
+
+# First, test if these points are inside the polygon, record the result
+for point in points:
+    is_in = huangshan.contains_point((point[0], point[1]))
+    point[2] = is_in
+
+# Then, build the quad-tree and do the test again. Compare the results of two methods.
+count_error = 0
+huangshan.build_quad_tree_structure()
+for point in points:
+    is_in = huangshan.contains_point((point[0], point[1]))
+    if point[2] != is_in:
+        print(&quot;Error found!!!&quot;)
+        count_error += 1
+
+
+if count_error == 0:
+    print(&quot;finished ==================== no error found&quot;)
+else:
+    print(&quot;finished ==================== ERROR FOUND&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Study region read finished, with vertices of 3891
+1000 random points generated
+finished ==================== no error found
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Algorithm-for-building-quadtree-cells-for-study-area">
+<h1>Algorithm for building quadtree cells for study area<a class="headerlink" href="#Algorithm-for-building-quadtree-cells-for-study-area" title="Link to this heading">¶</a></h1>
+<div class="line-block">
+<div class="line">A huge number of points will be simulated and test if falls in the study area in the real case. This calculation process is very computing intensive. Especially when the boundary of study area is complex and contains a lot of segments, or the simulation time is also large.</div>
+<div class="line">In order to fast decide whether a point is contained in the study area, we can prepare an grid structure which divide the study area into quadtree based regular rectangles. Each rectangles will have a specific status from [‘in’, ‘out’, ‘maybe’]. After we prepared this kind of grid structure, deciding whether a points falls in the study area will be very easy: first, allocate the point into a specific cell. For the cell with different status:</div>
+</div>
+<ul class="simple">
+<li><p>in: the point must be in the study area</p></li>
+<li><p>out: the point must not be in the study area</p></li>
+<li><p>maybe: decide if the points falls into the study area by some following-up calculation. However, the small polygon contains much less boundary segments, the calculation will be much easier. What’s more, this kind of grids only take over a very small part of the whole grids
+<img alt="quadtree_example" src="../../_images/quadtree_example.png" /></p></li>
+</ul>
+<section id="Process-of-duadtree-dividing-of-the-study-area:">
+<h2>Process of duadtree dividing of the study area:<a class="headerlink" href="#Process-of-duadtree-dividing-of-the-study-area:" title="Link to this heading">¶</a></h2>
+<div class="line-block">
+<div class="line">Treat the boundary of the study area as arc. Each time of dividing the study area means use two straight lines (on horizontal and one vertical) to split a big rectangle (cell) into 4 smaller ones. During this process, the arc should also be used to intersect with the straight lines and break into small segments. Different segments should belong to different cells and can be used to determine the status of the cell (as we mentioned: in, out or maybe inside of the study area.) Repeat this
+process until the cell’s size is small enough.</div>
+<div class="line">During the dividing, there are some special properties of the arcs we need to know:</div>
+</div>
+<ul class="simple">
+<li><p>Point order of the arcs <strong>MUST</strong> be clockwise</p></li>
+<li><p>The two end-points of each arc <strong>MUST</strong> lie on the borders of the cell</p></li>
+<li><p>When a arc goes in a cell, it <strong>MUST</strong> goes out from the same one</p></li>
+<li><p>The intersection points <strong>MUST</strong> be lying on the inner-boundaries which are used to divide the cell into 4 sub-cells</p></li>
+<li><p>Use the intersection points to split the arcs into small ones</p></li>
+<li><p>No need to store cell boundaries as arcs, store the intersection points, points’ relative location from</p></li>
+</ul>
+<div class="line-block">
+<div class="line">The following image depicts the categorize rule of cell boundary when being divided into sub cells:</div>
+<div class="line">cell_boundary_category_rule</div>
+<div class="line"><img alt="cell_boundary_category_rule" src="../../_images/cell_boundary_category_rule.png" /></div>
+</div>
+<div class="line-block">
+<div class="line">segment_sequence_search_rule</div>
+<div class="line"><img alt="segment_sequence_search_rule" src="../../_images/segment_sequence_search_rule.png" /></div>
+</div>
+<p>In the situations that there are some arcs intersect with a cell and we need to extract the segment squence, here is the rule:</p>
+<ol class="arabic simple">
+<li><p>Start on the bottom-left point of the cell, go clockwise to search points.</p></li>
+<li><p>Find the first arc-begin-point on the cell’s border. The actual segment sequence begin from here.</p></li>
+<li><p>Go alone the arc until the end point on the border. Then go alone the cell’s border until find next arc-begin-point.</p></li>
+<li><p>Repeat <strong>Step.3</strong> until reach the first arc-begin-point at <strong>Step.2</strong>. Search stop.</p></li>
+</ol>
+<div class="line-block">
+<div class="line">From the image we can see that the red border lines also belong to the segment sequence.</div>
+<div class="line">During the quadtree dividing, when there is a cell who doesn’t intersect with any arc, we need to determine whether this cell is totally within the study area or not. we Can use the method above to determine: If this cell share a border which belongs to other cells’ segment sequence, then this cell is totally within the study area; vice versa</div>
+</div>
+<div class="line-block">
+<div class="line">extract_connecting_boders_between_points</div>
+<div class="line"><img alt="extract_connecting_boders_between_points" src="../../_images/extract_connecting_boders_between_points.png" /></div>
+</div>
+<p>situation_segment_intersect_with_two_split_line <img alt="situation_segment_intersect_with_two_split_line" src="../../_images/situation_segment_intersect_with_two_split_line.png" /></p>
+<p>Under the sitiation that a single segment intersects with both split-lines. This kind of situation should be carefully treated.</p>
+</section>
+</section>
+<section id="Reference">
+<h1>Reference<a class="headerlink" href="#Reference" title="Link to this heading">¶</a></h1>
+<div class="line-block">
+<div class="line">Point in Polygon Strategies <a class="reference external" href="http://erich.realtimerendering.com/ptinpoly/">http://erich.realtimerendering.com/ptinpoly/</a></div>
+<div class="line">Samet, Hanan. Foundations of multidimensional and metric data structures. Morgan Kaufmann, 2006.</div>
+<div class="line">Jiménez, Juan J., Francisco R. Feito, and Rafael J. Segura. “A new hierarchical triangle-based point-in-polygon data structure.” Computers &amp; Geosciences 35, no. 9 (2009): 1843-1853.</div>
+<div class="line"><a class="reference external" href="http://stackoverflow.com/questions/12881848/draw-polygons-more-efficiently-with-matplotlib">http://stackoverflow.com/questions/12881848/draw-polygons-more-efficiently-with-matplotlib</a></div>
+<div class="line"><a class="reference external" href="http://matplotlib.org/api/collections_api.html">http://matplotlib.org/api/collections_api.html</a></div>
+<div class="line"><a class="reference external" href="http://materializecss.com/color.html">http://materializecss.com/color.html</a></div>
+</div>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../../_sources/user-guide/geometry/fast_point_in_polygon_algorithm.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

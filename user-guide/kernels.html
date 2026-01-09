@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Kernels with libpysal &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pysal-styles.css?v=38b0ce36" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="W to Graph Member Comparisions" href="../migration.html" />
+    <link rel="prev" title="W to Graph Migration Guide" href="graph/w_g_migration.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../installation.html">Installation</a></li>
+                <li><a href="intro.html">User Guide</a></li>
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="intro.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="graph/intro.html">Graphs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Kernels with <code class="docutils literal notranslate"><span class="pre">libpysal</span></code></a><ul>
+<li><a class="reference internal" href="#Setup">Setup</a></li>
+<li><a class="reference internal" href="#Available-Kernels">Available Kernels</a><ul>
+<li><a class="reference internal" href="#Interpretation-of-Kernel-Functions">Interpretation of Kernel Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Exploring-alternative-kernels-and-bandwidths">Exploring alternative kernels and bandwidths</a><ul>
+<li><a class="reference internal" href="#Bandwidth">Bandwidth</a></li>
+<li><a class="reference internal" href="#Decay">Decay</a></li>
+<li><a class="reference internal" href="#Taper">Taper</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/libpysal/blob/master/user-guide/kernels.ipynb">user-guide/kernels.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/libpysal/master?filepath=user-guide/kernels.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Kernels-with-libpysal">
+<h1>Kernels with <code class="docutils literal notranslate"><span class="pre">libpysal</span></code><a class="headerlink" href="#Kernels-with-libpysal" title="Link to this heading">¶</a></h1>
+<p>Kernel functions are widely used across spatial analysis for tasks such as density estimation, spatial smoothing, construction of local influence surfaces, and geographically weighted modeling. They provide a flexible mechanism to formalize how spatial influence decays with distance, allowing analysts to encode different assumptions about locality, neighborhood structure, and the scale of spatial interaction.</p>
+<p>Within the PySAL ecosystem, kernel functions are used primarily for generating spatial weights matrices—especially continuous, distance-decay–based weights—and for defining weighted edges in spatial graph representations. They also appear in certain spatial econometric estimators that require localized or tapered weighting schemes to model distance-dependent interactions and spatial heterogeneity more realistically.</p>
+<p>This notebook illustrates the functionality of kernels in <code class="docutils literal notranslate"><span class="pre">libpysal</span></code>.</p>
+<section id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+import numpy as np
+
+from libpysal import kernels
+
+np.set_printoptions(precision=4, suppress=True)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Available-Kernels">
+<h2>Available Kernels<a class="headerlink" href="#Available-Kernels" title="Link to this heading">¶</a></h2>
+<p>For a distance (d) and bandwidth (h), kernels are evaluated on the rescaled distance</p>
+<p><span class="math">\begin{equation}
+z = \frac{d}{h}, \quad K(z).
+\end{equation}</span></p>
+<p>The following kernel functions are implemented using one-dimensional definitions with <span class="math notranslate nohighlight">\(K(z)=0\)</span> outside the stated support:</p>
+<ul>
+<li><p><strong>Triangular</strong> (“triangle”)</p>
+<div class="math notranslate nohighlight">
+\[K(z) = 1 - |z|, \quad |z| \le 1.\]</div>
+</li>
+<li><p><strong>Uniform</strong> (“boxcar”)</p>
+<div class="math notranslate nohighlight">
+\[K(z) = \frac{1}{2}, \quad |z| \le 1.\]</div>
+</li>
+<li><p><strong>Quadratic</strong> (Epanechnikov / “parabolic”)</p>
+<div class="math notranslate nohighlight">
+\[K(z) = \frac{3}{4}(1 - z^2), \quad |z| \le 1.\]</div>
+</li>
+<li><p><strong>Quartic</strong> (biweight / “bisquare”)</p>
+<div class="math notranslate nohighlight">
+\[K(z) = \frac{15}{16}(1 - z^2)^2, \quad |z| \le 1.\]</div>
+</li>
+<li><p><strong>Gaussian</strong></p>
+<div class="math notranslate nohighlight">
+\[K(z) = (2\pi)^{-1/2} \exp\left(-\frac{z^2}{2}\right), \quad z \in \mathbb{R}.\]</div>
+</li>
+</ul>
+<p>The helpers in <code class="docutils literal notranslate"><span class="pre">kernels.py</span></code> adopt the same functional forms, but add optional arguments such as <code class="docutils literal notranslate"><span class="pre">decay</span></code> and <code class="docutils literal notranslate"><span class="pre">taper</span></code> to control how quickly weights decline with distance and whether the kernel is truncated at the bandwidth.</p>
+<section id="Interpretation-of-Kernel-Functions">
+<h3>Interpretation of Kernel Functions<a class="headerlink" href="#Interpretation-of-Kernel-Functions" title="Link to this heading">¶</a></h3>
+<p>Kernel functions differ in smoothness, support, and rate of decay. These properties influence how local or global the resulting spatial weights are.</p>
+<p>Triangular kernels decline linearly from peak to zero at the bandwidth. They generate moderate smoothing with sharp locality.</p>
+<p>Uniform (boxcar) kernels assign equal weight to all neighbors within the bandwidth and zero beyond. This is equivalent to binary distance-band weights and does not provide smoothing inside the band.</p>
+<p>Quadratic (parabolic) kernels decline smoothly and balance locality with smoothness. They are frequently used in nonparametric estimation due to favorable statistical properties.</p>
+<p>Quartic (bisquare) kernels have a steeper decline and place more weight on very close neighbors while still providing smooth, compact support.</p>
+<p>Gaussian kernels provide infinite support and the smoothest decay. Weights never drop to zero without tapering, which can lead to denser spatial weight matrices.</p>
+<p>Compactly supported kernels yield sparse matrices and emphasize strict locality. Infinite-support kernels yield smoother influence but may require tapering for computational efficiency. The rate of decline determines how “local” the smoothing will be in practice.</p>
+<p>Below we plot several common kernels implemented in <code class="docutils literal notranslate"><span class="pre">libpysal</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>functions = [
+    &quot;triangular&quot;,
+    &quot;parabolic&quot;,
+    &quot;gaussian&quot;,
+    &quot;bisquare&quot;,
+    &quot;cosine&quot;,
+    &quot;exponential&quot;,
+    &quot;boxcar&quot;,
+]
+
+h = 1.0  # bandwidth
+d = np.linspace(0, 2 * h, 400)
+
+plt.figure(figsize=(8, 5))
+for fn in functions:
+    k = kernels.kernel(d, bandwidth=h, kernel=fn, taper=False)
+    plt.plot(d / h, k, label=fn)
+
+plt.axvline(1.0, linestyle=&quot;--&quot;, linewidth=1)
+plt.xlabel(&quot;$z = d / h$&quot;)
+plt.ylabel(&quot;$K(z)$&quot;)
+plt.title(&quot;Kernel shapes&quot;)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/user-guide_kernels_4_0.png" src="../_images/user-guide_kernels_4_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Exploring-alternative-kernels-and-bandwidths">
+<h2>Exploring alternative kernels and bandwidths<a class="headerlink" href="#Exploring-alternative-kernels-and-bandwidths" title="Link to this heading">¶</a></h2>
+<p>You can repeat the previous steps using different kernel functions and bandwidth strategies to see how they affect the spatial lag.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">w_gauss_fixed</span> <span class="o">=</span> <span class="n">Kernel</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
+<span class="n">w_gauss_fixed</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+<span class="n">lag_gauss</span> <span class="o">=</span> <span class="n">lag_spatial</span><span class="p">(</span><span class="n">w_gauss_fixed</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="c1"># Plot `lag_gauss` and compare.</span>
+</pre></div>
+</div>
+<p>A typical set of experiments for a spatial analysis project might include:</p>
+<ul class="simple">
+<li><p>Trying different kernels (triangular, Gaussian, bisquare, etc.).</p></li>
+<li><p>Varying the number of neighbors <code class="docutils literal notranslate"><span class="pre">k</span></code>.</p></li>
+<li><p>Comparing fixed vs. adaptive bandwidth.</p></li>
+<li><p>Examining how these choices impact local statistics, regression residuals, or risk surfaces.</p></li>
+</ul>
+<section id="Bandwidth">
+<h3>Bandwidth<a class="headerlink" href="#Bandwidth" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code> parameter controls the spatial scale of the kernel. In the notation used earlier, the kernel is evaluated on the rescaled distance</p>
+<p><span class="math">\begin{equation}
+z = \frac{d}{h},
+\end{equation}</span></p>
+<p>where <code class="docutils literal notranslate"><span class="pre">h</span></code> is the bandwidth. Smaller bandwidths produce more localized weights (steeper decay), while larger bandwidths produce broader, smoother influence functions.</p>
+<p>Below we compare triangular kernels with three different bandwidths on the same distance axis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>d = np.linspace(0, 2, 400)  # absolute distance
+bandwidths = [0.25, 0.5, 1.0]
+
+plt.figure(figsize=(8, 5))
+for h in bandwidths:
+    k_vals = kernels.kernel(d, bandwidth=h, kernel=&quot;triangular&quot;, taper=False)
+    plt.plot(d, k_vals, label=f&quot;h = {h}&quot;)
+
+plt.xlabel(&quot;Distance d&quot;)
+plt.ylabel(&quot;Kernel weight K(d; h)&quot;)
+plt.title(&quot;Effect of bandwidth on the triangular kernel&quot;)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/user-guide_kernels_7_0.png" src="../_images/user-guide_kernels_7_0.png" />
+</div>
+</div>
+</section>
+<section id="Decay">
+<h3>Decay<a class="headerlink" href="#Decay" title="Link to this heading">¶</a></h3>
+<p>For the Gaussian kernel, the <code class="docutils literal notranslate"><span class="pre">decay</span></code> argument determines whether to calculate the kernel using the decay formulation. In the decay form, a kernel measures the distance decay in similarity between observations. It varies from maximal similarity (1) at a distance of zero to minimal similarity (0 or negative) at some very large (possibly infinite) distance. Otherwise, kernel functions are treated as proper volume-preserving probability distributions.</p>
+<p>Here we fix the bandwidth and compare Gaussian kernels with different <code class="docutils literal notranslate"><span class="pre">decay</span></code> values.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>d = np.linspace(0, 3, 400)
+h = 1.0
+decays = [True, False]
+
+plt.figure(figsize=(8, 5))
+for dec in decays:
+    k_vals = kernels.kernel(d, bandwidth=h, kernel=&quot;gaussian&quot;, decay=dec, taper=False)
+    plt.plot(d, k_vals, label=f&quot;decay = {dec}&quot;)
+
+plt.xlabel(&quot;Distance d&quot;)
+plt.ylabel(&quot;Kernel weight K(d; h, decay)&quot;)
+plt.title(&quot;Effect of decay on the Gaussian kernel&quot;)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/user-guide_kernels_9_0.png" src="../_images/user-guide_kernels_9_0.png" />
+</div>
+</div>
+</section>
+<section id="Taper">
+<h3>Taper<a class="headerlink" href="#Taper" title="Link to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">taper</span></code> argument is particularly relevant for unbounded kernels (e.g., Gaussian, exponential). When <code class="docutils literal notranslate"><span class="pre">taper=False</span></code>, the kernel has non-zero weight at all distances (in principle), although weights may become very small. When <code class="docutils literal notranslate"><span class="pre">taper=True</span></code>, the kernel is truncated at the bandwidth <code class="docutils literal notranslate"><span class="pre">h</span></code>, so weights are exactly zero for <code class="docutils literal notranslate"><span class="pre">d</span> <span class="pre">&gt;</span> <span class="pre">h</span></code>.</p>
+<p>This can make the resulting spatial weights matrix sparser and improve computational efficiency, while still preserving the basic shape of the kernel within the bandwidth.</p>
+<p>Below we compare a Gaussian kernel with and without tapering.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>d = np.linspace(0, 3, 400)
+h = 1.0
+
+k_notaper = kernels.kernel(d, bandwidth=h, kernel=&quot;gaussian&quot;, taper=False)
+k_taper = kernels.kernel(d, bandwidth=h, kernel=&quot;gaussian&quot;, taper=True)
+
+plt.figure(figsize=(8, 5))
+plt.plot(d, k_notaper, label=&quot;taper = False&quot;)
+plt.plot(d, k_taper, linestyle=&quot;--&quot;, label=&quot;taper = True&quot;)
+plt.axvline(h, linestyle=&quot;:&quot;, linewidth=1)
+
+plt.xlabel(&quot;Distance d&quot;)
+plt.ylabel(&quot;Kernel weight K(d; h)&quot;)
+plt.title(&quot;Effect of tapering on the Gaussian kernel&quot;)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/user-guide_kernels_11_0.png" src="../_images/user-guide_kernels_11_0.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../_sources/user-guide/kernels.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

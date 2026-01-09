@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>W to Graph Member Comparisions &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css?v=38b0ce36" />
+    <script src="_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Kernels with libpysal" href="user-guide/kernels.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="user-guide/intro.html">User Guide</a></li>
+                <li><a href="api.html">API</a></li>
+                <li><a href="references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">W to Graph Member Comparisions</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li><a class="reference internal" href="#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li><a class="reference internal" href="#members-unique-to-w">Members unique to W</a></li>
+<li><a class="reference internal" href="#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="w-to-graph-member-comparisions">
+<h1>W to Graph Member Comparisions<a class="headerlink" href="#w-to-graph-member-comparisions" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>This guide compares the members (attributes and methods) from the
+<cite>W</cite> class and the <cite>Graph</cite> class.</p>
+<p>It is intended for developers. Users interested in migrating to the
+new Graph class from W should see the <a class="reference external" href="user-guide/graph/w_g_migration.html">migration guide</a>.</p>
+</section>
+<section id="members-common-to-w-and-graph">
+<h2>Members common to W and Graph<a class="headerlink" href="#members-common-to-w-and-graph" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.asymmetry">asymmetry</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_sparse">from_sparse</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n">n</a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n_components">n_components</a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.neighbors">neighbors</a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.pct_nonzero">pct_nonzero</a></p></td>
+<td><p>builtins.float</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.plot">plot</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_networkx">to_networkx</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.weights">weights</a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="members-common-to-w-and-graph-with-different-types">
+<h2>Members common to W and Graph with different types<a class="headerlink" href="#members-common-to-w-and-graph-with-different-types" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Queen Type</p></th>
+<th class="head"><p>Graph Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cardinalities</p></td>
+<td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.cardinalities">builtins.dict</a></p></td>
+<td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.cardinalities">pandas.core.series.Series</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>component_labels</p></td>
+<td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.component_labels">numpy.ndarray</a></p></td>
+<td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.component_labels">pandas.core.series.Series</a></p></td>
+</tr>
+<tr class="row-even"><td><p>nonzero</p></td>
+<td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.nonzero">builtins.int</a></p></td>
+<td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.nonzero">numpy.int64</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>sparse</p></td>
+<td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.sparse">scipy.sparse._csr.csr_matrix</a></p></td>
+<td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.sparse">scipy.sparse._csr.csr_array</a></p></td>
+</tr>
+<tr class="row-even"><td><p>transform</p></td>
+<td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.transform">builtins.str</a></p></td>
+<td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.transform">builtins.method</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="members-unique-to-w">
+<h2>Members unique to W<a class="headerlink" href="#members-unique-to-w" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.asymmetries">asymmetries</a></p></td>
+<td><p>builtins.list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.diagW2">diagW2</a></p></td>
+<td><p>numpy.ndarray</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.diagWtW">diagWtW</a></p></td>
+<td><p>numpy.ndarray</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.diagWtW_WW">diagWtW_WW</a></p></td>
+<td><p>numpy.ndarray</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.from_WSP">from_WSP</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.from_adjlist">from_adjlist</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.from_dataframe">from_dataframe</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.from_file">from_file</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.from_iterable">from_iterable</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.from_networkx">from_networkx</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.from_shapefile">from_shapefile</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.from_xarray">from_xarray</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.full">full</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.get_transform">get_transform</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.histogram">histogram</a></p></td>
+<td><p>builtins.list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.id2i">id2i</a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.id_order">id_order</a></p></td>
+<td><p>builtins.list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.id_order_set">id_order_set</a></p></td>
+<td><p>builtins.bool</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.islands">islands</a></p></td>
+<td><p>builtins.list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.max_neighbors">max_neighbors</a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.mean_neighbors">mean_neighbors</a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.min_neighbors">min_neighbors</a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.neighbor_offsets">neighbor_offsets</a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.remap_ids">remap_ids</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.s0">s0</a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.s1">s1</a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.s2">s2</a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.s2array">s2array</a></p></td>
+<td><p>numpy.ndarray</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.sd">sd</a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.set_shapefile">set_shapefile</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.set_transform">set_transform</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.silence_warnings">silence_warnings</a></p></td>
+<td><p>builtins.bool</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.symmetrize">symmetrize</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.to_WSP">to_WSP</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.to_adjlist">to_adjlist</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.to_file">to_file</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.to_sparse">to_sparse</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.transformations">transformations</a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.trcW2">trcW2</a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.trcWtW">trcWtW</a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.weights.W.html#libpysal.weights.W.trcWtW_WW">trcWtW_WW</a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="members-unique-to-graph">
+<h2>Members unique to Graph<a class="headerlink" href="#members-unique-to-graph" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.adjacency">adjacency</a></p></td>
+<td><p>pandas.core.series.Series</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.aggregate">aggregate</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.apply">apply</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.assign_self_weight">assign_self_weight</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_block_contiguity">build_block_contiguity</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_contiguity">build_contiguity</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_distance_band">build_distance_band</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_fuzzy_contiguity">build_fuzzy_contiguity</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_h3">build_h3</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_kernel">build_kernel</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_knn">build_knn</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_raster_contiguity">build_raster_contiguity</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_spatial_matches">build_spatial_matches</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_travel_cost">build_travel_cost</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_triangulation">build_triangulation</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.copy">copy</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.describe">describe</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.difference">difference</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.eliminate_zeros">eliminate_zeros</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.equals">equals</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.explore">explore</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_W">from_W</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_adjacency">from_adjacency</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_arrays">from_arrays</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_dicts">from_dicts</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_weights_dict">from_weights_dict</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.generate_da">generate_da</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.higher_order">higher_order</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.index_pairs">index_pairs</a></p></td>
+<td><p>builtins.tuple</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.intersection">intersection</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.intersects">intersects</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.isolates">isolates</a></p></td>
+<td><p>pandas.core.indexes.base.Index</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.isomorphic">isomorphic</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.issubgraph">issubgraph</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.lag">lag</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n_edges">n_edges</a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n_nodes">n_nodes</a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.subgraph">subgraph</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.summary">summary</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.symmetric_difference">symmetric_difference</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_W">to_W</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_gal">to_gal</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_gwt">to_gwt</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_parquet">to_parquet</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.transformation">transformation</a></p></td>
+<td><p>builtins.str</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.union">union</a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph.unique_ids">unique_ids</a></p></td>
+<td><p>pandas.core.indexes.base.Index</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/migration.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

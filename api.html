@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libpysal API reference &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pysal-styles.css?v=38b0ce36" />
+    <script src="_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="libpysal.graph.Graph" href="generated/libpysal.graph.Graph.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="installation.html">Installation</a></li>
+                <li><a href="user-guide/intro.html">User Guide</a></li>
+                <li><a href="#">API</a></li>
+                <li><a href="references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">libpysal API reference</a><ul>
+<li><a class="reference internal" href="#spatial-graph">Spatial Graph</a></li>
+<li><a class="reference internal" href="#spatial-weights">Spatial Weights</a><ul>
+<li><a class="reference internal" href="#distance-weights">Distance Weights</a></li>
+<li><a class="reference internal" href="#contiguity-weights">Contiguity Weights</a></li>
+<li><a class="reference internal" href="#spint-weights">spint Weights</a></li>
+<li><a class="reference internal" href="#weights-tools-to-interface-with-rasters">Weights tools to interface with rasters</a></li>
+<li><a class="reference internal" href="#weights-util-classes-and-functions">Weights Util Classes and Functions</a></li>
+<li><a class="reference internal" href="#weights-user-classes-and-functions">Weights user Classes and Functions</a></li>
+<li><a class="reference internal" href="#set-theoretic-weights">Set Theoretic Weights</a></li>
+<li><a class="reference internal" href="#spatial-lag">Spatial Lag</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cg-computational-geometry">cg: Computational Geometry</a><ul>
+<li><a class="reference internal" href="#alpha-shapes">alpha_shapes</a></li>
+<li><a class="reference internal" href="#voronoi">voronoi</a></li>
+<li><a class="reference internal" href="#sphere">sphere</a></li>
+<li><a class="reference internal" href="#shapes">shapes</a></li>
+<li><a class="reference internal" href="#standalone">standalone</a></li>
+<li><a class="reference internal" href="#locators">locators</a></li>
+<li><a class="reference internal" href="#kdtree">kdtree</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#io">io</a></li>
+<li><a class="reference internal" href="#kernels">kernels</a></li>
+<li><a class="reference internal" href="#examples">examples</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="libpysal-api-reference">
+<span id="api-ref"></span><h1>libpysal API reference<a class="headerlink" href="#libpysal-api-reference" title="Link to this heading">¶</a></h1>
+<section id="spatial-graph">
+<h2>Spatial Graph<a class="headerlink" href="#spatial-graph" title="Link to this heading">¶</a></h2>
+<p>Modern implementation of spatial graphs encoding spatial weights matrices.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph" title="libpysal.graph.Graph"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.Graph</span></code></a>(adjacency[, ...])</p></td>
+<td><p>Graph class encoding spatial weights matrices</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.graph.GraphSummary.html#libpysal.graph.GraphSummary" title="libpysal.graph.GraphSummary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.GraphSummary</span></code></a>(graph[, asymmetries])</p></td>
+<td><p>Graph Summary</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.graph.read_parquet.html#libpysal.graph.read_parquet" title="libpysal.graph.read_parquet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.read_parquet</span></code></a>(path, **kwargs)</p></td>
+<td><p>Read Graph from a Apache Parquet</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.graph.read_gal.html#libpysal.graph.read_gal" title="libpysal.graph.read_gal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.read_gal</span></code></a>(path)</p></td>
+<td><p>Read Graph from a GAL file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.graph.read_gwt.html#libpysal.graph.read_gwt" title="libpysal.graph.read_gwt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.read_gwt</span></code></a>(path)</p></td>
+<td><p>Read Graph from a GWT file</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="spatial-weights">
+<h2>Spatial Weights<a class="headerlink" href="#spatial-weights" title="Link to this heading">¶</a></h2>
+<p>Legacy implementation of spatial weights matrices.</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a>(neighbors[, weights, ...])</p></td>
+<td><p>Spatial weights class.</p></td>
+</tr>
+</tbody>
+</table>
+<section id="distance-weights">
+<h3>Distance Weights<a class="headerlink" href="#distance-weights" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.DistanceBand.html#libpysal.weights.DistanceBand" title="libpysal.weights.DistanceBand"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.DistanceBand</span></code></a>(data, threshold)</p></td>
+<td><p>Spatial weights based on distance band.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.Kernel.html#libpysal.weights.Kernel" title="libpysal.weights.Kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Kernel</span></code></a>(data[, bandwidth, ...])</p></td>
+<td><p>Spatial weights based on kernel functions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.KNN.html#libpysal.weights.KNN" title="libpysal.weights.KNN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.KNN</span></code></a>(data[, k, p, ids, ...])</p></td>
+<td><p>Creates nearest neighbor weights matrix based on k nearest neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.Gabriel.html#libpysal.weights.Gabriel" title="libpysal.weights.Gabriel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Gabriel</span></code></a>(coordinates, **kwargs)</p></td>
+<td><p>Constructs the Gabriel graph of a set of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.Delaunay.html#libpysal.weights.Delaunay" title="libpysal.weights.Delaunay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Delaunay</span></code></a>(coordinates, **kwargs)</p></td>
+<td><p>Constructor of the Delaunay graph of a set of input points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.Relative_Neighborhood.html#libpysal.weights.Relative_Neighborhood" title="libpysal.weights.Relative_Neighborhood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Relative_Neighborhood</span></code></a>(...)</p></td>
+<td><p>Constructs the Relative Neighborhood graph from a set of points.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="contiguity-weights">
+<h3>Contiguity Weights<a class="headerlink" href="#contiguity-weights" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.Queen.html#libpysal.weights.Queen" title="libpysal.weights.Queen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Queen</span></code></a>(polygons, **kw)</p></td>
+<td><p>Construct a weights object from a collection of pysal polygons that share at least one vertex.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.Rook.html#libpysal.weights.Rook" title="libpysal.weights.Rook"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Rook</span></code></a>(polygons, **kw)</p></td>
+<td><p>Construct a weights object from a collection of pysal polygons that share at least one edge.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.Voronoi.html#libpysal.weights.Voronoi" title="libpysal.weights.Voronoi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Voronoi</span></code></a>(points[, ...])</p></td>
+<td><p>Voronoi weights for a 2-d point set</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a>(neighbors[, weights, ...])</p></td>
+<td><p>Spatial weights class.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="spint-weights">
+<h3>spint Weights<a class="headerlink" href="#spint-weights" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.WSP.html#libpysal.weights.WSP" title="libpysal.weights.WSP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.WSP</span></code></a>(sparse[, id_order, index])</p></td>
+<td><p>Thin <code class="docutils literal notranslate"><span class="pre">W</span></code> class for <code class="docutils literal notranslate"><span class="pre">spreg</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.netW.html#libpysal.weights.netW" title="libpysal.weights.netW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.netW</span></code></a>(link_list[, share, ...])</p></td>
+<td><p>Create a network-contiguity based weight object based on different nodal relationships encoded in a network.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.mat2L.html#libpysal.weights.mat2L" title="libpysal.weights.mat2L"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.mat2L</span></code></a>(edge_matrix)</p></td>
+<td><p>Convert a matrix denoting network connectivity (edges or flows) to a list denoting edges</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.ODW.html#libpysal.weights.ODW" title="libpysal.weights.ODW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.ODW</span></code></a>(Wo, Wd[, transform, ...])</p></td>
+<td><p>Constructs an o*d by o*d origin-destination style spatial weight for o*d flows using standard spatial weights on o origins and d destinations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.vecW.html#libpysal.weights.vecW" title="libpysal.weights.vecW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.vecW</span></code></a>(origin_x, origin_y, ...)</p></td>
+<td><p>Distance-based spatial weight for vectors that is computed using a 4-dimensional distance between the origin x,y-coordinates and the destination x,y-coordinates</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weights-tools-to-interface-with-rasters">
+<h3>Weights tools to interface with rasters<a class="headerlink" href="#weights-tools-to-interface-with-rasters" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.da2W.html#libpysal.weights.da2W" title="libpysal.weights.da2W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.da2W</span></code></a>(da[, criterion, ...])</p></td>
+<td><p>Create a W object from xarray.DataArray with an additional attribute index containing coordinate values of the raster in the form of Pandas.Index/MultiIndex.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.da2WSP.html#libpysal.weights.da2WSP" title="libpysal.weights.da2WSP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.da2WSP</span></code></a>(da[, criterion, ...])</p></td>
+<td><p>Create a WSP object from xarray.DataArray with an additional attribute index containing coordinate values of the raster in the form of Pandas.Index/MultiIndex.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w2da.html#libpysal.weights.w2da" title="libpysal.weights.w2da"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w2da</span></code></a>(data, w[, attrs, coords])</p></td>
+<td><p>Creates xarray.DataArray object from passed data aligned with W object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.wsp2da.html#libpysal.weights.wsp2da" title="libpysal.weights.wsp2da"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.wsp2da</span></code></a>(data, wsp[, attrs, ...])</p></td>
+<td><p>Creates xarray.DataArray object from passed data aligned with WSP object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.testDataArray.html#libpysal.weights.testDataArray" title="libpysal.weights.testDataArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.testDataArray</span></code></a>([shape, ...])</p></td>
+<td><p>Creates 2 or 3 dimensional test xarray.DataArray object</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weights-util-classes-and-functions">
+<h3>Weights Util Classes and Functions<a class="headerlink" href="#weights-util-classes-and-functions" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.block_weights.html#libpysal.weights.block_weights" title="libpysal.weights.block_weights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.block_weights</span></code></a>(regimes[, ...])</p></td>
+<td><p>Construct spatial weights for regime neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.lat2W.html#libpysal.weights.lat2W" title="libpysal.weights.lat2W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.lat2W</span></code></a>([nrows, ncols, rook, ...])</p></td>
+<td><p>Create a W object for a regular lattice.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.comb.html#libpysal.weights.comb" title="libpysal.weights.comb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.comb</span></code></a>(items[, n])</p></td>
+<td><p>Combinations of size n taken from items</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.order.html#libpysal.weights.order" title="libpysal.weights.order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.order</span></code></a>(w[, kmax])</p></td>
+<td><p>Determine the non-redundant order of contiguity up to a specific order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.higher_order.html#libpysal.weights.higher_order" title="libpysal.weights.higher_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.higher_order</span></code></a>(w[, k])</p></td>
+<td><p>Contiguity weights object of order k.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.shimbel.html#libpysal.weights.shimbel" title="libpysal.weights.shimbel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.shimbel</span></code></a>(w)</p></td>
+<td><p>Find the Shimbel matrix for first order contiguity matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.remap_ids.html#libpysal.weights.remap_ids" title="libpysal.weights.remap_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.remap_ids</span></code></a>(w, old2new[, ...])</p></td>
+<td><p>Remaps the IDs in a spatial weights object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.full2W.html#libpysal.weights.full2W" title="libpysal.weights.full2W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.full2W</span></code></a>(m[, ids])</p></td>
+<td><p>Create a PySAL W object from a full array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.full.html#libpysal.weights.full" title="libpysal.weights.full"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.full</span></code></a>(w)</p></td>
+<td><p>Generate a full numpy array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.WSP2W.html#libpysal.weights.WSP2W" title="libpysal.weights.WSP2W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.WSP2W</span></code></a>(wsp, **kwargs)</p></td>
+<td><p>Convert a pysal WSP object (thin weights matrix) to a pysal W object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.get_ids.html#libpysal.weights.get_ids" title="libpysal.weights.get_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.get_ids</span></code></a>(in_shps, idVariable)</p></td>
+<td><p>Gets the IDs from the DBF file that moves with a given shape file or a geopandas.GeoDataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.get_points_array_from_shapefile.html#libpysal.weights.get_points_array_from_shapefile" title="libpysal.weights.get_points_array_from_shapefile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.get_points_array_from_shapefile</span></code></a>(...)</p></td>
+<td><p>Gets a data array of x and y coordinates from a given shapefile.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.fill_diagonal.html#libpysal.weights.fill_diagonal" title="libpysal.weights.fill_diagonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.fill_diagonal</span></code></a>(w[, val, wsp])</p></td>
+<td><p>Returns a new weights object with values inserted along the main diagonal.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weights-user-classes-and-functions">
+<h3>Weights user Classes and Functions<a class="headerlink" href="#weights-user-classes-and-functions" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.min_threshold_distance.html#libpysal.weights.min_threshold_distance" title="libpysal.weights.min_threshold_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.min_threshold_distance</span></code></a>(data)</p></td>
+<td><p>Get the maximum nearest neighbor distance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.lat2SW.html#libpysal.weights.lat2SW" title="libpysal.weights.lat2SW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.lat2SW</span></code></a>([nrows, ncols, ...])</p></td>
+<td><p>Create a sparse W matrix for a regular lattice.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w_local_cluster.html#libpysal.weights.w_local_cluster" title="libpysal.weights.w_local_cluster"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_local_cluster</span></code></a>(w)</p></td>
+<td><p>Local clustering coefficients for each unit as a node in a graph.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.higher_order_sp.html#libpysal.weights.higher_order_sp" title="libpysal.weights.higher_order_sp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.higher_order_sp</span></code></a>(w[, k, ...])</p></td>
+<td><p>Contiguity weights for either a sparse W or W for order k.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.hexLat2W.html#libpysal.weights.hexLat2W" title="libpysal.weights.hexLat2W"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.hexLat2W</span></code></a>([nrows, ncols])</p></td>
+<td><p>Create a W object for a hexagonal lattice.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.attach_islands.html#libpysal.weights.attach_islands" title="libpysal.weights.attach_islands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.attach_islands</span></code></a>(w, w_knn1, ...)</p></td>
+<td><p>Attach nearest neighbor to islands in spatial weight w.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.nonplanar_neighbors.html#libpysal.weights.nonplanar_neighbors" title="libpysal.weights.nonplanar_neighbors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.nonplanar_neighbors</span></code></a>(w, ...)</p></td>
+<td><p>Detect neighbors for non-planar polygon collections</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.fuzzy_contiguity.html#libpysal.weights.fuzzy_contiguity" title="libpysal.weights.fuzzy_contiguity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.fuzzy_contiguity</span></code></a>(gdf[, ...])</p></td>
+<td><p>Fuzzy contiguity spatial weights</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.min_threshold_dist_from_shapefile.html#libpysal.weights.min_threshold_dist_from_shapefile" title="libpysal.weights.min_threshold_dist_from_shapefile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.min_threshold_dist_from_shapefile</span></code></a>(...)</p></td>
+<td><p>Get the maximum nearest neighbor distance between observations in the shapefile.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.build_lattice_shapefile.html#libpysal.weights.build_lattice_shapefile" title="libpysal.weights.build_lattice_shapefile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.build_lattice_shapefile</span></code></a>(...)</p></td>
+<td><p>Build a lattice shapefile with nrows rows and ncols cols.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.spw_from_gal.html#libpysal.weights.spw_from_gal" title="libpysal.weights.spw_from_gal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.spw_from_gal</span></code></a>(galfile)</p></td>
+<td><p>Sparse scipy matrix for w from a gal file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.neighbor_equality.html#libpysal.weights.neighbor_equality" title="libpysal.weights.neighbor_equality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.neighbor_equality</span></code></a>(w1, w2)</p></td>
+<td><p>Test if the neighbor sets are equal between two weights objects</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="set-theoretic-weights">
+<h3>Set Theoretic Weights<a class="headerlink" href="#set-theoretic-weights" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w_union.html#libpysal.weights.w_union" title="libpysal.weights.w_union"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_union</span></code></a>(w1, w2, **kwargs)</p></td>
+<td><p>Returns a binary weights object, w, that includes all neighbor pairs that exist in either w1 or w2.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.w_intersection.html#libpysal.weights.w_intersection" title="libpysal.weights.w_intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_intersection</span></code></a>(w1, w2[, ...])</p></td>
+<td><p>Returns a binary weights object, w, that includes only those neighbor pairs that exist in both w1 and w2.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w_difference.html#libpysal.weights.w_difference" title="libpysal.weights.w_difference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_difference</span></code></a>(w1, w2[, ...])</p></td>
+<td><p>Returns a binary weights object, w, that includes only neighbor pairs in w1 that are not in w2.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.w_symmetric_difference.html#libpysal.weights.w_symmetric_difference" title="libpysal.weights.w_symmetric_difference"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_symmetric_difference</span></code></a>(w1, w2)</p></td>
+<td><p>Returns a binary weights object, w, that includes only neighbor pairs that are not shared by w1 and w2.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w_subset.html#libpysal.weights.w_subset" title="libpysal.weights.w_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_subset</span></code></a>(w1, ids, **kwargs)</p></td>
+<td><p>Returns a binary weights object, w, that includes only those observations in ids.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.w_clip.html#libpysal.weights.w_clip" title="libpysal.weights.w_clip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_clip</span></code></a>(w1, w2[, outSP])</p></td>
+<td><p>Clip a continuous W object (w1) with a different W object (w2) so only cells where w2 has a non-zero value remain with non-zero values in w1.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="spatial-lag">
+<h3>Spatial Lag<a class="headerlink" href="#spatial-lag" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.lag_spatial.html#libpysal.weights.lag_spatial" title="libpysal.weights.lag_spatial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.lag_spatial</span></code></a>(w, y)</p></td>
+<td><p>Spatial lag operator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.lag_categorical.html#libpysal.weights.lag_categorical" title="libpysal.weights.lag_categorical"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.lag_categorical</span></code></a>(w, y[, ties])</p></td>
+<td><p>Spatial lag operator for categorical variables.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="cg-computational-geometry">
+<h2>cg: Computational Geometry<a class="headerlink" href="#cg-computational-geometry" title="Link to this heading">¶</a></h2>
+<section id="alpha-shapes">
+<h3>alpha_shapes<a class="headerlink" href="#alpha-shapes" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.alpha_shape.html#libpysal.cg.alpha_shape" title="libpysal.cg.alpha_shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.alpha_shape</span></code></a>(xys, alpha)</p></td>
+<td><p>Alpha-shape delineation (Edelsbrunner, Kirkpatrick &amp; Seidel, 1983) from a collection of points</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.alpha_shape_auto.html#libpysal.cg.alpha_shape_auto" title="libpysal.cg.alpha_shape_auto"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.alpha_shape_auto</span></code></a>(xys[, step, ...])</p></td>
+<td><p>Computation of alpha-shape delineation with automated selection of alpha.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="voronoi">
+<h3>voronoi<a class="headerlink" href="#voronoi" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.voronoi_frames.html#libpysal.cg.voronoi_frames" title="libpysal.cg.voronoi_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.voronoi_frames</span></code></a>(geometry[, ...])</p></td>
+<td><p>Create Voronoi polygons from a GeoSeries of points, lines, or polygons.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sphere">
+<h3>sphere<a class="headerlink" href="#sphere" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.RADIUS_EARTH_KM.html#libpysal.cg.RADIUS_EARTH_KM" title="libpysal.cg.RADIUS_EARTH_KM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.RADIUS_EARTH_KM</span></code></a></p></td>
+<td><p>Convert a string or number to a floating-point number, if possible.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.RADIUS_EARTH_MILES.html#libpysal.cg.RADIUS_EARTH_MILES" title="libpysal.cg.RADIUS_EARTH_MILES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.RADIUS_EARTH_MILES</span></code></a></p></td>
+<td><p>Convert a string or number to a floating-point number, if possible.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.arcdist.html#libpysal.cg.arcdist" title="libpysal.cg.arcdist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.arcdist</span></code></a>(pt0, pt1[, radius])</p></td>
+<td><p>Arc distance between two points on a sphere.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.arcdist2linear.html#libpysal.cg.arcdist2linear" title="libpysal.cg.arcdist2linear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.arcdist2linear</span></code></a>(arc_dist[, radius])</p></td>
+<td><p>Convert an arc distance (spherical earth) to a linear distance (R3) in the unit sphere.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.brute_knn.html#libpysal.cg.brute_knn" title="libpysal.cg.brute_knn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.brute_knn</span></code></a>(pts, k[, mode, radius])</p></td>
+<td><p>Computes a brute-force <span class="math notranslate nohighlight">\(k\)</span> nearest neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.fast_knn.html#libpysal.cg.fast_knn" title="libpysal.cg.fast_knn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.fast_knn</span></code></a>(pts, k[, return_dist, ...])</p></td>
+<td><p>Computes <span class="math notranslate nohighlight">\(k\)</span> nearest neighbors on a sphere.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.fast_threshold.html#libpysal.cg.fast_threshold" title="libpysal.cg.fast_threshold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.fast_threshold</span></code></a>(pts, dist[, radius])</p></td>
+<td><p>Find all neighbors on a sphere within a threshold distance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.linear2arcdist.html#libpysal.cg.linear2arcdist" title="libpysal.cg.linear2arcdist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.linear2arcdist</span></code></a>(linear_dist[, radius])</p></td>
+<td><p>Convert a linear distance in the unit sphere (R3) to an arc distance based on supplied radius.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.toLngLat.html#libpysal.cg.toLngLat" title="libpysal.cg.toLngLat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.toLngLat</span></code></a>(xyz)</p></td>
+<td><p>Convert a point's x,y,z to latitude and longitude.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.toXYZ.html#libpysal.cg.toXYZ" title="libpysal.cg.toXYZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.toXYZ</span></code></a>(pt)</p></td>
+<td><p>Convert a point's latitude and longitude to x,y,z.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.lonlat.html#libpysal.cg.lonlat" title="libpysal.cg.lonlat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.lonlat</span></code></a>(pointslist)</p></td>
+<td><p>Converts point order from lat-lon tuples to lon-lat (x,y) tuples.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.harcdist.html#libpysal.cg.harcdist" title="libpysal.cg.harcdist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.harcdist</span></code></a>(p0, p1[, lonx, radius])</p></td>
+<td><p>Alternative the arc distance function, uses the haversine formula.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.geointerpolate.html#libpysal.cg.geointerpolate" title="libpysal.cg.geointerpolate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.geointerpolate</span></code></a>(p0, p1, t[, lonx])</p></td>
+<td><p>Finds a point on a sphere along the great circle distance between two points on a sphere also known as a way point in great circle navigation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.geogrid.html#libpysal.cg.geogrid" title="libpysal.cg.geogrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.geogrid</span></code></a>(pup, pdown, k[, lonx])</p></td>
+<td><p>Computes a <span class="math notranslate nohighlight">\(k+1\)</span> by <span class="math notranslate nohighlight">\(k+1\)</span> set of grid points for a bounding box in lat-lon.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="shapes">
+<h3>shapes<a class="headerlink" href="#shapes" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a>(loc)</p></td>
+<td><p>Geometric class for point objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.LineSegment.html#libpysal.cg.LineSegment" title="libpysal.cg.LineSegment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.LineSegment</span></code></a>(start_pt, end_pt)</p></td>
+<td><p>Geometric representation of line segment objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Line.html#libpysal.cg.Line" title="libpysal.cg.Line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Line</span></code></a>(m, b)</p></td>
+<td><p>Geometric representation of line objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.Ray.html#libpysal.cg.Ray" title="libpysal.cg.Ray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Ray</span></code></a>(origin, second_p)</p></td>
+<td><p>Geometric representation of ray objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Chain.html#libpysal.cg.Chain" title="libpysal.cg.Chain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Chain</span></code></a>(vertices)</p></td>
+<td><p>Geometric representation of a chain, also known as a polyline.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.Polygon.html#libpysal.cg.Polygon" title="libpysal.cg.Polygon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Polygon</span></code></a>(vertices[, holes])</p></td>
+<td><p>Geometric representation of polygon objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a>(left, lower, right, upper)</p></td>
+<td><p>Geometric representation of rectangle objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.asShape.html#libpysal.cg.asShape" title="libpysal.cg.asShape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.asShape</span></code></a>(obj)</p></td>
+<td><p>Returns a PySAL shape object from <code class="docutils literal notranslate"><span class="pre">obj</span></code>, which must support the <code class="docutils literal notranslate"><span class="pre">__geo_interface__</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="standalone">
+<h3>standalone<a class="headerlink" href="#standalone" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.bbcommon.html#libpysal.cg.bbcommon" title="libpysal.cg.bbcommon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.bbcommon</span></code></a>(bb, bbother)</p></td>
+<td><p>Old Stars method for bounding box overlap testing.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_bounding_box.html#libpysal.cg.get_bounding_box" title="libpysal.cg.get_bounding_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_bounding_box</span></code></a>(items)</p></td>
+<td><p>Find bounding box for a list of geometries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_angle_between.html#libpysal.cg.get_angle_between" title="libpysal.cg.get_angle_between"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_angle_between</span></code></a>(ray1, ray2)</p></td>
+<td><p>Returns the angle formed between a pair of rays which share an origin.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.is_collinear.html#libpysal.cg.is_collinear" title="libpysal.cg.is_collinear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.is_collinear</span></code></a>(p1, p2, p3)</p></td>
+<td><p>Returns whether a triplet of points is collinear.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_segments_intersect.html#libpysal.cg.get_segments_intersect" title="libpysal.cg.get_segments_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_segments_intersect</span></code></a>(seg1, seg2)</p></td>
+<td><p>Returns the intersection of two segments if one exists.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_segment_point_intersect.html#libpysal.cg.get_segment_point_intersect" title="libpysal.cg.get_segment_point_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_segment_point_intersect</span></code></a>(seg, pt)</p></td>
+<td><p>Returns the intersection of a segment and point.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_polygon_point_intersect.html#libpysal.cg.get_polygon_point_intersect" title="libpysal.cg.get_polygon_point_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_polygon_point_intersect</span></code></a>(poly, pt)</p></td>
+<td><p>Returns the intersection of a polygon and point.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_rectangle_point_intersect.html#libpysal.cg.get_rectangle_point_intersect" title="libpysal.cg.get_rectangle_point_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_rectangle_point_intersect</span></code></a>(...)</p></td>
+<td><p>Returns the intersection of a rectangle and point.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_ray_segment_intersect.html#libpysal.cg.get_ray_segment_intersect" title="libpysal.cg.get_ray_segment_intersect"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_ray_segment_intersect</span></code></a>(ray, seg)</p></td>
+<td><p>Returns the intersection of a ray and line segment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_rectangle_rectangle_intersection.html#libpysal.cg.get_rectangle_rectangle_intersection" title="libpysal.cg.get_rectangle_rectangle_intersection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_rectangle_rectangle_intersection</span></code></a>(r0, r1)</p></td>
+<td><p>Returns the intersection between two rectangles.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_polygon_point_dist.html#libpysal.cg.get_polygon_point_dist" title="libpysal.cg.get_polygon_point_dist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_polygon_point_dist</span></code></a>(poly, pt)</p></td>
+<td><p>Returns the distance between a polygon and point.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_points_dist.html#libpysal.cg.get_points_dist" title="libpysal.cg.get_points_dist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_points_dist</span></code></a>(pt1, pt2)</p></td>
+<td><p>Returns the distance between a pair of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_segment_point_dist.html#libpysal.cg.get_segment_point_dist" title="libpysal.cg.get_segment_point_dist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_segment_point_dist</span></code></a>(seg, pt)</p></td>
+<td><p>Returns (1) the distance between a line segment and point and (2) the distance along the segment to the closest location on the segment from the point as a ratio of the length of the segment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_point_at_angle_and_dist.html#libpysal.cg.get_point_at_angle_and_dist" title="libpysal.cg.get_point_at_angle_and_dist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_point_at_angle_and_dist</span></code></a>(ray, ...)</p></td>
+<td><p>Returns the point at a distance and angle relative to the origin of a ray.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.convex_hull.html#libpysal.cg.convex_hull" title="libpysal.cg.convex_hull"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.convex_hull</span></code></a>(points)</p></td>
+<td><p>Returns the convex hull of a set of points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.is_clockwise.html#libpysal.cg.is_clockwise" title="libpysal.cg.is_clockwise"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.is_clockwise</span></code></a>(vertices)</p></td>
+<td><p>Returns whether a list of points describing a polygon are clockwise or counterclockwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.point_touches_rectangle.html#libpysal.cg.point_touches_rectangle" title="libpysal.cg.point_touches_rectangle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.point_touches_rectangle</span></code></a>(point, rect)</p></td>
+<td><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> (<code class="docutils literal notranslate"><span class="pre">1</span></code>) if the point is in the rectangle or touches it's boundary, otherwise <code class="docutils literal notranslate"><span class="pre">False</span></code> (<code class="docutils literal notranslate"><span class="pre">0</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_shared_segments.html#libpysal.cg.get_shared_segments" title="libpysal.cg.get_shared_segments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_shared_segments</span></code></a>(poly1, poly2)</p></td>
+<td><p>Returns the line segments in common to both polygons.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.distance_matrix.html#libpysal.cg.distance_matrix" title="libpysal.cg.distance_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.distance_matrix</span></code></a>(X[, p, threshold])</p></td>
+<td><p>Calculate a distance matrix.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="locators">
+<h3>locators<a class="headerlink" href="#locators" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Grid.html#libpysal.cg.Grid" title="libpysal.cg.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Grid</span></code></a>(bounds, resolution)</p></td>
+<td><p>Representation of a binning data structure.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.PointLocator.html#libpysal.cg.PointLocator" title="libpysal.cg.PointLocator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.PointLocator</span></code></a>(points)</p></td>
+<td><p>An abstract representation of a point indexing data structure.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator" title="libpysal.cg.PolygonLocator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.PolygonLocator</span></code></a>(polygons)</p></td>
+<td><p>An abstract representation of a polygon indexing data structure.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="kdtree">
+<h3>kdtree<a class="headerlink" href="#kdtree" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.KDTree.html#libpysal.cg.KDTree" title="libpysal.cg.KDTree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.KDTree</span></code></a>(data[, leafsize, ...])</p></td>
+<td><p>kd-tree built on top of kd-tree functionality in scipy.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="io">
+<h2>io<a class="headerlink" href="#io" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.io.open.html#libpysal.io.open" title="libpysal.io.open"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.io.open</span></code></a></p></td>
+<td><p>alias of <a class="reference internal" href="generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO" title="libpysal.io.fileio.FileIO"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileIO</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO" title="libpysal.io.fileio.FileIO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.io.fileio.FileIO</span></code></a>([dataPath, mode, ...])</p></td>
+<td><p>Metaclass for supporting spatial data file read and write.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="kernels">
+<h2>kernels<a class="headerlink" href="#kernels" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.kernels.kernel.html#libpysal.kernels.kernel" title="libpysal.kernels.kernel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.kernels.kernel</span></code></a>(distances, bandwidth)</p></td>
+<td><p>Evaluate a kernel function over a distance array.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples">
+<h2>examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.examples.available.html#libpysal.examples.available" title="libpysal.examples.available"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.examples.available</span></code></a>()</p></td>
+<td><p>Return a dataframe with available datasets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.examples.explain.html#libpysal.examples.explain" title="libpysal.examples.explain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.examples.explain</span></code></a>(name)</p></td>
+<td><p>Explain a dataset by name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.examples.get_path.html#libpysal.examples.get_path" title="libpysal.examples.get_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.examples.get_path</span></code></a>(file_name)</p></td>
+<td><p>Get the path for a file by searching installed datasets.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="_sources/api.rst.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

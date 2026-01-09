@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>libpysal.weights.gabriel &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pysal-styles.css?v=38b0ce36" />
+    <script src="../../../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="icon" href="../../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../../installation.html">Installation</a></li>
+                <li><a href="../../../user-guide/intro.html">User Guide</a></li>
+                <li><a href="../../../api.html">API</a></li>
+                <li><a href="../../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user-guide/intro.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/data/examples.html">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../user-guide/kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for libpysal.weights.gabriel</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">sparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">Delaunay</span> <span class="k">as</span> <span class="n">_Delaunay</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">WSP</span><span class="p">,</span> <span class="n">W</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">jit</span> <span class="k">as</span> <span class="n">njit</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;&quot;</span>
+<span class="s2">Levi John Wolf (levi.john.wolf@gmail.com)</span>
+<span class="s2">Martin Fleischmann (martin@martinfleischmann.net)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">#### Classes</span>
+
+
+<div class="viewcode-block" id="Delaunay">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Delaunay.html#libpysal.weights.Delaunay">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Delaunay</span><span class="p">(</span><span class="n">W</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructor of the Delaunay graph of a set of input points.</span>
+<span class="sd">    Relies on scipy.spatial.Delaunay and numba to quickly construct</span>
+<span class="sd">    a graph from the input set of points. Will be slower without numba,</span>
+<span class="sd">    and will warn if this is missing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates :   array of points, (N,2)</span>
+<span class="sd">        numpy array of coordinates containing locations to compute the</span>
+<span class="sd">        delaunay triangulation</span>
+<span class="sd">    **kwargs    :   keyword argument list</span>
+<span class="sd">        keyword arguments passed directly to weights.W</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The Delaunay triangulation can result in quite a few non-local links among</span>
+<span class="sd">    spatial coordinates. For a more useful graph, consider the weights.Voronoi</span>
+<span class="sd">    constructor or the Gabriel graph.</span>
+
+<span class="sd">    The weights.Voronoi class builds a voronoi diagram among the points, clips the</span>
+<span class="sd">    Voronoi cells, and then constructs an adjacency graph among the clipped cells.</span>
+<span class="sd">    This graph among the clipped Voronoi cells generally represents the structure</span>
+<span class="sd">    of local adjacencies better than the &quot;raw&quot; Delaunay graph.</span>
+
+<span class="sd">    The weights.gabriel.Gabriel graph constructs a Delaunay graph, but only</span>
+<span class="sd">    includes the &quot;short&quot; links in the Delaunay graph.</span>
+
+<span class="sd">    However, if the unresricted Delaunay triangulation is needed, this class</span>
+<span class="sd">    will compute it much more quickly than Voronoi(coordinates, clip=None).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Delaunay.__init__">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Delaunay.html#libpysal.weights.Delaunay.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span>  <span class="c1"># noqa: F401</span>
+        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The numba package is used extensively in this module&quot;</span>
+                <span class="s2">&quot; to accelerate the computation of graphs. Without numba,&quot;</span>
+                <span class="s2">&quot; these computations may become unduly slow on large data.&quot;</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">edges</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_voronoi_edges</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ids&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">ids</span><span class="p">[</span><span class="n">edges</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">ids</span><span class="p">[</span><span class="n">edges</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]))</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ids&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">voronoi_neighbors</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">W</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">voronoi_neighbors</span><span class="p">,</span> <span class="n">id_order</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_voronoi_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">_Delaunay</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">_edges_from_simplices</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">simplices</span><span class="p">)</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">edges</span><span class="p">)))</span>
+            <span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">values</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">edges</span><span class="p">,</span> <span class="n">dt</span>
+
+<div class="viewcode-block" id="Delaunay.from_dataframe">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Delaunay.html#libpysal.weights.Delaunay.from_dataframe">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dataframe</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">geom_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a Delaunay triangulation from a geopandas GeoDataFrame.</span>
+<span class="sd">        Not that the input geometries in the dataframe must be Points.</span>
+<span class="sd">        Polygons or lines must be converted to points (e.g. using</span>
+<span class="sd">        df.geometry.centroid).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df  :   geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing points to construct the Delaunay</span>
+<span class="sd">            Triangulation.</span>
+<span class="sd">        geom_col :  string</span>
+<span class="sd">            the name of the column in `df` that contains the</span>
+<span class="sd">            geometries. Defaults to active geometry column.</span>
+<span class="sd">        ids   :   list-like, string</span>
+<span class="sd">            a list-like of ids to use to index the spatial weights object or</span>
+<span class="sd">            the name of the column to use as IDs. If nothing is</span>
+<span class="sd">            provided, the dataframe index is used if `use_index=True` or</span>
+<span class="sd">            a positional index is used if `use_index=False`.</span>
+<span class="sd">            Order of the resulting W is not respected from this list.</span>
+<span class="sd">        use_index  : bool</span>
+<span class="sd">            use index of `df` as `ids` to index the spatial weights object.</span>
+<span class="sd">        **kwargs :  keyword arguments</span>
+<span class="sd">            Keyword arguments that are passed downwards to the weights.W</span>
+<span class="sd">            constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">pandas</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">geom_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">geom_col</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">geomtypes</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">geom_col</span><span class="p">]</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">use_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;`use_index` defaults to False but will default to True in future. &quot;</span>
+                    <span class="s2">&quot;Set True/False directly to control this behavior and silence this &quot;</span>
+                    <span class="s2">&quot;warning&quot;</span><span class="p">,</span>
+                    <span class="ne">FutureWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">use_index</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="n">use_index</span><span class="p">:</span>
+                <span class="n">ids</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">ids</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">geomtypes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="n">geomtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Point&quot;</span>
+            <span class="n">point_array</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">geom_col</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="n">geom_col</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">point_array</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The input dataframe has geometry types </span><span class="si">{</span><span class="n">geomtypes</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; but this delaunay triangulation is only well-defined for points.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; Choose a method to convert your dataframe into points (like using&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; the df.centroid) and use that to estimate this graph.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Gabriel">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Gabriel.html#libpysal.weights.Gabriel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Gabriel</span><span class="p">(</span><span class="n">Delaunay</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructs the Gabriel graph of a set of points. This graph is a subset of</span>
+<span class="sd">    the Delaunay triangulation where only &quot;short&quot; links are retained. This</span>
+<span class="sd">    function is also accelerated using numba, and implemented on top of the</span>
+<span class="sd">    scipy.spatial.Delaunay class.</span>
+
+<span class="sd">    For a link (i,j) connecting node i to j in the Delaunay triangulation</span>
+<span class="sd">    to be retained in the Gabriel graph, it must pass a point set exclusion test:</span>
+
+<span class="sd">    1. Construct the circle C_ij containing link (i,j) as its diameter</span>
+<span class="sd">    2. If any other node k is contained within C_ij, then remove link (i,j)</span>
+<span class="sd">       from the graph.</span>
+<span class="sd">    3. Once all links are evaluated, the remaining graph is the Gabriel graph.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates :   array of points, (N,2)</span>
+<span class="sd">        numpy array of coordinates containing locations to compute the</span>
+<span class="sd">        delaunay triangulation</span>
+<span class="sd">    **kwargs    :   keyword argument list</span>
+<span class="sd">        keyword arguments passed directly to weights.W</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Gabriel.__init__">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Gabriel.html#libpysal.weights.Gabriel.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span>  <span class="c1"># noqa: F401</span>
+        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The numba package is used extensively in this module&quot;</span>
+                <span class="s2">&quot; to accelerate the computation of graphs. Without numba,&quot;</span>
+                <span class="s2">&quot; these computations may become unduly slow on large data.&quot;</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">edges</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_voronoi_edges</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="n">droplist</span> <span class="o">=</span> <span class="n">_filter_gabriel</span><span class="p">(</span>
+            <span class="n">edges</span><span class="p">,</span>
+            <span class="n">dt</span><span class="o">.</span><span class="n">points</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">edges</span><span class="p">))</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">droplist</span><span class="p">))))</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ids&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">ids</span><span class="p">[</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">ids</span><span class="p">[</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]))</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ids&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">gabriel_neighbors</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">W</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gabriel_neighbors</span><span class="p">,</span> <span class="n">id_order</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Relative_Neighborhood">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Relative_Neighborhood.html#libpysal.weights.Relative_Neighborhood">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Relative_Neighborhood</span><span class="p">(</span><span class="n">Delaunay</span><span class="p">):</span>  <span class="c1"># noqa: N801</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructs the Relative Neighborhood graph from a set of points.</span>
+<span class="sd">    This graph is a subset of the Delaunay triangulation, where only</span>
+<span class="sd">    &quot;relative neighbors&quot; are retained. Further, it is a superset of</span>
+<span class="sd">    the Minimum Spanning Tree, with additional &quot;relative neighbors&quot;</span>
+<span class="sd">    introduced.</span>
+
+<span class="sd">    A relative neighbor pair of points i,j must be closer than the</span>
+<span class="sd">    maximum distance between i (or j) and each other point k.</span>
+<span class="sd">    This means that the points are at least as close to one another</span>
+<span class="sd">    as they are to any other point.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coordinates :   array of points, (N,2)</span>
+<span class="sd">        numpy array of coordinates containing locations to compute the</span>
+<span class="sd">        delaunay triangulation</span>
+<span class="sd">    **kwargs    :   keyword argument list</span>
+<span class="sd">        keyword arguments passed directly to weights.W</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Relative_Neighborhood.__init__">
+<a class="viewcode-back" href="../../../generated/libpysal.weights.Relative_Neighborhood.html#libpysal.weights.Relative_Neighborhood.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span>  <span class="c1"># noqa: F401</span>
+        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The numba package is used extensively in this module&quot;</span>
+                <span class="s2">&quot; to accelerate the computation of graphs. Without numba,&quot;</span>
+                <span class="s2">&quot; these computations may become unduly slow on large data.&quot;</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">edges</span><span class="p">,</span> <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_voronoi_edges</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+        <span class="n">output</span><span class="p">,</span> <span class="n">dkmax</span> <span class="o">=</span> <span class="n">_filter_relativehood</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">dt</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">return_dkmax</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">output</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">sp</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)))</span>  <span class="c1"># TODO: faster way than this?</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ids&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ids</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ids&quot;</span><span class="p">]</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">WSP</span><span class="p">(</span><span class="n">sp</span><span class="p">,</span> <span class="n">id_order</span><span class="o">=</span><span class="n">ids</span><span class="p">)</span><span class="o">.</span><span class="n">to_W</span><span class="p">()</span>
+        <span class="n">W</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">tmp</span><span class="o">.</span><span class="n">weights</span><span class="p">,</span> <span class="n">id_order</span><span class="o">=</span><span class="n">ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1">#### utilities</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_edges_from_simplices</span><span class="p">(</span><span class="n">simplices</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Construct the sets of links that correspond to the edges of each</span>
+<span class="sd">    simplex. Each simplex has three &quot;sides,&quot; and thus six undirected</span>
+<span class="sd">    edges. Thus, the input should be a list of three-length tuples,</span>
+<span class="sd">    that are then converted into the six non-directed edges for</span>
+<span class="sd">    each simplex.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">simplices</span><span class="p">:</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">simplex</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">simplex</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">simplex</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">simplex</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">simplex</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">simplex</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">simplex</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">simplex</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">simplex</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">simplex</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">simplex</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">simplex</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_filter_gabriel</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For an input set of edges and coordinates, filter the input edges</span>
+<span class="sd">    depending on the Gabriel rule:</span>
+
+<span class="sd">    For each simplex, let i,j be the diameter of the circle defined by</span>
+<span class="sd">    edge (i,j), and let k be the third point defining the simplex. The</span>
+<span class="sd">    limiting case for the Gabriel rule is when k is also on the circle</span>
+<span class="sd">    with diameter (i,j). In this limiting case, then simplex ijk must</span>
+<span class="sd">    be a right triangle, and dij**2 = djk**2 + dki**2 (by thales theorem).</span>
+
+<span class="sd">    This means that when dij**2 &gt; djk**2 + dki**2, then k is inside the circle.</span>
+<span class="sd">    In contrast, when dij**2 &lt; djk**2 + dji*2, k is outside of the circle.</span>
+
+<span class="sd">    Therefore, it&#39;s sufficient to take each observation i, iterate over its</span>
+<span class="sd">    Delaunay neighbors j,k, and remove links whre dij**2 &gt; djk**2 + dki**2</span>
+<span class="sd">    in order to construct the Gabriel graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">edge_pointer</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_edges</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+    <span class="n">to_drop</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">edge_pointer</span> <span class="o">&lt;</span> <span class="n">n_edges</span><span class="p">:</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">edge_pointer</span><span class="p">]</span>
+        <span class="n">cardinality</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># look ahead to find all neighbors of edge[0]</span>
+        <span class="k">for</span> <span class="n">joff</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">edge_pointer</span><span class="p">,</span> <span class="n">n_edges</span><span class="p">):</span>
+            <span class="n">next_edge</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">joff</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">next_edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">break</span>
+            <span class="n">cardinality</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">edge_pointer</span><span class="p">,</span> <span class="n">edge_pointer</span> <span class="o">+</span> <span class="n">cardinality</span><span class="p">):</span>
+            <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>  <span class="c1"># lookahead ensures that i is always edge[0]</span>
+            <span class="n">dij2</span> <span class="o">=</span> <span class="p">((</span><span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">ix2</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">edge_pointer</span><span class="p">,</span> <span class="n">edge_pointer</span> <span class="o">+</span> <span class="n">cardinality</span><span class="p">):</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="n">ix2</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">dik2</span> <span class="o">=</span> <span class="p">((</span><span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="n">djk2</span> <span class="o">=</span> <span class="p">((</span><span class="n">coordinates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">dij2</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">dik2</span> <span class="o">+</span> <span class="n">djk2</span><span class="p">):</span>
+                    <span class="n">to_drop</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+                    <span class="n">to_drop</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+        <span class="n">edge_pointer</span> <span class="o">+=</span> <span class="n">cardinality</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">to_drop</span><span class="p">)</span>
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_filter_relativehood</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">return_dkmax</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a direct implementation of the algorithm from Toussaint (1980), RNG-2</span>
+
+<span class="sd">    1. Compute the delaunay</span>
+<span class="sd">    2. for each edge of the delaunay (i,j), compute</span>
+<span class="sd">       dkmax = max(d(k,i), d(k,j)) for k in 1..n, k != i, j</span>
+<span class="sd">    3. for each edge of the delaunay (i,j), prune</span>
+<span class="sd">       if any dkmax is smaller than d(i,j)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+        <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">edge</span>
+        <span class="n">pi</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">pj</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">dkmax</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">dij</span> <span class="o">=</span> <span class="p">((</span><span class="n">pi</span> <span class="o">-</span> <span class="n">pj</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">prune</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">pk</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">dik</span> <span class="o">=</span> <span class="p">((</span><span class="n">pi</span> <span class="o">-</span> <span class="n">pk</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+            <span class="n">djk</span> <span class="o">=</span> <span class="p">((</span><span class="n">pj</span> <span class="o">-</span> <span class="n">pk</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+            <span class="n">dkmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dik</span><span class="p">,</span> <span class="n">djk</span><span class="p">)</span>
+            <span class="n">prune</span> <span class="o">=</span> <span class="n">dkmax</span> <span class="o">&lt;</span> <span class="n">dij</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">return_dkmax</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">prune</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">prune</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">dij</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">return_dkmax</span><span class="p">:</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dkmax</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">r</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

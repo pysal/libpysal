@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Datasets for use with libpysal &#8212; libpysal v4.14.1 Manual</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=9afac83c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pysal-styles.css?v=38b0ce36" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../../_static/documentation_options.js?v=2aa3d6d4"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"TeX": {"equationNumbers": {"autoNumber": "AMS", "useLabelIds": true}}, "tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="icon" href="../../_static/pysal_favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Spatial Weights" href="../weights/intro.html" />
+    <link rel="prev" title="User Guide" href="../intro.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          libpysal</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.14.1</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../../installation.html">Installation</a></li>
+                <li><a href="../intro.html">User Guide</a></li>
+                <li><a href="../../api.html">API</a></li>
+                <li><a href="../../references.html">References</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-released-version">Installing released version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation.html#installing-development-version">Installing development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-graph">Spatial Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#spatial-weights">Spatial Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#cg-computational-geometry">cg: Computational Geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#io">io</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#kernels">kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api.html#examples">examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../intro.html">User Guide</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../weights/intro.html">Weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../graph/intro.html">Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernels.html">Kernels</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration.html">W to Graph Member Comparisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-common-to-w-and-graph">Members common to W and Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-unique-to-w">Members unique to W</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../migration.html#members-unique-to-graph">Members unique to Graph</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Datasets for use with libpysal</a><ul>
+<li><a class="reference internal" href="#Backwards-compatibility-is-maintained">Backwards compatibility is maintained</a></li>
+<li><a class="reference internal" href="#Downloading-Remote-Datasets">Downloading Remote Datasets</a></li>
+<li><a class="reference internal" href="#Getting-remote-urls">Getting remote urls</a></li>
+<li><a class="reference internal" href="#Explaining-a-dataset">Explaining a dataset</a></li>
+<li><a class="reference internal" href="#Working-with-an-example-dataset">Working with an example dataset</a></li>
+<li><a class="reference internal" href="#Other-Remotes">Other Remotes</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="admonition note">
+<p>This page was generated from <a class="reference external" href="https://github.com/pysal/libpysal/blob/master/user-guide/data/examples.ipynb">user-guide/data/examples.ipynb</a>.
+Interactive online version:
+<span class="raw-html"><a href="https://mybinder.org/v2/gh/pysal/libpysal/master?filepath=user-guide/data/examples.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a></span></p>
+</div>
+<section id="Datasets-for-use-with-libpysal">
+<h1>Datasets for use with libpysal<a class="headerlink" href="#Datasets-for-use-with-libpysal" title="Link to this heading">¶</a></h1>
+<p>As of version 4.2, libpysal has refactored the <code class="docutils literal notranslate"><span class="pre">examples</span></code> package to:</p>
+<ul class="simple">
+<li><p>reduce the size of the source installation</p></li>
+<li><p>allow the use of remote datasets from the <a class="reference external" href="https://spatial.uchicago.edu/">Center for Spatial Data Science at the Unversity of Chicago</a>, and other remotes</p></li>
+</ul>
+<p>This notebook highlights the new functionality</p>
+<section id="Backwards-compatibility-is-maintained">
+<h2>Backwards compatibility is maintained<a class="headerlink" href="#Backwards-compatibility-is-maintained" title="Link to this heading">¶</a></h2>
+<p>If you were familiar with previous versions of libpysal, the newest version maintains backwards compatibility so any code that relied on the previous API should work.</p>
+<p>For example:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples import get_path
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>get_path(&quot;mexicojoin.dbf&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;/home/serge/para/1_projects/code-pysal-libpysal/libpysal/libpysal/examples/mexico/mexicojoin.dbf&#39;
+</pre></div></div>
+</div>
+<p>An important thing to note here is that the path to the file for this particular example is within the source distribution that was installed. Such an example data set is now referred to as a <code class="docutils literal notranslate"><span class="pre">builtin</span></code> dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import libpysal
+
+dbf = libpysal.io.open(get_path(&quot;mexicojoin.dbf&quot;))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>dbf.header
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;POLY_ID&#39;,
+ &#39;AREA&#39;,
+ &#39;CODE&#39;,
+ &#39;NAME&#39;,
+ &#39;PERIMETER&#39;,
+ &#39;ACRES&#39;,
+ &#39;HECTARES&#39;,
+ &#39;PCGDP1940&#39;,
+ &#39;PCGDP1950&#39;,
+ &#39;PCGDP1960&#39;,
+ &#39;PCGDP1970&#39;,
+ &#39;PCGDP1980&#39;,
+ &#39;PCGDP1990&#39;,
+ &#39;PCGDP2000&#39;,
+ &#39;HANSON03&#39;,
+ &#39;HANSON98&#39;,
+ &#39;ESQUIVEL99&#39;,
+ &#39;INEGI&#39;,
+ &#39;INEGI2&#39;,
+ &#39;MAXP&#39;,
+ &#39;GR4000&#39;,
+ &#39;GR5000&#39;,
+ &#39;GR6000&#39;,
+ &#39;GR7000&#39;,
+ &#39;GR8000&#39;,
+ &#39;GR9000&#39;,
+ &#39;LPCGDP40&#39;,
+ &#39;LPCGDP50&#39;,
+ &#39;LPCGDP60&#39;,
+ &#39;LPCGDP70&#39;,
+ &#39;LPCGDP80&#39;,
+ &#39;LPCGDP90&#39;,
+ &#39;LPCGDP00&#39;,
+ &#39;TEST&#39;]
+</pre></div></div>
+</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">available</span></code> is also available but has been updated to return a Pandas DataFrame. In addition to the builtin datasets, <code class="docutils literal notranslate"><span class="pre">available</span></code> will report on what datasets are available, either as builtin or remotes.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples import available
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df = available()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df.shape
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(99, 3)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.summary()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+99 datasets available, 29 installed, 70 remote.
+</pre></div></div>
+</div>
+<p>We see that there are 98 total datasets available for use with PySAL. On an initial install (i.e., <code class="docutils literal notranslate"><span class="pre">examples</span></code> has not been used yet), 27 of these are builtin datasets and 71 are remote. The latter can be downloaded and installed.</p>
+</section>
+<section id="Downloading-Remote-Datasets">
+<h2>Downloading Remote Datasets<a class="headerlink" href="#Downloading-Remote-Datasets" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Installed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10740</td>
+      <td>Albuquerque, New Mexico, Census 2000 Tract Dat...</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>AirBnB</td>
+      <td>Airbnb rentals, socioeconomics, and crime in C...</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Atlanta</td>
+      <td>Atlanta, GA region homicide counts and rates</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Baltimore</td>
+      <td>Baltimore house sales prices and hedonics</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Bostonhsg</td>
+      <td>Boston housing and neighborhood data</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The remote <code class="docutils literal notranslate"><span class="pre">AirBnB</span></code> can be installed by calling <code class="docutils literal notranslate"><span class="pre">load_example</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>airbnb = libpysal.examples.load_example(&quot;AirBnB&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Downloading AirBnB to /home/serge/.local/share/pysal/AirBnB
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.summary()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+99 datasets available, 30 installed, 69 remote.
+</pre></div></div>
+</div>
+<p>And we see that the number of remotes as declined by one and the number of installed has increased by 1.</p>
+<p>Trying to load an example that doesn’t exist will return None and alert the user:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.load_example(&quot;dataset42&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Example not available: dataset42
+</pre></div></div>
+</div>
+</section>
+<section id="Getting-remote-urls">
+<h2>Getting remote urls<a class="headerlink" href="#Getting-remote-urls" title="Link to this heading">¶</a></h2>
+<p>If the url, rather than the dataset, is needed this can be obtained on a remote with <code class="docutils literal notranslate"><span class="pre">get_url</span></code>. As the <code class="docutils literal notranslate"><span class="pre">Baltimore</span></code> dataset has not yet been downloaded in this example, we can grab it’s url:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>balt_url = libpysal.examples.get_url(&quot;Baltimore&quot;)
+balt_url
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;https://geodacenter.github.io/data-and-lab//data/baltimore.zip&#39;
+</pre></div></div>
+</div>
+</section>
+<section id="Explaining-a-dataset">
+<h2>Explaining a dataset<a class="headerlink" href="#Explaining-a-dataset" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain(&quot;taz&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+taz
+===
+
+Dataset used for regionalization
+--------------------------------
+
+* taz.dbf: attribute data. (k=14)
+* taz.shp: Polygon shapefile. (n=4109)
+* taz.shx: spatial index.
+
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>taz = libpysal.examples.load_example(&quot;taz&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>taz.get_file_list()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;/home/serge/.local/share/pysal/taz/taz-master/taz.dbf&#39;,
+ &#39;/home/serge/.local/share/pysal/taz/taz-master/README.md&#39;,
+ &#39;/home/serge/.local/share/pysal/taz/taz-master/taz.shx&#39;,
+ &#39;/home/serge/.local/share/pysal/taz/taz-master/taz.shp&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain(&quot;Baltimore&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<iframe
+    width="700"
+    height="350"
+    src="https://geodacenter.github.io/data-and-lab//baltim/"
+    frameborder="0"
+    allowfullscreen
+
+></iframe></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>balt = libpysal.examples.load_example(&quot;Baltimore&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Downloading Baltimore to /home/serge/.local/share/pysal/Baltimore
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.available()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Installed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10740</td>
+      <td>Albuquerque, New Mexico, Census 2000 Tract Dat...</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>AirBnB</td>
+      <td>Airbnb rentals, socioeconomics, and crime in C...</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Atlanta</td>
+      <td>Atlanta, GA region homicide counts and rates</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Baltimore</td>
+      <td>Baltimore house sales prices and hedonics</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Bostonhsg</td>
+      <td>Boston housing and neighborhood data</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>94</th>
+      <td>taz</td>
+      <td>Traffic Analysis Zones in So. California</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>tokyo</td>
+      <td>Tokyo Mortality data</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>us_income</td>
+      <td>Per-capita income for the lower 48 US states 1...</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>virginia</td>
+      <td>Virginia counties shapefile</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>wmat</td>
+      <td>Datasets used for spatial weights testing</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+<p>99 rows × 3 columns</p>
+</div></div>
+</div>
+</section>
+<section id="Working-with-an-example-dataset">
+<h2>Working with an example dataset<a class="headerlink" href="#Working-with-an-example-dataset" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">explain</span></code> will render maps for an example if available</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples import explain
+
+explain(&quot;Tampa1&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<iframe
+    width="700"
+    height="350"
+    src="https://geodacenter.github.io/data-and-lab//tampa1/"
+    frameborder="0"
+    allowfullscreen
+
+></iframe></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from libpysal.examples import load_example
+
+tampa1 = load_example(&quot;Tampa1&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Downloading Tampa1 to /home/serge/.local/share/pysal/Tampa1
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tampa1.installed
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tampa1.get_file_list()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.mif&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sbn&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.mif&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.dbf&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sqlite&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.xlsx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.kml&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.shp&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.xlsx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.shx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.gpkg&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.geojson&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.gpkg&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.shp&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.geojson&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.kml&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.prj&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/2000 Census Data Variables_Documentation.pdf&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.mid&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sbx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sbn&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sbx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.shx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.mid&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.dbf&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sqlite&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByType.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbindexes&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbindexes&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbindexes&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByName.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.spx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbindexes&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.spx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByUUID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.TablesByName.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByBackwardLabel.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.FDO_UUID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbindexes&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByParentTypeID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/gdb&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbindexes&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbindexes&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByPhysicalName.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByForwardLabel.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByOriginID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbindexes&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByName.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByType.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.FDO_UUID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByUUID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByDestItemTypeID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.spx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByDestinationID.atx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/timestamps&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtable&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtablx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.prj&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._2000 Census Data Variables_Documentation.pdf&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbx&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbn&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbn&#39;,
+ &#39;/home/serge/.local/share/pysal/Tampa1/__MACOSX/._TampaMSA&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tampa_counties_shp = tampa1.load(&quot;tampa_counties.shp&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tampa_counties_shp
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;libpysal.io.iohandlers.pyShpIO.PurePyShpWrapper at 0x7f22604b2810&gt;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tampa_df = geopandas.read_file(tampa1.get_path(&quot;tampa_counties.shp&quot;))
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+tampa_df.plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/user-guide_data_examples_40_1.png" src="../../_images/user-guide_data_examples_40_1.png" />
+</div>
+</div>
+</section>
+<section id="Other-Remotes">
+<h2>Other Remotes<a class="headerlink" href="#Other-Remotes" title="Link to this heading">¶</a></h2>
+<p>In addition to the remote datasets from the GeoData Data Science Center, there are several large remotes available at github repositories.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.explain(&quot;Rio Grande do Sul&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Rio_Grande_do_Sul
+======================
+
+Cities of the Brazilian State of Rio Grande do Sul
+-------------------------------------------------------
+
+* 43MUE250GC_SIR.dbf: attribute data (k=2)
+* 43MUE250GC_SIR.shp: Polygon shapefile (n=499)
+* 43MUE250GC_SIR.shx: spatial index
+* 43MUE250GC_SIR.cpg: encoding file
+* 43MUE250GC_SIR.prj: projection information
+* map_RS_BR.dbf: attribute data (k=3)
+* map_RS_BR.shp: Polygon shapefile (no lakes) (n=497)
+* map_RS_BR.prj: projection information
+* map_RS_BR.shx: spatial index
+
+
+
+Source: Renan Xavier Cortes
+Reference: https://github.com/pysal/pysal/issues/889#issuecomment-396693495
+
+
+</pre></div></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">explain</span></code> function generates a textual description of this example dataset - no rendering of the map is done as the source repository does not include that functionality.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rio = libpysal.examples.load_example(&quot;Rio Grande do Sul&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Downloading Rio Grande do Sul to /home/serge/.local/share/pysal/Rio_Grande_do_Sul
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>libpysal.examples.remote_datasets.datasets  # a listing of all remotes
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;AirBnB&#39;: &lt;libpysal.examples.base.Example at 0x7f2265395550&gt;,
+ &#39;Atlanta&#39;: &lt;libpysal.examples.base.Example at 0x7f22653954f0&gt;,
+ &#39;Baltimore&#39;: &lt;libpysal.examples.base.Example at 0x7f2265395580&gt;,
+ &#39;Bostonhsg&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367800&gt;,
+ &#39;Buenosaires&#39;: &lt;libpysal.examples.base.Example at 0x7f22643677d0&gt;,
+ &#39;Charleston1&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367860&gt;,
+ &#39;Charleston2&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367890&gt;,
+ &#39;Chicago Health&#39;: &lt;libpysal.examples.base.Example at 0x7f22643678c0&gt;,
+ &#39;Chicago commpop&#39;: &lt;libpysal.examples.base.Example at 0x7f22643678f0&gt;,
+ &#39;Chicago parcels&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367920&gt;,
+ &#39;Chile Labor&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367950&gt;,
+ &#39;Chile Migration&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367980&gt;,
+ &#39;Cincinnati&#39;: &lt;libpysal.examples.base.Example at 0x7f22643679b0&gt;,
+ &#39;Cleveland&#39;: &lt;libpysal.examples.base.Example at 0x7f22643679e0&gt;,
+ &#39;Columbus&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367a10&gt;,
+ &#39;Elections&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367a40&gt;,
+ &#39;Grid100&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367a70&gt;,
+ &#39;Groceries&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367aa0&gt;,
+ &#39;Guerry&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367ad0&gt;,
+ &#39;Health+&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367b60&gt;,
+ &#39;Health Indicators&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367b90&gt;,
+ &#39;Hickory1&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367b00&gt;,
+ &#39;Hickory2&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367b30&gt;,
+ &#39;Home Sales&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367bc0&gt;,
+ &#39;Houston&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367bf0&gt;,
+ &#39;Juvenile&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367c20&gt;,
+ &#39;Lansing1&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367c50&gt;,
+ &#39;Lansing2&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367c80&gt;,
+ &#39;Laozone&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367cb0&gt;,
+ &#39;LasRosas&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367ce0&gt;,
+ &#39;Liquor Stores&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367d10&gt;,
+ &#39;Malaria&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367d40&gt;,
+ &#39;Milwaukee1&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367d70&gt;,
+ &#39;Milwaukee2&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367da0&gt;,
+ &#39;NCOVR&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367dd0&gt;,
+ &#39;Natregimes&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367e00&gt;,
+ &#39;NDVI&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367e30&gt;,
+ &#39;Nepal&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367e60&gt;,
+ &#39;NYC&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367e90&gt;,
+ &#39;NYC Earnings&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367ec0&gt;,
+ &#39;NYC Education&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367ef0&gt;,
+ &#39;NYC Neighborhoods&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367f20&gt;,
+ &#39;NYC Socio-Demographics&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367f50&gt;,
+ &#39;Ohiolung&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367fb0&gt;,
+ &#39;Orlando1&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367f80&gt;,
+ &#39;Orlando2&#39;: &lt;libpysal.examples.base.Example at 0x7f2264367fe0&gt;,
+ &#39;Oz9799&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390080&gt;,
+ &#39;Phoenix ACS&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390050&gt;,
+ &#39;Pittsburgh&#39;: &lt;libpysal.examples.base.Example at 0x7f22643900b0&gt;,
+ &#39;Police&#39;: &lt;libpysal.examples.base.Example at 0x7f22643900e0&gt;,
+ &#39;Sacramento1&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390110&gt;,
+ &#39;Sacramento2&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390140&gt;,
+ &#39;SanFran Crime&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390170&gt;,
+ &#39;Savannah1&#39;: &lt;libpysal.examples.base.Example at 0x7f22643901a0&gt;,
+ &#39;Savannah2&#39;: &lt;libpysal.examples.base.Example at 0x7f22643901d0&gt;,
+ &#39;Scotlip&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390200&gt;,
+ &#39;Seattle1&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390230&gt;,
+ &#39;Seattle2&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390260&gt;,
+ &#39;SIDS&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390290&gt;,
+ &#39;SIDS2&#39;: &lt;libpysal.examples.base.Example at 0x7f22643902c0&gt;,
+ &#39;Snow&#39;: &lt;libpysal.examples.base.Example at 0x7f22643902f0&gt;,
+ &#39;South&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390320&gt;,
+ &#39;Spirals&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390350&gt;,
+ &#39;StLouis&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390380&gt;,
+ &#39;Tampa1&#39;: &lt;libpysal.examples.base.Example at 0x7f22643903b0&gt;,
+ &#39;US SDOH&#39;: &lt;libpysal.examples.base.Example at 0x7f22643903e0&gt;,
+ &#39;Rio Grande do Sul&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390440&gt;,
+ &#39;nyc_bikes&#39;: &lt;libpysal.examples.base.Example at 0x7f22643904a0&gt;,
+ &#39;taz&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390410&gt;,
+ &#39;clearwater&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390530&gt;,
+ &#39;newHaven&#39;: &lt;libpysal.examples.base.Example at 0x7f2264390560&gt;,
+ &#39;chicagoSDOH&#39;: &lt;libpysal.examples.base.Example at 0x7f22643904d0&gt;}
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+        <br/>
+        
+<div id="sourcelink">
+  <a href="../../_sources/user-guide/data/examples.ipynb.txt"
+     rel="nofollow">Source</a>
+</div>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018-, pysal developers.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 8.2.3.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
