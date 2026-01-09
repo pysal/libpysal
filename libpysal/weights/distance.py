@@ -728,6 +728,8 @@ class Kernel(W):
         elif isinstance(self.taper, (float, int)):
             for i, zi in enumerate(zs):
                 self.kernel[i][zi * bw[i] > self.taper + 1e-12] = 0.0
+
+
 class DistanceBand(W):
     """
     Spatial weights based on distance band.
