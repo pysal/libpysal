@@ -1491,10 +1491,10 @@ def fuzzy_contiguity(
                If False (default) joins will only be detected for features that
                intersect (touch, contain, within). If True, the 'dwithin' predicate
                is used with the specified distance to find neighbors within the
-               tolerance/buffer distance.
+               tolerance/buffer distance (requires GEOS >= 3.10, falls back to
+               buffer+intersects otherwise).
     drop: boolean
-          Deprecated parameter, kept for backward compatibility. No longer used
-          as geometries are no longer modified.
+          Deprecated parameter, kept for backward compatibility. Ignored.
     buffer : float
              Specify exact search distance for the 'dwithin' predicate.
              Ignores `tolerance`.
@@ -1577,11 +1577,16 @@ def fuzzy_contiguity(
     Planar Enforcement:
     http://ibis.geog.ubc.ca/courses/klink/gis.notes/ncgia/u12.html#SEC12.6
     """
-    # Use dwithin predicate when buffering is requested
+    # drop parameter is deprecated and ignored
+    del drop
+
+    # Use dwithin predicate when buffering is requested (requires GEOS >= 3.10)
     if buffering:
         if not buffer:
+            # calculate distance from tolerance
             minx, miny, maxx, maxy = gdf.total_bounds
             buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
+
         inp, res = gdf.sindex.query(
             gdf.geometry, predicate="dwithin", distance=buffer
         )

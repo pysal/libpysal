@@ -280,7 +280,14 @@ def test_block_contiguity(regimes):
     assert {f: n.tolist() for f, n in neighbors.items()} == wn_str
 
 
+from shapely import geos_version
+
+
 @pytest.mark.network
+@pytest.mark.skipif(
+    geos_version < (3, 10, 0),
+    reason="dwithin predicate requires GEOS >= 3.10",
+)
 def test_fuzzy_contiguity(nybb):
     # integer
     head, tail, weight = _fuzzy_contiguity(nybb.set_index("intID"), nybb["intID"])
@@ -376,17 +383,3 @@ def test_fuzzy_contiguity(nybb):
         _fuzzy_contiguity(
             nybb.set_index("intID"), nybb["intID"], tolerance=0.1, buffer=10000
         )
-
-    # kwargs
-    head, tail, weight = _fuzzy_contiguity(
-        nybb.set_index("intID"), nybb["intID"], buffer=10000, resolution=2
-    )
-    numpy.testing.assert_array_equal(
-        head,
-        [5, 4, 4, 4, 3, 3, 3, 1, 1, 1, 2, 2],
-    )
-    numpy.testing.assert_array_equal(
-        tail,
-        [3, 3, 1, 2, 5, 4, 1, 4, 3, 2, 4, 1],
-    )
-    numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])

@@ -237,9 +237,7 @@ def _block_contiguity(regimes, ids=None):
     return neighbors
 
 
-def _fuzzy_contiguity(
-    geoms, ids, tolerance=None, buffer=None, predicate="intersects", **kwargs
-):
+def _fuzzy_contiguity(geoms, ids, tolerance=None, buffer=None, predicate="intersects"):
     """Fuzzy contiguity builder
 
     Parameters
@@ -263,9 +261,7 @@ def _fuzzy_contiguity(
         If None is passed, neighbours are determined based on the intersection of
         bounding boxes. See the documentation of ``geopandas.GeoSeries.sindex.query``
         for allowed predicates. When ``tolerance`` or ``buffer`` is specified,
-        the 'dwithin' predicate is used automatically for better performance.
-    **kwargs
-        Keyword arguments passed to the query method.
+        the 'dwithin' predicate is used automatically (requires GEOS >= 3.10).
 
     Returns
     -------
@@ -285,6 +281,7 @@ def _fuzzy_contiguity(
         buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
 
     if buffer is not None:
+        # Use dwithin predicate (requires GEOS >= 3.10)
         head, tail = geoms.sindex.query(
             geoms.geometry, predicate="dwithin", distance=buffer
         )

@@ -335,6 +335,10 @@ class Testutil:
         assert wnp.neighbors[0] == [23, 59, 152, 239]
         assert wnp.neighbors[23] == [0, 45, 59, 107, 152, 185, 246]
 
+    @pytest.mark.skipif(
+        __import__("shapely").geos_version < (3, 10, 0),
+        reason="dwithin predicate requires GEOS >= 3.10",
+    )
     def test_fuzzy_contiguity(self):
         rs = examples.get_path("map_RS_BR.shp")
         rs_df = gpd.read_file(rs)
