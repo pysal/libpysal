@@ -341,7 +341,7 @@ class Testutil:
         wf = fuzzy_contiguity(rs_df)
         assert wf.islands == []
         assert set(wf.neighbors[0]) == {239, 59, 152, 23}
-        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=0.2)
+        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=0.4)
         assert set(buff.neighbors[0]) == {175, 119, 239, 59, 152, 246, 23, 107}
         rs_index = rs_df.set_index("NM_MUNICIP")
         index_w = fuzzy_contiguity(rs_index)

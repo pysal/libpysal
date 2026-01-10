@@ -941,16 +941,16 @@ class Graph(SetOpsMixin):
         <Graph of 5 nodes and 10 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
 
-        Example using the tolerance of 0.05:
+        Example using the tolerance of 0.1:
 
-        >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, tolerance=0.05)
+        >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, tolerance=0.1)
         >>> fuzzy_contiguity
         <Graph of 5 nodes and 12 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
 
-        Example using a buffer of 10000 feet (CRS of nybb is in feet):
+        Example using a buffer of 20000 feet (CRS of nybb is in feet):
 
-        >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, buffer=10000)
+        >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, buffer=20000)
         >>> fuzzy_contiguity
         <Graph of 5 nodes and 14 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>

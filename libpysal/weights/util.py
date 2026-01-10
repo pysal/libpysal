@@ -1485,21 +1485,25 @@ def fuzzy_contiguity(
     gdf:   GeoDataFrame
     tolerance: float
                The percentage of the length of the minimum side of the bounding
-               rectangle for the GeoDataFrame to use in determining the buffering
-               distance.
+               rectangle for the GeoDataFrame to use in determining the search
+               distance for the 'dwithin' predicate.
     buffering: boolean
                If False (default) joins will only be detected for features that
-               intersect (touch, contain, within). If True then features will be
-               buffered and intersections will be based on buffered features.
+               intersect (touch, contain, within). If True, the 'dwithin' predicate
+               is used with the specified distance to find neighbors within the
+               tolerance/buffer distance.
     drop: boolean
-          If True (default), the buffered features are removed from the GeoDataFrame.
-          If False, buffered features are added to the GeoDataFrame.
+          Deprecated parameter, kept for backward compatibility. No longer used
+          as geometries are no longer modified.
     buffer : float
-             Specify exact buffering distance. Ignores `tolerance`.
+             Specify exact search distance for the 'dwithin' predicate.
+             Ignores `tolerance`.
     predicate : {'intersects', 'within', 'contains', 'overlaps', 'crosses', 'touches'}
-                The predicate to use for determination of neighbors. Default is
-                'intersects'. If None is passed, neighbours are determined based on
-                the intersection of bounding boxes.
+                The predicate to use for determination of neighbors when
+                buffering=False. Default is 'intersects'. If None is passed,
+                neighbours are determined based on the intersection of bounding
+                boxes. When buffering=True, the 'dwithin' predicate is used
+                instead for better performance.
     **kwargs: keyword arguments
               optional arguments for :class:`pysal.weights.W`
 
@@ -1573,19 +1577,18 @@ def fuzzy_contiguity(
     Planar Enforcement:
     http://ibis.geog.ubc.ca/courses/klink/gis.notes/ncgia/u12.html#SEC12.6
     """
+    # Use dwithin predicate when buffering is requested
     if buffering:
         if not buffer:
-            # buffer each shape
             minx, miny, maxx, maxy = gdf.total_bounds
             buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
-        # create new geometry column
-        new_geometry = gdf.geometry.buffer(buffer)
-        gdf["_buffer"] = new_geometry
-        old_geometry_name = gdf.geometry.name
-        gdf.set_geometry("_buffer", inplace=True)
+        inp, res = gdf.sindex.query(
+            gdf.geometry, predicate="dwithin", distance=buffer
+        )
+    else:
+        inp, res = gdf.sindex.query(gdf.geometry, predicate=predicate)
 
     neighbors = {}
-    inp, res = gdf.sindex.query(gdf.geometry, predicate=predicate)
 
     # remove self hits
     itself = inp == res
@@ -1596,11 +1599,6 @@ def fuzzy_contiguity(
     for i, ix in enumerate(gdf.index):
         ids = gdf.index[res[inp == i]].tolist()
         neighbors[ix] = ids
-
-    if buffering:
-        gdf.set_geometry(old_geometry_name, inplace=True)
-        if drop:
-            gdf.drop(columns=["_buffer"], inplace=True)
 
     return W(neighbors, **kwargs)
 

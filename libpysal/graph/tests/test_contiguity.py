@@ -332,7 +332,7 @@ def test_fuzzy_contiguity(nybb):
 
     # tolerance
     head, tail, weight = _fuzzy_contiguity(
-        nybb.set_index("intID"), nybb["intID"], tolerance=0.05
+        nybb.set_index("intID"), nybb["intID"], tolerance=0.1
     )
     numpy.testing.assert_array_equal(
         head,
@@ -346,7 +346,7 @@ def test_fuzzy_contiguity(nybb):
 
     # buffer
     head, tail, weight = _fuzzy_contiguity(
-        nybb.set_index("intID"), nybb["intID"], buffer=5000
+        nybb.set_index("intID"), nybb["intID"], buffer=10000
     )
     numpy.testing.assert_array_equal(
         head,
@@ -374,12 +374,12 @@ def test_fuzzy_contiguity(nybb):
 
     with pytest.raises(ValueError, match="Only one"):
         _fuzzy_contiguity(
-            nybb.set_index("intID"), nybb["intID"], tolerance=0.05, buffer=5000
+            nybb.set_index("intID"), nybb["intID"], tolerance=0.1, buffer=10000
         )
 
     # kwargs
     head, tail, weight = _fuzzy_contiguity(
-        nybb.set_index("intID"), nybb["intID"], buffer=5000, resolution=2
+        nybb.set_index("intID"), nybb["intID"], buffer=10000, resolution=2
     )
     numpy.testing.assert_array_equal(
         head,

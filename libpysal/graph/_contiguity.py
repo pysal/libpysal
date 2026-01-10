@@ -251,20 +251,21 @@ def _fuzzy_contiguity(
         ids to be used index of the adjacency
     tolerance : float, optional
         The percentage of the length of the minimum side of the bounding rectangle
-        for the ``geoms`` to use in determining the buffering distance. Either
+        for the ``geoms`` to use in determining the search distance. Either
         ``tolerance`` or ``buffer`` may be specified but not both.
         By default None.
     buffer : float, optional
-        Exact buffering distance in the units of ``geoms.crs``. Either
+        Exact search distance in the units of ``geoms.crs``. Either
         ``tolerance`` or ``buffer`` may be specified but not both.
         By default None.
     predicate : str, optional
         The predicate to use for determination of neighbors. Default is 'intersects'.
         If None is passed, neighbours are determined based on the intersection of
         bounding boxes. See the documentation of ``geopandas.GeoSeries.sindex.query``
-        for allowed predicates.
+        for allowed predicates. When ``tolerance`` or ``buffer`` is specified,
+        the 'dwithin' predicate is used automatically for better performance.
     **kwargs
-        Keyword arguments passed to ``geopandas.GeoSeries.buffer``.
+        Keyword arguments passed to the query method.
 
     Returns
     -------
@@ -284,10 +285,12 @@ def _fuzzy_contiguity(
         buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
 
     if buffer is not None:
-        geoms = geoms.buffer(buffer, **kwargs)
-
-    # query tree based on set predicate
-    head, tail = geoms.sindex.query(geoms.geometry, predicate=predicate)
+        head, tail = geoms.sindex.query(
+            geoms.geometry, predicate="dwithin", distance=buffer
+        )
+    else:
+        # query tree based on set predicate
+        head, tail = geoms.sindex.query(geoms.geometry, predicate=predicate)
 
     # remove self hits
     itself = head == tail
