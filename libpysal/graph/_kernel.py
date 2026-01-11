@@ -127,7 +127,8 @@ def _kernel(
         if metric != "precomputed":
             d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
         else:
-            d = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
+            mask = coordinates.argsort(axis=1, kind="stable") < (k + 1)
+            d = sparse.csc_array(coordinates * mask)
     else:
         if metric != "precomputed":
             dist_kwds = {}
