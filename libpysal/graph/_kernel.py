@@ -127,7 +127,10 @@ def _kernel(
         if metric != "precomputed":
             d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
         else:
-            mask = coordinates.argsort(axis=1, kind="stable") < (k + 1)
+            ranks = coordinates.argsort(axis=1, kind="stable").argsort(
+                axis=1, kind="stable"
+            )
+            mask = ranks < (k + 1)
             d = sparse.csc_array(coordinates * mask)
     else:
         if metric != "precomputed":
