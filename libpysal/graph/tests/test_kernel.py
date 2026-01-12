@@ -23,7 +23,6 @@ from libpysal.graph._kernel import (
     _kernel_functions,
 )
 from libpysal.graph._utils import CoplanarError
-from scipy import sparse
 
 
 def _grocs():
