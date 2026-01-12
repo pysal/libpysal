@@ -114,11 +114,12 @@ def _gaussian(distances, bandwidth):
     ndarray
         Gaussian kernel weights.
     """
-    z = distances / bandwidth
-    exponent_term = -0.5 * (z**2)
-    c = 1 / numpy.sqrt(2 * numpy.pi)
-    k = c * numpy.exp(exponent_term)
-    return k
+    with numpy.errstate(divide="ignore", invalid="ignore"):
+        z = distances / bandwidth
+        exponent_term = -0.5 * (z**2)
+        c = 1 / numpy.sqrt(2 * numpy.pi)
+        k = c * numpy.exp(exponent_term)
+    return numpy.nan_to_num(k)
 
 
 def _bisquare(distances, bandwidth):
@@ -137,7 +138,8 @@ def _bisquare(distances, bandwidth):
     ndarray
         Bisquare kernel weights.
     """
-    z = numpy.clip(distances / bandwidth, 0, 1)
+    with numpy.errstate(divide="ignore", invalid="ignore"):
+        z = numpy.clip(distances / bandwidth, 0, 1)
     return (15 / 16) * (1 - z**2) ** 2
 
 
@@ -177,7 +179,8 @@ def _cosine(distances, bandwidth):
     ndarray
         Cosine kernel weights.
     """
-    z = numpy.clip(distances / bandwidth, 0, 1)
+    with numpy.errstate(divide="ignore", invalid="ignore"):
+        z = numpy.clip(distances / bandwidth, 0, 1)
     return (numpy.pi / 4) * numpy.cos(numpy.pi / 2 * z)
 
 
@@ -197,8 +200,10 @@ def _exponential(distances, bandwidth):
     ndarray
         Exponential kernel weights.
     """
-    z = distances / bandwidth
-    return numpy.exp(-z)
+    with numpy.errstate(divide="ignore", invalid="ignore"):
+        z = distances / bandwidth
+        k = numpy.exp(-z)
+    return numpy.nan_to_num(k)
 
 
 def _boxcar(distances, bandwidth):
@@ -296,8 +301,10 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
         func = _kernel_functions[kernel]
 
     k = func(distances, bandwidth)
-    if taper:
+    if taper is True:
         k[distances > bandwidth] = 0.0
+    elif isinstance(taper, (float, int)) and not isinstance(taper, bool):
+        k[distances > taper] = 0.0
 
     if decay:
         k /= func(0.0, bandwidth)

@@ -128,6 +128,12 @@ def _kernel(
             d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
         else:
             d = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
+    elif isinstance(taper, float) and (
+        metric in ("euclidean", "manhattan", "cityblock", "minkowski")
+    ):
+        d = _distance_band(coordinates, taper)
+        if exclude_self_weights:
+            d = d - sparse.diags(d.diagonal())
     else:
         if metric != "precomputed":
             dist_kwds = {}
@@ -161,7 +167,10 @@ def _kernel(
         else:
             d = sparse.csc_array(coordinates)
     if bandwidth is None:
-        bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
+        if d.data.size > 0:
+            bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
+        else:
+            bandwidth = 0.0
     elif bandwidth == "auto":
         if (kernel == "identity") or (kernel is None):
             bandwidth = numpy.nan  # ignored by identity
