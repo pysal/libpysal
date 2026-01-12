@@ -127,47 +127,12 @@ def _kernel(
             d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
         else:
             d = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
-    elif (not isinstance(taper, bool)) and (metric != "precomputed"):
-        threshold = taper
-        if (threshold is not None) and (
-            metric in ("euclidean", "manhattan", "cityblock", "minkowski")
-        ):
-            d = _distance_band(coordinates, threshold)
-            if exclude_self_weights:
-                res = d.tocoo()
-                mask = res.row != res.col
-                d = sparse.csc_array(
-                    (res.data[mask], (res.row[mask], res.col[mask])), shape=res.shape
-                )
-        else:
-            dist_kwds = {}
-            if metric == "minkowski":
-                dist_kwds["p"] = p
-            if HAS_SKLEARN:
-                sq = metrics.pairwise_distances(
-                    coordinates, coordinates, metric=metric, **dist_kwds
-                )
-            else:
-                if metric not in ("euclidean", "manhattan", "cityblock", "minkowski"):
-                    raise ValueError(
-                        f"metric {metric} is not supported by scipy, and scikit-learn "
-                        "could not be imported."
-                    )
-                d = spatial.distance.pdist(coordinates, metric=metric, **dist_kwds)
-                sq = spatial.distance.squareform(d)
-
-            # ensure that self-distance is dropped but 0 between co-located pts not
-            # get data and ids for sparse constructor
-            data = sq.flatten()
-            i = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
-            j = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
-
-            if exclude_self_weights:
-                data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
-                i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
-                j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
-
-            d = sparse.csc_array((data, (i, j)))
+    elif isinstance(taper, float) and (
+        metric in ("euclidean", "manhattan", "cityblock", "minkowski")
+    ):
+        d = _distance_band(coordinates, taper)
+        if exclude_self_weights:
+            d = d - sparse.diags(d.diagonal())
     else:
         if metric != "precomputed":
             dist_kwds = {}
@@ -189,14 +154,13 @@ def _kernel(
             # ensure that self-distance is dropped but 0 between co-located pts not
             # get data and ids for sparse constructor
             data = sq.flatten()
-            i = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
-            j = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
+            i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
+            j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
 
             if exclude_self_weights:
-                diag_idx = numpy.arange(0, data.size, sq.shape[0] + 1)
-                data = numpy.delete(data, diag_idx)
-                i = numpy.delete(i, diag_idx)
-                j = numpy.delete(j, diag_idx)
+                data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
+                i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
+                j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
 
             d = sparse.csc_array((data, (i, j)))
         else:
