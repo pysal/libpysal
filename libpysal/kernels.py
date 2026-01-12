@@ -281,7 +281,7 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
     k = func(distances, bandwidth)
     if taper is True:
         k[distances > bandwidth] = 0.0
-    elif isinstance(taper, (float, int)):
+    elif isinstance(taper, (float, int)) and not isinstance(taper, bool):
         k[distances > taper] = 0.0
 
     if decay:
