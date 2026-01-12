@@ -535,11 +535,9 @@ class Kernel(W):
         distance_metric="euclidean",
         radius=None,
         normalize=True,
-        taper=True,
         **kwargs,
     ):
         self._normalize = normalize
-        self.taper = taper
         if radius is not None:
             distance_metric = "arc"
         if isKDTree(data):
@@ -673,17 +671,9 @@ class Kernel(W):
         # get points within bandwidth distance of each point
         if not hasattr(self, "neigh"):
             kdtq = self.kdtree.query_ball_point
-            if self.taper:
-                neighbors = [
-                    kdtq(self.data[i], r=bwi[0]) for i, bwi in enumerate(self.bandwidth)
-                ]
-            elif isinstance(self.taper, (float, int)):
-                neighbors = [
-                    kdtq(self.data[i], r=float(self.taper))
-                    for i in range(len(self.data))
-                ]
-            else:
-                neighbors = [list(range(len(self.data))) for i in range(len(self.data))]
+            neighbors = [
+                kdtq(self.data[i], r=bwi[0]) for i, bwi in enumerate(self.bandwidth)
+            ]
             self.neigh = neighbors
         # get distances for neighbors
         bw = self.bandwidth
@@ -706,13 +696,13 @@ class Kernel(W):
         # in Practice. Pg 78
 
         if self.function == "triangular":
-            self.kernel = [np.maximum(0, 1 - zi) for zi in zs]
+            self.kernel = [1 - zi for zi in zs]
         elif self.function == "uniform":
             self.kernel = [np.ones(zi.shape) * 0.5 for zi in zs]
         elif self.function == "quadratic":
-            self.kernel = [np.maximum(0, (3.0 / 4) * (1 - zi**2)) for zi in zs]
+            self.kernel = [(3.0 / 4) * (1 - zi**2) for zi in zs]
         elif self.function == "quartic":
-            self.kernel = [np.maximum(0, (15.0 / 16) * (1 - zi**2) ** 2) for zi in zs]
+            self.kernel = [(15.0 / 16) * (1 - zi**2) ** 2 for zi in zs]
         elif self.function == "gaussian":
             c = np.pi * 2
             c = c ** (-0.5)
@@ -721,13 +711,6 @@ class Kernel(W):
             self.kernel = [c * np.exp(-(zi**2) / 2.0) for zi in zs]
         else:
             print(("Unsupported kernel function", self.function))
-
-        if self.taper is True:
-            for i, zi in enumerate(zs):
-                self.kernel[i][zi > 1.00000000001] = 0.0
-        elif isinstance(self.taper, (float, int)):
-            for i, zi in enumerate(zs):
-                self.kernel[i][zi * bw[i] > self.taper + 1e-12] = 0.0
 
 
 class DistanceBand(W):
