@@ -127,11 +127,20 @@ def _kernel(
         if metric != "precomputed":
             d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
         else:
-            ranks = coordinates.argsort(axis=1, kind="stable").argsort(
+            if exclude_self_weights:
+                coords_for_ranking = coordinates.copy()
+                numpy.fill_diagonal(coords_for_ranking, numpy.inf)
+            else:
+                coords_for_ranking = coordinates
+
+            ranks = coords_for_ranking.argsort(axis=1, kind="stable").argsort(
                 axis=1, kind="stable"
             )
-            mask = ranks < (k + 1)
-            d = sparse.csc_array(coordinates * mask)
+
+            mask = ranks < k
+            rows, cols = numpy.where(mask)
+            values = coordinates[mask]
+            d = sparse.csc_array((values, (rows, cols)), shape=coordinates.shape)
     else:
         if metric != "precomputed":
             dist_kwds = {}
@@ -164,6 +173,7 @@ def _kernel(
             d = sparse.csc_array((data, (i, j)))
         else:
             d = sparse.csc_array(coordinates)
+
     if bandwidth is None:
         bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
     elif bandwidth == "auto":
