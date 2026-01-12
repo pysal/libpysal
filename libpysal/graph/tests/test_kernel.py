@@ -426,3 +426,53 @@ def test_distance_band_colocated():
             ]
         ),
     )
+
+
+def test__kernel_precomputed_exclude_self_weights_affects_ranking():
+    coords = np.array(
+        [
+            [0.1, 1.0, 2.0],
+            [1.0, 0.1, 3.0],
+            [2.0, 3.0, 0.1],
+        ],
+        dtype=float,
+    )
+    n = coords.shape[0]
+    k = 2
+
+    out_including_self = _kernel(
+        coords,
+        k=k,
+        metric="precomputed",
+        exclude_self_weights=False,
+    )
+    focal, neighbor, weight = out_including_self
+
+    assert focal.shape == (n * k,)
+    assert neighbor.shape == (n * k,)
+    assert weight.shape == (n * k,)
+
+    for i in range(n):
+        neigh_i = set(neighbor[focal == i].tolist())
+        assert i in neigh_i
+
+    out_excluding_self = _kernel(
+        coords,
+        k=k,
+        metric="precomputed",
+        exclude_self_weights=True,
+    )
+
+    focal2, neighbor2, weight2 = out_excluding_self
+
+    assert focal2.shape == (n * k,)
+    assert neighbor2.shape == (n * k,)
+    assert weight2.shape == (n * k,)
+
+    # No (i -> i) edges at all
+    assert not np.any(focal2 == neighbor2)
+
+    for i in range(n):
+        neigh_i = neighbor2[focal2 == i]
+        assert len(neigh_i) == k
+        assert len(set(neigh_i.tolist())) == k
