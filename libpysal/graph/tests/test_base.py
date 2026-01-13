@@ -383,6 +383,72 @@ class TestBase:
         with pytest.raises(ValueError, match="The length of ids "):
             graph.Graph.from_sparse(sp, ids=["staten_island", "queens"])
 
+    def test_from_dense(self):
+        dense = np.array(
+            [[0.0, 0.1, 0.0, 0.5], [0.0, 0.0, 0.0, 0.9], [0.0, 0.0, 0.0, 0.0], [0.0, 0.3, 0.0, 0.1]]
+        )
+        g = graph.Graph.from_dense(dense)
+        # Include isolate node 2 in expected
+        expected = graph.Graph.from_arrays(
+            [0, 0, 1, 2, 3, 3], [1, 3, 3, 2, 1, 3], [0.1, 0.5, 0.9, 0.0, 0.3, 0.1]
+        )
+        assert g == expected, "dense constructor does not match arrays constructor"
+
+        ids = ["zero", "one", "two", "three"]
+        g_named = graph.Graph.from_dense(dense, ids=ids)
+        expected = graph.Graph.from_arrays(
+            ["zero", "zero", "one", "two", "three", "three"],
+            ["one", "three", "three", "two", "one", "three"],
+            [0.1, 0.5, 0.9, 0.0, 0.3, 0.1],
+        )
+        assert g_named == expected, "dense with ids does not match arrays constructor"
+
+        dense_binary = np.array(
+            [
+                [0, 0, 1, 1, 0],
+                [0, 0, 1, 1, 0],
+                [0, 1, 0, 1, 0],
+                [0, 1, 0, 0, 1],
+                [0, 1, 0, 1, 0],
+            ]
+        )
+        g = graph.Graph.from_dense(
+            dense_binary,
+            ids=["staten_island", "queens", "brooklyn", "manhattan", "bronx"],
+        )
+        expected = graph.Graph.from_arrays(
+            [
+                "staten_island",
+                "staten_island",
+                "queens",
+                "queens",
+                "brooklyn",
+                "brooklyn",
+                "manhattan",
+                "manhattan",
+                "bronx",
+                "bronx",
+            ],
+            [
+                "brooklyn",
+                "manhattan",
+                "brooklyn",
+                "manhattan",
+                "queens",
+                "manhattan",
+                "queens",
+                "bronx",
+                "queens",
+                "manhattan",
+            ],
+            np.ones(10),
+        )
+        assert g == expected, "dense nybb with ids does not match arrays constructor"
+        np.testing.assert_array_equal(g.sparse.todense(), dense_binary)
+
+        with pytest.raises(ValueError, match="The length of ids "):
+            graph.Graph.from_dense(dense_binary, ids=["staten_island", "queens"])
+
     def test_from_arrays(self):
         focal_ids = np.arange(9)
         neighbor_ids = np.array([1, 2, 5, 4, 5, 8, 7, 8, 7])
