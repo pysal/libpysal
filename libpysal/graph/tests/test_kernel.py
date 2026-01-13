@@ -482,9 +482,7 @@ def test_tree_parameter_knn(grocs):
     """Test that passing a pre-built tree produces the same results."""
     from scipy import spatial
 
-    coords = np.array(
-        [[pt.x, pt.y] for pt in grocs.geometry.values]
-    )
+    coords = np.array([[pt.x, pt.y] for pt in grocs.geometry.values])
 
     # Build KNN without tree
     g1 = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf)
@@ -503,9 +501,7 @@ def test_tree_parameter_sklearn(grocs):
     """Test that passing a pre-built sklearn tree works."""
     from sklearn.neighbors import KDTree
 
-    coords = np.array(
-        [[pt.x, pt.y] for pt in grocs.geometry.values]
-    )
+    coords = np.array([[pt.x, pt.y] for pt in grocs.geometry.values])
 
     # Build KNN with sklearn tree
     tree = KDTree(coords)
@@ -521,9 +517,7 @@ def test_tree_parameter_distance_band(grocs):
     """Test that passing a pre-built tree to distance_band works."""
     from scipy import spatial
 
-    coords = np.array(
-        [[pt.x, pt.y] for pt in grocs.geometry.values]
-    )
+    coords = np.array([[pt.x, pt.y] for pt in grocs.geometry.values])
 
     # Build distance band without tree
     sp1 = _distance_band(coords, threshold=500)
