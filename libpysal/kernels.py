@@ -16,6 +16,7 @@ Available kernels:
     - ``parabolic`` (Epanechnikov)
     - ``gaussian``
     - ``bisquare`` (quartic)
+    - ``tricube``
     - ``cosine``
     - ``exponential``
     - ``boxcar`` (uniform)
@@ -140,6 +141,26 @@ def _bisquare(distances, bandwidth):
     return (15 / 16) * (1 - z**2) ** 2
 
 
+def _tricube(distances, bandwidth):
+    """
+    Tricube kernel function.
+
+    Parameters
+    ----------
+    distances : ndarray
+        Array of distances.
+    bandwidth : float
+        Kernel bandwidth.
+
+    Returns
+    -------
+    ndarray
+        Tricube kernel weights.
+    """
+    z = numpy.clip(distances / bandwidth, 0, 1)
+    return (70 / 81) * (1 - z**3) ** 3
+
+
 def _cosine(distances, bandwidth):
     """
     Cosine kernel function.
@@ -224,6 +245,7 @@ _kernel_functions = {
     "parabolic": _parabolic,
     "gaussian": _gaussian,
     "bisquare": _bisquare,
+    "tricube": _tricube,
     "cosine": _cosine,
     "boxcar": _boxcar,
     "discrete": _boxcar,
@@ -245,7 +267,7 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
     kernel : str or callable, optional
         The kernel function to use. If a string, must be one of the predefined
         kernel names: 'triangular', 'parabolic', 'gaussian', 'bisquare',
-        'cosine', 'boxcar', 'discrete', 'exponential', 'identity'.
+        'tricube', 'cosine', 'boxcar', 'discrete', 'exponential', 'identity'.
         If callable, it should have the signature `(distances, bandwidth)`.
         If None, the 'identity' kernel is used.
     taper : bool (default: True)
