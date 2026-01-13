@@ -815,6 +815,12 @@ class Graph(SetOpsMixin):
         Bronx          Manhattan        0.309825
         Name: weight, dtype: float64
         """
+        if tree is not None and hasattr(tree, "data"):
+            data = np.asarray(tree.data)
+        elif hasattr(data, "data") and hasattr(data, "query"):
+            tree = data
+            data = np.asarray(tree.data)
+
         ids = _evaluate_index(data)
 
         dist = _distance_band(data, threshold, tree=tree)
@@ -1127,6 +1133,12 @@ class Graph(SetOpsMixin):
         Graph
             libpysal.graph.Graph encoding kernel weights
         """
+        if tree is not None and hasattr(tree, "data"):
+            data = np.asarray(tree.data)
+        elif hasattr(data, "data") and hasattr(data, "query"):
+            tree = data
+            data = np.asarray(tree.data)
+
         ids = _evaluate_index(data)
 
         head, tail, weight = _kernel(
@@ -1250,6 +1262,12 @@ class Graph(SetOpsMixin):
         Bronx          Manhattan    1
         Name: weight, dtype: int32
         """
+        if tree is not None and hasattr(tree, "data"):
+            data = np.asarray(tree.data)
+        elif hasattr(data, "data") and hasattr(data, "query"):
+            tree = data
+            data = np.asarray(tree.data)
+
         ids = _evaluate_index(data)
 
         head, tail, weight = _kernel(
