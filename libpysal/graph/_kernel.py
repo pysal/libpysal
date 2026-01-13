@@ -213,7 +213,7 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise", tree=None)
     )
     if coplanar == "jitter":
         coordinates, geoms = _jitter_geoms(coordinates, geoms=geoms)
-        tree = None 
+        tree = None
 
     n_coplanar = geoms.geometry.duplicated().sum()
     n_samples, _ = coordinates.shape
@@ -303,9 +303,7 @@ def _distance_band(coordinates, threshold, ids=None, tree=None):
     coordinates, ids, _ = _validate_geometry_input(
         coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
-    if tree is None:
-        tree = spatial.KDTree(coordinates)
-    elif not isinstance(tree, spatial.KDTree):
+    if tree is None or not isinstance(tree, spatial.KDTree):
         tree = spatial.KDTree(coordinates)
     sp = sparse.csr_array(tree.sparse_distance_matrix(tree, threshold))
     return sp
