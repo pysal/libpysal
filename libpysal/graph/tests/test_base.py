@@ -384,12 +384,14 @@ class TestBase:
             graph.Graph.from_sparse(sp, ids=["staten_island", "queens"])
 
     def test_from_dense(self):
-        dense = np.array([
-            [0.0, 0.1, 0.0, 0.5],
-            [0.0, 0.0, 0.0, 0.9],
-            [0.0, 0.0, 0.0, 0.0],
-            [0.0, 0.3, 0.0, 0.1],
-        ])
+        dense = np.array(
+            [
+                [0.0, 0.1, 0.0, 0.5],
+                [0.0, 0.0, 0.0, 0.9],
+                [0.0, 0.0, 0.0, 0.0],
+                [0.0, 0.3, 0.0, 0.1],
+            ]
+        )
         g = graph.Graph.from_dense(dense)
         # Include isolate node 2 in expected
         expected = graph.Graph.from_arrays(
