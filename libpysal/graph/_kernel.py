@@ -38,6 +38,7 @@ def _kernel(
     coplanar="raise",
     resolve_isolates=True,
     exclude_self_weights=True,
+    tree=None,
 ):
     """
     Compute a kernel function over a distance matrix.
@@ -97,7 +98,18 @@ def _kernel(
         Try to resolve isolates. Can be disabled if we are dealing with cliques later.
     exclude_self_weights : bool (default: True)
         Remove self-weights
+    tree : scipy.spatial.KDTree, sklearn.neighbors.KDTree, \
+           sklearn.neighbors.BallTree, optional
+        A pre-built tree for distance computation. If provided, `coordinates`
+        should be None or the tree's data will be used. This avoids rebuilding
+        the tree when it has already been constructed.
     """
+    if tree is not None:
+        if hasattr(tree, "data"):
+            coordinates = numpy.asarray(tree.data)
+        else:
+            raise ValueError("Provided tree must have a 'data' attribute.")
+
     if metric != "precomputed":
         coordinates, ids, _ = _validate_geometry_input(
             coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
@@ -125,7 +137,7 @@ def _kernel(
 
     if k is not None:
         if metric != "precomputed":
-            d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
+            d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar, tree=tree)
         else:
             if exclude_self_weights:
                 coords_for_ranking = coordinates.copy()
@@ -146,7 +158,11 @@ def _kernel(
             dist_kwds = {}
             if metric == "minkowski":
                 dist_kwds["p"] = p
-            if HAS_SKLEARN:
+            if tree is not None and hasattr(tree, "query"):
+                n_samples = coordinates.shape[0]
+                distances, _ = tree.query(coordinates, k=n_samples)
+                sq = distances
+            elif HAS_SKLEARN:
                 sq = metrics.pairwise_distances(
                     coordinates, coordinates, metric=metric, **dist_kwds
                 )
@@ -190,13 +206,14 @@ def _kernel(
     return _sparse_to_arrays(d, ids=ids, resolve_isolates=resolve_isolates)
 
 
-def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise"):
+def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise", tree=None):
     """internal function called only within _kernel, never directly to build KNN"""
     coordinates, ids, geoms = _validate_geometry_input(
         coordinates, ids=None, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
     if coplanar == "jitter":
         coordinates, geoms = _jitter_geoms(coordinates, geoms=geoms)
+        tree = None 
 
     n_coplanar = geoms.geometry.duplicated().sum()
     n_samples, _ = coordinates.shape
@@ -205,7 +222,12 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise"):
         if metric == "haversine":
             # sklearn haversine works with (lat,lng) in radians...
             coordinates = numpy.fliplr(numpy.deg2rad(coordinates))
-        query = _prepare_tree_query(coordinates, metric, p=p)
+            tree = None
+        # Use provided tree if available, otherwise build one
+        if tree is not None and hasattr(tree, "query"):
+            query = tree.query
+        else:
+            query = _prepare_tree_query(coordinates, metric, p=p)
         d_linear, ixs = query(coordinates, k=k + 1)
         self_ix, neighbor_ix = ixs[:, 0], ixs[:, 1:]
         d_linear = d_linear[:, 1:]
@@ -277,11 +299,14 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise"):
         )
 
 
-def _distance_band(coordinates, threshold, ids=None):
+def _distance_band(coordinates, threshold, ids=None, tree=None):
     coordinates, ids, _ = _validate_geometry_input(
         coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
     )
-    tree = spatial.KDTree(coordinates)
+    if tree is None:
+        tree = spatial.KDTree(coordinates)
+    elif not isinstance(tree, spatial.KDTree):
+        tree = spatial.KDTree(coordinates)
     sp = sparse.csr_array(tree.sparse_distance_matrix(tree, threshold))
     return sp
 

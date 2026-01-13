@@ -676,6 +676,7 @@ class Graph(SetOpsMixin):
         bandwidth=None,
         taper=True,
         decay=False,
+        tree=None,
     ):
         """Generate Graph from geometry based on a distance band
 
@@ -714,6 +715,11 @@ class Graph(SetOpsMixin):
             or negative) at some very large (possibly infinite) distance.
             Otherwise, kernel functions are treated as proper
             volume-preserving probability distributions.
+        tree : scipy.spatial.KDTree, optional
+            A pre-built scipy KDTree for distance computation. If provided,
+            the tree's data will be used as coordinates. This avoids rebuilding
+            the tree when it has already been constructed. Note that only
+            ``scipy.spatial.KDTree`` is supported for distance band computation.
         Returns
         -------
         Graph
@@ -811,7 +817,7 @@ class Graph(SetOpsMixin):
         """
         ids = _evaluate_index(data)
 
-        dist = _distance_band(data, threshold)
+        dist = _distance_band(data, threshold, tree=tree)
 
         if binary:
             head, tail, weight = _kernel(
@@ -1054,6 +1060,7 @@ class Graph(SetOpsMixin):
         coplanar="raise",
         taper=True,
         decay=False,
+        tree=None,
     ):
         """Generate Graph from geometry data based on a kernel function
 
@@ -1109,6 +1116,11 @@ class Graph(SetOpsMixin):
             or negative) at some very large (possibly infinite) distance.
             Otherwise, kernel functions are treated as proper
             volume-preserving probability distributions.
+        tree : scipy.spatial.KDTree, sklearn.neighbors.KDTree, \
+               sklearn.neighbors.BallTree, optional
+            A pre-built tree for distance computation. If provided, the tree's
+            data will be used as coordinates. This avoids rebuilding the tree
+            when it has already been constructed.
 
         Returns
         -------
@@ -1128,6 +1140,7 @@ class Graph(SetOpsMixin):
             coplanar=coplanar,
             decay=decay,
             taper=taper,
+            tree=tree,
         )
 
         return cls.from_arrays(head, tail, weight)
@@ -1142,6 +1155,7 @@ class Graph(SetOpsMixin):
         coplanar="raise",
         taper=True,
         decay=False,
+        tree=None,
     ):
         """Generate Graph from geometry data based on k-nearest neighbors search
 
@@ -1177,6 +1191,11 @@ class Graph(SetOpsMixin):
             or negative) at some very large (possibly infinite) distance.
             Otherwise, kernel functions are treated as proper
             volume-preserving probability distributions.
+        tree : scipy.spatial.KDTree, sklearn.neighbors.KDTree, \
+               sklearn.neighbors.BallTree, optional
+            A pre-built tree for distance computation. If provided, the tree's
+            data will be used as coordinates. This avoids rebuilding the tree
+            when it has already been constructed.
 
 
         Returns
@@ -1244,6 +1263,7 @@ class Graph(SetOpsMixin):
             coplanar=coplanar,
             taper=taper,
             decay=decay,
+            tree=tree,
         )
 
         return cls.from_arrays(head, tail, weight)
