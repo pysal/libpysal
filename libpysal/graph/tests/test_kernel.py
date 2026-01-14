@@ -476,3 +476,25 @@ def test__kernel_precomputed_exclude_self_weights_affects_ranking():
         neigh_i = neighbor2[focal2 == i]
         assert len(neigh_i) == k
         assert len(set(neigh_i.tolist())) == k
+
+
+def test_numeric_taper_euclidean_simple():
+    coords = np.array([[0.0, 0.0], [1.0, 0.0], [3.0, 0.0], [0.0, 4.0]])
+    heads, tails, weights = _kernel(
+        coords, kernel="identity", taper=1.5, exclude_self_weights=True
+    )
+
+    expected = {
+        (0, 1): 1.0,
+        (1, 0): 1.0,
+        (2, 2): 0.0,
+        (3, 3): 0.0,
+    }
+
+    returned = {
+        (int(h), int(t)): float(w)
+        for h, t, w in zip(heads, tails, weights, strict=True)
+    }
+
+    assert set(returned.keys()) == set(expected.keys())
+    assert returned == pytest.approx(expected)
