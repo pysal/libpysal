@@ -371,6 +371,27 @@ class Graph(SetOpsMixin):
         )
 
     @classmethod
+    def from_dense(cls, dense, ids=None):
+        """Convert a ``numpy.ndarray`` of a shape (N, N) to a PySAL ``Graph`` object.
+
+        Parameters
+        ----------
+        dense : numpy.ndarray
+            dense representation of a graph
+        ids : list-like, default None
+            list-like of ids for geometries that is mappable to
+            positions from dense. If None, the positions are used as labels.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph based on dense
+        """
+        from scipy import sparse
+
+        return cls.from_sparse(sparse.csr_array(dense), ids=ids)
+
+    @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight, **kwargs):
         """Generate Graph from arrays of indices and weights of the same length
 
