@@ -57,6 +57,14 @@ def test_bisquare(distances, bandwidth):
     )
 
 
+def test_tricube(distances, bandwidth):
+    z = np.clip(distances / bandwidth, 0, 1)
+    expected = (70 / 81) * (1 - z**3) ** 3
+    np.testing.assert_array_almost_equal(
+        kernels._tricube(distances, bandwidth), expected
+    )
+
+
 def test_cosine(distances, bandwidth):
     z = np.clip(distances / bandwidth, 0, 1)
     expected = (np.pi / 4) * np.cos(np.pi / 2 * z)
@@ -90,7 +98,7 @@ def test_identity(distances, bandwidth):
 # --- Dispatcher tests ---
 
 @pytest.mark.parametrize("name", [
-    "triangular", "parabolic", "gaussian", "bisquare",
+    "triangular", "parabolic", "gaussian", "bisquare", "tricube",
     "cosine", "boxcar", "discrete", "exponential", "identity", None
 ])
 def test_kernel_dispatcher_names(distances, bandwidth, name):
@@ -113,3 +121,21 @@ def test_kernel_dispatcher_invalid_name(distances, bandwidth):
     with pytest.raises(KeyError):
         kernels.kernel(distances, bandwidth, kernel="not-a-kernel")
 
+def test_kernel_taper(distances, bandwidth):
+    
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=True)
+    expected = kernels._gaussian(distances, bandwidth)
+    expected[distances > bandwidth] = 0.0
+    np.testing.assert_array_almost_equal(result, expected)
+
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=False)
+    expected = kernels._gaussian(distances, bandwidth)
+    np.testing.assert_array_almost_equal(result, expected)
+
+    taper_val = 0.75
+    result = kernels.kernel(
+        distances, bandwidth, kernel="gaussian", taper=taper_val
+    )
+    expected = kernels._gaussian(distances, bandwidth)
+    expected[distances > taper_val] = 0.0
+    np.testing.assert_array_almost_equal(result, expected)
