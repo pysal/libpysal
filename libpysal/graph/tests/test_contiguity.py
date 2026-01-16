@@ -15,6 +15,7 @@ import numpy
 import pandas
 import pytest
 import shapely
+from shapely import geos_version
 
 from libpysal.graph._contiguity import (
     _block_contiguity,
@@ -280,7 +281,6 @@ def test_block_contiguity(regimes):
     assert {f: n.tolist() for f, n in neighbors.items()} == wn_str
 
 
-from shapely import geos_version
 
 
 @pytest.mark.network
