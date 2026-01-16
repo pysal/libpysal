@@ -13,6 +13,7 @@ import scipy.spatial
 from scipy import sparse
 from scipy.spatial import KDTree
 from shapely.geometry.base import BaseGeometry
+import shapely
 
 from ..common import requires
 from ..io.fileio import FileIO
@@ -1475,6 +1476,7 @@ def fuzzy_contiguity(
     drop=True,
     buffer=None,
     predicate="intersects",
+    distance=None,
     **kwargs,
 ):
     """
@@ -1489,21 +1491,26 @@ def fuzzy_contiguity(
                distance for the 'dwithin' predicate.
     buffering: boolean
                If False (default) joins will only be detected for features that
-               intersect (touch, contain, within). If True, the 'dwithin' predicate
-               is used with the specified distance to find neighbors within the
-               tolerance/buffer distance (requires GEOS >= 3.10, falls back to
-               buffer+intersects otherwise).
+               intersect (touch, contain, within). If True, the geometries will
+               be buffered by the specified distance and then the ``predicate`` will
+               be applied. This works with all GEOS versions and allows custom predicates.
     drop: boolean
           Deprecated parameter, kept for backward compatibility. Ignored.
     buffer : float
-             Specify exact search distance for the 'dwithin' predicate.
+             Specify exact buffering distance.
              Ignores `tolerance`.
     predicate : {'intersects', 'within', 'contains', 'overlaps', 'crosses', 'touches'}
-                The predicate to use for determination of neighbors when
-                buffering=False. Default is 'intersects'. If None is passed,
+                The predicate to use for determination of neighbors.
+                Default is 'intersects'. If None is passed,
                 neighbours are determined based on the intersection of bounding
-                boxes. When buffering=True, the 'dwithin' predicate is used
-                instead for better performance.
+                boxes. When buffering=True, the predicate is applied to
+                buffered geometries. When distance is specified, the 'dwithin'
+                predicate is used instead (ignoring this parameter).
+    distance : float, optional
+               Exact search distance for the 'dwithin' predicate in units of ``geoms.crs``.
+               Uses the native GEOS dwithin predicate which is more efficient but requires
+               GEOS >= 3.10. Either ``tolerance``, ``buffer``, or ``distance`` may be
+               specified but not more than one. By default None.
     **kwargs: keyword arguments
               optional arguments for :class:`pysal.weights.W`
 
@@ -1580,16 +1587,27 @@ def fuzzy_contiguity(
     # drop parameter is deprecated and ignored
     del drop
 
-    # Use dwithin predicate when buffering is requested (requires GEOS >= 3.10)
-    if buffering:
+    if distance is not None:
+        if buffering:
+            raise ValueError("Only one of `buffering` and `distance` can be specified.")
+
+        if shapely.geos_version < (3, 10, 0):
+            raise ValueError(
+                "The `distance` parameter requires GEOS >= 3.10. "
+                f"Current GEOS version is {'.'.join(map(str, shapely.geos_version))}. "
+                "Use `buffering=True` and `buffer` parameter instead for older GEOS versions."
+            )
+        inp, res = gdf.sindex.query(
+            gdf.geometry, predicate="dwithin", distance=distance
+        )
+    elif buffering:
         if not buffer:
             # calculate distance from tolerance
             minx, miny, maxx, maxy = gdf.total_bounds
             buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
 
-        inp, res = gdf.sindex.query(
-            gdf.geometry, predicate="dwithin", distance=buffer
-        )
+        buffered = gdf.buffer(buffer)
+        inp, res = buffered.sindex.query(buffered.geometry, predicate=predicate)
     else:
         inp, res = gdf.sindex.query(gdf.geometry, predicate=predicate)
 

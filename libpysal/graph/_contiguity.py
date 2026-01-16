@@ -237,7 +237,15 @@ def _block_contiguity(regimes, ids=None):
     return neighbors
 
 
-def _fuzzy_contiguity(geoms, ids, tolerance=None, buffer=None, predicate="intersects"):
+def _fuzzy_contiguity(
+    geoms,
+    ids,
+    tolerance=None,
+    buffer=None,
+    distance=None,
+    predicate="intersects",
+    **kwargs,
+):
     """Fuzzy contiguity builder
 
     Parameters
@@ -249,28 +257,37 @@ def _fuzzy_contiguity(geoms, ids, tolerance=None, buffer=None, predicate="inters
         ids to be used index of the adjacency
     tolerance : float, optional
         The percentage of the length of the minimum side of the bounding rectangle
-        for the ``geoms`` to use in determining the search distance. Either
-        ``tolerance`` or ``buffer`` may be specified but not both.
-        By default None.
+        for the ``geoms`` to use in determining the search distance. Converted to
+        an absolute distance and used with the ``buffer`` parameter behavior.
+        Either ``tolerance``, ``buffer``, or ``distance`` may be specified but not
+        more than one. By default None.
     buffer : float, optional
-        Exact search distance in the units of ``geoms.crs``. Either
-        ``tolerance`` or ``buffer`` may be specified but not both.
-        By default None.
+        Exact buffering distance in the units of ``geoms.crs``. The geometries will
+        be buffered by this amount and then the ``predicate`` will be applied.
+        This works with all GEOS versions. Either ``tolerance``, ``buffer``, or
+        ``distance`` may be specified but not more than one. By default None.
+    distance : float, optional
+        Exact search distance for the 'dwithin' predicate in units of ``geoms.crs``.
+        Uses the native GEOS dwithin predicate which is more efficient but requires
+        GEOS >= 3.10. Either ``tolerance``, ``buffer``, or ``distance`` may be
+        specified but not more than one. By default None.
     predicate : str, optional
         The predicate to use for determination of neighbors. Default is 'intersects'.
         If None is passed, neighbours are determined based on the intersection of
         bounding boxes. See the documentation of ``geopandas.GeoSeries.sindex.query``
-        for allowed predicates. When ``tolerance`` or ``buffer`` is specified,
-        the 'dwithin' predicate is used automatically (requires GEOS >= 3.10).
+        for allowed predicates. When ``buffer`` or ``tolerance`` is specified, this
+        predicate is used on the buffered geometries. When ``distance`` is specified,
+        the 'dwithin' predicate is used directly (ignoring this parameter).
 
     Returns
     -------
     tuple
         tuple of ``heads``, ``tails``, ``weights`` arrays
     """
-    if buffer is not None and tolerance is not None:
+    specified = [x is not None for x in (tolerance, buffer, distance)]
+    if sum(specified) > 1:
         raise ValueError(
-            "Only one of `tolerance` and `buffer` can be speciifed, not both."
+            "Only one of `tolerance`, `buffer`, and `distance` can be specified."
         )
 
     if not isinstance(geoms, geopandas.base.GeoPandasBase):
@@ -280,13 +297,21 @@ def _fuzzy_contiguity(geoms, ids, tolerance=None, buffer=None, predicate="inters
         minx, miny, maxx, maxy = geoms.total_bounds
         buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
 
-    if buffer is not None:
-        # Use dwithin predicate (requires GEOS >= 3.10)
+    if distance is not None:
+        # Use dwithin predicate directly (requires GEOS >= 3.10)
+        if shapely.geos_version < (3, 10, 0):
+            raise ValueError(
+                "The `distance` parameter requires GEOS >= 3.10. "
+                f"Current GEOS version is {'.'.join(map(str, shapely.geos_version))}. "
+                "Use `buffer` parameter instead for older GEOS versions."
+            )
         head, tail = geoms.sindex.query(
-            geoms.geometry, predicate="dwithin", distance=buffer
+            geoms.geometry, predicate="dwithin", distance=distance
         )
+    elif buffer is not None:
+        buffered = geoms.buffer(buffer, **kwargs)
+        head, tail = buffered.sindex.query(buffered.geometry, predicate=predicate)
     else:
-        # query tree based on set predicate
         head, tail = geoms.sindex.query(geoms.geometry, predicate=predicate)
 
     # remove self hits

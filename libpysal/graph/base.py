@@ -866,7 +866,13 @@ class Graph(SetOpsMixin):
 
     @classmethod
     def build_fuzzy_contiguity(
-        cls, geometry, tolerance=None, buffer=None, predicate="intersects", **kwargs
+        cls,
+        geometry,
+        tolerance=None,
+        buffer=None,
+        distance=None,
+        predicate="intersects",
+        **kwargs,
     ):
         """Generate Graph from fuzzy contiguity
 
@@ -898,20 +904,31 @@ class Graph(SetOpsMixin):
             shapely.Geometry objects is passed, Graph will assume a RangeIndex.
         tolerance : float, optional
             The percentage of the length of the minimum side of the bounding rectangle
-            for the ``geoms`` to use in determining the buffering distance. Either
-            ``tolerance`` or ``buffer`` may be specified but not both.
-            By default None.
+            for the ``geoms`` to use in determining the buffering distance. Converted
+            to an absolute distance and used with the ``buffer`` parameter behavior.
+            Either ``tolerance``, ``buffer``, or ``distance`` may be specified but not
+            more than one. By default None.
         buffer : float, optional
-            Exact buffering distance in the units of ``geoms.crs``. Either
-            ``tolerance`` or ``buffer`` may be specified but not both.
-            By default None.
+            Exact buffering distance in the units of ``geoms.crs``. The geometries
+            will be buffered by this amount and then the ``predicate`` will be applied.
+            This works with all GEOS versions. Either ``tolerance``, ``buffer``, or
+            ``distance`` may be specified but not more than one. By default None.
+        distance : float, optional
+            Exact search distance for the 'dwithin' predicate in units of ``geoms.crs``.
+            Uses the native GEOS dwithin predicate which is more efficient but requires
+            GEOS >= 3.10. Either ``tolerance``, ``buffer``, or ``distance`` may be
+            specified but not more than one. By default None.
         predicate : str, optional
             The predicate to use for determination of neighbors. Default is
             'intersects'. If None is passed, neighbours are determined based
             on the intersection of bounding boxes. See the documentation of
             ``geopandas.GeoSeries.sindex.query`` for allowed predicates.
+            When ``buffer`` or ``tolerance`` is specified, this predicate is used
+            on the buffered geometries. When ``distance`` is specified, the 'dwithin'
+            predicate is used directly (ignoring this parameter).
         **kwargs
-            Keyword arguments passed to ``geopandas.GeoSeries.buffer``.
+            Keyword arguments passed to ``geopandas.GeoSeries.buffer`` when using
+            the ``buffer`` or ``tolerance`` parameter.
 
         Returns
         -------
@@ -955,6 +972,13 @@ class Graph(SetOpsMixin):
         <Graph of 5 nodes and 14 nonzero edges indexed by
          ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
 
+        Example using distance (requires GEOS >= 3.10):
+
+        >>> fuzzy_contiguity = graph.Graph.build_fuzzy_contiguity(nybb, distance=20000)
+        >>> fuzzy_contiguity  # doctest: +SKIP
+        <Graph of 5 nodes and 14 nonzero edges indexed by
+         ['Staten Island', 'Queens', 'Brooklyn', 'Manhattan', 'Bronx']>
+
         """
         ids = _evaluate_index(geometry)
 
@@ -963,6 +987,7 @@ class Graph(SetOpsMixin):
             ids,
             tolerance=tolerance,
             buffer=buffer,
+            distance=distance,
             predicate=predicate,
             **kwargs,
         )

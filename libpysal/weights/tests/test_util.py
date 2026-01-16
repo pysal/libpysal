@@ -335,17 +335,13 @@ class Testutil:
         assert wnp.neighbors[0] == [23, 59, 152, 239]
         assert wnp.neighbors[23] == [0, 45, 59, 107, 152, 185, 246]
 
-    @pytest.mark.skipif(
-        __import__("shapely").geos_version < (3, 10, 0),
-        reason="dwithin predicate requires GEOS >= 3.10",
-    )
     def test_fuzzy_contiguity(self):
         rs = examples.get_path("map_RS_BR.shp")
         rs_df = gpd.read_file(rs)
         wf = fuzzy_contiguity(rs_df)
         assert wf.islands == []
         assert set(wf.neighbors[0]) == {239, 59, 152, 23}
-        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=0.4)
+        buff = fuzzy_contiguity(rs_df, buffering=True, buffer=0.2)
         assert set(buff.neighbors[0]) == {175, 119, 239, 59, 152, 246, 23, 107}
         rs_index = rs_df.set_index("NM_MUNICIP")
         index_w = fuzzy_contiguity(rs_index)
