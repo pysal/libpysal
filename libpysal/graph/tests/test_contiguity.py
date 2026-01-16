@@ -281,8 +281,6 @@ def test_block_contiguity(regimes):
     assert {f: n.tolist() for f, n in neighbors.items()} == wn_str
 
 
-
-
 @pytest.mark.network
 def test_fuzzy_contiguity(nybb):
     # integer
