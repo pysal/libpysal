@@ -298,12 +298,13 @@ def _fuzzy_contiguity(
         buffer = tolerance * 0.5 * abs(min(maxx - minx, maxy - miny))
 
     if distance is not None:
-        # Use dwithin predicate directly (requires GEOS >= 3.10)
-        if shapely.geos_version < (3, 10, 0):
+        # Use dwithin predicate directly (requires shapely >= 2.1)
+        shapely_version = tuple(map(int, shapely.__version__.split(".")[:2]))
+        if shapely_version < (2, 1):
             raise ValueError(
-                "The `distance` parameter requires GEOS >= 3.10. "
-                f"Current GEOS version is {'.'.join(map(str, shapely.geos_version))}. "
-                "Use `buffer` parameter instead for older GEOS versions."
+                "The `distance` parameter requires shapely >= 2.1. "
+                f"Current shapely version is {shapely.__version__}. "
+                "Use `buffer` parameter instead for older shapely versions."
             )
         head, tail = geoms.sindex.query(
             geoms.geometry, predicate="dwithin", distance=distance

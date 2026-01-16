@@ -1593,13 +1593,13 @@ def fuzzy_contiguity(
         if buffering:
             raise ValueError("Only one of `buffering` and `distance` can be specified.")
 
-        if shapely.geos_version < (3, 10, 0):
+        shapely_version = tuple(map(int, shapely.__version__.split(".")[:2]))
+        if shapely_version < (2, 1):
             raise ValueError(
-                "The `distance` parameter requires GEOS >= 3.10. "
-                f"Current GEOS version is "
-                f"{'.'.join(map(str, shapely.geos_version))}. "
+                "The `distance` parameter requires shapely >= 2.1. "
+                f"Current shapely version is {shapely.__version__}. "
                 "Use `buffering=True` and `buffer` parameter instead for "
-                "older GEOS versions."
+                "older shapely versions."
             )
         inp, res = gdf.sindex.query(
             gdf.geometry, predicate="dwithin", distance=distance

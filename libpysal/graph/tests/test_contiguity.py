@@ -15,7 +15,6 @@ import numpy
 import pandas
 import pytest
 import shapely
-from shapely import geos_version
 
 from libpysal.graph._contiguity import (
     _block_contiguity,
@@ -378,8 +377,8 @@ def test_fuzzy_contiguity_buffer(nybb):
 
 @pytest.mark.network
 @pytest.mark.skipif(
-    shapely.geos_version < (3, 10, 0),
-    reason="dwithin predicate requires GEOS >= 3.10",
+    tuple(map(int, shapely.__version__.split(".")[:2])) < (2, 1),
+    reason="distance parameter in sindex.query requires shapely >= 2.1",
 )
 def test_fuzzy_contiguity_distance(nybb):
     head, tail, weight = _fuzzy_contiguity(
