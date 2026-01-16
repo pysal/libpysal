@@ -175,7 +175,10 @@ def _kernel(
             d = sparse.csc_array(coordinates)
 
     if bandwidth is None:
-        bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
+        if d.data.size > 0:
+            bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
+        else:
+            bandwidth = 0.0
     elif bandwidth == "auto":
         if (kernel == "identity") or (kernel is None):
             bandwidth = numpy.nan  # ignored by identity
