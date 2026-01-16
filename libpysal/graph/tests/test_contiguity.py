@@ -376,15 +376,9 @@ def test_fuzzy_contiguity_buffer(nybb):
     numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
 
-try:
-    _geos_version = geos_version
-except (AttributeError, ImportError):
-    _geos_version = (0, 0, 0)
-
-
 @pytest.mark.network
 @pytest.mark.skipif(
-    _geos_version < (3, 10, 0),
+    shapely.geos_version < (3, 10, 0),
     reason="dwithin predicate requires GEOS >= 3.10",
 )
 def test_fuzzy_contiguity_distance(nybb):
