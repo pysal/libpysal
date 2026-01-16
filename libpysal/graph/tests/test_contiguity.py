@@ -330,34 +330,6 @@ def test_fuzzy_contiguity(nybb):
     )
     numpy.testing.assert_array_equal(weight, [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
-    # tolerance
-    head, tail, weight = _fuzzy_contiguity(
-        nybb.set_index("intID"), nybb["intID"], tolerance=0.05
-    )
-    numpy.testing.assert_array_equal(
-        head,
-        [5, 4, 4, 4, 3, 3, 3, 1, 1, 1, 2, 2],
-    )
-    numpy.testing.assert_array_equal(
-        tail,
-        [3, 3, 1, 2, 5, 4, 1, 4, 3, 2, 4, 1],
-    )
-    numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-
-    # buffer
-    head, tail, weight = _fuzzy_contiguity(
-        nybb.set_index("intID"), nybb["intID"], buffer=5000
-    )
-    numpy.testing.assert_array_equal(
-        head,
-        [5, 4, 4, 4, 3, 3, 3, 1, 1, 1, 2, 2],
-    )
-    numpy.testing.assert_array_equal(
-        tail,
-        [3, 3, 1, 2, 5, 4, 1, 4, 3, 2, 4, 1],
-    )
-    numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-
     # predicate
     head, tail, weight = _fuzzy_contiguity(
         nybb.set_index("intID"), nybb["intID"], predicate="within"
@@ -372,14 +344,11 @@ def test_fuzzy_contiguity(nybb):
     )
     numpy.testing.assert_array_equal(weight, [0, 0, 0, 0, 0])
 
-    with pytest.raises(ValueError, match="Only one"):
-        _fuzzy_contiguity(
-            nybb.set_index("intID"), nybb["intID"], tolerance=0.05, buffer=5000
-        )
 
-    # kwargs
+@pytest.mark.network
+def test_fuzzy_contiguity_buffer(nybb):
     head, tail, weight = _fuzzy_contiguity(
-        nybb.set_index("intID"), nybb["intID"], buffer=5000, resolution=2
+        nybb.set_index("intID"), nybb["intID"], tolerance=0.1
     )
     numpy.testing.assert_array_equal(
         head,
@@ -390,3 +359,55 @@ def test_fuzzy_contiguity(nybb):
         [3, 3, 1, 2, 5, 4, 1, 4, 3, 2, 4, 1],
     )
     numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    # buffer
+    head, tail, weight = _fuzzy_contiguity(
+        nybb.set_index("intID"), nybb["intID"], buffer=10000
+    )
+    numpy.testing.assert_array_equal(
+        head,
+        [5, 5, 4, 4, 4, 3, 3, 3, 1, 1, 1, 1, 2, 2],
+    )
+    numpy.testing.assert_array_equal(
+        tail,
+        [3, 1, 3, 1, 2, 5, 4, 1, 5, 4, 3, 2, 4, 1],
+    )
+    numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+
+@pytest.mark.network
+@pytest.mark.skipif(
+    tuple(map(int, shapely.__version__.split(".")[:2])) < (2, 1),
+    reason="distance parameter in sindex.query requires shapely >= 2.1",
+)
+def test_fuzzy_contiguity_distance(nybb):
+    head, tail, weight = _fuzzy_contiguity(
+        nybb.set_index("intID"), nybb["intID"], distance=10000
+    )
+    numpy.testing.assert_array_equal(
+        head,
+        [5, 4, 4, 4, 3, 3, 3, 1, 1, 1, 2, 2],
+    )
+    numpy.testing.assert_array_equal(
+        tail,
+        [3, 3, 1, 2, 5, 4, 1, 4, 3, 2, 4, 1],
+    )
+    numpy.testing.assert_array_equal(weight, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+
+@pytest.mark.network
+def test_fuzzy_contiguity_exclusive_params(nybb):
+    with pytest.raises(ValueError, match="Only one"):
+        _fuzzy_contiguity(
+            nybb.set_index("intID"), nybb["intID"], tolerance=0.1, buffer=10000
+        )
+
+    with pytest.raises(ValueError, match="Only one"):
+        _fuzzy_contiguity(
+            nybb.set_index("intID"), nybb["intID"], buffer=10000, distance=10000
+        )
+
+    with pytest.raises(ValueError, match="Only one"):
+        _fuzzy_contiguity(
+            nybb.set_index("intID"), nybb["intID"], tolerance=0.1, distance=10000
+        )
