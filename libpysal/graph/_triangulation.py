@@ -136,62 +136,7 @@ def _delaunay(coordinates, coplanar):
     Relies on scipy.spatial.Delaunay and numba to quickly construct
     a graph from the input set of points. Will be slower without numba,
     and will warn if this is missing.
-
-    Parameters
-    ----------
-    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
-        geometries containing locations to compute the delaunay triangulation.  If
-        a geopandas object with Point geoemtry is provided, the .geometry attribute
-        is used. If a numpy.ndarray with shapely geoemtry is used, then the
-        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
-        used, it is assumed to contain x, y coordinates.
-    ids : numpy.narray (default: None)
-        ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via Graph.build_kernel() will set this automatically from
-        the index of the input. Do not use this argument directly unless you intend
-        to set the indices separately from your input data. Otherwise, use
-        data.set_index(ids) to ensure ordering is respected. If None, then the index
-        from the input coordinates will be used.
-    bandwidth : float (default: None)
-        distance to use in the kernel computation. Should be on the same scale as
-        the input coordinates.
-    kernel : string or callable
-        kernel function to use in order to weight the output graph. See the kernel()
-        function for more details.
-    coplanar : string (default: "raise")
-        How to deal with coplanar points. Coplanar points make all triangulations
-        ill-posed, and thus they need to be addressed in order to create a valid graph.
-        This parameter must be one of the following:
-        * "raise": raise an error if coplanar points are present. This is default.
-        * "jitter": jitter the input points by a small value. This makes the resulting
-            depend on the seed provided to the triangulation function.
-        * "clique": expand coplanar points into a graph clique. This creates a
-            "unique points" triangulation using all of the unique locations in the data.
-            Then, co-located samples are connected within a site. Finally, co-located
-            samples are connected to other sites in the "unique points" triangulation.
-    seed : int (default: None)
-        An integer value used to ensure that the pseudorandom number generator provides
-        the same value over replications. By default, no seed is used, so results
-        will be random every time. This is only used if coplanar='jitter'.
-
-    Notes
-    -----
-    The Delaunay triangulation can result in quite a few non-local links among
-    spatial coordinates. For a more useful graph, consider the weights.Voronoi
-    constructor or the Gabriel graph.
-
-    The weights.Voronoi class builds a voronoi diagram among the points, clips the
-    Voronoi cells, and then constructs an adjacency graph among the clipped cells.
-    This graph among the clipped Voronoi cells generally represents the structure
-    of local adjacencies better than the "raw" Delaunay graph.
-
-    The weights.gabriel.Gabriel graph constructs a Delaunay graph, but only
-    includes the "short" links in the Delaunay graph.
-
-    However, if the unresricted Delaunay triangulation is needed, this class
-    will compute it much more quickly than Voronoi(coordinates, clip=None).
     """
-
     if not HAS_NUMBA:
         warnings.warn(
             "The numba package is used extensively in this module"
@@ -208,55 +153,7 @@ def _delaunay(coordinates, coplanar):
 @_validate_coplanar
 def _gabriel(coordinates, coplanar):
     """
-    Constructs the Gabriel graph of a set of points. This graph is a subset of
-    the Delaunay triangulation where only "short" links are retained. This
-    function is also accelerated using numba, and implemented on top of the
-    scipy.spatial.Delaunay class.
-
-    For a link (i,j) connecting node i to j in the Delaunay triangulation
-    to be retained in the Gabriel graph, it must pass a point set exclusion test:
-
-    1. Construct the circle C_ij containing link (i,j) as its diameter
-    2. If any other node k is contained within C_ij, then remove link (i,j)
-       from the graph.
-    3. Once all links are evaluated, the remaining graph is the Gabriel graph.
-
-    Parameters
-    ----------
-    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
-        geometries containing locations to compute the delaunay triangulation.  If
-        a geopandas object with Point geoemtry is provided, the .geometry attribute
-        is used. If a numpy.ndarray with shapely geoemtry is used, then the
-        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
-        used, it is assumed to contain x, y coordinates.
-    ids : numpy.narray (default: None)
-        ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via Graph.build_kernel() will set this automatically from
-        the index of the input. Do not use this argument directly unless you intend
-        to set the indices separately from your input data. Otherwise, use
-        data.set_index(ids) to ensure ordering is respected. If None, then the index
-        from the input coordinates will be used.
-    bandwidth : float (default: None)
-        distance to use in the kernel computation. Should be on the same scale as
-        the input coordinates.
-    kernel : string or callable
-        kernel function to use in order to weight the output graph. See the kernel()
-        function for more details.
-    coplanar : string (default: "raise")
-        How to deal with coplanar points. Coplanar points make all triangulations
-        ill-posed, and thus they need to be addressed in order to create a valid graph.
-        This parameter must be one of the following:
-        * "raise": raise an error if coplanar points are present. This is default.
-        * "jitter": jitter the input points by a small value. This makes the resulting
-            depend on the seed provided to the triangulation function.
-        * "clique": expand coplanar points into a graph clique. This creates a
-            "unique points" triangulation using all of the unique locations in the data.
-            Then, co-located samples are connected within a site. Finally, co-located
-            samples are connected to other sites in the "unique points" triangulation.
-    seed : int (default: None)
-        An integer value used to ensure that the pseudorandom number generator provides
-        the same value over replications. By default, no seed is used, so results
-        will be random every time. This is only used if coplanar='jitter'.
+    Constructs the Gabriel graph of a set of points.
     """
     if not HAS_NUMBA:
         warnings.warn(
@@ -284,52 +181,6 @@ def _gabriel(coordinates, coplanar):
 def _relative_neighborhood(coordinates, coplanar):
     """
     Constructs the Relative Neighborhood graph from a set of points.
-    This graph is a subset of the Delaunay triangulation, where only
-    "relative neighbors" are retained. Further, it is a superset of
-    the Minimum Spanning Tree, with additional "relative neighbors"
-    introduced.
-
-    A relative neighbor pair of points i,j must be closer than the
-    maximum distance between i (or j) and each other point k.
-    This means that the points are at least as close to one another
-    as they are to any other point.
-
-    Parameters
-    ----------
-    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
-        geometries containing locations to compute the delaunay triangulation.  If
-        a geopandas object with Point geoemtry is provided, the .geometry attribute
-        is used. If a numpy.ndarray with shapely geoemtry is used, then the
-        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
-        used, it is assumed to contain x, y coordinates.
-    ids : numpy.narray (default: None)
-        ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via Graph.build_kernel() will set this automatically from
-        the index of the input. Do not use this argument directly unless you intend
-        to set the indices separately from your input data. Otherwise, use
-        data.set_index(ids) to ensure ordering is respected. If None, then the index
-        from the input coordinates will be used.
-    bandwidth : float (default: None)
-        distance to use in the kernel computation. Should be on the same scale as
-        the input coordinates.
-    kernel : string or callable
-        kernel function to use in order to weight the output graph. See the kernel()
-        function for more details.
-    coplanar : string (default: "raise")
-        How to deal with coplanar points. Coplanar points make all triangulations
-        ill-posed, and thus they need to be addressed in order to create a valid graph.
-        This parameter must be one of the following:
-        * "raise": raise an error if coplanar points are present. This is default.
-        * "jitter": jitter the input points by a small value. This makes the resulting
-            depend on the seed provided to the triangulation function.
-        * "clique": expand coplanar points into a graph clique. This creates a
-            "unique points" triangulation using all of the unique locations in the data.
-            Then, co-located samples are connected within a site. Finally, co-located
-            samples are connected to other sites in the "unique points" triangulation.
-    seed : int (default: None)
-        An integer value used to ensure that the pseudorandom number generator provides
-        the same value over replications. By default, no seed is used, so results
-        will be random every time. This is only used if coplanar='jitter'.
     """
     if not HAS_NUMBA:
         warnings.warn(
@@ -350,83 +201,16 @@ def _relative_neighborhood(coordinates, coplanar):
 
 def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **kwargs):
     """
-    Compute contiguity weights according to a clipped
-    Voronoi diagram.
-
-    Parameters
-    ----------
-    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
-        geometries containing locations to compute the delaunay triangulation.  If
-        a geopandas object with Point geoemtry is provided, the .geometry attribute
-        is used. If a numpy.ndarray with shapely geoemtry is used, then the
-        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
-        used, it is assumed to contain x, y coordinates.
-    ids : numpy.narray (default: None)
-        ids to use for each sample in coordinates. Generally, construction functions
-        that are accessed via Graph.build_kernel() will set this automatically from
-        the index of the input. Do not use this argument directly unless you intend
-        to set the indices separately from your input data. Otherwise, use
-        data.set_index(ids) to ensure ordering is respected. If None, then the index
-    clip : str (default: 'bbox')
-        An overloaded option about how to clip the voronoi cells passed to
-        ``libpysal.cg.voronoi_frames()``.
-        Default is ``'bounding_box'``. Options are as follows.
-
-        * ``None`` -- No clip is applied. Voronoi cells may be arbitrarily
-          larger that the source map. Note that this many lead to cells that are many
-          orders of magnitude larger in extent than the original map. Not recommended.
-        * ``'bounding_box'`` -- Clip the voronoi cells to the
-          bounding box of the input points.
-        * ``'convex_hull'`` -- Clip the voronoi cells to the convex hull of
-          the input points.
-        * ``'alpha_shape'`` -- Clip the voronoi cells to the tightest hull that
-          contains all points (e.g. the smallest alpha shape, using
-          :func:`libpysal.cg.alpha_shape_auto`).
-        * ``shapely.Polygon`` -- Clip to an arbitrary Polygon.
-
-    rook : bool, optional
-        Contiguity method. If True, two geometries are considered neighbours if they
-        share at least one edge. If False, two geometries are considered neighbours
-        if they share at least one vertex. By default True.
-    coplanar : string (default: "raise")
-        How to deal with coplanar points. Coplanar points make all triangulations
-        ill-posed, and thus they need to be addressed in order to create a valid graph.
-        This parameter must be one of the following:
-        * "raise": raise an error if coplanar points are present. This is default.
-        * "jitter": jitter the input points by a small value. This makes the resulting
-            depend on the seed provided to the triangulation function.
-        * "clique": expand coplanar points into a graph clique. This creates a
-            "unique points" triangulation using all of the unique locations in the data.
-            Then, co-located samples are connected within a site. Finally, co-located
-            samples are connected to other sites in the "unique points" triangulation.
-
-    seed : int (default: None)
-        An integer value used to ensure that the pseudorandom number generator provides
-        the same value over replications. By default, no seed is used, so results
-        will be random every time. This is only used if coplanar='jitter'.
-    **kwargs : dict
-        Additional keyword arguments passed to `libpysal.cg.voronoi_frames`.
-        For example, `shrink` or `buffer`.
-
-    Notes
-    -----
-    In theory, the rook contiguity graph for a Voronoi diagram
-    is the delaunay triangulation of the generators of the
-    voronoi diagram. Yet, this is *not* the case when voronoi
-    cells are clipped to an arbitrary shape, including the
-    original bounding box of the input points or anything tighter.
-    This can arbitrarily delete links present in the delaunay.
-    However, clipped voronoi weights make sense over pure
-    delaunay triangulations in many applied contexts and
-    generally will remove "long" links in the delaunay graph.
+    Compute contiguity weights according to a clipped Voronoi diagram.
     """
+    # 1. Handle IDs manually
     if ids is None:
         if hasattr(coordinates, "index"):
             ids = coordinates.index.values
         else:
             ids = numpy.arange(len(coordinates))
 
-    # 2. Logic to handle Point-only checks
+    # 2. Logic to handle Point-only checks (Combined for Ruff)
     if (
         coplanar == "raise"
         and hasattr(coordinates, "geom_type")
@@ -436,9 +220,13 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
         if unique.shape != coordinates.shape:
             raise CoplanarError("Duplicate points detected.")
 
-    # 3. Calculation
+    # 3. Calculation - Forwarding kwargs to voronoi_frames
     cells = voronoi_frames(
-        coordinates, clip=clip, return_input=False, as_gdf=False, **kwargs
+        coordinates,
+        clip=clip,
+        return_input=False,
+        as_gdf=False,
+        **kwargs,
     )
     h, t, _ = _vertex_set_intersection(cells, rook=rook)
 
@@ -447,7 +235,7 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
     n = len(coordinates)
     mask = (h_arr < n) & (t_arr < n)
 
-    # 5. Map to the actual IDs (doing the decorator's job correctly)
+    # 5. Map to the actual IDs and create weights
     final_heads = ids[h_arr[mask]]
     final_tails = ids[t_arr[mask]]
     weights = numpy.ones(len(final_heads))
@@ -461,11 +249,7 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
 @njit
 def _edges_from_simplices(simplices):
     """
-    Construct the sets of links that correspond to the edges of each
-    simplex. Each simplex has three "sides," and thus six undirected
-    edges. Thus, the input should be a list of three-length tuples,
-    that are then converted into the six non-directed edges for
-    each simplex.
+    Construct the sets of links that correspond to the edges of each simplex.
     """
     edges = []
     for simplex in simplices:
@@ -483,20 +267,7 @@ def _edges_from_simplices(simplices):
 def _filter_gabriel(edges, coordinates):
     """
     For an input set of edges and coordinates, filter the input edges
-    depending on the Gabriel rule:
-
-    For each simplex, let i,j be the diameter of the circle defined by
-    edge (i,j), and let k be the third point defining the simplex. The
-    limiting case for the Gabriel rule is when k is also on the circle
-    with diameter (i,j). In this limiting case, then simplex ijk must
-    be a right triangle, and dij**2 = djk**2 + dki**2 (by thales theorem).
-
-    This means that when dij**2 > djk**2 + dki**2, then k is inside the circle.
-    In contrast, when dij**2 < djk**2 + dji*2, k is outside of the circle.
-
-    Therefore, it's sufficient to take each observation i, iterate over its
-    Delaunay neighbors j,k, and remove links whre dij**2 > djk**2 + dki**2
-    in order to construct the Gabriel graph.
+    depending on the Gabriel rule.
     """
     edge_pointer = 0
     n_edges = len(edges)
@@ -531,12 +302,6 @@ def _filter_gabriel(edges, coordinates):
 def _filter_relativehood(edges, coordinates, return_dkmax=False):
     """
     This is a direct reimplementation of the algorithm from Toussaint (1980), RNG-2
-
-    1. Compute the delaunay
-    2. for each edge of the delaunay (i,j), compute
-       dkmax = max(d(k,i), d(k,j)) for k in 1..n, k != i, j
-    3. for each edge of the delaunay (i,j), prune
-       if any dkmax is greater than d(i,j)
     """
     n_coordinates = coordinates.shape[0]
     out = []
