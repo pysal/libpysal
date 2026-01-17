@@ -27,8 +27,9 @@ except ModuleNotFoundError:
 
     HAS_NUMBA = False
 
-
-_VALID_GEOMETRY_TYPES = ["Point","Polygon","MultiPolygon"]
+_
+_VALID_GEOMETRY_TYPES = ["Point"]
+_VORONOI_GEOMETRY_TYPES = ["Point", "Polygon", "MultiPolygon"]
 
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
@@ -387,6 +388,7 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
         How to deal with coplanar points. Coplanar points make all triangulations
         ill-posed, and thus they need to be addressed in order to create a valid graph.
         This parameter must be one of the following:
+
         * "raise": raise an error if coplanar points are present. This is default.
         * "jitter": jitter the input points by a small value. This makes the resulting
             depend on the seed provided to the triangulation function.
@@ -394,11 +396,11 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
             "unique points" triangulation using all of the unique locations in the data.
             Then, co-located samples are connected within a site. Finally, co-located
             samples are connected to other sites in the "unique points" triangulation.
+
     seed : int (default: None)
         An integer value used to ensure that the pseudorandom number generator provides
         the same value over replications. By default, no seed is used, so results
         will be random every time. This is only used if coplanar='jitter'.
-
     **kwargs : dict
         Additional keyword arguments passed to `libpysal.cg.voronoi_frames`.
         For example, `shrink` or `buffer`.
@@ -444,8 +446,6 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
 
     return final_heads, final_tails, weights
 
-
-#### utilities
 
 
 @njit
