@@ -37,8 +37,6 @@ Serge Rey (sjsrey@gmail.com)
 """
 
 
-# This is in the module, rather than in `utils`, to ensure that it
-# can access `_VALID_GEOMETRY_TYPES` without defining a nested decorator.
 def _validate_coplanar(triangulator):
     """This is a decorator that validates input for coplanar points"""
 
@@ -70,8 +68,9 @@ def _validate_coplanar(triangulator):
             coordinates = _jitter_geoms(coordinates, seed=seed)
 
         # generate triangulation (triangulator is the wrapped function)
+        # Pass seed to triangulator only if it expects it; otherwise keep in kwargs
         heads_ix, tails_ix, coplanar_loopkup = triangulator(
-            coordinates, coplanar, **kwargs
+            coordinates, coplanar=coplanar, seed=seed, **kwargs
         )
 
         # process weights
@@ -100,17 +99,14 @@ def _validate_coplanar(triangulator):
 
         # reinsert points resolved via clique
         if (coplanar_loopkup.shape[0] > 0) & (coplanar == "clique"):
-            # Note that the kernel is only used to compute a fill value for the clique.
-            # In the case of the voronoi weights. Using boxcar with an infinite
-            # bandwidth also gives us the correct fill value for the voronoi weight: 1.
-            if kernel is None:  # kernel not set, weights are assumed binary
+            if kernel is None:
                 fill_value = 1
             else:
                 fill_value = _kernel_functions[kernel](
                     numpy.array([0]), bandwidth
                 ).item()
-            coplanar, _, nearest = coplanar_loopkup.T
-            adjtable = _induce_cliques(adjtable, coplanar, nearest, fill_value)
+            coplanar_val, _, nearest = coplanar_loopkup.T
+            adjtable = _induce_cliques(adjtable, coplanar_val, nearest, fill_value)
             adjtable["focal"] = ids[adjtable.focal]
             adjtable["neighbor"] = ids[adjtable.neighbor]
 
@@ -119,7 +115,6 @@ def _validate_coplanar(triangulator):
             adjtable["focal"] = ids[adjtable.focal]
             adjtable["neighbor"] = ids[adjtable.neighbor]
 
-        # return data for Graph.from_arrays
         return (
             adjtable.focal.values,
             adjtable.neighbor.values,
@@ -130,121 +125,77 @@ def _validate_coplanar(triangulator):
 
 
 @_validate_coplanar
-def _delaunay(coordinates, coplanar):
-    """
-    Constructor of the Delaunay graph of a set of input points.
-    Relies on scipy.spatial.Delaunay and numba to quickly construct
-    a graph from the input set of points. Will be slower without numba,
-    and will warn if this is missing.
-    """
+def _delaunay(coordinates, coplanar="raise", **kwargs):
     if not HAS_NUMBA:
         warnings.warn(
-            "The numba package is used extensively in this module"
-            " to accelerate the computation of graphs. Without numba,"
-            " these computations may become unduly slow on large data.",
+            "The numba package is used extensively in this module...",
             stacklevel=3,
         )
-    edges, _, coplanar = _voronoi_edges(coordinates, coplanar)
+    edges, _, coplanar_out = _voronoi_edges(coordinates, coplanar)
     heads_ix, tails_ix = edges.T
 
-    return heads_ix, tails_ix, coplanar
+    return heads_ix, tails_ix, coplanar_out
 
 
 @_validate_coplanar
-def _gabriel(coordinates, coplanar):
-    """
-    Constructs the Gabriel graph of a set of points.
-    """
+def _gabriel(coordinates, coplanar="raise", **kwargs):
     if not HAS_NUMBA:
         warnings.warn(
-            "The numba package is used extensively in this module"
-            " to accelerate the computation of graphs. Without numba,"
-            " these computations may become unduly slow on large data.",
+            "The numba package is used extensively in this module...",
             stacklevel=3,
         )
 
-    edges, points, coplanar = _voronoi_edges(coordinates, coplanar)
-    droplist = _filter_gabriel(
-        edges,
-        points,
-    )
+    edges, points, coplanar_out = _voronoi_edges(coordinates, coplanar)
+    droplist = _filter_gabriel(edges, points)
     edges = numpy.vstack(list(set(map(tuple, edges)).difference(set(droplist))))
     heads_ix, tails_ix = edges.T
     order = numpy.lexsort((tails_ix, heads_ix))
-    sorted_heads_ix = heads_ix[order]
-    sorted_tails_ix = tails_ix[order]
-
-    return sorted_heads_ix, sorted_tails_ix, coplanar
+    return heads_ix[order], tails_ix[order], coplanar_out
 
 
 @_validate_coplanar
-def _relative_neighborhood(coordinates, coplanar):
-    """
-    Constructs the Relative Neighborhood graph from a set of points.
-    """
+def _relative_neighborhood(coordinates, coplanar="raise", **kwargs):
     if not HAS_NUMBA:
         warnings.warn(
-            "The numba package is used extensively in this module"
-            " to accelerate the computation of graphs. Without numba,"
-            " these computations may become unduly slow on large data.",
+            "The numba package is used extensively in this module...",
             stacklevel=3,
         )
 
-    edges, points, coplanar = _voronoi_edges(coordinates, coplanar)
+    edges, points, coplanar_out = _voronoi_edges(coordinates, coplanar)
     output, _ = _filter_relativehood(edges, points, return_dkmax=False)
 
-    heads_ix, tails_ix, distance = zip(*output, strict=True)
-    heads_ix, tails_ix = numpy.asarray(heads_ix), numpy.asarray(tails_ix)
-
-    return heads_ix, tails_ix, coplanar
+    heads_ix, tails_ix, _ = zip(*output, strict=True)
+    return numpy.asarray(heads_ix), numpy.asarray(tails_ix), coplanar_out
 
 
-def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **kwargs):
-    """
-    Compute contiguity weights according to a clipped Voronoi diagram.
-    """
-    # 1. Handle IDs manually
+def _voronoi(
+    coordinates, coplanar="raise", ids=None, clip="bounding_box", rook=True, **kwargs
+):
+    # 1. Handle IDs
     if ids is None:
-        if hasattr(coordinates, "index"):
-            ids = coordinates.index.values
-        else:
-            ids = numpy.arange(len(coordinates))
+        ids = coordinates.index.values if hasattr(coordinates, "index") else numpy.arange(len(coordinates))
 
-    # 2. Logic to handle Point-only checks (Combined for Ruff)
-    if (
-        coplanar == "raise"
-        and hasattr(coordinates, "geom_type")
-        and (coordinates.geom_type == "Point").all()
-    ):
-        unique = numpy.unique(coordinates, axis=0)
-        if unique.shape != coordinates.shape:
-            raise CoplanarError("Duplicate points detected.")
+    # 2. Logic for Point-only checks (Fixing the Axis Error)
+    if coplanar == "raise" and hasattr(coordinates, "geom_type"):
+        if (coordinates.geom_type == "Point").all():
+            coords_pts = numpy.array(coordinates.tolist()) if coordinates.dtype == object else coordinates
+            unique = numpy.unique(coords_pts, axis=0)
+            if unique.shape != coords_pts.shape:
+                raise CoplanarError("Duplicate points detected.")
 
-    # 3. Calculation - Forwarding kwargs to voronoi_frames
-    cells = voronoi_frames(
-        coordinates,
-        clip=clip,
-        return_input=False,
-        as_gdf=False,
-        **kwargs,
-    )
+    # 3. Handle 'seed' (Fixing the Unexpected Keyword Error)
+    kwargs.pop("seed", None)
+
+    # 4. Calculation
+    cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False, **kwargs)
     h, t, _ = _vertex_set_intersection(cells, rook=rook)
 
-    # 4. Filter the "Ghost" Index (indices >= n)
+    # 5. Filter Ghost Indices
     h_arr, t_arr = numpy.array(h), numpy.array(t)
     n = len(coordinates)
     mask = (h_arr < n) & (t_arr < n)
 
-    # 5. Map to the actual IDs and create weights
-    final_heads = ids[h_arr[mask]]
-    final_tails = ids[t_arr[mask]]
-    weights = numpy.ones(len(final_heads))
-
-    return final_heads, final_tails, weights
-
-
-#### utilities
-
+    return ids[h_arr[mask]], ids[t_arr[mask]], numpy.ones(mask.sum())
 
 @njit
 def _edges_from_simplices(simplices):
