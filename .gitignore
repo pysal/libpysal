@@ -107,3 +107,12 @@ pysal/examples/snow_maps/soho_graph.shp
 pysal/examples/snow_maps/soho_graph.shx
 
 .asv
+
+# Sphinx generated files
+_build/
+build/
+doctrees/
+generated/
+*.doctree
+*.pickle
+.sphinx/
