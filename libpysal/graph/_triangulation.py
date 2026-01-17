@@ -27,11 +27,10 @@ except ModuleNotFoundError:
 
     HAS_NUMBA = False
 
-_
-_VALID_GEOMETRY_TYPES = ["Point"]
-_VORONOI_GEOMETRY_TYPES = ["Point", "Polygon", "MultiPolygon"]
 
-__author__ = """"
+_VALID_GEOMETRY_TYPES = ["Point", "Polygon", "MultiPolygon"]
+
+__author__ = """
 Levi John Wolf (levi.john.wolf@gmail.com)
 Martin Fleischmann (martin@martinfleischmann.net)
 Serge Rey (sjsrey@gmail.com)
@@ -63,7 +62,9 @@ def _validate_coplanar(triangulator):
 
         # validate geometry input
         coordinates, ids, _ = _validate_geometry_input(
-            coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES,
+            coordinates,
+            ids=ids,
+            valid_geometry_types=_VALID_GEOMETRY_TYPES,
         )
         if coplanar == "jitter":
             coordinates = _jitter_geoms(coordinates, seed=seed)
@@ -119,7 +120,11 @@ def _validate_coplanar(triangulator):
             adjtable["neighbor"] = ids[adjtable.neighbor]
 
         # return data for Graph.from_arrays
-        return adjtable.focal.values, adjtable.neighbor.values, adjtable.weight.values
+        return (
+            adjtable.focal.values,
+            adjtable.neighbor.values,
+            adjtable.weight.values,
+        )
 
     return tri_with_validation
 
@@ -343,14 +348,13 @@ def _relative_neighborhood(coordinates, coplanar):
     return heads_ix, tails_ix, coplanar
 
 
-
 def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **kwargs):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
 
     Parameters
-    ---------
+    ----------
     coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
         geometries containing locations to compute the delaunay triangulation.  If
         a geopandas object with Point geoemtry is provided, the .geometry attribute
@@ -369,7 +373,7 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
         Default is ``'bounding_box'``. Options are as follows.
 
         * ``None`` -- No clip is applied. Voronoi cells may be arbitrarily
-          larger that the source map. Note that this may lead to cells that are many
+          larger that the source map. Note that this many lead to cells that are many
           orders of magnitude larger in extent than the original map. Not recommended.
         * ``'bounding_box'`` -- Clip the voronoi cells to the
           bounding box of the input points.
@@ -388,7 +392,6 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
         How to deal with coplanar points. Coplanar points make all triangulations
         ill-posed, and thus they need to be addressed in order to create a valid graph.
         This parameter must be one of the following:
-
         * "raise": raise an error if coplanar points are present. This is default.
         * "jitter": jitter the input points by a small value. This makes the resulting
             depend on the seed provided to the triangulation function.
@@ -422,23 +425,28 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
             ids = coordinates.index.values
         else:
             ids = numpy.arange(len(coordinates))
-            
+
     # 2. Logic to handle Point-only checks
-    if coplanar == "raise" and hasattr(coordinates, "geom_type"):
-        if (coordinates.geom_type == "Point").all():
-            unique = numpy.unique(coordinates, axis=0)
-            if unique.shape != coordinates.shape:
-                raise CoplanarError("Duplicate points detected.")
+    if (
+        coplanar == "raise"
+        and hasattr(coordinates, "geom_type")
+        and (coordinates.geom_type == "Point").all()
+    ):
+        unique = numpy.unique(coordinates, axis=0)
+        if unique.shape != coordinates.shape:
+            raise CoplanarError("Duplicate points detected.")
 
     # 3. Calculation
-    cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False, **kwargs)
+    cells = voronoi_frames(
+        coordinates, clip=clip, return_input=False, as_gdf=False, **kwargs
+    )
     h, t, _ = _vertex_set_intersection(cells, rook=rook)
 
-    # 4. Filter the "Ghost" Index 4
+    # 4. Filter the "Ghost" Index (indices >= n)
     h_arr, t_arr = numpy.array(h), numpy.array(t)
     n = len(coordinates)
     mask = (h_arr < n) & (t_arr < n)
-    
+
     # 5. Map to the actual IDs (doing the decorator's job correctly)
     final_heads = ids[h_arr[mask]]
     final_tails = ids[t_arr[mask]]
@@ -446,6 +454,8 @@ def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **
 
     return final_heads, final_tails, weights
 
+
+#### utilities
 
 
 @njit
