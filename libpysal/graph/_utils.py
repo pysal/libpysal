@@ -214,7 +214,7 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
         geoms = geoms.copy()
         geoms.index = ids
         return coordinates, ids, geoms
-    
+
     # Check for geometry dtype only if geoms has a .dtype attribute
     # This prevents AttributeError on GeoDataFrames
     elif hasattr(geoms, "dtype") and isinstance(
@@ -233,7 +233,7 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
                 ids=ids,
                 valid_geometry_types=valid_geometry_types,
             )
-            
+
     raise ValueError(
         "input geometry type is not supported. Input must either be a "
         "geopandas.GeoSeries, geopandas.GeoDataFrame, a numpy array with a geometry "
