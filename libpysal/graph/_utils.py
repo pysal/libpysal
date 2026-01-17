@@ -194,7 +194,8 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
     the returned coordinates will always pertain to geoms, but may be
     longer than geoms (such as when geoms represents polygons).
     """
-    if isinstance(geoms, geopandas.GeoSeries | geopandas.GeoDataFrame):
+    # accept either GeoSeries or GeoDataFrame using tuple for robustness
+    if isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
         geoms = geoms.geometry
         if ids is None:
             ids = geoms.index
@@ -213,19 +214,26 @@ def _validate_geometry_input(geoms, ids=None, valid_geometry_types=None):
         geoms = geoms.copy()
         geoms.index = ids
         return coordinates, ids, geoms
-    elif isinstance(geoms.dtype, geopandas.array.GeometryDtype):
+    
+    # Check for geometry dtype only if geoms has a .dtype attribute
+    # This prevents AttributeError on GeoDataFrames
+    elif hasattr(geoms, "dtype") and isinstance(
+        geoms.dtype, geopandas.array.GeometryDtype
+    ):
         return _validate_geometry_input(
             geopandas.GeoSeries(geoms),
             ids=ids,
             valid_geometry_types=valid_geometry_types,
         )
     else:
+        # Check for numeric point array (nx2)
         if (geoms.ndim == 2) and (geoms.shape[1] == 2):
             return _validate_geometry_input(
                 geopandas.points_from_xy(*geoms.T),
                 ids=ids,
                 valid_geometry_types=valid_geometry_types,
             )
+            
     raise ValueError(
         "input geometry type is not supported. Input must either be a "
         "geopandas.GeoSeries, geopandas.GeoDataFrame, a numpy array with a geometry "
