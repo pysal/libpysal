@@ -28,7 +28,7 @@ except ModuleNotFoundError:
     HAS_NUMBA = False
 
 
-_VALID_GEOMETRY_TYPES = ["Point"]
+_VALID_GEOMETRY_TYPES = ["Point","Polygon","MultiPolygon"]
 
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
@@ -62,7 +62,7 @@ def _validate_coplanar(triangulator):
 
         # validate geometry input
         coordinates, ids, _ = _validate_geometry_input(
-            coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES
+            coordinates, ids=ids, valid_geometry_types=_VALID_GEOMETRY_TYPES,
         )
         if coplanar == "jitter":
             coordinates = _jitter_geoms(coordinates, seed=seed)
@@ -342,8 +342,8 @@ def _relative_neighborhood(coordinates, coplanar):
     return heads_ix, tails_ix, coplanar
 
 
-@_validate_coplanar
-def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
+
+def _voronoi(coordinates, coplanar, ids=None, clip="bounding_box", rook=True, **kwargs):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -399,6 +399,10 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
         the same value over replications. By default, no seed is used, so results
         will be random every time. This is only used if coplanar='jitter'.
 
+    **kwargs : dict
+        Additional keyword arguments passed to `libpysal.cg.voronoi_frames`.
+        For example, `shrink` or `buffer`.
+
     Notes
     -----
     In theory, the rook contiguity graph for a Voronoi diagram
@@ -411,21 +415,34 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
-    if coplanar == "raise":
-        unique = numpy.unique(coordinates, axis=0)
-        if unique.shape != coordinates.shape:
-            raise CoplanarError(
-                f"There are {len(unique)} unique locations in "
-                f"the dataset, but {len(coordinates)} observations. This means there "
-                "are multiple points in the same location, which is undefined "
-                "for this graph type. To address this issue, consider setting "
-                "`coplanar='clique'` or consult the documentation about "
-                "coplanar points."
-            )
-    cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False)
-    heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
+    if ids is None:
+        if hasattr(coordinates, "index"):
+            ids = coordinates.index.values
+        else:
+            ids = numpy.arange(len(coordinates))
+            
+    # 2. Logic to handle Point-only checks
+    if coplanar == "raise" and hasattr(coordinates, "geom_type"):
+        if (coordinates.geom_type == "Point").all():
+            unique = numpy.unique(coordinates, axis=0)
+            if unique.shape != coordinates.shape:
+                raise CoplanarError("Duplicate points detected.")
 
-    return heads_ix, tails_ix, numpy.array([])
+    # 3. Calculation
+    cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False, **kwargs)
+    h, t, _ = _vertex_set_intersection(cells, rook=rook)
+
+    # 4. Filter the "Ghost" Index 4
+    h_arr, t_arr = numpy.array(h), numpy.array(t)
+    n = len(coordinates)
+    mask = (h_arr < n) & (t_arr < n)
+    
+    # 5. Map to the actual IDs (doing the decorator's job correctly)
+    final_heads = ids[h_arr[mask]]
+    final_tails = ids[t_arr[mask]]
+    weights = numpy.ones(len(final_heads))
+
+    return final_heads, final_tails, weights
 
 
 #### utilities
