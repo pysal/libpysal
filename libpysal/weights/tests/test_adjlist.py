@@ -23,7 +23,7 @@ class TestAdjlist:
 
     def test_round_trip_drop_islands_false(self):
         adjlist = self.knownW.to_adjlist(
-            remove_symmetric=False, drop_islands=True
+            remove_symmetric=False, drop_islands=False
         ).astype(int)
         w_from_adj = weights.W.from_adjlist(adjlist)
         np.testing.assert_allclose(
