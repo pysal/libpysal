@@ -378,7 +378,8 @@ class W:
         for ix, chunk in grouper:
             neighbors_to_ix = chunk[neighbor_col].values
             weights_to_ix = chunk[weight_col].values
-            mask = neighbors_to_ix != ix
+            # Allow self-loops with weight 0 (representing islands), but filter out other self-loops
+            mask = ~((neighbors_to_ix == ix) & (weights_to_ix != 0))
             neighbors[ix] = neighbors_to_ix[mask].tolist()
             weights[ix] = weights_to_ix[mask].tolist()
         return cls(neighbors=neighbors, weights=weights)
