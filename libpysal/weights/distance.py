@@ -385,6 +385,14 @@ class Kernel(W):
                   If true, set diagonal weights = 1.0, if false (default),
                   diagonals weights are set to value according to kernel
                   function.
+    distance_metric : str
+                      Defines how distance is calculated between two observations.
+                      Options : ['euclidean','manhattan','chebyshev','minkowski','arc'].
+                      If a `radius` is specified, `distance_metric` is automatically set to 'arc'.
+    radius      : float
+                  It sets a maximum distance cutoff for neighbors to be considered,
+                  Observations with distance <= radius are considered ,else their weights are set to 0.
+
     function    : {'triangular','uniform','quadratic','quartic','gaussian'}
                   kernel function defined as follows with
 
