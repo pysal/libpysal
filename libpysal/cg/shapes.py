@@ -1407,15 +1407,25 @@ class Polygon(Geometry):
         else:
             self._part_rings = [Ring(vertices)]
             self._vertices = [clockwise(vertices)]
-        if holes is not None and holes != []:
-            if isinstance(holes[0], list):
+
+        self._holes = [[] for _ in self._vertices]
+
+        if holes:
+            first_hole = holes[0]
+            if isinstance(first_hole, list) and not isinstance(
+                first_hole[0][0], (int, float)
+            ):
+                for i, part_holes in enumerate(holes):
+                    if i < len(self._holes):
+                        self._holes[i] = [clockwise(h) for h in part_holes]
+                        for h in part_holes:
+                            self._hole_rings.append(Ring(h))
+            elif isinstance(first_hole, list):
                 self._hole_rings = list(map(Ring, holes))
-                self._holes = [clockwise(hole) for hole in holes]
+                self._holes[0] = [clockwise(hole) for hole in holes]
             else:
+                self._holes[0] = [clockwise(holes)]
                 self._hole_rings = [Ring(holes)]
-                self._holes = [clockwise(holes)]
-        else:
-            self._holes = [[]]
         self._reset_props()
 
     @classmethod
@@ -1432,10 +1442,8 @@ class Polygon(Geometry):
             holes = []
             for polygon in geo["coordinates"]:
                 verts = [[Point(pt) for pt in part] for part in polygon]
-                parts += verts[0:1]
-                holes += verts[1:]
-            if not holes:
-                holes = None
+                parts.append(verts[0])
+                holes.append(verts[1:])
             return cls(parts, holes)
         else:
             verts = [[Point(pt) for pt in part] for part in geo["coordinates"]]
@@ -1448,13 +1456,14 @@ class Polygon(Geometry):
         if len(self.parts) > 1:
             geo = {
                 "type": "MultiPolygon",
-                "coordinates": [[part] for part in self.parts],
+                "coordinates": [],
             }
-            if self._holes[0]:
-                geo["coordinates"][0] += self._holes
+            for i in range(len(self._vertices)):
+                part_coords = [self._vertices[i]] + self._holes[i]
+                geo["coordinates"].append(part_coords)
             return geo
         if self._holes[0]:
-            return {"type": "Polygon", "coordinates": self._vertices + self._holes}
+            return {"type": "Polygon", "coordinates": self._vertices + self._holes[0]}
         else:
             return {"type": "Polygon", "coordinates": self._vertices}
 
@@ -1515,7 +1524,11 @@ class Polygon(Geometry):
         1
         """
 
-        return [list(part) for part in self._holes]
+        all_holes = []
+        for part in self._holes:
+            for ring in part:
+                all_holes.append(list(ring))
+        return all_holes
 
     @property
     def parts(self) -> list:
@@ -1533,7 +1546,11 @@ class Polygon(Geometry):
         2
         """
 
-        return [list(part) for part in self._vertices]
+        all_parts = [list(part) for part in self._vertices]
+        for part_holes in self._holes:
+            for hole in part_holes:
+                all_parts.append(list(hole))
+        return all_parts
 
     @property
     def perimeter(self) -> int | float:
@@ -1557,7 +1574,8 @@ class Polygon(Geometry):
         )
 
         if self._perimeter is None:
-            self._perimeter = sum_perim(self._vertices) + sum_perim(self._holes)
+            flat_holes = [ring for part in self._holes for ring in part]
+            self._perimeter = sum_perim(self._vertices) + sum_perim(flat_holes)
 
         return self._perimeter
 
@@ -1649,7 +1667,8 @@ class Polygon(Geometry):
         sum_area = lambda part_type: sum(  # noqa: E731
             [part_area(part) for part in part_type]
         )
-        _area = sum_area(self._vertices) - sum_area(self._holes)
+        flat_holes = [ring for part in self._holes for ring in part]
+        _area = sum_area(self._vertices) - sum_area(flat_holes)
 
         return _area
 

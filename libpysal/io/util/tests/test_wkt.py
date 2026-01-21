@@ -44,8 +44,8 @@ class TesttestWKTParser:
             [(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0, 1.0), (1.0, 1.0)],
             [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0), (2.0, 2.0)],
         ]
-        assert poly.centroid == (2.9705882352941178, 2.9705882352941178)
-        assert poly.area == 17.0
+        assert poly.centroid == (3.033333333333333, 3.033333333333333)
+        assert poly.area == 15.0
 
     def test_from_wkt(self):
         for wkt in self.unsupported:

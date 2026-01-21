@@ -31,14 +31,13 @@ class WKTParser:
     Inspect our WKT polygon.
 
     >>> parser(p).parts
-    [[(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0, 1.0), (1.0, 1.0)],
-     [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0), (2.0, 2.0)]]
+    [[(1.0, 1.0), (1.0, 5.0), (5.0, 5.0), (5.0, 1.0), (1.0, 1.0)], [(2.0, 2.0), (2.0, 3.0), (3.0, 3.0), (3.0, 2.0), (2.0, 2.0)]]
 
     >>> parser(p).centroid
-    (2.9705882352941178, 2.9705882352941178)
+    (3.033333333333333, 3.033333333333333)
 
     >>> parser(p).area
-    17.0
+    15.0
 
     Inspect ``pt``, our WKT point object.
 
@@ -93,11 +92,14 @@ class WKTParser:
     def Polygon(self, geo_str):
         """Returns a ``libpysal.cg.Polygon`` object."""
         rings = self.regExes["parenComma"].split(geo_str.strip())
-        for i, ring in enumerate(rings):
+        parsed_rings = []
+        for ring in rings:
             ring = self.regExes["trimParens"].match(ring).groups()[0]
-            ring = self.LineString(ring).vertices
-            rings[i] = ring
-        return cg.Polygon(rings)
+            parsed_rings.append(self.LineString(ring).vertices)
+
+        exterior = parsed_rings[0]
+        holes = parsed_rings[1:] if len(parsed_rings) > 1 else []
+        return cg.Polygon(exterior, holes)
 
     def fromWKT(self, wkt):
         """Returns geometric representation from WKT or ``None``.
