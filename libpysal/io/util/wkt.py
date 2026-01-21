@@ -1,4 +1,4 @@
-# ruff: noqa: N802, N815
+# ruff: noqa: N802, N815, E501
 
 import re
 

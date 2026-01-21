@@ -1394,7 +1394,11 @@ class Polygon(Geometry):
         self._part_rings = []
         self._hole_rings = []
 
+        def list_to_points(part: list) -> list:
+            return [Point(pt) if not isinstance(pt, Point) else pt for pt in part]
+
         def clockwise(part: list) -> list:
+            part = list_to_points(part)
             if standalone.is_clockwise(part):
                 return part[:]
             else:
@@ -1508,7 +1512,9 @@ class Polygon(Geometry):
         4
         """
 
-        return sum(list(self._vertices), []) + sum(list(self._holes), [])
+        flat_vertices = sum(self._vertices, [])
+        flat_holes = [pt for part in self._holes for ring in part for pt in ring]
+        return flat_vertices + flat_holes
 
     @property
     def holes(self) -> list:
@@ -1528,6 +1534,8 @@ class Polygon(Geometry):
         for part in self._holes:
             for ring in part:
                 all_holes.append(list(ring))
+        if not all_holes:
+            return [[]]
         return all_holes
 
     @property
