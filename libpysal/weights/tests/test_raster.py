@@ -105,3 +105,60 @@ class Testraster:
         )
         w = Queen.from_xarray(da)
         assert w.n == 97232
+
+
+class TestNodata:
+    def setup_method(self):
+        self.xr = pytest.importorskip("xarray")
+
+    def test_nan_nodata_float_raster_not_masked(self):
+        """
+        Float rasters with NaN nodata should exclude NaN cells from contiguity,
+        but current logic does not mask them since `ser != np.nan` is always True.
+        """
+        data = np.array([[1.0, 1.0, 1.0], [1.0, np.nan, 1.0], [1.0, 1.0, 1.0]])
+        da = self.xr.DataArray(data, dims=("y", "x"))
+
+        # Expected: center NaN pixel excluded -> 8 valid cells
+        # Actual (current bug): NaN is not masked -> 9 cells
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 8
+
+    def test_rio_nodata(self):
+        """
+        Raster with da.rio.nodata should be correctly masked.
+        This guards existing behavior for rioxarray.
+        """
+        pytest.importorskip("rioxarray")
+        import rioxarray  # noqa: F401
+
+        data = np.array([[1, 1, 1], [1, -9999, 1], [1, 1, 1]])
+        # xarray with rioxarray needs coords to be valid usually
+        # for some ops, but write_nodata might be fine
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        da = da.rio.write_nodata(-9999)
+
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 8
+
+    def test_attrs_nodata(self):
+        """
+        Raster with da.attrs['nodatavals'] should be correctly masked.
+        This guards backward compatibility.
+        """
+        data = np.array([[1, 1, 1], [1, -1, 1], [1, 1, 1]], dtype=int)
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        da.attrs["nodatavals"] = (-1,)
+
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 8
+
+    def test_no_nodata(self):
+        """
+        Raster without nodata should include all pixels.
+        """
+        data = np.array([[1.0, 1.0, 1.0], [1.0, 2.0, 1.0], [1.0, 1.0, 1.0]])
+        da = self.xr.DataArray(data, dims=("y", "x"))
+
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 9

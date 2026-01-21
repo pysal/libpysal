@@ -353,11 +353,22 @@ def _da2wsp(
     ser = da.to_series()
     dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
     nodata = get_nodata(da)
-    if nodata is not None:
-        mask = (ser != nodata).to_numpy()
+
+    values = ser.to_numpy()
+    mask = None
+
+    # Handle NaN masking for float rasters (explicit or implicit nodata)
+    if np.issubdtype(values.dtype, np.floating) and (
+        nodata is None or (isinstance(nodata, float) and np.isnan(nodata))
+    ):
+        mask = ~np.isnan(values)
+    else:
+        mask = values != nodata
+
+    if mask is not None:
         ids = np.where(mask)[0]
         id_map = _idmap(ids, mask, dtype)
-        ser = ser[ser != nodata]
+        ser = ser[mask]
     else:
         ids = np.arange(len(ser), dtype=dtype)
         id_map = ids.copy()
@@ -393,7 +404,7 @@ def _da2wsp(
     else:
         # Fallback method to build sparse matrix
         sw = lat2SW(*shape, criterion)
-        if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
+        if mask is not None:
             sw = sw[mask]
             sw = sw[:, mask]
         return sw, ser
