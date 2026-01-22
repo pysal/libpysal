@@ -143,12 +143,11 @@ def _kernel(
             d = sparse.csc_array((values, (rows, cols)), shape=coordinates.shape)
     elif (
         isinstance(taper, (float, int))
-        and not isinstance(taper, bool)
-        and (metric in ("euclidean", "manhattan", "cityblock", "minkowski"))
+        and (metric == "euclidean")
     ):
         d = _distance_band(coordinates, taper)
         if exclude_self_weights:
-            d = d - sparse.diags(d.diagonal())
+            d = d - sparse.diags_array(d.diagonal())
     else:
         if metric != "precomputed":
             dist_kwds = {}
