@@ -141,7 +141,7 @@ def _kernel(
             rows, cols = numpy.where(mask)
             values = coordinates[mask]
             d = sparse.csc_array((values, (rows, cols)), shape=coordinates.shape)
-    elif isinstance(taper, (float, int)) and (metric == "euclidean"):
+    elif (type(taper) in (float, int)) and (metric == "euclidean"):
         d = _distance_band(coordinates, taper)
         if exclude_self_weights:
             d = d - sparse.diags_array(d.diagonal())
@@ -179,7 +179,10 @@ def _kernel(
             d = sparse.csc_array(coordinates)
 
     if bandwidth is None:
-        bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
+        if d.data.size > 0:
+            bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
+        else:
+            bandwidth = numpy.nan
     elif bandwidth == "auto":
         if (kernel == "identity") or (kernel is None):
             bandwidth = numpy.nan  # ignored by identity
