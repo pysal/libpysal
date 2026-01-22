@@ -141,10 +141,7 @@ def _kernel(
             rows, cols = numpy.where(mask)
             values = coordinates[mask]
             d = sparse.csc_array((values, (rows, cols)), shape=coordinates.shape)
-    elif (
-        isinstance(taper, (float, int))
-        and (metric == "euclidean")
-    ):
+    elif isinstance(taper, (float, int)) and (metric == "euclidean"):
         d = _distance_band(coordinates, taper)
         if exclude_self_weights:
             d = d - sparse.diags_array(d.diagonal())
