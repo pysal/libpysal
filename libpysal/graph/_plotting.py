@@ -16,6 +16,8 @@ def _plot(
     ax=None,
     figsize=None,
     limit_extent=False,
+    color_by_weight=False,
+    cmap="viridis",
 ):
     """Plot edges and nodes of the Graph
 
@@ -61,6 +63,12 @@ def _plot(
     limit_extent : bool, optional
         limit the extent of the axis to the extent of the plotted graph, by default
         False
+    color_by_weight : bool, optional
+        If True, edges are colored by their weights using the specified colormap.
+        If False, all edges use the same color. By default False
+    cmap : str, optional
+        Colormap to use when ``color_by_weight=True``. Can be any valid matplotlib
+        colormap name (e.g., "viridis", "plasma", "coolwarm"). By default "viridis"
 
     Returns
     -------
@@ -70,6 +78,7 @@ def _plot(
     try:
         import matplotlib.pyplot as plt
         from matplotlib import collections
+        import matplotlib.colors as mcolors
 
     except (ImportError, ModuleNotFoundError) as err:
         raise ImportError("matplotlib is required for `plot`.") from err
@@ -84,15 +93,18 @@ def _plot(
         node_kws = {"color": color}
 
     if edge_kws is not None:
-        if "color" not in edge_kws:
+        if "color" not in edge_kws and not color_by_weight:
             edge_kws["color"] = color
     else:
-        edge_kws = {"color": color}
+        if not color_by_weight:
+            edge_kws = {"color": color}
+        else:
+            edge_kws = {}
 
     # get array of coordinates in the order reflecting graph_obj._adjacency.index.codes
     # we need to work on int position to allow fast filtering of duplicated edges and
     # cannot rely on gdf remaining in the same order between Graph creation and
-    # plotting
+    # plotting  
     coords = shapely.get_coordinates(
         gdf.reindex(graph_obj.unique_ids).representative_point()
     )
@@ -101,14 +113,37 @@ def _plot(
         if not pd.api.types.is_list_like(focal):
             focal = [focal]
         subset = graph_obj._adjacency[focal]
-        codes = subset.index.codes
+        codes = subset.index.codes 
 
     else:
         codes = graph_obj._adjacency.index.codes
 
     # avoid plotting both ij and ji
-    edges = np.unique(np.sort(np.column_stack([codes]).T, axis=1), axis=0)
+    edges, indices = np.unique(
+        np.sort(np.column_stack([codes]).T, axis=1), return_index=True, axis=0
+    )
     lines = coords[edges]
+
+    if color_by_weight:
+        if focal is not None:
+            weights = subset.iloc[indices].values
+        else:
+            weights = graph_obj._adjacency.iloc[indices].values
+
+        if len(weights) > 0 and weights.max() != weights.min():
+            norm = mcolors.Normalize(vmin=weights.min(), vmax=weights.max())
+        else:
+            norm = mcolors.Normalize(vmin=0, vmax=1)
+
+        colormap = plt.get_cmap(cmap)
+        colors = colormap(norm(weights))
+
+        edge_kws["colors"] = colors
+        edge_kws.pop("color", None)
+
+        sm = plt.cm.ScalarMappable(cmap=colormap, norm=norm)
+        sm.set_array([])
+        plt.colorbar(sm, ax=ax, label="Weight")
 
     ax.add_collection(collections.LineCollection(lines, **edge_kws))
 
@@ -252,7 +287,7 @@ def _explore_graph(
             # focals
             geoms.iloc[np.unique(subset.index.codes[0])].explore(
                 m=m, **dict(node_kws, **focal_kws)
-            )
+            ) 
         else:
             geoms.explore(m=m, **node_kws)
     return m
