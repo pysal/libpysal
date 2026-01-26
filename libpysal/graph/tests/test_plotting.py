@@ -12,6 +12,8 @@ from libpysal.graph.tests.test_utils import fetch_map_string
 class TestPlotting:
     def setup_method(self):
         _ = pytest.importorskip("matplotlib")
+        import matplotlib
+        matplotlib.use("Agg")  # Use non-interactive backend for CI
 
         self.nybb = geopandas.read_file(geodatasets.get_path("nybb"))
         self.G = graph.Graph.build_contiguity(self.nybb)
