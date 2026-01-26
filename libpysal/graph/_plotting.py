@@ -104,7 +104,7 @@ def _plot(
     # get array of coordinates in the order reflecting graph_obj._adjacency.index.codes
     # we need to work on int position to allow fast filtering of duplicated edges and
     # cannot rely on gdf remaining in the same order between Graph creation and
-    # plotting  
+    # plotting
     coords = shapely.get_coordinates(
         gdf.reindex(graph_obj.unique_ids).representative_point()
     )
@@ -113,7 +113,7 @@ def _plot(
         if not pd.api.types.is_list_like(focal):
             focal = [focal]
         subset = graph_obj._adjacency[focal]
-        codes = subset.index.codes 
+        codes = subset.index.codes
 
     else:
         codes = graph_obj._adjacency.index.codes
@@ -287,7 +287,7 @@ def _explore_graph(
             # focals
             geoms.iloc[np.unique(subset.index.codes[0])].explore(
                 m=m, **dict(node_kws, **focal_kws)
-            ) 
+            )
         else:
             geoms.explore(m=m, **node_kws)
     return m
