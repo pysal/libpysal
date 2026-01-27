@@ -141,10 +141,20 @@ def _kernel(
             rows, cols = numpy.where(mask)
             values = coordinates[mask]
             d = sparse.csc_array((values, (rows, cols)), shape=coordinates.shape)
-    elif (type(taper) in (float, int)) and (metric == "euclidean"):
-        d = _distance_band(coordinates, taper)
+    elif isinstance(taper, int | float) and (metric == "euclidean"):
+        if taper is False:
+            threshold = numpy.inf
+        else:
+            threshold = bandwidth if taper is True else taper
+            if threshold is None:
+                threshold = numpy.inf
+        d = _distance_band(coordinates, threshold)
         if exclude_self_weights:
-            d = d - sparse.diags_array(d.diagonal())
+            mask = d.tocoo().row != d.tocoo().col
+            d = sparse.csc_array(
+                (d.tocoo().data[mask], (d.tocoo().row[mask], d.tocoo().col[mask])),
+                shape=d.tocoo().shape,
+            )
     else:
         if metric != "precomputed":
             dist_kwds = {}
