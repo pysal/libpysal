@@ -183,3 +183,29 @@ class TestAdjlist:
         manual_neighbors = w.to_adjlist().groupby("focal").neighbor.agg(list).to_dict()
         for focal, neighbors in w.neighbors.items():
             assert set(manual_neighbors[focal]) == set(neighbors)
+
+    def test_from_adjlist_missing_weight_column(self):
+        """Test that from_adjlist handles missing weight column correctly."""
+        import pandas as pd
+
+        adjlist = pd.DataFrame(
+            {"focal": [0, 0, 1, 1, 2], "neighbor": [1, 2, 0, 2, 0]}
+        )
+        # Should not raise AttributeError
+        w = weights.W.from_adjlist(adjlist)
+        assert w.weights[0] == [1, 1]
+        assert w.weights[1] == [1, 1]
+        assert w.weights[2] == [1]
+
+    def test_from_adjlist_custom_weight_column_missing(self):
+        """Test that from_adjlist handles missing custom weight column."""
+        import pandas as pd
+
+        # Create adjlist without custom weight column
+        adjlist = pd.DataFrame(
+            {"focal": [0, 1], "neighbor": [1, 0]}
+        )
+        # Should not raise AttributeError when weight_col is specified but missing
+        w = weights.W.from_adjlist(adjlist, weight_col="custom_weight")
+        assert w.weights[0] == [1]
+        assert w.weights[1] == [1]
