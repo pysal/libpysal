@@ -188,9 +188,7 @@ class TestAdjlist:
         """Test that from_adjlist handles missing weight column correctly."""
         import pandas as pd
 
-        adjlist = pd.DataFrame(
-            {"focal": [0, 0, 1, 1, 2], "neighbor": [1, 2, 0, 2, 0]}
-        )
+        adjlist = pd.DataFrame({"focal": [0, 0, 1, 1, 2], "neighbor": [1, 2, 0, 2, 0]})
         # Should not raise AttributeError
         w = weights.W.from_adjlist(adjlist)
         assert w.weights[0] == [1, 1]
@@ -202,9 +200,7 @@ class TestAdjlist:
         import pandas as pd
 
         # Create adjlist without custom weight column
-        adjlist = pd.DataFrame(
-            {"focal": [0, 1], "neighbor": [1, 0]}
-        )
+        adjlist = pd.DataFrame({"focal": [0, 1], "neighbor": [1, 0]})
         # Should not raise AttributeError when weight_col is specified but missing
         w = weights.W.from_adjlist(adjlist, weight_col="custom_weight")
         assert w.weights[0] == [1]
