@@ -176,7 +176,7 @@ def nodata_from_attrs(attrs):
     candidates = ["_FillValue", "missing_value", "fill_value", "nodata", "nodatavals"]
     for i in candidates:
         if i in attrs:
-            if isinstance(i, tuple):
+            if isinstance(attrs[i], tuple):
                 return attrs[i][0]
             else:
                 return attrs[i]
