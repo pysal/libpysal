@@ -358,9 +358,17 @@ def _da2wsp(
     mask = None
 
     # Handle NaN masking for float rasters (explicit or implicit nodata)
-    if np.issubdtype(values.dtype, np.floating) and (
-        nodata is None or (isinstance(nodata, float) and np.isnan(nodata))
-    ):
+    # We check if nodata is None (implicit) or a nan (explicit)
+    # This handles both python float('nan') and numpy scalar np.nan
+    is_nan_nodata = False
+    if nodata is None:
+        is_nan_nodata = True
+    elif isinstance(nodata, (float, np.floating)) and np.isnan(nodata):
+        is_nan_nodata = True
+
+    if np.issubdtype(values.dtype, np.floating) and is_nan_nodata:
+        # We cannot use `values != nodata` when nodata is np.nan because
+        # np.nan != np.nan is True, which fails to mask the nodata values.
         mask = ~np.isnan(values)
     else:
         mask = values != nodata

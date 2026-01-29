@@ -162,3 +162,42 @@ class TestNodata:
 
         wsp = raster.da2WSP(da)
         assert wsp.n == 9
+
+    def test_nan_nodata_numpy_scalar(self):
+        """
+        Verify that using a numpy scalar nan (e.g. np.float32(np.nan))
+        also triggers the correct masking.
+        """
+        data = np.array([[1.0, 1.0, 1.0], [1.0, np.nan, 1.0], [1.0, 1.0, 1.0]])
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        # Set nodata to a numpy scalar nan
+        da.attrs["nodatavals"] = (np.float32(np.nan),)
+        
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 8
+
+    def test_all_nan_raster(self):
+        """
+        Verify that an all-NaN raster results in an empty weights object
+        With n=0.
+        """
+        data = np.full((3, 3), np.nan)
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        da.attrs["nodatavals"] = (np.nan,)
+        
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 0
+        assert wsp.sparse.nnz == 0
+
+    def test_infinite_values(self):
+        """
+        Verify that infinite values are treated as valid data (not masked out)
+        as long as nodata is NaN.
+        """
+        data = np.array([[1.0, np.inf, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]])
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        da.attrs["nodatavals"] = (np.nan,)
+        
+        wsp = raster.da2WSP(da)
+        # All 9 cells are valid (infinity is valid data)
+        assert wsp.n == 9
