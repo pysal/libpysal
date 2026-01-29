@@ -361,9 +361,9 @@ def _da2wsp(
     # We check if nodata is None (implicit) or a nan (explicit)
     # This handles both python float('nan') and numpy scalar np.nan
     is_nan_nodata = False
-    if nodata is None:
-        is_nan_nodata = True
-    elif isinstance(nodata, (float, np.floating)) and np.isnan(nodata):
+    if nodata is None or (
+        isinstance(nodata, (float, np.floating)) and np.isnan(nodata)
+    ):
         is_nan_nodata = True
 
     if np.issubdtype(values.dtype, np.floating) and is_nan_nodata:

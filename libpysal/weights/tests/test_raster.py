@@ -120,7 +120,7 @@ class TestNodata:
         da = self.xr.DataArray(data, dims=("y", "x"))
 
         # Expected: center NaN pixel excluded -> 8 valid cells
-        # Actual (current bug): NaN is not masked -> 9 cells
+        # Actual (current bug): NaN is not masked ->
         wsp = raster.da2WSP(da)
         assert wsp.n == 8
 
@@ -172,7 +172,7 @@ class TestNodata:
         da = self.xr.DataArray(data, dims=("y", "x"))
         # Set nodata to a numpy scalar nan
         da.attrs["nodatavals"] = (np.float32(np.nan),)
-        
+
         wsp = raster.da2WSP(da)
         assert wsp.n == 8
 
@@ -184,7 +184,7 @@ class TestNodata:
         data = np.full((3, 3), np.nan)
         da = self.xr.DataArray(data, dims=("y", "x"))
         da.attrs["nodatavals"] = (np.nan,)
-        
+
         wsp = raster.da2WSP(da)
         assert wsp.n == 0
         assert wsp.sparse.nnz == 0
@@ -197,7 +197,7 @@ class TestNodata:
         data = np.array([[1.0, np.inf, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]])
         da = self.xr.DataArray(data, dims=("y", "x"))
         da.attrs["nodatavals"] = (np.nan,)
-        
+
         wsp = raster.da2WSP(da)
         # All 9 cells are valid (infinity is valid data)
         assert wsp.n == 9
