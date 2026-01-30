@@ -30,15 +30,21 @@ __all__ = ["Rook", "Queen", "Voronoi"]
 
 class Rook(W):
     """
-    Construct a weights object from a collection of pysal
+    Construct a weights object from a collection of PySAL
     polygons that share at least one edge.
+
+    If a collection of points is provided instead of polygons,
+    Voronoi polygons are constructed internally and contiguity
+    is computed based on those polygons.
 
     Parameters
     ----------
-    polygons    : list
-                a collection of PySAL shapes to build weights from
+    polygons    : list-like
+                A collection of polygon geometries. If a collection
+                of point geometries is provided, Voronoi polygons
+                are constructed internally before computing contiguity.
     ids         : list
-                a list of names to use to build the weights
+                A list of names to use to build the weights
     **kw        : keyword arguments
                 optional arguments for :class:`pysal.weights.W`
 
@@ -316,15 +322,22 @@ class Rook(W):
 
 class Queen(W):
     """
-    Construct a weights object from a collection of pysal
+    Construct a weights object from a collection of PySAL
     polygons that share at least one vertex.
+
+    If a collection of points is provided instead of polygons, 
+    voronoi polygons are constructed internally and contiguity
+    is computed based on those polygons.
+    
 
     Parameters
     ----------
-    polygons    : list
-                  a collection of PySAL shapes to build weights from
+    polygons    : list-like
+                  A collection of polygon geometries. If a collection 
+                  of point geometries is provided, Voronoi polygons
+                  are constructed internally before computing contiguity.
     ids         : list
-                  a list of names to use to build the weights
+                  A list of names to use to build the weights
     **kw        : keyword arguments
                   optional arguments for :class:`pysal.weights.W`
 
