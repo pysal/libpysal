@@ -244,7 +244,8 @@ class Rook(W):
                 ids = ids.tolist()
 
             if len(ids) != len(df):
-                raise ValueError("The length of `ids` does not match the length of df.")
+                raise ValueError(
+                    "The length of `ids` does not match the length of df.")
 
         if id_order is None:
             id_order = ids
@@ -316,7 +317,8 @@ class Rook(W):
         if sparse:
             w = da2WSP(da, "rook", z_value, coords_labels, k, include_nodata)
         else:
-            w = da2W(da, "rook", z_value, coords_labels, k, include_nodata, **kwargs)
+            w = da2W(da, "rook", z_value, coords_labels,
+                     k, include_nodata, **kwargs)
         return w
 
 
@@ -325,15 +327,15 @@ class Queen(W):
     Construct a weights object from a collection of PySAL
     polygons that share at least one vertex.
 
-    If a collection of points is provided instead of polygons, 
+    If a collection of points is provided instead of polygons,
     voronoi polygons are constructed internally and contiguity
     is computed based on those polygons.
-    
+
 
     Parameters
     ----------
     polygons    : list-like
-                  A collection of polygon geometries. If a collection 
+                  A collection of polygon geometries. If a collection
                   of point geometries is provided, Voronoi polygons
                   are constructed internally before computing contiguity.
     ids         : list
@@ -543,7 +545,8 @@ class Queen(W):
                 ids = ids.tolist()
 
             if len(ids) != len(df):
-                raise ValueError("The length of `ids` does not match the length of df.")
+                raise ValueError(
+                    "The length of `ids` does not match the length of df.")
 
         if id_order is None:
             id_order = ids
@@ -615,7 +618,8 @@ class Queen(W):
         if sparse:
             w = da2WSP(da, "queen", z_value, coords_labels, k, include_nodata)
         else:
-            w = da2W(da, "queen", z_value, coords_labels, k, include_nodata, **kwargs)
+            w = da2W(da, "queen", z_value, coords_labels,
+                     k, include_nodata, **kwargs)
         return w
 
 
@@ -649,7 +653,8 @@ def Voronoi(points, criterion="rook", clip="alpha_shape", **kwargs):
     """
     from ..cg.voronoi import voronoi_frames
 
-    region_df = voronoi_frames(points, clip=clip, return_input=False, as_gdf=True)
+    region_df = voronoi_frames(
+        points, clip=clip, return_input=False, as_gdf=True)
     if criterion.lower() == "queen":
         cls = Queen
     elif criterion.lower() == "rook":
