@@ -54,3 +54,11 @@ contribute to libpysal development.
 .. _Python Package Index: https://pypi.org/project/libpysal/
 .. _pysal/libpysal: https://github.com/pysal/libpysal
 .. _fork: https://help.github.com/articles/fork-a-repo/
+
+Next steps
+----------
+
+After installing libpysal, new users may want to start with the User Guide
+to see example workflows and learn how the core components are used together.
+See the User Guide introduction for an overview.
+
