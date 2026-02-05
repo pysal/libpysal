@@ -342,8 +342,13 @@ def _relative_neighborhood(coordinates, coplanar):
     return heads_ix, tails_ix, coplanar
 
 
-@_validate_coplanar
-def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
+
+def _voronoi(coordinates, ids=None, clip="None", **kwargs):   
+    from ._utils import _validate_geometry_input, CoplanarError
+    from ._contiguity import _vertex_set_intersection
+    from ..weights.util import get_points_array
+    from ..cg import voronoi_frames
+    import numpy 
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -411,21 +416,45 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
+    coplanar = kwargs.pop("coplanar", "raise")
+    rook = kwargs.pop("rook", True)
+    
+    if hasattr(coordinates, "centroid"):
+        points = numpy.array([[p.x, p.y] for p in coordinates.centroid])
+    else:
+        raw_points = get_points_array(coordinates)
+        points = numpy.array([numpy.array(p) for p in raw_points])
+        
+        if points.ndim == 1:
+            points = points.reshape(-1, 2)
+        elif points.ndim == 3:
+            points = points.squeeze()
+        
+    if ids is None:
+        if hasattr(coordinates, "index"):
+            ids = coordinates.index.values
+        else:
+            ids = numpy.arange(len(points))
+            
     if coplanar == "raise":
-        unique = numpy.unique(coordinates, axis=0)
-        if unique.shape != coordinates.shape:
+        unique = numpy.unique(points, axis=0)
+        if unique.shape[0] != points.shape[0]:
             raise CoplanarError(
                 f"There are {len(unique)} unique locations in "
-                f"the dataset, but {len(coordinates)} observations. This means there "
+                f"the dataset, but {len(points)} observations. This means there "
                 "are multiple points in the same location, which is undefined "
                 "for this graph type. To address this issue, consider setting "
                 "`coplanar='clique'` or consult the documentation about "
                 "coplanar points."
             )
-    cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False)
+    
+    cells = voronoi_frames(points, clip=clip, return_input=False, as_gdf=False, **kwargs)
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
+    
+    final_heads = ids[numpy.array(heads_ix)]
+    final_tails = ids[numpy.array(tails_ix)]
 
-    return heads_ix, tails_ix, numpy.array([])
+    return final_heads, final_tails, numpy.array([])
 
 
 #### utilities
