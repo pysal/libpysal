@@ -414,6 +414,9 @@ def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
     coplanar = kwargs.pop("coplanar", "raise")
     rook = kwargs.pop("rook", True)
     
+    for extra in ["decay", "taper", "seed", "bandwidth", "kernel"]:
+        kwargs.pop(extra, None)
+        
     if hasattr(coordinates, "centroid"):
         points = numpy.array([[p.x, p.y] for p in coordinates.centroid])
     else:
@@ -452,7 +455,7 @@ def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
     final_heads = ids[numpy.array(heads_ix)]
     final_tails = ids[numpy.array(tails_ix)]
 
-    return final_heads, final_tails, numpy.array([])
+    return final_heads, final_tails, numpy.array(weights)
 
 
 #### utilities
