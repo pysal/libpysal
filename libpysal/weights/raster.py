@@ -650,7 +650,7 @@ def _index2da(data, index, attrs, coords):
             f"data length ({data.size}) must equal the number of observations "
             f"in the weights object ({len(idx)}). When the raster has missing "
             "values, pass only the values at valid (non-missing) cells in the "
-            "same order as w.index, e.g. da.to_series()[da.to_series() != nodata].values"
+            "same order as w.index, e.g. da.to_series()[da.to_series() != nodata]"
         )
     dims = idx.names
     indexer = tuple(idx.codes)

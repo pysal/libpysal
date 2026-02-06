@@ -87,7 +87,7 @@ class Testraster:
         assert da_compare is True
 
     def test_w2da_missing_vals(self):
-        """Test w2da with raster that has missing values (covers _index2da missing path)."""
+        """Test w2da with raster that has missing values (_index2da missing path)."""
         pytest.importorskip("xarray")
         da = raster.testDataArray((1, 4, 4), missing_vals=True)
         w = raster.da2W(da, "rook", n_jobs=1)
@@ -104,11 +104,13 @@ class Testraster:
         assert (out_ser[~valid_mask] == nodata).all()
 
     def test_w2da_data_length_mismatch_raises(self):
-        """Passing full flattened data when w has missing values raises clear ValueError."""
+        """Full flattened data when w has missing values raises clear ValueError."""
         pytest.importorskip("xarray")
         da = raster.testDataArray((1, 4, 4), missing_vals=True)
         w = raster.da2W(da, "rook", n_jobs=1)
-        with pytest.raises(ValueError, match="data length.*must equal the number of observations"):
+        with pytest.raises(
+            ValueError, match="data length.*must equal the number of observations"
+        ):
             raster.w2da(da.data.flatten(), w, da.attrs, None)
 
     def test_wsp2da(self):
