@@ -645,6 +645,13 @@ def _index2da(data, index, attrs, coords):
 
     data = np.array(data).flatten()
     idx = index
+    if data.size != len(idx):
+        raise ValueError(
+            f"data length ({data.size}) must equal the number of observations "
+            f"in the weights object ({len(idx)}). When the raster has missing "
+            "values, pass only the values at valid (non-missing) cells in the "
+            "same order as w.index, e.g. da.to_series()[da.to_series() != nodata].values"
+        )
     dims = idx.names
     indexer = tuple(idx.codes)
     shape = tuple(lev.size for lev in idx.levels)
