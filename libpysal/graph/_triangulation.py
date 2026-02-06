@@ -413,6 +413,7 @@ def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
     """
     coplanar = kwargs.pop("coplanar", "raise")
     rook = kwargs.pop("rook", True)
+    seed = kwargs.pop("seed", None)
     
     for extra in ["decay", "taper", "seed", "bandwidth", "kernel"]:
         kwargs.pop(extra, None)
@@ -445,10 +446,18 @@ def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
                 "`coplanar='clique'` or consult the documentation about "
                 "coplanar points."
             )
+            
+    if coplanar == "jitter":
+        if seed is not None:
+            kwargs["seed"] = seed
+    kwargs.pop("coplanar", None)
+    #kwargs["coplanar"] = coplanar
+    
     if clip == "none" or clip is None:
         actual_clip = None
     else:
         actual_clip = clip
+        
     cells = voronoi_frames(points, clip=actual_clip, return_input=False, as_gdf=False, **kwargs)
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
     
