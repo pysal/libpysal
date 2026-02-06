@@ -5,8 +5,7 @@ import numpy
 import pandas
 from scipy import sparse, spatial
 
-from libpysal.cg import voronoi_frames
-
+from ..cg import voronoi_frames
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
@@ -17,6 +16,7 @@ from ._utils import (
     _validate_geometry_input,
     _vec_euclidean_distances,
 )
+from ..weights.util import get_points_array
 
 try:
     from numba import njit  # noqa: E401
@@ -343,12 +343,7 @@ def _relative_neighborhood(coordinates, coplanar):
 
 
 
-def _voronoi(coordinates, ids=None, clip="None", **kwargs):   
-    from ._utils import _validate_geometry_input, CoplanarError
-    from ._contiguity import _vertex_set_intersection
-    from ..weights.util import get_points_array
-    from ..cg import voronoi_frames
-    import numpy 
+def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):   
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -447,8 +442,11 @@ def _voronoi(coordinates, ids=None, clip="None", **kwargs):
                 "`coplanar='clique'` or consult the documentation about "
                 "coplanar points."
             )
-    
-    cells = voronoi_frames(points, clip=clip, return_input=False, as_gdf=False, **kwargs)
+    if clip == "none" or clip is None:
+        actual_clip = None
+    else:
+        actual_clip = clip
+    cells = voronoi_frames(points, clip=actual_clip, return_input=False, as_gdf=False, **kwargs)
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
     
     final_heads = ids[numpy.array(heads_ix)]
