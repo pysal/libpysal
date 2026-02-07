@@ -1864,8 +1864,8 @@ class Graph(SetOpsMixin):
 
         Returns
         -------
-        numpy.array
-            Array of component labels
+        pandas.Series
+            Series of component labels
         """
         return pd.Series(
             self._components[1], index=self.unique_ids, name="component labels"
