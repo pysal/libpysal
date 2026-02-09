@@ -4,6 +4,8 @@ from functools import wraps
 import numpy
 import pandas
 from scipy import sparse, spatial
+import geopandas as gpd
+from shapely.geometry import Point
 
 from ..cg import voronoi_frames
 from ._contiguity import _vertex_set_intersection
@@ -448,10 +450,8 @@ def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
             )
             
     if coplanar == "jitter":
-        if seed is not None:
-            kwargs["seed"] = seed
+        points = _jitter_geoms(points, seed=seed)
     kwargs.pop("coplanar", None)
-    #kwargs["coplanar"] = coplanar
     
     if clip == "none" or clip is None:
         actual_clip = None
@@ -465,6 +465,7 @@ def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
     final_tails = ids[numpy.array(tails_ix)]
 
     return final_heads, final_tails, numpy.array(weights)
+
 
 
 #### utilities
