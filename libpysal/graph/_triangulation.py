@@ -4,10 +4,9 @@ from functools import wraps
 import numpy
 import pandas
 from scipy import sparse, spatial
-import geopandas as gpd
-from shapely.geometry import Point
 
 from ..cg import voronoi_frames
+from ..weights.util import get_points_array
 from ._contiguity import _vertex_set_intersection
 from ._kernel import _kernel, _kernel_functions, _optimize_bandwidth
 from ._utils import (
@@ -18,7 +17,6 @@ from ._utils import (
     _validate_geometry_input,
     _vec_euclidean_distances,
 )
-from ..weights.util import get_points_array
 
 try:
     from numba import njit  # noqa: E401
@@ -344,8 +342,7 @@ def _relative_neighborhood(coordinates, coplanar):
     return heads_ix, tails_ix, coplanar
 
 
-
-def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):   
+def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -416,27 +413,27 @@ def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
     coplanar = kwargs.pop("coplanar", "raise")
     rook = kwargs.pop("rook", True)
     seed = kwargs.pop("seed", None)
-    
+
     for extra in ["decay", "taper", "seed", "bandwidth", "kernel"]:
         kwargs.pop(extra, None)
-        
+
     if hasattr(coordinates, "centroid"):
         points = numpy.array([[p.x, p.y] for p in coordinates.centroid])
     else:
         raw_points = get_points_array(coordinates)
         points = numpy.array([numpy.array(p) for p in raw_points])
-        
+
         if points.ndim == 1:
             points = points.reshape(-1, 2)
         elif points.ndim == 3:
             points = points.squeeze()
-        
+
     if ids is None:
         if hasattr(coordinates, "index"):
             ids = coordinates.index.values
         else:
             ids = numpy.arange(len(points))
-            
+
     if coplanar == "raise":
         unique = numpy.unique(points, axis=0)
         if unique.shape[0] != points.shape[0]:
@@ -448,24 +445,22 @@ def _voronoi(coordinates, ids=None, clip="bounding_box", **kwargs):
                 "`coplanar='clique'` or consult the documentation about "
                 "coplanar points."
             )
-            
+
     if coplanar == "jitter":
         points = _jitter_geoms(points, seed=seed)
     kwargs.pop("coplanar", None)
-    
-    if clip == "none" or clip is None:
-        actual_clip = None
-    else:
-        actual_clip = clip
-        
-    cells = voronoi_frames(points, clip=actual_clip, return_input=False, as_gdf=False, **kwargs)
+
+    actual_clip = None if clip == "none" or clip is None else clip
+
+    cells = voronoi_frames(
+        points, clip=actual_clip, return_input=False, as_gdf=False, **kwargs
+    )
     heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
-    
+
     final_heads = ids[numpy.array(heads_ix)]
     final_tails = ids[numpy.array(tails_ix)]
 
     return final_heads, final_tails, numpy.array(weights)
-
 
 
 #### utilities
