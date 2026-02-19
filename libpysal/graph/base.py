@@ -1377,6 +1377,7 @@ class Graph(SetOpsMixin):
         coplanar="raise",
         taper=True,
         decay=False,
+        **kwargs,
     ):
         """Generate Graph from geometry based on triangulation
 
@@ -1442,6 +1443,9 @@ class Graph(SetOpsMixin):
             or negative) at some very large (possibly infinite) distance.
             Otherwise, kernel functions are treated as proper
             volume-preserving probability distributions.
+        **kwargs: Additional keyword arguments passed to ``voronoi_frames()`` when
+        ``method="voronoi"``. Supports ``segment`` (float) and ``shrink``
+        (float). Ignored for other methods.
 
         Returns
         -------
@@ -1527,6 +1531,7 @@ class Graph(SetOpsMixin):
                 coplanar=coplanar,
                 decay=decay,
                 taper=taper,
+                **kwargs,
             )
         else:
             raise ValueError(
