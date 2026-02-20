@@ -4,8 +4,9 @@ from functools import wraps
 import geopandas
 import numpy
 import pandas
-from scipy import sparse, spatial
 import shapely
+from scipy import sparse, spatial
+
 
 from libpysal.cg import voronoi_frames
 
@@ -30,7 +31,7 @@ except ModuleNotFoundError:
     HAS_NUMBA = False
 
 
-_VALID_GEOMETRY_TYPES = ["Point", "Polygon", "MultiPolygon"]
+_VALID_GEOMETRY_TYPES = ["Point"]
 
 __author__ = """"
 Levi John Wolf (levi.john.wolf@gmail.com)
@@ -344,7 +345,15 @@ def _relative_neighborhood(coordinates, coplanar):
     return heads_ix, tails_ix, coplanar
 
 
-def _voronoi(geoms, ids=None,  coplanar="raise", clip="bounding_box", rook=True,seed = None, decay=False, taper=False, **kwargs):
+def _voronoi(
+    geoms,
+    ids=None,
+    coplanar="raise",
+    clip="bounding_box",
+    rook=True,
+    seed=None,
+    **kwargs,
+):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
@@ -420,23 +429,23 @@ def _voronoi(geoms, ids=None,  coplanar="raise", clip="bounding_box", rook=True,
         geoms = geoms.geometry
         if ids is None:
             ids = numpy.asarray(geoms.index)
-            
+
     if ids is None:
         ids = numpy.arange(len(geoms))
-    
+
     if coplanar == "jitter":
         coords = shapely.get_coordinates(geoms)
         coords = _jitter_geoms(coords, seed=seed)
         geoms = geopandas.GeoSeries(
-            shapely.points(coords), index=geoms.index if hasattr(geoms, 'index') else None
+            shapely.points(coords),
+            index=geoms.index if hasattr(geoms, "index") else None,
         )
-    
-    voronoi_kwargs = {
-        k: v for k, v in kwargs.items() 
-        if k in ("segment", "shrink") 
-    }
-            
-    if coplanar == "raise" and not isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
+
+    voronoi_kwargs = {k: v for k, v in kwargs.items() if k in ("segment", "shrink")}
+
+    if coplanar == "raise" and not isinstance(
+        geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)
+    ):
         unique = numpy.unique(geoms, axis=0)
         if unique.shape != geoms.shape:
             raise CoplanarError(
@@ -446,9 +455,11 @@ def _voronoi(geoms, ids=None,  coplanar="raise", clip="bounding_box", rook=True,
                 "for this graph type. To address this issue, consider setting "
                 "`coplanar='clique'` or consult the documentation about "
                 "coplanar points."
-    )
-            
-    elif coplanar == "raise" and isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
+            )
+
+    elif coplanar == "raise" and isinstance(
+        geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)
+    ):
         if geoms.geom_type.isin(["Point"]).all():
             coords = shapely.get_coordinates(geoms)
             unique = numpy.unique(coords, axis=0)
@@ -461,8 +472,10 @@ def _voronoi(geoms, ids=None,  coplanar="raise", clip="bounding_box", rook=True,
                     "`coplanar='clique'` or consult the documentation about "
                     "coplanar points."
                 )
-            
-    cells = voronoi_frames(geoms, clip=clip, return_input=False, as_gdf=False, **voronoi_kwargs)
+
+    cells = voronoi_frames(
+        geoms, clip=clip, return_input=False, as_gdf=False, **voronoi_kwargs
+    )
     heads_ix, tails_ix, _ = _vertex_set_intersection(cells, rook=rook)
     n = len(ids)
     mask = (heads_ix < n) & (tails_ix < n)
