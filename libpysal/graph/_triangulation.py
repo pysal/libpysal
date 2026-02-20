@@ -7,7 +7,6 @@ import pandas
 import shapely
 from scipy import sparse, spatial
 
-
 from libpysal.cg import voronoi_frames
 
 from ._contiguity import _vertex_set_intersection
