@@ -26,18 +26,18 @@ def _build_coplanarity_node_lookup(geoms):
 
 def pdna_to_adj(origins, network, node_ids, threshold):
     """Create an adjacency list of shortest network-based travel between
-       origins and destinations in a pandana.Network.
+       origins and destinations in a pandarm.Network.
 
     Parameters
     ----------
     origins : geopandas.GeoDataFrame
         Geodataframe of origin geometries to begin routing.
-    network : pandana.Network
-        pandana.Network instance that stores the local travel network
+    network : pandarm.Network
+        pandarm.Network instance that stores the local travel network
     node_ids:
-        array of node_ids in the pandana.Network aligned with the input
+        array of node_ids in the pandarm.Network aligned with the input
         observations in ``origins``. This is created via a call like
-        ``pandana.Network.get_node_ids(df.geometry.x, df.geometry.y)``
+        ``pandarm.Network.get_node_ids(df.geometry.x, df.geometry.y)``
     threshold : int
         maximum travel distance (inclusive)
 
@@ -65,7 +65,7 @@ def pdna_to_adj(origins, network, node_ids, threshold):
 def build_travel_graph(
     df, network, threshold, mapping_distance, kernel=None, taper=True, decay=False
 ):
-    """Compute the shortest path between gdf centroids via a pandana.Network
+    """Compute the shortest path between gdf centroids via a pandarm.Network
     and return an adjacency list with weight=cost. Note unlike distance_band,
     :math:`G_{ij}` and :math:`G_{ji}` are often different because travel networks
     may be directed.
@@ -74,14 +74,14 @@ def build_travel_graph(
     ----------
     df : geopandas.GeoDataFrame
         geodataframe of observations. CRS should be the same as the locations
-        of ``node_x`` and ``node_y`` in the pandana.Network (usually 4326 if network
+        of ``node_x`` and ``node_y`` in the pandarm.Network (usually 4326 if network
         comes from OSM, but sometimes projected to improve snapping quality).
-    network : pandana.Network
-        Network that encodes travel costs. See <https://udst.github.io/pandana/>
+    network : pandarm.Network
+        Network that encodes travel costs. See <https://oturns.github.io/pandarm/>
     threshold : int
         maximum travel cost to consider neighbors
     mapping_distance : int
-        snapping tolerance passed to ``pandana.Network.get_node_ids`` that defines
+        snapping tolerance passed to ``pandarm.Network.get_node_ids`` that defines
         the maximum range at which observations are snapped to nearest nodes in the
         network. Default is None
     kernel : str

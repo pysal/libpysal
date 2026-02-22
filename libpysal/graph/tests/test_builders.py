@@ -1,5 +1,3 @@
-import sys
-
 import geodatasets
 import geopandas as gpd
 import numpy as np
@@ -218,6 +216,12 @@ class TestTriangulation:
             rn.adjacency, delaunay.adjacency.loc[rn.adjacency.index]
         )
 
+    def test_sorting(self):
+        delaunay = graph.Graph.build_triangulation(self.gdf)
+        pd.testing.assert_index_equal(
+            pd.Index(self.gdf.index, name="focal"), delaunay.unique_ids
+        )
+
 
 @pytest.mark.network
 class TestKernel:
@@ -290,6 +294,12 @@ class TestKernel:
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+
+    def test_code_consistency(self):
+        gdf = gpd.read_file(geodatasets.get_path("geoda guerry"))
+        g = graph.Graph.build_kernel(gdf.centroid, k=2)
+
+        assert g.sparse.shape == (85, 85)
 
 
 @pytest.mark.network
@@ -501,12 +511,12 @@ class TestMatching:
 
 
 @pytest.mark.network
-@pytest.mark.skipif(
-    sys.platform.startswith("win"), reason="pandana has dtype issues on windows"
-)
 class TestTravelNetwork:
     def setup_method(self):
-        pandana = pytest.importorskip("pandana")
+        try:
+            import pandana as pandarm
+        except ImportError:
+            pandarm = pytest.importorskip("pandarm")
         import pooch
 
         self.net_path = pooch.retrieve(
@@ -515,7 +525,7 @@ class TestTravelNetwork:
         )
         df = gpd.read_file(geodatasets.get_path("geoda cincinnati")).to_crs(4326)
         self.df = df.set_geometry(df.centroid)
-        self.network = pandana.Network.from_hdf5(self.net_path)
+        self.network = pandarm.Network.from_hdf5(self.net_path)
 
     def test_build_travel_network(self):
         g = graph.Graph.build_travel_cost(self.df, self.network, 500)

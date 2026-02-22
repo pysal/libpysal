@@ -105,8 +105,6 @@ include = ["*.py", "*.ipynb"]
     "UP031",  # Use format specifiers instead of percent format
 ]
 
-
-
 [tool.coverage.run]
 source = ["./libpysal"]
 

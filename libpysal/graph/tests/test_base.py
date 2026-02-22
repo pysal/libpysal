@@ -466,6 +466,31 @@ class TestBase:
             check_index_type=False,
         )
 
+    def test_from_networkx(self):
+        nx = pytest.importorskip("networkx")
+
+        nxg = nx.path_graph(5)
+        g = graph.Graph.from_networkx(nxg)
+        assert g.n == 5
+        assert g.nonzero == 8
+
+        nxg = nx.Graph()
+        nxg.add_edge(0, 1, custom_weight=0.5)
+        nxg.add_edge(1, 2, custom_weight=1.5)
+        g = graph.Graph.from_networkx(nxg, weight="custom_weight")
+        expected = graph.Graph.from_arrays(
+            [0, 1, 1, 2], [1, 0, 2, 1], [0.5, 0.5, 1.5, 1.5]
+        )
+        assert g == expected
+
+        nxg = nx.Graph()
+        nxg.add_edge(0, 1, other_attr=0.5)
+        nxg.add_edge(1, 2, other_attr=1.5)
+        with pytest.raises(
+            ValueError, match="The weight attribute 'nonexistent_weight' does not exist"
+        ):
+            graph.Graph.from_networkx(nxg, weight="nonexistent_weight")
+
     @pytest.mark.parametrize("y", [3, 5])
     @pytest.mark.parametrize("id_type", ["int", "str"])
     @pytest.mark.parametrize("rook", [True, False])

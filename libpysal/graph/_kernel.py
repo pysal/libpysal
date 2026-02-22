@@ -63,6 +63,7 @@ def _kernel(
             - parabolic:
             - gaussian:
             - bisquare:
+            - tricube:
             - cosine:
             - exponential:
             - boxcar/discrete: all distances less than `bandwidth` are 1, and all
@@ -126,7 +127,20 @@ def _kernel(
         if metric != "precomputed":
             d = _knn(coordinates, k=k, metric=metric, p=p, coplanar=coplanar)
         else:
-            d = coordinates * (coordinates.argsort(axis=1, kind="stable") < (k + 1))
+            if exclude_self_weights:
+                coords_for_ranking = coordinates.copy()
+                numpy.fill_diagonal(coords_for_ranking, numpy.inf)
+            else:
+                coords_for_ranking = coordinates
+
+            ranks = coords_for_ranking.argsort(axis=1, kind="stable").argsort(
+                axis=1, kind="stable"
+            )
+
+            mask = ranks < k
+            rows, cols = numpy.where(mask)
+            values = coordinates[mask]
+            d = sparse.csc_array((values, (rows, cols)), shape=coordinates.shape)
     else:
         if metric != "precomputed":
             dist_kwds = {}
@@ -159,6 +173,7 @@ def _kernel(
             d = sparse.csc_array((data, (i, j)))
         else:
             d = sparse.csc_array(coordinates)
+
     if bandwidth is None:
         bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
     elif bandwidth == "auto":

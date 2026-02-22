@@ -492,6 +492,51 @@ class Graph(SetOpsMixin):
         return cls.from_arrays(head, tail, weight)
 
     @classmethod
+    def from_networkx(cls, graph, weight=None):
+        """Generate a Graph from a NetworkX graph.
+
+        Parameters
+        ----------
+        graph : ``networkx`` graph object
+            representation of the graph as a :class:`networkx.Graph` or
+            :class:`networkx.DiGraph`. Multi-graphs are not supported as they do
+            not translate to a unique weight between two nodes.
+        weight : str | None, default None
+            name of the edge attribute to use as weights.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph based on NetworkX graph
+
+        Examples
+        --------
+        >>> import networkx as nx
+        >>> nx_graph = nx.path_graph(5)
+        >>> g = graph.Graph.from_networkx(nx_graph)
+        >>> g.n
+        5
+        """
+        try:
+            import networkx as nx
+        except ImportError:
+            raise ImportError("NetworkX is required.") from None
+
+        nodes = list(graph.nodes())
+
+        # Check if the specified weight attribute exists on edges
+        if weight is not None:
+            for _u, _v, edge_data in graph.edges(data=True):
+                if weight not in edge_data:
+                    raise ValueError(
+                        f"The weight attribute '{weight}' does not exist on all edges."
+                    )
+
+        sparse_array = nx.to_scipy_sparse_array(graph, nodelist=nodes, weight=weight)
+
+        return cls.from_sparse(sparse_array, ids=nodes)
+
+    @classmethod
     def build_block_contiguity(cls, regimes):
         """Generate Graph from block contiguity (regime neighbors)
 
@@ -1130,7 +1175,7 @@ class Graph(SetOpsMixin):
             taper=taper,
         )
 
-        return cls.from_arrays(head, tail, weight, is_sorted=True)
+        return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_knn(
@@ -1566,21 +1611,21 @@ class Graph(SetOpsMixin):
         taper=True,
         decay=False,
     ):
-        """Generate a Graph based on shortest travel costs from a pandana.Network
+        """Generate a Graph based on shortest travel costs from a pandarm.Network
 
         Parameters
         ----------
         df : geopandas.GeoDataFrame
             geodataframe representing observations which are snapped to the nearest
-            node in the pandana.Network. CRS should be the same as the locations
-            of ``node_x`` and ``node_y`` in the pandana.Network (usually 4326 if network
+            node in the pandarm.Network. CRS should be the same as the locations
+            of ``node_x`` and ``node_y`` in the pandarm.Network (usually 4326 if network
             comes from OSM, but sometimes projected to improve snapping quality).
-        network : pandana.Network
-            pandana Network object describing travel costs between nodes in the study
-            area.  See <https://udst.github.io/pandana/> for more
+        network : pandarm.Network
+            pandarm Network object describing travel costs between nodes in the study
+            area.  See <https://oturns.github.io/pandarm/> for more
         threshold : int
             threshold representing maximum cost distances. This is measured in the same
-            units as the pandana.Network (not influenced by the df.crs in any way). For
+            units as the pandarm.Network (not influenced by the df.crs in any way). For
             travel modes with relatively constant speeds like walking or biking, this is
             usually distance (e.g. meters if the Network is constructed from OSM). For a
             a multimodal or auto network with variable travel speeds, this is usually
@@ -1591,7 +1636,7 @@ class Graph(SetOpsMixin):
             transformation options. Default is None, in which case the Graph weight
             is pure distance between focal and neighbor
         mapping_distance : int
-            snapping tolerance passed to ``pandana.Network.get_node_ids`` that defines
+            snapping tolerance passed to ``pandarm.Network.get_node_ids`` that defines
             the maximum range at which observations are snapped to nearest nodes in the
             network. Default is None
         taper : bool (default: True)
@@ -1614,7 +1659,7 @@ class Graph(SetOpsMixin):
         >>> import geodatasets
         >>> import geopandas as gpd
         >>> import osmnx as ox
-        >>> import pandana as pdna
+        >>> import pandarm
 
         Read an example geodataframe:
 
@@ -1626,16 +1671,16 @@ class Graph(SetOpsMixin):
         >>> nodes, edges = ox.utils_graph.graph_to_gdfs(osm_graph)
         >>> edges = edges.reset_index()
 
-        Generate a routable pandana network from the OSM nodes and edges
+        Generate a routable pandarm network from the OSM nodes and edges
 
-        >>> network = pdna.Network(
+        >>> network = pandarm.Network(
         >>>     edge_from=edges["u"],
         >>>     edge_to=edges["v"],
         >>>     edge_weights=edges[["length"]],
         >>>     node_x=nodes["x"],
         >>>     node_y=nodes["y"],)
 
-        Use the pandana network to compute shortest paths between gdf centroids and
+        Use the pandarm network to compute shortest paths between gdf centroids and
         generate a Graph
 
         >>> G = Graph.build_travel_cost(df.set_geometry(df.centroid), network, 500)
@@ -1819,8 +1864,8 @@ class Graph(SetOpsMixin):
 
         Returns
         -------
-        numpy.array
-            Array of component labels
+        pandas.Series
+            Series of component labels
         """
         return pd.Series(
             self._components[1], index=self.unique_ids, name="component labels"

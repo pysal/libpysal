@@ -52,7 +52,7 @@ Introduction
 
 
 Examples demonstrating some of **libpysal** functionality are available in the
-`User Guide <user-guide.html>`_.
+`User Guide <user-guide/intro.html>`_.
 
 Details are available in the `libpysal api <api.html>`_.
 

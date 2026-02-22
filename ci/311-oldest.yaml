@@ -29,7 +29,8 @@ dependencies:
   - sqlalchemy=2.0
   - zstd
   - xarray=2023.6
-  - pandarm
+  # - pandarm - requires geopandas 1.1
+  - pandana
   - h3-py<4
   - pip
   - pip:
