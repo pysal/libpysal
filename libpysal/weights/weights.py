@@ -368,10 +368,10 @@ class W:
         """
         if weight_col is None:
             weight_col = "weight"
-        try_weightcol = getattr(adjlist, weight_col)
-        if try_weightcol is None:
+        if weight_col not in adjlist.columns:
             adjlist = adjlist.copy(deep=True)
             adjlist["weight"] = 1
+            weight_col = "weight"
         grouper = adjlist.groupby(focal_col)
         neighbors = {}
         weights = {}
