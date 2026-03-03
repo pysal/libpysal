@@ -1,10 +1,8 @@
 import warnings
 from functools import wraps
 
-import geopandas
 import numpy
 import pandas
-import shapely
 from scipy import sparse, spatial
 
 from libpysal.cg import voronoi_frames
@@ -344,27 +342,20 @@ def _relative_neighborhood(coordinates, coplanar):
     return heads_ix, tails_ix, coplanar
 
 
-def _voronoi(
-    geoms,
-    ids=None,
-    coplanar="raise",
-    clip="bounding_box",
-    rook=True,
-    seed=None,
-    **kwargs,
-):
+@_validate_coplanar
+def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
     """
     Compute contiguity weights according to a clipped
     Voronoi diagram.
 
     Parameters
     ---------
-    geoms : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
-    Geometries to compute the Voronoi diagram. Accepts Point, Polygon,
-    and MultiPolygon geometries. For non-point geometries, the boundaries
-    are discretised into points and dissolved back using
-    ``voronoi_frames()``. If a numpy.ndarray of shape (2, n) is provided,
-    it is assumed to contain x, y coordinates.
+    coordinates :  numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+        geometries containing locations to compute the delaunay triangulation.  If
+        a geopandas object with Point geoemtry is provided, the .geometry attribute
+        is used. If a numpy.ndarray with shapely geoemtry is used, then the
+        coordinates are extracted and used.  If a numpy.ndarray of a shape (2,n) is
+        used, it is assumed to contain x, y coordinates.
     ids : numpy.narray (default: None)
         ids to use for each sample in coordinates. Generally, construction functions
         that are accessed via Graph.build_kernel() will set this automatically from
@@ -407,10 +398,6 @@ def _voronoi(
         An integer value used to ensure that the pseudorandom number generator provides
         the same value over replications. By default, no seed is used, so results
         will be random every time. This is only used if coplanar='jitter'.
-    **kwargs: Additional keyword arguments passed to ``voronoi_frames()``.
-    Supports ``segment`` (float) to control boundary discretisation
-    and ``shrink`` (float) to shrink geometries before tessellation.
-    Only used when ``method="voronoi"``.
 
     Notes
     -----
@@ -424,71 +411,82 @@ def _voronoi(
     delaunay triangulations in many applied contexts and
     generally will remove "long" links in the delaunay graph.
     """
-    if isinstance(geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)):
-        geoms = geoms.geometry
-        if ids is None:
-            ids = numpy.asarray(geoms.index)
-
-    if ids is None:
-        ids = numpy.arange(len(geoms))
-
-    if coplanar == "jitter":
-        coords = shapely.get_coordinates(geoms)
-        coords = _jitter_geoms(coords, seed=seed)
-        geoms = geopandas.GeoSeries(
-            shapely.points(coords),
-            index=geoms.index if hasattr(geoms, "index") else None,
-        )
-
-    voronoi_kwargs = {k: v for k, v in kwargs.items() if k in ("segment", "shrink")}
-
-    if coplanar == "raise" and not isinstance(
-        geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)
-    ):
-        unique = numpy.unique(geoms, axis=0)
-        if unique.shape != geoms.shape:
+    if coplanar == "raise":
+        unique = numpy.unique(coordinates, axis=0)
+        if unique.shape != coordinates.shape:
             raise CoplanarError(
                 f"There are {len(unique)} unique locations in "
-                f"the dataset, but {len(geoms)} observations. This means there "
+                f"the dataset, but {len(coordinates)} observations. This means there "
                 "are multiple points in the same location, which is undefined "
                 "for this graph type. To address this issue, consider setting "
                 "`coplanar='clique'` or consult the documentation about "
                 "coplanar points."
             )
+    cells = voronoi_frames(coordinates, clip=clip, return_input=False, as_gdf=False)
+    heads_ix, tails_ix, weights = _vertex_set_intersection(cells, rook=rook)
 
-    elif coplanar == "raise" and isinstance(
-        geoms, (geopandas.GeoSeries, geopandas.GeoDataFrame)
-    ):
-        if geoms.geom_type.isin(["Point"]).all():
-            coords = shapely.get_coordinates(geoms)
-            unique = numpy.unique(coords, axis=0)
-            if len(unique) != len(geoms):
-                raise CoplanarError(
-                    f"There are {len(unique)} unique locations in "
-                    f"the dataset, but {len(geoms)} observations. This means there "
-                    "are multiple points in the same location, which is undefined "
-                    "for this graph type. To address this issue, consider setting "
-                    "`coplanar='clique'` or consult the documentation about "
-                    "coplanar points."
-                )
+    return heads_ix, tails_ix, numpy.array([])
+
+
+#### utilities
+
+
+def _voronoi_polygon(
+    geoms,
+    ids,
+    clip="bounding_box",
+    rook=True,
+    **kwargs,
+):
+    """
+    Compute contiguity weights according to a clipped Voronoi diagram
+    for non-point geometries (Polygon, MultiPolygon).
+
+    Parameters
+    ---------
+    geoms : geopandas.GeoSeries or geopandas.GeoDataFrame
+        Geometries to compute the Voronoi diagram. Accepts Polygon
+        and MultiPolygon geometries. Boundaries are discretised into
+        points and dissolved back using ``voronoi_frames()``.
+    ids : numpy.ndarray
+        ids to use for each sample in geoms.
+    clip : str (default: 'bounding_box')
+        Clipping method passed to ``libpysal.cg.voronoi_frames()``.
+        Options are ``None``, ``'bounding_box'``, ``'convex_hull'``,
+        ``'alpha_shape'``, or a ``shapely.Polygon``.
+    rook : bool, optional
+        Contiguity method. If True, two geometries are considered
+        neighbours if they share at least one edge. If False, they
+        are considered neighbours if they share at least one vertex.
+        By default True.
+    **kwargs
+        Additional keyword arguments passed to ``voronoi_frames()``.
+        Supports ``segment`` (float) to control boundary discretisation
+        and ``shrink`` (float) to shrink geometries before tessellation.
+
+    Returns
+    -------
+    heads : numpy.ndarray
+    tails : numpy.ndarray
+    weights : numpy.ndarray
+    """
+
+    voronoi_kwargs = {k: v for k, v in kwargs.items() if k in ("segment", "shrink")}
 
     cells = voronoi_frames(
         geoms, clip=clip, return_input=False, as_gdf=False, **voronoi_kwargs
     )
     heads_ix, tails_ix, _ = _vertex_set_intersection(cells, rook=rook)
-    n = len(ids)
-    mask = (heads_ix < n) & (tails_ix < n)
+
+    valid_ids = set(ids)
+    mask = numpy.isin(heads_ix, list(valid_ids)) & numpy.isin(tails_ix, list(valid_ids))
     heads_ix = heads_ix[mask]
     tails_ix = tails_ix[mask]
 
-    heads = ids[heads_ix]
-    tails = ids[tails_ix]
+    heads = heads_ix
+    tails = tails_ix
     weights = numpy.ones(len(heads_ix), dtype=numpy.int8)
-
     return heads, tails, weights
-
-
-#### utilities
 
 
 @njit

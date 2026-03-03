@@ -24,7 +24,13 @@ from ._raster import _generate_da, _raster_contiguity
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._summary import GraphSummary
-from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
+from ._triangulation import (
+    _delaunay,
+    _gabriel,
+    _relative_neighborhood,
+    _voronoi,
+    _voronoi_polygon,
+)
 from ._utils import (
     _compute_stats,
     _evaluate_index,
@@ -1523,16 +1529,24 @@ class Graph(SetOpsMixin):
                 taper=taper,
             )
         elif method == "voronoi":
-            head, tail, weights = _voronoi(
-                data,
-                ids=ids,
-                clip=clip,
-                rook=rook,
-                coplanar=coplanar,
-                decay=decay,
-                taper=taper,
-                **kwargs,
-            )
+            if hasattr(data, "geom_type") and not set(data.geom_type) <= {"Point"}:
+                head, tail, weights = _voronoi_polygon(
+                    data,
+                    ids=ids,
+                    clip=clip,
+                    rook=rook,
+                    **kwargs,
+                )
+            else:
+                head, tail, weights = _voronoi(
+                    data,
+                    ids=ids,
+                    clip=clip,
+                    rook=rook,
+                    coplanar=coplanar,
+                    decay=decay,
+                    taper=taper,
+                )
         else:
             raise ValueError(
                 f"Method '{method}' is not supported. Use one of ['delaunay', "
