@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import shapely
+from shapely.geometry import MultiPolygon, Polygon
 
 from libpysal.graph._kernel import _kernel_functions
 from libpysal.graph._triangulation import (
@@ -22,6 +23,7 @@ from libpysal.graph._triangulation import (
     _gabriel,
     _relative_neighborhood,
     _voronoi,
+    _voronoi_polygon,
 )
 from libpysal.graph._utils import CoplanarError
 from libpysal.graph.base import Graph
@@ -289,7 +291,7 @@ def test_coplanar_raise_voronoi(stores):
 
 
 @pytest.mark.network
-def test_coplanar_jitter_voronoi(stores, stores_unique):
+def test_coplanar_jitter_voronoi(stores, stores_unique):  # edit
     cp_heads, cp_tails, cp_w = _voronoi(stores, clip=False, coplanar="jitter")
     unique_heads, unique_tails, unique_w = _voronoi(stores_unique, clip=False)
     assert not np.array_equal(cp_heads, unique_heads)
@@ -498,3 +500,84 @@ class TestCoplanar:
             match="Recieved option coplanar='nonsense'",
         ):
             _delaunay(self.df_int, coplanar="nonsense")
+
+
+def test_voronoi_polygon():
+    polys = [
+        Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys)
+    ids = np.arange(4)
+    heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
+    assert len(np.unique(heads)) == 4
+
+
+def test_voronoi_polygon_kwargs():
+    polys = [
+        Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys)
+    ids = np.arange(4)
+    heads, tails, weights = _voronoi_polygon(gdf, ids=ids, segment=0.5, shrink=0.4)
+    assert len(np.unique(heads)) == 4
+
+
+def test_voronoi_polygon_via_build_triangulation():
+    polys = [
+        Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys)
+    graph = Graph.build_triangulation(gdf, method="voronoi")
+    assert graph.n_nodes == 4
+
+
+def test_voronoi_polygon_multipolygon():
+    polys = [
+        MultiPolygon(
+            [
+                Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+                Polygon([(2, 0), (3, 0), (3, 1), (2, 1)]),
+            ]
+        ),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys)
+    ids = np.arange(4)
+    heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
+    assert len(np.unique(heads)) == 4
+
+
+def test_voronoi_polygon_string_ids():
+    polys = [
+        Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys, index=["a", "b", "c", "d"])
+    ids = np.array(["a", "b", "c", "d"])
+    heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
+    assert set(heads) == {"a", "b", "c", "d"}
+
+
+def test_voronoi_polygon_point_backward_compat():
+    pts = [
+        shapely.Point(0, 0),
+        shapely.Point(1, 0),
+        shapely.Point(0, 1),
+        shapely.Point(1, 1),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=pts)
+    graph = Graph.build_triangulation(gdf, method="voronoi")
+    assert graph.n_nodes == 4
