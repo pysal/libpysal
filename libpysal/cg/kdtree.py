@@ -24,7 +24,10 @@ DISTANCE_METRICS = ["Euclidean", "Arc"]
 FLOAT_EPS = numpy.finfo(float).eps
 
 
-dep_msg = "{} class will deprecated and removed in a future version of libpysal."
+dep_msg = (
+    "The {} class will deprecated and removed in a future version of libpysal. "
+    "Use ``scipy.spatial.KDTree`` or ``scipy.spatial.cKDTree`` directly."
+)
 
 
 def KDTree(data, leafsize=10, distance_metric="Euclidean", radius=RADIUS_EARTH_KM):
