@@ -7,6 +7,7 @@ Adds support for Arc Distance to scipy.spatial.KDTree.
 # ruff: noqa: ARG002, N801, N802, N816
 
 import math
+import warnings
 
 import numpy
 import scipy.spatial
@@ -21,6 +22,9 @@ __all__ = ["DISTANCE_METRICS", "FLOAT_EPS", "KDTree"]
 
 DISTANCE_METRICS = ["Euclidean", "Arc"]
 FLOAT_EPS = numpy.finfo(float).eps
+
+
+dep_msg = "{} class will deprecated and removed in a future version of libpysal."
 
 
 def KDTree(data, leafsize=10, distance_metric="Euclidean", radius=RADIUS_EARTH_KM):
@@ -45,6 +49,12 @@ def KDTree(data, leafsize=10, distance_metric="Euclidean", radius=RADIUS_EARTH_K
         latitude and longitude. Ignored if distance_metric="Euclidean". Typical
         values: pysal.cg.RADIUS_EARTH_KM (default) pysal.cg.RADIUS_EARTH_MILES
     """
+
+    warnings.warn(
+        dep_msg.format("KDTree"),
+        FutureWarning,
+        stacklevel=2,
+    )
 
     if distance_metric.lower() == "euclidean":
         if (
@@ -89,6 +99,13 @@ class Arc_KDTree(temp_KDTree):
         >>> round(d[0],5) == round(circumference/4.0,5)
         True
         """
+
+        warnings.warn(
+            dep_msg.format("Arc_KDTree"),
+            FutureWarning,
+            stacklevel=2,
+        )
+
         self.radius = radius
         self.circumference = 2 * math.pi * radius
         temp_KDTree.__init__(self, list(map(sphere.toXYZ, data)), leafsize)
