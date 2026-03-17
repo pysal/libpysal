@@ -25,8 +25,8 @@ FLOAT_EPS = numpy.finfo(float).eps
 
 
 dep_msg = (
-    "The {} class will deprecated and removed in a future version of libpysal. "
-    "Use ``scipy.spatial.KDTree`` or ``scipy.spatial.cKDTree`` directly."
+    "The {} class is deprecated and will be removed in a future version of libpysal. "
+    "Use ``scipy.spatial.KDTree`` directly."
 )
 
 
