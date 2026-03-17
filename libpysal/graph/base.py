@@ -2159,8 +2159,23 @@ class Graph(SetOpsMixin):
             raised when the weight on the edge linking node i to j
             is not the same as the weight on the edge linking j to i.
         """
+        valid_reductions = {"sum", "min", "max", "mean"}
+        if reduction is not None and reduction not in valid_reductions:
+            raise ValueError(
+                f"reduction {reduction} not understood."
+                " Supported options are `['sum', 'min', "
+                " 'max', 'mean']`"
+            )
         new_adj = self.adjacency.copy(deep=True)
+        processed_pairs = set()
         for (head, tail), fweight in new_adj.items():
+            if head == tail:
+                continue
+            pair_id = frozenset((head, tail))
+            if pair_id in processed_pairs:
+                continue
+            else:
+                processed_pairs.add(pair_id)
             try:
                 bweight = self.adjacency.loc[tail, head]
             except KeyError:
@@ -2197,7 +2212,12 @@ class Graph(SetOpsMixin):
                     " Supported options are `['sum', 'min', "
                     " 'max', 'mean']`"
                 )
-        return Graph(new_adj)
+        output = Graph(new_adj)
+
+        if hasattr(self, "_xarray_index_names"):
+            output._xarray_index_names = self._xarray_index_names
+
+        return output
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order :math:`k`.
