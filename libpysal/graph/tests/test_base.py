@@ -1082,7 +1082,8 @@ class TestBase:
         assert (adj_mean <= adj_max).all()
         assert (adj_max <= adj_sum).all()
 
-        # invalid reduction strings should raise even when the graph is already symmetric
+        # invalid reduction strings should raise even when the
+        # graph is already symmetric
         with pytest.raises(ValueError):
             gmax.make_symmetric(reduction="invalid")
 
