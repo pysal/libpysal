@@ -1412,7 +1412,7 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
     References
     ----------
     Planar Enforcement:
-    http://ibis.geog.ubc.ca/courses/klink/gis.notes/ncgia/u12.html#SEC12.6
+    https://geoplanar.readthedocs.io/en/latest/nonplanaredges.html
     """  # noqa: E501
 
     gdf = geodataframe
