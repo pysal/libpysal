@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.acf80fe7f4d9ef9e2.min.css?v=9e56d0d2" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
         <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
@@ -870,7 +870,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&#39;/Users/martin/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/libpysal/examples/mexico/mexicojoin.dbf&#39;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&#39;/home/runner/micromamba/envs/test/lib/python3.14/site-packages/libpysal/examples/mexico/mexicojoin.dbf&#39;
 </code></pre></div>
 </div>
 </div>
@@ -964,7 +964,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>99 datasets available, 43 installed, 56 remote.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>99 datasets available, 27 installed, 72 remote.
 </code></pre></div>
 </div>
 </div>
@@ -1012,7 +1012,7 @@
       <th>1</th>
       <td>AirBnB</td>
       <td>Airbnb rentals, socioeconomics, and crime in C...</td>
-      <td>True</td>
+      <td>False</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1024,7 +1024,7 @@
       <th>3</th>
       <td>Baltimore</td>
       <td>Baltimore house sales prices and hedonics</td>
-      <td>True</td>
+      <td>False</td>
     </tr>
     <tr>
       <th>4</th>
@@ -1043,6 +1043,11 @@
 </code></pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Downloading AirBnB to /home/runner/.local/share/pysal/AirBnB
+</code></pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1051,7 +1056,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>99 datasets available, 43 installed, 56 remote.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>99 datasets available, 28 installed, 71 remote.
 </code></pre></div>
 </div>
 </div>
@@ -1113,6 +1118,11 @@ Dataset used for regionalization
 </code></pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Downloading taz to /home/runner/.local/share/pysal/taz
+</code></pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1121,10 +1131,10 @@ Dataset used for regionalization
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[&#39;/Users/martin/Library/Application Support/pysal/taz/taz-master/README.md&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/taz/taz-master/taz.dbf&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/taz/taz-master/taz.shp&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/taz/taz-master/taz.shx&#39;]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[&#39;/home/runner/.local/share/pysal/taz/taz-master/taz.dbf&#39;,
+ &#39;/home/runner/.local/share/pysal/taz/taz-master/README.md&#39;,
+ &#39;/home/runner/.local/share/pysal/taz/taz-master/taz.shp&#39;,
+ &#39;/home/runner/.local/share/pysal/taz/taz-master/taz.shx&#39;]
 </code></pre></div>
 </div>
 </div>
@@ -1150,6 +1160,11 @@ Dataset used for regionalization
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">balt</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">load_example</span><span class="p">(</span><span class="s2">&quot;Baltimore&quot;</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Downloading Baltimore to /home/runner/.local/share/pysal/Baltimore
 </code></pre></div>
 </div>
 </div>
@@ -1286,6 +1301,11 @@ Dataset used for regionalization
 </code></pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Downloading Tampa1 to /home/runner/.local/share/pysal/Tampa1
+</code></pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1306,87 +1326,87 @@ Dataset used for regionalization
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[&#39;/Users/martin/Library/Application Support/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbn&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/__MACOSX/TampaMSA/._2000 Census Data Variables_Documentation.pdf&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbn&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/__MACOSX/._TampaMSA&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.prj&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.xlsx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.shx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.sbx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.shp&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.sqlite&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.sbn&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.FDO_UUID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbindexes&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/gdb&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByName.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.spx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/timestamps&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByOriginID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.spx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByType.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByDestinationID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbindexes&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByParentTypeID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByType.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByDestItemTypeID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByUUID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbindexes&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbindexes&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.TablesByName.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByPhysicalName.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByForwardLabel.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbindexes&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByUUID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbindexes&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbindexes&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtable&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByBackwardLabel.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtablx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.spx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.FDO_UUID.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbindexes&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByName.atx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.kml&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/2000 Census Data Variables_Documentation.pdf&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.geojson&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.mid&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.mif&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.dbf&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.gpkg&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.shp&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.sbn&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.shx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.prj&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.sbx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.gpkg&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.sqlite&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.geojson&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.kml&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.mid&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_counties.mif&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.xlsx&#39;,
- &#39;/Users/martin/Library/Application Support/pysal/Tampa1/TampaMSA/tampa_final_census2.dbf&#39;]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>[&#39;/home/runner/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbn&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbn&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._2000 Census Data Variables_Documentation.pdf&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_counties.sbx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/__MACOSX/TampaMSA/._tampa_final_census2.sbx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/__MACOSX/._TampaMSA&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.geojson&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.prj&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sbx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.dbf&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.xlsx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.shx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.shp&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sbn&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.kml&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.gpkg&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.shx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sqlite&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/timestamps&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.TablesByName.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByUUID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByOriginItemTypeID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.FDO_UUID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbindexes&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByName.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByDestItemTypeID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByType.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/gdb&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByDestinationID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByForwardLabel.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.spx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbindexes&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbindexes&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbindexes&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.gdbindexes&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.CatRelTypesByBackwardLabel.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbindexes&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000001.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a0000000a.spx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByUUID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000009.spx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000003.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByPhysicalName.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000002.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByParentTypeID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbindexes&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.CatItemsByType.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000004.FDO_UUID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.CatItemTypesByName.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000007.gdbtable&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.CatRelsByOriginID.atx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000006.gdbtablx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/TampaMSA.gdb/a00000005.gdbindexes&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sbn&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/2000 Census Data Variables_Documentation.pdf&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.prj&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.mid&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.mid&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.sqlite&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.kml&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.mif&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.xlsx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.geojson&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.mif&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.shp&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.sbx&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_final_census2.gpkg&#39;,
+ &#39;/home/runner/.local/share/pysal/Tampa1/TampaMSA/tampa_counties.dbf&#39;]
 </code></pre></div>
 </div>
 </div>
@@ -1405,7 +1425,7 @@ Dataset used for regionalization
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;libpysal.io.iohandlers.pyShpIO.PurePyShpWrapper at 0x15c406a50&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;libpysal.io.iohandlers.pyShpIO.PurePyShpWrapper at 0x7f7f469cd940&gt;
 </code></pre></div>
 </div>
 </div>
@@ -1478,6 +1498,11 @@ Reference: https://github.com/pysal/pysal/issues/889#issuecomment-396693495
 </code></pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>Downloading Rio Grande do Sul to /home/runner/.local/share/pysal/Rio_Grande_do_Sul
+</code></pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1486,78 +1511,78 @@ Reference: https://github.com/pysal/pysal/issues/889#issuecomment-396693495
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>{&#39;AirBnB&#39;: &lt;libpysal.examples.base.Example at 0x150792900&gt;,
- &#39;Atlanta&#39;: &lt;libpysal.examples.base.Example at 0x1507abed0&gt;,
- &#39;Baltimore&#39;: &lt;libpysal.examples.base.Example at 0x15090c190&gt;,
- &#39;Bostonhsg&#39;: &lt;libpysal.examples.base.Example at 0x1508023f0&gt;,
- &#39;Buenosaires&#39;: &lt;libpysal.examples.base.Example at 0x150802520&gt;,
- &#39;Charleston1&#39;: &lt;libpysal.examples.base.Example at 0x1508b8af0&gt;,
- &#39;Charleston2&#39;: &lt;libpysal.examples.base.Example at 0x1508b8d10&gt;,
- &#39;Chicago Health&#39;: &lt;libpysal.examples.base.Example at 0x150317650&gt;,
- &#39;Chicago commpop&#39;: &lt;libpysal.examples.base.Example at 0x1508dce50&gt;,
- &#39;Chicago parcels&#39;: &lt;libpysal.examples.base.Example at 0x1508c0c80&gt;,
- &#39;Chile Labor&#39;: &lt;libpysal.examples.base.Example at 0x1508c0d70&gt;,
- &#39;Chile Migration&#39;: &lt;libpysal.examples.base.Example at 0x1508f9010&gt;,
- &#39;Cincinnati&#39;: &lt;libpysal.examples.base.Example at 0x1508f91d0&gt;,
- &#39;Cleveland&#39;: &lt;libpysal.examples.base.Example at 0x15010ec30&gt;,
- &#39;Columbus&#39;: &lt;libpysal.examples.base.Example at 0x1507fa510&gt;,
- &#39;Elections&#39;: &lt;libpysal.examples.base.Example at 0x1507fa450&gt;,
- &#39;Grid100&#39;: &lt;libpysal.examples.base.Example at 0x10567c260&gt;,
- &#39;Groceries&#39;: &lt;libpysal.examples.base.Example at 0x150905e90&gt;,
- &#39;Guerry&#39;: &lt;libpysal.examples.base.Example at 0x150863a70&gt;,
- &#39;Health+&#39;: &lt;libpysal.examples.base.Example at 0x150863070&gt;,
- &#39;Health Indicators&#39;: &lt;libpysal.examples.base.Example at 0x150863ed0&gt;,
- &#39;Hickory1&#39;: &lt;libpysal.examples.base.Example at 0x150863f70&gt;,
- &#39;Hickory2&#39;: &lt;libpysal.examples.base.Example at 0x150863390&gt;,
- &#39;Home Sales&#39;: &lt;libpysal.examples.base.Example at 0x150863e30&gt;,
- &#39;Houston&#39;: &lt;libpysal.examples.base.Example at 0x150862d50&gt;,
- &#39;Juvenile&#39;: &lt;libpysal.examples.base.Example at 0x150863570&gt;,
- &#39;Lansing1&#39;: &lt;libpysal.examples.base.Example at 0x150862fd0&gt;,
- &#39;Lansing2&#39;: &lt;libpysal.examples.base.Example at 0x1508634d0&gt;,
- &#39;Laozone&#39;: &lt;libpysal.examples.base.Example at 0x150863d90&gt;,
- &#39;LasRosas&#39;: &lt;libpysal.examples.base.Example at 0x1508631b0&gt;,
- &#39;Liquor Stores&#39;: &lt;libpysal.examples.base.Example at 0x150863250&gt;,
- &#39;Malaria&#39;: &lt;libpysal.examples.base.Example at 0x150863430&gt;,
- &#39;Milwaukee1&#39;: &lt;libpysal.examples.base.Example at 0x150862df0&gt;,
- &#39;Milwaukee2&#39;: &lt;libpysal.examples.base.Example at 0x1508632f0&gt;,
- &#39;NCOVR&#39;: &lt;libpysal.examples.base.Example at 0x1508639d0&gt;,
- &#39;Natregimes&#39;: &lt;libpysal.examples.base.Example at 0x150863b10&gt;,
- &#39;NDVI&#39;: &lt;libpysal.examples.base.Example at 0x150914050&gt;,
- &#39;Nepal&#39;: &lt;libpysal.examples.base.Example at 0x1509145f0&gt;,
- &#39;NYC&#39;: &lt;libpysal.examples.base.Example at 0x1509140f0&gt;,
- &#39;NYC Earnings&#39;: &lt;libpysal.examples.base.Example at 0x150914190&gt;,
- &#39;NYC Education&#39;: &lt;libpysal.examples.base.Example at 0x150914230&gt;,
- &#39;NYC Neighborhoods&#39;: &lt;libpysal.examples.base.Example at 0x150914550&gt;,
- &#39;NYC Socio-Demographics&#39;: &lt;libpysal.examples.base.Example at 0x150914690&gt;,
- &#39;Ohiolung&#39;: &lt;libpysal.examples.base.Example at 0x150914730&gt;,
- &#39;Orlando1&#39;: &lt;libpysal.examples.base.Example at 0x1509147d0&gt;,
- &#39;Orlando2&#39;: &lt;libpysal.examples.base.Example at 0x150914870&gt;,
- &#39;Oz9799&#39;: &lt;libpysal.examples.base.Example at 0x1509149b0&gt;,
- &#39;Phoenix ACS&#39;: &lt;libpysal.examples.base.Example at 0x150914a50&gt;,
- &#39;Pittsburgh&#39;: &lt;libpysal.examples.base.Example at 0x150914af0&gt;,
- &#39;Police&#39;: &lt;libpysal.examples.base.Example at 0x150914b90&gt;,
- &#39;Sacramento1&#39;: &lt;libpysal.examples.base.Example at 0x150914c30&gt;,
- &#39;Sacramento2&#39;: &lt;libpysal.examples.base.Example at 0x150914cd0&gt;,
- &#39;SanFran Crime&#39;: &lt;libpysal.examples.base.Example at 0x150914d70&gt;,
- &#39;Savannah1&#39;: &lt;libpysal.examples.base.Example at 0x150914e10&gt;,
- &#39;Savannah2&#39;: &lt;libpysal.examples.base.Example at 0x150914f50&gt;,
- &#39;Scotlip&#39;: &lt;libpysal.examples.base.Example at 0x150914ff0&gt;,
- &#39;Seattle1&#39;: &lt;libpysal.examples.base.Example at 0x150915090&gt;,
- &#39;Seattle2&#39;: &lt;libpysal.examples.base.Example at 0x150915130&gt;,
- &#39;SIDS&#39;: &lt;libpysal.examples.base.Example at 0x1509151d0&gt;,
- &#39;SIDS2&#39;: &lt;libpysal.examples.base.Example at 0x150915270&gt;,
- &#39;Snow&#39;: &lt;libpysal.examples.base.Example at 0x150915310&gt;,
- &#39;South&#39;: &lt;libpysal.examples.base.Example at 0x1509153b0&gt;,
- &#39;Spirals&#39;: &lt;libpysal.examples.base.Example at 0x150915450&gt;,
- &#39;StLouis&#39;: &lt;libpysal.examples.base.Example at 0x1509154f0&gt;,
- &#39;Tampa1&#39;: &lt;libpysal.examples.base.Example at 0x150915590&gt;,
- &#39;US SDOH&#39;: &lt;libpysal.examples.base.Example at 0x150915630&gt;,
- &#39;Rio Grande do Sul&#39;: &lt;libpysal.examples.base.Example at 0x1509156d0&gt;,
- &#39;nyc_bikes&#39;: &lt;libpysal.examples.base.Example at 0x150915770&gt;,
- &#39;taz&#39;: &lt;libpysal.examples.base.Example at 0x150915810&gt;,
- &#39;clearwater&#39;: &lt;libpysal.examples.base.Example at 0x1509158b0&gt;,
- &#39;newHaven&#39;: &lt;libpysal.examples.base.Example at 0x150915950&gt;,
- &#39;chicagoSDOH&#39;: &lt;libpysal.examples.base.Example at 0x1509159f0&gt;}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>{&#39;AirBnB&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891e9010&gt;,
+ &#39;Atlanta&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891c1bd0&gt;,
+ &#39;Baltimore&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891c1e50&gt;,
+ &#39;Bostonhsg&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89307a80&gt;,
+ &#39;Buenosaires&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89307bb0&gt;,
+ &#39;Charleston1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89232cf0&gt;,
+ &#39;Charleston2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89232f10&gt;,
+ &#39;Chicago Health&#39;: &lt;libpysal.examples.base.Example at 0x7f7f8958e550&gt;,
+ &#39;Chicago commpop&#39;: &lt;libpysal.examples.base.Example at 0x7f7f8923bc50&gt;,
+ &#39;Chicago parcels&#39;: &lt;libpysal.examples.base.Example at 0x7f7f892454f0&gt;,
+ &#39;Chile Labor&#39;: &lt;libpysal.examples.base.Example at 0x7f7f892455e0&gt;,
+ &#39;Chile Migration&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89236b30&gt;,
+ &#39;Cincinnati&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89236cf0&gt;,
+ &#39;Cleveland&#39;: &lt;libpysal.examples.base.Example at 0x7f7f895b02c0&gt;,
+ &#39;Columbus&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891d9490&gt;,
+ &#39;Elections&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891d93d0&gt;,
+ &#39;Grid100&#39;: &lt;libpysal.examples.base.Example at 0x7f800037fb70&gt;,
+ &#39;Groceries&#39;: &lt;libpysal.examples.base.Example at 0x7f7f8a7933e0&gt;,
+ &#39;Guerry&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891afbb0&gt;,
+ &#39;Health+&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891afd90&gt;,
+ &#39;Health Indicators&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891afe30&gt;,
+ &#39;Hickory1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891afed0&gt;,
+ &#39;Hickory2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891af890&gt;,
+ &#39;Home Sales&#39;: &lt;libpysal.examples.base.Example at 0x7f7f891af930&gt;,
+ &#39;Houston&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090050&gt;,
+ &#39;Juvenile&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890900f0&gt;,
+ &#39;Lansing1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090190&gt;,
+ &#39;Lansing2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090230&gt;,
+ &#39;Laozone&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090370&gt;,
+ &#39;LasRosas&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090cd0&gt;,
+ &#39;Liquor Stores&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090410&gt;,
+ &#39;Malaria&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090ff0&gt;,
+ &#39;Milwaukee1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090550&gt;,
+ &#39;Milwaukee2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890905f0&gt;,
+ &#39;NCOVR&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090690&gt;,
+ &#39;Natregimes&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090730&gt;,
+ &#39;NDVI&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890907d0&gt;,
+ &#39;Nepal&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090870&gt;,
+ &#39;NYC&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090910&gt;,
+ &#39;NYC Earnings&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090a50&gt;,
+ &#39;NYC Education&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090af0&gt;,
+ &#39;NYC Neighborhoods&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090b90&gt;,
+ &#39;NYC Socio-Demographics&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090c30&gt;,
+ &#39;Ohiolung&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090d70&gt;,
+ &#39;Orlando1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090e10&gt;,
+ &#39;Orlando2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090eb0&gt;,
+ &#39;Oz9799&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89090f50&gt;,
+ &#39;Phoenix ACS&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091090&gt;,
+ &#39;Pittsburgh&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091130&gt;,
+ &#39;Police&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890911d0&gt;,
+ &#39;Sacramento1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091270&gt;,
+ &#39;Sacramento2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091310&gt;,
+ &#39;SanFran Crime&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890913b0&gt;,
+ &#39;Savannah1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091450&gt;,
+ &#39;Savannah2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890914f0&gt;,
+ &#39;Scotlip&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091590&gt;,
+ &#39;Seattle1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091630&gt;,
+ &#39;Seattle2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890916d0&gt;,
+ &#39;SIDS&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091770&gt;,
+ &#39;SIDS2&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091810&gt;,
+ &#39;Snow&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890918b0&gt;,
+ &#39;South&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091950&gt;,
+ &#39;Spirals&#39;: &lt;libpysal.examples.base.Example at 0x7f7f890919f0&gt;,
+ &#39;StLouis&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091a90&gt;,
+ &#39;Tampa1&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091b30&gt;,
+ &#39;US SDOH&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091bd0&gt;,
+ &#39;Rio Grande do Sul&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091c70&gt;,
+ &#39;nyc_bikes&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091d10&gt;,
+ &#39;taz&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091db0&gt;,
+ &#39;clearwater&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091e50&gt;,
+ &#39;newHaven&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091ef0&gt;,
+ &#39;chicagoSDOH&#39;: &lt;libpysal.examples.base.Example at 0x7f7f89091f90&gt;}
 </code></pre></div>
 </div>
 </div>
@@ -1608,7 +1633,7 @@ Reference: https://github.com/pysal/pysal/issues/889#issuecomment-396693495
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    9.1.0.
+    8.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   

@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.acf80fe7f4d9ef9e2.min.css?v=9e56d0d2" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
@@ -745,7 +745,7 @@
       <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span>
     
     <span class="md-ellipsis">
-      <span title="libpysal.io.open (Python attribute) — __init__([dataPath, mode, dataFormat])"><span>libpysal.<wbr>io.<wbr>open</span></span>
+      <span title="libpysal.io.open (Python attribute) — alias of FileIO"><span>libpysal.<wbr>io.<wbr>open</span></span>
     </span>
   </a>
   
@@ -984,7 +984,7 @@
       <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span>
     
     <span class="md-ellipsis">
-      <span title="libpysal.io.open (Python attribute) — __init__([dataPath, mode, dataFormat])"><span>libpysal.<wbr>io.<wbr>open</span></span>
+      <span title="libpysal.io.open (Python attribute) — alias of FileIO"><span>libpysal.<wbr>io.<wbr>open</span></span>
     </span>
   </a>
   
@@ -1009,66 +1009,8 @@
 <h1 id="libpysal-io-open">libpysal.io.open<a class="headerlink" href="#libpysal-io-open" title="Link to this heading">¶</a></h1>
 <dl class="py attribute objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.io.open">
-<span class="sig-prename descclassname"><span class="pre">libpysal.io.</span></span><span class="sig-name descname"><span class="pre">open</span></span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.14.1/libpysal/io/fileio.py#L57-L456"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.io.open" title="Link to this definition">¶</a></dt>
-<dd><p class="rubric">Methods</p>
-<table class="autosummary longtable docutils data align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code>([dataPath, mode, dataFormat])</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cast</span></code>(key, typ)</p></td>
-<td><p>Cast <code class="docutils literal notranslate"><span class="pre">key</span></code> as <code class="docutils literal notranslate"><span class="pre">typ</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">check</span></code>()</p></td>
-<td><p>Prints the contents of the registry.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code>()</p></td>
-<td><p>Subclasses should clean themselves up and then call this method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">flush</span></code>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code>(n)</p></td>
-<td><p>Seeks the file to <code class="docutils literal notranslate"><span class="pre">n</span></code> and returns <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">getType</span></code>(dataPath, mode[, dataFormat])</p></td>
-<td><p>Parse the <code class="docutils literal notranslate"><span class="pre">dataPath</span></code> and return the data type.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">open</span></code>(*args, **kwargs)</p></td>
-<td><p>Alias for <code class="docutils literal notranslate"><span class="pre">FileIO()</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code>([n])</p></td>
-<td><p>Read at most <code class="docutils literal notranslate"><span class="pre">n</span></code> objects, less if read hits EOF.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">seek</span></code>(n)</p></td>
-<td><p>Seek the <cite>FileObj</cite> to the beginning of the <code class="docutils literal notranslate"><span class="pre">n</span></code>'th record.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tell</span></code>()</p></td>
-<td><p>Return ID (or offset) of next object.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncate</span></code>([size])</p></td>
-<td><p>Should be implemented by subclasses and redefine this doc string.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code>(obj)</p></td>
-<td><p>Must be implemented by subclasses that support 'w' subclasses Should increment <code class="docutils literal notranslate"><span class="pre">.pos</span></code>.</p></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Attributes</p>
-<table class="autosummary longtable docutils data align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">by_row</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ids</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rIds</span></code></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<p>alias of <a class="reference internal" href="libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO" title="libpysal.io.fileio.FileIO (Python class) — Metaclass for supporting spatial data file read and write."><code class="xref py py-class docutils literal notranslate"><span class="pre">FileIO</span></code></a></p>
+<span class="sig-prename descclassname"><span class="pre">libpysal.io.</span></span><span class="sig-name descname"><span class="pre">open</span></span><a class="reference external" href="https://github.com/pysal/libpysal/blob/main/libpysal/io/fileio.py#L57-L456"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.io.open" title="Link to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO" title="libpysal.io.fileio.FileIO (Python class) — Metaclass for supporting spatial data file read and write."><code class="xref py py-class docutils literal notranslate"><span class="pre">FileIO</span></code></a></p>
 </dd></dl>
 
 
@@ -1116,7 +1058,7 @@
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    9.1.0.
+    8.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   

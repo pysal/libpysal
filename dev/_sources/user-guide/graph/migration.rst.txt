@@ -18,27 +18,29 @@ Members common to W and Graph
 -----------------------------
 
 
-+-----------------------------------------------------------------------------------------+------------------+
-| Member                                                                                  |   Type           |
-+=========================================================================================+==================+
-| `asymmetry <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.asymmetry>`_       |  builtins.method |
-+-----------------------------------------------------------------------------------------+------------------+
-| `from_sparse <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_sparse>`_   |  builtins.method |
-+-----------------------------------------------------------------------------------------+------------------+
-| `n <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n>`_                       |  builtins.int    |
-+-----------------------------------------------------------------------------------------+------------------+
-| `n_components <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n_components>`_ |  builtins.int    |
-+-----------------------------------------------------------------------------------------+------------------+
-| `neighbors <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.neighbors>`_       |  builtins.dict   |
-+-----------------------------------------------------------------------------------------+------------------+
-| `pct_nonzero <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.pct_nonzero>`_   |  builtins.float  |
-+-----------------------------------------------------------------------------------------+------------------+
-| `plot <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.plot>`_                 |  builtins.method |
-+-----------------------------------------------------------------------------------------+------------------+
-| `to_networkx <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_networkx>`_   |  builtins.method |
-+-----------------------------------------------------------------------------------------+------------------+
-| `weights <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.weights>`_           |  builtins.dict   |
-+-----------------------------------------------------------------------------------------+------------------+
++-------------------------------------------------------------------------------------------+------------------+
+| Member                                                                                    |   Type           |
++===========================================================================================+==================+
+| `asymmetry <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.asymmetry>`_         |  builtins.method |
++-------------------------------------------------------------------------------------------+------------------+
+| `from_networkx <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_networkx>`_ |  builtins.method |
++-------------------------------------------------------------------------------------------+------------------+
+| `from_sparse <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_sparse>`_     |  builtins.method |
++-------------------------------------------------------------------------------------------+------------------+
+| `n <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n>`_                         |  builtins.int    |
++-------------------------------------------------------------------------------------------+------------------+
+| `n_components <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n_components>`_   |  builtins.int    |
++-------------------------------------------------------------------------------------------+------------------+
+| `neighbors <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.neighbors>`_         |  builtins.dict   |
++-------------------------------------------------------------------------------------------+------------------+
+| `pct_nonzero <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.pct_nonzero>`_     |  builtins.float  |
++-------------------------------------------------------------------------------------------+------------------+
+| `plot <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.plot>`_                   |  builtins.method |
++-------------------------------------------------------------------------------------------+------------------+
+| `to_networkx <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_networkx>`_     |  builtins.method |
++-------------------------------------------------------------------------------------------+------------------+
+| `weights <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.weights>`_             |  builtins.dict   |
++-------------------------------------------------------------------------------------------+------------------+
 
 
 Members common to W and Graph with different types
@@ -86,8 +88,6 @@ Members unique to W
 | `from_file <generated/libpysal.weights.W.html#libpysal.weights.W.from_file>`_               | builtins.method |
 +---------------------------------------------------------------------------------------------+-----------------+
 | `from_iterable <generated/libpysal.weights.W.html#libpysal.weights.W.from_iterable>`_       | builtins.method |
-+---------------------------------------------------------------------------------------------+-----------------+
-| `from_networkx <generated/libpysal.weights.W.html#libpysal.weights.W.from_networkx>`_       | builtins.method |
 +---------------------------------------------------------------------------------------------+-----------------+
 | `from_shapefile <generated/libpysal.weights.W.html#libpysal.weights.W.from_shapefile>`_     | builtins.method |
 +---------------------------------------------------------------------------------------------+-----------------+
@@ -208,6 +208,8 @@ Members unique to Graph
 | `from_adjacency <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_adjacency>`_                   | builtins.method |
 +---------------------------------------------------------------------------------------------------------------+-----------------+
 | `from_arrays <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_arrays>`_                         | builtins.method |
++---------------------------------------------------------------------------------------------------------------+-----------------+
+| `from_dense <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_dense>`_                           | builtins.method |
 +---------------------------------------------------------------------------------------------------------------+-----------------+
 | `from_dicts <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_dicts>`_                           | builtins.method |
 +---------------------------------------------------------------------------------------------------------------+-----------------+

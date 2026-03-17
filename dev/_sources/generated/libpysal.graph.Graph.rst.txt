@@ -38,7 +38,9 @@
       ~Graph.from_W
       ~Graph.from_adjacency
       ~Graph.from_arrays
+      ~Graph.from_dense
       ~Graph.from_dicts
+      ~Graph.from_networkx
       ~Graph.from_sparse
       ~Graph.from_weights_dict
       ~Graph.generate_da

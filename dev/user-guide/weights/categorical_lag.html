@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.acf80fe7f4d9ef9e2.min.css?v=9e56d0d2" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
         <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
@@ -1004,7 +1004,7 @@ Length: 9, dtype: str
 <span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
 <span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">_lag_spatial</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">categorical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="nn">File ~/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/libpysal/graph/_spatial_lag.py:94,</span> in <span class="ni">_lag_spatial</span><span class="nt">(graph, y, categorical, ties)</span>
+<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/libpysal/graph/_spatial_lag.py:94,</span> in <span class="ni">_lag_spatial</span><span class="nt">(graph, y, categorical, ties)</span>
 <span class="g g-Whitespace">     </span><span class="mi">85</span>     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="g g-Whitespace">     </span><span class="mi">87</span> <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span>
 <span class="g g-Whitespace">     </span><span class="mi">88</span>     <span class="n">categorical</span>
@@ -1014,7 +1014,7 @@ Length: 9, dtype: str
 <span class="ne">---&gt; </span><span class="mi">94</span>     <span class="k">return</span> <span class="n">_categorical</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ties</span><span class="o">=</span><span class="n">ties</span><span class="p">)</span>
 <span class="g g-Whitespace">     </span><span class="mi">96</span> <span class="k">return</span> <span class="n">sp</span> <span class="o">@</span> <span class="n">y</span>
 
-<span class="nn">File ~/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/libpysal/graph/_spatial_lag.py:146,</span> in <span class="ni">_categorical</span><span class="nt">(graph, y, ties)</span>
+<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/libpysal/graph/_spatial_lag.py:146,</span> in <span class="ni">_categorical</span><span class="nt">(graph, y, ties)</span>
 <span class="g g-Whitespace">    </span><span class="mi">144</span> <span class="n">n_ties</span> <span class="o">=</span> <span class="n">gb</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_check_ties</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 <span class="g g-Whitespace">    </span><span class="mi">145</span> <span class="k">if</span> <span class="n">n_ties</span> <span class="ow">and</span> <span class="n">ties</span> <span class="o">==</span> <span class="s2">&quot;raise&quot;</span><span class="p">:</span>
 <span class="ne">--&gt; </span><span class="mi">146</span>     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -1294,7 +1294,7 @@ Name: weight, dtype: float64
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    9.1.0.
+    8.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   

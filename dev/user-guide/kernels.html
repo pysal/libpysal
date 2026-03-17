@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.acf80fe7f4d9ef9e2.min.css?v=9e56d0d2" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
@@ -985,26 +985,7 @@ truncated at the bandwidth.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">17</span>
-<span class="g g-Whitespace">     </span><span class="mi">15</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="g g-Whitespace">     </span><span class="mi">16</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">functions</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">17</span>     <span class="n">k</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">fn</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span>     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">fn</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="nn">File ~/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/libpysal/kernels.py:274,</span> in <span class="ni">kernel</span><span class="nt">(distances, bandwidth, kernel, taper, decay)</span>
-<span class="g g-Whitespace">    </span><span class="mi">272</span>     <span class="n">func</span> <span class="o">=</span> <span class="n">_kernel_functions</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">273</span> <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">274</span>     <span class="n">func</span> <span class="o">=</span> <span class="n">_kernel_functions</span><span class="p">[</span><span class="n">kernel</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">276</span> <span class="n">k</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">bandwidth</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">277</span> <span class="k">if</span> <span class="n">taper</span><span class="p">:</span>
-
-<span class="ne">KeyError</span>: &#39;tricube&#39;
-</code></pre></div>
-</div>
-<img alt="../_images/6ef8c1f6444bfc9b7570753736b386e083d3fea702f750ada907bf2a96d8c0f6.png" src="../_images/6ef8c1f6444bfc9b7570753736b386e083d3fea702f750ada907bf2a96d8c0f6.png" />
+<img alt="../_images/e946ebc1fd7e21d5697cc7d1dd246537861e96fc808d630d99c577d72fb605ba.png" src="../_images/e946ebc1fd7e21d5697cc7d1dd246537861e96fc808d630d99c577d72fb605ba.png" />
 </div>
 </div>
 <h2 id="exploring-alternative-kernels-and-bandwidths">Exploring alternative kernels and bandwidths<a class="headerlink" href="#exploring-alternative-kernels-and-bandwidths" title="Link to this heading">¶</a></h2>
@@ -1054,7 +1035,7 @@ larger bandwidths produce broader, smoother influence functions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/0f45db96000c440742249ed3c6f47655433af7d1eb247e629000292f4ec2a92f.png" src="../_images/0f45db96000c440742249ed3c6f47655433af7d1eb247e629000292f4ec2a92f.png" />
+<img alt="../_images/61478073d50a8a8f9571b8f02b64161ae31db26454ae4cb17d04d7d3f22a218c.png" src="../_images/61478073d50a8a8f9571b8f02b64161ae31db26454ae4cb17d04d7d3f22a218c.png" />
 </div>
 </div>
 <h3 id="decay">Decay<a class="headerlink" href="#decay" title="Link to this heading">¶</a></h3>
@@ -1088,7 +1069,7 @@ volume-preserving probability distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/805d98d5d66c37b52fa3033805e08844679ff67ee7a478ffd211bd37fc8100cb.png" src="../_images/805d98d5d66c37b52fa3033805e08844679ff67ee7a478ffd211bd37fc8100cb.png" />
+<img alt="../_images/40e62d092df4c4d14490d315f4bb791a73f33c0102a70459fa527767c206b4ca.png" src="../_images/40e62d092df4c4d14490d315f4bb791a73f33c0102a70459fa527767c206b4ca.png" />
 </div>
 </div>
 <h3 id="taper">Taper<a class="headerlink" href="#taper" title="Link to this heading">¶</a></h3>
@@ -1128,7 +1109,7 @@ while still preserving the basic shape of the kernel within the bandwidth.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/758544b3ff93c42e2bc701b4941d9b74a5d9c926e96d0eb964a3970819968ee6.png" src="../_images/758544b3ff93c42e2bc701b4941d9b74a5d9c926e96d0eb964a3970819968ee6.png" />
+<img alt="../_images/9efb68b4ae16d669dc97805d7fe1f2d1dbeb0c63d06a0609b067be1b9349a1c6.png" src="../_images/9efb68b4ae16d669dc97805d7fe1f2d1dbeb0c63d06a0609b067be1b9349a1c6.png" />
 </div>
 </div>
 
@@ -1177,7 +1158,7 @@ while still preserving the basic shape of the kernel within the bandwidth.</p>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    9.1.0.
+    8.2.3.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
