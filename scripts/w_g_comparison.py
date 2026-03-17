@@ -242,5 +242,5 @@ g_content = [line.split(",") for line in g_content]
 content = f"{content}\n\n{create_rst_table(g_content)}"
 
 
-with open("../docs/migration.rst", "w") as guide:
+with open("../docs/user-guide/graph/migration.rst", "w") as guide:
     guide.write(content)
