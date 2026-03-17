@@ -56,6 +56,9 @@ templates_path = [
 ]
 exclude_patterns = []
 
+html_copy_source = True
+html_sourcelink_suffix = ""
+
 intersphinx_mapping = {
     "geopandas": ("https://geopandas.org/en/latest", None),
     "python": ("https://docs.python.org/3", None),
@@ -85,10 +88,11 @@ html_favicon = "_static/pysal_favicon.ico"
 html_theme_options = {
     "icon": {
         "repo": "fontawesome/brands/github",
-        "edit": "material/file-edit-outline",
+        "edit": "material/file-code",
     },
     "site_url": "https://pysal.org/libpysal",
     "repo_url": "https://github.com/pysal/libpysal/",
+    "edit_uri": "blob/main/docs",
     "repo_name": "pysal/libpysal",
     "features": [
         # "navigation.expand",
@@ -108,7 +112,7 @@ html_theme_options = {
         "toc.sticky",
         # "content.tabs.link",
         "content.code.copy",
-        # "content.action.edit",
+        "content.action.edit",
         # "content.action.view",
         # "content.tooltips",
         # "announce.dismiss",
