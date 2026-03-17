@@ -1,0 +1,6823 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="references.html">
+      
+      
+        <link rel="next" href="generated/libpysal.graph.Graph.html">
+      
+      
+      <link rel="icon" href="_static/pysal_favicon.ico">
+    
+    
+      
+        <title>libpysal API reference - libpysal</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="_static/sphinx_immaterial_theme.acf80fe7f4d9ef9e2.min.css?v=9e56d0d2" />
+        <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spatial-graph" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="libpysal" class="md-header__button md-logo" aria-label="libpysal" data-md-component="logo">
+      <img src="_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            libpysal
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              libpysal API reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/libpysal/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/libpysal
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="libpysal" class="md-nav__button md-logo" aria-label="libpysal" data-md-component="logo">
+      <img src="_static/pysal_logo.svg" alt="logo">
+    </a>
+    libpysal
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/libpysal/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/libpysal
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>User Guide</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>User Guide</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/graph/intro.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Graphs</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/kernels.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Kernels</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/weights/intro.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Weights</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-guide/data/examples.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Datasets</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__current-nested md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span> API reference</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            <span> API reference</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#spatial-graph" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Graph</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_1" id="__nav_4_1_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_1">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Spatial Graph</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.graph.Graph.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>graph.<wbr>Graph</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.graph.GraphSummary.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>graph.<wbr>Graph<wbr>Summary</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.graph.read_parquet.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>graph.<wbr>read_<wbr>parquet</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.graph.read_gal.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>graph.<wbr>read_<wbr>gal</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.graph.read_gwt.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>graph.<wbr>read_<wbr>gwt</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#spatial-weights" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Weights</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2" id="__nav_4_1_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Spatial Weights</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.W.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#distance-weights" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Distance Weights</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_2" id="__nav_4_1_2_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Distance Weights</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.DistanceBand.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>Distance<wbr>Band</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.Kernel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>Kernel</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.KNN.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>KNN</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.Gabriel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>Gabriel</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.Delaunay.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>Delaunay</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.Relative_Neighborhood.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>Relative_<wbr>Neighborhood</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#contiguity-weights" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Contiguity Weights</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_3" id="__nav_4_1_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Contiguity Weights</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.Queen.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>Queen</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.Rook.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>Rook</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.Voronoi.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>Voronoi</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.W.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#spint-weights" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>spint Weights</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_4" id="__nav_4_1_2_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>spint Weights</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.WSP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>WSP</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.netW.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>net<wbr>W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.mat2L.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>mat2L</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.ODW.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>ODW</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.vecW.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>vec<wbr>W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#weights-tools-to-interface-with-rasters" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Weights tools to interface with rasters</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_5" id="__nav_4_1_2_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Weights tools to interface with rasters</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.da2W.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>da2W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.da2WSP.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>da2WSP</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.w2da.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>w2da</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.wsp2da.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>wsp2da</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.testDataArray.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>test<wbr>Data<wbr>Array</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#weights-util-classes-and-functions" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Weights Util Classes and Functions</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_6" id="__nav_4_1_2_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Weights Util Classes and Functions</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.block_weights.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>block_<wbr>weights</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.lat2W.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>lat2W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.comb.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>comb</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.order.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>order</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.higher_order.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>higher_<wbr>order</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.shimbel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>shimbel</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.remap_ids.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>remap_<wbr>ids</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.full2W.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>full2W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.full.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>full</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.WSP2W.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>WSP2W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.get_ids.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>get_<wbr>ids</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.get_points_array_from_shapefile.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>get_<wbr>points_<wbr>array_<wbr>from_<wbr>shapefile</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.fill_diagonal.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>fill_<wbr>diagonal</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#weights-user-classes-and-functions" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Weights user Classes and Functions</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_7" id="__nav_4_1_2_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Weights user Classes and Functions</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.min_threshold_distance.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>min_<wbr>threshold_<wbr>distance</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.lat2SW.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>lat2SW</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.w_local_cluster.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>w_<wbr>local_<wbr>cluster</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.higher_order_sp.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>higher_<wbr>order_<wbr>sp</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.hexLat2W.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>hex<wbr>Lat2W</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.attach_islands.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>attach_<wbr>islands</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.nonplanar_neighbors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>nonplanar_<wbr>neighbors</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.fuzzy_contiguity.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>fuzzy_<wbr>contiguity</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.min_threshold_dist_from_shapefile.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>min_<wbr>threshold_<wbr>dist_<wbr>from_<wbr>shapefile</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.build_lattice_shapefile.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>build_<wbr>lattice_<wbr>shapefile</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.spw_from_gal.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>spw_<wbr>from_<wbr>gal</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.neighbor_equality.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>neighbor_<wbr>equality</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#set-theoretic-weights" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Set Theoretic Weights</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_8" id="__nav_4_1_2_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_8">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Set Theoretic Weights</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.w_union.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>w_<wbr>union</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.w_intersection.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>w_<wbr>intersection</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.w_difference.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>w_<wbr>difference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.w_symmetric_difference.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>w_<wbr>symmetric_<wbr>difference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.w_subset.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>w_<wbr>subset</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.w_clip.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>w_<wbr>clip</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_2_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#spatial-lag" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Spatial Lag</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_2_9" id="__nav_4_1_2_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_2_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_2_9">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Spatial Lag</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.lag_spatial.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>lag_<wbr>spatial</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.weights.lag_categorical.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>weights.<wbr>lag_<wbr>categorical</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#cg-computational-geometry" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>cg:<wbr> Computational Geometry</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3" id="__nav_4_1_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>cg:<wbr> Computational Geometry</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_1" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#alpha-shapes" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>alpha_<wbr>shapes</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3_1" id="__nav_4_1_3_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            <span>alpha_<wbr>shapes</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.alpha_shape.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>alpha_<wbr>shape</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.alpha_shape_auto.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>alpha_<wbr>shape_<wbr>auto</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#voronoi" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>voronoi</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3_2" id="__nav_4_1_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            <span>voronoi</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.voronoi_frames.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>voronoi_<wbr>frames</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#sphere" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>sphere</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3_3" id="__nav_4_1_3_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>sphere</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.RADIUS_EARTH_KM.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>RADIUS_<wbr>EARTH_<wbr>KM</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.RADIUS_EARTH_MILES.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>RADIUS_<wbr>EARTH_<wbr>MILES</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.arcdist.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>arcdist</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.arcdist2linear.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>arcdist2linear</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.brute_knn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>brute_<wbr>knn</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.fast_knn.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>fast_<wbr>knn</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.fast_threshold.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>fast_<wbr>threshold</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.linear2arcdist.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>linear2arcdist</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.toLngLat.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>to<wbr>Lng<wbr>Lat</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.toXYZ.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>to<wbr>XYZ</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.lonlat.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>lonlat</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.harcdist.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>harcdist</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.geointerpolate.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>geointerpolate</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.geogrid.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>geogrid</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#shapes" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>shapes</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3_4" id="__nav_4_1_3_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>shapes</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.Point.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Point</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.LineSegment.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Line<wbr>Segment</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.Line.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Line</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.Ray.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Ray</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.Chain.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Chain</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.Polygon.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Polygon</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.Rectangle.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Rectangle</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.asShape.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>as<wbr>Shape</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#standalone" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>standalone</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3_5" id="__nav_4_1_3_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>standalone</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.bbcommon.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>bbcommon</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_bounding_box.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>bounding_<wbr>box</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_angle_between.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>angle_<wbr>between</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.is_collinear.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>is_<wbr>collinear</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_segments_intersect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>segments_<wbr>intersect</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_segment_point_intersect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>segment_<wbr>point_<wbr>intersect</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_polygon_point_intersect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>polygon_<wbr>point_<wbr>intersect</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_rectangle_point_intersect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>rectangle_<wbr>point_<wbr>intersect</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_ray_segment_intersect.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>ray_<wbr>segment_<wbr>intersect</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_rectangle_rectangle_intersection.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>rectangle_<wbr>rectangle_<wbr>intersection</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_polygon_point_dist.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>polygon_<wbr>point_<wbr>dist</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_points_dist.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>points_<wbr>dist</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_segment_point_dist.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>segment_<wbr>point_<wbr>dist</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_point_at_angle_and_dist.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>point_<wbr>at_<wbr>angle_<wbr>and_<wbr>dist</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.convex_hull.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>convex_<wbr>hull</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.is_clockwise.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>is_<wbr>clockwise</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.point_touches_rectangle.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>point_<wbr>touches_<wbr>rectangle</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.get_shared_segments.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>get_<wbr>shared_<wbr>segments</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.distance_matrix.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>distance_<wbr>matrix</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#locators" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>locators</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3_6" id="__nav_4_1_3_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>locators</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.Grid.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Grid</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.PointLocator.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Point<wbr>Locator</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.PolygonLocator.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>Polygon<wbr>Locator</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_3_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#kdtree" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>kdtree</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_3_7" id="__nav_4_1_3_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_4_1_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            <span>kdtree</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.cg.KDTree.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>cg.<wbr>KDTree</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#io" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>io</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_4" id="__nav_4_1_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>io</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.io.open.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>io.<wbr>open</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.io.fileio.FileIO.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>io.<wbr>fileio.<wbr>File<wbr>IO</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#kernels" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>kernels</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_5" id="__nav_4_1_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>kernels</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.kernels.kernel.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>kernels.<wbr>kernel</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="#examples" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>examples</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_1_6" id="__nav_4_1_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>examples</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.examples.available.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>examples.<wbr>available</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.examples.explain.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>examples.<wbr>explain</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/libpysal.examples.get_path.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>libpysal.<wbr>examples.<wbr>get_<wbr>path</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+      
+    <li class="md-nav__item md-nav__item--active md-nav__current-toc">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span> API reference</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span> API reference</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spatial-graph" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Spatial Graph</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spatial Graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.graph.Graph.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>graph.<wbr>Graph</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.graph.GraphSummary.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>graph.<wbr>Graph<wbr>Summary</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.graph.read_parquet.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>graph.<wbr>read_<wbr>parquet</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.graph.read_gal.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>graph.<wbr>read_<wbr>gal</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.graph.read_gwt.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>graph.<wbr>read_<wbr>gwt</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spatial-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Spatial Weights</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spatial Weights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.W.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>W</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#distance-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Distance Weights</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Distance Weights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.DistanceBand.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>Distance<wbr>Band</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.Kernel.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>Kernel</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.KNN.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>KNN</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.Gabriel.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>Gabriel</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.Delaunay.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>Delaunay</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.Relative_Neighborhood.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>Relative_<wbr>Neighborhood</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contiguity-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Contiguity Weights</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Contiguity Weights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.Queen.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>Queen</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.Rook.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>Rook</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.Voronoi.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>Voronoi</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.W.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>W</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spint-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>spint Weights</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="spint Weights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.WSP.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>WSP</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.netW.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>net<wbr>W</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.mat2L.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>mat2L</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.ODW.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>ODW</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.vecW.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>vec<wbr>W</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weights-tools-to-interface-with-rasters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Weights tools to interface with rasters</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Weights tools to interface with rasters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.da2W.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>da2W</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.da2WSP.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>da2WSP</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.w2da.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>w2da</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.wsp2da.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>wsp2da</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.testDataArray.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>test<wbr>Data<wbr>Array</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weights-util-classes-and-functions" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Weights Util Classes and Functions</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Weights Util Classes and Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.block_weights.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>block_<wbr>weights</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.lat2W.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>lat2W</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.comb.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>comb</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.order.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>order</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.higher_order.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>higher_<wbr>order</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.shimbel.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>shimbel</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.remap_ids.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>remap_<wbr>ids</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.full2W.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>full2W</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.full.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>full</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.WSP2W.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>WSP2W</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.get_ids.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>get_<wbr>ids</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.get_points_array_from_shapefile.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>get_<wbr>points_<wbr>array_<wbr>from_<wbr>shapefile</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.fill_diagonal.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>fill_<wbr>diagonal</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weights-user-classes-and-functions" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Weights user Classes and Functions</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Weights user Classes and Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.min_threshold_distance.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>min_<wbr>threshold_<wbr>distance</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.lat2SW.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>lat2SW</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.w_local_cluster.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>w_<wbr>local_<wbr>cluster</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.higher_order_sp.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>higher_<wbr>order_<wbr>sp</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.hexLat2W.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>hex<wbr>Lat2W</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.attach_islands.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>attach_<wbr>islands</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.nonplanar_neighbors.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>nonplanar_<wbr>neighbors</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.fuzzy_contiguity.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>fuzzy_<wbr>contiguity</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.min_threshold_dist_from_shapefile.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>min_<wbr>threshold_<wbr>dist_<wbr>from_<wbr>shapefile</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.build_lattice_shapefile.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>build_<wbr>lattice_<wbr>shapefile</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.spw_from_gal.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>spw_<wbr>from_<wbr>gal</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.neighbor_equality.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>neighbor_<wbr>equality</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-theoretic-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Set Theoretic Weights</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Set Theoretic Weights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.w_union.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>w_<wbr>union</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.w_intersection.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>w_<wbr>intersection</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.w_difference.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>w_<wbr>difference</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.w_symmetric_difference.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>w_<wbr>symmetric_<wbr>difference</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.w_subset.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>w_<wbr>subset</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.w_clip.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>w_<wbr>clip</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spatial-lag" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Spatial Lag</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spatial Lag">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.lag_spatial.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>lag_<wbr>spatial</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.weights.lag_categorical.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>weights.<wbr>lag_<wbr>categorical</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cg-computational-geometry" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>cg:<wbr> Computational Geometry</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="cg: Computational Geometry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alpha-shapes" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>alpha_<wbr>shapes</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="alpha_shapes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.alpha_shape.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>alpha_<wbr>shape</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.alpha_shape_auto.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>alpha_<wbr>shape_<wbr>auto</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voronoi" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>voronoi</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="voronoi">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.voronoi_frames.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>voronoi_<wbr>frames</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sphere" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>sphere</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="sphere">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.RADIUS_EARTH_KM.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>RADIUS_<wbr>EARTH_<wbr>KM</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.RADIUS_EARTH_MILES.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>RADIUS_<wbr>EARTH_<wbr>MILES</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.arcdist.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>arcdist</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.arcdist2linear.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>arcdist2linear</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.brute_knn.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>brute_<wbr>knn</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.fast_knn.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>fast_<wbr>knn</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.fast_threshold.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>fast_<wbr>threshold</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.linear2arcdist.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>linear2arcdist</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.toLngLat.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>to<wbr>Lng<wbr>Lat</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.toXYZ.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>to<wbr>XYZ</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.lonlat.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>lonlat</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.harcdist.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>harcdist</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.geointerpolate.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>geointerpolate</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.geogrid.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>geogrid</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shapes" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>shapes</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="shapes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.Point.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Point</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.LineSegment.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Line<wbr>Segment</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.Line.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Line</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.Ray.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Ray</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.Chain.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Chain</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.Polygon.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Polygon</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.Rectangle.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Rectangle</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.asShape.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>as<wbr>Shape</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standalone" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>standalone</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="standalone">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.bbcommon.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>bbcommon</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_bounding_box.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>bounding_<wbr>box</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_angle_between.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>angle_<wbr>between</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.is_collinear.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>is_<wbr>collinear</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_segments_intersect.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>segments_<wbr>intersect</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_segment_point_intersect.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>segment_<wbr>point_<wbr>intersect</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_polygon_point_intersect.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>polygon_<wbr>point_<wbr>intersect</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_rectangle_point_intersect.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>rectangle_<wbr>point_<wbr>intersect</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_ray_segment_intersect.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>ray_<wbr>segment_<wbr>intersect</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_rectangle_rectangle_intersection.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>rectangle_<wbr>rectangle_<wbr>intersection</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_polygon_point_dist.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>polygon_<wbr>point_<wbr>dist</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_points_dist.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>points_<wbr>dist</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_segment_point_dist.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>segment_<wbr>point_<wbr>dist</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_point_at_angle_and_dist.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>point_<wbr>at_<wbr>angle_<wbr>and_<wbr>dist</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.convex_hull.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>convex_<wbr>hull</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.is_clockwise.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>is_<wbr>clockwise</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.point_touches_rectangle.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>point_<wbr>touches_<wbr>rectangle</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.get_shared_segments.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>get_<wbr>shared_<wbr>segments</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.distance_matrix.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>distance_<wbr>matrix</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#locators" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>locators</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="locators">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.Grid.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Grid</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.PointLocator.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Point<wbr>Locator</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.PolygonLocator.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>Polygon<wbr>Locator</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kdtree" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>kdtree</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="kdtree">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.cg.KDTree.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>cg.<wbr>KDTree</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#io" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>io</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="io">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.io.open.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>io.<wbr>open</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.io.fileio.FileIO.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>io.<wbr>fileio.<wbr>File<wbr>IO</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernels" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>kernels</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="kernels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.kernels.kernel.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>kernels.<wbr>kernel</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>examples</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.examples.available.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>examples.<wbr>available</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.examples.explain.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>examples.<wbr>explain</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="generated/libpysal.examples.get_path.html" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>libpysal.<wbr>examples.<wbr>get_<wbr>path</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/libpysal" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/libpysal/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spatial-graph" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Spatial Graph</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spatial-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Spatial Weights</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Spatial Weights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#distance-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Distance Weights</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#contiguity-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Contiguity Weights</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spint-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>spint Weights</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weights-tools-to-interface-with-rasters" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Weights tools to interface with rasters</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weights-util-classes-and-functions" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Weights Util Classes and Functions</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weights-user-classes-and-functions" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Weights user Classes and Functions</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-theoretic-weights" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Set Theoretic Weights</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spatial-lag" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Spatial Lag</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cg-computational-geometry" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>cg:<wbr> Computational Geometry</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="cg: Computational Geometry">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alpha-shapes" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>alpha_<wbr>shapes</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voronoi" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>voronoi</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sphere" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>sphere</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shapes" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>shapes</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standalone" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>standalone</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#locators" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>locators</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kdtree" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>kdtree</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#io" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>io</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernels" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>kernels</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>examples</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+<h1 id="libpysal-api-reference"><span id="api-ref"></span>libpysal API reference<a class="headerlink" href="#libpysal-api-reference" title="Link to this heading">¶</a></h1>
+<h2 id="spatial-graph">Spatial Graph<a class="headerlink" href="#spatial-graph" title="Link to this heading">¶</a></h2>
+<p>Modern implementation of spatial graphs encoding spatial weights matrices.</p>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.graph.Graph.html#libpysal.graph.Graph" title="libpysal.graph.Graph (Python class) — Graph class encoding spatial weights matrices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.Graph</span></code></a>(adjacency[, ...])</p></td>
+<td><p>Graph class encoding spatial weights matrices</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.graph.GraphSummary.html#libpysal.graph.GraphSummary" title="libpysal.graph.GraphSummary (Python class) — Graph Summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.GraphSummary</span></code></a>(graph[, asymmetries])</p></td>
+<td><p>Graph Summary</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.graph.read_parquet.html#libpysal.graph.read_parquet" title="libpysal.graph.read_parquet (Python function) — Read Graph from a Apache Parquet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.read_parquet</span></code></a>(path, **kwargs)</p></td>
+<td><p>Read Graph from a Apache Parquet</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.graph.read_gal.html#libpysal.graph.read_gal" title="libpysal.graph.read_gal (Python function) — Read Graph from a GAL file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.read_gal</span></code></a>(path)</p></td>
+<td><p>Read Graph from a GAL file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.graph.read_gwt.html#libpysal.graph.read_gwt" title="libpysal.graph.read_gwt (Python function) — Read Graph from a GWT file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.graph.read_gwt</span></code></a>(path)</p></td>
+<td><p>Read Graph from a GWT file</p></td>
+</tr>
+</tbody>
+</table>
+<h2 id="spatial-weights">Spatial Weights<a class="headerlink" href="#spatial-weights" title="Link to this heading">¶</a></h2>
+<p>Legacy implementation of spatial weights matrices.</p>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W (Python class) — Spatial weights class. Class attributes are described by their docstrings. to view, use the help function."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a>(neighbors[, weights, ...])</p></td>
+<td><p>Spatial weights class.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="distance-weights">Distance Weights<a class="headerlink" href="#distance-weights" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.DistanceBand.html#libpysal.weights.DistanceBand" title="libpysal.weights.DistanceBand (Python class) — Spatial weights based on distance band."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.DistanceBand</span></code></a>(data, threshold)</p></td>
+<td><p>Spatial weights based on distance band.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.Kernel.html#libpysal.weights.Kernel" title="libpysal.weights.Kernel (Python class) — Spatial weights based on kernel functions."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Kernel</span></code></a>(data[, bandwidth, ...])</p></td>
+<td><p>Spatial weights based on kernel functions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.KNN.html#libpysal.weights.KNN" title="libpysal.weights.KNN (Python class) — Creates nearest neighbor weights matrix based on k nearest neighbors."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.KNN</span></code></a>(data[, k, p, ids, ...])</p></td>
+<td><p>Creates nearest neighbor weights matrix based on k nearest neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.Gabriel.html#libpysal.weights.Gabriel" title="libpysal.weights.Gabriel (Python class) — Constructs the Gabriel graph of a set of points. This graph is a subset of the Delaunay triangulation where only &quot;short&quot; links are retained. This function is also accelerated using numba, and implemented on top of the scipy.spatial.Delaunay class."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Gabriel</span></code></a>(coordinates, **kwargs)</p></td>
+<td><p>Constructs the Gabriel graph of a set of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.Delaunay.html#libpysal.weights.Delaunay" title="libpysal.weights.Delaunay (Python class) — Constructor of the Delaunay graph of a set of input points. Relies on scipy.spatial.Delaunay and numba to quickly construct a graph from the input set of points. Will be slower without numba, and will warn if this is missing."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Delaunay</span></code></a>(coordinates, **kwargs)</p></td>
+<td><p>Constructor of the Delaunay graph of a set of input points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.Relative_Neighborhood.html#libpysal.weights.Relative_Neighborhood" title="libpysal.weights.Relative_Neighborhood (Python class) — Constructs the Relative Neighborhood graph from a set of points. This graph is a subset of the Delaunay triangulation, where only &quot;relative neighbors&quot; are retained. Further, it is a superset of the Minimum Spanning Tree, with additional &quot;relative neighbors&quot; introduced."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Relative_Neighborhood</span></code></a>(...)</p></td>
+<td><p>Constructs the Relative Neighborhood graph from a set of points.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="contiguity-weights">Contiguity Weights<a class="headerlink" href="#contiguity-weights" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.Queen.html#libpysal.weights.Queen" title="libpysal.weights.Queen (Python class) — Construct a weights object from a collection of pysal polygons that share at least one vertex."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Queen</span></code></a>(polygons, **kw)</p></td>
+<td><p>Construct a weights object from a collection of pysal polygons that share at least one vertex.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.Rook.html#libpysal.weights.Rook" title="libpysal.weights.Rook (Python class) — Construct a weights object from a collection of pysal polygons that share at least one edge."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Rook</span></code></a>(polygons, **kw)</p></td>
+<td><p>Construct a weights object from a collection of pysal polygons that share at least one edge.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.Voronoi.html#libpysal.weights.Voronoi" title="libpysal.weights.Voronoi (Python function) — Voronoi weights for a 2-d point set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.Voronoi</span></code></a>(points[, ...])</p></td>
+<td><p>Voronoi weights for a 2-d point set</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W (Python class) — Spatial weights class. Class attributes are described by their docstrings. to view, use the help function."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.W</span></code></a>(neighbors[, weights, ...])</p></td>
+<td><p>Spatial weights class.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="spint-weights">spint Weights<a class="headerlink" href="#spint-weights" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.WSP.html#libpysal.weights.WSP" title="libpysal.weights.WSP (Python class) — Thin W class for spreg."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.WSP</span></code></a>(sparse[, id_order, index])</p></td>
+<td><p>Thin <code class="docutils literal notranslate"><span class="pre">W</span></code> class for <code class="docutils literal notranslate"><span class="pre">spreg</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.netW.html#libpysal.weights.netW" title="libpysal.weights.netW (Python function) — Create a network-contiguity based weight object based on different nodal relationships encoded in a network."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.netW</span></code></a>(link_list[, share, ...])</p></td>
+<td><p>Create a network-contiguity based weight object based on different nodal relationships encoded in a network.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.mat2L.html#libpysal.weights.mat2L" title="libpysal.weights.mat2L (Python function) — Convert a matrix denoting network connectivity (edges or flows) to a list denoting edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.mat2L</span></code></a>(edge_matrix)</p></td>
+<td><p>Convert a matrix denoting network connectivity (edges or flows) to a list denoting edges</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.ODW.html#libpysal.weights.ODW" title="libpysal.weights.ODW (Python function) — Constructs an o*d by o*d origin-destination style spatial weight for o*d flows using standard spatial weights on o origins and d destinations. Input spatial weights must be binary or able to be sutiably transformed to binary."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.ODW</span></code></a>(Wo, Wd[, transform, ...])</p></td>
+<td><p>Constructs an o*d by o*d origin-destination style spatial weight for o*d flows using standard spatial weights on o origins and d destinations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.vecW.html#libpysal.weights.vecW" title="libpysal.weights.vecW (Python function) — Distance-based spatial weight for vectors that is computed using a 4-dimensional distance between the origin x,y-coordinates and the destination x,y-coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.vecW</span></code></a>(origin_x, origin_y, ...)</p></td>
+<td><p>Distance-based spatial weight for vectors that is computed using a 4-dimensional distance between the origin x,y-coordinates and the destination x,y-coordinates</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="weights-tools-to-interface-with-rasters">Weights tools to interface with rasters<a class="headerlink" href="#weights-tools-to-interface-with-rasters" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.da2W.html#libpysal.weights.da2W" title="libpysal.weights.da2W (Python function) — Create a W object from xarray.DataArray with an additional attribute index containing coordinate values of the raster in the form of Pandas.Index/MultiIndex."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.da2W</span></code></a>(da[, criterion, ...])</p></td>
+<td><p>Create a W object from xarray.DataArray with an additional attribute index containing coordinate values of the raster in the form of Pandas.Index/MultiIndex.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.da2WSP.html#libpysal.weights.da2WSP" title="libpysal.weights.da2WSP (Python function) — Create a WSP object from xarray.DataArray with an additional attribute index containing coordinate values of the raster in the form of Pandas.Index/MultiIndex."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.da2WSP</span></code></a>(da[, criterion, ...])</p></td>
+<td><p>Create a WSP object from xarray.DataArray with an additional attribute index containing coordinate values of the raster in the form of Pandas.Index/MultiIndex.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w2da.html#libpysal.weights.w2da" title="libpysal.weights.w2da (Python function) — Creates xarray.DataArray object from passed data aligned with W object."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w2da</span></code></a>(data, w[, attrs, coords])</p></td>
+<td><p>Creates xarray.DataArray object from passed data aligned with W object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.wsp2da.html#libpysal.weights.wsp2da" title="libpysal.weights.wsp2da (Python function) — Creates xarray.DataArray object from passed data aligned with WSP object."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.wsp2da</span></code></a>(data, wsp[, attrs, ...])</p></td>
+<td><p>Creates xarray.DataArray object from passed data aligned with WSP object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.testDataArray.html#libpysal.weights.testDataArray" title="libpysal.weights.testDataArray (Python function) — Creates 2 or 3 dimensional test xarray.DataArray object"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.testDataArray</span></code></a>([shape, ...])</p></td>
+<td><p>Creates 2 or 3 dimensional test xarray.DataArray object</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="weights-util-classes-and-functions">Weights Util Classes and Functions<a class="headerlink" href="#weights-util-classes-and-functions" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.block_weights.html#libpysal.weights.block_weights" title="libpysal.weights.block_weights (Python function) — Construct spatial weights for regime neighbors."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.block_weights</span></code></a>(regimes[, ...])</p></td>
+<td><p>Construct spatial weights for regime neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.lat2W.html#libpysal.weights.lat2W" title="libpysal.weights.lat2W (Python function) — Create a W object for a regular lattice."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.lat2W</span></code></a>([nrows, ncols, rook, ...])</p></td>
+<td><p>Create a W object for a regular lattice.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.comb.html#libpysal.weights.comb" title="libpysal.weights.comb (Python function) — Combinations of size n taken from items"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.comb</span></code></a>(items[, n])</p></td>
+<td><p>Combinations of size n taken from items</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.order.html#libpysal.weights.order" title="libpysal.weights.order (Python function) — Determine the non-redundant order of contiguity up to a specific order."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.order</span></code></a>(w[, kmax])</p></td>
+<td><p>Determine the non-redundant order of contiguity up to a specific order.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.higher_order.html#libpysal.weights.higher_order" title="libpysal.weights.higher_order (Python function) — Contiguity weights object of order k."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.higher_order</span></code></a>(w[, k])</p></td>
+<td><p>Contiguity weights object of order k.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.shimbel.html#libpysal.weights.shimbel" title="libpysal.weights.shimbel (Python function) — Find the Shimbel matrix for first order contiguity matrix."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.shimbel</span></code></a>(w)</p></td>
+<td><p>Find the Shimbel matrix for first order contiguity matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.remap_ids.html#libpysal.weights.remap_ids" title="libpysal.weights.remap_ids (Python function) — Remaps the IDs in a spatial weights object."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.remap_ids</span></code></a>(w, old2new[, ...])</p></td>
+<td><p>Remaps the IDs in a spatial weights object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.full2W.html#libpysal.weights.full2W" title="libpysal.weights.full2W (Python function) — Create a PySAL W object from a full array."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.full2W</span></code></a>(m[, ids])</p></td>
+<td><p>Create a PySAL W object from a full array.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.full.html#libpysal.weights.full" title="libpysal.weights.full (Python function) — Generate a full numpy array."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.full</span></code></a>(w)</p></td>
+<td><p>Generate a full numpy array.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.WSP2W.html#libpysal.weights.WSP2W" title="libpysal.weights.WSP2W (Python function) — Convert a pysal WSP object (thin weights matrix) to a pysal W object."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.WSP2W</span></code></a>(wsp, **kwargs)</p></td>
+<td><p>Convert a pysal WSP object (thin weights matrix) to a pysal W object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.get_ids.html#libpysal.weights.get_ids" title="libpysal.weights.get_ids (Python function) — Gets the IDs from the DBF file that moves with a given shape file or a geopandas.GeoDataFrame."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.get_ids</span></code></a>(in_shps, idVariable)</p></td>
+<td><p>Gets the IDs from the DBF file that moves with a given shape file or a geopandas.GeoDataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.get_points_array_from_shapefile.html#libpysal.weights.get_points_array_from_shapefile" title="libpysal.weights.get_points_array_from_shapefile (Python function) — Gets a data array of x and y coordinates from a given shapefile."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.get_points_array_from_shapefile</span></code></a>(...)</p></td>
+<td><p>Gets a data array of x and y coordinates from a given shapefile.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.fill_diagonal.html#libpysal.weights.fill_diagonal" title="libpysal.weights.fill_diagonal (Python function) — Returns a new weights object with values inserted along the main diagonal."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.fill_diagonal</span></code></a>(w[, val, wsp])</p></td>
+<td><p>Returns a new weights object with values inserted along the main diagonal.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="weights-user-classes-and-functions">Weights user Classes and Functions<a class="headerlink" href="#weights-user-classes-and-functions" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.min_threshold_distance.html#libpysal.weights.min_threshold_distance" title="libpysal.weights.min_threshold_distance (Python function) — Get the maximum nearest neighbor distance."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.min_threshold_distance</span></code></a>(data)</p></td>
+<td><p>Get the maximum nearest neighbor distance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.lat2SW.html#libpysal.weights.lat2SW" title="libpysal.weights.lat2SW (Python function) — Create a sparse W matrix for a regular lattice."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.lat2SW</span></code></a>([nrows, ncols, ...])</p></td>
+<td><p>Create a sparse W matrix for a regular lattice.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w_local_cluster.html#libpysal.weights.w_local_cluster" title="libpysal.weights.w_local_cluster (Python function) — Local clustering coefficients for each unit as a node in a graph."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_local_cluster</span></code></a>(w)</p></td>
+<td><p>Local clustering coefficients for each unit as a node in a graph.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.higher_order_sp.html#libpysal.weights.higher_order_sp" title="libpysal.weights.higher_order_sp (Python function) — Contiguity weights for either a sparse W or W for order k."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.higher_order_sp</span></code></a>(w[, k, ...])</p></td>
+<td><p>Contiguity weights for either a sparse W or W for order k.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.hexLat2W.html#libpysal.weights.hexLat2W" title="libpysal.weights.hexLat2W (Python function) — Create a W object for a hexagonal lattice."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.hexLat2W</span></code></a>([nrows, ncols])</p></td>
+<td><p>Create a W object for a hexagonal lattice.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.attach_islands.html#libpysal.weights.attach_islands" title="libpysal.weights.attach_islands (Python function) — Attach nearest neighbor to islands in spatial weight w."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.attach_islands</span></code></a>(w, w_knn1, ...)</p></td>
+<td><p>Attach nearest neighbor to islands in spatial weight w.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.nonplanar_neighbors.html#libpysal.weights.nonplanar_neighbors" title="libpysal.weights.nonplanar_neighbors (Python function) — Detect neighbors for non-planar polygon collections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.nonplanar_neighbors</span></code></a>(w, ...)</p></td>
+<td><p>Detect neighbors for non-planar polygon collections</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.fuzzy_contiguity.html#libpysal.weights.fuzzy_contiguity" title="libpysal.weights.fuzzy_contiguity (Python function) — Fuzzy contiguity spatial weights"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.fuzzy_contiguity</span></code></a>(gdf[, ...])</p></td>
+<td><p>Fuzzy contiguity spatial weights</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.min_threshold_dist_from_shapefile.html#libpysal.weights.min_threshold_dist_from_shapefile" title="libpysal.weights.min_threshold_dist_from_shapefile (Python function) — Get the maximum nearest neighbor distance between observations in the shapefile."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.min_threshold_dist_from_shapefile</span></code></a>(...)</p></td>
+<td><p>Get the maximum nearest neighbor distance between observations in the shapefile.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.build_lattice_shapefile.html#libpysal.weights.build_lattice_shapefile" title="libpysal.weights.build_lattice_shapefile (Python function) — Build a lattice shapefile with nrows rows and ncols cols."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.build_lattice_shapefile</span></code></a>(...)</p></td>
+<td><p>Build a lattice shapefile with nrows rows and ncols cols.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.spw_from_gal.html#libpysal.weights.spw_from_gal" title="libpysal.weights.spw_from_gal (Python function) — Sparse scipy matrix for w from a gal file."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.spw_from_gal</span></code></a>(galfile)</p></td>
+<td><p>Sparse scipy matrix for w from a gal file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.neighbor_equality.html#libpysal.weights.neighbor_equality" title="libpysal.weights.neighbor_equality (Python function) — Test if the neighbor sets are equal between two weights objects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.neighbor_equality</span></code></a>(w1, w2)</p></td>
+<td><p>Test if the neighbor sets are equal between two weights objects</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="set-theoretic-weights">Set Theoretic Weights<a class="headerlink" href="#set-theoretic-weights" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w_union.html#libpysal.weights.w_union" title="libpysal.weights.w_union (Python function) — Returns a binary weights object, w, that includes all neighbor pairs that exist in either w1 or w2."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_union</span></code></a>(w1, w2, **kwargs)</p></td>
+<td><p>Returns a binary weights object, w, that includes all neighbor pairs that exist in either w1 or w2.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.w_intersection.html#libpysal.weights.w_intersection" title="libpysal.weights.w_intersection (Python function) — Returns a binary weights object, w, that includes only those neighbor pairs that exist in both w1 and w2."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_intersection</span></code></a>(w1, w2[, ...])</p></td>
+<td><p>Returns a binary weights object, w, that includes only those neighbor pairs that exist in both w1 and w2.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w_difference.html#libpysal.weights.w_difference" title="libpysal.weights.w_difference (Python function) — Returns a binary weights object, w, that includes only neighbor pairs in w1 that are not in w2. The w_shape and constrained parameters determine which pairs in w1 that are not in w2 are returned."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_difference</span></code></a>(w1, w2[, ...])</p></td>
+<td><p>Returns a binary weights object, w, that includes only neighbor pairs in w1 that are not in w2.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.w_symmetric_difference.html#libpysal.weights.w_symmetric_difference" title="libpysal.weights.w_symmetric_difference (Python function) — Returns a binary weights object, w, that includes only neighbor pairs that are not shared by w1 and w2. The w_shape and constrained parameters determine which pairs that are not shared by w1 and w2 are returned."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_symmetric_difference</span></code></a>(w1, w2)</p></td>
+<td><p>Returns a binary weights object, w, that includes only neighbor pairs that are not shared by w1 and w2.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.w_subset.html#libpysal.weights.w_subset" title="libpysal.weights.w_subset (Python function) — Returns a binary weights object, w, that includes only those observations in ids."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_subset</span></code></a>(w1, ids, **kwargs)</p></td>
+<td><p>Returns a binary weights object, w, that includes only those observations in ids.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.w_clip.html#libpysal.weights.w_clip" title="libpysal.weights.w_clip (Python function) — Clip a continuous W object (w1) with a different W object (w2) so only cells where w2 has a non-zero value remain with non-zero values in w1."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.w_clip</span></code></a>(w1, w2[, outSP])</p></td>
+<td><p>Clip a continuous W object (w1) with a different W object (w2) so only cells where w2 has a non-zero value remain with non-zero values in w1.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="spatial-lag">Spatial Lag<a class="headerlink" href="#spatial-lag" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.weights.lag_spatial.html#libpysal.weights.lag_spatial" title="libpysal.weights.lag_spatial (Python function) — Spatial lag operator."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.lag_spatial</span></code></a>(w, y)</p></td>
+<td><p>Spatial lag operator.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.weights.lag_categorical.html#libpysal.weights.lag_categorical" title="libpysal.weights.lag_categorical (Python function) — Spatial lag operator for categorical variables."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.weights.lag_categorical</span></code></a>(w, y[, ties])</p></td>
+<td><p>Spatial lag operator for categorical variables.</p></td>
+</tr>
+</tbody>
+</table>
+<h2 id="cg-computational-geometry">cg: Computational Geometry<a class="headerlink" href="#cg-computational-geometry" title="Link to this heading">¶</a></h2>
+<h3 id="alpha-shapes">alpha_shapes<a class="headerlink" href="#alpha-shapes" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.alpha_shape.html#libpysal.cg.alpha_shape" title="libpysal.cg.alpha_shape (Python function) — Alpha-shape delineation (Edelsbrunner, Kirkpatrick &amp; Seidel, 1983) from a collection of points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.alpha_shape</span></code></a>(xys, alpha)</p></td>
+<td><p>Alpha-shape delineation (Edelsbrunner, Kirkpatrick &amp; Seidel, 1983) from a collection of points</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.alpha_shape_auto.html#libpysal.cg.alpha_shape_auto" title="libpysal.cg.alpha_shape_auto (Python function) — Computation of alpha-shape delineation with automated selection of alpha."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.alpha_shape_auto</span></code></a>(xys[, step, ...])</p></td>
+<td><p>Computation of alpha-shape delineation with automated selection of alpha.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="voronoi">voronoi<a class="headerlink" href="#voronoi" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.voronoi_frames.html#libpysal.cg.voronoi_frames" title="libpysal.cg.voronoi_frames (Python function) — Create Voronoi polygons from a GeoSeries of points, lines, or polygons."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.voronoi_frames</span></code></a>(geometry[, ...])</p></td>
+<td><p>Create Voronoi polygons from a GeoSeries of points, lines, or polygons.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="sphere">sphere<a class="headerlink" href="#sphere" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.RADIUS_EARTH_KM.html#libpysal.cg.RADIUS_EARTH_KM" title="libpysal.cg.RADIUS_EARTH_KM (Python data) — Convert a string or number to a floating-point number, if possible."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.RADIUS_EARTH_KM</span></code></a></p></td>
+<td><p>Convert a string or number to a floating-point number, if possible.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.RADIUS_EARTH_MILES.html#libpysal.cg.RADIUS_EARTH_MILES" title="libpysal.cg.RADIUS_EARTH_MILES (Python data) — Convert a string or number to a floating-point number, if possible."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.RADIUS_EARTH_MILES</span></code></a></p></td>
+<td><p>Convert a string or number to a floating-point number, if possible.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.arcdist.html#libpysal.cg.arcdist" title="libpysal.cg.arcdist (Python function) — Arc distance between two points on a sphere."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.arcdist</span></code></a>(pt0, pt1[, radius])</p></td>
+<td><p>Arc distance between two points on a sphere.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.arcdist2linear.html#libpysal.cg.arcdist2linear" title="libpysal.cg.arcdist2linear (Python function) — Convert an arc distance (spherical earth) to a linear distance (R3) in the unit sphere."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.arcdist2linear</span></code></a>(arc_dist[, radius])</p></td>
+<td><p>Convert an arc distance (spherical earth) to a linear distance (R3) in the unit sphere.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.brute_knn.html#libpysal.cg.brute_knn" title="libpysal.cg.brute_knn (Python function) — Computes a brute-force k nearest neighbors."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.brute_knn</span></code></a>(pts, k[, mode, radius])</p></td>
+<td><p>Computes a brute-force <span class="math notranslate nohighlight">\(k\)</span> nearest neighbors.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.fast_knn.html#libpysal.cg.fast_knn" title="libpysal.cg.fast_knn (Python function) — Computes k nearest neighbors on a sphere."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.fast_knn</span></code></a>(pts, k[, return_dist, ...])</p></td>
+<td><p>Computes <span class="math notranslate nohighlight">\(k\)</span> nearest neighbors on a sphere.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.fast_threshold.html#libpysal.cg.fast_threshold" title="libpysal.cg.fast_threshold (Python function) — Find all neighbors on a sphere within a threshold distance."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.fast_threshold</span></code></a>(pts, dist[, radius])</p></td>
+<td><p>Find all neighbors on a sphere within a threshold distance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.linear2arcdist.html#libpysal.cg.linear2arcdist" title="libpysal.cg.linear2arcdist (Python function) — Convert a linear distance in the unit sphere (R3) to an arc distance based on supplied radius."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.linear2arcdist</span></code></a>(linear_dist[, radius])</p></td>
+<td><p>Convert a linear distance in the unit sphere (R3) to an arc distance based on supplied radius.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.toLngLat.html#libpysal.cg.toLngLat" title="libpysal.cg.toLngLat (Python function) — Convert a point's x,y,z to latitude and longitude."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.toLngLat</span></code></a>(xyz)</p></td>
+<td><p>Convert a point's x,y,z to latitude and longitude.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.toXYZ.html#libpysal.cg.toXYZ" title="libpysal.cg.toXYZ (Python function) — Convert a point's latitude and longitude to x,y,z."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.toXYZ</span></code></a>(pt)</p></td>
+<td><p>Convert a point's latitude and longitude to x,y,z.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.lonlat.html#libpysal.cg.lonlat" title="libpysal.cg.lonlat (Python function) — Converts point order from lat-lon tuples to lon-lat (x,y) tuples."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.lonlat</span></code></a>(pointslist)</p></td>
+<td><p>Converts point order from lat-lon tuples to lon-lat (x,y) tuples.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.harcdist.html#libpysal.cg.harcdist" title="libpysal.cg.harcdist (Python function) — Alternative the arc distance function, uses the haversine formula."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.harcdist</span></code></a>(p0, p1[, lonx, radius])</p></td>
+<td><p>Alternative the arc distance function, uses the haversine formula.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.geointerpolate.html#libpysal.cg.geointerpolate" title="libpysal.cg.geointerpolate (Python function) — Finds a point on a sphere along the great circle distance between two points on a sphere also known as a way point in great circle navigation."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.geointerpolate</span></code></a>(p0, p1, t[, lonx])</p></td>
+<td><p>Finds a point on a sphere along the great circle distance between two points on a sphere also known as a way point in great circle navigation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.geogrid.html#libpysal.cg.geogrid" title="libpysal.cg.geogrid (Python function) — Computes a k+1 by k+1 set of grid points for a bounding box in lat-lon. Uses geointerpolate."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.geogrid</span></code></a>(pup, pdown, k[, lonx])</p></td>
+<td><p>Computes a <span class="math notranslate nohighlight">\(k+1\)</span> by <span class="math notranslate nohighlight">\(k+1\)</span> set of grid points for a bounding box in lat-lon.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="shapes">shapes<a class="headerlink" href="#shapes" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Point.html#libpysal.cg.Point" title="libpysal.cg.Point (Python class) — Geometric class for point objects."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Point</span></code></a>(loc)</p></td>
+<td><p>Geometric class for point objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.LineSegment.html#libpysal.cg.LineSegment" title="libpysal.cg.LineSegment (Python class) — Geometric representation of line segment objects."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.LineSegment</span></code></a>(start_pt, end_pt)</p></td>
+<td><p>Geometric representation of line segment objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Line.html#libpysal.cg.Line" title="libpysal.cg.Line (Python class) — Geometric representation of line objects."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Line</span></code></a>(m, b)</p></td>
+<td><p>Geometric representation of line objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.Ray.html#libpysal.cg.Ray" title="libpysal.cg.Ray (Python class) — Geometric representation of ray objects."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Ray</span></code></a>(origin, second_p)</p></td>
+<td><p>Geometric representation of ray objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Chain.html#libpysal.cg.Chain" title="libpysal.cg.Chain (Python class) — Geometric representation of a chain, also known as a polyline."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Chain</span></code></a>(vertices)</p></td>
+<td><p>Geometric representation of a chain, also known as a polyline.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.Polygon.html#libpysal.cg.Polygon" title="libpysal.cg.Polygon (Python class) — Geometric representation of polygon objects. Returns a polygon created from the objects specified."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Polygon</span></code></a>(vertices[, holes])</p></td>
+<td><p>Geometric representation of polygon objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Rectangle.html#libpysal.cg.Rectangle" title="libpysal.cg.Rectangle (Python class) — Geometric representation of rectangle objects."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Rectangle</span></code></a>(left, lower, right, upper)</p></td>
+<td><p>Geometric representation of rectangle objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.asShape.html#libpysal.cg.asShape" title="libpysal.cg.asShape (Python function) — Returns a PySAL shape object from obj, which must support the __geo_interface__."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.asShape</span></code></a>(obj)</p></td>
+<td><p>Returns a PySAL shape object from <code class="docutils literal notranslate"><span class="pre">obj</span></code>, which must support the <code class="docutils literal notranslate"><span class="pre">__geo_interface__</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="standalone">standalone<a class="headerlink" href="#standalone" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.bbcommon.html#libpysal.cg.bbcommon" title="libpysal.cg.bbcommon (Python function) — Old Stars method for bounding box overlap testing. Also defined in pysal.weights._cont_binning."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.bbcommon</span></code></a>(bb, bbother)</p></td>
+<td><p>Old Stars method for bounding box overlap testing.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_bounding_box.html#libpysal.cg.get_bounding_box" title="libpysal.cg.get_bounding_box (Python function) — Find bounding box for a list of geometries."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_bounding_box</span></code></a>(items)</p></td>
+<td><p>Find bounding box for a list of geometries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_angle_between.html#libpysal.cg.get_angle_between" title="libpysal.cg.get_angle_between (Python function) — Returns the angle formed between a pair of rays which share an origin."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_angle_between</span></code></a>(ray1, ray2)</p></td>
+<td><p>Returns the angle formed between a pair of rays which share an origin.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.is_collinear.html#libpysal.cg.is_collinear" title="libpysal.cg.is_collinear (Python function) — Returns whether a triplet of points is collinear."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.is_collinear</span></code></a>(p1, p2, p3)</p></td>
+<td><p>Returns whether a triplet of points is collinear.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_segments_intersect.html#libpysal.cg.get_segments_intersect" title="libpysal.cg.get_segments_intersect (Python function) — Returns the intersection of two segments if one exists."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_segments_intersect</span></code></a>(seg1, seg2)</p></td>
+<td><p>Returns the intersection of two segments if one exists.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_segment_point_intersect.html#libpysal.cg.get_segment_point_intersect" title="libpysal.cg.get_segment_point_intersect (Python function) — Returns the intersection of a segment and point."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_segment_point_intersect</span></code></a>(seg, pt)</p></td>
+<td><p>Returns the intersection of a segment and point.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_polygon_point_intersect.html#libpysal.cg.get_polygon_point_intersect" title="libpysal.cg.get_polygon_point_intersect (Python function) — Returns the intersection of a polygon and point."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_polygon_point_intersect</span></code></a>(poly, pt)</p></td>
+<td><p>Returns the intersection of a polygon and point.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_rectangle_point_intersect.html#libpysal.cg.get_rectangle_point_intersect" title="libpysal.cg.get_rectangle_point_intersect (Python function) — Returns the intersection of a rectangle and point."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_rectangle_point_intersect</span></code></a>(...)</p></td>
+<td><p>Returns the intersection of a rectangle and point.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_ray_segment_intersect.html#libpysal.cg.get_ray_segment_intersect" title="libpysal.cg.get_ray_segment_intersect (Python function) — Returns the intersection of a ray and line segment."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_ray_segment_intersect</span></code></a>(ray, seg)</p></td>
+<td><p>Returns the intersection of a ray and line segment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_rectangle_rectangle_intersection.html#libpysal.cg.get_rectangle_rectangle_intersection" title="libpysal.cg.get_rectangle_rectangle_intersection (Python function) — Returns the intersection between two rectangles."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_rectangle_rectangle_intersection</span></code></a>(r0, r1)</p></td>
+<td><p>Returns the intersection between two rectangles.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_polygon_point_dist.html#libpysal.cg.get_polygon_point_dist" title="libpysal.cg.get_polygon_point_dist (Python function) — Returns the distance between a polygon and point."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_polygon_point_dist</span></code></a>(poly, pt)</p></td>
+<td><p>Returns the distance between a polygon and point.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_points_dist.html#libpysal.cg.get_points_dist" title="libpysal.cg.get_points_dist (Python function) — Returns the distance between a pair of points."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_points_dist</span></code></a>(pt1, pt2)</p></td>
+<td><p>Returns the distance between a pair of points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.get_segment_point_dist.html#libpysal.cg.get_segment_point_dist" title="libpysal.cg.get_segment_point_dist (Python function) — Returns (1) the distance between a line segment and point and (2) the distance along the segment to the closest location on the segment from the point as a ratio of the length of the segment."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_segment_point_dist</span></code></a>(seg, pt)</p></td>
+<td><p>Returns (1) the distance between a line segment and point and (2) the distance along the segment to the closest location on the segment from the point as a ratio of the length of the segment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_point_at_angle_and_dist.html#libpysal.cg.get_point_at_angle_and_dist" title="libpysal.cg.get_point_at_angle_and_dist (Python function) — Returns the point at a distance and angle relative to the origin of a ray."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_point_at_angle_and_dist</span></code></a>(ray, ...)</p></td>
+<td><p>Returns the point at a distance and angle relative to the origin of a ray.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.convex_hull.html#libpysal.cg.convex_hull" title="libpysal.cg.convex_hull (Python function) — Returns the convex hull of a set of points."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.convex_hull</span></code></a>(points)</p></td>
+<td><p>Returns the convex hull of a set of points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.is_clockwise.html#libpysal.cg.is_clockwise" title="libpysal.cg.is_clockwise (Python function) — Returns whether a list of points describing a polygon are clockwise or counterclockwise."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.is_clockwise</span></code></a>(vertices)</p></td>
+<td><p>Returns whether a list of points describing a polygon are clockwise or counterclockwise.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.point_touches_rectangle.html#libpysal.cg.point_touches_rectangle" title="libpysal.cg.point_touches_rectangle (Python function) — Returns True (1) if the point is in the rectangle or touches it's boundary, otherwise False (0)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.point_touches_rectangle</span></code></a>(point, rect)</p></td>
+<td><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> (<code class="docutils literal notranslate"><span class="pre">1</span></code>) if the point is in the rectangle or touches it's boundary, otherwise <code class="docutils literal notranslate"><span class="pre">False</span></code> (<code class="docutils literal notranslate"><span class="pre">0</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.get_shared_segments.html#libpysal.cg.get_shared_segments" title="libpysal.cg.get_shared_segments (Python function) — Returns the line segments in common to both polygons."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.get_shared_segments</span></code></a>(poly1, poly2)</p></td>
+<td><p>Returns the line segments in common to both polygons.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.distance_matrix.html#libpysal.cg.distance_matrix" title="libpysal.cg.distance_matrix (Python function) — Calculate a distance matrix."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.distance_matrix</span></code></a>(X[, p, threshold])</p></td>
+<td><p>Calculate a distance matrix.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="locators">locators<a class="headerlink" href="#locators" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.Grid.html#libpysal.cg.Grid" title="libpysal.cg.Grid (Python class) — Representation of a binning data structure."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.Grid</span></code></a>(bounds, resolution)</p></td>
+<td><p>Representation of a binning data structure.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.cg.PointLocator.html#libpysal.cg.PointLocator" title="libpysal.cg.PointLocator (Python class) — An abstract representation of a point indexing data structure."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.PointLocator</span></code></a>(points)</p></td>
+<td><p>An abstract representation of a point indexing data structure.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.PolygonLocator.html#libpysal.cg.PolygonLocator" title="libpysal.cg.PolygonLocator (Python class) — An abstract representation of a polygon indexing data structure."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.PolygonLocator</span></code></a>(polygons)</p></td>
+<td><p>An abstract representation of a polygon indexing data structure.</p></td>
+</tr>
+</tbody>
+</table>
+<h3 id="kdtree">kdtree<a class="headerlink" href="#kdtree" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.cg.KDTree.html#libpysal.cg.KDTree" title="libpysal.cg.KDTree (Python function) — kd-tree built on top of kd-tree functionality in scipy. If using scipy 0.12 or greater uses the scipy.spatial.cKDTree, otherwise uses scipy.spatial.KDTree. Offers both Arc distance and Euclidean distance. Note that Arc distance is only appropriate when points in latitude and longitude, and the radius set to meaningful value (see docs below)."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.cg.KDTree</span></code></a>(data[, leafsize, ...])</p></td>
+<td><p>kd-tree built on top of kd-tree functionality in scipy.</p></td>
+</tr>
+</tbody>
+</table>
+<h2 id="io">io<a class="headerlink" href="#io" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.io.open.html#libpysal.io.open" title="libpysal.io.open (Python attribute) — __init__([dataPath, mode, dataFormat])"><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.io.open</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.io.fileio.FileIO.html#libpysal.io.fileio.FileIO" title="libpysal.io.fileio.FileIO (Python class) — Metaclass for supporting spatial data file read and write."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.io.fileio.FileIO</span></code></a>([dataPath, mode, ...])</p></td>
+<td><p>Metaclass for supporting spatial data file read and write.</p></td>
+</tr>
+</tbody>
+</table>
+<h2 id="kernels">kernels<a class="headerlink" href="#kernels" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.kernels.kernel.html#libpysal.kernels.kernel" title="libpysal.kernels.kernel (Python function) — Evaluate a kernel function over a distance array."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.kernels.kernel</span></code></a>(distances, bandwidth)</p></td>
+<td><p>Evaluate a kernel function over a distance array.</p></td>
+</tr>
+</tbody>
+</table>
+<h2 id="examples">examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils data align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.examples.available.html#libpysal.examples.available" title="libpysal.examples.available (Python function) — Return a dataframe with available datasets."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.examples.available</span></code></a>()</p></td>
+<td><p>Return a dataframe with available datasets.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/libpysal.examples.explain.html#libpysal.examples.explain" title="libpysal.examples.explain (Python function) — Explain a dataset by name."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.examples.explain</span></code></a>(name)</p></td>
+<td><p>Explain a dataset by name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/libpysal.examples.get_path.html#libpysal.examples.get_path" title="libpysal.examples.get_path (Python function) — Get the path for a file by searching installed datasets."><code class="xref py py-obj docutils literal notranslate"><span class="pre">libpysal.examples.get_path</span></code></a>(file_name)</p></td>
+<td><p>Get the path for a file by searching installed datasets.</p></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    9.1.0.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/libpysal/versions.json"}}</script>
+    
+      
+        <script src="_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script id="MathJax-script" src="_static/mathjax/tex-mml-chtml.js"></script>
+    
+  </body>
+</html>

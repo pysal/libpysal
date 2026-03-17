@@ -1,0 +1,6 @@
+﻿libpysal.kernels.kernel
+=======================
+
+.. currentmodule:: libpysal.kernels
+
+.. autofunction:: kernel

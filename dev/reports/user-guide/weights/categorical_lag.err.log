@@ -1,0 +1,66 @@
+Traceback (most recent call last):
+  File "/Users/martin/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+    ~~~~~~~~~^
+        nb,
+        ^^^
+    ...<4 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/Users/martin/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/nbclient/client.py", line 1323, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/martin/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/martin/dev/pysal/.pixi/envs/default/lib/python3.14/asyncio/base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "/Users/martin/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+        cell, index, execution_count=self.code_cells_executed + 1
+    )
+  File "/Users/martin/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/Users/martin/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+_lag_spatial(graph, y, categorical=True)
+------------------
+
+
+[31m---------------------------------------------------------------------------[39m
+[31mValueError[39m                                Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[8][39m[32m, line 1[39m
+[32m----> [39m[32m1[39m [43m_lag_spatial[49m[43m([49m[43mgraph[49m[43m,[49m[43m [49m[43my[49m[43m,[49m[43m [49m[43mcategorical[49m[43m=[49m[38;5;28;43;01mTrue[39;49;00m[43m)[49m
+
+[36mFile [39m[32m~/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/libpysal/graph/_spatial_lag.py:94[39m, in [36m_lag_spatial[39m[34m(graph, y, categorical, ties)[39m
+[32m     85[39m     y = np.array(y)
+[32m     87[39m [38;5;28;01mif[39;00m y.ndim == [32m1[39m [38;5;129;01mand[39;00m (
+[32m     88[39m     categorical
+[32m     89[39m     [38;5;129;01mor[39;00m [38;5;28misinstance[39m(y.dtype, pd.CategoricalDtype)
+[32m   (...)[39m[32m     92[39m     [38;5;129;01mor[39;00m pd.api.types.is_string_dtype(y.dtype)
+[32m     93[39m ):
+[32m---> [39m[32m94[39m     [38;5;28;01mreturn[39;00m [43m_categorical[49m[43m([49m[43mgraph[49m[43m,[49m[43m [49m[43my[49m[43m,[49m[43m [49m[43mties[49m[43m=[49m[43mties[49m[43m)[49m
+[32m     96[39m [38;5;28;01mreturn[39;00m sp @ y
+
+[36mFile [39m[32m~/dev/pysal/.pixi/envs/default/lib/python3.14/site-packages/libpysal/graph/_spatial_lag.py:146[39m, in [36m_categorical[39m[34m(graph, y, ties)[39m
+[32m    144[39m n_ties = gb.apply(_check_ties).sum()
+[32m    145[39m [38;5;28;01mif[39;00m n_ties [38;5;129;01mand[39;00m ties == [33m"[39m[33mraise[39m[33m"[39m:
+[32m--> [39m[32m146[39m     [38;5;28;01mraise[39;00m [38;5;167;01mValueError[39;00m(
+[32m    147[39m         [33mf[39m[33m"[39m[33mThere are [39m[38;5;132;01m{[39;00mn_ties[38;5;132;01m}[39;00m[33m ties that must be broken [39m[33m"[39m
+[32m    148[39m         [33mf[39m[33m"[39m[33mto define the categorical [39m[33m"[39m
+[32m    149[39m         [33m"[39m[33mspatial lag for these observations. To address this [39m[33m"[39m
+[32m    150[39m         [33m"[39m[33missue, consider setting `ties=[39m[33m'[39m[33mtryself[39m[33m'[39m[33m` [39m[33m"[39m
+[32m    151[39m         [33m"[39m[33mor `ties=[39m[33m'[39m[33mrandom[39m[33m'[39m[33m` or consult the documentation [39m[33m"[39m
+[32m    152[39m         [33m"[39m[33mabout ties and the categorical spatial lag.[39m[33m"[39m
+[32m    153[39m     )
+[32m    154[39m [38;5;66;03m# either there are ties and random|tryself specified or[39;00m
+[32m    155[39m [38;5;66;03m# there are no ties[39;00m
+[32m    156[39m gb = df.groupby(by=[[33m"[39m[33mfocal[39m[33m"[39m])
+
+[31mValueError[39m: There are 2 ties that must be broken to define the categorical spatial lag for these observations. To address this issue, consider setting `ties='tryself'` or `ties='random'` or consult the documentation about ties and the categorical spatial lag.
+
