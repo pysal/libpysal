@@ -9,3 +9,4 @@ Spatial Graph
 
    Graph Matching <matching-graph>
    Migration Guide <w_g_migration>
+   migration
