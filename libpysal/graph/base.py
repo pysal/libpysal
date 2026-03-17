@@ -2142,6 +2142,58 @@ class Graph(SetOpsMixin):
         """
         return GraphSummary(self, asymmetries=asymmetries)
 
+    def make_symmetric(self, intersection=False, reduction=None):
+        r"""Create a symmetric version of this graph
+
+        Parameters
+        ----------
+        intersection : bool, optional
+            whether to use the intersection of the neighbor set
+            to make a symmetric graph. If True, then links are
+            only dropped from the graph. If False, then
+            links are only added to the graph.
+        reduction: str or None, optional
+            How to combine weights when the graph has links in both
+            directions. Options are "sum", "min", "max", or "mean".
+            By default, this is None, which means than an error is
+            raised when the weight on the edge linking node i to j
+            is not the same as the weight on the edge linking j to i.
+        """
+        new_adj = self.adjacency.copy(deep=True)
+        seen = set()
+        for (head, tail), fweight in new_adj.items():
+            if (head, tail) in seen:
+                continue
+            try:
+                bweight = self.adjacency.loc[tail, head]
+            except KeyError:
+                if intersection:
+                    new_adj.drop((head, tail), inplace=True)
+                else:
+                    new_adj.loc[tail, head] = fweight
+                continue
+            if reduction is None:
+                raise ValueError(
+                    f"Weights for {head},{tail} are not equal,"
+                    f"but no reduction was provided. Try providing"
+                    f" `reduction='sum'` to address this issue."
+                )
+            elif reduction == "sum":
+                new_adj.loc[tail, head] = bweight + fweight
+            elif reduction == "min":
+                new_adj.loc[tail, head] = min(bweight, fweight)
+            elif reduction == "max":
+                new_adj.loc[tail, head] = max(bweight, fweight)
+            elif reduction == "mean":
+                new_adj.loc[tail, head] = (bweight + fweight) / 2
+            else:
+                raise ValueError(
+                    f"reduction {reduction} not understood."
+                    " Supported options are `['sum', 'min', "
+                    " 'max', 'mean']`"
+                )
+        return Graph(new_adj)
+
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order :math:`k`.
 
