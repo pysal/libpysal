@@ -934,6 +934,14 @@
                   
 
 
+  
+    <a href="https://github.com/pysal/libpysal/blob/main/docs/user-guide/weights/voronoi.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
 <h1 id="voronoi-polygons-for-2-d-point-sets">Voronoi Polygons for 2-D Point Sets<a class="headerlink" href="#voronoi-polygons-for-2-d-point-sets" title="Link to this heading">¶</a></h1>
 <p>Author: Serge Rey (http://github.com/sjsrey)</p>
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">¶</a></h2>
@@ -968,7 +976,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4386/2901581476.py:1: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4300/2901581476.py:1: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
   regions, vertices = voronoi(points)
 /home/runner/micromamba/envs/test/lib/python3.14/site-packages/libpysal/cg/voronoi.py:67: FutureWarning: The &#39;voronoi_regions&#39; function is considered private and will be removed in a future release.
   vor = voronoi_regions(Voronoi(points), radius=radius)
@@ -1016,9 +1024,9 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4386/2172163060.py:1: FutureWarning: The &#39;as_gdf&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4300/2172163060.py:1: FutureWarning: The &#39;as_gdf&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
   region_df, point_df = voronoi_frames(points)
-/tmp/ipykernel_4386/2172163060.py:1: FutureWarning: The &#39;return_input&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
+/tmp/ipykernel_4300/2172163060.py:1: FutureWarning: The &#39;return_input&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
   region_df, point_df = voronoi_frames(points)
 </code></pre></div>
 </div>
@@ -1061,7 +1069,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4386/3060736572.py:4: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4300/3060736572.py:4: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
   results = voronoi(points)
 /home/runner/micromamba/envs/test/lib/python3.14/site-packages/libpysal/cg/voronoi.py:67: FutureWarning: The &#39;voronoi_regions&#39; function is considered private and will be removed in a future release.
   vor = voronoi_regions(Voronoi(points), radius=radius)
@@ -1076,7 +1084,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4386/2901581476.py:1: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4300/2901581476.py:1: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
   regions, vertices = voronoi(points)
 </code></pre></div>
 </div>
@@ -1089,9 +1097,9 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4386/980072883.py:1: FutureWarning: The &#39;as_gdf&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4300/980072883.py:1: FutureWarning: The &#39;as_gdf&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
   regions_df, points_df = voronoi_frames(points)
-/tmp/ipykernel_4386/980072883.py:1: FutureWarning: The &#39;return_input&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
+/tmp/ipykernel_4300/980072883.py:1: FutureWarning: The &#39;return_input&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
   regions_df, points_df = voronoi_frames(points)
 </code></pre></div>
 </div>
@@ -1310,7 +1318,7 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/libpysal/versions.json"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/libpysal/versions.json"}}</script>
     
       
         <script src="../../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>

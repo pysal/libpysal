@@ -668,6 +668,14 @@
                   
 
 
+  
+    <a href="https://github.com/pysal/libpysal/blob/main/docs/user-guide/geometry/fast_point_in_polygon_algorithm.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
 <h1 id="fast-point-in-polygon-testing-method">Fast Point in Polygon Testing Method<a class="headerlink" href="#fast-point-in-polygon-testing-method" title="Link to this heading">¶</a></h1>
 <hr class="docutils" />
 <p><strong>Author: Hu Shao <a class="reference external" href="mailto:shaohutiger&#37;&#52;&#48;gmail&#46;com">shaohutiger<span>&#64;</span>gmail<span>&#46;</span>com</a></strong></p>
@@ -746,15 +754,15 @@ Once the quadtree structure is constructed, the “point in polygon testing” w
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4155/1580836759.py:15: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4110/1580836759.py:15: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   Texas = Polygon(get_ring_from_file(&quot;data/texas_points.txt&quot;))
 /home/runner/micromamba/envs/test/lib/python3.14/site-packages/libpysal/cg/shapes.py:1408: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   self._part_rings = [Ring(vertices)]
-/tmp/ipykernel_4155/1580836759.py:16: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
+/tmp/ipykernel_4110/1580836759.py:16: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   Pecos = Polygon(get_ring_from_file(&quot;data/pecos_points.txt&quot;))
-/tmp/ipykernel_4155/1580836759.py:17: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
+/tmp/ipykernel_4110/1580836759.py:17: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   San_Saba = Polygon(get_ring_from_file(&quot;data/san_saba_points.txt&quot;))
-/tmp/ipykernel_4155/1580836759.py:18: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
+/tmp/ipykernel_4110/1580836759.py:18: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   Texas_with_holes = Polygon(Texas.vertices, [Pecos.vertices, San_Saba.vertices])
 /home/runner/micromamba/envs/test/lib/python3.14/site-packages/libpysal/cg/shapes.py:1412: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   self._hole_rings = list(map(Ring, holes))
@@ -777,16 +785,16 @@ Once the quadtree structure is constructed, the “point in polygon testing” w
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>quad tree build finished
--98.01214892868771 34.73771502746118 False
--100.20110897351432 26.67608002207828 False
--104.1243268540344 33.70856967262684 False
--98.39605141816256 34.1270042033938 False
--94.99505191858708 25.993877432956985 False
--102.14107685541784 30.03318865009982 True
--101.23934310822432 31.67687528789821 True
--96.42528024919145 33.71601723172394 True
--101.21486857314218 29.271422372321744 False
--93.83373178720707 32.00320378634374 False
+-102.82266882617066 29.441767689507493 True
+-94.53711323405398 32.823940622031095 True
+-98.2891817139893 35.98316176058258 False
+-96.1905316426073 33.82153180759192 False
+-94.63949872196714 27.27921591979602 False
+-98.21394036292159 26.988577313640114 True
+-100.28156853728217 27.30200596441229 False
+-103.40669641953284 27.999837548393508 False
+-102.78147272172868 34.352145799662566 True
+-100.76137322549766 34.21351838855715 True
 </code></pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/test/lib/python3.14/site-packages/libpysal/cg/shapes.py:1195: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
@@ -852,7 +860,7 @@ Once the quadtree structure is constructed, the “point in polygon testing” w
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4155/3152310791.py:4: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4110/3152310791.py:4: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   qts_singlering = QuadTreeStructureSingleRing(Ring(texas_main_vertices))
 </code></pre></div>
 </div>
@@ -899,7 +907,7 @@ Once the quadtree structure is constructed, the “point in polygon testing” w
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/da7262dbdd61014e4811da8316d28b3dfbed4f4f198513bf47c7fa6797b50e66.png" src="../../_images/da7262dbdd61014e4811da8316d28b3dfbed4f4f198513bf47c7fa6797b50e66.png" />
+<img alt="../../_images/bd579eb23bf55fbf46f2b25f7144aa4883de23cccfb5302d7603b5db1c3765fe.png" src="../../_images/bd579eb23bf55fbf46f2b25f7144aa4883de23cccfb5302d7603b5db1c3765fe.png" />
 </div>
 </div>
 <h3 id="test-the-performance-of-this-quad-tree-structure">Test the performance of this quad-tree-structure<a class="headerlink" href="#test-the-performance-of-this-quad-tree-structure" title="Link to this heading">¶</a></h3>
@@ -945,13 +953,13 @@ Once the quadtree structure is constructed, the “point in polygon testing” w
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>10000 random points generated
 ------------------------------
 Begin test without quad-tree-structure
-Test without quad-tree-structure finished, time used = 9.153s
+Test without quad-tree-structure finished, time used = 9.336s
 ------------------------------
 Begin test with quad-tree-structure
-Test with quad-tree-structure finished, time used = 0.167s
+Test with quad-tree-structure finished, time used = 0.169s
 </code></pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4155/2754639059.py:2: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4110/2754639059.py:2: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   Huangshan = Polygon(get_ring_from_file(&quot;data/study_region_huangshan_point.txt&quot;))
 </code></pre></div>
 </div>
@@ -1003,7 +1011,7 @@ Test with quad-tree-structure finished, time used = 0.167s
 finished ==================== no error found
 </code></pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4155/1497789425.py:6: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4110/1497789425.py:6: FutureWarning: Objects based on the `Geometry` class will deprecated and removed in a future version of libpysal.
   huangshan = Ring(vertices)
 </code></pre></div>
 </div>
@@ -1118,7 +1126,7 @@ http://materializecss.com/color.html</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/libpysal/versions.json"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/libpysal/versions.json"}}</script>
     
       
         <script src="../../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>

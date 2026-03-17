@@ -890,6 +890,14 @@
                   
 
 
+  
+    <a href="https://github.com/pysal/libpysal/blob/main/docs/user-guide/kernels.ipynb" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
 <h1 id="kernels-with-libpysal">Kernels with <code class="docutils literal notranslate"><span class="pre">libpysal</span></code><a class="headerlink" href="#kernels-with-libpysal" title="Link to this heading">¶</a></h1>
 <p>Kernel functions are widely used across spatial analysis for tasks such as density estimation, spatial smoothing, construction of local influence surfaces, and geographically weighted modeling. They provide a flexible mechanism to formalize how spatial influence decays with distance, allowing analysts to encode different assumptions about locality, neighborhood structure, and the scale of spatial interaction.</p>
 <p>Within the PySAL ecosystem, kernel functions are used primarily for generating spatial weights matrices—especially continuous, distance-decay–based weights—and for defining weighted edges in spatial graph representations. They also appear in certain spatial econometric estimators that require localized or tapered weighting schemes to model distance-dependent interactions and spatial heterogeneity more realistically.</p>
@@ -1025,8 +1033,8 @@ truncated at the bandwidth.</p>
 <h3 id="bandwidth">Bandwidth<a class="headerlink" href="#bandwidth" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code> parameter controls the spatial scale of the kernel. In the notation used earlier, the
 kernel is evaluated on the rescaled distance</p>
-<div class="amsmath math notranslate nohighlight" id="equation-5e9d1fed-dc44-4d21-af91-9effeee33ca5">
-<span class="eqno">(1)<a class="headerlink" href="#equation-5e9d1fed-dc44-4d21-af91-9effeee33ca5" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-2c4005de-2632-4e62-b002-7f39918e84d2">
+<span class="eqno">(1)<a class="headerlink" href="#equation-2c4005de-2632-4e62-b002-7f39918e84d2" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 z = \frac{d}{h},
 \end{equation}\]</div>
 <p>where <code class="docutils literal notranslate"><span class="pre">h</span></code> is the bandwidth. Smaller bandwidths produce more localized weights (steeper decay), while
@@ -1193,7 +1201,7 @@ while still preserving the basic shape of the kernel within the bandwidth.</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/libpysal/versions.json"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/libpysal/versions.json"}}</script>
     
       
         <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
