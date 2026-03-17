@@ -2160,10 +2160,7 @@ class Graph(SetOpsMixin):
             is not the same as the weight on the edge linking j to i.
         """
         new_adj = self.adjacency.copy(deep=True)
-        seen = set()
         for (head, tail), fweight in new_adj.items():
-            if (head, tail) in seen:
-                continue
             try:
                 bweight = self.adjacency.loc[tail, head]
             except KeyError:
@@ -2172,20 +2169,28 @@ class Graph(SetOpsMixin):
                 else:
                     new_adj.loc[tail, head] = fweight
                 continue
-            if reduction is None:
+            if fweight == bweight:
+                continue
+            elif reduction is None:
                 raise ValueError(
                     f"Weights for {head},{tail} are not equal,"
                     f"but no reduction was provided. Try providing"
                     f" `reduction='sum'` to address this issue."
                 )
             elif reduction == "sum":
-                new_adj.loc[tail, head] = bweight + fweight
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = bweight + fweight
             elif reduction == "min":
-                new_adj.loc[tail, head] = min(bweight, fweight)
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = min(
+                    bweight, fweight
+                )
             elif reduction == "max":
-                new_adj.loc[tail, head] = max(bweight, fweight)
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = max(
+                    bweight, fweight
+                )
             elif reduction == "mean":
-                new_adj.loc[tail, head] = (bweight + fweight) / 2
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = (
+                    bweight + fweight
+                ) / 2
             else:
                 raise ValueError(
                     f"reduction {reduction} not understood."

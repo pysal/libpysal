@@ -1043,6 +1043,29 @@ class TestBase:
 
         pd.testing.assert_series_equal(self.g_int.asymmetry(False), empty)
 
+    def test_make_symmetric(self):
+        neighbors = {
+            "a": ["b", "c"],
+            "b": ["b", "c", "d"],
+            "c": ["a", "b"],
+            "d": ["a", "b"],
+        }
+        weights_d = {"a": [1, 0.5], "b": [1, 1, 1], "c": [1, 1], "d": [1, 1]}
+        g = graph.Graph.from_dicts(neighbors, weights_d)
+        with pytest.raises(ValueError):
+            g.make_symmetric(reduction=None)
+        gint = g.make_symmetric(intersection=True, reduction="min")
+        guni = g.make_symmetric(intersection=False, reduction="min")
+        gmax = g.make_symmetric(intersection=True, reduction="max")
+
+        assert len(gmax) == len(gint), "intersections should be the same length"
+        assert (gmax == 1).all(), "the largest weight for asymmetries should be 1"
+        assert len(gint) < len(guni), "intersection should be smaller than the union"
+        assert (
+            guni.adjacency.index.intersection(gmax.adjacency.index)
+            == gmax.adjacency.index
+        ).all(), "the intersection is a subset of the union"
+
     def test_parquet(self):
         pytest.importorskip("pyarrow")
 
