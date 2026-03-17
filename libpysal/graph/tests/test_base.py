@@ -1057,6 +1057,8 @@ class TestBase:
         gint = g.make_symmetric(intersection=True, reduction="min")
         guni = g.make_symmetric(intersection=False, reduction="min")
         gmax = g.make_symmetric(intersection=True, reduction="max")
+        gsum = g.make_symmetric(intersection=True, reduction="sum")
+        gmean = g.make_symmetric(intersection=True, reduction="mean")
 
         assert len(gmax) == len(gint), "intersections should be the same length"
         assert (gmax.adjacency == 1).all(), (
@@ -1067,6 +1069,22 @@ class TestBase:
             guni.adjacency.index.intersection(gmax.adjacency.index)
             == gmax.adjacency.index
         ).all(), "the intersection is a subset of the union"
+
+        # additional checks for alternative reductions
+        assert len(gsum) == len(gint)
+        assert len(gmean) == len(gint)
+        # for any pair of reciprocal weights, min <= mean <= max <= sum
+        adj_min = gint.adjacency
+        adj_mean = gmean.adjacency
+        adj_max = gmax.adjacency
+        adj_sum = gsum.adjacency
+        assert (adj_min <= adj_mean).all()
+        assert (adj_mean <= adj_max).all()
+        assert (adj_max <= adj_sum).all()
+
+        # invalid reduction strings should raise even when the graph is already symmetric
+        with pytest.raises(ValueError):
+            gmax.make_symmetric(reduction="invalid")
 
     def test_parquet(self):
         pytest.importorskip("pyarrow")
