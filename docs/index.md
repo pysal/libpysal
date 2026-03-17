@@ -1,9 +1,7 @@
 # libpysal: Python Spatial Analysis Library Core
 
 [![image](https://github.com/pysal/libpysal/actions/workflows/.github/workflows/unittests.yml/badge.svg)](https://github.com/pysal/libpysal/actions/workflows/unittests.yml)
-
 [![image](https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc)](https://discord.gg/BxFTEPFFZn)
-
 [![image](https://badge.fury.io/py/libpysal.svg)](https://badge.fury.io/py/libpysal)
 
 <div class="container-fluid">
@@ -34,16 +32,12 @@ in the [PySAL family](https://pysal.org):
 - Computational geometry: libpysal.cg
 - Built-in example datasets libpysal.examples
 
-:::: note
-::: title
-Note
-:::
-
+:::{note}
 A new Graph class is being added to libpysal. For users interested in migration from
 using Weights to the new Graph class, see the [migration
 guide](user-guide/graph/w_g_migration.html). For developers interested in the technical
 details details see [W and Graph Components](migration.html).
-::::
+:::
 
 Examples demonstrating some of **libpysal** functionality are available in the
 [User Guide](user-guide/intro.html).
@@ -75,12 +69,12 @@ To search for or report bugs, please see libpysal\'s
 If you use PySAL in a scientific publication, we would appreciate citations to the
 following paper:
 
-> 
+>
 > [PySAL: A Python Library of Spatial Analytical Methods](http://journal.srsa.org/ojs/index.php/RRS/article/view/134/85),
 > *Rey, S.J. and L. Anselin*, Review of Regional Studies 37, 5-27 2007.
-> 
+>
 > Bibtex entry:
-> 
+>
 >     @Article{pysal2007,
 >       author={Rey, Sergio J. and Anselin, Luc},
 >       title={{PySAL: A Python Library of Spatial Analytical Methods}},
