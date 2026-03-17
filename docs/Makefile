@@ -15,9 +15,9 @@ help:
 
 .PHONY: help Makefile generate-rst
 
-# Custom target to generate rst files
+# Custom target to generate files
 generate-rst:
-	@echo "Generating custom rst files..."
+	@echo "Generating custom files..."
 	@python ../scripts/w_g_comparison.py
 
 # Catch-all target: route all unknown targets to Sphinx using the new
