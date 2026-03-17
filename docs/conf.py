@@ -50,10 +50,6 @@ exclude_patterns = []
 
 intersphinx_mapping = {
     "geopandas": ("https://geopandas.org/en/latest", None),
-    "libpysal": (
-        "https://pysal.org/libpysal/",
-        "https://pysal.org/libpysal//objects.inv",
-    ),
     "python": ("https://docs.python.org/3", None),
     "sklearn": ("https://scikit-learn.org/stable", None),
 }
@@ -141,7 +137,7 @@ html_theme_options = {
     "version_dropdown": True,
     "version_json": "https://pysal.org/libpysal/versions.json",
 }
-nb_execution_mode = "cache"
+nb_execution_mode = "off"
 nb_execution_timeout = -1
 nb_kernel_rgx_aliases = {".*": "python3"}
 nb_merge_streams = True
