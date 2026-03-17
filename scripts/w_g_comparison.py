@@ -5,8 +5,6 @@ Build the documentation for the member comparison of W and Graph
 
 """
 
-import inspect
-
 import geopandas as gpd
 
 from libpysal import examples, graph, weights
@@ -63,59 +61,55 @@ def create_rst_table(data):
     if not data or not all(isinstance(row, list) for row in data):
         raise ValueError("Input should be a list of lists")
 
-    # Determine the width of each column
-    col_widths = [
-        max(len(str(item)) for item in column) for column in zip(*data, strict=False)
+    num_columns = max(len(row) for row in data)
+
+    def format_cell(item):
+        return str(item).replace("|", r"\|").replace("\n", " ")
+
+    normalized = [
+        [
+            format_cell(row[index]) if index < len(row) else ""
+            for index in range(num_columns)
+        ]
+        for row in data
     ]
 
-    # Function to create a row separator
-    def create_separator(char):
-        return "+" + "+".join(char * (width + 2) for width in col_widths) + "+"
+    col_widths = [
+        max(len(row[index]) for row in normalized) for index in range(num_columns)
+    ]
 
-    # Function to create a row
     def create_row(row):
         return (
-            "|"
-            + "|".join(
-                f" {str(item).ljust(width)} "
-                for item, width in zip(row, col_widths, strict=False)
+            "| "
+            + " | ".join(
+                cell.ljust(width) for cell, width in zip(row, col_widths, strict=True)
             )
-            + "|"
+            + " |"
         )
 
-    # Create the table
-    table = []
-    table.append(create_separator("-"))
-    table.append(create_row(data[0]))
-    table.append(create_separator("="))
-    for row in data[1:]:
-        table.append(create_row(row))
-        table.append(create_separator("-"))
+    separator = "| " + " | ".join("-" * max(width, 3) for width in col_widths) + " |"
+    body = [create_row(row) for row in normalized[1:]]
 
-    return "\n".join(table)
+    return "\n".join([create_row(normalized[0]), separator, *body])
 
 
 changed_table = create_rst_table(changed_content)
 
 
 content = """
-W to Graph Member Comparisions
-==============================
+# W to Graph Member Comparisions
 
-
-Overview
---------
+## Overview
 
 This guide compares the members (attributes and methods) from the
 `W` class and the `Graph` class.
 
 It is intended for developers. Users interested in migrating to the
 new Graph class from W should see the
-`migration guide <user-guide/graph/w_g_migration.html>`_.
+[migration guide](w_g_migration.ipynb).
 
 
-Members common to W and Graph
------------------------------
+## Members common to W and Graph
 """
 
 
@@ -123,14 +117,11 @@ common_content = []
 header = "Member,  Type"
 common_content.append(header)
 for member in compat:
-    url = f"generated/libpysal.graph.Graph.html#libpysal.graph.Graph.{member}"
-    line = [f"`{member} <{url}>`_"]
-    label = ":attr"
+    url = f"#libpysal.graph.Graph.{member}"
+    line = [f"[`{member}`]({url})"]
     ga = getattr(g_queen, member)
     class_type = type(ga)
     gat = f"{class_type.__module__}.{class_type.__name__}"
-    if inspect.ismethod(ga):
-        label = ":meth"
     gs = f" {gat}"
 
     line.append(gs)
@@ -142,8 +133,7 @@ common_content = [line.split(",") for line in common_content]
 
 content = f"{content}\n\n{create_rst_table(common_content)}"
 head = """
-Members common to W and Graph with different types
---------------------------------------------------
+## Members common to W and Graph with different types
 
 """
 
@@ -156,16 +146,14 @@ for member in changed:
     ga = getattr(g_queen, member)
     class_type = type(ga)
     gat = f"{class_type.__module__}.{class_type.__name__}"
-    gat = (
-        f"`{gat} <generated/libpysal.graph.Graph.html#libpysal.graph.Graph.{member}>`_"
-    )
+    gat = f"[`{gat}`](#libpysal.graph.Graph.{member})"
 
     gs = f"{gat}"
 
     wa = getattr(w_queen, member)
     class_type = type(wa)
     wat = f"{class_type.__module__}.{class_type.__name__}"
-    wat = f"`{wat} <generated/libpysal.weights.W.html#libpysal.weights.W.{member}>`_"
+    wat = f"[`{wat}`](#libpysal.weights.W.{member})"
 
     ws = f"{wat}"
     line.append(ws)
@@ -178,8 +166,8 @@ content = f"{content}\n\n{head}\n\n{create_rst_table(changed_content)}"
 
 
 head = """
-Members unique to W
--------------------
+## Members unique to W
+
 
 """
 
@@ -193,9 +181,7 @@ w_content = []
 header = "Member,  Type"
 w_content.append(header)
 for member in w_only:
-    line = [
-        f"`{member} <generated/libpysal.weights.W.html#libpysal.weights.W.{member}>`_"
-    ]
+    line = [f"[`{member}`](#libpysal.weights.W.{member})"]
     wa = getattr(w_queen, member)
     class_type = type(wa)
     wat = f"{class_type.__module__}.{class_type.__name__}"
@@ -211,8 +197,7 @@ content = f"{content}\n\n{create_rst_table(w_content)}"
 
 
 head = """
-Members unique to Graph
------------------------
+## Members unique to Graph
 
 """
 
@@ -226,8 +211,8 @@ g_content = []
 header = "Member,  Type"
 g_content.append(header)
 for member in g_only:
-    url = f"generated/libpysal.graph.Graph.html#libpysal.graph.Graph.{member}"
-    line = [f"`{member} <{url}>`_"]
+    url = f"#libpysal.graph.Graph.{member}"
+    line = [f"[`{member}`]({url})"]
     ga = getattr(g_queen, member)
     class_type = type(ga)
     gat = f"{class_type.__module__}.{class_type.__name__}"
@@ -242,5 +227,5 @@ g_content = [line.split(",") for line in g_content]
 content = f"{content}\n\n{create_rst_table(g_content)}"
 
 
-with open("../docs/user-guide/graph/migration.rst", "w") as guide:
+with open("../docs/user-guide/graph/migration.md", "w") as guide:
     guide.write(content)

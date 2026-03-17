@@ -38,6 +38,14 @@ extensions = [
     "sphinx_immaterial",
 ]
 
+myst_enable_extensions = [
+    "amsmath",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "html_image",
+]
+
 bibtex_bibfiles = ["_static/references.bib"]
 bibtex_reference_style = "author_year"
 
@@ -50,10 +58,6 @@ exclude_patterns = []
 
 intersphinx_mapping = {
     "geopandas": ("https://geopandas.org/en/latest", None),
-    "libpysal": (
-        "https://pysal.org/libpysal/",
-        "https://pysal.org/libpysal//objects.inv",
-    ),
     "python": ("https://docs.python.org/3", None),
     "sklearn": ("https://scikit-learn.org/stable", None),
 }
