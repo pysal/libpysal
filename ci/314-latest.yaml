@@ -33,13 +33,14 @@ dependencies:
   - pandarm
   - xarray
   # for docs build action (this env only)
-  - myst-parser
-  - nbsphinx
-  - numpydoc
-  - pandoc
+  - ipykernel
+  - myst-nb
   - sphinx
   - sphinxcontrib-bibtex
-  - sphinx_bootstrap_theme
+  - sphinx-autosummary-accessors
+  - sphinx-copybutton
+  - sphinx-immaterial
+  - pandoc
   - pip
   - pip:
     - pulp

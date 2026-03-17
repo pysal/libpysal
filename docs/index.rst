@@ -5,7 +5,7 @@ libpysal: Python Spatial Analysis Library Core
 
 .. image:: https://github.com/pysal/libpysal/actions/workflows/.github/workflows/unittests.yml/badge.svg
    :target: https://github.com/pysal/libpysal/actions/workflows/unittests.yml
-      
+
 .. image:: https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&logo=discord&logoColor=cccccc
    :target: https://discord.gg/BxFTEPFFZn
 
@@ -37,8 +37,8 @@ Introduction
 
 **libpysal** offers five modules that form the building blocks in many upstream packages in the `PySAL family <https://pysal.org>`_:
 
-- Spatial Weights: libpysal.weights 
-- Spatial Graphs: libpysal.graph 
+- Spatial Weights: libpysal.weights
+- Spatial Graphs: libpysal.graph
 - Input-and output: libpysal.io
 - Computational geometry: libpysal.cg
 - Built-in example datasets libpysal.examples
@@ -121,17 +121,38 @@ libpysal
 
 Core components of the Python Spatial Analysis Library (`PySAL`_)
 
-Documentation contents
-----------------------
 .. toctree::
-   :maxdepth: 1
+  :hidden:
+  :maxdepth: 1
 
-   Home <self>
-   installation
+  Home <self>
+  installation
+
+.. toctree::
+  :hidden:
+  :caption: User Guide
+  :maxdepth: 1
+
+  Graphs  <user-guide/graph/intro>
+  Kernels <user-guide/kernels>
+  Weights <user-guide/weights/intro>
+  Datasets <user-guide/data/examples>
+  references
+
+.. toctree::
+  :hidden:
+  :caption: API
+  :maxdepth: 1
+
    API reference <api>
-   references
-   user-guide/intro
-   migration
+
+.. toctree::
+  :hidden:
+  :caption: For contributors
+  :maxdepth: 1
+
+  GitHub <https://github.com/pysal/libpysal>
+  Changelog <https://github.com/pysal/libpysal/releases>
 
 
 .. _PySAL: https://github.com/pysal/pysal
