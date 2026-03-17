@@ -121,7 +121,15 @@ class KNN(W):
             self.kdtree = data
             self.data = self.kdtree.data
         else:
-            self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore",
+                    category=FutureWarning,
+                    message="The KDTree class is deprecated",
+                )
+                self.kdtree = KDTree(
+                    data, radius=radius, distance_metric=distance_metric
+                )
             self.data = self.kdtree.data
         self.k = k
         self.p = p

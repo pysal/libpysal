@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 
 from ... import cg
@@ -18,7 +20,13 @@ class DistanceMixin:
     polygon_path = pysal_examples.get_path("columbus.shp")
     arc_path = pysal_examples.get_path("stl_hom.shp")
     points = [(10, 10), (20, 10), (40, 10), (15, 20), (30, 20), (30, 30)]
-    euclidean_kdt = KDTree(points, distance_metric="euclidean")
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            category=FutureWarning,
+            message="The KDTree class is deprecated",
+        )
+        euclidean_kdt = KDTree(points, distance_metric="euclidean")
 
     polygon_f = FileIO(polygon_path)  # our file handler
     poly_centroids = get_points_array(polygon_f)  # our iterable
@@ -27,9 +35,15 @@ class DistanceMixin:
     arc_f = FileIO(arc_path)
     arc_points = get_points_array(arc_f)
     arc_f.seek(0)
-    arc_kdt = KDTree(
-        arc_points, distance_metric="Arc", radius=cg.sphere.RADIUS_EARTH_KM
-    )
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            category=FutureWarning,
+            message="The KDTree class is deprecated",
+        )
+        arc_kdt = KDTree(
+            arc_points, distance_metric="Arc", radius=cg.sphere.RADIUS_EARTH_KM
+        )
 
     cls = object  # class constructor
     known_wi = None  # index of known w entry to compare
@@ -152,7 +166,13 @@ class TestDistanceBand(DistanceMixin):
         self.grid_points = get_points_array(self.grid_f)
         self.grid_f.seek(0)
 
-        self.grid_kdt = KDTree(self.grid_points)
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                category=FutureWarning,
+                message="The KDTree class is deprecated",
+            )
+            self.grid_kdt = KDTree(self.grid_points)
 
     ##########################
     # Classmethod tests      #
@@ -221,9 +241,15 @@ class TestDistanceBand(DistanceMixin):
 
     def test_arcdist(self):
         arc = cg.sphere.arcdist
-        kdt = KDTree(
-            self.arc_points, distance_metric="Arc", radius=cg.sphere.RADIUS_EARTH_KM
-        )
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                category=FutureWarning,
+                message="The KDTree class is deprecated",
+            )
+            kdt = KDTree(
+                self.arc_points, distance_metric="Arc", radius=cg.sphere.RADIUS_EARTH_KM
+            )
         npoints = self.arc_points.shape[0]
         full = np.array(
             [

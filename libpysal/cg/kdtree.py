@@ -68,7 +68,13 @@ def KDTree(data, leafsize=10, distance_metric="Euclidean", radius=RADIUS_EARTH_K
         else:
             return scipy.spatial.cKDTree(data, leafsize)
     elif distance_metric.lower() == "arc":
-        return Arc_KDTree(data, leafsize, radius)
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                category=FutureWarning,
+                message="The Arc_KDTree class is deprecated",
+            )
+            return Arc_KDTree(data, leafsize, radius)
 
 
 # internal hack for the Arc_KDTree class inheritance
