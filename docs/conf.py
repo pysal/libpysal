@@ -56,9 +56,6 @@ templates_path = [
 ]
 exclude_patterns = []
 
-html_copy_source = True
-html_sourcelink_suffix = ""
-
 intersphinx_mapping = {
     "geopandas": ("https://geopandas.org/en/latest", None),
     "python": ("https://docs.python.org/3", None),
