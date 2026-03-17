@@ -38,6 +38,14 @@ extensions = [
     "sphinx_immaterial",
 ]
 
+myst_enable_extensions = [
+    "amsmath",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "html_image",
+]
+
 bibtex_bibfiles = ["_static/references.bib"]
 bibtex_reference_style = "author_year"
 
@@ -137,7 +145,7 @@ html_theme_options = {
     "version_dropdown": True,
     "version_json": "https://pysal.org/libpysal/versions.json",
 }
-nb_execution_mode = "off"
+nb_execution_mode = "cache"
 nb_execution_timeout = -1
 nb_kernel_rgx_aliases = {".*": "python3"}
 nb_merge_streams = True
