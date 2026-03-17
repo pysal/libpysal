@@ -653,7 +653,7 @@
   
   
   <span class="md-ellipsis">
-    <span> API reference</span>
+    <span>API reference</span>
     
   </span>
   
@@ -909,36 +909,53 @@
 </div>
 <h2 id="available-kernels">Available Kernels<a class="headerlink" href="#available-kernels" title="Link to this heading">¶</a></h2>
 <p>For a distance (d) and bandwidth (h), kernels are evaluated on the rescaled distance</p>
-<p>\begin{equation}
-z = \frac{d}{h}, \quad K(z).
-\end{equation}</p>
-<p>The following kernel functions are implemented using one-dimensional definitions with $K(z)=0$ outside the stated support:</p>
+<div class="math notranslate nohighlight">
+\[
+z = \frac{d}{h}, \quad K(z)
+\]</div>
+<p>The following kernel functions are implemented using one-dimensional definitions with <span class="math notranslate nohighlight">\(K(z)=0\)</span> outside the stated support:</p>
 <ul class="simple">
-<li><p><strong>Triangular</strong> (“triangle”)
-$$
-K(z) = 1 - |z|, \quad |z| \le 1.
-$$</p></li>
-<li><p><strong>Uniform</strong> (“boxcar”)
-$$
-K(z) = \frac{1}{2}, \quad |z| \le 1.
-$$</p></li>
-<li><p><strong>Quadratic</strong> (Epanechnikov / “parabolic”)
-$$
-K(z) = \frac{3}{4}(1 - z^2), \quad |z| \le 1.
-$$</p></li>
-<li><p><strong>Quartic</strong> (biweight / “bisquare”)
-$$
-K(z) = \frac{15}{16}(1 - z^2)^2, \quad |z| \le 1.
-$$</p></li>
-<li><p><strong>Tricube</strong> (“tricube”)
-$$
-K(z) = \frac{70}{81}(1 - |z|^3)^3, \quad |z| \le 1.
-$$</p></li>
-<li><p><strong>Gaussian</strong>
-$$
-K(z) = (2\pi)^{-1/2} \exp\left(-\frac{z^2}{2}\right), \quad z \in \mathbb{R}.
-$$</p></li>
+<li><p><strong>Triangular</strong> (“triangle”)</p></li>
 </ul>
+<div class="math notranslate nohighlight">
+\[
+  K(z) = 1 - |z|, \quad |z| \le 1.
+\]</div>
+<ul class="simple">
+<li><p><strong>Uniform</strong> (“boxcar”)</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+  K(z) = \frac{1}{2}, \quad |z| \le 1.
+\]</div>
+<ul class="simple">
+<li><p><strong>Quadratic</strong> (Epanechnikov / “parabolic”)</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+  K(z) = \frac{3}{4}(1 - z^2), \quad |z| \le 1.
+\]</div>
+<ul class="simple">
+<li><p><strong>Quartic</strong> (biweight / “bisquare”)</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+  K(z) = \frac{15}{16}(1 - z^2)^2, \quad |z| \le 1.
+\]</div>
+<ul class="simple">
+<li><p><strong>Tricube</strong> (“tricube”)</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+  K(z) = \frac{70}{81}(1 - |z|^3)^3, \quad |z| \le 1.
+\]</div>
+<ul class="simple">
+<li><p><strong>Gaussian</strong></p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+  K(z) = (2\pi)^{-1/2} \exp\left(-\frac{z^2}{2}\right), \quad z \in \mathbb{R}.
+\]</div>
 <p>The helpers in <code class="docutils literal notranslate"><span class="pre">kernels.py</span></code> adopt the same functional forms, but add optional arguments such as
 <code class="docutils literal notranslate"><span class="pre">decay</span></code> and <code class="docutils literal notranslate"><span class="pre">taper</span></code> to control how quickly weights decline with distance and whether the kernel is
 truncated at the bandwidth.</p>
@@ -1008,9 +1025,10 @@ truncated at the bandwidth.</p>
 <h3 id="bandwidth">Bandwidth<a class="headerlink" href="#bandwidth" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code> parameter controls the spatial scale of the kernel. In the notation used earlier, the
 kernel is evaluated on the rescaled distance</p>
-<p>\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-5e9d1fed-dc44-4d21-af91-9effeee33ca5">
+<span class="eqno">(1)<a class="headerlink" href="#equation-5e9d1fed-dc44-4d21-af91-9effeee33ca5" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 z = \frac{d}{h},
-\end{equation}</p>
+\end{equation}\]</div>
 <p>where <code class="docutils literal notranslate"><span class="pre">h</span></code> is the bandwidth. Smaller bandwidths produce more localized weights (steeper decay), while
 larger bandwidths produce broader, smoother influence functions.</p>
 <p>Below we compare triangular kernels with three different bandwidths on the same distance axis.</p>
@@ -1181,6 +1199,8 @@ while still preserving the basic shape of the kernel within the bandwidth.</p>
         <script src="../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
         <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js"></script>
     
   </body>
 </html>

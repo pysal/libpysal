@@ -1,0 +1,146 @@
+
+# W to Graph Member Comparisions
+
+## Overview
+
+This guide compares the members (attributes and methods) from the
+`W` class and the `Graph` class.
+
+It is intended for developers. Users interested in migrating to the
+new Graph class from W should see the
+[migration guide](w_g_migration.ipynb).
+
+
+## Members common to W and Graph
+
+
+| Member                                                 |   Type           |
+| ------------------------------------------------------ | ---------------- |
+| [`asymmetry`](#libpysal.graph.Graph.asymmetry)         |  builtins.method |
+| [`from_networkx`](#libpysal.graph.Graph.from_networkx) |  builtins.method |
+| [`from_sparse`](#libpysal.graph.Graph.from_sparse)     |  builtins.method |
+| [`n`](#libpysal.graph.Graph.n)                         |  builtins.int    |
+| [`n_components`](#libpysal.graph.Graph.n_components)   |  builtins.int    |
+| [`neighbors`](#libpysal.graph.Graph.neighbors)         |  builtins.dict   |
+| [`pct_nonzero`](#libpysal.graph.Graph.pct_nonzero)     |  builtins.float  |
+| [`plot`](#libpysal.graph.Graph.plot)                   |  builtins.method |
+| [`to_networkx`](#libpysal.graph.Graph.to_networkx)     |  builtins.method |
+| [`weights`](#libpysal.graph.Graph.weights)             |  builtins.dict   |
+
+
+## Members common to W and Graph with different types
+
+
+
+| Member           |  Queen Type                                                  |  Graph Type                                                   |
+| ---------------- | ------------------------------------------------------------ | ------------------------------------------------------------- |
+| cardinalities    | [`builtins.dict`](#libpysal.weights.W.cardinalities)         | [`pandas.Series`](#libpysal.graph.Graph.cardinalities)        |
+| component_labels | [`numpy.ndarray`](#libpysal.weights.W.component_labels)      | [`pandas.Series`](#libpysal.graph.Graph.component_labels)     |
+| nonzero          | [`builtins.int`](#libpysal.weights.W.nonzero)                | [`numpy.int64`](#libpysal.graph.Graph.nonzero)                |
+| sparse           | [`scipy.sparse._csr.csr_matrix`](#libpysal.weights.W.sparse) | [`scipy.sparse._csr.csr_array`](#libpysal.graph.Graph.sparse) |
+| transform        | [`builtins.str`](#libpysal.weights.W.transform)              | [`builtins.method`](#libpysal.graph.Graph.transform)          |
+
+
+## Members unique to W
+
+
+
+
+| Member                                                     |   Type          |
+| ---------------------------------------------------------- | --------------- |
+| [`asymmetries`](#libpysal.weights.W.asymmetries)           | builtins.list   |
+| [`diagW2`](#libpysal.weights.W.diagW2)                     | numpy.ndarray   |
+| [`diagWtW`](#libpysal.weights.W.diagWtW)                   | numpy.ndarray   |
+| [`diagWtW_WW`](#libpysal.weights.W.diagWtW_WW)             | numpy.ndarray   |
+| [`from_WSP`](#libpysal.weights.W.from_WSP)                 | builtins.method |
+| [`from_adjlist`](#libpysal.weights.W.from_adjlist)         | builtins.method |
+| [`from_dataframe`](#libpysal.weights.W.from_dataframe)     | builtins.method |
+| [`from_file`](#libpysal.weights.W.from_file)               | builtins.method |
+| [`from_iterable`](#libpysal.weights.W.from_iterable)       | builtins.method |
+| [`from_shapefile`](#libpysal.weights.W.from_shapefile)     | builtins.method |
+| [`from_xarray`](#libpysal.weights.W.from_xarray)           | builtins.method |
+| [`full`](#libpysal.weights.W.full)                         | builtins.method |
+| [`get_transform`](#libpysal.weights.W.get_transform)       | builtins.method |
+| [`histogram`](#libpysal.weights.W.histogram)               | builtins.list   |
+| [`id2i`](#libpysal.weights.W.id2i)                         | builtins.dict   |
+| [`id_order`](#libpysal.weights.W.id_order)                 | builtins.list   |
+| [`id_order_set`](#libpysal.weights.W.id_order_set)         | builtins.bool   |
+| [`islands`](#libpysal.weights.W.islands)                   | builtins.list   |
+| [`max_neighbors`](#libpysal.weights.W.max_neighbors)       | builtins.int    |
+| [`mean_neighbors`](#libpysal.weights.W.mean_neighbors)     | numpy.float64   |
+| [`min_neighbors`](#libpysal.weights.W.min_neighbors)       | builtins.int    |
+| [`neighbor_offsets`](#libpysal.weights.W.neighbor_offsets) | builtins.dict   |
+| [`remap_ids`](#libpysal.weights.W.remap_ids)               | builtins.method |
+| [`s0`](#libpysal.weights.W.s0)                             | numpy.float64   |
+| [`s1`](#libpysal.weights.W.s1)                             | numpy.float64   |
+| [`s2`](#libpysal.weights.W.s2)                             | numpy.float64   |
+| [`s2array`](#libpysal.weights.W.s2array)                   | numpy.ndarray   |
+| [`sd`](#libpysal.weights.W.sd)                             | numpy.float64   |
+| [`set_shapefile`](#libpysal.weights.W.set_shapefile)       | builtins.method |
+| [`set_transform`](#libpysal.weights.W.set_transform)       | builtins.method |
+| [`silence_warnings`](#libpysal.weights.W.silence_warnings) | builtins.bool   |
+| [`symmetrize`](#libpysal.weights.W.symmetrize)             | builtins.method |
+| [`to_WSP`](#libpysal.weights.W.to_WSP)                     | builtins.method |
+| [`to_adjlist`](#libpysal.weights.W.to_adjlist)             | builtins.method |
+| [`to_file`](#libpysal.weights.W.to_file)                   | builtins.method |
+| [`to_sparse`](#libpysal.weights.W.to_sparse)               | builtins.method |
+| [`transformations`](#libpysal.weights.W.transformations)   | builtins.dict   |
+| [`trcW2`](#libpysal.weights.W.trcW2)                       | numpy.float64   |
+| [`trcWtW`](#libpysal.weights.W.trcWtW)                     | numpy.float64   |
+| [`trcWtW_WW`](#libpysal.weights.W.trcWtW_WW)               | numpy.float64   |
+
+
+## Members unique to Graph
+
+
+
+| Member                                                                     |   Type          |
+| -------------------------------------------------------------------------- | --------------- |
+| [`adjacency`](#libpysal.graph.Graph.adjacency)                             | pandas.Series   |
+| [`aggregate`](#libpysal.graph.Graph.aggregate)                             | builtins.method |
+| [`apply`](#libpysal.graph.Graph.apply)                                     | builtins.method |
+| [`assign_self_weight`](#libpysal.graph.Graph.assign_self_weight)           | builtins.method |
+| [`build_block_contiguity`](#libpysal.graph.Graph.build_block_contiguity)   | builtins.method |
+| [`build_contiguity`](#libpysal.graph.Graph.build_contiguity)               | builtins.method |
+| [`build_distance_band`](#libpysal.graph.Graph.build_distance_band)         | builtins.method |
+| [`build_fuzzy_contiguity`](#libpysal.graph.Graph.build_fuzzy_contiguity)   | builtins.method |
+| [`build_h3`](#libpysal.graph.Graph.build_h3)                               | builtins.method |
+| [`build_kernel`](#libpysal.graph.Graph.build_kernel)                       | builtins.method |
+| [`build_knn`](#libpysal.graph.Graph.build_knn)                             | builtins.method |
+| [`build_raster_contiguity`](#libpysal.graph.Graph.build_raster_contiguity) | builtins.method |
+| [`build_spatial_matches`](#libpysal.graph.Graph.build_spatial_matches)     | builtins.method |
+| [`build_travel_cost`](#libpysal.graph.Graph.build_travel_cost)             | builtins.method |
+| [`build_triangulation`](#libpysal.graph.Graph.build_triangulation)         | builtins.method |
+| [`copy`](#libpysal.graph.Graph.copy)                                       | builtins.method |
+| [`describe`](#libpysal.graph.Graph.describe)                               | builtins.method |
+| [`difference`](#libpysal.graph.Graph.difference)                           | builtins.method |
+| [`eliminate_zeros`](#libpysal.graph.Graph.eliminate_zeros)                 | builtins.method |
+| [`equals`](#libpysal.graph.Graph.equals)                                   | builtins.method |
+| [`explore`](#libpysal.graph.Graph.explore)                                 | builtins.method |
+| [`from_W`](#libpysal.graph.Graph.from_W)                                   | builtins.method |
+| [`from_adjacency`](#libpysal.graph.Graph.from_adjacency)                   | builtins.method |
+| [`from_arrays`](#libpysal.graph.Graph.from_arrays)                         | builtins.method |
+| [`from_dense`](#libpysal.graph.Graph.from_dense)                           | builtins.method |
+| [`from_dicts`](#libpysal.graph.Graph.from_dicts)                           | builtins.method |
+| [`from_weights_dict`](#libpysal.graph.Graph.from_weights_dict)             | builtins.method |
+| [`generate_da`](#libpysal.graph.Graph.generate_da)                         | builtins.method |
+| [`higher_order`](#libpysal.graph.Graph.higher_order)                       | builtins.method |
+| [`index_pairs`](#libpysal.graph.Graph.index_pairs)                         | builtins.tuple  |
+| [`intersection`](#libpysal.graph.Graph.intersection)                       | builtins.method |
+| [`intersects`](#libpysal.graph.Graph.intersects)                           | builtins.method |
+| [`isolates`](#libpysal.graph.Graph.isolates)                               | pandas.Index    |
+| [`isomorphic`](#libpysal.graph.Graph.isomorphic)                           | builtins.method |
+| [`issubgraph`](#libpysal.graph.Graph.issubgraph)                           | builtins.method |
+| [`lag`](#libpysal.graph.Graph.lag)                                         | builtins.method |
+| [`n_edges`](#libpysal.graph.Graph.n_edges)                                 | builtins.int    |
+| [`n_nodes`](#libpysal.graph.Graph.n_nodes)                                 | builtins.int    |
+| [`subgraph`](#libpysal.graph.Graph.subgraph)                               | builtins.method |
+| [`summary`](#libpysal.graph.Graph.summary)                                 | builtins.method |
+| [`symmetric_difference`](#libpysal.graph.Graph.symmetric_difference)       | builtins.method |
+| [`to_W`](#libpysal.graph.Graph.to_W)                                       | builtins.method |
+| [`to_gal`](#libpysal.graph.Graph.to_gal)                                   | builtins.method |
+| [`to_gwt`](#libpysal.graph.Graph.to_gwt)                                   | builtins.method |
+| [`to_parquet`](#libpysal.graph.Graph.to_parquet)                           | builtins.method |
+| [`transformation`](#libpysal.graph.Graph.transformation)                   | builtins.str    |
+| [`union`](#libpysal.graph.Graph.union)                                     | builtins.method |
+| [`unique_ids`](#libpysal.graph.Graph.unique_ids)                           | pandas.Index    |

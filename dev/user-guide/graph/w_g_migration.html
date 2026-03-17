@@ -805,7 +805,7 @@
   
   
   <span class="md-ellipsis">
-    <span> API reference</span>
+    <span>API reference</span>
     
   </span>
   
@@ -1094,7 +1094,7 @@
 <p>Author: <a class="reference external" href="http://github.com/sjsrey">Serge Rey</a></p>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
 <p>Beginning in the fall of 2023, the PySAL project released a new <code class="docutils literal notranslate"><span class="pre">graph</span></code> module that offers a modern implementation of spatial weights. This module’s <a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph" title="libpysal.graph.Graph (Python class) — Graph class encoding spatial weights matrices"><span class="xref myst py py-class">Graph</span></a> class is set to eventually replace the <a class="reference internal" href="../../generated/libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W (Python class) — Spatial weights class. Class attributes are described by their docstrings. to view, use the help function."><span class="xref myst py py-class">W</span></a> class, which has been the cornerstone for spatial weights in PySAL for the past 15 years. The <code class="docutils literal notranslate"><span class="pre">W</span></code> class has significantly contributed to the library’s success, but as the scientific landscape evolves, new opportunities necessitate updated interfaces and designs for spatial weights.</p>
-<p>While the application programming interfaces (API) of the <code class="docutils literal notranslate"><span class="pre">W</span></code> and <code class="docutils literal notranslate"><span class="pre">Graph</span></code> classes are similar, there are important <a class="reference internal" href="migration.html"><span class="std std-doc">differences</span></a>
+<p>While the application programming interfaces (API) of the <code class="docutils literal notranslate"><span class="pre">W</span></code> and <code class="docutils literal notranslate"><span class="pre">Graph</span></code> classes are similar, there are important <a class="reference internal" href="#migration.rst"><span class="xref myst">differences</span></a>
 to consider when transitioning from weights-based resources to graph-based implementations.</p>
 <p>This guide is designed to provide users with an overview of migrating from the <code class="docutils literal notranslate"><span class="pre">W</span></code> class to the <code class="docutils literal notranslate"><span class="pre">Graph</span></code> class.</p>
 <p>Beyond the specifics that we outline below, it is important to note two utility methods are available to convert between the two classes:</p>
@@ -1805,7 +1805,7 @@ Here we see one advantage of the <code class="docutils literal notranslate"><spa
 </div>
 </div>
 </div>
-<p>So in this case our equality check above happened to be comparing the values for the same $i,j$ observations, but this is not guaranteed to always be the case. Handling the proper alignment of the ids and the weights was a key motivation for developing the <code class="docutils literal notranslate"><span class="pre">Graph</span></code>.</p>
+<p>So in this case our equality check above happened to be comparing the values for the same <span class="math notranslate nohighlight">\(i,j\)</span> observations, but this is not guaranteed to always be the case. Handling the proper alignment of the ids and the weights was a key motivation for developing the <code class="docutils literal notranslate"><span class="pre">Graph</span></code>.</p>
 <p>The key take-away here is that the <code class="docutils literal notranslate"><span class="pre">Graph</span></code> combines the information about who are the neighbors <em>and</em> the values of the associated weights in the <em>same</em> data structure, the <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> attribute, while in <code class="docutils literal notranslate"><span class="pre">W</span></code> there are <em>two different</em> <code class="docutils literal notranslate"><span class="pre">dicts</span></code> that handle the neighbor information and the weights information (<code class="docutils literal notranslate"><span class="pre">neighbor</span></code> and <code class="docutils literal notranslate"><span class="pre">weights</span></code>, respectively).</p>
 <h2 id="cardinalities">Cardinalities<a class="headerlink" href="#cardinalities" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">cardinalities</span></code> attribute contains information on the number of neighbors for each unit.</p>
@@ -1944,7 +1944,7 @@ Name: cardinalities, Length: 100, dtype: int64
 </div>
 </div>
 </div>
-<p>Here we see that, although the attribute name is common to both classes, the data types are different. (Note: other cases of common names but different types that we won’t cover here are listed <a class="reference internal" href="migration.html"><span class="std std-doc">here</span></a>).</p>
+<p>Here we see that, although the attribute name is common to both classes, the data types are different. (Note: other cases of common names but different types that we won’t cover here are listed <a class="reference internal" href="#migration.rst"><span class="xref myst">here</span></a>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="nb">type</span><span class="p">(</span><span class="n">w_queen</span><span class="o">.</span><span class="n">cardinalities</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">g_queen</span><span class="o">.</span><span class="n">cardinalities</span><span class="p">)</span>
@@ -2904,7 +2904,7 @@ Name: cardinalities, Length: 100, dtype: int64
 </div>
 </div>
 </div>
-<p>In some cases, rather than using the binary weights, we may need to row-standardize the weights, so that in the full $n \times n$ weights matrix, the row sums would all be equal to unity. The relevant transform in this case is ‘r’:</p>
+<p>In some cases, rather than using the binary weights, we may need to row-standardize the weights, so that in the full <span class="math notranslate nohighlight">\(n \times n\)</span> weights matrix, the row sums would all be equal to unity. The relevant transform in this case is ‘r’:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w_queen</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
@@ -3010,7 +3010,8 @@ Name: weight, dtype: float64
 </div>
 <h2 id="spatial-lag">Spatial Lag<a class="headerlink" href="#spatial-lag" title="Link to this heading">¶</a></h2>
 <p>The spatial lag of a variable is a weight sum, or weighted average, of the neighboring values for that variable:</p>
-<p>$$[Wy]<em>i = \sum_j w</em>{i,j} y_j$$</p>
+<div class="math notranslate nohighlight">
+\[[Wy]_i = \sum_j w_{i,j} y_j\]</div>
 <p>The implementation of the spatial lag has changed between the <code class="docutils literal notranslate"><span class="pre">W</span></code> and <code class="docutils literal notranslate"><span class="pre">Graph</span></code> classes.</p>
 <p>To illustrate, we will pull out the Sudden Infant Death Rate in 1979 for the counties into the variable <code class="docutils literal notranslate"><span class="pre">y</span></code>:</p>
 <div class="cell docutils container">
@@ -3868,7 +3869,7 @@ Name: weight, dtype: int64
 </div>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
 <p>This notebook highlights the main areas that users need to be aware of when considering porting their code from the <code class="docutils literal notranslate"><span class="pre">W</span></code> class to the new <code class="docutils literal notranslate"><span class="pre">Graph</span></code>.
-More details on the specifications and differences of the graphs can be found in the <a class="reference internal" href="migration.html"><span class="std std-doc">W to Graph Member Comparisions</span></a>.</p>
+More details on the specifications and differences of the graphs can be found in the <a class="reference internal" href="#migration.rst"><span class="xref myst">W to Graph Member Comparisions</span></a>.</p>
 <p>Downstream packages in the pysal family are in the process of supporting the new <code class="docutils literal notranslate"><span class="pre">Graph</span></code> while preserving backwards compatibility with the <code class="docutils literal notranslate"><span class="pre">W</span></code> class.</p>
 <h2 id="further-reading">Further Reading<a class="headerlink" href="#further-reading" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -3947,6 +3948,8 @@ More details on the specifications and differences of the graphs can be found in
         <script src="../../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
         <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../_static/copybutton.js?v=f281be69"></script>
+        <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script id="MathJax-script" src="../../_static/mathjax/tex-mml-chtml.js"></script>
     
   </body>
 </html>
