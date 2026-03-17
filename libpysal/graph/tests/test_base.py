@@ -1059,7 +1059,9 @@ class TestBase:
         gmax = g.make_symmetric(intersection=True, reduction="max")
 
         assert len(gmax) == len(gint), "intersections should be the same length"
-        assert (gmax == 1).all(), "the largest weight for asymmetries should be 1"
+        assert (gmax.adjacency == 1).all(), (
+            "the largest weight for asymmetries should be 1"
+        )
         assert len(gint) < len(guni), "intersection should be smaller than the union"
         assert (
             guni.adjacency.index.intersection(gmax.adjacency.index)
