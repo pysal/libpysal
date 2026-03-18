@@ -32,7 +32,7 @@ dependencies:
   - sqlalchemy
   - xarray
   - zstd
-  - pandana
+  - pandarm
   - pip
   - pip:
     - pulp

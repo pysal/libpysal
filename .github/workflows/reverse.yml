@@ -40,7 +40,7 @@ jobs:
             setuptools-scm
             h3-py
             hdbscan
-            pandana
+            pandarm
             astropy
             geodatasets
             bokeh

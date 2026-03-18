@@ -296,8 +296,14 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
         func = _kernel_functions[kernel]
 
     k = func(distances, bandwidth)
-    if taper:
+    if taper is True:
+        # pandas 3.0 Copy-on-Write consequence
+        k = k.copy()
         k[distances > bandwidth] = 0.0
+    elif isinstance(taper, (float, int)) and not isinstance(taper, bool):
+        # pandas 3.0 Copy-on-Write consequence
+        k = k.copy()
+        k[distances > taper] = 0.0
 
     if decay:
         k /= func(0.0, bandwidth)

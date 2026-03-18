@@ -1,65 +1,99 @@
+---
+name: Build Docs
 
- name: Build Docs
- on:
-   push:
-     # Sequence of patterns matched against refs/tags
-     tags:
-       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-   workflow_dispatch:
-     inputs:
-       version:
-         description: Manual Doc Build Reason
-         default: test
-         required: false
+on:
+  push:
+    branches: [main]
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Manual Doc Build
+        default: run-doc-build
+        required: false
+jobs:
+  docs:
+    name: Build & push docs
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+        environment-file: [ci/314-latest.yaml]
+        experimental: [false]
+    defaults:
+      run:
+        shell: bash -l {0}
 
- jobs:
-   docs:
-     name: Build & Push Docs
-     runs-on: ${{ matrix.os }}
-     timeout-minutes: 90
-     strategy:
-       matrix:
-         os: ['ubuntu-latest']
-         environment-file: [ci/313-latest.yaml]
-         experimental: [false]
-     defaults:
-       run:
-         shell: bash -l {0}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-     steps:
-       - name: Checkout repo
-         uses: actions/checkout@v6
-         with:
-           fetch-depth: 0 # Fetch all history for all branches and tags.
- 
-       - name: Setup micromamba
-         uses: mamba-org/setup-micromamba@v2
-         with:
-           environment-file: ${{ matrix.environment-file }}
-           micromamba-version: 'latest'
+      - name: Setup micromamba
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: ${{ matrix.environment-file }}
+          micromamba-version: "latest"
 
-       - name: Install
-         run: pip install -e . --no-deps --force-reinstall
+      - name: Install package
+        run: pip install . --no-deps
 
-       - name: Make Docs
-         run: cd docs; make html
+      - name: Make docs
+        run: cd docs; make html
 
-       - name: Commit Docs
-         run: |
-           git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
-           cp -r docs/_build/html/* gh-pages/
-           cd gh-pages
-           git config --local user.email "action@github.com"
-           git config --local user.name "GitHub Action"
-           git add .
-           git commit -m "Update documentation" -a || true
-           # The above command will fail if no changes were present,
-           # so we ignore the return code.
+      - name: Zip documentation
+        if: ${{ github.event_name == 'pull_request' }}
+        run: zip docs_artifact.zip docs/_build/html -r
 
-       - name: Push to gh-pages
-         uses: ad-m/github-push-action@master
-         with:
-            branch: gh-pages
-            directory: gh-pages
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            force: true
+      - name: Upload artifact
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs_artifact
+          path: docs_artifact.zip
+
+      - name: Publish to Github Pages on main (dev)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html/
+          destination_dir: dev
+          keep_files: false
+
+      - name: Publish to Github Pages on release (versioned)
+        if: ${{ github.ref_type == 'tag' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html/
+          destination_dir: ${{ github.ref_name }}
+
+      - name: Publish to Github Pages on release (stable)
+        if: ${{ github.ref_type == 'tag' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html/
+          destination_dir: stable
+          keep_files: false
+
+      - name: Update the versions switcher
+        if: ${{ github.ref_type == 'tag' }}
+        run: |
+          git checkout gh-pages
+          git fetch
+          git pull
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python update_version_json.py --version ${{ github.ref_name }}
+          git add versions.json
+          git commit -m "Update versions switcher"
+          git push
+          git checkout main

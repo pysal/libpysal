@@ -2,9 +2,10 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python=3.14
   - beautifulsoup4
   - jinja2
+  - pandarm
   - platformdirs
   - requests
   # testing
@@ -27,7 +28,7 @@ dependencies:
   - pyproj
   - sqlalchemy
   - zstd
-  #- pandana # not compatible with Python 3.13 as of 2025-06
+  - pandarm
   - pip
   - pip:
     # dev versions of packages

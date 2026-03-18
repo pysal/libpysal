@@ -129,8 +129,13 @@ class Graph(SetOpsMixin):
 
         if not is_sorted:
             # adjacency always ordered i-->j on both levels
-            ids = adjacency.index.get_level_values(0).unique().values
-            adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
+            ids = pd.concat(
+                (
+                    adjacency.index.get_level_values(0).to_series(),
+                    adjacency.index.get_level_values(1).to_series(),
+                )
+            ).unique()
+            adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1).fillna(0)
 
         self._adjacency = adjacency
         self.transformation = transformation
@@ -371,6 +376,30 @@ class Graph(SetOpsMixin):
         )
 
     @classmethod
+    def from_dense(cls, dense, ids=None):
+        """Convert a ``numpy.ndarray`` of a shape (N, N) to a PySAL ``Graph`` object.
+
+        Parameters
+        ----------
+        dense : numpy.ndarray
+            dense representation of a graph
+        ids : list-like, default None
+            list-like of ids for geometries that is mappable to
+            positions from dense. If None, the positions are used as labels.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph based on dense
+        """
+        from scipy import sparse
+
+        if dense.dtype == bool:
+            dense = dense.astype(int)
+
+        return cls.from_sparse(sparse.csr_array(dense), ids=ids)
+
+    @classmethod
     def from_arrays(cls, focal_ids, neighbor_ids, weight, **kwargs):
         """Generate Graph from arrays of indices and weights of the same length
 
@@ -490,6 +519,51 @@ class Graph(SetOpsMixin):
         """
         head, tail, weight = _neighbor_dict_to_edges(neighbors, weights=weights)
         return cls.from_arrays(head, tail, weight)
+
+    @classmethod
+    def from_networkx(cls, graph, weight=None):
+        """Generate a Graph from a NetworkX graph.
+
+        Parameters
+        ----------
+        graph : ``networkx`` graph object
+            representation of the graph as a :class:`networkx.Graph` or
+            :class:`networkx.DiGraph`. Multi-graphs are not supported as they do
+            not translate to a unique weight between two nodes.
+        weight : str | None, default None
+            name of the edge attribute to use as weights.
+
+        Returns
+        -------
+        Graph
+            libpysal.graph.Graph based on NetworkX graph
+
+        Examples
+        --------
+        >>> import networkx as nx
+        >>> nx_graph = nx.path_graph(5)
+        >>> g = graph.Graph.from_networkx(nx_graph)
+        >>> g.n
+        5
+        """
+        try:
+            import networkx as nx
+        except ImportError:
+            raise ImportError("NetworkX is required.") from None
+
+        nodes = list(graph.nodes())
+
+        # Check if the specified weight attribute exists on edges
+        if weight is not None:
+            for _u, _v, edge_data in graph.edges(data=True):
+                if weight not in edge_data:
+                    raise ValueError(
+                        f"The weight attribute '{weight}' does not exist on all edges."
+                    )
+
+        sparse_array = nx.to_scipy_sparse_array(graph, nodelist=nodes, weight=weight)
+
+        return cls.from_sparse(sparse_array, ids=nodes)
 
     @classmethod
     def build_block_contiguity(cls, regimes):
@@ -1604,21 +1678,21 @@ class Graph(SetOpsMixin):
         taper=True,
         decay=False,
     ):
-        """Generate a Graph based on shortest travel costs from a pandana.Network
+        """Generate a Graph based on shortest travel costs from a pandarm.Network
 
         Parameters
         ----------
         df : geopandas.GeoDataFrame
             geodataframe representing observations which are snapped to the nearest
-            node in the pandana.Network. CRS should be the same as the locations
-            of ``node_x`` and ``node_y`` in the pandana.Network (usually 4326 if network
+            node in the pandarm.Network. CRS should be the same as the locations
+            of ``node_x`` and ``node_y`` in the pandarm.Network (usually 4326 if network
             comes from OSM, but sometimes projected to improve snapping quality).
-        network : pandana.Network
-            pandana Network object describing travel costs between nodes in the study
-            area.  See <https://udst.github.io/pandana/> for more
+        network : pandarm.Network
+            pandarm Network object describing travel costs between nodes in the study
+            area.  See <https://oturns.github.io/pandarm/> for more
         threshold : int
             threshold representing maximum cost distances. This is measured in the same
-            units as the pandana.Network (not influenced by the df.crs in any way). For
+            units as the pandarm.Network (not influenced by the df.crs in any way). For
             travel modes with relatively constant speeds like walking or biking, this is
             usually distance (e.g. meters if the Network is constructed from OSM). For a
             a multimodal or auto network with variable travel speeds, this is usually
@@ -1629,7 +1703,7 @@ class Graph(SetOpsMixin):
             transformation options. Default is None, in which case the Graph weight
             is pure distance between focal and neighbor
         mapping_distance : int
-            snapping tolerance passed to ``pandana.Network.get_node_ids`` that defines
+            snapping tolerance passed to ``pandarm.Network.get_node_ids`` that defines
             the maximum range at which observations are snapped to nearest nodes in the
             network. Default is None
         taper : bool (default: True)
@@ -1652,7 +1726,7 @@ class Graph(SetOpsMixin):
         >>> import geodatasets
         >>> import geopandas as gpd
         >>> import osmnx as ox
-        >>> import pandana as pdna
+        >>> import pandarm
 
         Read an example geodataframe:
 
@@ -1664,16 +1738,16 @@ class Graph(SetOpsMixin):
         >>> nodes, edges = ox.utils_graph.graph_to_gdfs(osm_graph)
         >>> edges = edges.reset_index()
 
-        Generate a routable pandana network from the OSM nodes and edges
+        Generate a routable pandarm network from the OSM nodes and edges
 
-        >>> network = pdna.Network(
+        >>> network = pandarm.Network(
         >>>     edge_from=edges["u"],
         >>>     edge_to=edges["v"],
         >>>     edge_weights=edges[["length"]],
         >>>     node_x=nodes["x"],
         >>>     node_y=nodes["y"],)
 
-        Use the pandana network to compute shortest paths between gdf centroids and
+        Use the pandarm network to compute shortest paths between gdf centroids and
         generate a Graph
 
         >>> G = Graph.build_travel_cost(df.set_geometry(df.centroid), network, 500)
@@ -1857,8 +1931,8 @@ class Graph(SetOpsMixin):
 
         Returns
         -------
-        numpy.array
-            Array of component labels
+        pandas.Series
+            Series of component labels
         """
         return pd.Series(
             self._components[1], index=self.unique_ids, name="component labels"
@@ -1894,7 +1968,14 @@ class Graph(SetOpsMixin):
     @cached_property
     def unique_ids(self):
         """Unique IDs used in the Graph"""
-        return self._adjacency.index.get_level_values("focal").unique()
+        return pd.Index(
+            pd.concat(
+                (
+                    self._adjacency.index.get_level_values("focal").to_series(),
+                    self._adjacency.index.get_level_values("neighbor").to_series(),
+                )
+            ).unique()
+        )
 
     @cached_property
     def n(self):
@@ -2110,6 +2191,93 @@ class Graph(SetOpsMixin):
         20
         """
         return GraphSummary(self, asymmetries=asymmetries)
+
+    def make_symmetric(self, intersection=False, reduction=None):
+        r"""Create a symmetric version of this graph
+
+        Parameters
+        ----------
+        intersection : bool, optional
+            whether to use the intersection of the neighbor set
+            to make a symmetric graph. If True, then links are
+            only dropped from the graph. If False, then
+            links are only added to the graph.
+        reduction: str or None, optional
+            How to combine weights when the graph has links in both
+            directions. Options are "sum", "min", "max", or "mean".
+            By default, this is None, which means than an error is
+            raised when the weight on the edge linking node i to j
+            is not the same as the weight on the edge linking j to i.
+        """
+        valid_reductions = {"sum", "min", "max", "mean"}
+        if reduction is not None and reduction not in valid_reductions:
+            raise ValueError(
+                f"reduction {reduction} not understood."
+                " Supported options are `['sum', 'min', "
+                " 'max', 'mean']`"
+            )
+        new_adj = self.adjacency.copy(deep=True)
+        processed_pairs = set()
+        for (head, tail), fweight in new_adj.items():
+            if head == tail:
+                continue
+            pair_id = frozenset((head, tail))
+            if pair_id in processed_pairs:
+                continue
+            else:
+                processed_pairs.add(pair_id)
+            try:
+                bweight = self.adjacency.loc[tail, head]
+            except KeyError:
+                if intersection:
+                    new_adj.drop((head, tail), inplace=True)
+                else:
+                    new_adj.loc[tail, head] = fweight
+                continue
+            if fweight == bweight:
+                continue
+            elif reduction is None:
+                raise ValueError(
+                    f"Weights for {head},{tail} are not equal,"
+                    f"but no reduction was provided. Try providing"
+                    f" `reduction='sum'` to address this issue."
+                )
+            elif reduction == "sum":
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = bweight + fweight
+            elif reduction == "min":
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = min(
+                    bweight, fweight
+                )
+            elif reduction == "max":
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = max(
+                    bweight, fweight
+                )
+            elif reduction == "mean":
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = (
+                    bweight + fweight
+                ) / 2
+
+        new_unique_ids = pd.concat(
+            (
+                new_adj.index.get_level_values("focal").to_series(),
+                new_adj.index.get_level_values("neighbor").to_series(),
+            )
+        ).unique()
+        new_isolates = self.unique_ids.difference(new_unique_ids)
+
+        for isolate in new_isolates:
+            new_adj.loc[isolate, isolate] = 0
+
+        new_adj = (
+            new_adj.reindex(self.unique_ids, level=0)
+            .reindex(self.unique_ids, level=1)
+            .fillna(0)
+        )
+        output = Graph(new_adj, is_sorted=True)
+        if hasattr(self, "_xarray_index_names"):
+            output._xarray_index_names = self._xarray_index_names
+
+        return output
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order :math:`k`.

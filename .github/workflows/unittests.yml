@@ -27,15 +27,16 @@ jobs:
           - ci/311-oldest.yaml
           - ci/311-latest.yaml
           - ci/312-latest.yaml
-          - ci/313-min.yaml
           - ci/313-latest.yaml
-          - ci/313-dev.yaml
+          - ci/314-min.yaml
+          - ci/314-latest.yaml
+          - ci/314-dev.yaml
         include:
-          - environment-file: ci/313-latest.yaml
+          - environment-file: ci/314-latest.yaml
             os: macos-15-intel # Intel
-          - environment-file: ci/313-latest.yaml
+          - environment-file: ci/314-latest.yaml
             os: macos-latest # Apple Silicon
-          - environment-file: ci/313-latest.yaml
+          - environment-file: ci/314-latest.yaml
             os: windows-latest
     defaults:
       run:

@@ -121,3 +121,21 @@ def test_kernel_dispatcher_invalid_name(distances, bandwidth):
     with pytest.raises(KeyError):
         kernels.kernel(distances, bandwidth, kernel="not-a-kernel")
 
+def test_kernel_taper(distances, bandwidth):
+    
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=True)
+    expected = kernels._gaussian(distances, bandwidth)
+    expected[distances > bandwidth] = 0.0
+    np.testing.assert_array_almost_equal(result, expected)
+
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=False)
+    expected = kernels._gaussian(distances, bandwidth)
+    np.testing.assert_array_almost_equal(result, expected)
+
+    taper_val = 0.75
+    result = kernels.kernel(
+        distances, bandwidth, kernel="gaussian", taper=taper_val
+    )
+    expected = kernels._gaussian(distances, bandwidth)
+    expected[distances > taper_val] = 0.0
+    np.testing.assert_array_almost_equal(result, expected)

@@ -2,7 +2,7 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python=3.14
   - beautifulsoup4
   - geopandas
   - jinja2
@@ -17,7 +17,6 @@ dependencies:
   - matplotlib
   - tobler
   - h3-py
-  - rioxarray
   - pytest
   - pytest-cov
   - pytest-mpl
@@ -33,6 +32,15 @@ dependencies:
   - zstd
   - pandarm
   - xarray
+  # for docs build action (this env only)
+  - ipykernel
+  - myst-nb
+  - sphinx
+  - sphinxcontrib-bibtex
+  - sphinx-autosummary-accessors
+  - sphinx-copybutton
+  - sphinx-immaterial
+  - pandoc
   - pip
   - pip:
     - pulp
