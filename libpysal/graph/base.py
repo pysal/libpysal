@@ -129,8 +129,17 @@ class Graph(SetOpsMixin):
 
         if not is_sorted:
             # adjacency always ordered i-->j on both levels
-            ids = adjacency.index.get_level_values(0).unique().values
-            adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
+            ids = (
+                pandas.concat(
+                    (
+                        adjacency.index.get_level_values(0).to_series(),
+                        adjacency.index.get_level_values(1).to_series(),
+                    )
+                )
+                .unique()
+                .values
+            )
+            adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1).fillna(0)
 
         self._adjacency = adjacency
         self.transformation = transformation
