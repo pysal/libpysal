@@ -129,16 +129,12 @@ class Graph(SetOpsMixin):
 
         if not is_sorted:
             # adjacency always ordered i-->j on both levels
-            ids = (
-                pd.concat(
-                    (
-                        adjacency.index.get_level_values(0).to_series(),
-                        adjacency.index.get_level_values(1).to_series(),
-                    )
+            ids = pd.concat(
+                (
+                    adjacency.index.get_level_values(0).to_series(),
+                    adjacency.index.get_level_values(1).to_series(),
                 )
-                .unique()
-                .values
-            )
+            ).unique()
             adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1).fillna(0)
 
         self._adjacency = adjacency
@@ -1934,12 +1930,14 @@ class Graph(SetOpsMixin):
     @cached_property
     def unique_ids(self):
         """Unique IDs used in the Graph"""
-        return pd.concat(
-            (
-                self._adjacency.index.get_level_values("focal").to_series(),
-                self._adjacency.index.get_level_values("neighbor").to_series(),
-            )
-        ).unique()
+        return pd.Index(
+            pd.concat(
+                (
+                    self._adjacency.index.get_level_values("focal").to_series(),
+                    self._adjacency.index.get_level_values("neighbor").to_series(),
+                )
+            ).unique()
+        )
 
     @cached_property
     def n(self):

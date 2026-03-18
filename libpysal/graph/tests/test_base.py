@@ -1264,7 +1264,7 @@ class TestBase:
         nybb = graph.Graph.build_contiguity(self.nybb)
         expected = pd.Series(
             [0, 1, 1, 1, 1],
-            index=pd.Index(self.nybb.index.values, name="focal"),
+            index=pd.Index(self.nybb.index.values),
             dtype=int,
             name="component labels",
         )
@@ -1325,7 +1325,6 @@ class TestBase:
             [1.62382200e09, 3.76087588e09, 3.68168493e09, 6.16961834e09, 3.68168493e09],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_series_equal(contig.apply(self.nybb.area, "sum"), expected)
@@ -1335,7 +1334,6 @@ class TestBase:
             [1.62382200e09, 1.18692629e09, 1.84084247e09, 1.93747835e09, 1.84084247e09],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_series_equal(
@@ -1347,7 +1345,6 @@ class TestBase:
             [2.06271959e09, 6.68788190e09, 7.57087991e09, 8.78957337e09, 7.57087991e09],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_series_equal(
@@ -1367,7 +1364,6 @@ class TestBase:
             columns=["Shape_Leng", "Shape_Area"],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_frame_equal(
@@ -1382,7 +1378,6 @@ class TestBase:
             [1.62382200e09, 3.76087588e09, 3.68168493e09, 6.16961834e09, 3.68168493e09],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_series_equal(
@@ -1400,7 +1395,6 @@ class TestBase:
             ],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_frame_equal(
