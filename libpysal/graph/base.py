@@ -130,7 +130,7 @@ class Graph(SetOpsMixin):
         if not is_sorted:
             # adjacency always ordered i-->j on both levels
             ids = (
-                pandas.concat(
+                pd.concat(
                     (
                         adjacency.index.get_level_values(0).to_series(),
                         adjacency.index.get_level_values(1).to_series(),
@@ -2215,14 +2215,24 @@ class Graph(SetOpsMixin):
                 new_adj.loc[tail, head] = new_adj.loc[head, tail] = (
                     bweight + fweight
                 ) / 2
-            else:
-                raise ValueError(
-                    f"reduction {reduction} not understood."
-                    " Supported options are `['sum', 'min', "
-                    " 'max', 'mean']`"
-                )
-        output = Graph(new_adj)
 
+        new_unique_ids = pd.concat(
+            (
+                new_adj.index.get_level_values("focal").to_series(),
+                new_adj.index.get_level_values("neighbor").to_series(),
+            )
+        ).unique()
+        new_isolates = self.unique_ids.difference(new_unique_ids)
+
+        for isolate in new_isolates:
+            new_adj.loc[isolate, isolate] = 0
+
+        new_adj = (
+            new_adj.reindex(self.unique_ids, level=0)
+            .reindex(self.unique_ids, level=1)
+            .fillna(0)
+        )
+        output = Graph(new_adj, is_sorted=True)
         if hasattr(self, "_xarray_index_names"):
             output._xarray_index_names = self._xarray_index_names
 
