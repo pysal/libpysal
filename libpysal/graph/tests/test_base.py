@@ -1043,6 +1043,50 @@ class TestBase:
 
         pd.testing.assert_series_equal(self.g_int.asymmetry(False), empty)
 
+    def test_make_symmetric(self):
+        neighbors = {
+            "a": ["b", "c"],
+            "b": ["b", "c", "d"],
+            "c": ["a", "b"],
+            "d": ["a", "b"],
+        }
+        weights_d = {"a": [1, 0.5], "b": [1, 1, 1], "c": [1, 1], "d": [1, 1]}
+        g = graph.Graph.from_dicts(neighbors, weights_d)
+        with pytest.raises(ValueError):
+            g.make_symmetric(reduction=None)
+        gint = g.make_symmetric(intersection=True, reduction="min")
+        guni = g.make_symmetric(intersection=False, reduction="min")
+        gmax = g.make_symmetric(intersection=True, reduction="max")
+        gsum = g.make_symmetric(intersection=True, reduction="sum")
+        gmean = g.make_symmetric(intersection=True, reduction="mean")
+
+        assert len(gmax) == len(gint), "intersections should be the same length"
+        assert (gmax.adjacency == 1).all(), (
+            "the largest weight for asymmetries should be 1"
+        )
+        assert len(gint) < len(guni), "intersection should be smaller than the union"
+        assert (
+            guni.adjacency.index.intersection(gmax.adjacency.index)
+            == gmax.adjacency.index
+        ).all(), "the intersection is a subset of the union"
+
+        # additional checks for alternative reductions
+        assert len(gsum) == len(gint)
+        assert len(gmean) == len(gint)
+        # for any pair of reciprocal weights, min <= mean <= max <= sum
+        adj_min = gint.adjacency
+        adj_mean = gmean.adjacency
+        adj_max = gmax.adjacency
+        adj_sum = gsum.adjacency
+        assert (adj_min <= adj_mean).all()
+        assert (adj_mean <= adj_max).all()
+        assert (adj_max <= adj_sum).all()
+
+        # invalid reduction strings should raise even when the
+        # graph is already symmetric
+        with pytest.raises(ValueError):
+            gmax.make_symmetric(reduction="invalid")
+
     def test_parquet(self):
         pytest.importorskip("pyarrow")
 
@@ -1220,7 +1264,7 @@ class TestBase:
         nybb = graph.Graph.build_contiguity(self.nybb)
         expected = pd.Series(
             [0, 1, 1, 1, 1],
-            index=pd.Index(self.nybb.index.values, name="focal"),
+            index=pd.Index(self.nybb.index.values),
             dtype=int,
             name="component labels",
         )
@@ -1281,7 +1325,6 @@ class TestBase:
             [1.62382200e09, 3.76087588e09, 3.68168493e09, 6.16961834e09, 3.68168493e09],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_series_equal(contig.apply(self.nybb.area, "sum"), expected)
@@ -1291,7 +1334,6 @@ class TestBase:
             [1.62382200e09, 1.18692629e09, 1.84084247e09, 1.93747835e09, 1.84084247e09],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_series_equal(
@@ -1303,7 +1345,6 @@ class TestBase:
             [2.06271959e09, 6.68788190e09, 7.57087991e09, 8.78957337e09, 7.57087991e09],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_series_equal(
@@ -1323,7 +1364,6 @@ class TestBase:
             columns=["Shape_Leng", "Shape_Area"],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_frame_equal(
@@ -1338,7 +1378,6 @@ class TestBase:
             [1.62382200e09, 3.76087588e09, 3.68168493e09, 6.16961834e09, 3.68168493e09],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_series_equal(
@@ -1356,7 +1395,6 @@ class TestBase:
             ],
             index=pd.Index(
                 ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"],
-                name="focal",
             ),
         )
         pd.testing.assert_frame_equal(

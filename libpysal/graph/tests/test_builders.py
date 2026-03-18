@@ -218,9 +218,7 @@ class TestTriangulation:
 
     def test_sorting(self):
         delaunay = graph.Graph.build_triangulation(self.gdf)
-        pd.testing.assert_index_equal(
-            pd.Index(self.gdf.index, name="focal"), delaunay.unique_ids
-        )
+        pd.testing.assert_index_equal(pd.Index(self.gdf.index), delaunay.unique_ids)
 
 
 @pytest.mark.network

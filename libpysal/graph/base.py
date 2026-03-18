@@ -129,8 +129,13 @@ class Graph(SetOpsMixin):
 
         if not is_sorted:
             # adjacency always ordered i-->j on both levels
-            ids = adjacency.index.get_level_values(0).unique().values
-            adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1)
+            ids = pd.concat(
+                (
+                    adjacency.index.get_level_values(0).to_series(),
+                    adjacency.index.get_level_values(1).to_series(),
+                )
+            ).unique()
+            adjacency = adjacency.reindex(ids, level=0).reindex(ids, level=1).fillna(0)
 
         self._adjacency = adjacency
         self.transformation = transformation
@@ -1925,7 +1930,14 @@ class Graph(SetOpsMixin):
     @cached_property
     def unique_ids(self):
         """Unique IDs used in the Graph"""
-        return self._adjacency.index.get_level_values("focal").unique()
+        return pd.Index(
+            pd.concat(
+                (
+                    self._adjacency.index.get_level_values("focal").to_series(),
+                    self._adjacency.index.get_level_values("neighbor").to_series(),
+                )
+            ).unique()
+        )
 
     @cached_property
     def n(self):
@@ -2141,6 +2153,93 @@ class Graph(SetOpsMixin):
         20
         """
         return GraphSummary(self, asymmetries=asymmetries)
+
+    def make_symmetric(self, intersection=False, reduction=None):
+        r"""Create a symmetric version of this graph
+
+        Parameters
+        ----------
+        intersection : bool, optional
+            whether to use the intersection of the neighbor set
+            to make a symmetric graph. If True, then links are
+            only dropped from the graph. If False, then
+            links are only added to the graph.
+        reduction: str or None, optional
+            How to combine weights when the graph has links in both
+            directions. Options are "sum", "min", "max", or "mean".
+            By default, this is None, which means than an error is
+            raised when the weight on the edge linking node i to j
+            is not the same as the weight on the edge linking j to i.
+        """
+        valid_reductions = {"sum", "min", "max", "mean"}
+        if reduction is not None and reduction not in valid_reductions:
+            raise ValueError(
+                f"reduction {reduction} not understood."
+                " Supported options are `['sum', 'min', "
+                " 'max', 'mean']`"
+            )
+        new_adj = self.adjacency.copy(deep=True)
+        processed_pairs = set()
+        for (head, tail), fweight in new_adj.items():
+            if head == tail:
+                continue
+            pair_id = frozenset((head, tail))
+            if pair_id in processed_pairs:
+                continue
+            else:
+                processed_pairs.add(pair_id)
+            try:
+                bweight = self.adjacency.loc[tail, head]
+            except KeyError:
+                if intersection:
+                    new_adj.drop((head, tail), inplace=True)
+                else:
+                    new_adj.loc[tail, head] = fweight
+                continue
+            if fweight == bweight:
+                continue
+            elif reduction is None:
+                raise ValueError(
+                    f"Weights for {head},{tail} are not equal,"
+                    f"but no reduction was provided. Try providing"
+                    f" `reduction='sum'` to address this issue."
+                )
+            elif reduction == "sum":
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = bweight + fweight
+            elif reduction == "min":
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = min(
+                    bweight, fweight
+                )
+            elif reduction == "max":
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = max(
+                    bweight, fweight
+                )
+            elif reduction == "mean":
+                new_adj.loc[tail, head] = new_adj.loc[head, tail] = (
+                    bweight + fweight
+                ) / 2
+
+        new_unique_ids = pd.concat(
+            (
+                new_adj.index.get_level_values("focal").to_series(),
+                new_adj.index.get_level_values("neighbor").to_series(),
+            )
+        ).unique()
+        new_isolates = self.unique_ids.difference(new_unique_ids)
+
+        for isolate in new_isolates:
+            new_adj.loc[isolate, isolate] = 0
+
+        new_adj = (
+            new_adj.reindex(self.unique_ids, level=0)
+            .reindex(self.unique_ids, level=1)
+            .fillna(0)
+        )
+        output = Graph(new_adj, is_sorted=True)
+        if hasattr(self, "_xarray_index_names"):
+            output._xarray_index_names = self._xarray_index_names
+
+        return output
 
     def higher_order(self, k=2, shortest_path=True, diagonal=False, lower_order=False):
         """Contiguity weights object of order :math:`k`.
