@@ -1934,7 +1934,12 @@ class Graph(SetOpsMixin):
     @cached_property
     def unique_ids(self):
         """Unique IDs used in the Graph"""
-        return self._adjacency.index.get_level_values("focal").unique()
+        return pd.concat(
+            (
+                self._adjacency.index.get_level_values("focal").to_series(),
+                self._adjacency.index.get_level_values("neighbor").to_series(),
+            )
+        ).unique()
 
     @cached_property
     def n(self):
