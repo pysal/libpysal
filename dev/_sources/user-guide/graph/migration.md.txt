@@ -132,6 +132,7 @@ new Graph class from W should see the
 | [`isomorphic`](#libpysal.graph.Graph.isomorphic)                           | builtins.method |
 | [`issubgraph`](#libpysal.graph.Graph.issubgraph)                           | builtins.method |
 | [`lag`](#libpysal.graph.Graph.lag)                                         | builtins.method |
+| [`make_symmetric`](#libpysal.graph.Graph.make_symmetric)                   | builtins.method |
 | [`n_edges`](#libpysal.graph.Graph.n_edges)                                 | builtins.int    |
 | [`n_nodes`](#libpysal.graph.Graph.n_nodes)                                 | builtins.int    |
 | [`subgraph`](#libpysal.graph.Graph.subgraph)                               | builtins.method |

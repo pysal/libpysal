@@ -50,6 +50,7 @@
       ~Graph.isomorphic
       ~Graph.issubgraph
       ~Graph.lag
+      ~Graph.make_symmetric
       ~Graph.plot
       ~Graph.subgraph
       ~Graph.summary
