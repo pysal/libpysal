@@ -9,12 +9,13 @@
       const path = window.location.pathname;
       const origin = window.location.origin;
 
-      // Match old URLs like /libpysal/api.html
+      // Match old URLs like /libpysal/api.html or /esda/api.html
       // but do not touch already-versioned paths.
-      const m = path.match(/^\/libpysal\/(.+)$/);
+      const m = path.match(/^\/([^/]+)\/(.+)$/);
       if (!m) return;
 
-      const rest = m[1];
+      const packageName = m[1];
+      const rest = m[2];
 
       // Leave versioned folders alone
       if (
@@ -25,7 +26,7 @@
         return;
       }
 
-      const target = origin + "/libpysal/stable/" + rest + window.location.search + window.location.hash;
+      const target = origin + "/" + packageName + "/stable/" + rest + window.location.search + window.location.hash;
       window.location.replace(target);
     })();
   </script>
