@@ -158,10 +158,11 @@ def _kernel(
             dist_kwds = {}
             if metric == "minkowski":
                 dist_kwds["p"] = p
-            if tree is not None and hasattr(tree, "query"):
-                n_samples = coordinates.shape[0]
-                distances, _ = tree.query(coordinates, k=n_samples)
-                sq = distances
+            if tree is not None and hasattr(tree, "data"):
+                d = spatial.distance.pdist(
+                    numpy.asarray(tree.data), metric=metric, **dist_kwds
+                )
+                sq = spatial.distance.squareform(d)
             elif HAS_SKLEARN:
                 sq = metrics.pairwise_distances(
                     coordinates, coordinates, metric=metric, **dist_kwds
@@ -214,7 +215,7 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise", tree=None)
     if coplanar == "jitter":
         if tree is not None:
             raise ValueError(
-                "Cannot using a pre-built tree when `coplanar='jitter'`. "
+                "Cannot use a pre-built tree when `coplanar='jitter'`. "
                 "The coordinates are modified during jittering, invalidating the "
                 "tree. Please strip the 'tree' argument or set `coplanar='raise'` "
                 "or `coplanar='clique'`."
@@ -228,7 +229,7 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise", tree=None)
         if metric == "haversine":
             if tree is not None:
                 raise ValueError(
-                    "Cannot using a pre-built tree when `metric='haversine'`. "
+                    "Cannot use a pre-built tree when `metric='haversine'`. "
                     "The coordinates are transformed (deg to rad) for this metric, "
                     "invalidating the tree. Please strip the 'tree' argument."
                 )
