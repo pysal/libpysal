@@ -1,6 +1,6 @@
-import warnings
 import numpy
 import pandas
+import warnings
 from scipy import optimize, sparse, spatial, stats
 
 from libpysal.kernels import _kernel_functions
