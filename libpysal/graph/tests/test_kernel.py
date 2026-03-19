@@ -487,9 +487,10 @@ def test_tree_parameter_knn(grocs):
     # Build KNN without tree
     g1 = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf)
 
-    # Build a KDTree and pass it
+    # Build a KDTree and pass it — coords + tree triggers a warning
     tree = spatial.KDTree(coords)
-    g2 = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf, tree=tree)
+    with pytest.warns(UserWarning, match="coordinate"):
+        g2 = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf, tree=tree)
 
     np.testing.assert_array_equal(g1[0], g2[0])  # focal
     np.testing.assert_array_equal(g1[1], g2[1])  # neighbor
@@ -503,9 +504,10 @@ def test_tree_parameter_sklearn(grocs):
 
     coords = np.array([[pt.x, pt.y] for pt in grocs.geometry.values])
 
-    # Build KNN with sklearn tree
+    # Build KNN with sklearn tree — coords + tree triggers a warning
     tree = KDTree(coords)
-    g = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf, tree=tree)
+    with pytest.warns(UserWarning, match="coordinate"):
+        g = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf, tree=tree)
 
     # Should produce valid output
     assert len(g[0]) > 0
@@ -538,9 +540,10 @@ def test_tree_parameter_full_distance_matrix():
     # Without tree
     g1 = _kernel(coords, k=None, kernel="identity", taper=False)
 
-    # With tree
+    # With tree — coords + tree triggers a warning
     tree = spatial.KDTree(coords)
-    g2 = _kernel(coords, k=None, kernel="identity", taper=False, tree=tree)
+    with pytest.warns(UserWarning, match="coordinate"):
+        g2 = _kernel(coords, k=None, kernel="identity", taper=False, tree=tree)
 
     np.testing.assert_array_almost_equal(np.sort(g1[2]), np.sort(g2[2]))
 

@@ -1,3 +1,4 @@
+import warnings
 import numpy
 import pandas
 from scipy import optimize, sparse, spatial, stats
@@ -106,6 +107,11 @@ def _kernel(
     """
     if tree is not None:
         if hasattr(tree, "data"):
+            if coordinates is not None:
+                warnings.warn(
+                    "`tree` provided, so `coordinate` information will be ignored.",
+                    stacklevel=2,
+                )
             coordinates = numpy.asarray(tree.data)
         else:
             raise ValueError("Provided tree must have a 'data' attribute.")
