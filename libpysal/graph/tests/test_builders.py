@@ -218,9 +218,7 @@ class TestTriangulation:
 
     def test_sorting(self):
         delaunay = graph.Graph.build_triangulation(self.gdf)
-        pd.testing.assert_index_equal(
-            pd.Index(self.gdf.index, name="focal"), delaunay.unique_ids
-        )
+        pd.testing.assert_index_equal(pd.Index(self.gdf.index), delaunay.unique_ids)
 
 
 @pytest.mark.network
@@ -301,6 +299,50 @@ class TestKernel:
 
         assert g.sparse.shape == (85, 85)
 
+    def test_knn_tree_scipy(self):
+        from scipy import spatial
+
+        gdf = gpd.read_file(geodatasets.get_path("nybb"))
+        gdf = gdf.set_geometry(gdf.centroid)
+
+        tree = spatial.KDTree(gdf.geometry.get_coordinates())
+        g = graph.Graph.build_knn(tree, k=3)
+
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+        assert g.n == len(gdf)
+
+    def test_knn_tree_sklearn_kdtree(self):
+        pytest.importorskip("sklearn")
+        from sklearn import neighbors
+
+        gdf = gpd.read_file(geodatasets.get_path("nybb"))
+        gdf = gdf.set_geometry(gdf.centroid)
+
+        tree = neighbors.KDTree(gdf.geometry.get_coordinates())
+        g = graph.Graph.build_knn(tree, k=3)
+
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+        assert g.n == len(gdf)
+
+    def test_knn_tree_sklearn_balltree(self):
+        pytest.importorskip("sklearn")
+        from sklearn import neighbors
+
+        gdf = gpd.read_file(geodatasets.get_path("nybb"))
+        gdf = gdf.set_geometry(gdf.centroid)
+
+        tree = neighbors.BallTree(gdf.geometry.get_coordinates())
+        g = graph.Graph.build_knn(tree, k=3)
+
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+        assert g.n == len(gdf)
+
 
 @pytest.mark.network
 class TestDistanceBand:
@@ -354,6 +396,17 @@ class TestDistanceBand:
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+
+    def test_distance_band_tree_scipy(self):
+        from scipy import spatial
+
+        tree = spatial.KDTree(self.gdf.geometry.get_coordinates())
+        g = graph.Graph.build_distance_band(tree, 50000)
+
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["focal"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.index.dtypes["neighbor"])
+        assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+        assert g.n == len(self.gdf)
 
 
 @pytest.mark.network
