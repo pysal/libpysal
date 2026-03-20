@@ -23,7 +23,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4>=4.13.0",
     "geopandas>=0.14.0",
@@ -83,7 +83,6 @@ include = ["libpysal", "libpysal.*"]
 [tool.ruff]
 line-length = 88
 lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
-target-version = "py310"
 exclude = [
     "libpysal/tests/*",
     "libpysal/cg/tests/fast_point_in_polygon_algorithm.ipynb"

@@ -2,7 +2,7 @@ name: py311_libpysal-oldest
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.12
   - beautifulsoup4=4.13
   - geopandas=0.14.0
   - jinja2
