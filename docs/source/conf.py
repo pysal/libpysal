@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath("../libpysal/"))
 import libpysal  # noqa
 
 project = "libpysal"
-copyright = "2018-, pysal developers"
+copyright = "2018-, pysal developers"  # noqa: A001 - shadowing a Python builtin
 author = "pysal developers"
 
 version = libpysal.__version__.split("+", 1)[0]  # remove commit hash

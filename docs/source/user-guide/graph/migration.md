@@ -14,17 +14,18 @@ new Graph class from W should see the
 ## Members common to W and Graph
 
 
-| Member                                               |   Type           |
-| ---------------------------------------------------- | ---------------- |
-| [`asymmetry`](#libpysal.graph.Graph.asymmetry)       |  builtins.method |
-| [`from_sparse`](#libpysal.graph.Graph.from_sparse)   |  builtins.method |
-| [`n`](#libpysal.graph.Graph.n)                       |  builtins.int    |
-| [`n_components`](#libpysal.graph.Graph.n_components) |  builtins.int    |
-| [`neighbors`](#libpysal.graph.Graph.neighbors)       |  builtins.dict   |
-| [`pct_nonzero`](#libpysal.graph.Graph.pct_nonzero)   |  builtins.float  |
-| [`plot`](#libpysal.graph.Graph.plot)                 |  builtins.method |
-| [`to_networkx`](#libpysal.graph.Graph.to_networkx)   |  builtins.method |
-| [`weights`](#libpysal.graph.Graph.weights)           |  builtins.dict   |
+| Member                                                 |   Type           |
+| ------------------------------------------------------ | ---------------- |
+| [`asymmetry`](#libpysal.graph.Graph.asymmetry)         |  builtins.method |
+| [`from_networkx`](#libpysal.graph.Graph.from_networkx) |  builtins.method |
+| [`from_sparse`](#libpysal.graph.Graph.from_sparse)     |  builtins.method |
+| [`n`](#libpysal.graph.Graph.n)                         |  builtins.int    |
+| [`n_components`](#libpysal.graph.Graph.n_components)   |  builtins.int    |
+| [`neighbors`](#libpysal.graph.Graph.neighbors)         |  builtins.dict   |
+| [`pct_nonzero`](#libpysal.graph.Graph.pct_nonzero)     |  builtins.float  |
+| [`plot`](#libpysal.graph.Graph.plot)                   |  builtins.method |
+| [`to_networkx`](#libpysal.graph.Graph.to_networkx)     |  builtins.method |
+| [`weights`](#libpysal.graph.Graph.weights)             |  builtins.dict   |
 
 
 ## Members common to W and Graph with different types
@@ -56,7 +57,6 @@ new Graph class from W should see the
 | [`from_dataframe`](#libpysal.weights.W.from_dataframe)     | builtins.method |
 | [`from_file`](#libpysal.weights.W.from_file)               | builtins.method |
 | [`from_iterable`](#libpysal.weights.W.from_iterable)       | builtins.method |
-| [`from_networkx`](#libpysal.weights.W.from_networkx)       | builtins.method |
 | [`from_shapefile`](#libpysal.weights.W.from_shapefile)     | builtins.method |
 | [`from_xarray`](#libpysal.weights.W.from_xarray)           | builtins.method |
 | [`full`](#libpysal.weights.W.full)                         | builtins.method |
@@ -120,6 +120,7 @@ new Graph class from W should see the
 | [`from_W`](#libpysal.graph.Graph.from_W)                                   | builtins.method |
 | [`from_adjacency`](#libpysal.graph.Graph.from_adjacency)                   | builtins.method |
 | [`from_arrays`](#libpysal.graph.Graph.from_arrays)                         | builtins.method |
+| [`from_dense`](#libpysal.graph.Graph.from_dense)                           | builtins.method |
 | [`from_dicts`](#libpysal.graph.Graph.from_dicts)                           | builtins.method |
 | [`from_weights_dict`](#libpysal.graph.Graph.from_weights_dict)             | builtins.method |
 | [`generate_da`](#libpysal.graph.Graph.generate_da)                         | builtins.method |
@@ -131,6 +132,7 @@ new Graph class from W should see the
 | [`isomorphic`](#libpysal.graph.Graph.isomorphic)                           | builtins.method |
 | [`issubgraph`](#libpysal.graph.Graph.issubgraph)                           | builtins.method |
 | [`lag`](#libpysal.graph.Graph.lag)                                         | builtins.method |
+| [`make_symmetric`](#libpysal.graph.Graph.make_symmetric)                   | builtins.method |
 | [`n_edges`](#libpysal.graph.Graph.n_edges)                                 | builtins.int    |
 | [`n_nodes`](#libpysal.graph.Graph.n_nodes)                                 | builtins.int    |
 | [`subgraph`](#libpysal.graph.Graph.subgraph)                               | builtins.method |
