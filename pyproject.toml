@@ -23,19 +23,19 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4>=4.13.0",
-    "geopandas>=0.14.0",
+    "geopandas>=1.1.0",
     "jinja2",
-    "numpy>=1.26.0",
-    "packaging>=23.2",
-    "pandas>=2.1.0",
-    "platformdirs>=3.11.0",
+    "numpy>=2.0.0",
+    "packaging>=24.1",
+    "pandas>=2.3.0",
+    "platformdirs>=4.3",
     "requests>=2.32.0",
-    "scikit-learn>=1.4.0",
-    "scipy>=1.12.0",
-    "shapely>=2.0",
+    "scikit-learn>=1.5.0",
+    "scipy>=1.14.0",
+    "shapely>=2.1",
 ]
 
 [project.urls]
@@ -44,13 +44,13 @@ Repository = "https://github.com/pysal/libpysal"
 
 [project.optional-dependencies]
 plus = [
-    "joblib>=1.4.0",
-    "networkx>=3.2",
-    "numba>=0.58",
-    "pandarm",
-    "pyarrow>=11.0",
+    "joblib>=1.5.0",
+    "networkx>=3.4",
+    "numba>=0.60",
+    "pandarm>=0.0",
+    "pyarrow>=16.1",
     "sqlalchemy>=2.0",
-    "xarray>=2023.6",
+    "xarray>=2024.5",
     "zstd",
 ]
 dev = [
@@ -69,8 +69,8 @@ docs = [
 ]
 tests = [
     "codecov",
-    "geodatasets>=2023.12.0",
-    "matplotlib>=3.8",
+    "geodatasets>=2024.7.0",
+    "matplotlib>=3.10",
     "pytest",
     "pytest-mpl",
     "pytest-cov",
@@ -83,7 +83,6 @@ include = ["libpysal", "libpysal.*"]
 [tool.ruff]
 line-length = 88
 lint.select = ["E", "F", "W", "I", "UP", "N", "B", "A", "C4", "SIM", "ARG"]
-target-version = "py310"
 exclude = [
     "libpysal/tests/*",
     "libpysal/cg/tests/fast_point_in_polygon_algorithm.ipynb"
