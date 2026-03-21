@@ -23,6 +23,7 @@ jobs:
       - uses: scientific-python/reverse-dependency-testing-action@main
         with:
           package_name: libpysal
+          python_version: 3.12
           ignore: >-
             fine
             tigernet
@@ -37,7 +38,6 @@ jobs:
           include: >-
             mapclassify
           install: >-
-            python>=3.12
             setuptools-scm
             h3-py
             hdbscan
