@@ -1,7 +1,7 @@
 name: Test reverse dependencies
 on:
   push:
-    branches: [main]
+    branches: ["*"]
   schedule:
     - cron: "0 0 * * 1,4"
   workflow_dispatch:
@@ -37,6 +37,7 @@ jobs:
           include: >-
             mapclassify
           install: >-
+            python>=3.12
             setuptools-scm
             h3-py
             hdbscan
