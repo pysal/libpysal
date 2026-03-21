@@ -7,6 +7,7 @@ Adds support for Arc Distance to scipy.spatial.KDTree.
 # ruff: noqa: ARG002, N801, N802, N816
 
 import math
+import warnings
 
 import numpy
 import scipy.spatial
@@ -21,6 +22,12 @@ __all__ = ["DISTANCE_METRICS", "FLOAT_EPS", "KDTree"]
 
 DISTANCE_METRICS = ["Euclidean", "Arc"]
 FLOAT_EPS = numpy.finfo(float).eps
+
+
+dep_msg = (
+    "The {} class is deprecated and will be removed in a future version of libpysal. "
+    "Use ``scipy.spatial.KDTree`` directly."
+)
 
 
 def KDTree(data, leafsize=10, distance_metric="Euclidean", radius=RADIUS_EARTH_KM):
@@ -46,6 +53,12 @@ def KDTree(data, leafsize=10, distance_metric="Euclidean", radius=RADIUS_EARTH_K
         values: pysal.cg.RADIUS_EARTH_KM (default) pysal.cg.RADIUS_EARTH_MILES
     """
 
+    warnings.warn(
+        dep_msg.format("KDTree"),
+        FutureWarning,
+        stacklevel=2,
+    )
+
     if distance_metric.lower() == "euclidean":
         if (
             int(scipy.version.version.split(".")[1]) < 12
@@ -55,7 +68,13 @@ def KDTree(data, leafsize=10, distance_metric="Euclidean", radius=RADIUS_EARTH_K
         else:
             return scipy.spatial.cKDTree(data, leafsize)
     elif distance_metric.lower() == "arc":
-        return Arc_KDTree(data, leafsize, radius)
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                category=FutureWarning,
+                message="The Arc_KDTree class is deprecated",
+            )
+            return Arc_KDTree(data, leafsize, radius)
 
 
 # internal hack for the Arc_KDTree class inheritance
@@ -89,6 +108,13 @@ class Arc_KDTree(temp_KDTree):
         >>> round(d[0],5) == round(circumference/4.0,5)
         True
         """
+
+        warnings.warn(
+            dep_msg.format("Arc_KDTree"),
+            FutureWarning,
+            stacklevel=2,
+        )
+
         self.radius = radius
         self.circumference = 2 * math.pi * radius
         temp_KDTree.__init__(self, list(map(sphere.toXYZ, data)), leafsize)
