@@ -1,6 +1,6 @@
 # Installation
 
-libpysal supports python \>= [3.11](https://docs.python.org/3.11/) only.
+libpysal supports python \>= [3.12](https://docs.python.org/3.12/) only.
 Please make sure that you are operating in a python 3 environment.
 
 ## Installing released version
