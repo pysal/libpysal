@@ -145,20 +145,20 @@ class W:
 
     >>> import libpysal
     >>> w = libpysal.io.open(libpysal.examples.get_path("stl.gal")).read()
-    >>> w.n 
+    >>> w.n
     78
-    >>> "%.3f"%w.pct_nonzero 
+    >>> "%.3f"%w.pct_nonzero
     6.542'
 
     Set weights implicitly.
 
     >>> neighbors = {0: [3, 1], 1: [0, 4, 2], 2: [1, 5], 3: [0, 6, 4], 4: [1, 3, 7, 5], 5: [2, 4, 8], 6: [3, 7], 7: [4, 6, 8], 8: [5, 7]}
     >>> w = W(neighbors)
-    >>> round(w.pct_nonzero,3) 
+    >>> round(w.pct_nonzero,3)
     29.63
     >>> from libpysal.weights import lat2W
     >>> w = lat2W(100, 100)
-    >>> w.trcW2 
+    >>> w.trcW2
     39600.0
     >>> w.trcWtW
     39600.0
@@ -195,10 +195,10 @@ class W:
         self.transformations = {}
         self.neighbors = neighbors
         if not weights:
-            #instead of assigning, 1.0 to each and every key, using a for loop, assigning all of them at once using items(), will reduce the time taken by 36%
-            #This is a significant change for large data
+            # Using items() avoids redundant dictionary lookup
+            # and improves performance for large datasets (~36% faster)
             weights = {key: [1.0] * len(val) for key, val in neighbors.items()}
-        
+
         self.weights = weights
         self.transformations["O"] = self.weights.copy()  # original weights
         self.transform = "O"
