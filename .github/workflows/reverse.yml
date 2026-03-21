@@ -1,7 +1,7 @@
 name: Test reverse dependencies
 on:
   push:
-    branches: ["*"]
+    branches: ["main"]
   schedule:
     - cron: "0 0 * * 1,4"
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
       - uses: scientific-python/reverse-dependency-testing-action@main
         with:
           package_name: libpysal
-          python_version: 3.12
+          python_version: 3.14
           ignore: >-
             fine
             tigernet
