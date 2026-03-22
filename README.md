@@ -21,7 +21,7 @@ in the [PySAL family](https://pysal.org):
 
 ## Documentation
 
-The documentation of `libpysal` is avaliable at
+The documentation of `libpysal` is available at
 [pysal.org/libpysal](https://pysal.org/libpysal/).
 
 ## Development
