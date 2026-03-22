@@ -37,7 +37,8 @@ class _LabelEncoder:
     --------
     >>> le = _LabelEncoder()
     >>> le.fit(["NY", "CA", "NY", "CA", "TX", "TX"])
-    >>> le.classes_array(['CA', 'NY', 'TX'])
+    >>> le.classes_
+    array(['CA', 'NY', 'TX'])
     >>> le.transform(["NY", "CA", "NY", "CA", "TX", "TX"])
     array([1, 0, 1, 0, 2, 2])
     """
@@ -53,7 +54,7 @@ class _LabelEncoder:
         Returns
         -------
         self : instance of self.
-            Fitted label encoder.
+          Fitted label encoder.
         """
         self.classes_ = np.unique(y)
         return self
@@ -148,7 +149,7 @@ class W:
     >>> w.n
     78
     >>> "%.3f"%w.pct_nonzero
-    6.542'
+    '6.542'
 
     Set weights implicitly.
 
@@ -195,10 +196,9 @@ class W:
         self.transformations = {}
         self.neighbors = neighbors
         if not weights:
-            # Using items() avoids redundant dictionary lookup
-            # and improves performance for large datasets (~36% faster)
-            weights = {key: [1.0] * len(val) for key, val in neighbors.items()}
-
+            weights = {}
+            for key in neighbors:
+                weights[key] = [1.0] * len(neighbors[key])
         self.weights = weights
         self.transformations["O"] = self.weights.copy()  # original weights
         self.transform = "O"
