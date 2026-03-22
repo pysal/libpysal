@@ -1,8 +1,5 @@
 .. _api_ref:
 
-.. currentmodule:: libpysal
-
-
 libpysal API reference
 ======================
 
@@ -54,7 +51,6 @@ Contiguity Weights
    libpysal.weights.Queen
    libpysal.weights.Rook
    libpysal.weights.Voronoi
-   libpysal.weights.W
 
 spint Weights
 +++++++++++++
@@ -279,4 +275,3 @@ examples
    libpysal.examples.available
    libpysal.examples.explain
    libpysal.examples.get_path
-

@@ -436,7 +436,8 @@ class LineSegment(Geometry):
         self._line = False
 
     def _get_p1(self):
-        """**HELPER METHOD. DO NOT CALL.**
+        """Helper method. Do not call directly.
+
         Returns the ``p1`` attribute of the line segment.
 
         Returns
@@ -455,7 +456,8 @@ class LineSegment(Geometry):
         return self._p1
 
     def _set_p1(self, p1):
-        """**HELPER METHOD. DO NOT CALL.**
+        """Helper method. Do not call directly.
+
         Sets the ``p1`` attribute of the line segment.
 
         Parameters
@@ -484,7 +486,8 @@ class LineSegment(Geometry):
     p1 = property(_get_p1, _set_p1)
 
     def _get_p2(self):
-        """**HELPER METHOD. DO NOT CALL.**
+        """Helper method. Do not call directly.
+
         Returns the ``p2`` attribute of the line segment.
 
         Returns
@@ -503,7 +506,8 @@ class LineSegment(Geometry):
         return self._p2
 
     def _set_p2(self, p2):
-        """**HELPER METHOD. DO NOT CALL.**
+        """Helper method. Do not call directly.
+
         Sets the ``p2`` attribute of the line segment.
 
         Parameters

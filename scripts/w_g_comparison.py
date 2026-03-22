@@ -17,7 +17,7 @@ gdf = gpd.read_file(examples.get_path("sids2.shp"))
 gdf = gdf.set_crs("epsg:4326")
 
 # Make weights and graph
-w_queen = weights.Queen.from_dataframe(gdf)
+w_queen = weights.Queen.from_dataframe(gdf, use_index=False)
 g_queen = graph.Graph.build_contiguity(gdf, rook=False)
 
 
@@ -97,7 +97,7 @@ changed_table = create_rst_table(changed_content)
 
 
 content = """
-# W to Graph Member Comparisions
+# W to Graph Member Comparisons
 
 ## Overview
 

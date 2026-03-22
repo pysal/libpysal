@@ -37,7 +37,7 @@ class KNN(W):
 
     Parameters
     ----------
-    kdtree      : object
+    data        : object
                   PySAL KDTree or ArcKDTree where KDtree.data is array (n,k)
                   n observations on k characteristics used to measure
                   distances between the n objects
@@ -762,11 +762,11 @@ class DistanceBand(W):
                   distance matrix; significant speed gains may be obtained
                   dending on the sparsity of the of distance_matrix and
                   threshold that is applied
-    silent      : boolean
-                  By default libpysal will print a warning if the
-                  dataset contains any disconnected observations or
-                  islands. To silence this warning set this
-                  parameter to True.
+    silence_warnings : boolean
+                       By default libpysal will print a warning if the
+                       dataset contains any disconnected observations or
+                       islands. To silence this warning set this
+                       parameter to True.
 
     Attributes
     ----------

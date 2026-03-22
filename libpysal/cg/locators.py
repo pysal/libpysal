@@ -147,8 +147,8 @@ class Grid:
 
         Parameters
         ----------
-        item     : the item to remove from the grid
-        pt       : the location the item was added at
+        bounds : Rectangle
+            Bounding box used to query items stored in the grid.
 
         Examples
         --------

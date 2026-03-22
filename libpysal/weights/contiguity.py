@@ -37,10 +37,9 @@ class Rook(W):
     ----------
     polygons    : list
                 a collection of PySAL shapes to build weights from
-    ids         : list
-                a list of names to use to build the weights
     **kw        : keyword arguments
-                optional arguments for :class:`pysal.weights.W`
+                Optional arguments for :class:`libpysal.weights.W`, including
+                ``ids`` to set custom names for the weights object.
 
     See Also
     --------
@@ -323,10 +322,9 @@ class Queen(W):
     ----------
     polygons    : list
                   a collection of PySAL shapes to build weights from
-    ids         : list
-                  a list of names to use to build the weights
     **kw        : keyword arguments
-                  optional arguments for :class:`pysal.weights.W`
+                Optional arguments for :class:`libpysal.weights.W`, including
+                ``ids`` to set custom names for the weights object.
 
     See Also
     --------
