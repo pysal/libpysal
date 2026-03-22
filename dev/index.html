@@ -70,7 +70,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#" class="md-skip">
+        <a href="#introduction" class="md-skip">
           Skip to content
         </a>
       
@@ -676,17 +676,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>libpysal:<wbr> Python Spatial Analysis Library Core</span>
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="libpysal: Python Spatial Analysis Library Core">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#introduction" class="md-nav__link">
     
     <span class="md-ellipsis">
@@ -695,8 +684,18 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Documentation</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#development" class="md-nav__link">
     
     <span class="md-ellipsis">
@@ -705,28 +704,18 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#getting-involved" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#contributing" class="md-nav__link">
     
     <span class="md-ellipsis">
-      <span>Getting Involved</span>
+      <span>Contributing</span>
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#bug-reports" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>Bug reports</span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#citing-libpysal" class="md-nav__link">
     
     <span class="md-ellipsis">
@@ -735,27 +724,12 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#license-information" class="md-nav__link">
     
     <span class="md-ellipsis">
       <span>License information</span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#libpysal" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>libpysal</span>
     </span>
   </a>
   
@@ -786,83 +760,62 @@
   
 
 <h1 id="libpysal-python-spatial-analysis-library-core">libpysal: Python Spatial Analysis Library Core<a class="headerlink" href="#libpysal-python-spatial-analysis-library-core" title="Link to this heading">¶</a></h1>
-<p><a class="reference external" href="https://github.com/pysal/libpysal/actions/workflows/unittests.yml"><img alt="image" src="https://github.com/pysal/libpysal/actions/workflows/.github/workflows/unittests.yml/badge.svg" /></a>
-<a class="reference external" href="https://discord.gg/BxFTEPFFZn"><img alt="image" src="https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&amp;logo=discord&amp;logoColor=cccccc" /></a>
-<a class="reference external" href="https://badge.fury.io/py/libpysal"><img alt="image" src="https://badge.fury.io/py/libpysal.svg" /></a></p>
-<div class="container-fluid">
-  <div class="row equal-height">
-    <div class="col-sm-1 col-xs-hidden">
-    </div>
-    <div class="col-sm-10 col-xs-12">
-        <a href="http://nbviewer.jupyter.org/github/pysal/libpysal/blob/main/docs/user-guide/weights/weights.ipynb" class="thumbnail">
-            <img src="_static/images/npweights.png" class="img-responsive center-block">
-            <div class="caption text-center">
-            <h6>Weights for nonplanar enforced geometries</h6>
-            </div>
-        </a>
-    </div>
-    <div class="col-sm-1 col-xs-hidden">
-    </div>
-  </div>
-</div>
+<p><a class="reference external" href="https://github.com/pysal/libpysal/actions/workflows/unittests.yml"><img alt="Continuous Integration" src="https://github.com/pysal/libpysal/actions/workflows/unittests.yml/badge.svg" /></a>
+<a class="reference external" href="https://codecov.io/gh/pysal/libpysal"><img alt="codecov" src="https://codecov.io/gh/pysal/libpysal/branch/main/graph/badge.svg" /></a>
+<a class="reference external" href="https://badge.fury.io/py/libpysal"><img alt="PyPI version" src="https://badge.fury.io/py/libpysal.svg" /></a>
+<a class="reference external" href="https://anaconda.org/conda-forge/libpysal"><img alt="Conda Version" src="https://img.shields.io/conda/vn/conda-forge/libpysal.svg" /></a>
+<a class="reference external" href="https://zenodo.org/badge/latestdoi/81501824"><img alt="DOI" src="https://zenodo.org/badge/81501824.svg" /></a>
+<a class="reference external" href="https://discord.gg/BxFTEPFFZn"><img alt="Discord" src="https://img.shields.io/badge/Discord-join%20chat-7289da?style=flat&amp;logo=discord&amp;logoColor=cccccc&amp;link=https://discord.gg/BxFTEPFFZn" /></a>
+<a class="reference external" href="https://scientific-python.org/specs/spec-0000/"><img alt="SPEC 0 — Minimum Supported Dependencies" src="https://img.shields.io/badge/SPEC-0-green?labelColor=%23004811&amp;color=%235CA038" /></a></p>
 <h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
 <p><strong>libpysal</strong> offers five modules that form the building blocks in many upstream packages
 in the <a class="reference external" href="https://pysal.org">PySAL family</a>:</p>
 <ul class="simple">
-<li><p>Spatial Weights: libpysal.weights</p></li>
-<li><p>Spatial Graphs: libpysal.graph</p></li>
-<li><p>Input-and output: libpysal.io</p></li>
-<li><p>Computational geometry: libpysal.cg</p></li>
-<li><p>Built-in example datasets libpysal.examples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libpysal.cg</span></code> – Computational geometry</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libpysal.examples</span></code> – Built-in example datasets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libpysal.graph</span></code> – Graph class encoding spatial weights matrices</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libpysal.io</span></code> – Input and output</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libpysal.weights</span></code> – Spatial weights (legacy)</p></li>
 </ul>
-<div class="note admonition">
-<p class="admonition-title">Note</p>
-<p>A new Graph class is being added to libpysal. For users interested in migration from
-using Weights to the new Graph class, see the <a class="reference internal" href="#user-guide/graph/w_g_migration.html"><span class="xref myst">migration
-guide</span></a>. For developers interested in the technical
-details details see <a class="reference internal" href="#migration.html"><span class="xref myst">W and Graph Components</span></a>.</p>
-</div>
-<p>Examples demonstrating some of <strong>libpysal</strong> functionality are available in the
-<a class="reference internal" href="#user-guide/intro.html"><span class="xref myst">User Guide</span></a>.</p>
-<p>Details are available in the <a class="reference internal" href="#api.html"><span class="xref myst">libpysal api</span></a>.</p>
-<p>For background information see <span id="id1">[<a class="reference internal" href="references.html#id3" title="Sergio J. Rey and Luc Anselin. PySAL: A Python Library of Spatial Analytical Methods. The Review of Regional Studies, 37(1):5-27, 2007.">Rey and Anselin, 2007</a>]</span>.</p>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Link to this heading">¶</a></h2>
+<p>The documentation of <code class="docutils literal notranslate"><span class="pre">libpysal</span></code> is available at
+<a class="reference external" href="https://pysal.org/libpysal/">pysal.org/libpysal</a>.</p>
 <h2 id="development">Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h2>
-<p>libpysal development is hosted on <a class="reference external" href="https://github.com/pysal/libpysal">github</a>.</p>
-<p>Discussions of development occurs on the <a class="reference external" href="http://groups.google.com/group/pysal-dev">developer
-list</a> as well as
-<a class="reference external" href="https://discord.gg/BxFTEPFFZn">discord</a>.</p>
-<h2 id="getting-involved">Getting Involved<a class="headerlink" href="#getting-involved" title="Link to this heading">¶</a></h2>
-<p>If you are interested in contributing to PySAL please see our
-<a class="reference external" href="https://github.com/pysal/pysal/wiki">development guidelines</a>.</p>
-<h2 id="bug-reports">Bug reports<a class="headerlink" href="#bug-reports" title="Link to this heading">¶</a></h2>
-<p>To search for or report bugs, please see libpysal’s
-<a class="reference external" href="http://github.com/pysal/libpysal/issues">issues</a>.</p>
+<p>libpysal development is hosted on <a class="reference external" href="https://github.com/pysal/libpysal">GitHub</a>.</p>
+<p>Discussions of development occurs on PySAL <a class="reference external" href="https://discord.gg/BxFTEPFFZn">Discord</a>.</p>
+<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h2>
+<p>PySAL-libpysal is under active development and contributors are welcome. If you have any
+suggestions, feature requests, or bug reports, please open new
+<a class="reference external" href="https://github.com/pysal/libpysal/issues">issues</a> on GitHub. To submit patches, please
+review <a class="reference external" href="https://pysal.org/docs/devs/">PySAL’s documentation for developers</a>, the PySAL
+<a class="reference external" href="https://github.com/pysal/pysal/wiki">development guidelines</a>, and the
+<a class="reference external" href="https://github.com/pysal/libpysal/blob/main/.github/CONTRIBUTING.md">libpysal contributing guidelines</a>
+before opening a <a class="reference external" href="https://github.com/pysal/libpysal/pulls">pull request</a>. Once your
+changes get merged, you’ll automatically be added to the
+<a class="reference external" href="https://github.com/pysal/libpysal/graphs/contributors">Contributors List</a>.</p>
 <h2 id="citing-libpysal">Citing libpysal<a class="headerlink" href="#citing-libpysal" title="Link to this heading">¶</a></h2>
 <p>If you use PySAL in a scientific publication, we would appreciate citations to the
 following paper:</p>
 <blockquote>
 <div><p><a class="reference external" href="http://journal.srsa.org/ojs/index.php/RRS/article/view/134/85">PySAL: A Python Library of Spatial Analytical Methods</a>,
 <em>Rey, S.J. and L. Anselin</em>, Review of Regional Studies 37, 5-27 2007.</p>
+</div></blockquote>
 <p>Bibtex entry:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span><code>@Article{pysal2007,
-  author={Rey, Sergio J. and Anselin, Luc},
-  title={{PySAL: A Python Library of Spatial Analytical Methods}},
-  journal={The Review of Regional Studies},
-  year=2007,
-  volume={37},
-  number={1},
-  pages={5-27},
-  keywords={Open Source; Software; Spatial}
-}
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><code><span class="nc">@Article</span><span class="p">{</span><span class="nl">pysal2007</span><span class="p">,</span>
+<span class="w">  </span><span class="na">author</span><span class="p">=</span><span class="s">{Rey, Sergio J. and Anselin, Luc}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">title</span><span class="p">=</span><span class="s">{{PySAL: A Python Library of Spatial Analytical Methods}}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">journal</span><span class="p">=</span><span class="s">{The Review of Regional Studies}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">year</span><span class="p">=</span><span class="m">2007</span><span class="p">,</span>
+<span class="w">  </span><span class="na">volume</span><span class="p">=</span><span class="s">{37}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">number</span><span class="p">=</span><span class="s">{1}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">pages</span><span class="p">=</span><span class="s">{5-27}</span><span class="p">,</span>
+<span class="w">  </span><span class="na">keywords</span><span class="p">=</span><span class="s">{Open Source; Software; Spatial}</span>
+<span class="p">}</span>
 </code></pre></div>
 </div>
-</div></blockquote>
 <h2 id="license-information">License information<a class="headerlink" href="#license-information" title="Link to this heading">¶</a></h2>
-<p>See the file “LICENSE.txt” for information on the history of this software, terms &amp;
-conditions for usage, and a DISCLAIMER OF ALL WARRANTIES.</p>
-<h1 id="libpysal">libpysal<a class="headerlink" href="#libpysal" title="Link to this heading">¶</a></h1>
-<p>Core components of the Python Spatial Analysis Library
-(<a class="reference external" href="https://github.com/pysal/pysal">PySAL</a>)</p>
+<p>The package is licensed under BSD 3-Clause License (Copyright (c) 2007-, PySAL
+Developers).</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
