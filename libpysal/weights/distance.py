@@ -179,7 +179,7 @@ class KNN(W):
 
         Parameters
         ----------
-        filepath : string
+        filepath : str
             Shapefile containing attribute data.
         k : int
             number of nearest neighbors
@@ -607,9 +607,9 @@ class Kernel(W):
 
         Parameters
         ----------
-        filepath : string
+        filepath : str
             Shapefile name with shp suffix.
-        idVariable  : string
+        idVariable  : str
             Name of column in shapefile's DBF to use for ids.
 
         Returns
@@ -901,11 +901,11 @@ class DistanceBand(W):
 
         Parameters
         ----------
-        filepath : string
+        filepath : str
             Shapefile name with shp suffix.
         threshold : float
             Distance band.
-        idVariable : string
+        idVariable : str
             Name of column in shapefile's DBF to use for ids.
 
         Returns

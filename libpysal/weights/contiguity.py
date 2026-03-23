@@ -68,9 +68,9 @@ class Rook(W):
 
         Parameters
         ----------
-        filepath : string
+        filepath : str
             Name of polygon shapefile including suffix.
-        idVariable : string, optional
+        idVariable : str, optional
             Name of a column in the shapefile's DBF to use for ids.
         full : bool, default False
             Write out the entire path for a shapefile (``True``) or
@@ -360,9 +360,9 @@ class Queen(W):
 
         Parameters
         ----------
-        filepath : string
+        filepath : str
             Name of polygon shapefile including suffix.
-        idVariable : string, optional
+        idVariable : str, optional
             Name of a column in the shapefile's DBF to use for ids.
         full : bool, default False
             Write out the entire path for a shapefile (``True``) or
