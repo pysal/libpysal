@@ -5,7 +5,7 @@ __author__ = "Sergio J. Rey <srey@asu.edu>, Levi John Wolf <levi.john.wolf@gmail
 
 
 import copy
-from warnings import warn
+import warnings
 
 import numpy as np
 import scipy.sparse as sp
@@ -121,7 +121,15 @@ class KNN(W):
             self.kdtree = data
             self.data = self.kdtree.data
         else:
-            self.kdtree = KDTree(data, radius=radius, distance_metric=distance_metric)
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore",
+                    category=FutureWarning,
+                    message="The KDTree class is deprecated",
+                )
+                self.kdtree = KDTree(
+                    data, radius=radius, distance_metric=distance_metric
+                )
             self.data = self.kdtree.data
         self.k = k
         self.p = p
@@ -347,7 +355,7 @@ class KNN(W):
             data = self.kdtree
             ids = self.id_order
         elif (new_data is None) and (new_ids is not None):
-            warn("Remapping ids must be done using w.remap_ids", stacklevel=2)
+            warnings.warn("Remapping ids must be done using w.remap_ids", stacklevel=2)
         if k is None:
             k = self.k
         if p is None:
@@ -545,7 +553,15 @@ class Kernel(W):
             self.data = self.kdtree.data
             data = self.data
         else:
-            self.kdtree = KDTree(data, distance_metric=distance_metric, radius=radius)
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore",
+                    category=FutureWarning,
+                    message="The KDTree class is deprecated",
+                )
+                self.kdtree = KDTree(
+                    data, distance_metric=distance_metric, radius=radius
+                )
             self.data = self.kdtree.data
         self.k = k + 1
         self.function = function.lower()
@@ -840,9 +856,15 @@ class DistanceBand(W):
                     data = np.asarray(data)
                     if data.dtype.kind != "f":
                         data = data.astype(float)
-                    self.kdtree = KDTree(
-                        data, distance_metric=distance_metric, radius=radius
-                    )
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings(
+                            "ignore",
+                            category=FutureWarning,
+                            message="The KDTree class is deprecated",
+                        )
+                        self.kdtree = KDTree(
+                            data, distance_metric=distance_metric, radius=radius
+                        )
                     self.data = self.kdtree.data
                 except:  # noqa: E722
                     raise ValueError("Could not make array from data") from None

@@ -1,0 +1,37 @@
+name: py312_libpysal-oldest
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - beautifulsoup4=4.13
+  - geopandas=1.1.0
+  - jinja2
+  - numpy=2.0.0
+  - packaging=24.1
+  - pandas=2.3.0
+  - requests=2.32
+  - scikit-learn=1.5.0
+  - scipy=1.14.0
+  - shapely=2.1
+  # testing
+  - codecov
+  - matplotlib=3.10
+  - pytest
+  - pytest-cov
+  - pytest-mpl
+  - pytest-xdist
+  # optional
+  - geodatasets
+  - joblib=1.5.0
+  - networkx=3.4
+  - numba=0.60
+  - pyarrow=16.1
+  - sqlalchemy=2.0
+  - zstd
+  - xarray=2024.5
+  - pandarm=0.0
+  - h3-py<4
+  - pip
+  - pip:
+    - pulp
+    - platformdirs==4.3

@@ -23,7 +23,10 @@ Modern implementation of spatial graphs encoding spatial weights matrices.
 Spatial Weights
 ---------------
 
-Legacy implementation of spatial weights matrices.
+Legacy implementation of spatial weights matrices. For users interested in migration from
+using :class:`~libpysal.weights.W` to the new :class:`~libpysal.graph.Graph` class, see the
+:doc:`migration guide <user-guide/graph/w_g_migration>`. For developers interested in the technical
+details, see :doc:`W and Graph Components <user-guide/graph/migration>`.
 
 .. autosummary::
    :toctree: generated/
@@ -264,7 +267,7 @@ kernels
 
    libpysal.kernels.kernel
 
-   
+
 
 examples
 --------
@@ -276,5 +279,4 @@ examples
    libpysal.examples.available
    libpysal.examples.explain
    libpysal.examples.get_path
-
 

@@ -24,18 +24,18 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         environment-file:
-          - ci/311-oldest.yaml
-          - ci/311-latest.yaml
+          - ci/312-oldest.yaml
           - ci/312-latest.yaml
-          - ci/313-min.yaml
           - ci/313-latest.yaml
-          - ci/313-dev.yaml
+          - ci/314-min.yaml
+          - ci/314-latest.yaml
+          - ci/314-dev.yaml
         include:
-          - environment-file: ci/313-latest.yaml
+          - environment-file: ci/314-latest.yaml
             os: macos-15-intel # Intel
-          - environment-file: ci/313-latest.yaml
+          - environment-file: ci/314-latest.yaml
             os: macos-latest # Apple Silicon
-          - environment-file: ci/313-latest.yaml
+          - environment-file: ci/314-latest.yaml
             os: windows-latest
     defaults:
       run:
@@ -76,7 +76,14 @@ jobs:
           '
       - name: Test libpysal
         run: |
-          pytest -v --color yes -n auto --cov libpysal --cov-append --cov-report term-missing --cov-report xml .
+          pytest libpysal \
+          -v \
+          --color yes \
+          -n logical \
+          --cov libpysal \
+          --cov-append \
+          --cov-report term-missing \
+          --cov-report xml
 
       - name: Codecov
         uses: codecov/codecov-action@v5

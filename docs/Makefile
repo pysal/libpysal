@@ -2,11 +2,10 @@
 #
 
 # You can set these variables from the command line.
-SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = libpysal
-SOURCEDIR     = .
-BUILDDIR      = _build
+SPHINXOPTS    ?=
+SPHINXBUILD   ?= sphinx-build
+SOURCEDIR     = source
+BUILDDIR      = build
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -15,9 +14,9 @@ help:
 
 .PHONY: help Makefile generate-rst
 
-# Custom target to generate rst files
+# Custom target to generate files
 generate-rst:
-	@echo "Generating custom rst files..."
+	@echo "Generating custom files..."
 	@python ../scripts/w_g_comparison.py
 
 # Catch-all target: route all unknown targets to Sphinx using the new

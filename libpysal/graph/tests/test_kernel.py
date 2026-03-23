@@ -476,3 +476,97 @@ def test__kernel_precomputed_exclude_self_weights_affects_ranking():
         neigh_i = neighbor2[focal2 == i]
         assert len(neigh_i) == k
         assert len(set(neigh_i.tolist())) == k
+
+
+def test_tree_parameter_knn(grocs):
+    """Test that passing a pre-built tree produces the same results."""
+    from scipy import spatial
+
+    coords = np.array([[pt.x, pt.y] for pt in grocs.geometry.values])
+
+    # Build KNN without tree
+    g1 = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf)
+
+    # Build a KDTree and pass it — coords + tree triggers a warning
+    tree = spatial.KDTree(coords)
+    with pytest.warns(UserWarning, match="coordinate"):
+        g2 = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf, tree=tree)
+
+    np.testing.assert_array_equal(g1[0], g2[0])  # focal
+    np.testing.assert_array_equal(g1[1], g2[1])  # neighbor
+    np.testing.assert_array_equal(g1[2], g2[2])  # weight
+
+
+@pytest.mark.skipif(not HAS_SKLEARN, reason="scikit-learn not installed")
+def test_tree_parameter_sklearn(grocs):
+    """Test that passing a pre-built sklearn tree works."""
+    from sklearn.neighbors import KDTree
+
+    coords = np.array([[pt.x, pt.y] for pt in grocs.geometry.values])
+
+    # Build KNN with sklearn tree — coords + tree triggers a warning
+    tree = KDTree(coords)
+    with pytest.warns(UserWarning, match="coordinate"):
+        g = _kernel(coords, k=5, kernel="boxcar", bandwidth=np.inf, tree=tree)
+
+    # Should produce valid output
+    assert len(g[0]) > 0
+    assert len(g[1]) > 0
+    assert len(g[2]) > 0
+
+
+def test_tree_parameter_distance_band(grocs):
+    """Test that passing a pre-built tree to distance_band works."""
+    from scipy import spatial
+
+    coords = np.array([[pt.x, pt.y] for pt in grocs.geometry.values])
+
+    # Build distance band without tree
+    sp1 = _distance_band(coords, threshold=500)
+
+    # Build a KDTree and pass it
+    tree = spatial.KDTree(coords)
+    sp2 = _distance_band(coords, threshold=500, tree=tree)
+
+    np.testing.assert_array_equal(sp1.toarray(), sp2.toarray())
+
+
+def test_tree_parameter_full_distance_matrix():
+    """Test _kernel with k=None and a pre-built tree (uses pdist path)."""
+    from scipy import spatial
+
+    coords = lap_coords[:20]
+
+    # Without tree
+    g1 = _kernel(coords, k=None, kernel="identity", taper=False)
+
+    # With tree — coords + tree triggers a warning
+    tree = spatial.KDTree(coords)
+    with pytest.warns(UserWarning, match="coordinate"):
+        g2 = _kernel(coords, k=None, kernel="identity", taper=False, tree=tree)
+
+    np.testing.assert_array_almost_equal(np.sort(g1[2]), np.sort(g2[2]))
+
+
+def test_tree_jitter_raises():
+    """Tree + coplanar='jitter' should raise a ValueError."""
+    from scipy import spatial
+
+    coords = lap_coords[:20]
+    tree = spatial.KDTree(coords)
+
+    with pytest.raises(ValueError, match="Cannot use a pre-built tree"):
+        _kernel(coords, k=3, coplanar="jitter", tree=tree)
+
+
+@pytest.mark.network
+def test_tree_haversine_raises(grocs):
+    """Tree + metric='haversine' should raise a ValueError."""
+    from scipy import spatial
+
+    grocs_4326 = grocs.to_crs(4326)
+    coords = np.array([[pt.x, pt.y] for pt in grocs_4326.geometry.values])
+    tree = spatial.KDTree(coords)
+
+    with pytest.raises(ValueError, match="Cannot use a pre-built tree"):
+        _kernel(coords, k=3, metric="haversine", tree=tree)

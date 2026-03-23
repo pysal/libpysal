@@ -28,6 +28,8 @@ def stores():
 
 np.random.seed(85711)
 simple = np.random.random(size=(5, 2))
+bipartite = np.random.random(size=(5, 2))
+bipartite[-1] = simple[-1]
 
 
 pulp = pytest.importorskip("pulp")
@@ -36,6 +38,16 @@ default_solver = pulp.listSolvers(onlyAvailable=True)
 if len(default_solver) == 0:
     raise Exception("configuration of pulp has failed, no available solvers")
 default_solver = getattr(pulp, default_solver[0])()
+
+
+def test_coincident():
+    crosspattern_heads, crosspattern_tails, weights, mip = _spatial_matching(
+        x=simple, y=bipartite, n_matches=1, return_mip=True
+    )
+    known_heads = np.array([0, 1, 2, 3, 4])
+    known_tails = np.array([1, 3, 2, 0, 4])
+    np.testing.assert_array_equal(known_heads, crosspattern_heads)
+    np.testing.assert_array_equal(known_tails, crosspattern_tails)
 
 
 def test_correctness_k1():

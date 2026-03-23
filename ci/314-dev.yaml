@@ -2,9 +2,10 @@ name: test
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
+  - python=3.14
   - beautifulsoup4
   - jinja2
+  - pandarm
   - platformdirs
   - requests
   # testing
