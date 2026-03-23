@@ -85,17 +85,19 @@ class Geometry:
 class Point(Geometry):
     """Geometric class for point objects.
 
-    Parameters
-    ----------
-    loc : tuple
-        The point's location (number :math:`x`-tuple, :math:`x` > 1).
-
     Examples
     --------
     >>> p = Point((1, 3))
     """
 
     def __init__(self, loc):
+        """Create a point from its coordinates.
+
+        Parameters
+        ----------
+        loc : tuple
+            The point's location (number :math:`x`-tuple, :math:`x` > 1).
+        """
         warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self.__loc = tuple(map(float, loc))
 
@@ -321,32 +323,21 @@ class Point(Geometry):
 class LineSegment(Geometry):
     """Geometric representation of line segment objects.
 
-    Parameters
-    ----------
-    start_pt : libpysal.cg.Point
-        The point where the segment begins.
-    end_pt : libpysal.cg.Point
-        The point where the segment ends.
-
-    Attributes
-    ----------
-    p1 : libpysal.cg.Point
-        The starting point of the line segment.
-    p2 : Point
-        The ending point of the line segment.
-    bounding_box : libpysal.cg.Rectangle
-        The bounding box of the segment.
-    len : float
-        The length of the segment.
-    line : libpysal.cg.Line
-        The line on which the segment lies.
-
     Examples
     --------
     >>> ls = LineSegment(Point((1, 2)), Point((5, 6)))
     """
 
     def __init__(self, start_pt, end_pt):
+        """Create a line segment from two endpoints.
+
+        Parameters
+        ----------
+        start_pt : libpysal.cg.Point
+            The point where the segment begins.
+        end_pt : libpysal.cg.Point
+            The point where the segment ends.
+        """
         warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self._p1 = start_pt
         self._p2 = end_pt
@@ -801,13 +792,6 @@ class VerticalLine(Geometry):
 class Line(Geometry):
     """Geometric representation of line objects.
 
-    Parameters
-    ----------
-    m : {int, float}
-        The slope of the line. ``m`` is also an attribute.
-    b : {int, float}
-        The :math:`y`-intercept of the line. ``b`` is also an attribute.
-
     Raises
     ------
     ArithmeticError
@@ -824,6 +808,15 @@ class Line(Geometry):
     """
 
     def __init__(self, m, b):
+        """Create a line from its slope and intercept.
+
+        Parameters
+        ----------
+        m : {int, float}
+            The slope of the line. ``m`` is also an attribute.
+        b : {int, float}
+            The :math:`y`-intercept of the line. ``b`` is also an attribute.
+        """
         warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         if m == float("inf"):
             raise ArithmeticError("Slope cannot be infinite.")
@@ -880,21 +873,6 @@ class Line(Geometry):
 class Ray:
     """Geometric representation of ray objects.
 
-    Parameters
-    ----------
-    origin : libpysal.cg.Point
-        The point where the ray originates.
-    second_p :
-        The second point specifying the ray (not ``origin``.)
-
-    Attributes
-    ----------
-    o : libpysal.cg.Point
-        The origin (point where ray originates). See ``origin``.
-    p : libpysal.cg.Point
-        The second point on the ray (not the point where the
-        ray originates). See ``second_p``.
-
     Examples
     --------
     >>> l = Ray(Point((0, 0)), Point((1, 0)))
@@ -906,6 +884,15 @@ class Ray:
     """
 
     def __init__(self, origin, second_p):
+        """Create a ray from an origin and a second point on the ray.
+
+        Parameters
+        ----------
+        origin : libpysal.cg.Point
+            The point where the ray originates.
+        second_p : libpysal.cg.Point
+            The second point specifying the ray (not ``origin``).
+        """
         warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self.o = origin
         self.p = second_p
@@ -914,24 +901,19 @@ class Ray:
 class Chain(Geometry):
     """Geometric representation of a chain, also known as a polyline.
 
-    Parameters
-    ----------
-    vertices : list
-        A point list or list of point lists.
-
-    Attributes
-    ----------
-    vertices : list
-        The list of points of the vertices of the chain in order.
-    len : float
-        The geometric length of the chain.
-
     Examples
     --------
     >>> c = Chain([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((2, 1))])
     """
 
     def __init__(self, vertices: list):
+        """Create a chain from one ordered sequence of points or many parts.
+
+        Parameters
+        ----------
+        vertices : list
+            A point list or list of point lists.
+        """
         warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         if isinstance(vertices[0], list):
             self._vertices = list(vertices)
@@ -1362,38 +1344,21 @@ class Polygon(Geometry):
     """Geometric representation of polygon objects.
     Returns a polygon created from the objects specified.
 
-    Parameters
-    ----------
-    vertices : list
-        A list of vertices or a list of lists of vertices.
-    holes : list
-        A list of sub-polygons to be considered as holes.
-        Default is ``None``.
-
-    Attributes
-    ----------
-    vertices : list
-        A list of points with the vertices of the polygon in clockwise order.
-    len : int
-        The number of vertices including holes.
-    perimeter : float
-        The geometric length of the perimeter of the polygon.
-    bounding_box : libpysal.cg.Rectangle
-        The bounding box of the polygon.
-    bbox : list
-        A list representation of the bounding box in the
-        form ``[left, lower, right, upper]``.
-    area : float
-        The area enclosed by the polygon.
-    centroid : tuple
-        The 'center of gravity', i.e. the mean point of the polygon.
-
     Examples
     --------
     >>> p1 = Polygon([Point((0, 0)), Point((1, 0)), Point((1, 1)), Point((0, 1))])
     """
 
     def __init__(self, vertices, holes=None):
+        """Create a polygon from one or more rings and optional holes.
+
+        Parameters
+        ----------
+        vertices : list
+            A list of vertices or a list of lists of vertices.
+        holes : list, optional
+            A list of sub-polygons to be considered as holes.
+        """
         warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         self._part_rings = []
         self._hole_rings = []
@@ -1773,17 +1738,6 @@ class Polygon(Geometry):
 class Rectangle(Geometry):
     """Geometric representation of rectangle objects.
 
-    Attributes
-    ----------
-    left : float
-        Minimum x-value of the rectangle.
-    lower : float
-        Minimum y-value of the rectangle.
-    right : float
-        Maximum x-value of the rectangle.
-    upper : float
-        Maximum y-value of the rectangle.
-
     Examples
     --------
     >>> r = Rectangle(-4, 3, 10, 17)
@@ -1801,6 +1755,19 @@ class Rectangle(Geometry):
     """
 
     def __init__(self, left, lower, right, upper):
+        """Create a rectangle from its bounding coordinates.
+
+        Parameters
+        ----------
+        left : float
+            Minimum x-value of the rectangle.
+        lower : float
+            Minimum y-value of the rectangle.
+        right : float
+            Maximum x-value of the rectangle.
+        upper : float
+            Maximum y-value of the rectangle.
+        """
         warnings.warn(dep_msg, FutureWarning, stacklevel=2)
         if right < left or upper < lower:
             raise ArithmeticError("Rectangle must have positive area.")

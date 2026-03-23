@@ -75,8 +75,7 @@ autodoc_default_options = {
     "undoc-members": True,
     "inherited-members": True,
 }
-suppress_warnings = ["ref.ref"]
-
+autoclass_content = "both"
 html_theme = "sphinx_immaterial"
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]

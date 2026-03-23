@@ -323,11 +323,11 @@ class Graph(SetOpsMixin):
             a dataframe formatted as an ajacency list. Should have columns
             "focal", "neighbor", and "weight", or columns that can be mapped
             to these (e.g. origin, destination, cost)
-        focal : str, optional
+        focal_col : str, optional
             name of column holding focal/origin index, by default 'focal'
-        neighbor : str, optional
+        neighbor_col : str, optional
             name of column holding neighbor/destination index, by default 'neighbor'
-        weight : str, optional
+        weight_col : str, optional
             name of column holding weight values, by default 'weight'
 
         Returns
@@ -408,9 +408,9 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        focal_index : array-like
+        focal_ids : array-like
             focal indices
-        neighbor_index : array-like
+        neighbor_ids : array-like
             neighbor indices
         weight : array-like
             weights
@@ -978,17 +978,17 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        geoms :  array-like of shapely.Geometry objects
+        geometry : array-like of shapely.Geometry objects
             Could be geopandas.GeoSeries or geopandas.GeoDataFrame, in which case the
             resulting Graph is indexed by the original index. If an array of
             shapely.Geometry objects is passed, Graph will assume a RangeIndex.
         tolerance : float, optional
             The percentage of the length of the minimum side of the bounding rectangle
-            for the ``geoms`` to use in determining the buffering distance. Either
+            for the ``geometry`` to use in determining the buffering distance. Either
             ``tolerance`` or ``buffer`` may be specified but not both.
             By default None.
         buffer : float, optional
-            Exact buffering distance in the units of ``geoms.crs``. Either
+            Exact buffering distance in the units of ``geometry.crs``. Either
             ``tolerance`` or ``buffer`` may be specified but not both.
             By default None.
         predicate : str, optional
@@ -1371,7 +1371,7 @@ class Graph(SetOpsMixin):
         **metric_kwargs,
     ):
         """
-        Match locations in one dataset to at least `n_matches`
+        Match locations in one dataset to at least ``k``
         locations in another (possibly identical) dataset
         by minimizing the total distance between matched locations.
 
@@ -1389,17 +1389,12 @@ class Graph(SetOpsMixin):
 
         Parameters
         ----------
-        x : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
-            geometries that need matches. If a geopandas.Geo* object
-            is provided, the .geometry attribute is used. If a numpy.ndarray with
-            a geometry dtype is used, then the coordinates are extracted and used.
-        y : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame (default: None)
-            geometries that are used as a source for matching. If a geopandas object
-            is provided, the .geometry attribute is used. If a numpy.ndarray with
-            a geometry dtype is used, then the coordinates are extracted and
-            used. If none, matches are made within `x`.
-        n_matches : int (default: None)
-            number of matches
+        data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
+            Geometries that need matches. If a geopandas object is provided, the
+            ``.geometry`` attribute is used. If a numpy.ndarray with a geometry dtype
+            is used, then the coordinates are extracted and used.
+        k : int
+            Number of matches for each observation.
         metric : string or callable (default: 'euclidean')
             distance function to apply over the input coordinates. Supported options
             depend on whether or not scikit-learn is installed. If so, then any
@@ -1409,9 +1404,6 @@ class Graph(SetOpsMixin):
             a solver defined by the pulp optimization library. If no solver is
             provided, pulp's default solver will be used. This is generally
             pulp.COIN(), but this may vary depending on your configuration.
-        return_mip : bool (default: False)
-            whether or not to return the instance of the pulp.LpProblem. By
-            default, the problem is not returned to the user.
         allow_partial_match : bool (default: False)
             whether to allow for partial matching. A partial match may have
             a weight between zero and one, while a "full" match (by default)

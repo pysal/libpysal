@@ -26,15 +26,14 @@ class Grid:
     """
 
     def __init__(self, bounds, resolution):
-        """
-        Returns a grid with specified properties.
-
-        __init__(Rectangle, number) -> Grid
+        """Create a grid with the specified bounds and resolution.
 
         Parameters
         ----------
-        bounds      : the area for the grid to encompass
-        resolution  : the diameter of each bin
+        bounds : Rectangle
+            The area for the grid to encompass.
+        resolution : number
+            The diameter of each bin.
 
         Examples
         --------
@@ -375,14 +374,12 @@ class PointLocator:
     """
 
     def __init__(self, points):
-        """
-        Returns a point locator object.
-
-        __init__(Point list) -> PointLocator
+        """Create a point locator for a sequence of points.
 
         Parameters
         ----------
-        points : a list of points to index
+        points : list
+            A list of points to index.
 
         Examples
         --------
@@ -470,14 +467,12 @@ class PolygonLocator:
     """
 
     def __init__(self, polygons):
-        """
-        Returns a polygon locator object.
-
-        __init__(Polygon list) -> PolygonLocator
+        """Create a polygon locator for a sequence of polygons.
 
         Parameters
         ----------
-        polygons : a list of polygons to index
+        polygons : list
+            A list of polygons to index.
 
         Examples
         --------
