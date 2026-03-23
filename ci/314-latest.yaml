@@ -44,6 +44,7 @@ dependencies:
   - seaborn
   - esda
   - splot
+  - watermark
   - pip
   - pip:
     - pulp
