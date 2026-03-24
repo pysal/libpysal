@@ -17,7 +17,7 @@ gdf = gpd.read_file(examples.get_path("sids2.shp"))
 gdf = gdf.set_crs("epsg:4326")
 
 # Make weights and graph
-w_queen = weights.Queen.from_dataframe(gdf)
+w_queen = weights.Queen.from_dataframe(gdf, use_index=False)
 g_queen = graph.Graph.build_contiguity(gdf, rook=False)
 
 
@@ -97,7 +97,7 @@ changed_table = create_rst_table(changed_content)
 
 
 content = """
-# W to Graph Member Comparisions
+# W to Graph Member Comparisons
 
 ## Overview
 
@@ -181,7 +181,7 @@ w_content = []
 header = "Member,  Type"
 w_content.append(header)
 for member in w_only:
-    line = [f"[`{member}`](#libpysal.weights.W.{member})"]
+    line = [f"[`{member}`](#libpysal.weights.Queen.{member})"]
     wa = getattr(w_queen, member)
     class_type = type(wa)
     wat = f"{class_type.__module__}.{class_type.__name__}"

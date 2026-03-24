@@ -314,9 +314,9 @@ def fast_threshold(pts, dist, radius=RADIUS_EARTH_KM):
 
     Parameters
     ----------
-    pointslist : list
+    pts : list
         A list of lat-lon tuples. This **must** be a list, even for one point.
-    dist: float
+    dist : float
         The threshold distance.
     radius : float
         The radius of a sphere. Default is Earth's radius in

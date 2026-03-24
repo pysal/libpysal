@@ -1,5 +1,5 @@
 
-# W to Graph Member Comparisions
+# W to Graph Member Comparisons
 
 ## Overview
 
@@ -14,18 +14,17 @@ new Graph class from W should see the
 ## Members common to W and Graph
 
 
-| Member                                                 |   Type           |
-| ------------------------------------------------------ | ---------------- |
-| [`asymmetry`](#libpysal.graph.Graph.asymmetry)         |  builtins.method |
-| [`from_networkx`](#libpysal.graph.Graph.from_networkx) |  builtins.method |
-| [`from_sparse`](#libpysal.graph.Graph.from_sparse)     |  builtins.method |
-| [`n`](#libpysal.graph.Graph.n)                         |  builtins.int    |
-| [`n_components`](#libpysal.graph.Graph.n_components)   |  builtins.int    |
-| [`neighbors`](#libpysal.graph.Graph.neighbors)         |  builtins.dict   |
-| [`pct_nonzero`](#libpysal.graph.Graph.pct_nonzero)     |  builtins.float  |
-| [`plot`](#libpysal.graph.Graph.plot)                   |  builtins.method |
-| [`to_networkx`](#libpysal.graph.Graph.to_networkx)     |  builtins.method |
-| [`weights`](#libpysal.graph.Graph.weights)             |  builtins.dict   |
+| Member                                               |   Type           |
+| ---------------------------------------------------- | ---------------- |
+| [`asymmetry`](#libpysal.graph.Graph.asymmetry)       |  builtins.method |
+| [`from_sparse`](#libpysal.graph.Graph.from_sparse)   |  builtins.method |
+| [`n`](#libpysal.graph.Graph.n)                       |  builtins.int    |
+| [`n_components`](#libpysal.graph.Graph.n_components) |  builtins.int    |
+| [`neighbors`](#libpysal.graph.Graph.neighbors)       |  builtins.dict   |
+| [`pct_nonzero`](#libpysal.graph.Graph.pct_nonzero)   |  builtins.float  |
+| [`plot`](#libpysal.graph.Graph.plot)                 |  builtins.method |
+| [`to_networkx`](#libpysal.graph.Graph.to_networkx)   |  builtins.method |
+| [`weights`](#libpysal.graph.Graph.weights)           |  builtins.dict   |
 
 
 ## Members common to W and Graph with different types
@@ -46,48 +45,49 @@ new Graph class from W should see the
 
 
 
-| Member                                                     |   Type          |
-| ---------------------------------------------------------- | --------------- |
-| [`asymmetries`](#libpysal.weights.W.asymmetries)           | builtins.list   |
-| [`diagW2`](#libpysal.weights.W.diagW2)                     | numpy.ndarray   |
-| [`diagWtW`](#libpysal.weights.W.diagWtW)                   | numpy.ndarray   |
-| [`diagWtW_WW`](#libpysal.weights.W.diagWtW_WW)             | numpy.ndarray   |
-| [`from_WSP`](#libpysal.weights.W.from_WSP)                 | builtins.method |
-| [`from_adjlist`](#libpysal.weights.W.from_adjlist)         | builtins.method |
-| [`from_dataframe`](#libpysal.weights.W.from_dataframe)     | builtins.method |
-| [`from_file`](#libpysal.weights.W.from_file)               | builtins.method |
-| [`from_iterable`](#libpysal.weights.W.from_iterable)       | builtins.method |
-| [`from_shapefile`](#libpysal.weights.W.from_shapefile)     | builtins.method |
-| [`from_xarray`](#libpysal.weights.W.from_xarray)           | builtins.method |
-| [`full`](#libpysal.weights.W.full)                         | builtins.method |
-| [`get_transform`](#libpysal.weights.W.get_transform)       | builtins.method |
-| [`histogram`](#libpysal.weights.W.histogram)               | builtins.list   |
-| [`id2i`](#libpysal.weights.W.id2i)                         | builtins.dict   |
-| [`id_order`](#libpysal.weights.W.id_order)                 | builtins.list   |
-| [`id_order_set`](#libpysal.weights.W.id_order_set)         | builtins.bool   |
-| [`islands`](#libpysal.weights.W.islands)                   | builtins.list   |
-| [`max_neighbors`](#libpysal.weights.W.max_neighbors)       | builtins.int    |
-| [`mean_neighbors`](#libpysal.weights.W.mean_neighbors)     | numpy.float64   |
-| [`min_neighbors`](#libpysal.weights.W.min_neighbors)       | builtins.int    |
-| [`neighbor_offsets`](#libpysal.weights.W.neighbor_offsets) | builtins.dict   |
-| [`remap_ids`](#libpysal.weights.W.remap_ids)               | builtins.method |
-| [`s0`](#libpysal.weights.W.s0)                             | numpy.float64   |
-| [`s1`](#libpysal.weights.W.s1)                             | numpy.float64   |
-| [`s2`](#libpysal.weights.W.s2)                             | numpy.float64   |
-| [`s2array`](#libpysal.weights.W.s2array)                   | numpy.ndarray   |
-| [`sd`](#libpysal.weights.W.sd)                             | numpy.float64   |
-| [`set_shapefile`](#libpysal.weights.W.set_shapefile)       | builtins.method |
-| [`set_transform`](#libpysal.weights.W.set_transform)       | builtins.method |
-| [`silence_warnings`](#libpysal.weights.W.silence_warnings) | builtins.bool   |
-| [`symmetrize`](#libpysal.weights.W.symmetrize)             | builtins.method |
-| [`to_WSP`](#libpysal.weights.W.to_WSP)                     | builtins.method |
-| [`to_adjlist`](#libpysal.weights.W.to_adjlist)             | builtins.method |
-| [`to_file`](#libpysal.weights.W.to_file)                   | builtins.method |
-| [`to_sparse`](#libpysal.weights.W.to_sparse)               | builtins.method |
-| [`transformations`](#libpysal.weights.W.transformations)   | builtins.dict   |
-| [`trcW2`](#libpysal.weights.W.trcW2)                       | numpy.float64   |
-| [`trcWtW`](#libpysal.weights.W.trcWtW)                     | numpy.float64   |
-| [`trcWtW_WW`](#libpysal.weights.W.trcWtW_WW)               | numpy.float64   |
+| Member                                                         |   Type          |
+| -------------------------------------------------------------- | --------------- |
+| [`asymmetries`](#libpysal.weights.Queen.asymmetries)           | builtins.list   |
+| [`diagW2`](#libpysal.weights.Queen.diagW2)                     | numpy.ndarray   |
+| [`diagWtW`](#libpysal.weights.Queen.diagWtW)                   | numpy.ndarray   |
+| [`diagWtW_WW`](#libpysal.weights.Queen.diagWtW_WW)             | numpy.ndarray   |
+| [`from_WSP`](#libpysal.weights.Queen.from_WSP)                 | builtins.method |
+| [`from_adjlist`](#libpysal.weights.Queen.from_adjlist)         | builtins.method |
+| [`from_dataframe`](#libpysal.weights.Queen.from_dataframe)     | builtins.method |
+| [`from_file`](#libpysal.weights.Queen.from_file)               | builtins.method |
+| [`from_iterable`](#libpysal.weights.Queen.from_iterable)       | builtins.method |
+| [`from_networkx`](#libpysal.weights.Queen.from_networkx)       | builtins.method |
+| [`from_shapefile`](#libpysal.weights.Queen.from_shapefile)     | builtins.method |
+| [`from_xarray`](#libpysal.weights.Queen.from_xarray)           | builtins.method |
+| [`full`](#libpysal.weights.Queen.full)                         | builtins.method |
+| [`get_transform`](#libpysal.weights.Queen.get_transform)       | builtins.method |
+| [`histogram`](#libpysal.weights.Queen.histogram)               | builtins.list   |
+| [`id2i`](#libpysal.weights.Queen.id2i)                         | builtins.dict   |
+| [`id_order`](#libpysal.weights.Queen.id_order)                 | builtins.list   |
+| [`id_order_set`](#libpysal.weights.Queen.id_order_set)         | builtins.bool   |
+| [`islands`](#libpysal.weights.Queen.islands)                   | builtins.list   |
+| [`max_neighbors`](#libpysal.weights.Queen.max_neighbors)       | builtins.int    |
+| [`mean_neighbors`](#libpysal.weights.Queen.mean_neighbors)     | numpy.float64   |
+| [`min_neighbors`](#libpysal.weights.Queen.min_neighbors)       | builtins.int    |
+| [`neighbor_offsets`](#libpysal.weights.Queen.neighbor_offsets) | builtins.dict   |
+| [`remap_ids`](#libpysal.weights.Queen.remap_ids)               | builtins.method |
+| [`s0`](#libpysal.weights.Queen.s0)                             | numpy.float64   |
+| [`s1`](#libpysal.weights.Queen.s1)                             | numpy.float64   |
+| [`s2`](#libpysal.weights.Queen.s2)                             | numpy.float64   |
+| [`s2array`](#libpysal.weights.Queen.s2array)                   | numpy.ndarray   |
+| [`sd`](#libpysal.weights.Queen.sd)                             | numpy.float64   |
+| [`set_shapefile`](#libpysal.weights.Queen.set_shapefile)       | builtins.method |
+| [`set_transform`](#libpysal.weights.Queen.set_transform)       | builtins.method |
+| [`silence_warnings`](#libpysal.weights.Queen.silence_warnings) | builtins.bool   |
+| [`symmetrize`](#libpysal.weights.Queen.symmetrize)             | builtins.method |
+| [`to_WSP`](#libpysal.weights.Queen.to_WSP)                     | builtins.method |
+| [`to_adjlist`](#libpysal.weights.Queen.to_adjlist)             | builtins.method |
+| [`to_file`](#libpysal.weights.Queen.to_file)                   | builtins.method |
+| [`to_sparse`](#libpysal.weights.Queen.to_sparse)               | builtins.method |
+| [`transformations`](#libpysal.weights.Queen.transformations)   | builtins.dict   |
+| [`trcW2`](#libpysal.weights.Queen.trcW2)                       | numpy.float64   |
+| [`trcWtW`](#libpysal.weights.Queen.trcWtW)                     | numpy.float64   |
+| [`trcWtW_WW`](#libpysal.weights.Queen.trcWtW_WW)               | numpy.float64   |
 
 
 ## Members unique to Graph
@@ -120,7 +120,6 @@ new Graph class from W should see the
 | [`from_W`](#libpysal.graph.Graph.from_W)                                   | builtins.method |
 | [`from_adjacency`](#libpysal.graph.Graph.from_adjacency)                   | builtins.method |
 | [`from_arrays`](#libpysal.graph.Graph.from_arrays)                         | builtins.method |
-| [`from_dense`](#libpysal.graph.Graph.from_dense)                           | builtins.method |
 | [`from_dicts`](#libpysal.graph.Graph.from_dicts)                           | builtins.method |
 | [`from_weights_dict`](#libpysal.graph.Graph.from_weights_dict)             | builtins.method |
 | [`generate_da`](#libpysal.graph.Graph.generate_da)                         | builtins.method |
@@ -132,7 +131,6 @@ new Graph class from W should see the
 | [`isomorphic`](#libpysal.graph.Graph.isomorphic)                           | builtins.method |
 | [`issubgraph`](#libpysal.graph.Graph.issubgraph)                           | builtins.method |
 | [`lag`](#libpysal.graph.Graph.lag)                                         | builtins.method |
-| [`make_symmetric`](#libpysal.graph.Graph.make_symmetric)                   | builtins.method |
 | [`n_edges`](#libpysal.graph.Graph.n_edges)                                 | builtins.int    |
 | [`n_nodes`](#libpysal.graph.Graph.n_nodes)                                 | builtins.int    |
 | [`subgraph`](#libpysal.graph.Graph.subgraph)                               | builtins.method |

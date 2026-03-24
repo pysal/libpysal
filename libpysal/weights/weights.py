@@ -80,59 +80,6 @@ class W:
     Spatial weights class. Class attributes are described by their
     docstrings. to view, use the ``help`` function.
 
-    Parameters
-    ----------
-    neighbors : dict
-        Key is region ID, value is a list of neighbor IDS.
-        For example, ``{'a':['b'],'b':['a','c'],'c':['b']}``.
-    weights : dict
-       Key is region ID, value is a list of edge weights.
-       If not supplied all edge weights are assumed to have a weight of 1.
-       For example, ``{'a':[0.5],'b':[0.5,1.5],'c':[1.5]}``.
-    id_order : list
-       An ordered list of ids, defines the order of observations when
-       iterating over ``W`` if not set, lexicographical ordering is used
-       to iterate and the ``id_order_set`` property will return ``False``.
-       This can be set after creation by setting the ``id_order`` property.
-    silence_warnings : bool
-       By default ``libpysal`` will print a warning if the dataset contains
-       any disconnected components or islands. To silence this warning set this
-       parameter to ``True``.
-    ids : list
-        Values to use for keys of the neighbors and weights ``dict`` objects.
-
-    Attributes
-    ----------
-    asymmetries
-    cardinalities
-    component_labels
-    diagW2
-    diagWtW
-    diagWtW_WW
-    histogram
-    id2i
-    id_order
-    id_order_set
-    islands
-    max_neighbors
-    mean_neighbors
-    min_neighbors
-    n
-    n_components
-    neighbor_offsets
-    nonzero
-    pct_nonzero
-    s0
-    s1
-    s2
-    s2array
-    sd
-    sparse
-    trcW2
-    trcWtW
-    trcWtW_WW
-    transform
-
     Examples
     --------
     >>> from libpysal.weights import W
@@ -192,6 +139,29 @@ class W:
         silence_warnings=False,
         ids=None,  # noqa: ARG002
     ):
+        """Create a spatial weights object.
+
+        Parameters
+        ----------
+        neighbors : dict
+            Key is region ID, value is a list of neighbor IDS.
+            For example, ``{'a':['b'],'b':['a','c'],'c':['b']}``.
+        weights : dict
+            Key is region ID, value is a list of edge weights.
+            If not supplied all edge weights are assumed to have a weight of 1.
+            For example, ``{'a':[0.5],'b':[0.5,1.5],'c':[1.5]}``.
+        id_order : list
+            An ordered list of ids, defines the order of observations when
+            iterating over ``W`` if not set, lexicographical ordering is used
+            to iterate and the ``id_order_set`` property will return ``False``.
+            This can be set after creation by setting the ``id_order`` property.
+        silence_warnings : bool
+            By default ``libpysal`` will print a warning if the dataset contains
+            any disconnected components or islands. To silence this warning set this
+            parameter to ``True``.
+        ids : list
+            Values to use for keys of the neighbors and weights ``dict`` objects.
+        """
         self.silence_warnings = silence_warnings
         self.transformations = {}
         self.neighbors = neighbors
@@ -290,12 +260,11 @@ class W:
 
         Parameters
         ----------
-        wsp                     : WSP
-                                PySAL sparse weights object
-        silence_warnings        : bool
-           By default ``libpysal`` will print a warning if the dataset contains
-           any disconnected components or islands. To silence this warning set this
-           parameter to ``True``.
+        WSP : WSP
+            PySAL sparse weights object.
+        silence_warnings : bool
+            By default ``libpysal`` will print a warning if the dataset contains
+            disconnected components or islands. Set to ``True`` to silence it.
 
         Returns
         -------
@@ -1107,7 +1076,7 @@ class W:
 
         Parameters
         ----------
-        transform : str
+        value : str
             This parameter is not case sensitive. The following are
             valid transformations.
 
@@ -1307,11 +1276,6 @@ class W:
     def full(self):
         """Generate a full ``numpy.ndarray``.
 
-        Parameters
-        ----------
-        self : libpysal.weights.W
-            spatial weights object
-
         Returns
         -------
         (fullw, keys) : tuple
@@ -1499,20 +1463,6 @@ class W:
 class WSP:
     """Thin ``W`` class for ``spreg``.
 
-    Parameters
-    ----------
-    sparse : scipy.sparse.{matrix-type}
-        NxN object from ``scipy.sparse``
-
-    Attributes
-    ----------
-    n           : int
-                  description
-    s0          : float
-                  description
-    trcWtW_WW   : float
-                  description
-
     Examples
     --------
     From GAL information
@@ -1533,6 +1483,17 @@ class WSP:
     """
 
     def __init__(self, sparse, id_order=None, index=None):
+        """Create a thin sparse weights object.
+
+        Parameters
+        ----------
+        sparse : scipy.sparse.{matrix-type}
+            Square sparse weights matrix.
+        id_order : list, optional
+            Ordered list of ids aligned with the sparse matrix.
+        index : pandas.Index, optional
+            Index aligned with the sparse matrix.
+        """
         if not scipy.sparse.issparse(sparse):
             raise ValueError("must pass a scipy sparse object")
         rows, cols = sparse.shape
@@ -1626,8 +1587,6 @@ class WSP:
 
         Parameters
         ----------
-        self : WSP
-            PySAL sparse weights object.
         silence_warnings : bool
             Switch to ``True`` to turn off print statements for every
             observation with islands. Default is ``False``, which does

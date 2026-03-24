@@ -41,6 +41,10 @@ dependencies:
   - sphinx-copybutton
   - sphinx-immaterial
   - pandoc
+  - seaborn
+  - esda
+  - splot
+  - watermark
   - pip
   - pip:
     - pulp

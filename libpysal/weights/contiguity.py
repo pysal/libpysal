@@ -33,21 +33,22 @@ class Rook(W):
     Construct a weights object from a collection of pysal
     polygons that share at least one edge.
 
-    Parameters
-    ----------
-    polygons    : list
-                a collection of PySAL shapes to build weights from
-    ids         : list
-                a list of names to use to build the weights
-    **kw        : keyword arguments
-                optional arguments for :class:`pysal.weights.W`
-
     See Also
     --------
     :class:`libpysal.weights.weights.W`
     """
 
     def __init__(self, polygons, **kw):
+        """Construct rook contiguity weights from polygon-like inputs.
+
+        Parameters
+        ----------
+        polygons : list
+            A collection of shapes to build weights from.
+        **kw
+            Optional arguments for :class:`libpysal.weights.W`, including
+            ``ids`` to set custom names for the weights object.
+        """
         criterion = "rook"
         ids = kw.pop("ids", None)
         polygons, backup = itertools.tee(polygons)
@@ -67,11 +68,16 @@ class Rook(W):
 
         Parameters
         ----------
-        shapefile : string
-                    name of polygon shapefile including suffix.
-        sparse    : boolean
-                    If True return WSP instance
-                    If False return W instance
+        filepath : str
+            Name of polygon shapefile including suffix.
+        idVariable : str, optional
+            Name of a column in the shapefile's DBF to use for ids.
+        full : bool, default False
+            Write out the entire path for a shapefile (``True``) or
+            only the base of the shapefile without extension (``False``).
+            Default is ``True``.
+        kwargs : dict
+            Additional keyword arguments passed to :class:`libpysal.weights.W`.
 
         Returns
         -------
@@ -122,8 +128,8 @@ class Rook(W):
         iterable    : iterable
                       a collection of of shapes to be cast to PySAL shapes. Must
                       support iteration. Can be either Shapely or PySAL shapes.
-        **kw        : keyword arguments
-                      optional arguments for  :class:`pysal.weights.W`
+        **kwargs : keyword arguments
+            Optional arguments for :class:`libpysal.weights.W`.
 
         See Also
         --------
@@ -319,21 +325,22 @@ class Queen(W):
     Construct a weights object from a collection of pysal
     polygons that share at least one vertex.
 
-    Parameters
-    ----------
-    polygons    : list
-                  a collection of PySAL shapes to build weights from
-    ids         : list
-                  a list of names to use to build the weights
-    **kw        : keyword arguments
-                  optional arguments for :class:`pysal.weights.W`
-
     See Also
     --------
     :class:`libpysal.weights.weights.W`
     """
 
     def __init__(self, polygons, **kw):
+        """Construct queen contiguity weights from polygon-like inputs.
+
+        Parameters
+        ----------
+        polygons : list
+            A collection of shapes to build weights from.
+        **kw
+            Optional arguments for :class:`libpysal.weights.W`, including
+            ``ids`` to set custom names for the weights object.
+        """
         criterion = "queen"
         ids = kw.pop("ids", None)
         polygons, backup = itertools.tee(polygons)
@@ -353,13 +360,16 @@ class Queen(W):
 
         Parameters
         ----------
-        shapefile   : string
-                      name of polygon shapefile including suffix.
-        idVariable  : string
-                      name of a column in the shapefile's DBF to use for ids.
-        sparse      : boolean
-                      If True return WSP instance
-                      If False return W instance
+        filepath : str
+            Name of polygon shapefile including suffix.
+        idVariable : str, optional
+            Name of a column in the shapefile's DBF to use for ids.
+        full : bool, default False
+            Write out the entire path for a shapefile (``True``) or
+            only the base of the shapefile without extension (``False``).
+            Default is ``True``.
+        kwargs : dict
+            Additional keyword arguments passed to :class:`libpysal.weights.W`.
 
         Returns
         -------
@@ -414,8 +424,8 @@ class Queen(W):
                       a collection of of shapes to be cast to PySAL shapes.
                       Must support iteration. Contents may either be
                       a shapely or PySAL shape.
-        **kw        : keyword arguments
-                      optional arguments for  :class:`pysal.weights.W`
+        **kwargs : keyword arguments
+            Optional arguments for :class:`libpysal.weights.W`.
 
         See Also
         --------
