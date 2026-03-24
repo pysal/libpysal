@@ -179,6 +179,17 @@ class FileIO(metaclass=FileIO_MetaCls):  # should be a type?
         __call__ = __getitem__
 
     def __init__(self, dataPath="", mode="r", dataFormat=None):
+        """Initialize a file handler.
+
+        Parameters
+        ----------
+        dataPath : str, optional
+            Path to the input or output dataset.
+        mode : str, default "r"
+            File access mode.
+        dataFormat : str, optional
+            Explicit data format override used instead of inferring from the path.
+        """
         self.dataPath = dataPath
         self.dataObj = ""
         self.mode = mode

@@ -836,7 +836,7 @@ def fill_diagonal(w, val=1.0, wsp=False):
     w        : W
                Spatial weights object
 
-    diagonal : float, int or array
+    val      : float, int or array
                Defines the value(s) to which the weights matrix diagonal should
                be set. If a constant is passed then each element along the
                diagonal will get this value (default is 1.0). An array of length
@@ -1154,8 +1154,8 @@ def lat2SW(nrows=3, ncols=5, criterion="rook", row_st=False):
               number of rows
     ncols   : int
               number of columns
-    rook    : {"rook", "queen", "bishop"}
-              type of contiguity. Default is rook.
+    criterion : {"rook", "queen", "bishop"}
+                Type of contiguity. Default is ``"rook"``.
     row_st  : boolean
               If True, the created sparse W object is row-standardized so
               every row sums up to one. Defaults to False.

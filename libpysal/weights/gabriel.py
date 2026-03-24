@@ -27,14 +27,6 @@ class Delaunay(W):
     a graph from the input set of points. Will be slower without numba,
     and will warn if this is missing.
 
-    Parameters
-    ----------
-    coordinates :   array of points, (N,2)
-        numpy array of coordinates containing locations to compute the
-        delaunay triangulation
-    **kwargs    :   keyword argument list
-        keyword arguments passed directly to weights.W
-
     Notes
     -----
     The Delaunay triangulation can result in quite a few non-local links among
@@ -54,6 +46,15 @@ class Delaunay(W):
     """
 
     def __init__(self, coordinates, **kwargs):
+        """Build Delaunay weights from point coordinates.
+
+        Parameters
+        ----------
+        coordinates : array of points, (N, 2)
+            Coordinate array containing locations to compute the triangulation.
+        **kwargs
+            Keyword arguments passed directly to :class:`libpysal.weights.W`.
+        """
         try:
             from numba import njit  # noqa: F401
         except ModuleNotFoundError:
@@ -167,16 +168,18 @@ class Gabriel(Delaunay):
        from the graph.
     3. Once all links are evaluated, the remaining graph is the Gabriel graph.
 
-    Parameters
-    ----------
-    coordinates :   array of points, (N,2)
-        numpy array of coordinates containing locations to compute the
-        delaunay triangulation
-    **kwargs    :   keyword argument list
-        keyword arguments passed directly to weights.W
     """
 
     def __init__(self, coordinates, **kwargs):
+        """Build Gabriel weights from point coordinates.
+
+        Parameters
+        ----------
+        coordinates : array of points, (N, 2)
+            Coordinate array containing locations to compute the triangulation.
+        **kwargs
+            Keyword arguments passed directly to :class:`libpysal.weights.W`.
+        """
         try:
             from numba import njit  # noqa: F401
         except ModuleNotFoundError:
@@ -217,16 +220,20 @@ class Relative_Neighborhood(Delaunay):  # noqa: N801
     This means that the points are at least as close to one another
     as they are to any other point.
 
-    Parameters
-    ----------
-    coordinates :   array of points, (N,2)
-        numpy array of coordinates containing locations to compute the
-        delaunay triangulation
-    **kwargs    :   keyword argument list
-        keyword arguments passed directly to weights.W
     """
 
     def __init__(self, coordinates, binary=True, **kwargs):
+        """Build Relative Neighborhood weights from point coordinates.
+
+        Parameters
+        ----------
+        coordinates : array of points, (N, 2)
+            Coordinate array containing locations to compute the triangulation.
+        binary : bool, default True
+            If True, return binary weights.
+        **kwargs
+            Keyword arguments passed directly to :class:`libpysal.weights.W`.
+        """
         try:
             from numba import njit  # noqa: F401
         except ModuleNotFoundError:

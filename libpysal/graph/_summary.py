@@ -62,7 +62,6 @@ class GraphSummary:
         :attr:`s0`, :attr:`s1`, and :attr:`s2` reflect interaction between observations
         and are used to compute standard errors for spatial autocorrelation estimators.
 
-
     s1 : float
         S1 sum of weights
 
