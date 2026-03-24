@@ -6,14 +6,11 @@
 .. autoclass:: KNN
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~KNN.__init__
       ~KNN.asymmetry
       ~KNN.from_WSP
       ~KNN.from_adjlist
@@ -37,9 +34,7 @@
       ~KNN.to_networkx
       ~KNN.to_sparse
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -74,5 +69,4 @@
       ~KNN.trcW2
       ~KNN.trcWtW
       ~KNN.trcWtW_WW
-   
    

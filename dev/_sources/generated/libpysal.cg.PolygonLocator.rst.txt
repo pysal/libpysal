@@ -6,14 +6,11 @@
 .. autoclass:: PolygonLocator
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~PolygonLocator.__init__
       ~PolygonLocator.contains_point
       ~PolygonLocator.inside
       ~PolygonLocator.nearest
@@ -21,8 +18,5 @@
       ~PolygonLocator.proximity
       ~PolygonLocator.region
    
-   
 
-   
-   
    

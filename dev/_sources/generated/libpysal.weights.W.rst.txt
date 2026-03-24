@@ -6,14 +6,11 @@
 .. autoclass:: W
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~W.__init__
       ~W.asymmetry
       ~W.from_WSP
       ~W.from_adjlist
@@ -34,9 +31,7 @@
       ~W.to_networkx
       ~W.to_sparse
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -71,5 +66,4 @@
       ~W.trcW2
       ~W.trcWtW
       ~W.trcWtW_WW
-   
    

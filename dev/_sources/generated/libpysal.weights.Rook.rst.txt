@@ -6,14 +6,11 @@
 .. autoclass:: Rook
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~Rook.__init__
       ~Rook.asymmetry
       ~Rook.from_WSP
       ~Rook.from_adjlist
@@ -37,9 +34,7 @@
       ~Rook.to_networkx
       ~Rook.to_sparse
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -74,5 +69,4 @@
       ~Rook.trcW2
       ~Rook.trcWtW
       ~Rook.trcWtW_WW
-   
    

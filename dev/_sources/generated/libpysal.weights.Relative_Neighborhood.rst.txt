@@ -6,14 +6,11 @@
 .. autoclass:: Relative_Neighborhood
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~Relative_Neighborhood.__init__
       ~Relative_Neighborhood.asymmetry
       ~Relative_Neighborhood.from_WSP
       ~Relative_Neighborhood.from_adjlist
@@ -35,9 +32,7 @@
       ~Relative_Neighborhood.to_networkx
       ~Relative_Neighborhood.to_sparse
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -72,5 +67,4 @@
       ~Relative_Neighborhood.trcW2
       ~Relative_Neighborhood.trcWtW
       ~Relative_Neighborhood.trcWtW_WW
-   
    

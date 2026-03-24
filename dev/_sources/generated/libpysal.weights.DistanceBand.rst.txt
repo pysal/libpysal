@@ -6,14 +6,11 @@
 .. autoclass:: DistanceBand
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~DistanceBand.__init__
       ~DistanceBand.asymmetry
       ~DistanceBand.from_WSP
       ~DistanceBand.from_adjlist
@@ -36,9 +33,7 @@
       ~DistanceBand.to_networkx
       ~DistanceBand.to_sparse
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -73,5 +68,4 @@
       ~DistanceBand.trcW2
       ~DistanceBand.trcWtW
       ~DistanceBand.trcWtW_WW
-   
    

@@ -6,14 +6,11 @@
 .. autoclass:: Grid
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~Grid.__init__
       ~Grid.add
       ~Grid.bounds
       ~Grid.in_grid
@@ -21,8 +18,5 @@
       ~Grid.proximity
       ~Grid.remove
    
-   
 
-   
-   
    
