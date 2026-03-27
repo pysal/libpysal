@@ -8,15 +8,17 @@
 import os
 import sys
 
+from packaging.version import Version
+
 sys.path.insert(0, os.path.abspath("../../"))
 
-import libpysal  # noqa
+import libpysal
 
 project = "libpysal"
 copyright = "2018-, pysal developers"  # noqa: A001 - shadowing a Python builtin
 author = "pysal developers"
 
-version = libpysal.__version__.split("+", 1)[0]  # remove commit hash
+version = Version(libpysal.__version__).public  # remove commit hash
 release = version
 
 language = "en"
