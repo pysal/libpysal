@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../weights/categorical_lag.html">
+        <link rel="prev" href="../weights/voronoi.html">
       
       
         <link rel="next" href="../../references.html">
@@ -45,7 +45,7 @@
         <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
         <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-        <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8a9b2930" />
+        <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d127c87d" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -1433,7 +1433,7 @@ Dataset used for regionalization
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;libpysal.io.iohandlers.pyShpIO.PurePyShpWrapper at 0x7f45532c5fd0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;libpysal.io.iohandlers.pyShpIO.PurePyShpWrapper at 0x7f57f8ed9e80&gt;
 </code></pre></div>
 </div>
 </div>
@@ -1519,78 +1519,78 @@ Reference: https://github.com/pysal/pysal/issues/889#issuecomment-396693495
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>{&#39;AirBnB&#39;: &lt;libpysal.examples.base.Example at 0x7f4595acd6a0&gt;,
- &#39;Atlanta&#39;: &lt;libpysal.examples.base.Example at 0x7f4595aca0d0&gt;,
- &#39;Baltimore&#39;: &lt;libpysal.examples.base.Example at 0x7f4595aca350&gt;,
- &#39;Bostonhsg&#39;: &lt;libpysal.examples.base.Example at 0x7f4595c1fa80&gt;,
- &#39;Buenosaires&#39;: &lt;libpysal.examples.base.Example at 0x7f4595c1fbb0&gt;,
- &#39;Charleston1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595b3f020&gt;,
- &#39;Charleston2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595b3f240&gt;,
- &#39;Chicago Health&#39;: &lt;libpysal.examples.base.Example at 0x7f45960a6650&gt;,
- &#39;Chicago commpop&#39;: &lt;libpysal.examples.base.Example at 0x7f4595b53d50&gt;,
- &#39;Chicago parcels&#39;: &lt;libpysal.examples.base.Example at 0x7f4595b618b0&gt;,
- &#39;Chile Labor&#39;: &lt;libpysal.examples.base.Example at 0x7f4595b619a0&gt;,
- &#39;Chile Migration&#39;: &lt;libpysal.examples.base.Example at 0x7f4595b4e6d0&gt;,
- &#39;Cincinnati&#39;: &lt;libpysal.examples.base.Example at 0x7f4595b4e890&gt;,
- &#39;Cleveland&#39;: &lt;libpysal.examples.base.Example at 0x7f4595ebc530&gt;,
- &#39;Columbus&#39;: &lt;libpysal.examples.base.Example at 0x7f4595af56d0&gt;,
- &#39;Elections&#39;: &lt;libpysal.examples.base.Example at 0x7f4595af5610&gt;,
- &#39;Grid100&#39;: &lt;libpysal.examples.base.Example at 0x7f45fcc43b70&gt;,
- &#39;Groceries&#39;: &lt;libpysal.examples.base.Example at 0x7f45972ab5f0&gt;,
- &#39;Guerry&#39;: &lt;libpysal.examples.base.Example at 0x7f4595ac7ed0&gt;,
- &#39;Health+&#39;: &lt;libpysal.examples.base.Example at 0x7f4595ac7c50&gt;,
- &#39;Health Indicators&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0370&gt;,
- &#39;Hickory1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0410&gt;,
- &#39;Hickory2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0050&gt;,
- &#39;Home Sales&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb00f0&gt;,
- &#39;Houston&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0190&gt;,
- &#39;Juvenile&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb02d0&gt;,
- &#39;Lansing1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0cd0&gt;,
- &#39;Lansing2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb04b0&gt;,
- &#39;Laozone&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb05f0&gt;,
- &#39;LasRosas&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0230&gt;,
- &#39;Liquor Stores&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0690&gt;,
- &#39;Malaria&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1310&gt;,
- &#39;Milwaukee1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb07d0&gt;,
- &#39;Milwaukee2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0870&gt;,
- &#39;NCOVR&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0910&gt;,
- &#39;Natregimes&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb09b0&gt;,
- &#39;NDVI&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0a50&gt;,
- &#39;Nepal&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0af0&gt;,
- &#39;NYC&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0b90&gt;,
- &#39;NYC Earnings&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0d70&gt;,
- &#39;NYC Education&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0e10&gt;,
- &#39;NYC Neighborhoods&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0eb0&gt;,
- &#39;NYC Socio-Demographics&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb0f50&gt;,
- &#39;Ohiolung&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1090&gt;,
- &#39;Orlando1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1130&gt;,
- &#39;Orlando2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb11d0&gt;,
- &#39;Oz9799&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1270&gt;,
- &#39;Phoenix ACS&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb13b0&gt;,
- &#39;Pittsburgh&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1450&gt;,
- &#39;Police&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb14f0&gt;,
- &#39;Sacramento1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1590&gt;,
- &#39;Sacramento2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1630&gt;,
- &#39;SanFran Crime&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb16d0&gt;,
- &#39;Savannah1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1770&gt;,
- &#39;Savannah2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1810&gt;,
- &#39;Scotlip&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb18b0&gt;,
- &#39;Seattle1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1950&gt;,
- &#39;Seattle2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb19f0&gt;,
- &#39;SIDS&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1a90&gt;,
- &#39;SIDS2&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1b30&gt;,
- &#39;Snow&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1bd0&gt;,
- &#39;South&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1c70&gt;,
- &#39;Spirals&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1d10&gt;,
- &#39;StLouis&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1db0&gt;,
- &#39;Tampa1&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1e50&gt;,
- &#39;US SDOH&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1ef0&gt;,
- &#39;Rio Grande do Sul&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb1f90&gt;,
- &#39;nyc_bikes&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb2030&gt;,
- &#39;taz&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb20d0&gt;,
- &#39;clearwater&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb2170&gt;,
- &#39;newHaven&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb2210&gt;,
- &#39;chicagoSDOH&#39;: &lt;libpysal.examples.base.Example at 0x7f4595bb22b0&gt;}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>{&#39;AirBnB&#39;: &lt;libpysal.examples.base.Example at 0x7f583b8c1550&gt;,
+ &#39;Atlanta&#39;: &lt;libpysal.examples.base.Example at 0x7f583b8b6350&gt;,
+ &#39;Baltimore&#39;: &lt;libpysal.examples.base.Example at 0x7f583b8b65d0&gt;,
+ &#39;Bostonhsg&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7b4050&gt;,
+ &#39;Buenosaires&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7b4180&gt;,
+ &#39;Charleston1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b71f240&gt;,
+ &#39;Charleston2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b71f460&gt;,
+ &#39;Chicago Health&#39;: &lt;libpysal.examples.base.Example at 0x7f583bcaf250&gt;,
+ &#39;Chicago commpop&#39;: &lt;libpysal.examples.base.Example at 0x7f583b784a50&gt;,
+ &#39;Chicago parcels&#39;: &lt;libpysal.examples.base.Example at 0x7f583b751b80&gt;,
+ &#39;Chile Labor&#39;: &lt;libpysal.examples.base.Example at 0x7f583b751c70&gt;,
+ &#39;Chile Migration&#39;: &lt;libpysal.examples.base.Example at 0x7f583b74a7b0&gt;,
+ &#39;Cincinnati&#39;: &lt;libpysal.examples.base.Example at 0x7f583b74a970&gt;,
+ &#39;Cleveland&#39;: &lt;libpysal.examples.base.Example at 0x7f583bcc8390&gt;,
+ &#39;Columbus&#39;: &lt;libpysal.examples.base.Example at 0x7f583b6e56d0&gt;,
+ &#39;Elections&#39;: &lt;libpysal.examples.base.Example at 0x7f583b6e5610&gt;,
+ &#39;Grid100&#39;: &lt;libpysal.examples.base.Example at 0x7f58b08a8b50&gt;,
+ &#39;Groceries&#39;: &lt;libpysal.examples.base.Example at 0x7f583ccdc680&gt;,
+ &#39;Guerry&#39;: &lt;libpysal.examples.base.Example at 0x7f583b8bbed0&gt;,
+ &#39;Health+&#39;: &lt;libpysal.examples.base.Example at 0x7f583b8bbc50&gt;,
+ &#39;Health Indicators&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8370&gt;,
+ &#39;Hickory1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8410&gt;,
+ &#39;Hickory2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8050&gt;,
+ &#39;Home Sales&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a80f0&gt;,
+ &#39;Houston&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8190&gt;,
+ &#39;Juvenile&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a82d0&gt;,
+ &#39;Lansing1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8cd0&gt;,
+ &#39;Lansing2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a84b0&gt;,
+ &#39;Laozone&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a85f0&gt;,
+ &#39;LasRosas&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8230&gt;,
+ &#39;Liquor Stores&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8690&gt;,
+ &#39;Malaria&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9310&gt;,
+ &#39;Milwaukee1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a87d0&gt;,
+ &#39;Milwaukee2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8870&gt;,
+ &#39;NCOVR&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8910&gt;,
+ &#39;Natregimes&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a89b0&gt;,
+ &#39;NDVI&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8a50&gt;,
+ &#39;Nepal&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8af0&gt;,
+ &#39;NYC&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8b90&gt;,
+ &#39;NYC Earnings&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8d70&gt;,
+ &#39;NYC Education&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8e10&gt;,
+ &#39;NYC Neighborhoods&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8eb0&gt;,
+ &#39;NYC Socio-Demographics&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a8f50&gt;,
+ &#39;Ohiolung&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9090&gt;,
+ &#39;Orlando1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9130&gt;,
+ &#39;Orlando2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a91d0&gt;,
+ &#39;Oz9799&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9270&gt;,
+ &#39;Phoenix ACS&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a93b0&gt;,
+ &#39;Pittsburgh&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9450&gt;,
+ &#39;Police&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a94f0&gt;,
+ &#39;Sacramento1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9590&gt;,
+ &#39;Sacramento2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9630&gt;,
+ &#39;SanFran Crime&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a96d0&gt;,
+ &#39;Savannah1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9770&gt;,
+ &#39;Savannah2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9810&gt;,
+ &#39;Scotlip&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a98b0&gt;,
+ &#39;Seattle1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9950&gt;,
+ &#39;Seattle2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a99f0&gt;,
+ &#39;SIDS&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9a90&gt;,
+ &#39;SIDS2&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9b30&gt;,
+ &#39;Snow&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9bd0&gt;,
+ &#39;South&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9c70&gt;,
+ &#39;Spirals&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9d10&gt;,
+ &#39;StLouis&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9db0&gt;,
+ &#39;Tampa1&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9e50&gt;,
+ &#39;US SDOH&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9ef0&gt;,
+ &#39;Rio Grande do Sul&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7a9f90&gt;,
+ &#39;nyc_bikes&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7aa030&gt;,
+ &#39;taz&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7aa0d0&gt;,
+ &#39;clearwater&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7aa170&gt;,
+ &#39;newHaven&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7aa210&gt;,
+ &#39;chicagoSDOH&#39;: &lt;libpysal.examples.base.Example at 0x7f583b7aa2b0&gt;}
 </code></pre></div>
 </div>
 </div>

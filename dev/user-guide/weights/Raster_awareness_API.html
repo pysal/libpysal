@@ -45,7 +45,7 @@
         <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
         <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
-        <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=8a9b2930" />
+        <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d127c87d" />
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -554,26 +554,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#using-local-geotiff-dataset" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>Using local Geo<wbr>TIFF dataset</span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#higher-order-neighbors" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>higher_<wbr>order neighbors</span>
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -612,30 +592,6 @@
   
   <span class="md-ellipsis">
     <span>Voronoi Weights</span>
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="categorical_lag.html" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    <span>Categorical Spatial Lags</span>
     
   </span>
   
@@ -935,26 +891,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#using-local-geotiff-dataset" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>Using local Geo<wbr>TIFF dataset</span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#higher-order-neighbors" class="md-nav__link">
-    
-    <span class="md-ellipsis">
-      <span>higher_<wbr>order neighbors</span>
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1009,13 +945,10 @@ basic usage of the functionality offered by the interface which mainly involves:
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="o">%</span><span class="k">matplotlib</span> inline
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">xarray</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xr</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">esda</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moran_Local</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">splot</span><span class="w"> </span><span class="kn">import</span> <span class="n">libpysal</span> <span class="k">as</span> <span class="n">splot</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">Queen</span><span class="p">,</span> <span class="n">Rook</span><span class="p">,</span> <span class="n">raster</span>
 </code></pre></div>
@@ -1095,7 +1028,7 @@ Attributes:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;xarray.plot.facetgrid.FacetGrid at 0x7f3fee191a90&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;xarray.plot.facetgrid.FacetGrid at 0x7fc9df3f7a10&gt;
 </code></pre></div>
 </div>
 <img alt="../../_images/f26786fb8c9b6aeef0fac572384bec19b47f16c4ab3c89cc67d500f5294a9d64.png" src="../../_images/f26786fb8c9b6aeef0fac572384bec19b47f16c4ab3c89cc67d500f5294a9d64.png" />
@@ -1206,7 +1139,7 @@ Coordinates:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;matplotlib.collections.QuadMesh at 0x7f3fe96d51d0&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;matplotlib.collections.QuadMesh at 0x7fc9d899bed0&gt;
 </code></pre></div>
 </div>
 <img alt="../../_images/af55b5caf6cb278bc62abdfb44b4912710188cbe49bf246ac027ce66810391cb.png" src="../../_images/af55b5caf6cb278bc62abdfb44b4912710188cbe49bf246ac027ce66810391cb.png" />
@@ -1218,6 +1151,17 @@ Coordinates:
 <p>We’ll also see how to speed up the reverse journey (from weights object to <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>) by passing prebuilt <code class="docutils literal notranslate"><span class="pre">coords</span></code> and <code class="docutils literal notranslate"><span class="pre">attrs</span></code> to <code class="docutils literal notranslate"><span class="pre">w2da</span></code> method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s2">&quot;https://archive.unidata.ucar.edu/software/netcdf/examples/ECMWF_ERA-40_subset.nc&quot;</span>
+<span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;ECMWF_ERA-40_subset.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># Lets load a netCDF Surface dataset</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span>
     <span class="s2">&quot;ECMWF_ERA-40_subset.nc&quot;</span>
@@ -1227,140 +1171,29 @@ Coordinates:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><code><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyError</span><span class="g g-Whitespace">                                  </span>Traceback (most recent call last)
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/file_manager.py:219,</span> in <span class="ni">CachingFileManager._acquire_with_cache_info</span><span class="nt">(self, needs_lock)</span>
-<span class="g g-Whitespace">    </span><span class="mi">218</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">219</span>     <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_key</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">220</span> <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/lru_cache.py:56,</span> in <span class="ni">LRUCache.__getitem__</span><span class="nt">(self, key)</span>
-<span class="g g-Whitespace">     </span><span class="mi">55</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
-<span class="ne">---&gt; </span><span class="mi">56</span>     <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-<span class="g g-Whitespace">     </span><span class="mi">57</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">move_to_end</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-<span class="ne">KeyError</span>: [&lt;function _open_scipy_netcdf at 0x7f3ffd26fe20&gt;, (&#39;/home/runner/work/libpysal/libpysal/docs/source/user-guide/weights/ECMWF_ERA-40_subset.nc&#39;,), &#39;r&#39;, ((&#39;mmap&#39;, None), (&#39;version&#39;, 2)), &#39;9f3a3ada-0ce7-4222-bca1-c3967603ba1f&#39;]
-
-<span class="n">During</span> <span class="n">handling</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">exception</span><span class="p">,</span> <span class="n">another</span> <span class="n">exception</span> <span class="n">occurred</span><span class="p">:</span>
-
-<span class="ne">FileNotFoundError</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="c1"># Lets load a netCDF Surface dataset</span>
-<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span>     <span class="s2">&quot;ECMWF_ERA-40_subset.nc&quot;</span>
-<span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="p">)</span>  <span class="c1"># After loading netCDF dataset we obtained a xarray.Dataset object</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>  <span class="c1"># This Dataset object containes several data variables</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/api.py:607,</span> in <span class="ni">open_dataset</span><span class="nt">(filename_or_obj, engine, chunks, cache, decode_cf, mask_and_scale, decode_times, decode_timedelta, use_cftime, concat_characters, decode_coords, drop_variables, create_default_indexes, inline_array, chunked_array_type, from_array_kwargs, backend_kwargs, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">595</span> <span class="n">decoders</span> <span class="o">=</span> <span class="n">_resolve_decoders_kwargs</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">596</span>     <span class="n">decode_cf</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">597</span>     <span class="n">open_backend_dataset_parameters</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">open_dataset_parameters</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>    <span class="mi">603</span>     <span class="n">decode_coords</span><span class="o">=</span><span class="n">decode_coords</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">604</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">606</span> <span class="n">overwrite_encoded_chunks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;overwrite_encoded_chunks&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">607</span> <span class="n">backend_ds</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">608</span>     <span class="n">filename_or_obj</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">609</span>     <span class="n">drop_variables</span><span class="o">=</span><span class="n">drop_variables</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">610</span>     <span class="o">**</span><span class="n">decoders</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">611</span>     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">612</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">613</span> <span class="n">ds</span> <span class="o">=</span> <span class="n">_dataset_from_backend_dataset</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">614</span>     <span class="n">backend_ds</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">615</span>     <span class="n">filename_or_obj</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>    <span class="mi">626</span>     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">627</span> <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">628</span> <span class="k">return</span> <span class="n">ds</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/scipy_.py:404,</span> in <span class="ni">ScipyBackendEntrypoint.open_dataset</span><span class="nt">(self, filename_or_obj, mask_and_scale, decode_times, concat_characters, decode_coords, drop_variables, use_cftime, decode_timedelta, mode, format, group, mmap, lock)</span>
-<span class="g g-Whitespace">    </span><span class="mi">402</span> <span class="n">store_entrypoint</span> <span class="o">=</span> <span class="n">StoreBackendEntrypoint</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">403</span> <span class="k">with</span> <span class="n">close_on_error</span><span class="p">(</span><span class="n">store</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">404</span>     <span class="n">ds</span> <span class="o">=</span> <span class="n">store_entrypoint</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span>
-<span class="g g-Whitespace">    </span><span class="mi">405</span>         <span class="n">store</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">406</span>         <span class="n">mask_and_scale</span><span class="o">=</span><span class="n">mask_and_scale</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">407</span>         <span class="n">decode_times</span><span class="o">=</span><span class="n">decode_times</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">408</span>         <span class="n">concat_characters</span><span class="o">=</span><span class="n">concat_characters</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">409</span>         <span class="n">decode_coords</span><span class="o">=</span><span class="n">decode_coords</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">410</span>         <span class="n">drop_variables</span><span class="o">=</span><span class="n">drop_variables</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">411</span>         <span class="n">use_cftime</span><span class="o">=</span><span class="n">use_cftime</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">412</span>         <span class="n">decode_timedelta</span><span class="o">=</span><span class="n">decode_timedelta</span><span class="p">,</span>
-<span class="g g-Whitespace">    </span><span class="mi">413</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">414</span> <span class="k">return</span> <span class="n">ds</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/store.py:42,</span> in <span class="ni">StoreBackendEntrypoint.open_dataset</span><span class="nt">(self, filename_or_obj, mask_and_scale, decode_times, concat_characters, decode_coords, drop_variables, set_indexes, use_cftime, decode_timedelta)</span>
-<span class="g g-Whitespace">     </span><span class="mi">27</span> <span class="k">def</span><span class="w"> </span><span class="nf">open_dataset</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">28</span>     <span class="bp">self</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">29</span>     <span class="n">filename_or_obj</span><span class="p">:</span> <span class="n">T_PathFileOrDataStore</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>     <span class="mi">38</span>     <span class="n">decode_timedelta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">39</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
-<span class="g g-Whitespace">     </span><span class="mi">40</span>     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename_or_obj</span><span class="p">,</span> <span class="n">AbstractDataStore</span><span class="p">)</span>
-<span class="ne">---&gt; </span><span class="mi">42</span>     <span class="nb">vars</span><span class="p">,</span> <span class="n">attrs</span> <span class="o">=</span> <span class="n">filename_or_obj</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span>     <span class="n">encoding</span> <span class="o">=</span> <span class="n">filename_or_obj</span><span class="o">.</span><span class="n">get_encoding</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">45</span>     <span class="nb">vars</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">coord_names</span> <span class="o">=</span> <span class="n">conventions</span><span class="o">.</span><span class="n">decode_cf_variables</span><span class="p">(</span>
-<span class="g g-Whitespace">     </span><span class="mi">46</span>         <span class="nb">vars</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">47</span>         <span class="n">attrs</span><span class="p">,</span>
-   <span class="p">(</span><span class="o">...</span><span class="p">)</span>     <span class="mi">54</span>         <span class="n">decode_timedelta</span><span class="o">=</span><span class="n">decode_timedelta</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">55</span>     <span class="p">)</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/common.py:366,</span> in <span class="ni">AbstractDataStore.load</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">347</span> <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">348</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">349</span><span class="sd">     This loads the variables and attributes simultaneously.</span>
-<span class="g g-Whitespace">    </span><span class="mi">350</span><span class="sd">     A centralized loading function makes it easier to create</span>
-<span class="sd">   (...)    363     are requested, so care should be taken to make sure its fast.</span>
-<span class="g g-Whitespace">    </span><span class="mi">364</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">365</span>     <span class="n">variables</span> <span class="o">=</span> <span class="n">FrozenDict</span><span class="p">(</span>
-<span class="nn">--&gt; 366         (_decode_variable_name(k), v) for k, v</span> in <span class="ni">self.get_variables().items</span><span class="nt">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">367</span>     <span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">368</span>     <span class="n">attributes</span> <span class="o">=</span> <span class="n">FrozenDict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">())</span>
-<span class="g g-Whitespace">    </span><span class="mi">369</span>     <span class="k">return</span> <span class="n">variables</span><span class="p">,</span> <span class="n">attributes</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/scipy_.py:246,</span> in <span class="ni">ScipyDataStore.get_variables</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">244</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">245</span>     <span class="k">return</span> <span class="n">FrozenDict</span><span class="p">(</span>
-<span class="nn">--&gt; 246         (k, self.open_store_variable(k, v)) for k, v</span> in <span class="ni">self.ds.variables.items</span><span class="nt">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">247</span>     <span class="p">)</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/scipy_.py:235,</span> in <span class="ni">ScipyDataStore.ds</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">233</span> <span class="nd">@property</span>
-<span class="g g-Whitespace">    </span><span class="mi">234</span> <span class="k">def</span><span class="w"> </span><span class="nf">ds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">235</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/file_manager.py:201,</span> in <span class="ni">CachingFileManager.acquire</span><span class="nt">(self, needs_lock)</span>
-<span class="g g-Whitespace">    </span><span class="mi">186</span> <span class="k">def</span><span class="w"> </span><span class="nf">acquire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">needs_lock</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_File</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">187</span><span class="w">     </span><span class="sd">&quot;&quot;&quot;Acquire a file object from the manager.</span>
-<span class="g g-Whitespace">    </span><span class="mi">188</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">189</span><span class="sd">     A new file is only opened if it has expired from the</span>
-<span class="sd">   (...)    199         An open file object, as returned by ``opener(*args, **kwargs)``.</span>
-<span class="g g-Whitespace">    </span><span class="mi">200</span><span class="sd">     &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">201</span>     <span class="n">file</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acquire_with_cache_info</span><span class="p">(</span><span class="n">needs_lock</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">202</span>     <span class="k">return</span> <span class="n">file</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/file_manager.py:225,</span> in <span class="ni">CachingFileManager._acquire_with_cache_info</span><span class="nt">(self, needs_lock)</span>
-<span class="g g-Whitespace">    </span><span class="mi">223</span>     <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">224</span>     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span>
-<span class="ne">--&gt; </span><span class="mi">225</span> <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_opener</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">226</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s2">&quot;w&quot;</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">227</span>     <span class="c1"># ensure file doesn&#39;t get overridden when opened again</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/xarray/backends/scipy_.py:158,</span> in <span class="ni">_open_scipy_netcdf</span><span class="nt">(filename, mode, mmap, version, flush_only)</span>
-<span class="g g-Whitespace">    </span><span class="mi">155</span>             <span class="k">raise</span>
-<span class="g g-Whitespace">    </span><span class="mi">157</span> <span class="k">try</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">158</span>     <span class="k">return</span> <span class="n">netcdf_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="n">mmap</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">159</span> <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># netcdf3 message is obscure in this case</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span>     <span class="n">errmsg</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="nn">File ~/micromamba/envs/test/lib/python3.14/site-packages/scipy/io/_netcdf.py:251,</span> in <span class="ni">netcdf_file.__init__</span><span class="nt">(self, filename, mode, mmap, version, maskandscale)</span>
-<span class="g g-Whitespace">    </span><span class="mi">249</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-<span class="g g-Whitespace">    </span><span class="mi">250</span> <span class="n">omode</span> <span class="o">=</span> <span class="s1">&#39;r+&#39;</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;a&#39;</span> <span class="k">else</span> <span class="n">mode</span>
-<span class="ne">--&gt; </span><span class="mi">251</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">omode</span><span class="si">}</span><span class="s1">b&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">252</span> <span class="k">if</span> <span class="n">mmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">253</span>     <span class="c1"># Mmapped files on PyPy cannot be usually closed</span>
-<span class="g g-Whitespace">    </span><span class="mi">254</span>     <span class="c1"># before the GC runs, so it&#39;s better to use mmap=False</span>
-<span class="g g-Whitespace">    </span><span class="mi">255</span>     <span class="c1"># as the default.</span>
-<span class="g g-Whitespace">    </span><span class="mi">256</span>     <span class="n">mmap</span> <span class="o">=</span> <span class="p">(</span><span class="ow">not</span> <span class="n">IS_PYPY</span><span class="p">)</span>
-
-<span class="ne">FileNotFoundError</span>: [Errno 2] No such file or directory: &#39;/home/runner/work/libpysal/libpysal/docs/source/user-guide/weights/ECMWF_ERA-40_subset.nc&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;xarray.Dataset&gt; Size: 89MB
+Dimensions:    (time: 62, latitude: 73, longitude: 144)
+Coordinates:
+  * time       (time) datetime64[ns] 496B 2002-07-01T12:00:00 ... 2002-07-31T...
+  * latitude   (latitude) float32 292B 90.0 87.5 85.0 82.5 ... -85.0 -87.5 -90.0
+  * longitude  (longitude) float32 576B 0.0 2.5 5.0 7.5 ... 352.5 355.0 357.5
+Data variables: (12/17)
+    tcw        (time, latitude, longitude) float64 5MB ...
+    tcwv       (time, latitude, longitude) float64 5MB ...
+    lsp        (time, latitude, longitude) float64 5MB ...
+    cp         (time, latitude, longitude) float64 5MB ...
+    msl        (time, latitude, longitude) float64 5MB ...
+    blh        (time, latitude, longitude) float64 5MB ...
+    ...         ...
+    e          (time, latitude, longitude) float64 5MB ...
+    lcc        (time, latitude, longitude) float64 5MB ...
+    mcc        (time, latitude, longitude) float64 5MB ...
+    hcc        (time, latitude, longitude) float64 5MB ...
+    tco3       (time, latitude, longitude) float64 5MB ...
+    tp         (time, latitude, longitude) float64 5MB ...
+Attributes:
+    Conventions:  CF-1.0
+    history:      2004-09-15 17:04:29 GMT by mars2netcdf-0.92
 </code></pre></div>
 </div>
 </div>
@@ -1422,129 +1255,6 @@ Coordinates:
 </div>
 </div>
 </div>
-<h3 id="using-local-geotiff-dataset">Using local <code class="docutils literal notranslate"><span class="pre">GeoTIFF</span></code> dataset<a class="headerlink" href="#using-local-geotiff-dataset" title="Link to this heading">¶</a></h3>
-<p>Up until now we’ve only played with <code class="docutils literal notranslate"><span class="pre">netCDF</span></code> datasets but in this example we’ll use a <code class="docutils literal notranslate"><span class="pre">raster.tif</span></code> file to see how interface interacts with it. We’ll also see how these methods handle missing data.</p>
-<p>Unlike earlier we’ll use weight builder methods from <code class="docutils literal notranslate"><span class="pre">raster.py</span></code>, which we can call directly. Just a reminder that <code class="docutils literal notranslate"><span class="pre">from_xarray</span></code> uses methods from <code class="docutils literal notranslate"><span class="pre">raster.py</span></code> and therefore only difference exists in the API.</p>
-<p>To access GDAL Raster Formats <code class="docutils literal notranslate"><span class="pre">xarray</span></code> offers <code class="docutils literal notranslate"><span class="pre">open_rasterio</span></code> method which uses <code class="docutils literal notranslate"><span class="pre">rasterio</span></code> as backend. It loads metadata, coordinate values from the raster file and assign them to the <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># Loading raster data with missing values</span>
-<span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_rasterio</span><span class="p">(</span><span class="s2">&quot;/data/Downloads/lux_ppp_2019.tif&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;xarray.DataArray (band: 1, y: 880, x: 940)&gt;
-[827200 values with dtype=float32]
-Coordinates:
-  * band     (band) int64 1
-  * y        (y) float64 50.18 50.18 50.18 50.18 ... 49.45 49.45 49.45 49.45
-  * x        (x) float64 5.745 5.746 5.747 5.747 ... 6.525 6.526 6.527 6.527
-Attributes:
-    transform:      (0.0008333333297872345, 0.0, 5.744583325, 0.0, -0.0008333...
-    crs:            +init=epsg:4326
-    res:            (0.0008333333297872345, 0.0008333333295454553)
-    is_tiled:       0
-    nodatavals:     (-99999.0,)
-    scales:         (1.0,)
-    offsets:        (0.0,)
-    AREA_OR_POINT:  Area
-</code></pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-    <span class="n">da</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;nodatavals&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>  <span class="c1"># we can see that the DataArray contains missing values.</span>
-</code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;matplotlib.collections.QuadMesh at 0x7f68ef4c5ca0&gt;
-</code></pre></div>
-</div>
-<img alt="../../_images/251092a39bd44405586a0b6a7f68cfc5d060012a7b4f635e9a93b79103d28bd3.png" src="../../_images/251092a39bd44405586a0b6a7f68cfc5d060012a7b4f635e9a93b79103d28bd3.png" />
-</div>
-</div>
-<p>We’ll look at how weight builders handle missing values. Firstly we’ll slice the <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> to reduce overall size for easier visualization.</p>
-<p>This time we’ll create <code class="docutils literal notranslate"><span class="pre">WSP</span></code> object using <code class="docutils literal notranslate"><span class="pre">da2WSP</span></code> method inside <code class="docutils literal notranslate"><span class="pre">raster.py</span></code>. Since our DataArray is single banded and all of its dimensions belong to the default list, we only have to ship the DataArray and the type of contiguity we need.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># Slicing the dataarray</span>
-<span class="n">da_s</span> <span class="o">=</span> <span class="n">da</span><span class="p">[:,</span> <span class="mi">330</span><span class="p">:</span><span class="mi">340</span><span class="p">,</span> <span class="mi">129</span><span class="p">:</span><span class="mi">139</span><span class="p">]</span>
-<span class="n">w_queen</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">da2WSP</span><span class="p">(</span><span class="n">da_s</span><span class="p">)</span>  <span class="c1"># default contiguity is queen</span>
-<span class="n">w_rook</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">da2WSP</span><span class="p">(</span><span class="n">da_s</span><span class="p">,</span> <span class="s2">&quot;rook&quot;</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<p>After plotting both contiguities and sliced <code class="docutils literal notranslate"><span class="pre">DataArray</span></code>, we can see that the missing values are ignored by the <code class="docutils literal notranslate"><span class="pre">da2WSP</span></code> method and only indices of non missing values are stored in <code class="docutils literal notranslate"><span class="pre">index</span></code> attribute of <code class="docutils literal notranslate"><span class="pre">WSP</span></code> object.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;equal&quot;</span><span class="p">))</span>
-<span class="n">da_s</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">da_s</span><span class="o">.</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">da_s</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;nodatavals&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Sliced raster&quot;</span><span class="p">)</span>
-<span class="n">splot</span><span class="o">.</span><span class="n">plot_spatial_weights</span><span class="p">(</span><span class="n">w_rook</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">da_s</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Rook contiguity&quot;</span><span class="p">)</span>
-<span class="n">splot</span><span class="o">.</span><span class="n">plot_spatial_weights</span><span class="p">(</span><span class="n">w_queen</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">da_s</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Queen contiguity&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../../_images/7cdd1788b4103f38011a4811118278fb13953fc746237217c2405c8d27cc8c8b.png" src="../../_images/7cdd1788b4103f38011a4811118278fb13953fc746237217c2405c8d27cc8c8b.png" />
-</div>
-</div>
-<h3 id="higher-order-neighbors"><code class="docutils literal notranslate"><span class="pre">higher_order</span></code> neighbors<a class="headerlink" href="#higher-order-neighbors" title="Link to this heading">¶</a></h3>
-<p>In some cases <code class="docutils literal notranslate"><span class="pre">Rook</span></code> and <code class="docutils literal notranslate"><span class="pre">Queen</span></code> contiguities don’t provide sufficient neighbors when performing spatial analysis on a raster data, this is because <code class="docutils literal notranslate"><span class="pre">Rook</span></code> contiguity provides max 4 neighbors and <code class="docutils literal notranslate"><span class="pre">Queen</span></code> provides max 8.</p>
-<p>Therefore we’ve added <code class="docutils literal notranslate"><span class="pre">higher_order</span></code> functionality inside the builder method. We can now pass <code class="docutils literal notranslate"><span class="pre">k</span></code> value to the weight builder to obtain upto kth order neighbors. Since this can be computionally expensive we can take advantage of parallel processing using <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> argument. Now lets take a look at this functionality.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># Building a test DataArray</span>
-<span class="n">da_s</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">testDataArray</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">rand</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<p>Below we can see that builder selected all the neighbors of order less than equal to 2, with <code class="docutils literal notranslate"><span class="pre">rook</span></code> contiguity</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w_rook2</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">da2WSP</span><span class="p">(</span><span class="n">da_s</span><span class="p">,</span> <span class="s2">&quot;rook&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">splot</span><span class="o">.</span><span class="n">plot_spatial_weights</span><span class="p">(</span><span class="n">w_rook2</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">da_s</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/opt/anaconda/lib/python3.8/site-packages/scipy/sparse/_index.py:124: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
-  self._set_arrayXarray(i, j, x)
-</code></pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>(&lt;Figure size 720x720 with 1 Axes&gt;, &lt;AxesSubplot:&gt;)
-</code></pre></div>
-</div>
-<img alt="../../_images/19c34523ac3baf338fb7cc54e2527ea4fb51f2f4298a21959a42f856688dd597.png" src="../../_images/19c34523ac3baf338fb7cc54e2527ea4fb51f2f4298a21959a42f856688dd597.png" />
-</div>
-</div>
-<p>Few times we require the kth order neighbors for our analysis even if lower order neighbors are absent, hence we can use <code class="docutils literal notranslate"><span class="pre">include_nas</span></code> argument to do the same.</p>
-<p>We can also look in both the examples we used <code class="docutils literal notranslate"><span class="pre">n_jobs</span></code> parameter, and assigned -1 which equats to all the cores present in the computer for multithreading</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">w_rook2</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">da2WSP</span><span class="p">(</span><span class="n">da_s</span><span class="p">,</span> <span class="s2">&quot;rook&quot;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">include_nodata</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">splot</span><span class="o">.</span><span class="n">plot_spatial_weights</span><span class="p">(</span><span class="n">w_rook2</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">da_s</span><span class="p">)</span>
-</code></pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>(&lt;Figure size 720x720 with 1 Axes&gt;, &lt;AxesSubplot:&gt;)
-</code></pre></div>
-</div>
-<img alt="../../_images/bb9cf4d45c0fb78178d04628d1c675764ee09c938a146139f4143edd5d616301.png" src="../../_images/bb9cf4d45c0fb78178d04628d1c675764ee09c938a146139f4143edd5d616301.png" />
-</div>
-</div>
 <h2 id="additional-resources">Additional resources<a class="headerlink" href="#additional-resources" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p><a class="reference external" href="http://xarray.pydata.org/en/stable/io.html">Reading and writing files using Xarray</a></p></li>
@@ -1552,7 +1262,6 @@ Attributes:
 <li><p>Dataset links:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.unidata.ucar.edu/software/netcdf/examples/files.html">ECMWF_ERA-40_subset.nc</a></p></li>
-<li><p><a class="reference external" href="https://data.humdata.org/dataset/worldpop-population-counts-for-luxembourg">lux_ppp_2019.tif</a></p></li>
 </ul>
 </li>
 </ol>
