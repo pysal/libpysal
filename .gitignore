@@ -116,3 +116,5 @@ generated/
 *.doctree
 *.pickle
 .sphinx/
+docs/source/user-guide/weights/ECMWF_ERA-40_subset.nc
+docs/source/user-guide/weights/lux_ppp_2019.tif
