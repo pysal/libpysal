@@ -294,6 +294,10 @@ def _knn(coordinates, metric="euclidean", k=1, p=2, coplanar="raise", tree=None)
                     coplanar="raise",
                 )
             )
+            # map back head and tails to original
+            remaining_ix = numpy.delete(numpy.arange(n_samples), coplanar_lookup)
+            heads = remaining_ix[heads]
+            tails = remaining_ix[tails]
             adjtable = pandas.DataFrame.from_dict(
                 {"focal": heads, "neighbor": tails, "weight": weights}
             )
