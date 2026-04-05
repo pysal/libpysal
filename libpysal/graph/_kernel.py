@@ -51,9 +51,11 @@ def _kernel(
         geometries over which to compute a kernel. If a geopandas.Geo* object
         is provided, the .geometry attribute is used. If a numpy.ndarray with
         a geometry dtype is used, then the coordinates are extracted and used.
-    bandwidth : float (default: None)
+    bandwidth : float or "auto" or "adaptive" (default: None)
         distance to use in the kernel computation. Should be on the same scale as
-        the input coordinates.
+        the input coordinates. If "auto", the bandwidth is optimized via entropy.
+        If "adaptive", a per-observation bandwidth is used equal to each
+        observation's distance to its k-th nearest neighbor. Requires ``k``.
     metric : string or callable (default: 'euclidean')
         distance function to apply over the input coordinates. Supported options
         depend on whether or not scikit-learn is installed. If so, then any
@@ -198,7 +200,20 @@ def _kernel(
         else:
             d = sparse.csc_array(coordinates)
 
-    if bandwidth is None:
+    if bandwidth == "adaptive":
+        if k is None:
+            raise ValueError(
+                "bandwidth='adaptive' requires `k` to be set so that "
+                "per-observation bandwidths can be computed from k-nearest-neighbor "
+                "distances."
+            )
+        # each observation's bandwidth is its distance to its k-th neighbor
+        d_csr = d.tocsr()
+        rows, _ = d_csr.nonzero()
+        bw_per_row = numpy.zeros(d_csr.shape[0])
+        numpy.maximum.at(bw_per_row, rows, d_csr.data)
+        bandwidth = bw_per_row[rows]
+    elif bandwidth is None:
         bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
     elif bandwidth == "auto":
         if (kernel == "identity") or (kernel is None):

@@ -570,3 +570,51 @@ def test_tree_haversine_raises(grocs):
 
     with pytest.raises(ValueError, match="Cannot use a pre-built tree"):
         _kernel(coords, k=3, metric="haversine", tree=tree)
+
+
+def test_adaptive_bandwidth_requires_k():
+    """bandwidth='adaptive' without k should raise a ValueError."""
+    with pytest.raises(ValueError, match="bandwidth='adaptive'"):
+        _kernel(lap_coords, bandwidth="adaptive", k=None)
+
+
+def test_adaptive_bandwidth_basic():
+    """bandwidth='adaptive' with k should produce per-observation bandwidths."""
+    k = 5
+    head_f, tail_f, weight_f = _kernel(lap_coords, k=k)
+    head_a, tail_a, weight_a = _kernel(lap_coords, k=k, bandwidth="adaptive")
+
+    # Both should have the same neighbors
+    assert head_a.shape == head_f.shape
+    assert tail_a.shape == tail_f.shape
+
+    assert not np.allclose(weight_a, weight_f)
+
+
+def test_adaptive_bandwidth_graph():
+    """Graph.build_kernel with bandwidth='adaptive' should work end-to-end."""
+    import geopandas as gpd
+    from shapely.geometry import Point
+
+    from libpysal.graph import Graph
+
+    coords = gpd.GeoSeries([Point(x, y) for x, y in lap_coords[:20]])
+    g_fixed = Graph.build_kernel(coords, k=4)
+    g_adaptive = Graph.build_kernel(coords, k=4, bandwidth="adaptive")
+
+    assert set(
+        zip(
+            g_fixed.adjacency.index.get_level_values("focal"),
+            g_fixed.adjacency.index.get_level_values("neighbor"),
+            strict=True,
+        )
+    ) == set(
+        zip(
+            g_adaptive.adjacency.index.get_level_values("focal"),
+            g_adaptive.adjacency.index.get_level_values("neighbor"),
+            strict=True,
+        )
+    )
+
+    # Weights differ between fixed and adaptive
+    assert not np.allclose(g_fixed.adjacency.values, g_adaptive.adjacency.values)

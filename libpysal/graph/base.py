@@ -1171,9 +1171,11 @@ class Graph(SetOpsMixin):
         k : int (default: None)
             number of nearest neighbors used to truncate the kernel. This is assumed
             to be constant across samples. If None, no truncation is conduted.
-        bandwidth : float (default: None)
+        bandwidth : float or "auto" or "adaptive" (default: None)
             distance to use in the kernel computation. Should be on the same scale as
-            the input coordinates.
+            the input coordinates. If "auto", the bandwidth is optimized via entropy.
+            If "adaptive", a per-observation bandwidth is used equal to each
+            observation's distance to its k-th nearest neighbor. Requires ``k``.
         metric : string or callable (default: 'euclidean')
             distance function to apply over the input coordinates. Supported options
             depend on whether or not scikit-learn is installed. If so, then any
