@@ -592,6 +592,9 @@ def test_adaptive_bandwidth_basic():
     unique, counts = np.unique(head_a, return_counts=True)
     assert (counts == k).all()
 
+    assert weight_a.mean() == pytest.approx(0.2950555038)
+    assert weight_a.max() == pytest.approx(0.3981074891)
+
     assert not np.allclose(weight_a, weight_f)
 
 
