@@ -588,6 +588,10 @@ def test_adaptive_bandwidth_basic():
     assert head_a.shape == head_f.shape
     assert tail_a.shape == tail_f.shape
 
+    # each focal should have exactly k neighbors
+    unique, counts = np.unique(head_a, return_counts=True)
+    assert (counts == k).all()
+
     assert not np.allclose(weight_a, weight_f)
 
 

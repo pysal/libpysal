@@ -207,12 +207,12 @@ def _kernel(
                 "per-observation bandwidths can be computed from k-nearest-neighbor "
                 "distances."
             )
-        # each observation's bandwidth is its distance to its k-th neighbor
+        # each observation's bandwidth is its distance to its k-th neighbor,
         d_csr = d.tocsr()
         rows, _ = d_csr.nonzero()
         bw_per_row = numpy.zeros(d_csr.shape[0])
         numpy.maximum.at(bw_per_row, rows, d_csr.data)
-        bandwidth = bw_per_row[rows]
+        bandwidth = bw_per_row[rows] * 1.0000001
     elif bandwidth is None:
         bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
     elif bandwidth == "auto":
