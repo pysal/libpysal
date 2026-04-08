@@ -108,13 +108,15 @@ def _spatial_matching(
 
     mp = pulp.LpProblem("optimal-neargraph", sense=pulp.LpMinimize)
     # a match is as binary decision variable, connecting observation i to observation j
-    match_vars = pulp.LpVariable.dicts(
-        "match",
-        lowBound=0,
-        upBound=1,
-        indices=zip(row, col, strict=True),
-        cat="Continuous" if allow_partial_match else "Binary",
-    )
+    match_vars = {
+        (i, j): pulp.LpVariable(
+            f"match_{i}_{j}",
+            lowBound=0,
+            upBound=1,
+            cat="Continuous" if allow_partial_match else "Binary",
+        )
+        for i, j in zip(row, col, strict=True)
+    }
     # we want to minimize the geographic distance of links in the graph
     mp.objective = pulp.lpSum(
         [
