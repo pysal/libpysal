@@ -146,11 +146,16 @@ def _spatial_matching(
                 ]
             )
             sense = int(not allow_partial_match)
-        mp += pulp.LpConstraint(summand, sense=sense, rhs=n_matches)
+        if sense == 1:
+            mp += summand >= n_matches
+        elif sense == 0:
+            mp += summand == n_matches
+        else:
+            mp += summand <= n_matches
     if match_between:  # but, we may choose to ignore some sources
         for i in range(n_sources):
             summand = pulp.lpSum([match_vars[j, i] for j in range(n_targets)])
-            mp += pulp.LpConstraint(summand, sense=-1, rhs=n_matches)
+            mp += summand <= n_matches
 
     status = mp.solve(solver)
 
