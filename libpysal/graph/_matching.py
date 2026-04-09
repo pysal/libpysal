@@ -1,6 +1,7 @@
 import warnings
 
 import numpy
+from packaging.version import Version
 from sklearn.metrics import pairwise_distances
 
 from ._utils import _validate_geometry_input
@@ -108,11 +109,12 @@ def _spatial_matching(
 
     mp = pulp.LpProblem("optimal-neargraph", sense=pulp.LpMinimize)
     # a match is as binary decision variable, connecting observation i to observation j
+    PULP4 = Version(pulp.__version__).major >= 4
     match_vars = {}
     for i, j in zip(row, col, strict=True):
         name = f"match_{i}_{j}"
         cat = "Continuous" if allow_partial_match else "Binary"
-        if hasattr(mp, "add_variable"):
+        if PULP4:
             match_vars[i, j] = mp.add_variable(name, lowBound=0, upBound=1, cat=cat)
         else:
             match_vars[i, j] = pulp.LpVariable(name, lowBound=0, upBound=1, cat=cat)
