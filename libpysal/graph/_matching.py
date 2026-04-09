@@ -109,12 +109,12 @@ def _spatial_matching(
 
     mp = pulp.LpProblem("optimal-neargraph", sense=pulp.LpMinimize)
     # a match is as binary decision variable, connecting observation i to observation j
-    PULP4 = Version(pulp.__version__).major >= 4
+    pulp4 = Version(pulp.__version__).major >= 4
     match_vars = {}
     for i, j in zip(row, col, strict=True):
         name = f"match_{i}_{j}"
         cat = "Continuous" if allow_partial_match else "Binary"
-        if PULP4:
+        if pulp4:
             match_vars[i, j] = mp.add_variable(name, lowBound=0, upBound=1, cat=cat)
         else:
             match_vars[i, j] = pulp.LpVariable(name, lowBound=0, upBound=1, cat=cat)
