@@ -2574,6 +2574,8 @@ class Graph(SetOpsMixin):
         ax=None,
         figsize=None,
         limit_extent=False,
+        color_by_weight=False,
+        cmap="viridis",
     ):
         """Plot edges and nodes of the Graph
 
@@ -2616,6 +2618,12 @@ class Graph(SetOpsMixin):
         limit_extent : bool, optional
             limit the extent of the axis to the extent of the plotted graph, by default
             False
+        color_by_weight : bool, optional
+            If True, edges are colored by their weights using the specified colormap.
+            If False, all edges use the same color. By default False
+        cmap : str, optional
+            Colormap to use when ``color_by_weight=True``. Can be any valid matplotlib
+            colormap name (e.g., "viridis", "plasma", "coolwarm"). By default "viridis"
 
         Returns
         -------
@@ -2644,6 +2652,8 @@ class Graph(SetOpsMixin):
             ax=ax,
             figsize=figsize,
             limit_extent=limit_extent,
+            color_by_weight=color_by_weight,
+            cmap=cmap,
         )
 
     def explore(
