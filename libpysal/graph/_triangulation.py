@@ -431,6 +431,64 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
 #### utilities
 
 
+def _voronoi_polygon(
+    geoms,
+    ids,
+    clip="bounding_box",
+    rook=True,
+    **kwargs,
+):
+    """
+    Compute contiguity weights according to a clipped Voronoi diagram
+    for non-point geometries (Polygon, MultiPolygon).
+
+    Parameters
+    ---------
+    geoms : geopandas.GeoSeries or geopandas.GeoDataFrame
+        Geometries to compute the Voronoi diagram. Accepts Polygon
+        and MultiPolygon geometries. Boundaries are discretised into
+        points and dissolved back using ``voronoi_frames()``.
+    ids : numpy.ndarray
+        ids to use for each sample in geoms.
+    clip : str (default: 'bounding_box')
+        Clipping method passed to ``libpysal.cg.voronoi_frames()``.
+        Options are ``None``, ``'bounding_box'``, ``'convex_hull'``,
+        ``'alpha_shape'``, or a ``shapely.Polygon``.
+    rook : bool, optional
+        Contiguity method. If True, two geometries are considered
+        neighbours if they share at least one edge. If False, they
+        are considered neighbours if they share at least one vertex.
+        By default True.
+    **kwargs
+        Additional keyword arguments passed to ``voronoi_frames()``.
+        Supports ``segment`` (float) to control boundary discretisation
+        and ``shrink`` (float) to shrink geometries before tessellation.
+
+    Returns
+    -------
+    heads : numpy.ndarray
+    tails : numpy.ndarray
+    weights : numpy.ndarray
+    """
+
+    voronoi_kwargs = {k: v for k, v in kwargs.items() if k in ("segment", "shrink")}
+
+    cells = voronoi_frames(
+        geoms, clip=clip, return_input=False, as_gdf=False, **voronoi_kwargs
+    )
+    heads_ix, tails_ix, _ = _vertex_set_intersection(cells, rook=rook)
+
+    valid_ids = set(ids)
+    mask = numpy.isin(heads_ix, list(valid_ids)) & numpy.isin(tails_ix, list(valid_ids))
+    heads_ix = heads_ix[mask]
+    tails_ix = tails_ix[mask]
+
+    heads = heads_ix
+    tails = tails_ix
+    weights = numpy.ones(len(heads_ix), dtype=numpy.int8)
+    return heads, tails, weights
+
+
 @njit
 def _edges_from_simplices(simplices):
     """
