@@ -208,7 +208,7 @@ def _kernel(
                         "minkowski",
                     ):
                         raise ValueError(
-                            f"metric {metric} is not supported by scipy, and scikit-learn "
+                            f"metric {metric} is not supported by scipy or scikit-learn"
                             "could not be imported."
                         )
                     d = spatial.distance.pdist(coordinates, metric=metric, **dist_kwds)
