@@ -77,6 +77,13 @@ tests = [
     "pytest-xdist",
 ]
 
+[dependency-groups]
+dev = [
+    "geodatasets>=2026.1.0",
+    "geopandas>=1.1.3",
+    "pytest>=9.0.3",
+]
+
 [tool.setuptools.packages.find]
 include = ["libpysal", "libpysal.*"]
 
