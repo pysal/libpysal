@@ -1,6 +1,7 @@
 import warnings
 
 import numpy
+from packaging.version import Version
 from sklearn.metrics import pairwise_distances
 
 from ._utils import _validate_geometry_input
@@ -69,6 +70,8 @@ def _spatial_matching(
     """
     try:
         import pulp
+
+        PULP_GE_4 = Version(pulp.__version__).major >= 4  # noqa: N806
     except ImportError as error:
         raise ImportError("spatial matching requires the pulp library") from error
     if metric == "precomputed":
@@ -108,13 +111,14 @@ def _spatial_matching(
 
     mp = pulp.LpProblem("optimal-neargraph", sense=pulp.LpMinimize)
     # a match is as binary decision variable, connecting observation i to observation j
-    match_vars = pulp.LpVariable.dicts(
-        "match",
-        lowBound=0,
-        upBound=1,
-        indices=zip(row, col, strict=True),
-        cat="Continuous" if allow_partial_match else "Binary",
-    )
+    match_vars = {}
+    for i, j in zip(row, col, strict=True):
+        name = f"match_{i}_{j}"
+        cat = "Continuous" if allow_partial_match else "Binary"
+        if PULP_GE_4:
+            match_vars[i, j] = mp.add_variable(name, lowBound=0, upBound=1, cat=cat)
+        else:
+            match_vars[i, j] = pulp.LpVariable(name, lowBound=0, upBound=1, cat=cat)
     # we want to minimize the geographic distance of links in the graph
     mp.objective = pulp.lpSum(
         [
@@ -145,11 +149,16 @@ def _spatial_matching(
                 ]
             )
             sense = int(not allow_partial_match)
-        mp += pulp.LpConstraint(summand, sense=sense, rhs=n_matches)
+        if sense == 1:
+            mp += summand >= n_matches
+        elif sense == 0:
+            mp += summand == n_matches
+        else:
+            mp += summand <= n_matches
     if match_between:  # but, we may choose to ignore some sources
         for i in range(n_sources):
             summand = pulp.lpSum([match_vars[j, i] for j in range(n_targets)])
-            mp += pulp.LpConstraint(summand, sense=-1, rhs=n_matches)
+            mp += summand <= n_matches
 
     status = mp.solve(solver)
 
