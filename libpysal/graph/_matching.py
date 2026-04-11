@@ -70,6 +70,8 @@ def _spatial_matching(
     """
     try:
         import pulp
+
+        PULP_GE_4 = Version(pulp.__version__).major >= 4  # noqa: N806
     except ImportError as error:
         raise ImportError("spatial matching requires the pulp library") from error
     if metric == "precomputed":
@@ -109,7 +111,6 @@ def _spatial_matching(
 
     mp = pulp.LpProblem("optimal-neargraph", sense=pulp.LpMinimize)
     # a match is as binary decision variable, connecting observation i to observation j
-    PULP_GE_4 = Version(pulp.__version__).major >= 4  # noqa: N806
     match_vars = {}
     for i, j in zip(row, col, strict=True):
         name = f"match_{i}_{j}"
