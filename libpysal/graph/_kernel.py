@@ -180,7 +180,9 @@ def _kernel(
                 if tree is None or not isinstance(tree, spatial.KDTree):
                     tree = spatial.KDTree(coordinates)
                 d = sparse.csc_array(
-                    tree.sparse_distance_matrix(tree, bandwidth, output_type="coo_matrix")
+                    tree.sparse_distance_matrix(
+                        tree, bandwidth, output_type="coo_matrix"
+                    )
                 )
                 if exclude_self_weights:
                     d.setdiag(0)
