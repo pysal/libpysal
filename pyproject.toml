@@ -48,6 +48,7 @@ plus = [
     "networkx>=3.4",
     "numba>=0.60",
     "pandarm>=0.0",
+    "pulp",
     "pyarrow>=16.1",
     "sqlalchemy>=2.0",
     "xarray>=2024.5",
