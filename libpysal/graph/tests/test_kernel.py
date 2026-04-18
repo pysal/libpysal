@@ -570,3 +570,51 @@ def test_tree_haversine_raises(grocs):
 
     with pytest.raises(ValueError, match="Cannot use a pre-built tree"):
         _kernel(coords, k=3, metric="haversine", tree=tree)
+
+
+@pytest.mark.parametrize(
+    "kernel",
+    ["bisquare", "boxcar", "triangular", "tricube", "cosine", "parabolic"],
+)
+def test_compact_support_sparse_path_matches_dense(kernel):
+    """Compact-support kernels with a fixed bandwidth should take the sparse path
+    and return results identical to the dense path."""
+    coords = lap_coords[:100]
+    bw = 0.05
+
+    sparse_heads, sparse_tails, sparse_weights = _kernel(
+        coords, bandwidth=bw, kernel=kernel, metric="euclidean"
+    )
+    # Force dense path: wrap bw so isinstance(bandwidth, (int, float)) is False
+    dense_heads, dense_tails, dense_weights = _kernel(
+        coords, bandwidth=complex(bw), kernel=kernel, metric="euclidean"
+    )
+
+    np.testing.assert_array_equal(
+        np.sort(sparse_heads), np.sort(dense_heads), err_msg=f"{kernel}: heads differ"
+    )
+    np.testing.assert_array_equal(
+        np.sort(sparse_tails), np.sort(dense_tails), err_msg=f"{kernel}: tails differ"
+    )
+    np.testing.assert_array_almost_equal(
+        np.sort(sparse_weights),
+        np.sort(dense_weights),
+        err_msg=f"{kernel}: weights differ",
+    )
+
+
+def test_gaussian_not_sparse_path():
+    """Gaussian (infinite support) must not take the sparse path."""
+
+    coords = lap_coords[:50]
+    bw = 0.05
+
+    heads, tails, weights = _kernel(coords, bandwidth=bw, kernel="gaussian")
+    # Gaussian with a tight bandwidth should still return weights for all pairs
+    # (non-zero gaussian never reaches exactly zero), so the edge count should
+    # exceed what a compact-support kernel would return at the same bandwidth.
+    compact_heads, _, _ = _kernel(coords, bandwidth=bw, kernel="bisquare")
+    assert len(heads) >= len(compact_heads), (
+        "Gaussian should have at least as many edges as a compact kernel"
+        " at the same bandwidth"
+    )

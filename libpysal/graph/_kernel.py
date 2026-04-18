@@ -111,6 +111,17 @@ def _kernel(
         A pre-built tree for distance computation. If provided, `coordinates`
         should be None or the tree's data will be used. This avoids rebuilding
         the tree when it has already been constructed.
+
+    Notes
+    -----
+    When ``kernel`` has compact support (bisquare, boxcar, triangular, tricube,
+    cosine, parabolic/discrete), ``bandwidth`` is a fixed numeric value, and
+    ``metric`` is ``"euclidean"``, a fast path is taken using
+    ``scipy.spatial.KDTree.sparse_distance_matrix``.  This avoids allocating an
+    O(N²) dense distance matrix and instead builds only the O(N × avg_neighbors)
+    sparse matrix of pairs within ``bandwidth``.  All other combinations of
+    ``kernel``, ``bandwidth``, and ``metric`` fall through to the existing dense
+    path unchanged.
     """
     if tree is not None:
         if hasattr(tree, "data"):
