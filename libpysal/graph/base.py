@@ -436,6 +436,174 @@ class Graph(SetOpsMixin):
 
         return w
 
+    def multiply(self, other):
+        """
+        Element-wise (Hadamard) multiplication of two graphs.
+
+        Multiplies the weights of two graphs edge by edge. Both graphs must
+        share the same focal and neighbor structure (i.e., the same set of
+        edges). This is the primitive operation for combining independently
+        constructed spatial and temporal graphs into a spatiotemporal graph.
+
+        Parameters
+        ----------
+        other : Graph
+            Another Graph with the same edge structure as ``self``.
+
+        Returns
+        -------
+        Graph
+            A new Graph whose weights are the element-wise product of the
+            weights of ``self`` and ``other``.
+
+        Raises
+        ------
+        ValueError
+            If the two graphs do not share the same edge structure.
+
+        Notes
+        -----
+        The spatiotemporal product kernel is defined as:
+
+        .. math::
+
+            W_{ST}(i,j) = W_S(i,j) \\cdot W_T(i,j)
+
+        where :math:`W_S` and :math:`W_T` are independently built spatial
+        and temporal kernel graphs. Using separate bandwidths :math:`h_S`
+        and :math:`h_T` for space and time avoids the "bandwidth steepness"
+        issue that arises when combining spatial and temporal distances into
+        a single Euclidean metric.
+
+        Examples
+        --------
+        Build a spatiotemporal graph from separate spatial and temporal graphs:
+
+        >>> import geopandas as gpd
+        >>> import pandas as pd
+        >>> from libpysal import graph
+        >>> from sklearn.metrics import pairwise_distances
+        >>> gdf = gpd.read_file(...)  # your GeoDataFrame
+        >>> t = pd.Series([...])      # days since first observation
+        >>> spatial_g = graph.Graph.build_knn(gdf, k=10)
+        >>> temporal_dists = pairwise_distances(t.values.reshape(-1, 1))
+        >>> temporal_g = graph.Graph.build_kernel(
+        ...     temporal_dists, metric="precomputed", bandwidth=365
+        ... )
+        >>> # Restrict to spatial neighbours, then weight by temporal kernel
+        >>> st_graph = temporal_g.intersection(spatial_g).multiply(spatial_g)
+
+        Or use the convenience constructor:
+
+        >>> st_graph = graph.Graph.build_spatiotemporal(
+        ...     gdf, t=t, spatial_bandwidth=10, temporal_bandwidth=365
+        ... )
+        """
+        if not self._adjacency.index.equals(other._adjacency.index):
+            raise ValueError(
+                "Both graphs must have the same edge structure (focal/neighbor pairs) "
+                "to be multiplied element-wise. Consider using "
+                "``graph1.intersection(graph2)`` first to align the structures."
+            )
+        new_weights = self._adjacency * other._adjacency
+        return Graph(new_weights)
+
+    @classmethod
+    def build_spatiotemporal(
+        cls,
+        data,
+        t,
+        spatial_bandwidth,
+        temporal_bandwidth,
+        kernel="gaussian",
+    ):
+        """
+        Build a spatiotemporal kernel graph using the product-of-kernels approach.
+
+        Constructs a spatiotemporal weights matrix as the element-wise (Hadamard)
+        product of a spatial kernel graph and a temporal kernel graph:
+
+        .. math::
+
+            W_{ST}(i,j) = W_S(i,j) \\cdot W_T(i,j)
+
+        Using separate bandwidths for space (:math:`h_S`) and time (:math:`h_T`)
+        avoids the "bandwidth steepness" issue that arises when spatial and temporal
+        distances are collapsed into a single Euclidean metric.
+
+        Parameters
+        ----------
+        data : geopandas.GeoDataFrame | numpy.ndarray
+            Geometries or coordinates for spatial neighbour construction.
+            Passed directly to :meth:`Graph.build_kernel`.
+        t : array-like | pandas.Series
+            Temporal values for each observation (e.g. days since first event).
+            Must be aligned with the rows of ``data``.
+        spatial_bandwidth : float
+            Bandwidth for the spatial kernel.
+        temporal_bandwidth : float
+            Bandwidth for the temporal kernel (in the same units as ``t``).
+        kernel : str, optional
+            Kernel function name, by default ``"gaussian"``.
+            Must be one of the kernels supported by :meth:`Graph.build_kernel`.
+
+        Returns
+        -------
+        Graph
+            A spatiotemporal kernel graph whose weights encode both spatial
+            proximity and temporal proximity.
+
+        See Also
+        --------
+        Graph.multiply : Element-wise multiplication of two graphs (lower-level).
+        Graph.build_kernel : Spatial kernel constructor.
+
+        Notes
+        -----
+        The temporal distances are computed as absolute pairwise differences
+        of ``t`` and the temporal graph is restricted to the same set of
+        edges as the spatial graph before multiplication, ensuring the result
+        is sparse in exactly the same neighbourhoods as the spatial graph.
+
+        Examples
+        --------
+        >>> import geopandas as gpd
+        >>> import pandas as pd
+        >>> from libpysal import graph
+        >>> accidents = gpd.read_file("brno_accidents.gpkg")
+        >>> t = (pd.to_datetime(accidents["date"]) - pd.Timestamp("2000-01-01")).dt.days
+        >>> st_graph = graph.Graph.build_spatiotemporal(
+        ...     accidents,
+        ...     t=t,
+        ...     spatial_bandwidth=500,
+        ...     temporal_bandwidth=365,
+        ...     kernel="gaussian",
+        ... )
+        """
+        from sklearn.metrics import pairwise_distances
+
+        # Build spatial kernel graph
+        spatial_g = cls.build_kernel(data, bandwidth=spatial_bandwidth, kernel=kernel)
+
+        # Build temporal kernel graph (dense over all pairs)
+        t_arr = np.asarray(t, dtype=float).reshape(-1, 1)
+        temporal_dists = pairwise_distances(t_arr, metric="euclidean")
+        temporal_g = cls.build_kernel(
+            temporal_dists,
+            metric="precomputed",
+            bandwidth=temporal_bandwidth,
+            kernel=kernel,
+        )
+
+        # Restrict temporal weights to exactly the spatial edge structure
+        # by reindexing onto the spatial graph's (focal, neighbor) index
+        temporal_weights_restricted = temporal_g._adjacency.reindex(
+            spatial_g._adjacency.index, fill_value=0.0
+        )
+        temporal_restricted = Graph(temporal_weights_restricted)
+
+        return temporal_restricted.multiply(spatial_g)
+
     @classmethod
     def from_weights_dict(cls, weights_dict):
         """Generate Graph from a dict of dicts
