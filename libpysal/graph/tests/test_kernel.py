@@ -15,7 +15,9 @@ import geopandas
 import numpy as np
 import pandas as pd
 import pytest
+from shapely import Point
 
+from libpysal.graph import Graph
 from libpysal.graph._kernel import (
     HAS_SKLEARN,
     _distance_band,
@@ -359,6 +361,28 @@ def test_coplanar(grocs):
     assert tail.shape == head.shape
     assert weight.shape == head.shape
     np.testing.assert_array_equal(pd.unique(head), grocs_duplicated.index)
+
+
+def test_coplanar_clique_duplicate_labels():
+    gs = geopandas.GeoSeries(
+        [
+            Point(0, 0),
+            Point(0, 0),
+            Point(1, 0),
+            Point(2, 0),
+            Point(3, 0),
+            Point(4, 0),
+        ]
+    )
+    g = Graph.build_kernel(gs, k=2, coplanar="clique")
+    assert g.n == 6
+
+    assert 0 in g.adjacency.index.get_level_values("focal")
+    assert 1 in g.adjacency.index.get_level_values("focal")
+
+    neighbors_0 = set(g.adjacency.loc[0].index) - {1}
+    neighbors_1 = set(g.adjacency.loc[1].index) - {0}
+    assert neighbors_0 == neighbors_1
 
 
 def test_shape_preservation():
