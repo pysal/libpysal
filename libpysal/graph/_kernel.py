@@ -26,6 +26,14 @@ except ImportError:
 
 _VALID_GEOMETRY_TYPES = ["Point"]
 
+# Kernels that are exactly zero beyond `bandwidth`. For these we can use
+# KDTree.sparse_distance_matrix to avoid building the full N×N distance matrix.
+# Infinite-support kernels (e.g. gaussian) also qualify when taper=True, because
+# taper explicitly zeroes weights beyond bandwidth — see kernels.kernel().
+_COMPACT_SUPPORT_KERNELS = frozenset(
+    {"triangular", "parabolic", "bisquare", "tricube", "cosine", "boxcar", "discrete"}
+)
+
 
 def _kernel(
     coordinates,
@@ -105,6 +113,17 @@ def _kernel(
         A pre-built tree for distance computation. If provided, `coordinates`
         should be None or the tree's data will be used. This avoids rebuilding
         the tree when it has already been constructed.
+
+    Notes
+    -----
+    When all weights beyond ``bandwidth`` are zero — either because ``kernel``
+    has compact support (bisquare, boxcar, triangular, tricube, cosine,
+    parabolic/discrete) or because ``taper=True`` explicitly zeroes them — and
+    ``bandwidth`` is a fixed numeric value and ``metric`` is ``"euclidean"``, a
+    fast path is taken using ``scipy.spatial.KDTree.sparse_distance_matrix``.
+    This avoids allocating an O(N²) dense distance matrix and instead builds
+    only the O(N × avg_neighbors) sparse matrix of pairs within ``bandwidth``.
+    All other combinations fall through to the existing dense path unchanged.
     """
     if tree is not None:
         if hasattr(tree, "data"):
@@ -162,39 +181,67 @@ def _kernel(
             d = sparse.csc_array((values, (rows, cols)), shape=coordinates.shape)
     else:
         if metric != "precomputed":
-            dist_kwds = {}
-            if metric == "minkowski":
-                dist_kwds["p"] = p
-            if tree is not None and hasattr(tree, "data"):
-                d = spatial.distance.pdist(
-                    numpy.asarray(tree.data), metric=metric, **dist_kwds
-                )
-                sq = spatial.distance.squareform(d)
-            elif HAS_SKLEARN:
-                sq = metrics.pairwise_distances(
-                    coordinates, coordinates, metric=metric, **dist_kwds
-                )
-            else:
-                if metric not in ("euclidean", "manhattan", "cityblock", "minkowski"):
-                    raise ValueError(
-                        f"metric {metric} is not supported by scipy, and scikit-learn "
-                        "could not be imported."
+            # Fast path: when all weights beyond `bandwidth` are zero — either
+            # because the kernel has compact support or because taper=True zeroes
+            # them explicitly — we only need distances within `bandwidth`.  Use
+            # KDTree.sparse_distance_matrix (O(N * neighbors) memory) instead of
+            # building the full N×N dense matrix (O(N²) memory).
+            if (
+                (kernel in _COMPACT_SUPPORT_KERNELS or taper is True)
+                and isinstance(bandwidth, (int, float))
+                and metric == "euclidean"
+            ):
+                if tree is None or not isinstance(tree, spatial.KDTree):
+                    tree = spatial.KDTree(coordinates)
+                d = sparse.csc_array(
+                    tree.sparse_distance_matrix(
+                        tree, bandwidth, output_type="coo_matrix"
                     )
-                d = spatial.distance.pdist(coordinates, metric=metric, **dist_kwds)
-                sq = spatial.distance.squareform(d)
+                )
+                if exclude_self_weights:
+                    d.setdiag(0)
+                    d.eliminate_zeros()
+            else:
+                dist_kwds = {}
+                if metric == "minkowski":
+                    dist_kwds["p"] = p
+                if tree is not None and hasattr(tree, "data"):
+                    d = spatial.distance.pdist(
+                        numpy.asarray(tree.data), metric=metric, **dist_kwds
+                    )
+                    sq = spatial.distance.squareform(d)
+                elif HAS_SKLEARN:
+                    sq = metrics.pairwise_distances(
+                        coordinates, coordinates, metric=metric, **dist_kwds
+                    )
+                else:
+                    if metric not in (
+                        "euclidean",
+                        "manhattan",
+                        "cityblock",
+                        "minkowski",
+                    ):
+                        raise ValueError(
+                            f"metric {metric} is not supported by scipy or scikit-learn"
+                            "could not be imported."
+                        )
+                    d = spatial.distance.pdist(coordinates, metric=metric, **dist_kwds)
+                    sq = spatial.distance.squareform(d)
 
-            # ensure that self-distance is dropped but 0 between co-located pts not
-            # get data and ids for sparse constructor
-            data = sq.flatten()
-            i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
-            j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
+                # ensure that self-distance is dropped but 0 between co-located pts not
+                # get data and ids for sparse constructor
+                data = sq.flatten()
+                i = numpy.tile(numpy.arange(sq.shape[0]), sq.shape[0])
+                j = numpy.repeat(numpy.arange(sq.shape[0]), sq.shape[0])
 
-            if exclude_self_weights:
-                data = numpy.delete(data, numpy.arange(0, data.size, sq.shape[0] + 1))
-                i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
-                j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
+                if exclude_self_weights:
+                    data = numpy.delete(
+                        data, numpy.arange(0, data.size, sq.shape[0] + 1)
+                    )
+                    i = numpy.delete(i, numpy.arange(0, i.size, sq.shape[0] + 1))
+                    j = numpy.delete(j, numpy.arange(0, j.size, sq.shape[0] + 1))
 
-            d = sparse.csc_array((data, (i, j)))
+                d = sparse.csc_array((data, (i, j)))
         else:
             d = sparse.csc_array(coordinates)
 
