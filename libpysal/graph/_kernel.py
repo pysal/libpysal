@@ -28,6 +28,8 @@ _VALID_GEOMETRY_TYPES = ["Point"]
 
 # Kernels that are exactly zero beyond `bandwidth`. For these we can use
 # KDTree.sparse_distance_matrix to avoid building the full N×N distance matrix.
+# Infinite-support kernels (e.g. gaussian) also qualify when taper=True, because
+# taper explicitly zeroes weights beyond bandwidth — see kernels.kernel().
 _COMPACT_SUPPORT_KERNELS = frozenset(
     {"triangular", "parabolic", "bisquare", "tricube", "cosine", "boxcar", "discrete"}
 )
@@ -114,14 +116,14 @@ def _kernel(
 
     Notes
     -----
-    When ``kernel`` has compact support (bisquare, boxcar, triangular, tricube,
-    cosine, parabolic/discrete), ``bandwidth`` is a fixed numeric value, and
-    ``metric`` is ``"euclidean"``, a fast path is taken using
-    ``scipy.spatial.KDTree.sparse_distance_matrix``.  This avoids allocating an
-    O(N²) dense distance matrix and instead builds only the O(N × avg_neighbors)
-    sparse matrix of pairs within ``bandwidth``.  All other combinations of
-    ``kernel``, ``bandwidth``, and ``metric`` fall through to the existing dense
-    path unchanged.
+    When all weights beyond ``bandwidth`` are zero — either because ``kernel``
+    has compact support (bisquare, boxcar, triangular, tricube, cosine,
+    parabolic/discrete) or because ``taper=True`` explicitly zeroes them — and
+    ``bandwidth`` is a fixed numeric value and ``metric`` is ``"euclidean"``, a
+    fast path is taken using ``scipy.spatial.KDTree.sparse_distance_matrix``.
+    This avoids allocating an O(N²) dense distance matrix and instead builds
+    only the O(N × avg_neighbors) sparse matrix of pairs within ``bandwidth``.
+    All other combinations fall through to the existing dense path unchanged.
     """
     if tree is not None:
         if hasattr(tree, "data"):
@@ -179,12 +181,13 @@ def _kernel(
             d = sparse.csc_array((values, (rows, cols)), shape=coordinates.shape)
     else:
         if metric != "precomputed":
-            # Fast path: compact support kernels with a known fixed bandwidth and
-            # euclidean metric only need distances within `bandwidth`, so we use
+            # Fast path: when all weights beyond `bandwidth` are zero — either
+            # because the kernel has compact support or because taper=True zeroes
+            # them explicitly — we only need distances within `bandwidth`.  Use
             # KDTree.sparse_distance_matrix (O(N * neighbors) memory) instead of
             # building the full N×N dense matrix (O(N²) memory).
             if (
-                kernel in _COMPACT_SUPPORT_KERNELS
+                (kernel in _COMPACT_SUPPORT_KERNELS or taper is True)
                 and isinstance(bandwidth, (int, float))
                 and metric == "euclidean"
             ):

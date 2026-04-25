@@ -604,12 +604,14 @@ def test_compact_support_sparse_path_matches_dense(kernel):
 
 
 def test_gaussian_not_sparse_path():
-    """Gaussian (infinite support) must not take the sparse path."""
+    """Gaussian without taper must not take the sparse path."""
 
     coords = lap_coords[:50]
     bw = 0.05
 
-    heads, tails, weights = _kernel(coords, bandwidth=bw, kernel="gaussian")
+    heads, tails, weights = _kernel(
+        coords, bandwidth=bw, kernel="gaussian", taper=False
+    )
     # Gaussian with a tight bandwidth should still return weights for all pairs
     # (non-zero gaussian never reaches exactly zero), so the edge count should
     # exceed what a compact-support kernel would return at the same bandwidth.
@@ -617,4 +619,24 @@ def test_gaussian_not_sparse_path():
     assert len(heads) >= len(compact_heads), (
         "Gaussian should have at least as many edges as a compact kernel"
         " at the same bandwidth"
+    )
+
+
+def test_gaussian_taper_sparse_path_matches_dense():
+    """Gaussian with taper=True should take the sparse path and match the dense path."""
+    coords = lap_coords[:100]
+    bw = 0.05
+
+    sparse_heads, sparse_tails, sparse_weights = _kernel(
+        coords, bandwidth=bw, kernel="gaussian", taper=True, metric="euclidean"
+    )
+    # Force dense path by wrapping bw so isinstance(bandwidth, (int, float)) is False
+    dense_heads, dense_tails, dense_weights = _kernel(
+        coords, bandwidth=complex(bw), kernel="gaussian", taper=True, metric="euclidean"
+    )
+
+    np.testing.assert_array_equal(np.sort(sparse_heads), np.sort(dense_heads))
+    np.testing.assert_array_equal(np.sort(sparse_tails), np.sort(dense_tails))
+    np.testing.assert_array_almost_equal(
+        np.sort(sparse_weights), np.sort(dense_weights)
     )
