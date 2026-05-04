@@ -349,7 +349,7 @@ class Graph(SetOpsMixin):
                 [focal, neighbor], names=["focal", "neighbor"]
             ),
         )
-        return cls(adjacency)
+        return cls(adjacency, is_sorted=True)
 
     def to_W(self):  # noqa: N802
         """Convert Graph to a libpysal.weights.W object
