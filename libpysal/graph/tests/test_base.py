@@ -294,6 +294,94 @@ class TestBase:
         assert w.id_order_set
         np.testing.assert_array_equal(w.id_order, self.letters[:10])
 
+    @pytest.mark.parametrize("shape", [(3, 3), (4, 5)])
+    @pytest.mark.parametrize("rook", [True, False])
+    def test_from_lattice(self, shape, rook):
+        w = weights.lat2W(*shape, rook=rook)
+        g = graph.Graph.from_lattice(*shape, rook=rook)
+        expected = graph.Graph.from_W(w)
+        assert g == expected
+
+    def test_from_lattice_rook_structure(self):
+        g = graph.Graph.from_lattice(3, 3)
+        assert g.neighbors == {
+            0: (1, 3),
+            1: (0, 2, 4),
+            2: (1, 5),
+            3: (0, 4, 6),
+            4: (1, 3, 5, 7),
+            5: (2, 4, 8),
+            6: (3, 7),
+            7: (4, 6, 8),
+            8: (5, 7),
+        }
+        assert g.cardinalities.to_dict() == {
+            0: 2,
+            1: 3,
+            2: 2,
+            3: 3,
+            4: 4,
+            5: 3,
+            6: 2,
+            7: 3,
+            8: 2,
+        }
+        assert g.nonzero == 24
+        assert g.isolates.empty
+
+    def test_from_lattice_queen_structure(self):
+        g = graph.Graph.from_lattice(3, 3, rook=False)
+        assert g.neighbors == {
+            0: (1, 3, 4),
+            1: (0, 2, 3, 4, 5),
+            2: (1, 4, 5),
+            3: (0, 1, 4, 6, 7),
+            4: (0, 1, 2, 3, 5, 6, 7, 8),
+            5: (1, 2, 4, 7, 8),
+            6: (3, 4, 7),
+            7: (3, 4, 5, 6, 8),
+            8: (4, 5, 7),
+        }
+        assert g.cardinalities.to_dict() == {
+            0: 3,
+            1: 5,
+            2: 3,
+            3: 5,
+            4: 8,
+            5: 5,
+            6: 3,
+            7: 5,
+            8: 3,
+        }
+        assert g.nonzero == 40
+        assert g.isolates.empty
+
+    def test_from_lattice_single_cell(self):
+        w = weights.lat2W(1, 1)
+        g = graph.Graph.from_lattice(1, 1)
+        assert g.n == len(w.id_order)
+        assert g.isolates.tolist() == w.id_order
+        assert g.adjacency.loc[(0, 0)] == 0
+
+    @pytest.mark.parametrize("index_type", ["int", "float", "string"])
+    def test_from_lattice_index_type(self, index_type):
+        w = weights.lat2W(3, 4, id_type=index_type)
+        g = graph.Graph.from_lattice(3, 4, index_type=index_type)
+        expected = graph.Graph.from_W(w)
+        assert g == expected
+
+    def test_from_lattice_string_index_structure(self):
+        g = graph.Graph.from_lattice(2, 3, index_type="string")
+        assert g.unique_ids.tolist() == ["id0", "id1", "id2", "id3", "id4", "id5"]
+        assert g.neighbors == {
+            "id0": ("id1", "id3"),
+            "id1": ("id0", "id2", "id4"),
+            "id2": ("id1", "id5"),
+            "id3": ("id0", "id4"),
+            "id4": ("id1", "id3", "id5"),
+            "id5": ("id2", "id4"),
+        }
+
     def test_from_sparse(self):
         row = np.array([0, 0, 1, 2, 3, 3])
         col = np.array([1, 3, 3, 2, 1, 3])
