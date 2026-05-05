@@ -37,6 +37,7 @@
       ~Graph.from_arrays
       ~Graph.from_dense
       ~Graph.from_dicts
+      ~Graph.from_lattice
       ~Graph.from_networkx
       ~Graph.from_sparse
       ~Graph.from_weights_dict
