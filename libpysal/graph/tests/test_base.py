@@ -1436,7 +1436,7 @@ class TestBase:
             ),
         )
         pd.testing.assert_series_equal(
-            contig.apply(self.nybb.geometry, lambda x: x.unary_union.convex_hull.area),
+            contig.apply(self.nybb.geometry, lambda x: x.union_all().convex_hull.area),
             expected,
         )
 
