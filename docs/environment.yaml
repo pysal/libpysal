@@ -30,7 +30,7 @@ dependencies:
   # for docs build action (this env only)
   - ipykernel
   - myst-nb
-  - sphinx
+  - sphinx<9
   - sphinxcontrib-bibtex
   - sphinx-autosummary-accessors
   - sphinx-copybutton
