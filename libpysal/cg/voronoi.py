@@ -402,12 +402,13 @@ def voronoi_frames(
                 objects.loc[mask_poly] = shapely.segmentize(objects[mask_poly], segment)
 
         if mask_line.any():
-            objects.loc[mask_line] = objects.loc[mask_line].apply(
-                shapely.ops.substring,
-                start_dist=shrink,
-                end_dist=1 - shrink,
-                normalized=True,
-            )
+            if shrink != 0:
+                objects.loc[mask_line] = objects.loc[mask_line].apply(
+                    shapely.ops.substring,
+                    start_dist=shrink,
+                    end_dist=1 - shrink,
+                    normalized=True,
+                )
             if segment != 0:
                 objects.loc[mask_line] = shapely.segmentize(objects[mask_line], segment)
 

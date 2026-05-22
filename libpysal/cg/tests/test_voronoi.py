@@ -95,6 +95,24 @@ class TestVoronoi:
         )
         assert_geoseries_equal(geoms.simplify(0.1), expected, check_less_precise=True)
 
+    def test_from_lines_raises_when_line_disappears(self):
+        lines = gpd.GeoSeries(
+            [
+                shapely.LineString([(0, 0), (1, 0)]),
+                shapely.LineString([(1, 0), (1, 1)]),
+                shapely.LineString([(0, 1), (1, 1)]),
+            ],
+            crs="EPSG:3857",
+        )
+
+        with pytest.raises(
+            ValueError, match="Geometries collapsed during the preprocessing."
+        ):
+            voronoi_frames(lines, as_gdf=False, return_input=False)
+
+        geoms = voronoi_frames(lines, shrink=1e-6, as_gdf=False, return_input=False)
+        assert len(geoms) == 3
+
     def test_clip_none(self):
         geoms = voronoi_frames(
             self.points2, as_gdf=False, return_input=False, clip=None
