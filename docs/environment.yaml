@@ -1,4 +1,4 @@
-name: test
+name: docs
 channels:
   - conda-forge
 dependencies:
@@ -13,14 +13,9 @@ dependencies:
   - scipy
   - shapely
   # testing
-  - codecov
   - matplotlib
   - tobler
   - h3-py
-  - pytest
-  - pytest-cov
-  - pytest-mpl
-  - pytest-xdist
   # optional
   - geodatasets
   - joblib
@@ -32,6 +27,19 @@ dependencies:
   - zstd
   - pandarm
   - xarray
+  # for docs build action (this env only)
+  - ipykernel
+  - myst-nb
+  - sphinx<9
+  - sphinxcontrib-bibtex
+  - sphinx-autosummary-accessors
+  - sphinx-copybutton
+  - sphinx-immaterial
+  - pandoc
+  - seaborn
+  - esda
+  - splot
+  - watermark
   - pip
   - pip:
     - pulp

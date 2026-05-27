@@ -246,6 +246,111 @@ class Graph(SetOpsMixin):
         """
         return cls.from_weights_dict(dict(w))
 
+    @classmethod
+    def from_lattice(cls, nrows=5, ncols=5, rook=True, index_type="int"):
+        """
+        Create a Graph object for a regular lattice.
+
+        Parameters
+        ----------
+        nrows : int, default 5
+            Number of rows.
+        ncols : int, default 5
+            Number of columns.
+        rook : bool, default True
+            Type of contiguity. If False, queen contiguity is used.
+        index_type : {"int", "float", "string"}, default "int"
+            Type of index IDs to use in the final Graph object.
+
+        Returns
+        -------
+        Graph
+            Graph encoding lattice contiguity.
+
+        Examples
+        --------
+        >>> Graph.from_lattice()
+        <Graph of 25 nodes and 80 nonzero edges (1 component, 0 isolates) indexed by
+         [0, 1, 2, 3, 4, ...]>
+
+        >>> Graph.from_lattice(3, 5, index_type="string")
+        <Graph of 15 nodes and 44 nonzero edges (1 component, 0 isolates) indexed by
+         ['id0', 'id1', 'id2', 'id3', 'id4', ...]>
+        """
+        n = nrows * ncols
+        ids = np.arange(n)
+
+        rows = ids // ncols
+        cols = ids % ncols
+        has_north = rows > 0
+        has_south = rows < nrows - 1
+        has_west = cols > 0
+        has_east = cols < ncols - 1
+
+        degree = (has_north.astype(np.intp) + has_west + has_east + has_south).astype(
+            np.intp
+        )
+        if not rook:
+            degree += (
+                (has_north & has_west).astype(np.intp)
+                + (has_north & has_east)
+                + (has_south & has_west)
+                + (has_south & has_east)
+            )
+
+        if n == 1:
+            focal = ids
+            neighbor = ids
+            weight = np.zeros(1, dtype="int64")
+        else:
+            starts = np.empty(n + 1, dtype=np.intp)
+            starts[0] = 0
+            np.cumsum(degree, out=starts[1:])
+            total = starts[-1]
+            focal = np.repeat(ids, degree)
+            neighbor = np.empty(total, dtype=ids.dtype)
+            cursor = starts[:-1].copy()
+
+            def add(mask, offset):
+                loc = cursor[mask]
+                neighbor[loc] = ids[mask] + offset
+                cursor[mask] += 1
+
+            if rook:
+                add(has_north, -ncols)
+                add(has_west, -1)
+                add(has_east, 1)
+                add(has_south, ncols)
+            else:
+                add(has_north & has_west, -ncols - 1)
+                add(has_north, -ncols)
+                add(has_north & has_east, -ncols + 1)
+                add(has_west, -1)
+                add(has_east, 1)
+                add(has_south & has_west, ncols - 1)
+                add(has_south, ncols)
+                add(has_south & has_east, ncols + 1)
+
+            weight = np.ones(total, dtype="int64")
+
+        if index_type == "string":
+            ids = np.array([f"id{i}" for i in ids], dtype=object)
+        elif index_type == "float":
+            ids = ids.astype(float)
+
+        if index_type == "string" or index_type == "float":
+            focal = ids[focal]
+            neighbor = ids[neighbor]
+
+        adjacency = pd.Series(
+            weight,
+            name="weight",
+            index=pd.MultiIndex.from_arrays(
+                [focal, neighbor], names=["focal", "neighbor"]
+            ),
+        )
+        return cls(adjacency, is_sorted=True)
+
     def to_W(self):  # noqa: N802
         """Convert Graph to a libpysal.weights.W object
 

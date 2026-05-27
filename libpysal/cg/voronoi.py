@@ -346,8 +346,10 @@ def voronoi_frames(
         * ``shapely.Polygon`` -- Clip to an arbitrary Polygon.
 
     shrink : float, optional
-        Distance for the negative buffer of polygons required when there are polygons
-        sharing portion of their exterior, by default 0
+        For Polygons, ``shrink`` represents the distance for the negative buffer
+        required when there are polygons sharing portion of their exterior. For
+        LineStrings, represents the fraction of the length of each LineString clipped on
+        each end to avoid co-located points. By default 0
     segment : float, optional
         Distance for the segmentation of lines used to add coordinates to lines or
         polygons prior Voronoi tessellation, by default 0
@@ -400,11 +402,18 @@ def voronoi_frames(
                 objects.loc[mask_poly] = shapely.segmentize(objects[mask_poly], segment)
 
         if mask_line.any():
+            if shrink != 0:
+                objects.loc[mask_line] = objects.loc[mask_line].apply(
+                    shapely.ops.substring,
+                    start_dist=shrink,
+                    end_dist=1 - shrink,
+                    normalized=True,
+                )
             if segment != 0:
                 objects.loc[mask_line] = shapely.segmentize(objects[mask_line], segment)
 
             # Remove duplicate coordinates from lines
-            objects.loc[mask_line] = (
+            deduplicated = (
                 objects.loc[mask_line]
                 .get_coordinates(index_parts=True)
                 .drop_duplicates(keep=False)
@@ -412,6 +421,13 @@ def voronoi_frames(
                 .apply(shapely.multipoints)
                 .values
             )
+            if len(deduplicated) == mask_line.sum():
+                objects.loc[mask_line] = deduplicated
+            else:
+                raise ValueError(
+                    "Geometries collapsed during the preprocessing. "
+                    "Please adapt `shrink` or `segment` arguments."
+                )
     else:
         geometry = np.asarray(geometry)
         objects = geometry = gpd.GeoSeries.from_xy(geometry[:, 0], geometry[:, 1])
