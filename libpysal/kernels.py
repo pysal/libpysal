@@ -288,12 +288,20 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
         Kernel function evaluated at distance values.
 
     """
+    if isinstance(kernel, str) and kernel not in _kernel_functions:
+        raise ValueError(
+            f"Invalid kernel '{kernel}'. "
+            f"Supported kernels are: {list(_kernel_functions.keys())}, "
+            "None, or a callable."
+        )
     if callable(kernel):
         func = kernel
     elif kernel is None:
         func = _kernel_functions[None]
-    else:
+    elif isinstance(kernel, str):
         func = _kernel_functions[kernel]
+    else:
+        raise ValueError("kernel must be either a valid string, None, or a callable.")
 
     k = func(distances, bandwidth)
     if taper is True:
