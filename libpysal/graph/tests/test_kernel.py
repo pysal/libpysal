@@ -622,35 +622,6 @@ def test_adaptive_bandwidth_basic():
     assert not np.allclose(weight_a, weight_f)
 
 
-def test_adaptive_bandwidth_graph():
-    """Graph.build_kernel with bandwidth='adaptive' should work end-to-end."""
-    import geopandas as gpd
-    from shapely.geometry import Point
-
-    from libpysal.graph import Graph
-
-    coords = gpd.GeoSeries([Point(x, y) for x, y in lap_coords[:20]])
-    g_fixed = Graph.build_kernel(coords, k=4)
-    g_adaptive = Graph.build_kernel(coords, k=4, bandwidth="adaptive")
-
-    assert set(
-        zip(
-            g_fixed.adjacency.index.get_level_values("focal"),
-            g_fixed.adjacency.index.get_level_values("neighbor"),
-            strict=True,
-        )
-    ) == set(
-        zip(
-            g_adaptive.adjacency.index.get_level_values("focal"),
-            g_adaptive.adjacency.index.get_level_values("neighbor"),
-            strict=True,
-        )
-    )
-
-    # Weights differ between fixed and adaptive
-    assert not np.allclose(g_fixed.adjacency.values, g_adaptive.adjacency.values)
-
-
 @pytest.mark.parametrize(
     "kernel",
     ["bisquare", "boxcar", "triangular", "tricube", "cosine", "parabolic"],

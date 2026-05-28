@@ -279,6 +279,37 @@ class TestKernel:
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
+    def test_adaptive_bandwidth(self):
+        """build_kernel with bandwidth='adaptive' should work end-to-end."""
+        from shapely.geometry import Point
+
+        rng = np.random.default_rng(6301)
+        coords = gpd.GeoSeries([Point(*p) for p in rng.laplace(size=(20, 2)) / 50])
+        g_fixed = graph.Graph.build_kernel(coords, k=4)
+        g_adaptive = graph.Graph.build_kernel(coords, k=4, bandwidth="adaptive")
+
+        # Same neighbour topology between fixed and adaptive ...
+        assert set(
+            zip(
+                g_fixed.adjacency.index.get_level_values("focal"),
+                g_fixed.adjacency.index.get_level_values("neighbor"),
+                strict=True,
+            )
+        ) == set(
+            zip(
+                g_adaptive.adjacency.index.get_level_values("focal"),
+                g_adaptive.adjacency.index.get_level_values("neighbor"),
+                strict=True,
+            )
+        )
+
+        # ... but the kernel weights must differ.
+        assert not np.allclose(g_fixed.adjacency.values, g_adaptive.adjacency.values)
+
+        # Check against actual values
+        assert g_adaptive.adjacency.values.mean() == pytest.approx(0.2946159834)
+        assert g_adaptive.adjacency.values.max() == pytest.approx(0.3978916872)
+
     def test_knn_intids(self):
         g = graph.Graph.build_knn(self.gdf, k=3, coplanar="jitter")
 
