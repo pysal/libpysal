@@ -264,18 +264,39 @@ def _kernel(
         rows, _ = d_csr.nonzero()
         bw_per_row = numpy.zeros(d_csr.shape[0])
         numpy.maximum.at(bw_per_row, rows, d_csr.data)
-        bandwidth = bw_per_row[rows] * 1.0000001
-    elif bandwidth is None:
-        bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
-    elif bandwidth == "auto":
-        if (kernel == "identity") or (kernel is None):
-            bandwidth = numpy.nan  # ignored by identity
+        bw_per_row = bw_per_row * 1.0000001
+
+        if callable(kernel):
+            func = kernel
         else:
-            bandwidth = _optimize_bandwidth(d, kernel)
-    if callable(kernel):
-        d.data = kernel(d.data, bandwidth)
+            func = lambda distances, bw: _lps_kernel(
+                distances, bw, kernel=kernel, taper=taper, decay=decay
+            )
+
+        for i in range(d_csr.shape[0]):
+            start = d_csr.indptr[i]
+            end = d_csr.indptr[i + 1]
+            if start < end:
+                d_csr.data[start:end] = func(
+                    d_csr.data[start:end], float(bw_per_row[i])
+                )
+        d = d_csr.tocsc()
+
     else:
-        d.data = _lps_kernel(d.data, bandwidth, kernel=kernel, taper=taper, decay=decay)
+        if bandwidth is None:
+            bandwidth = numpy.percentile(d.data, 25) if k is None else d.data.max()
+        elif bandwidth == "auto":
+            if (kernel == "identity") or (kernel is None):
+                bandwidth = numpy.nan  # ignored by identity
+            else:
+                bandwidth = _optimize_bandwidth(d, kernel)
+
+        if callable(kernel):
+            d.data = kernel(d.data, bandwidth)
+        else:
+            d.data = _lps_kernel(
+                d.data, bandwidth, kernel=kernel, taper=taper, decay=decay
+            )
     if taper:
         d.eliminate_zeros()
     return _sparse_to_arrays(d, ids=ids, resolve_isolates=resolve_isolates)
