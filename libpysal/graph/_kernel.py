@@ -269,9 +269,11 @@ def _kernel(
         if callable(kernel):
             func = kernel
         else:
-            func = lambda distances, bw: _lps_kernel(
-                distances, bw, kernel=kernel, taper=taper, decay=decay
-            )
+
+            def func(distances, bw):
+                return _lps_kernel(
+                    distances, bw, kernel=kernel, taper=taper, decay=decay
+                )
 
         for i in range(d_csr.shape[0]):
             start = d_csr.indptr[i]
