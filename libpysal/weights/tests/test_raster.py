@@ -101,7 +101,7 @@ class Testraster:
         rioxarray = pytest.importorskip("rioxarray")
 
         da = rioxarray.open_rasterio(
-            "https://github.com/gdsbook/book/blob/main/data/ghsl/ghsl_sao_paulo.tif"
+            "https://github.com/gdsbook/book/raw/refs/heads/main/data/ghsl/ghsl_sao_paulo.tif"
         )
         w = Queen.from_xarray(da)
         assert w.n == 97232
