@@ -37,29 +37,33 @@ All kernels are evaluated as:
 
 """
 
-import numpy
+import numpy as np
 
 
-def _trim(d, bandwidth):
+def _trim(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Normalize and clip distances to the range [0, 1].
 
     Parameters
     ----------
-    d : ndarray
+    distances : ndarray
         Array of distances.
-    bandwidth : float
-        Bandwidth parameter.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
     ndarray
         Clipped and normalized distances.
     """
-    return numpy.clip(numpy.abs(d) / bandwidth, 0, 1)
+    if isinstance(bandwidth, (int, float)):
+        return np.clip(np.abs(distances) / bandwidth, 0, 1)
+    else:
+        bandwidth = np.asarray(bandwidth)
+        return np.clip(np.abs(distances) / bandwidth, 0, 1)
 
 
-def _triangular(distances, bandwidth):
+def _triangular(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Triangular kernel function.
 
@@ -67,8 +71,8 @@ def _triangular(distances, bandwidth):
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
@@ -78,7 +82,7 @@ def _triangular(distances, bandwidth):
     return 1 - _trim(distances, bandwidth)
 
 
-def _parabolic(distances, bandwidth):
+def _parabolic(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Parabolic (Epanechnikov) kernel function.
 
@@ -86,8 +90,8 @@ def _parabolic(distances, bandwidth):
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
@@ -98,7 +102,7 @@ def _parabolic(distances, bandwidth):
     return 0.75 * (1 - z**2)
 
 
-def _gaussian(distances, bandwidth):
+def _gaussian(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Gaussian kernel function (truncated at z=1).
 
@@ -106,22 +110,26 @@ def _gaussian(distances, bandwidth):
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
     ndarray
         Gaussian kernel weights.
     """
-    z = distances / bandwidth
+    if isinstance(bandwidth, (int, float)):
+        z = distances / bandwidth
+    else:
+        bandwidth = np.asarray(bandwidth)
+        z = distances / bandwidth
     exponent_term = -0.5 * (z**2)
-    c = 1 / numpy.sqrt(2 * numpy.pi)
-    k = c * numpy.exp(exponent_term)
+    c = 1 / np.sqrt(2 * np.pi)
+    k = c * np.exp(exponent_term)
     return k
 
 
-def _bisquare(distances, bandwidth):
+def _bisquare(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Bisquare (quartic) kernel function.
 
@@ -129,19 +137,19 @@ def _bisquare(distances, bandwidth):
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
     ndarray
         Bisquare kernel weights.
     """
-    z = numpy.clip(distances / bandwidth, 0, 1)
+    z = _trim(distances, bandwidth)
     return (15 / 16) * (1 - z**2) ** 2
 
 
-def _tricube(distances, bandwidth):
+def _tricube(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Tricube kernel function.
 
@@ -149,19 +157,19 @@ def _tricube(distances, bandwidth):
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
     ndarray
         Tricube kernel weights.
     """
-    z = numpy.clip(distances / bandwidth, 0, 1)
+    z = _trim(distances, bandwidth)
     return (70 / 81) * (1 - z**3) ** 3
 
 
-def _cosine(distances, bandwidth):
+def _cosine(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Cosine kernel function.
 
@@ -169,19 +177,19 @@ def _cosine(distances, bandwidth):
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
     ndarray
         Cosine kernel weights.
     """
-    z = numpy.clip(distances / bandwidth, 0, 1)
-    return (numpy.pi / 4) * numpy.cos(numpy.pi / 2 * z)
+    z = _trim(distances, bandwidth)
+    return (np.pi / 4) * np.cos(np.pi / 2 * z)
 
 
-def _exponential(distances, bandwidth):
+def _exponential(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Exponential kernel function, truncated at z=1.
 
@@ -189,19 +197,23 @@ def _exponential(distances, bandwidth):
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
     ndarray
         Exponential kernel weights.
     """
-    z = distances / bandwidth
-    return numpy.exp(-z)
+    if isinstance(bandwidth, (int, float)):
+        z = distances / bandwidth
+    else:
+        bandwidth = np.asarray(bandwidth)
+        z = distances / bandwidth
+    return np.exp(-z)
 
 
-def _boxcar(distances, bandwidth):
+def _boxcar(distances: np.ndarray, bandwidth) -> np.ndarray:
     """
     Boxcar (uniform) kernel function.
 
@@ -209,19 +221,23 @@ def _boxcar(distances, bandwidth):
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Bandwidth parameter. Can be a single float or an array of the same shape as distances.
 
     Returns
     -------
     ndarray
         Binary weights: 1 if distance < bandwidth, else 0.
     """
-    distances = numpy.asarray(distances)
-    return (distances < bandwidth).astype(float)
+    distances = np.asarray(distances)
+    if isinstance(bandwidth, (int, float)):
+        return (distances < bandwidth).astype(float)
+    else:
+        bandwidth = np.asarray(bandwidth)
+        return (distances < bandwidth).astype(float)
 
 
-def _identity(distances, _):
+def _identity(distances: np.ndarray, _) -> np.ndarray:
     """
     Identity kernel (no weighting, returns raw distances).
 
@@ -255,15 +271,18 @@ _kernel_functions = {
 }
 
 
-def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
-    """Evaluate a kernel function over a distance array.
+def kernel(
+    distances: np.ndarray, bandwidth, kernel="gaussian", taper=True, decay=False
+) -> np.ndarray:
+    """
+    Evaluate a kernel function over a distance array.
 
     Parameters
     ----------
     distances : ndarray
         Array of distances.
-    bandwidth : float
-        Kernel bandwidth.
+    bandwidth : float or ndarray
+        Kernel bandwidth. Can be a single float or an array of the same shape as distances.
     kernel : str or callable, optional
         The kernel function to use. If a string, must be one of the predefined
         kernel names: 'triangular', 'parabolic', 'gaussian', 'bisquare',
@@ -274,9 +293,9 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
         Set kernel = 0 for all distances exceeding the bandwith. To
         evaluate kernel beyond bandwith set taper=False.
     decay : bool (default: False)
-        whether to calculate the kernel using the decay formulation.
+        Whether to calculate the kernel using the decay formulation.
         In the decay form, a kernel measures the distance decay in
-        similarity between observations. It varies from from maximal
+        similarity between observations. It varies from maximal
         similarity (1) at a distance of zero to minimal similarity (0
         or negative) at some very large (possibly infinite) distance.
         Otherwise, kernel functions are treated as proper
@@ -286,7 +305,6 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
     -------
     ndarray
         Kernel function evaluated at distance values.
-
     """
     if isinstance(kernel, str) and kernel not in _kernel_functions:
         raise ValueError(
@@ -294,25 +312,28 @@ def kernel(distances, bandwidth, kernel="gaussian", taper=True, decay=False):
             f"Supported kernels are: {list(_kernel_functions.keys())}, "
             "None, or a callable."
         )
-    if callable(kernel):
-        func = kernel
-    elif kernel is None:
-        func = _kernel_functions[None]
-    elif isinstance(kernel, str):
-        func = _kernel_functions[kernel]
-    else:
+
+    func = _kernel_functions.get(kernel, kernel)
+
+    if not callable(func):
         raise ValueError("kernel must be either a valid string, None, or a callable.")
 
     k = func(distances, bandwidth)
+
     if taper is True:
-        # pandas 3.0 Copy-on-Write consequence
-        k = k.copy()
-        k[distances > bandwidth] = 0.0
+        if isinstance(bandwidth, (int, float)):
+            k[distances > bandwidth] = 0.0
+        else:
+            bandwidth = np.asarray(bandwidth)
+            k[distances > bandwidth] = 0.0
+
     elif isinstance(taper, (float, int)) and not isinstance(taper, bool):
-        # pandas 3.0 Copy-on-Write consequence
-        k = k.copy()
         k[distances > taper] = 0.0
 
     if decay:
-        k /= func(0.0, bandwidth)
+        if isinstance(bandwidth, (int, float)):
+            k /= func(0.0, bandwidth)
+        else:
+            k /= func(0.0, np.mean(bandwidth))
+
     return k

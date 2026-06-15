@@ -16,6 +16,7 @@ def bandwidth():
 
 # --- Individual kernel tests ---
 
+
 def test_trim_clipping():
     d = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])
     bw = 1.0
@@ -75,7 +76,7 @@ def test_cosine(distances, bandwidth):
 
 def test_exponential(distances, bandwidth):
     z = distances / bandwidth
-    #expected = np.where(z <= 1, np.exp(-z), 0)
+    # expected = np.where(z <= 1, np.exp(-z), 0)
     expected = np.exp(-z)
     np.testing.assert_array_almost_equal(
         kernels._exponential(distances, bandwidth), expected
@@ -84,23 +85,32 @@ def test_exponential(distances, bandwidth):
 
 def test_boxcar(distances, bandwidth):
     expected = (distances < bandwidth).astype(int)
-    np.testing.assert_array_equal(
-        kernels._boxcar(distances, bandwidth), expected
-    )
+    np.testing.assert_array_equal(kernels._boxcar(distances, bandwidth), expected)
 
 
 def test_identity(distances, bandwidth):
-    np.testing.assert_array_equal(
-        kernels._identity(distances, bandwidth), distances
-    )
+    np.testing.assert_array_equal(kernels._identity(distances, bandwidth), distances)
 
 
 # --- Dispatcher tests ---
 
-@pytest.mark.parametrize("name", [
-    "triangular", "parabolic", "gaussian", "bisquare", "tricube",
-    "cosine", "boxcar", "discrete", "exponential", "identity", None
-])
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "triangular",
+        "parabolic",
+        "gaussian",
+        "bisquare",
+        "tricube",
+        "cosine",
+        "boxcar",
+        "discrete",
+        "exponential",
+        "identity",
+        None,
+    ],
+)
 def test_kernel_dispatcher_names(distances, bandwidth, name):
     # Should not raise or error
     result = kernels.kernel(distances, bandwidth, kernel=name)
@@ -121,13 +131,15 @@ def test_kernel_dispatcher_invalid_name(distances, bandwidth):
     with pytest.raises(ValueError, match="Invalid kernel"):
         kernels.kernel(distances, bandwidth, kernel="not-a-kernel")
 
+
 def test_kernel_not_callable_or_string(distances, bandwidth):
     """Ensure invalid kernel type (not string/callable) raises ValueError."""
 
     with pytest.raises(ValueError, match="kernel must"):
         kernels.kernel(distances, bandwidth, kernel=123)
-def test_kernel_taper(distances, bandwidth):
 
+
+def test_kernel_taper(distances, bandwidth):
     result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=True)
     expected = kernels._gaussian(distances, bandwidth)
     expected[distances > bandwidth] = 0.0
@@ -138,12 +150,53 @@ def test_kernel_taper(distances, bandwidth):
     np.testing.assert_array_almost_equal(result, expected)
 
     taper_val = 0.75
-    result = kernels.kernel(
-        distances, bandwidth, kernel="gaussian", taper=taper_val
-    )
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=taper_val)
     expected = kernels._gaussian(distances, bandwidth)
     expected[distances > taper_val] = 0.0
     np.testing.assert_array_almost_equal(result, expected)
 
 
+def test_kernel_taper_float_bandwidth():
+    distances = np.array([0.0, 0.5, 1.0, 1.5])
+    bandwidth = 1.0
 
+    # Test with taper=True
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=True)
+    expected = kernels._gaussian(distances, bandwidth)
+    expected[distances > bandwidth] = 0.0
+    np.testing.assert_array_almost_equal(result, expected)
+
+    # Test with taper=False
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=False)
+    expected = kernels._gaussian(distances, bandwidth)
+    np.testing.assert_array_almost_equal(result, expected)
+
+    # Test with taper=0.75
+    taper_val = 0.75
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=taper_val)
+    expected = kernels._gaussian(distances, bandwidth)
+    expected[distances > taper_val] = 0.0
+    np.testing.assert_array_almost_equal(result, expected)
+
+
+def test_kernel_taper_array_bandwidth():
+    distances = np.array([0.0, 0.5, 1.0, 1.5])
+    bandwidth = np.array([1.0, 1.2, 1.0, 2.0])
+
+    # Test with taper=True
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=True)
+    expected = kernels._gaussian(distances, bandwidth)
+    expected[distances > bandwidth] = 0.0
+    np.testing.assert_array_almost_equal(result, expected)
+
+    # Test with taper=False
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=False)
+    expected = kernels._gaussian(distances, bandwidth)
+    np.testing.assert_array_almost_equal(result, expected)
+
+    # Test with taper=0.75
+    taper_val = 0.75
+    result = kernels.kernel(distances, bandwidth, kernel="gaussian", taper=taper_val)
+    expected = kernels._gaussian(distances, bandwidth)
+    expected[distances > taper_val] = 0.0
+    np.testing.assert_array_almost_equal(result, expected)
