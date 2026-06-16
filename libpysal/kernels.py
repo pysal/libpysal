@@ -117,11 +117,10 @@ def _gaussian(distances: np.ndarray, bandwidth) -> np.ndarray:
     ndarray
         Gaussian kernel weights.
     """
-    if isinstance(bandwidth, (int, float)):
-        z = distances / bandwidth
-    else:
-        bandwidth = np.asarray(bandwidth)
-        z = distances / bandwidth
+    if not isinstance(bandwidth, (int, float)):
+       bandwidth = np.asarray(bandwidth)
+        
+    z = distances / bandwidth
     exponent_term = -0.5 * (z**2)
     c = 1 / np.sqrt(2 * np.pi)
     k = c * np.exp(exponent_term)
