@@ -56,11 +56,10 @@ def _trim(distances: np.ndarray, bandwidth) -> np.ndarray:
     ndarray
         Clipped and normalized distances.
     """
-    if isinstance(bandwidth, (int, float)):
-        return np.clip(np.abs(distances) / bandwidth, 0, 1)
-    else:
+    if not isinstance(bandwidth, (int, float)):
         bandwidth = np.asarray(bandwidth)
-        return np.clip(np.abs(distances) / bandwidth, 0, 1)
+
+    return np.clip(np.abs(distances) / bandwidth, 0, 1)
 
 
 def _triangular(distances: np.ndarray, bandwidth) -> np.ndarray:
