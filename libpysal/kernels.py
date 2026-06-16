@@ -203,11 +203,10 @@ def _exponential(distances: np.ndarray, bandwidth) -> np.ndarray:
     ndarray
         Exponential kernel weights.
     """
-    if isinstance(bandwidth, (int, float)):
-        z = distances / bandwidth
-    else:
+    if not isinstance(bandwidth, (int, float)):
         bandwidth = np.asarray(bandwidth)
-        z = distances / bandwidth
+        
+    z = distances / bandwidth
     return np.exp(-z)
 
 
