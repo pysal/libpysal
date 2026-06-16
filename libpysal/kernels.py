@@ -227,11 +227,10 @@ def _boxcar(distances: np.ndarray, bandwidth) -> np.ndarray:
         Binary weights: 1 if distance < bandwidth, else 0.
     """
     distances = np.asarray(distances)
-    if isinstance(bandwidth, (int, float)):
-        return (distances < bandwidth).astype(float)
-    else:
+    if not isinstance(bandwidth, (int, float)):
         bandwidth = np.asarray(bandwidth)
-        return (distances < bandwidth).astype(float)
+    
+    return (distances < bandwidth).astype(float)
 
 
 def _identity(distances: np.ndarray, _) -> np.ndarray:
