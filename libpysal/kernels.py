@@ -317,11 +317,10 @@ def kernel(
     k = func(distances, bandwidth)
 
     if taper is True:
-        if isinstance(bandwidth, (int, float)):
-            k[distances > bandwidth] = 0.0
-        else:
+        if not isinstance(bandwidth, (int, float)):
             bandwidth = np.asarray(bandwidth)
-            k[distances > bandwidth] = 0.0
+
+        k[distances > bandwidth] = 0.0
 
     elif isinstance(taper, (float, int)) and not isinstance(taper, bool):
         k[distances > taper] = 0.0
