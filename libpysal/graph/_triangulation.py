@@ -428,8 +428,6 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
     return heads_ix, tails_ix, numpy.array([])
 
 
-#### utilities
-
 
 def _voronoi_polygon(
     geoms,
@@ -478,16 +476,15 @@ def _voronoi_polygon(
     )
     heads_ix, tails_ix, _ = _vertex_set_intersection(cells, rook=rook)
 
-    valid_ids = set(ids)
-    mask = numpy.isin(heads_ix, list(valid_ids)) & numpy.isin(tails_ix, list(valid_ids))
+    mask = numpy.isin(heads_ix, ids) & numpy.isin(tails_ix, ids)
     heads_ix = heads_ix[mask]
     tails_ix = tails_ix[mask]
 
-    heads = heads_ix
-    tails = tails_ix
     weights = numpy.ones(len(heads_ix), dtype=numpy.int8)
-    return heads, tails, weights
+    return heads_ix, tails_ix, weights
 
+
+#### utilities
 
 @njit
 def _edges_from_simplices(simplices):

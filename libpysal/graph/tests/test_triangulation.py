@@ -291,7 +291,7 @@ def test_coplanar_raise_voronoi(stores):
 
 
 @pytest.mark.network
-def test_coplanar_jitter_voronoi(stores, stores_unique):  # edit
+def test_coplanar_jitter_voronoi(stores, stores_unique):
     cp_heads, cp_tails, cp_w = _voronoi(stores, clip=False, coplanar="jitter")
     unique_heads, unique_tails, unique_w = _voronoi(stores_unique, clip=False)
     assert not np.array_equal(cp_heads, unique_heads)
@@ -512,7 +512,15 @@ def test_voronoi_polygon():
     gdf = geopandas.GeoDataFrame(geometry=polys)
     ids = np.arange(4)
     heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
-    assert len(np.unique(heads)) == 4
+
+    exp_heads = np.array([0, 0, 1, 1, 2, 2, 3, 3])
+    exp_tails = np.array([1, 2, 0, 3, 0, 3, 1, 2])
+    exp_weights = np.ones(8, dtype=np.int8)
+
+    np.testing.assert_array_equal(heads, exp_heads)
+    np.testing.assert_array_equal(tails, exp_tails)
+    np.testing.assert_array_equal(weights, exp_weights)
+
 
 
 def test_voronoi_polygon_kwargs():
@@ -525,7 +533,15 @@ def test_voronoi_polygon_kwargs():
     gdf = geopandas.GeoDataFrame(geometry=polys)
     ids = np.arange(4)
     heads, tails, weights = _voronoi_polygon(gdf, ids=ids, segment=0.5, shrink=0.4)
-    assert len(np.unique(heads)) == 4
+
+    exp_heads = np.array([0, 0, 1, 1, 2, 2, 3, 3])
+    exp_tails = np.array([1, 2, 0, 3, 0, 3, 1, 2])
+    exp_weights = np.ones(8, dtype=np.int8)
+
+    np.testing.assert_array_equal(heads, exp_heads)
+    np.testing.assert_array_equal(tails, exp_tails)
+    np.testing.assert_array_equal(weights, exp_weights)
+
 
 
 def test_voronoi_polygon_via_build_triangulation():
@@ -538,16 +554,24 @@ def test_voronoi_polygon_via_build_triangulation():
     gdf = geopandas.GeoDataFrame(geometry=polys)
     graph = Graph.build_triangulation(gdf, method="voronoi")
     assert graph.n_nodes == 4
+    assert graph.n_edges == 8
+    np.testing.assert_array_equal(
+        graph.adjacency.index.get_level_values(0).values,
+        np.array([0, 0, 1, 1, 2, 2, 3, 3])
+    )
+    np.testing.assert_array_equal(
+        graph.adjacency.index.get_level_values(1).values,
+        np.array([1, 2, 0, 3, 0, 3, 1, 2])
+    )
+
 
 
 def test_voronoi_polygon_multipolygon():
     polys = [
-        MultiPolygon(
-            [
-                Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
-                Polygon([(2, 0), (3, 0), (3, 1), (2, 1)]),
-            ]
-        ),
+        MultiPolygon([
+            Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+            Polygon([(2, 0), (3, 0), (3, 1), (2, 1)]),
+        ]),
         Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
         Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
         Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
@@ -555,7 +579,15 @@ def test_voronoi_polygon_multipolygon():
     gdf = geopandas.GeoDataFrame(geometry=polys)
     ids = np.arange(4)
     heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
-    assert len(np.unique(heads)) == 4
+
+    exp_heads = np.array([0, 0, 1, 1, 1, 2, 3, 3])
+    exp_tails = np.array([1, 3, 0, 2, 3, 1, 0, 1])
+    exp_weights = np.ones(8, dtype=np.int8)
+
+    np.testing.assert_array_equal(heads, exp_heads)
+    np.testing.assert_array_equal(tails, exp_tails)
+    np.testing.assert_array_equal(weights, exp_weights)
+
 
 
 def test_voronoi_polygon_string_ids():
@@ -568,7 +600,23 @@ def test_voronoi_polygon_string_ids():
     gdf = geopandas.GeoDataFrame(geometry=polys, index=["a", "b", "c", "d"])
     ids = np.array(["a", "b", "c", "d"])
     heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
-    assert set(heads) == {"a", "b", "c", "d"}
+
+    graph = Graph.from_arrays(heads, tails, weights)
+
+    exp_neighbors = {
+        "a": {"b", "c"},
+        "b": {"a", "d"},
+        "c": {"a", "d"},
+        "d": {"b", "c"},
+    }
+    for node, expected in exp_neighbors.items():
+        actual = set(graph[node].index)
+        assert actual == expected, f"Node {node}: expected {expected}, got {actual}"
+
+    np.testing.assert_array_equal(weights, np.ones(8, dtype=np.int8))
+
+
+
 
 
 def test_voronoi_polygon_point_backward_compat():
@@ -581,3 +629,13 @@ def test_voronoi_polygon_point_backward_compat():
     gdf = geopandas.GeoDataFrame(geometry=pts)
     graph = Graph.build_triangulation(gdf, method="voronoi")
     assert graph.n_nodes == 4
+    assert graph.n_edges == 8
+    np.testing.assert_array_equal(
+        graph.adjacency.index.get_level_values(0).values,
+        np.array([0, 0, 1, 1, 2, 2, 3, 3])
+    )
+    np.testing.assert_array_equal(
+        graph.adjacency.index.get_level_values(1).values,
+        np.array([1, 2, 0, 3, 0, 3, 1, 2])
+    )
+
