@@ -428,7 +428,6 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
     return heads_ix, tails_ix, numpy.array([])
 
 
-
 def _voronoi_polygon(
     geoms,
     ids,
@@ -485,6 +484,7 @@ def _voronoi_polygon(
 
 
 #### utilities
+
 
 @njit
 def _edges_from_simplices(simplices):

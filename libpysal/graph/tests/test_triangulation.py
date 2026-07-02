@@ -522,7 +522,6 @@ def test_voronoi_polygon():
     np.testing.assert_array_equal(weights, exp_weights)
 
 
-
 def test_voronoi_polygon_kwargs():
     polys = [
         Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
@@ -543,7 +542,6 @@ def test_voronoi_polygon_kwargs():
     np.testing.assert_array_equal(weights, exp_weights)
 
 
-
 def test_voronoi_polygon_via_build_triangulation():
     polys = [
         Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
@@ -557,21 +555,22 @@ def test_voronoi_polygon_via_build_triangulation():
     assert graph.n_edges == 8
     np.testing.assert_array_equal(
         graph.adjacency.index.get_level_values(0).values,
-        np.array([0, 0, 1, 1, 2, 2, 3, 3])
+        np.array([0, 0, 1, 1, 2, 2, 3, 3]),
     )
     np.testing.assert_array_equal(
         graph.adjacency.index.get_level_values(1).values,
-        np.array([1, 2, 0, 3, 0, 3, 1, 2])
+        np.array([1, 2, 0, 3, 0, 3, 1, 2]),
     )
-
 
 
 def test_voronoi_polygon_multipolygon():
     polys = [
-        MultiPolygon([
-            Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
-            Polygon([(2, 0), (3, 0), (3, 1), (2, 1)]),
-        ]),
+        MultiPolygon(
+            [
+                Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+                Polygon([(2, 0), (3, 0), (3, 1), (2, 1)]),
+            ]
+        ),
         Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
         Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
         Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
@@ -587,7 +586,6 @@ def test_voronoi_polygon_multipolygon():
     np.testing.assert_array_equal(heads, exp_heads)
     np.testing.assert_array_equal(tails, exp_tails)
     np.testing.assert_array_equal(weights, exp_weights)
-
 
 
 def test_voronoi_polygon_string_ids():
@@ -616,9 +614,6 @@ def test_voronoi_polygon_string_ids():
     np.testing.assert_array_equal(weights, np.ones(8, dtype=np.int8))
 
 
-
-
-
 def test_voronoi_polygon_point_backward_compat():
     pts = [
         shapely.Point(0, 0),
@@ -632,10 +627,9 @@ def test_voronoi_polygon_point_backward_compat():
     assert graph.n_edges == 8
     np.testing.assert_array_equal(
         graph.adjacency.index.get_level_values(0).values,
-        np.array([0, 0, 1, 1, 2, 2, 3, 3])
+        np.array([0, 0, 1, 1, 2, 2, 3, 3]),
     )
     np.testing.assert_array_equal(
         graph.adjacency.index.get_level_values(1).values,
-        np.array([1, 2, 0, 3, 0, 3, 1, 2])
+        np.array([1, 2, 0, 3, 0, 3, 1, 2]),
     )
-
