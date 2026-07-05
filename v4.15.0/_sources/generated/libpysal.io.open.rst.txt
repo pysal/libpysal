@@ -1,0 +1,36 @@
+﻿libpysal.io.open
+================
+
+.. currentmodule:: libpysal.io
+
+.. autoclass:: open
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~open.cast
+      ~open.check
+      ~open.close
+      ~open.flush
+      ~open.get
+      ~open.getType
+      ~open.open
+      ~open.read
+      ~open.seek
+      ~open.tell
+      ~open.truncate
+      ~open.write
+   
+
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~open.by_row
+      ~open.ids
+      ~open.rIds
+   

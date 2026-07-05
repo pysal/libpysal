@@ -1,0 +1,11 @@
+﻿libpysal.graph.GraphSummary
+===========================
+
+.. currentmodule:: libpysal.graph
+
+.. autoclass:: GraphSummary
+
+   
+   
+
+   

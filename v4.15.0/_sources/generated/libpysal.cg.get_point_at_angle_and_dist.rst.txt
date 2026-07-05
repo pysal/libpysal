@@ -1,0 +1,6 @@
+﻿libpysal.cg.get\_point\_at\_angle\_and\_dist
+============================================
+
+.. currentmodule:: libpysal.cg
+
+.. autofunction:: get_point_at_angle_and_dist

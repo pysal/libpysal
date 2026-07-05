@@ -1,0 +1,6 @@
+﻿libpysal.graph.read\_parquet
+============================
+
+.. currentmodule:: libpysal.graph
+
+.. autofunction:: read_parquet

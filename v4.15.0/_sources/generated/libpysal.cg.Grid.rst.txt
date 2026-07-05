@@ -1,0 +1,22 @@
+﻿libpysal.cg.Grid
+================
+
+.. currentmodule:: libpysal.cg
+
+.. autoclass:: Grid
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Grid.add
+      ~Grid.bounds
+      ~Grid.in_grid
+      ~Grid.nearest
+      ~Grid.proximity
+      ~Grid.remove
+   
+
+   

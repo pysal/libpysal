@@ -1,0 +1,18 @@
+﻿libpysal.cg.Line
+================
+
+.. currentmodule:: libpysal.cg
+
+.. autoclass:: Line
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Line.x
+      ~Line.y
+   
+
+   

@@ -1,0 +1,368 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Raster awareness API\n",
+    "\n",
+    "This notebook will give an overview of newly developed raster interface. We'll cover \n",
+    "basic usage of the functionality offered by the interface which mainly involves:\n",
+    "1. converting `xarray.DataArray` object to the PySAL's weights object (`libpysal.weights.W`/`WSP`).\n",
+    "2. going back to the `xarray.DataArray` from weights object.\n",
+    "\n",
+    "using different datasets:\n",
+    "- with missing values.\n",
+    "- with multiple layers.\n",
+    "- with non conventional dimension names."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import requests\n",
+    "import xarray as xr\n",
+    "from esda import Moran_Local\n",
+    "\n",
+    "from libpysal.weights import Queen, Rook, raster"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Loading Data\n",
+    "\n",
+    "*The interface only accepts `xarray.DataArray`*, this can be easily obtained from raster data\n",
+    "format using `xarray`'s I/O functionality which can read from a variety of data formats some of them are listed below: \n",
+    "- [GDAL Raster Formats](https://svn.osgeo.org/gdal/tags/gdal_1_2_5/frmts/formats_list.html) via `open_rasterio` method.\n",
+    "- [NetCDF](https://www.unidata.ucar.edu/software/netcdf/) via `open_dataset` method.\n",
+    "\n",
+    "In this notebook we'll work with `NetCDF` and `GeoTIFF` data. \n",
+    "\n",
+    "### Using xarray example dataset\n",
+    "First lets load up a `netCDF` dataset offered by xarray."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# -> returns a xarray.Dataset object\n",
+    "ds = xr.tutorial.open_dataset(\"air_temperature.nc\")\n",
+    "da = ds[\"air\"]  # we'll use the \"air\" data variable for further analysis\n",
+    "print(da)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "`xarray`'s data structures like `Dataset` and `DataArray` provides `pandas` like functionality for multidimensional-array or ndarray. \n",
+    "\n",
+    "In our case we'll mainly deal with `DataArray`, we can see above that the `da` holds the data for air temperature, it has 2 dims coordinate dimensions `x` and `y`, and it's layered on `time` dimension so in total 3 dims (`time`, `lat`, `lon`).\n",
+    "\n",
+    "We'll now group `da` by month and take average over the `time` dimension\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "da = da.groupby(\"time.month\").mean()\n",
+    "print(da.coords)  # as a result time dim is replaced by month"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# let's plot over month, each facet will represent\n",
+    "# the mean air temperature in a given month.\n",
+    "da.plot(\n",
+    "    col=\"month\",\n",
+    "    col_wrap=4,\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can use `from_xarray` method from the contiguity classes like `Rook` and `Queen`, and also from `KNN`.\n",
+    "\n",
+    "This uses a util function in `raster.py` file called `da2W`, which can also be called directly to build `W` object, similarly `da2WSP` for building `WSP` object.\n",
+    "\n",
+    "**Weight builders (`from_xarray`, `da2W`, `da2WSP`) can recognise dimensions belonging to this list `[band, time, lat, y, lon, x]`, if any of the dimension in the `DataArray` does not belong to the mentioned list then we need to pass a dictionary (specifying that dimension's name) to the weight builder.** \n",
+    "\n",
+    "e.g. `dims` dictionary:\n",
+    "```python\n",
+    ">>> da.dims                  # none of the dimension belong to the default dimension list\n",
+    "('year', 'height', 'width')\n",
+    ">>> coords_labels = {                 # dimension values should be properly aligned with the following keys\n",
+    "        \"z_label\": \"year\",\n",
+    "        \"y_label\": \"height\",\n",
+    "        \"x_label\": \"width\"\n",
+    "    }\n",
+    "```\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "coords_labels = {}\n",
+    "# since month does not belong to the default list we\n",
+    "# need to pass it using a dictionary\n",
+    "coords_labels[\"z_label\"] = \"month\"\n",
+    "w_queen = Queen.from_xarray(\n",
+    "    da, z_value=12, coords_labels=coords_labels, sparse=False\n",
+    ")  # We'll use data from 12th layer (in our case layer=month)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "`index` is a newly added attribute to the weights object, this holds the multi-indices of the non-missing values belonging to `pandas.Series` created from the passed `DataArray`, this series can be easily obtained using `DataArray.to_series()` method."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "w_queen.index[:5]  # indices are aligned to the ids of the weight object"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can then obtain raster data by converting the `DataArray` to `Series` and then using indices from `index` attribute to get non-missing values by subsetting the `Series`. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data = da.to_series()[w_queen.index]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We now have the required data for further analysis (we can now use methods such as ESDA/spatial regression), for this example let's compute a local Moran statistic for the extracted data."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Quickly computing and loading a LISA\n",
+    "np.random.seed(12345)\n",
+    "lisa = Moran_Local(np.array(data, dtype=np.float64), w_queen)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "After getting our calculated results it's time to store them back to the `DataArray`, we can use `w2da` function directly to convert the `W` object back to `DataArray`. \n",
+    "\n",
+    "*Your use case might differ but the steps for using the interface will be similar to this example.* "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Converting obtained data back to DataArray\n",
+    "moran_da = raster.w2da(\n",
+    "    lisa.p_sim, w_queen\n",
+    ")  # w2da accepts list/1d array/pd.Series and a weight object aligned to passed data\n",
+    "print(moran_da)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "moran_da.plot()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Using local `NetCDF` dataset\n",
+    "\n",
+    "In the earlier example we used an example dataset from xarray for building weights object. Additonally, we had to pass the custom layer name to the builder. \n",
+    "\n",
+    "In this small example we'll build `KNN` distance weight object using a local `NetCDF` dataset with different dimensions names which doesn't belong to the default list of dimensions.\n",
+    "\n",
+    "We'll also see how to speed up the reverse journey (from weights object to `DataArray`) by passing prebuilt `coords` and `attrs` to `w2da` method. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r = requests.get(\n",
+    "    \"https://archive.unidata.ucar.edu/software/netcdf/examples/ECMWF_ERA-40_subset.nc\"\n",
+    ")\n",
+    "with open(\"ECMWF_ERA-40_subset.nc\", \"wb\") as f:\n",
+    "    f.write(r.content)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Lets load a netCDF Surface dataset\n",
+    "ds = xr.open_dataset(\n",
+    "    \"ECMWF_ERA-40_subset.nc\"\n",
+    ")  # After loading netCDF dataset we obtained a xarray.Dataset object\n",
+    "print(ds)  # This Dataset object containes several data variables"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Out of 17 data variables we'll use `p2t` for our analysis. This will give us our desired `DataArray` object `da`, we will further group `da` by day, taking average over the `time` dimension."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [],
+   "source": [
+    "# this will give us the required DataArray with p2t\n",
+    "# (2 metre temperature) data variable\n",
+    "da = ds[\"p2t\"]\n",
+    "da = da.groupby(\"time.day\").mean()\n",
+    "print(da.dims)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**We can see that the none of dimensions of `da` matches with the default dimensions (`[band, time, lat, y, lon, x]`)**\n",
+    "\n",
+    "This means we have to create a dictionary mentioning the dimensions and ship it to weight builder, similar to our last example. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "coords_labels = {}\n",
+    "coords_labels[\"y_label\"] = \"latitude\"\n",
+    "coords_labels[\"x_label\"] = \"longitude\"\n",
+    "coords_labels[\"z_label\"] = \"day\"\n",
+    "w_rook = Rook.from_xarray(da, z_value=13, coords_labels=coords_labels, sparse=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data = da.to_series()[\n",
+    "    w_rook.index\n",
+    "]  # we derived the data from DataArray similar to our last example"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In the last example we only passed the `data` values and weight object to `w2da` method, which then created the necessary `coords` to build our required `DataArray`. This process can be speed up by passing `coords` from the existing `DataArray` `da` which we used earlier.\n",
+    "\n",
+    "Along with `coords` we can also pass `attrs` of the same `DataArray` this will help `w2da` to retain all the properties of original `DataArray`.\n",
+    "\n",
+    "Let's compare the `DataArray` returned by `w2da` and original `DataArray`. For this we'll ship the derived data straight to `w2da` without any statistical analysis."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "da1 = raster.wsp2da(data, w_rook, attrs=da.attrs, coords=da[12:13].coords)\n",
+    "xr.DataArray.equals(\n",
+    "    da[12:13], da1\n",
+    ")  # method to compare 2 DataArray, if true then w2da was successfull"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Additional resources\n",
+    "\n",
+    "1. [Reading and writing files using Xarray](http://xarray.pydata.org/en/stable/io.html)\n",
+    "2. [Xarray Data Structures](http://xarray.pydata.org/en/stable/data-structures.html)\n",
+    "3. Dataset links:\n",
+    "    - [ECMWF_ERA-40_subset.nc](https://www.unidata.ucar.edu/software/netcdf/examples/files.html)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "default",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
