@@ -6,14 +6,11 @@
 .. autoclass:: Queen
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~Queen.__init__
       ~Queen.asymmetry
       ~Queen.from_WSP
       ~Queen.from_adjlist
@@ -37,9 +34,7 @@
       ~Queen.to_networkx
       ~Queen.to_sparse
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -74,5 +69,4 @@
       ~Queen.trcW2
       ~Queen.trcWtW
       ~Queen.trcWtW_WW
-   
    

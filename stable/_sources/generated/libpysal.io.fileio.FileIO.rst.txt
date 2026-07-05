@@ -6,14 +6,11 @@
 .. autoclass:: FileIO
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~FileIO.__init__
       ~FileIO.cast
       ~FileIO.check
       ~FileIO.close
@@ -27,9 +24,7 @@
       ~FileIO.truncate
       ~FileIO.write
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -38,5 +33,4 @@
       ~FileIO.by_row
       ~FileIO.ids
       ~FileIO.rIds
-   
    

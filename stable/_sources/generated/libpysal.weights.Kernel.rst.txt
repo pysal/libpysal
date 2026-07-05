@@ -6,14 +6,11 @@
 .. autoclass:: Kernel
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~Kernel.__init__
       ~Kernel.asymmetry
       ~Kernel.from_WSP
       ~Kernel.from_adjlist
@@ -36,9 +33,7 @@
       ~Kernel.to_networkx
       ~Kernel.to_sparse
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -73,5 +68,4 @@
       ~Kernel.trcW2
       ~Kernel.trcWtW
       ~Kernel.trcWtW_WW
-   
    

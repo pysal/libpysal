@@ -6,22 +6,16 @@
 .. autoclass:: PointLocator
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~PointLocator.__init__
       ~PointLocator.nearest
       ~PointLocator.overlapping
       ~PointLocator.polygon
       ~PointLocator.proximity
       ~PointLocator.region
    
-   
 
-   
-   
    

@@ -6,20 +6,15 @@
 .. autoclass:: WSP
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~WSP.__init__
       ~WSP.from_W
       ~WSP.to_W
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -29,5 +24,4 @@
       ~WSP.id_order
       ~WSP.s0
       ~WSP.trcWtW_WW
-   
    

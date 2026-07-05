@@ -1,0 +1,1380 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="w_g_migration.html">
+      
+      
+        <link rel="next" href="../kernels.html">
+      
+      
+      <link rel="icon" href="../../_static/pysal_favicon.ico">
+    
+    
+      
+        <title>W to Graph Member Comparisons - libpysal</title>
+      
+    
+    
+      
+        
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+        <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+        <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d127c87d" />
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#overview" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../index.html" title="libpysal" class="md-header__button md-logo" aria-label="libpysal" data-md-component="logo">
+      <img src="../../_static/pysal_logo.svg" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            libpysal
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              W to Graph Member Comparisons
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="red"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pysal/libpysal/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/libpysal
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../index.html" title="libpysal" class="md-nav__button md-logo" aria-label="libpysal" data-md-component="logo">
+      <img src="../../_static/pysal_logo.svg" alt="logo">
+    </a>
+    libpysal
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pysal/libpysal/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    pysal/libpysal
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Home</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Installation</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>User Guide</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            <span>User Guide</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="intro.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    <span>Graphs</span>
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Graphs</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="matching-graph.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Graph Matching</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="w_g_migration.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Migration Guide</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span>W to Graph Member Comparisons</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>W to Graph Member Comparisons</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Overview</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#members-common-to-w-and-graph" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Members common to W and Graph</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#members-common-to-w-and-graph-with-different-types" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Members common to W and Graph with different types</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#members-unique-to-w" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Members unique to W</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#members-unique-to-graph" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Members unique to Graph</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kernels.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Kernels</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../weights/intro.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Weights</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data/examples.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Datasets</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>References</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>API reference</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>For contributors</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>For contributors</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/libpysal" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Git<wbr>Hub</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/pysal/libpysal/releases" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Changelog</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Overview</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#members-common-to-w-and-graph" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Members common to W and Graph</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#members-common-to-w-and-graph-with-different-types" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Members common to W and Graph with different types</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#members-unique-to-w" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Members unique to W</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#members-unique-to-graph" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Members unique to Graph</span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+  
+    <a href="https://github.com/pysal/libpysal/blob/main/docs/user-guide/graph/migration.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h5.5L13 3.5zM6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5 3.74 3.74 1.42-1.41-2.33-2.33 2.33-2.33-1.42-1.41zm11.16 0-3.74-3.74-1.42 1.41 2.33 2.33-2.33 2.33 1.42 1.41z"/></svg>
+    </a>
+  
+  
+
+<h1 id="w-to-graph-member-comparisons">W to Graph Member Comparisons<a class="headerlink" href="#w-to-graph-member-comparisons" title="Link to this heading">¶</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>This guide compares the members (attributes and methods) from the
+<code class="docutils literal notranslate"><span class="pre">W</span></code> class and the <code class="docutils literal notranslate"><span class="pre">Graph</span></code> class.</p>
+<p>It is intended for developers. Users interested in migrating to the
+new Graph class from W should see the
+<a class="reference internal" href="w_g_migration.html"><span class="std std-doc">migration guide</span></a>.</p>
+<h2 id="members-common-to-w-and-graph">Members common to W and Graph<a class="headerlink" href="#members-common-to-w-and-graph" title="Link to this heading">¶</a></h2>
+<table class="docutils data align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.asymmetry" title="libpysal.graph.Graph.asymmetry (Python method) — Asymmetry check."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">asymmetry</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_networkx" title="libpysal.graph.Graph.from_networkx (Python method) — Generate a Graph from a NetworkX graph."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_networkx</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_sparse" title="libpysal.graph.Graph.from_sparse (Python method) — Convert a scipy.sparse array to a PySAL Graph object."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_sparse</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n" title="libpysal.graph.Graph.n (Python property) — Number of observations."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">n</span></code></span></a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n_components" title="libpysal.graph.Graph.n_components (Python property) — Get a number of connected components"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">n_components</span></code></span></a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.neighbors" title="libpysal.graph.Graph.neighbors (Python property) — Get neighbors dictionary"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">neighbors</span></code></span></a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.pct_nonzero" title="libpysal.graph.Graph.pct_nonzero (Python property) — Percentage of nonzero weights."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">pct_nonzero</span></code></span></a></p></td>
+<td><p>builtins.float</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.plot" title="libpysal.graph.Graph.plot (Python method) — Plot edges and nodes of the Graph"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">plot</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_networkx" title="libpysal.graph.Graph.to_networkx (Python method) — Convert Graph to a networkx graph."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_networkx</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.weights" title="libpysal.graph.Graph.weights (Python property) — Get weights dictionary"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">weights</span></code></span></a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+</tbody>
+</table>
+<h2 id="members-common-to-w-and-graph-with-different-types">Members common to W and Graph with different types<a class="headerlink" href="#members-common-to-w-and-graph-with-different-types" title="Link to this heading">¶</a></h2>
+<table class="docutils data align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Queen Type</p></th>
+<th class="head"><p>Graph Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cardinalities</p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.weights.W.html#libpysal.weights.W.cardinalities" title="libpysal.weights.W.cardinalities (Python property) — Number of neighbors for each observation."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">builtins.dict</span></code></span></a></p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.cardinalities" title="libpysal.graph.Graph.cardinalities (Python property) — Number of neighbors for each observation"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code></span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>component_labels</p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.weights.W.html#libpysal.weights.W.component_labels" title="libpysal.weights.W.component_labels (Python property) — Store the graph component in which each observation falls."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></span></a></p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.component_labels" title="libpysal.graph.Graph.component_labels (Python property) — Get component labels per observation"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code></span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>nonzero</p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.weights.W.html#libpysal.weights.W.nonzero" title="libpysal.weights.W.nonzero (Python property) — Number of nonzero weights."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">builtins.int</span></code></span></a></p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.nonzero" title="libpysal.graph.Graph.nonzero (Python property) — Number of nonzero weights."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">numpy.int64</span></code></span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>sparse</p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.weights.W.html#libpysal.weights.W.sparse" title="libpysal.weights.W.sparse (Python property) — Sparse matrix object. For any matrix manipulations required for w, w.sparse should be used. This is based on scipy.sparse."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">scipy.sparse._csr.csr_matrix</span></code></span></a></p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.sparse" title="libpysal.graph.Graph.sparse (Python property) — Return a scipy.sparse array (CSR)"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">scipy.sparse._csr.csr_array</span></code></span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>transform</p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.weights.W.html#libpysal.weights.W.transform" title="libpysal.weights.W.transform (Python property) — Getter for transform property."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">builtins.str</span></code></span></a></p></td>
+<td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.transform" title="libpysal.graph.Graph.transform (Python method) — Transformation of weights"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">builtins.method</span></code></span></a></p></td>
+</tr>
+</tbody>
+</table>
+<h2 id="members-unique-to-w">Members unique to W<a class="headerlink" href="#members-unique-to-w" title="Link to this heading">¶</a></h2>
+<table class="docutils data align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.asymmetries" title="libpysal.weights.Queen.asymmetries (Python property) — List of id pairs with asymmetric weights sorted in ascending index location order."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">asymmetries</span></code></span></a></p></td>
+<td><p>builtins.list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.diagW2" title="libpysal.weights.Queen.diagW2 (Python property) — Diagonal of WW."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">diagW2</span></code></span></a></p></td>
+<td><p>numpy.ndarray</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.diagWtW" title="libpysal.weights.Queen.diagWtW (Python property) — Diagonal of W^{'}W."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">diagWtW</span></code></span></a></p></td>
+<td><p>numpy.ndarray</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.diagWtW_WW" title="libpysal.weights.Queen.diagWtW_WW (Python property) — Diagonal of W^{'}W + WW."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">diagWtW_WW</span></code></span></a></p></td>
+<td><p>numpy.ndarray</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_WSP" title="libpysal.weights.Queen.from_WSP (Python method) — Create a pysal W from a pysal WSP object (thin weights matrix)."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_WSP</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_adjlist" title="libpysal.weights.Queen.from_adjlist (Python method) — Return an adjacency list representation of a weights object."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_adjlist</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_dataframe" title="libpysal.weights.Queen.from_dataframe (Python method) — Construct a weights object from a (geo)pandas dataframe with a geometry column. This will cast the polygons to PySAL polygons, then build the W using ids from the dataframe."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_dataframe</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_file" title="libpysal.weights.Queen.from_file (Python method) — Read a weights file into a W object."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_file</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_iterable" title="libpysal.weights.Queen.from_iterable (Python method) — Construct a weights object from a collection of arbitrary polygons."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_iterable</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_shapefile" title="libpysal.weights.Queen.from_shapefile (Python method) — Queen contiguity weights from a polygon shapefile."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_shapefile</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.from_xarray" title="libpysal.weights.Queen.from_xarray (Python method) — Construct a weights object from a xarray.DataArray with an additional attribute index containing coordinate values of the raster in the form of Pandas.Index/MultiIndex."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_xarray</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.full" title="libpysal.weights.Queen.full (Python method) — Generate a full numpy.ndarray."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">full</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.get_transform" title="libpysal.weights.Queen.get_transform (Python method) — Getter for transform property."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">get_transform</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.histogram" title="libpysal.weights.Queen.histogram (Python property) — Cardinality histogram as a dictionary where key is the id and value is the number of neighbors for that unit."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">histogram</span></code></span></a></p></td>
+<td><p>builtins.list</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.id2i" title="libpysal.weights.Queen.id2i (Python property) — Dictionary where the key is an ID and the value is that ID's index in W.id_order."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">id2i</span></code></span></a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.id_order" title="libpysal.weights.Queen.id_order (Python property) — Returns the ids for the observations in the order in which they would be encountered if iterating over the weights."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">id_order</span></code></span></a></p></td>
+<td><p>builtins.list</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.id_order_set" title="libpysal.weights.Queen.id_order_set (Python property) — Returns True if user has set id_order, False if not."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">id_order_set</span></code></span></a></p></td>
+<td><p>builtins.bool</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.islands" title="libpysal.weights.Queen.islands (Python property) — List of ids without any neighbors."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">islands</span></code></span></a></p></td>
+<td><p>builtins.list</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.max_neighbors" title="libpysal.weights.Queen.max_neighbors (Python property) — Largest number of neighbors."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">max_neighbors</span></code></span></a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.mean_neighbors" title="libpysal.weights.Queen.mean_neighbors (Python property) — Average number of neighbors."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">mean_neighbors</span></code></span></a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.min_neighbors" title="libpysal.weights.Queen.min_neighbors (Python property) — Minimum number of neighbors."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">min_neighbors</span></code></span></a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.neighbor_offsets" title="libpysal.weights.Queen.neighbor_offsets (Python property) — Given the current id_order, neighbor_offsets[id] is the offsets of the id's neighbors in id_order."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">neighbor_offsets</span></code></span></a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.remap_ids" title="libpysal.weights.Queen.remap_ids (Python method) — In place modification throughout W of id values from w.id_order to new_ids in all."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">remap_ids</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.s0" title="libpysal.weights.Queen.s0 (Python property) — s0 is defined as"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">s0</span></code></span></a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.s1" title="libpysal.weights.Queen.s1 (Python property) — s1 is defined as"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">s1</span></code></span></a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.s2" title="libpysal.weights.Queen.s2 (Python property) — s2 is defined as"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">s2</span></code></span></a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.s2array" title="libpysal.weights.Queen.s2array (Python property) — Individual elements comprising s2."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">s2array</span></code></span></a></p></td>
+<td><p>numpy.ndarray</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.sd" title="libpysal.weights.Queen.sd (Python property) — Standard deviation of number of neighbors."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">sd</span></code></span></a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.set_shapefile" title="libpysal.weights.Queen.set_shapefile (Python method) — Adding metadata for writing headers of .gal and .gwt files."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">set_shapefile</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.set_transform" title="libpysal.weights.Queen.set_transform (Python method) — Transformations of weights."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">set_transform</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.Queen.silence_warnings"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">silence_warnings</span></code></span></a></p></td>
+<td><p>builtins.bool</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.symmetrize" title="libpysal.weights.Queen.symmetrize (Python method) — Construct a symmetric KNN weight. This ensures that the neighbors of each focal observation consider the focal observation itself as a neighbor. This returns a generic W object, since the object is no longer guaranteed to have k neighbors for each observation."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">symmetrize</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.to_WSP" title="libpysal.weights.Queen.to_WSP (Python method) — Generate a WSP object."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_WSP</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.to_adjlist" title="libpysal.weights.Queen.to_adjlist (Python method) — Compute an adjacency list representation of a weights object."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_adjlist</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.to_file" title="libpysal.weights.Queen.to_file (Python method) — Write a weights to a file. The format is guessed automatically from the path, but can be overridden with the format argument."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_file</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.to_sparse" title="libpysal.weights.Queen.to_sparse (Python method) — Generate a scipy.sparse array object from a pysal W."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_sparse</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#libpysal.weights.Queen.transformations"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">transformations</span></code></span></a></p></td>
+<td><p>builtins.dict</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.trcW2" title="libpysal.weights.Queen.trcW2 (Python property) — Trace of WW."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">trcW2</span></code></span></a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.trcWtW" title="libpysal.weights.Queen.trcWtW (Python property) — Trace of W^{'}W."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">trcWtW</span></code></span></a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.weights.Queen.html#libpysal.weights.Queen.trcWtW_WW" title="libpysal.weights.Queen.trcWtW_WW (Python property) — Trace of W^{'}W + WW."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">trcWtW_WW</span></code></span></a></p></td>
+<td><p>numpy.float64</p></td>
+</tr>
+</tbody>
+</table>
+<h2 id="members-unique-to-graph">Members unique to Graph<a class="headerlink" href="#members-unique-to-graph" title="Link to this heading">¶</a></h2>
+<table class="docutils data align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Member</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.adjacency" title="libpysal.graph.Graph.adjacency (Python property) — Return a copy of the adjacency list"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">adjacency</span></code></span></a></p></td>
+<td><p>pandas.Series</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.aggregate" title="libpysal.graph.Graph.aggregate (Python method) — Aggregate weights within a neighbor set"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">aggregate</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.apply" title="libpysal.graph.Graph.apply (Python method) — Apply a reduction across the neighbor sets"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">apply</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.assign_self_weight" title="libpysal.graph.Graph.assign_self_weight (Python method) — Assign values to edges representing self-weight."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">assign_self_weight</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_block_contiguity" title="libpysal.graph.Graph.build_block_contiguity (Python method) — Generate Graph from block contiguity (regime neighbors)"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_block_contiguity</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_contiguity" title="libpysal.graph.Graph.build_contiguity (Python method) — Generate Graph from geometry based on contiguity"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_contiguity</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_distance_band" title="libpysal.graph.Graph.build_distance_band (Python method) — Generate Graph from geometry based on a distance band"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_distance_band</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_fuzzy_contiguity" title="libpysal.graph.Graph.build_fuzzy_contiguity (Python method) — Generate Graph from fuzzy contiguity"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_fuzzy_contiguity</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_h3" title="libpysal.graph.Graph.build_h3 (Python method) — Generate Graph from indices of H3 hexagons."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_h3</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_kernel" title="libpysal.graph.Graph.build_kernel (Python method) — Generate Graph from geometry data based on a kernel function"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_kernel</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_knn" title="libpysal.graph.Graph.build_knn (Python method) — Generate Graph from geometry data based on k-nearest neighbors search"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_knn</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_raster_contiguity" title="libpysal.graph.Graph.build_raster_contiguity (Python method) — Generate Graph from xarray.DataArray raster object"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_raster_contiguity</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_spatial_matches" title="libpysal.graph.Graph.build_spatial_matches (Python method) — Match locations in one dataset to at least k locations in another (possibly identical) dataset by minimizing the total distance between matched locations."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_spatial_matches</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_travel_cost" title="libpysal.graph.Graph.build_travel_cost (Python method) — Generate a Graph based on shortest travel costs from a pandarm.Network"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_travel_cost</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.build_triangulation" title="libpysal.graph.Graph.build_triangulation (Python method) — Generate Graph from geometry based on triangulation"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">build_triangulation</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.copy" title="libpysal.graph.Graph.copy (Python method) — Make a copy of this Graph's adjacency table and transformation"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">copy</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.describe" title="libpysal.graph.Graph.describe (Python method) — Describe the distribution of y values within the neighbors of each node."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">describe</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.difference" title="libpysal.graph.Graph.difference (Python method) — Provide the set difference between the graph on the left and the graph on the right. This returns all links in the left graph that are not in the right graph."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">difference</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.eliminate_zeros" title="libpysal.graph.Graph.eliminate_zeros (Python method) — Remove graph edges with zero weight"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">eliminate_zeros</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.equals" title="libpysal.graph.Graph.equals (Python method) — Check that two graphs are identical. This reqiures them to have 1. the same edge labels and node labels 2. in the same order 3. with the same weights"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">equals</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.explore" title="libpysal.graph.Graph.explore (Python method) — Plot graph as an interactive Folium Map"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">explore</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_W" title="libpysal.graph.Graph.from_W (Python method) — Create an experimental Graph from libpysal.weights.W object"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_W</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_adjacency" title="libpysal.graph.Graph.from_adjacency (Python method) — Create a Graph from a pandas DataFrame formatted as an adjacency list"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_adjacency</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_arrays" title="libpysal.graph.Graph.from_arrays (Python method) — Generate Graph from arrays of indices and weights of the same length"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_arrays</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_dense" title="libpysal.graph.Graph.from_dense (Python method) — Convert a numpy.ndarray of a shape (N, N) to a PySAL Graph object."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_dense</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_dicts" title="libpysal.graph.Graph.from_dicts (Python method) — Generate Graph from dictionaries of neighbors and weights"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_dicts</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_lattice" title="libpysal.graph.Graph.from_lattice (Python method) — Create a Graph object for a regular lattice."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_lattice</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.from_weights_dict" title="libpysal.graph.Graph.from_weights_dict (Python method) — Generate Graph from a dict of dicts"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">from_weights_dict</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.generate_da" title="libpysal.graph.Graph.generate_da (Python method) — Creates xarray.DataArray object from passed data aligned with the Graph."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">generate_da</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.higher_order" title="libpysal.graph.Graph.higher_order (Python method) — Contiguity weights object of order k."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">higher_order</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.index_pairs" title="libpysal.graph.Graph.index_pairs (Python property) — Return focal-neighbor index pairs"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">index_pairs</span></code></span></a></p></td>
+<td><p>builtins.tuple</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.intersection" title="libpysal.graph.Graph.intersection (Python method) — Returns a binary Graph, that includes only those neighbor pairs that exist in both left and right."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">intersection</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.intersects" title="libpysal.graph.Graph.intersects (Python method) — Returns True if left and right share at least one link, irrespective of weights value."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">intersects</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.isolates" title="libpysal.graph.Graph.isolates (Python property) — Index of observations with no neighbors"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">isolates</span></code></span></a></p></td>
+<td><p>pandas.Index</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.isomorphic" title="libpysal.graph.Graph.isomorphic (Python method) — Check that two graphs are isomorphic. This requires that a re-labelling can be found to convert one graph into the other graph. Requires networkx."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">isomorphic</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.issubgraph" title="libpysal.graph.Graph.issubgraph (Python method) — Return True if every link in the left Graph also occurs in the right Graph. This requires both Graphs are labeled equally. Isolates are ignored."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">issubgraph</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.lag" title="libpysal.graph.Graph.lag (Python method) — Spatial lag operator"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">lag</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.make_symmetric" title="libpysal.graph.Graph.make_symmetric (Python method) — Create a symmetric version of this graph"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">make_symmetric</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n_edges" title="libpysal.graph.Graph.n_edges (Python property) — Number of edges."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">n_edges</span></code></span></a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.n_nodes" title="libpysal.graph.Graph.n_nodes (Python property) — Number of nodes."><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">n_nodes</span></code></span></a></p></td>
+<td><p>builtins.int</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.subgraph" title="libpysal.graph.Graph.subgraph (Python method) — Returns a subset of Graph containing only nodes specified in ids"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">subgraph</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.summary" title="libpysal.graph.Graph.summary (Python method) — Summary of the Graph properties"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">summary</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.symmetric_difference" title="libpysal.graph.Graph.symmetric_difference (Python method) — Filter out links that are in both left and right Graph objects."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">symmetric_difference</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_W" title="libpysal.graph.Graph.to_W (Python method) — Convert Graph to a libpysal.weights.W object"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_W</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_gal" title="libpysal.graph.Graph.to_gal (Python method) — Save Graph to a GAL file"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_gal</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_gwt" title="libpysal.graph.Graph.to_gwt (Python method) — Save Graph to a GWT file"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_gwt</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.to_parquet" title="libpysal.graph.Graph.to_parquet (Python method) — Save Graph to a Apache Parquet"><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">to_parquet</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#libpysal.graph.Graph.transformation"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">transformation</span></code></span></a></p></td>
+<td><p>builtins.str</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.union" title="libpysal.graph.Graph.union (Python method) — Provide the union of two Graph objects, collecing all links that are in either graph."><span class="xref myst py py-meth"><code class="docutils literal notranslate"><span class="pre">union</span></code></span></a></p></td>
+<td><p>builtins.method</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../generated/libpysal.graph.Graph.html#libpysal.graph.Graph.unique_ids" title="libpysal.graph.Graph.unique_ids (Python property) — Unique IDs used in the Graph"><span class="xref myst py py-attr"><code class="docutils literal notranslate"><span class="pre">unique_ids</span></code></span></a></p></td>
+<td><p>pandas.Index</p></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2018-, pysal developers.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    8.2.3.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.sections", "navigation.top", "search.share", "search.suggest", "toc.follow", "toc.sticky", "content.code.copy", "content.action.edit"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike", "staticVersions": null, "versionPath": "https://pysal.org/libpysal/versions.json"}}</script>
+    
+      
+        <script src="../../_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+        <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../_static/copybutton.js?v=f281be69"></script>
+    
+  </body>
+</html>

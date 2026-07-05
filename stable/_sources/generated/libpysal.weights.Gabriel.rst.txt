@@ -6,14 +6,11 @@
 .. autoclass:: Gabriel
 
    
-   .. automethod:: __init__
-
    
    .. rubric:: Methods
 
    .. autosummary::
    
-      ~Gabriel.__init__
       ~Gabriel.asymmetry
       ~Gabriel.from_WSP
       ~Gabriel.from_adjlist
@@ -35,9 +32,7 @@
       ~Gabriel.to_networkx
       ~Gabriel.to_sparse
    
-   
 
-   
    
    .. rubric:: Attributes
 
@@ -72,5 +67,4 @@
       ~Gabriel.trcW2
       ~Gabriel.trcWtW
       ~Gabriel.trcWtW_WW
-   
    
