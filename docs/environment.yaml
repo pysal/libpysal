@@ -29,8 +29,6 @@ dependencies:
   - xarray
   # for docs build action (this env only)
   - ipykernel
-  - libjxl>=0.11
-  - pyogrio
   - myst-nb
   - sphinx<9
   - sphinxcontrib-bibtex
