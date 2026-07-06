@@ -38,7 +38,6 @@ dependencies:
   - pandoc
   - seaborn
   - esda
-  - splot
   - watermark
   - pip
   - pip:

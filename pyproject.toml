@@ -60,13 +60,16 @@ dev = [
     "watermark",
 ]
 docs = [
-    "myst-parser",
-    "nbsphinx",
-    "numpydoc",
+    "myst-nb",
     "pandoc",
     "sphinx",
+    "sphinx-autosummary-accessors",
     "sphinxcontrib-bibtex",
-    "sphinx_bootstrap_theme",
+    "sphinx-copybutton",
+    "sphinx-immaterial",
+    "seaborn",
+    "esda",
+    "watermark",
 ]
 tests = [
     "codecov",
