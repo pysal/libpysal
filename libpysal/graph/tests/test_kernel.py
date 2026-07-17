@@ -385,6 +385,29 @@ def test_coplanar_clique_duplicate_labels():
     assert neighbors_0 == neighbors_1
 
 
+def test_coplanar_clique_adaptive_bandwidth():
+    """bandwidth='adaptive' + coplanar='clique' used to crash with
+    'ValueError: array is not broadcastable to correct shape', because the
+    clique-induced zero-distance edges between coincident points are stored
+    explicitly (not eliminated), so d_csr.nonzero() disagreed in length with
+    d_csr.data. See GH issue for the adaptive-bandwidth + clique interaction.
+    """
+    gs = geopandas.GeoSeries(
+        [
+            Point(0, 0),
+            Point(0, 0),
+            Point(1, 0),
+            Point(2, 0),
+            Point(3, 0),
+        ]
+    )
+    g = Graph.build_kernel(
+        gs, k=1, bandwidth="adaptive", kernel="gaussian", coplanar="clique"
+    )
+    assert np.isfinite(g.sparse.data).all()
+    assert (g.sparse.data > 0).all()
+
+
 def test_shape_preservation():
     coordinates = np.vstack(
         [np.repeat(np.arange(10), 10), np.tile(np.arange(10), 10)]

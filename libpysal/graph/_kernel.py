@@ -261,7 +261,12 @@ def _kernel(
             )
         # each observation's bandwidth is its distance to its k-th neighbor,
         d_csr = d.tocsr()
-        rows, _ = d_csr.nonzero()
+        # NOTE: derive `rows` from indptr rather than d_csr.nonzero(). nonzero()
+        # only returns indices of truthy values, so it silently drops explicit
+        # stored zeros (e.g. the zero-distance edges coplanar="clique" induces
+        # between coincident points), leaving `rows` shorter than `d_csr.data`
+        # and breaking the maximum.at call below.
+        rows = numpy.repeat(numpy.arange(d_csr.shape[0]), numpy.diff(d_csr.indptr))
         bw_per_row = numpy.zeros(d_csr.shape[0])
         numpy.maximum.at(bw_per_row, rows, d_csr.data)
         bandwidth = bw_per_row[rows] * 1.0000001
