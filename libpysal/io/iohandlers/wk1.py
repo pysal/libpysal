@@ -18,7 +18,7 @@ class Wk1IO(fileio.FileIO):
     A `Wk1` file holds a spatial weights object in a full matrix form without
     any row and column headers. The maximum number of columns supported in a
     `Wk1` file is 256. `Wk1` starts the row (column) number from 0 and uses
-    little endian binary endcoding. In PySAL, when the number of observations
+    little endian binary encoding. In PySAL, when the number of observations
     is ``n``, it is assumed that each cell of an ``n\\*n(=m)`` matrix either
     is a blank or has a number.
 
