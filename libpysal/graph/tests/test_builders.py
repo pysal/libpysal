@@ -310,6 +310,25 @@ class TestKernel:
         assert g_adaptive.adjacency.values.mean() == pytest.approx(0.2946159834)
         assert g_adaptive.adjacency.values.max() == pytest.approx(0.3978916872)
 
+    def test_adaptive_bandwidth_custom_kernel_scalar(self):
+        """Ensure adaptive bandwidth provides a scalar float to custom kernels."""
+        from shapely.geometry import Point
+
+        rng = np.random.default_rng(6301)
+        coords = gpd.GeoSeries([Point(*p) for p in rng.laplace(size=(20, 2)) / 50])
+
+        def safe_custom_kernel(distances, bw):
+            # Capping the bandwidth to a minimum value to prevent division by zero
+            if bw < 0.001:
+                bw = 0.001
+
+            return np.exp(-distances / bw)
+
+        g = graph.Graph.build_kernel(
+            coords, k=4, bandwidth="adaptive", kernel=safe_custom_kernel
+        )
+        assert len(g.adjacency) > 0
+
     def test_knn_intids(self):
         g = graph.Graph.build_knn(self.gdf, k=3, coplanar="jitter")
 
