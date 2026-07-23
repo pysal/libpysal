@@ -4,6 +4,7 @@ from functools import cached_property
 
 import numpy as np
 import pandas as pd
+import shapely
 from scipy import sparse
 
 from libpysal.weights import W
@@ -24,7 +25,13 @@ from ._raster import _generate_da, _raster_contiguity
 from ._set_ops import SetOpsMixin
 from ._spatial_lag import _lag_spatial
 from ._summary import GraphSummary
-from ._triangulation import _delaunay, _gabriel, _relative_neighborhood, _voronoi
+from ._triangulation import (
+    _delaunay,
+    _gabriel,
+    _relative_neighborhood,
+    _voronoi,
+    _voronoi_polygon,
+)
 from ._utils import (
     _compute_stats,
     _evaluate_index,
@@ -1548,6 +1555,7 @@ class Graph(SetOpsMixin):
         coplanar="raise",
         taper=True,
         decay=False,
+        **kwargs,
     ):
         """Generate Graph from geometry based on triangulation
 
@@ -1556,10 +1564,13 @@ class Graph(SetOpsMixin):
         data : numpy.ndarray, geopandas.GeoSeries, geopandas.GeoDataFrame
             geometries containing locations to compute the
             delaunay triangulation. If a geopandas object with Point
-            geoemtry is provided, the .geometry attribute is used. If a numpy.ndarray
-            with shapely geoemtry is used, then the coordinates are extracted and used.
+            geometry is provided, the .geometry attribute is used. If a geopandas
+            object with Polygon or MultiPolygon geometry is provided, the Voronoi
+            diagram is computed directly on the polygons. If a numpy.ndarray
+            with shapely geometry is used, then the coordinates are extracted and used.
             If a numpy.ndarray of a shape (2,n) is used, it is assumed to contain x, y
             coordinates.
+
         method : str, (default "delaunay")
             method of extracting the weights from triangulation. Supports:
 
@@ -1613,6 +1624,10 @@ class Graph(SetOpsMixin):
             or negative) at some very large (possibly infinite) distance.
             Otherwise, kernel functions are treated as proper
             volume-preserving probability distributions.
+        **kwargs: Additional keyword arguments passed to ``voronoi_frames()`` when
+        ``method="voronoi"``. Supports ``segment`` (float) and ``shrink``
+        (float). Only for non-point inputs. Ignored for other methods.
+
 
         Returns
         -------
@@ -1690,15 +1705,25 @@ class Graph(SetOpsMixin):
                 taper=taper,
             )
         elif method == "voronoi":
-            head, tail, weights = _voronoi(
-                data,
-                ids=ids,
-                clip=clip,
-                rook=rook,
-                coplanar=coplanar,
-                decay=decay,
-                taper=taper,
-            )
+            geoms = data.geometry if hasattr(data, "geometry") else data
+            if not (shapely.get_type_id(geoms) == 0).all():
+                head, tail, weights = _voronoi_polygon(
+                    data,
+                    ids=ids,
+                    clip=clip,
+                    rook=rook,
+                    **kwargs,
+                )
+            else:
+                head, tail, weights = _voronoi(
+                    data,
+                    ids=ids,
+                    clip=clip,
+                    rook=rook,
+                    coplanar=coplanar,
+                    decay=decay,
+                    taper=taper,
+                )
         else:
             raise ValueError(
                 f"Method '{method}' is not supported. Use one of ['delaunay', "
