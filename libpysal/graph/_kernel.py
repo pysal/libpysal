@@ -251,6 +251,14 @@ def _kernel(
                 d = sparse.csc_array((data, (i, j)))
         else:
             d = sparse.csc_array(coordinates)
+            if exclude_self_weights:
+                # drop only the diagonal; eliminate_zeros() would also drop
+                # genuine 0-distance edges between distinct, coincident points
+                coo = d.tocoo()
+                mask = coo.row != coo.col
+                d = sparse.csc_array(
+                    (coo.data[mask], (coo.row[mask], coo.col[mask])), shape=d.shape
+                )
 
     if bandwidth == "adaptive":
         if k is None:
