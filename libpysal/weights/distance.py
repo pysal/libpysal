@@ -987,6 +987,7 @@ class DistanceBand(W):
             )
             return neighbors, weights
         else:
+            self.dmat.eliminate_zeros()
             weighted = self.dmat.power(self.alpha)
             weighted[weighted == np.inf] = 0
             weighted.eliminate_zeros()
