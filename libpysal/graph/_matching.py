@@ -2,7 +2,7 @@ import warnings
 
 import numpy
 from scipy.optimize import Bounds, LinearConstraint, milp
-from scipy.sparse import coo_array
+from scipy.sparse import coo_matrix
 from sklearn.metrics import pairwise_distances
 
 from ._utils import _validate_geometry_input
@@ -123,7 +123,7 @@ def _spatial_matching(
         )
         constraint_columns = numpy.tile(variables, 2)
         n_constraints = n_targets + n_sources if match_between else n_targets
-        incidence = coo_array(
+        incidence = coo_matrix(
             (numpy.ones(2 * len(row)), (constraint_rows, constraint_columns)),
             shape=(n_constraints, len(row)),
         ).tocsc()
