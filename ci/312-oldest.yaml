@@ -33,5 +33,5 @@ dependencies:
   - h3-py<4
   - pip
   - pip:
-    - pulp
+    - pulp<4
     - platformdirs==4.3
