@@ -105,25 +105,56 @@ def _induce_cliques(adjtable, coplanar, nearest, fill_value=1):
 
     This does not guarantee/understand ordering of the *output* adjacency table.
     """
-    coplanar_addition = []
-    for c, n in zip(coplanar, nearest, strict=True):
-        neighbors = adjtable.neighbor[adjtable.focal == n]
-        for n_ in neighbors:
-            fill = adjtable.weight[
-                (adjtable.focal == n) & (adjtable.neighbor == n_)
-            ].item()
-            coplanar_addition.append([c, n_, fill])
-            coplanar_addition.append([n_, c, fill])
-        coplanar_addition.append([c, n, fill_value])
-        coplanar_addition.append([n, c, fill_value])
-    adjtable_filled = pd.concat(
-        [
-            adjtable,
-            pd.DataFrame(coplanar_addition, columns=["focal", "neighbor", "weight"]),
-        ],
-        ignore_index=True,
+    if len(coplanar) == 0:
+        return adjtable
+
+    # Each point takes its neighbors from the site it sits on: a coplanar point
+    # from the point it duplicates, every other point from itself. Indexing by
+    # site makes every point on a site interchangeable, so none of them is
+    # treated as the center of the clique.
+    sites = pd.unique(
+        np.concatenate([adjtable[["focal", "neighbor"]].to_numpy().ravel(), nearest])
     )
-    return adjtable_filled
+    members = pd.DataFrame(
+        {"member": np.concatenate([sites, coplanar])},
+        index=pd.Index(np.concatenate([sites, nearest]), name="site"),
+    )
+
+    # Expand every edge over the points sitting on its focal and its neighbor.
+    # Self-loops mark isolates rather than neighbor relations, so they are
+    # carried through untouched instead of being expanded over the site.
+    loops = adjtable.focal.to_numpy() == adjtable.neighbor.to_numpy()
+    expanded = (
+        adjtable[~loops]
+        .merge(members, how="inner", left_on="focal", right_index=True)
+        .merge(
+            members,
+            how="inner",
+            left_on="neighbor",
+            right_index=True,
+            suffixes=("_focal", "_neighbor"),
+        )
+    )
+    between = pd.DataFrame(
+        {
+            "focal": expanded.member_focal.to_numpy(),
+            "neighbor": expanded.member_neighbor.to_numpy(),
+            "weight": expanded.weight.to_numpy(),
+        }
+    )
+
+    # Connect the points sharing a site to one another.
+    pairs = members.reset_index().merge(members.reset_index(), on="site")
+    pairs = pairs[pairs.member_x != pairs.member_y]
+    within = pd.DataFrame(
+        {
+            "focal": pairs.member_x.to_numpy(),
+            "neighbor": pairs.member_y.to_numpy(),
+            "weight": fill_value,
+        }
+    )
+
+    return pd.concat([adjtable[loops], between, within], ignore_index=True)
 
 
 def _neighbor_dict_to_edges(neighbors, weights=None):
