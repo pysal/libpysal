@@ -16,8 +16,6 @@ import numpy as np
 import scipy.sparse
 from scipy.sparse.csgraph import connected_components
 
-from ..io.fileio import FileIO
-
 # from .util import full, WSP2W resolve import cycle by
 # forcing these into methods
 from . import adjtools
@@ -218,6 +216,8 @@ class W:
         -------
         None
         """
+        from ..io.fileio import FileIO
+
         f = FileIO(dataPath=path, mode="w", dataFormat=format)
         f.write(self)
         f.close()
@@ -238,6 +238,8 @@ class W:
         -------
         W object
         """
+        from ..io.fileio import FileIO
+
         f = FileIO(dataPath=path, mode="r", dataFormat=format)
         w = f.read()
         f.close()
