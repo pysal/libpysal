@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import shapely
+from shapely.geometry import MultiPolygon, Polygon
 
 from libpysal.graph._kernel import _kernel_functions
 from libpysal.graph._triangulation import (
@@ -22,6 +23,7 @@ from libpysal.graph._triangulation import (
     _gabriel,
     _relative_neighborhood,
     _voronoi,
+    _voronoi_polygon,
 )
 from libpysal.graph._utils import CoplanarError
 from libpysal.graph.base import Graph
@@ -498,3 +500,136 @@ class TestCoplanar:
             match="Recieved option coplanar='nonsense'",
         ):
             _delaunay(self.df_int, coplanar="nonsense")
+
+
+def test_voronoi_polygon():
+    polys = [
+        Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys)
+    ids = np.arange(4)
+    heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
+
+    exp_heads = np.array([0, 0, 1, 1, 2, 2, 3, 3])
+    exp_tails = np.array([1, 2, 0, 3, 0, 3, 1, 2])
+    exp_weights = np.ones(8, dtype=np.int8)
+
+    np.testing.assert_array_equal(heads, exp_heads)
+    np.testing.assert_array_equal(tails, exp_tails)
+    np.testing.assert_array_equal(weights, exp_weights)
+
+
+def test_voronoi_polygon_kwargs():
+    polys = [
+        Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys)
+    ids = np.arange(4)
+    heads, tails, weights = _voronoi_polygon(gdf, ids=ids, segment=0.5, shrink=0.4)
+
+    exp_heads = np.array([0, 0, 1, 1, 2, 2, 3, 3])
+    exp_tails = np.array([1, 2, 0, 3, 0, 3, 1, 2])
+    exp_weights = np.ones(8, dtype=np.int8)
+
+    np.testing.assert_array_equal(heads, exp_heads)
+    np.testing.assert_array_equal(tails, exp_tails)
+    np.testing.assert_array_equal(weights, exp_weights)
+
+
+def test_voronoi_polygon_via_build_triangulation():
+    polys = [
+        Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys)
+    graph = Graph.build_triangulation(gdf, method="voronoi")
+    assert graph.n_nodes == 4
+    assert graph.n_edges == 8
+    np.testing.assert_array_equal(
+        graph.adjacency.index.get_level_values(0).values,
+        np.array([0, 0, 1, 1, 2, 2, 3, 3]),
+    )
+    np.testing.assert_array_equal(
+        graph.adjacency.index.get_level_values(1).values,
+        np.array([1, 2, 0, 3, 0, 3, 1, 2]),
+    )
+
+
+def test_voronoi_polygon_multipolygon():
+    polys = [
+        MultiPolygon(
+            [
+                Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+                Polygon([(2, 0), (3, 0), (3, 1), (2, 1)]),
+            ]
+        ),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys)
+    ids = np.arange(4)
+    heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
+
+    exp_heads = np.array([0, 0, 1, 1, 1, 2, 3, 3])
+    exp_tails = np.array([1, 3, 0, 2, 3, 1, 0, 1])
+    exp_weights = np.ones(8, dtype=np.int8)
+
+    np.testing.assert_array_equal(heads, exp_heads)
+    np.testing.assert_array_equal(tails, exp_tails)
+    np.testing.assert_array_equal(weights, exp_weights)
+
+
+def test_voronoi_polygon_string_ids():
+    polys = [
+        Polygon([(0, 0), (1, 0), (1, 1), (0, 1)]),
+        Polygon([(1, 0), (2, 0), (2, 1), (1, 1)]),
+        Polygon([(0, 1), (1, 1), (1, 2), (0, 2)]),
+        Polygon([(1, 1), (2, 1), (2, 2), (1, 2)]),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=polys, index=["a", "b", "c", "d"])
+    ids = np.array(["a", "b", "c", "d"])
+    heads, tails, weights = _voronoi_polygon(gdf, ids=ids)
+
+    graph = Graph.from_arrays(heads, tails, weights)
+
+    exp_neighbors = {
+        "a": {"b", "c"},
+        "b": {"a", "d"},
+        "c": {"a", "d"},
+        "d": {"b", "c"},
+    }
+    for node, expected in exp_neighbors.items():
+        actual = set(graph[node].index)
+        assert actual == expected, f"Node {node}: expected {expected}, got {actual}"
+
+    np.testing.assert_array_equal(weights, np.ones(8, dtype=np.int8))
+
+
+def test_voronoi_polygon_point_backward_compat():
+    pts = [
+        shapely.Point(0, 0),
+        shapely.Point(1, 0),
+        shapely.Point(0, 1),
+        shapely.Point(1, 1),
+    ]
+    gdf = geopandas.GeoDataFrame(geometry=pts)
+    graph = Graph.build_triangulation(gdf, method="voronoi")
+    assert graph.n_nodes == 4
+    assert graph.n_edges == 8
+    np.testing.assert_array_equal(
+        graph.adjacency.index.get_level_values(0).values,
+        np.array([0, 0, 1, 1, 2, 2, 3, 3]),
+    )
+    np.testing.assert_array_equal(
+        graph.adjacency.index.get_level_values(1).values,
+        np.array([1, 2, 0, 3, 0, 3, 1, 2]),
+    )
