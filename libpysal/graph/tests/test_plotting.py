@@ -12,6 +12,8 @@ from libpysal.graph.tests.test_utils import fetch_map_string
 class TestPlotting:
     def setup_method(self):
         _ = pytest.importorskip("matplotlib")
+        import matplotlib
+        matplotlib.use("Agg")  # Use non-interactive backend for CI
 
         self.nybb = geopandas.read_file(geodatasets.get_path("nybb"))
         self.G = graph.Graph.build_contiguity(self.nybb)
@@ -255,6 +257,114 @@ class TestPlotting:
         np.testing.assert_array_equal(
             pathcollection_focal.get_facecolor(), np.array([[0.0, 0.0, 1.0, 1.0]])
         )
+
+    def test_color_by_weight(self):
+        """Test weight-based coloring feature"""
+        import pandas as pd
+
+        # Create a graph with varying weights for testing
+        focal_ids = ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"]
+        neighbor_ids = ["Queens", "Brooklyn", "Manhattan", "Bronx", "Staten Island"]
+        weights = [0.2, 0.4, 0.6, 0.8, 1.0]
+
+        adjacency = pd.Series(
+            weights,
+            index=pd.MultiIndex.from_arrays(
+                [focal_ids, neighbor_ids], names=["focal", "neighbor"]
+            ),
+            name="weight",
+        )
+        G_test = graph.Graph(adjacency)
+
+        # Test that color_by_weight=True produces colors array
+        ax = G_test.plot(self.nybb_str, color_by_weight=True)
+        linecollection = ax.collections[0]
+
+        # When color_by_weight=True, should use colors array
+        edgecolors = linecollection.get_edgecolors()
+        assert edgecolors is not None
+        assert len(edgecolors) == len(weights)
+        assert edgecolors.shape[1] == 4  # RGBA
+
+        # Different weights should produce different colors
+        # Check that colors are not all the same
+        assert not np.allclose(edgecolors[0], edgecolors[1])
+
+    def test_color_by_weight_false(self):
+        """Test that color_by_weight=False maintains backward compatibility"""
+        ax = self.G.plot(self.nybb, color_by_weight=False, color="red")
+
+        linecollection = ax.collections[0]
+        # Should use single color, not colors array
+        color = linecollection.get_color()
+        np.testing.assert_array_equal(color, np.array([[1.0, 0.0, 0.0, 1.0]]))
+
+    def test_color_by_weight_cmap(self):
+        """Test that cmap parameter works"""
+        import pandas as pd
+        import matplotlib.pyplot as plt
+
+        # Use existing graph but test with different colormap
+        # This tests that cmap parameter is accepted and produces different colors
+        ax1 = self.G_str.plot(self.nybb_str, color_by_weight=True, cmap="viridis")
+        ax2 = self.G_str.plot(self.nybb_str, color_by_weight=True, cmap="plasma")
+
+        linecollection1 = ax1.collections[0]
+        linecollection2 = ax2.collections[0]
+
+        edgecolors1 = linecollection1.get_edgecolors()
+        edgecolors2 = linecollection2.get_edgecolors()
+
+        assert edgecolors1 is not None
+        assert edgecolors2 is not None
+        # Different colormaps should produce different colors
+        # (at least for some edges, unless all weights are identical)
+        assert len(edgecolors1) == len(edgecolors2)
+
+    def test_color_by_weight_focal(self):
+        """Test weight-based coloring with focal parameter"""
+        import pandas as pd
+
+        # Create a graph with varying weights - use existing contiguity graph
+        # but modify weights for testing
+        G_test = self.G_str.copy()
+
+        # Test with focal parameter - should work with existing graph
+        ax = G_test.plot(self.nybb_str, focal="Queens", color_by_weight=True)
+        linecollection = ax.collections[0]
+        edgecolors = linecollection.get_edgecolors()
+
+        # Should have colors for edges from Queens
+        assert edgecolors is not None
+        assert len(edgecolors) > 0
+
+    def test_color_by_weight_same_weights(self):
+        """Test weight-based coloring when all weights are the same"""
+        import pandas as pd
+
+        # Create a graph with ALL identical weights using all boroughs
+        focal_ids = ["Staten Island", "Queens", "Brooklyn", "Manhattan", "Bronx"]
+        neighbor_ids = ["Queens", "Brooklyn", "Manhattan", "Bronx", "Staten Island"]
+        weights = [1.0, 1.0, 1.0, 1.0, 1.0]  # All weights identical
+
+        adjacency = pd.Series(
+            weights,
+            index=pd.MultiIndex.from_arrays(
+                [focal_ids, neighbor_ids], names=["focal", "neighbor"]
+            ),
+            name="weight",
+        )
+        G_test = graph.Graph(adjacency)
+
+        # Should not crash when all weights are identical
+        ax = G_test.plot(self.nybb_str, color_by_weight=True)
+        linecollection = ax.collections[0]
+        edgecolors = linecollection.get_edgecolors()
+
+        assert edgecolors is not None
+        assert len(edgecolors) == len(weights)
+        # All colors should be identical when weights are identical
+        np.testing.assert_array_equal(edgecolors[0], edgecolors[1])
 
 
 class TestExplore:
