@@ -35,4 +35,4 @@ dependencies:
   - xarray
   - pip
   - pip:
-    - pulp
+    - pulp<4
