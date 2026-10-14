@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1669,7 +1669,7 @@ order.</p>
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="libpysal.weights.order.w"><span class="sig-name descname">w</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W (Python class) — Spatial weights class. Class attributes are described by their docstrings. to view, use the help function.">W</a></span></span><a class="headerlink" href="#libpysal.weights.order.w" title="Permalink to this definition">¶</a></dt><dd><p>spatial weights object</p>
 </dd>
-<dt id="libpysal.weights.order.kmax"><span class="sig-name descname">kmax</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></span></span><a class="headerlink" href="#libpysal.weights.order.kmax" title="Permalink to this definition">¶</a></dt><dd><p>maximum order of contiguity</p>
+<dt id="libpysal.weights.order.kmax"><span class="sig-name descname">kmax</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a></span></span><a class="headerlink" href="#libpysal.weights.order.kmax" title="Permalink to this definition">¶</a></dt><dd><p>maximum order of contiguity</p>
 </dd>
 </dl>
 </dd>
@@ -1686,7 +1686,7 @@ orders with a negative 1 in the ith position</p>
 <p class="example rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights</span><span class="w"> </span><span class="kn">import</span> <span class="n">order</span><span class="p">,</span> <span class="n">Rook</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">Rook</span><span class="o">.</span><span class="n">from_shapefile</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;10740.shp&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">Rook</span><span class="o">.</span><span class="n">from_shapefile</span><span class="p">(</span><span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'10740.shp'</span><span class="p">))</span>
 </code></pre></div>
 </div>
 <p>WARNING: there is one disconnected observation (no neighbors)

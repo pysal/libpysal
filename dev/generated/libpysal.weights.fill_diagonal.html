@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1692,7 +1692,7 @@
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="libpysal.weights.fill_diagonal.w"><span class="sig-name descname">w</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference internal" href="libpysal.weights.W.html#libpysal.weights.W" title="libpysal.weights.W (Python class) — Spatial weights class. Class attributes are described by their docstrings. to view, use the help function.">W</a></span></span><a class="headerlink" href="#libpysal.weights.fill_diagonal.w" title="Permalink to this definition">¶</a></dt><dd><p>Spatial weights object</p>
 </dd>
-<dt id="libpysal.weights.fill_diagonal.val"><span class="sig-name descname">val</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a> or array</span></span><a class="headerlink" href="#libpysal.weights.fill_diagonal.val" title="Permalink to this definition">¶</a></dt><dd><p>Defines the value(s) to which the weights matrix diagonal should
+<dt id="libpysal.weights.fill_diagonal.val"><span class="sig-name descname">val</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)">int</a> or array</span></span><a class="headerlink" href="#libpysal.weights.fill_diagonal.val" title="Permalink to this definition">¶</a></dt><dd><p>Defines the value(s) to which the weights matrix diagonal should
 be set. If a constant is passed then each element along the
 diagonal will get this value (default is 1.0). An array of length
 w.n can be passed to set explicit values to each element along
@@ -1717,18 +1717,18 @@ return the standard W object.</p>
 </div>
 <p>Build a basic rook weights matrix, which has zeros on the diagonal, then
 insert ones along the diagonal.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">id_type</span><span class="o">=</span><span class="s1">&#39;string&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">id_type</span><span class="o">=</span><span class="s1">'string'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w_const</span> <span class="o">=</span> <span class="n">insert_diagonal</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="p">[</span><span class="s1">&#39;id0&#39;</span><span class="p">]</span> <span class="o">==</span>  <span class="p">{</span><span class="s1">&#39;id5&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="p">[</span><span class="s1">'id0'</span><span class="p">]</span> <span class="o">==</span>  <span class="p">{</span><span class="s1">'id5'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">'id1'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w_const</span><span class="p">[</span><span class="s1">&#39;id0&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">{</span><span class="s1">&#39;id5&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;id0&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w_const</span><span class="p">[</span><span class="s1">'id0'</span><span class="p">]</span> <span class="o">==</span> <span class="p">{</span><span class="s1">'id5'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">'id0'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">'id1'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 <span class="go">True</span>
 </code></pre></div>
 </div>
 <p>Insert different values along the main diagonal.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">diag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">125</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w_var</span> <span class="o">=</span> <span class="n">insert_diagonal</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">diag</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w_var</span><span class="p">[</span><span class="s1">&#39;id0&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">{</span><span class="s1">&#39;id5&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;id0&#39;</span><span class="p">:</span> <span class="mf">100.0</span><span class="p">,</span> <span class="s1">&#39;id1&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w_var</span><span class="p">[</span><span class="s1">'id0'</span><span class="p">]</span> <span class="o">==</span> <span class="p">{</span><span class="s1">'id5'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">'id0'</span><span class="p">:</span> <span class="mf">100.0</span><span class="p">,</span> <span class="s1">'id1'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 <span class="go">True</span>
 </code></pre></div>
 </div>

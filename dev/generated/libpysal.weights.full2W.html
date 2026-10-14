@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1692,7 +1692,7 @@
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="libpysal.weights.full2W.m"><span class="sig-name descname">m</span><span class="p"> : </span><span class="desctype"><span class="desctype">array</span></span><a class="headerlink" href="#libpysal.weights.full2W.m" title="Permalink to this definition">¶</a></dt><dd><p>nxn array with the full weights matrix</p>
 </dd>
-<dt id="libpysal.weights.full2W.ids"><span class="sig-name descname">ids</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></span></span><a class="headerlink" href="#libpysal.weights.full2W.ids" title="Permalink to this definition">¶</a></dt><dd><p>User ids assumed to be aligned with m</p>
+<dt id="libpysal.weights.full2W.ids"><span class="sig-name descname">ids</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a></span></span><a class="headerlink" href="#libpysal.weights.full2W.ids" title="Permalink to this definition">¶</a></dt><dd><p>User ids assumed to be aligned with m</p>
 </dd>
 <dt id="libpysal.weights.full2W.kwargs"><span class="sig-name descname">**kwargs</span><span class="p"> : </span><span class="desctype"><span class="desctype">keyword arguments</span></span><a class="headerlink" href="#libpysal.weights.full2W.kwargs" title="Permalink to this definition">¶</a></dt><dd><p>optional arguments for <code class="xref py py-class docutils literal notranslate"><span class="pre">pysal.weights.W</span></code></p>
 </dd>
@@ -1731,7 +1731,7 @@
 </code></pre></div>
 </div>
 <p>Create list of user ids</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;myID0&#39;</span><span class="p">,</span> <span class="s1">&#39;myID1&#39;</span><span class="p">,</span> <span class="s1">&#39;myID2&#39;</span><span class="p">,</span> <span class="s1">&#39;myID3&#39;</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'myID0'</span><span class="p">,</span> <span class="s1">'myID1'</span><span class="p">,</span> <span class="s1">'myID2'</span><span class="p">,</span> <span class="s1">'myID3'</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">full2W</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">full</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">a</span>
 <span class="go">array([[ True,  True,  True,  True],</span>

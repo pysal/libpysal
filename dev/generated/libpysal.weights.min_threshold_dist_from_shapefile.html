@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1669,10 +1669,10 @@ shapefile.</p>
 <dd class="field-odd"><dl class="simple api-field highlight">
 <dt id="libpysal.weights.min_threshold_dist_from_shapefile.shapefile"><span class="sig-name descname">shapefile</span><span class="p"> : </span><span class="desctype"><span class="desctype">string</span></span><a class="headerlink" href="#libpysal.weights.min_threshold_dist_from_shapefile.shapefile" title="Permalink to this definition">¶</a></dt><dd><p>shapefile name with shp suffix.</p>
 </dd>
-<dt id="libpysal.weights.min_threshold_dist_from_shapefile.radius"><span class="sig-name descname">radius</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#libpysal.weights.min_threshold_dist_from_shapefile.radius" title="Permalink to this definition">¶</a></dt><dd><p>If supplied arc_distances will be calculated
+<dt id="libpysal.weights.min_threshold_dist_from_shapefile.radius"><span class="sig-name descname">radius</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></span></span><a class="headerlink" href="#libpysal.weights.min_threshold_dist_from_shapefile.radius" title="Permalink to this definition">¶</a></dt><dd><p>If supplied arc_distances will be calculated
 based on the given radius. p will be ignored.</p>
 </dd>
-<dt id="libpysal.weights.min_threshold_dist_from_shapefile.p"><span class="sig-name descname">p</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#libpysal.weights.min_threshold_dist_from_shapefile.p" title="Permalink to this definition">¶</a></dt><dd><p>Minkowski p-norm distance metric parameter:
+<dt id="libpysal.weights.min_threshold_dist_from_shapefile.p"><span class="sig-name descname">p</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></span></span><a class="headerlink" href="#libpysal.weights.min_threshold_dist_from_shapefile.p" title="Permalink to this definition">¶</a></dt><dd><p>Minkowski p-norm distance metric parameter:
 1&lt;=p&lt;=infinity
 2: Euclidean distance
 1: Manhattan distance</p>
@@ -1684,18 +1684,18 @@ based on the given radius. p will be ignored.</p>
 observations.</p>
 </dd>
 <dt class="field-odd" id="libpysal.weights.min_threshold_dist_from_shapefile-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#libpysal.weights.min_threshold_dist_from_shapefile-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">md</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">min_threshold_dist_from_shapefile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;columbus.shp&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"columbus.shp"</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">md</span>
 <span class="go">0.6188641580768541</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">min_threshold_dist_from_shapefile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">&quot;stl_hom.shp&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s2">"stl_hom.shp"</span><span class="p">),</span>
 <span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">cg</span><span class="o">.</span><span class="n">sphere</span><span class="o">.</span><span class="n">RADIUS_EARTH_MILES</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">31.846942936393717</span>

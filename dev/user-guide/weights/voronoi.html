@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d127c87d" />
@@ -926,7 +926,7 @@
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">))</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">".."</span><span class="p">))</span>
 </code></pre></div>
 </div>
 </div>
@@ -952,9 +952,9 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4360/2901581476.py:1: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4135/2901581476.py:1: FutureWarning: The 'voronoi' function is considered private and will be removed in a future release.
   regions, vertices = voronoi(points)
-/home/runner/micromamba/envs/docs/lib/python3.14/site-packages/libpysal/cg/voronoi.py:67: FutureWarning: The &#39;voronoi_regions&#39; function is considered private and will be removed in a future release.
+/home/runner/micromamba/envs/docs/lib/python3.14/site-packages/libpysal/cg/voronoi.py:67: FutureWarning: The 'voronoi_regions' function is considered private and will be removed in a future release.
   vor = voronoi_regions(Voronoi(points), radius=radius)
 </code></pre></div>
 </div>
@@ -1000,9 +1000,9 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4360/2172163060.py:1: FutureWarning: The &#39;as_gdf&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4135/2172163060.py:1: FutureWarning: The 'as_gdf' parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
   region_df, point_df = voronoi_frames(points)
-/tmp/ipykernel_4360/2172163060.py:1: FutureWarning: The &#39;return_input&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
+/tmp/ipykernel_4135/2172163060.py:1: FutureWarning: The 'return_input' parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
   region_df, point_df = voronoi_frames(points)
 </code></pre></div>
 </div>
@@ -1020,16 +1020,16 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">region_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">point_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">region_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">point_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='x', ylabel='y'&gt;
 </code></pre></div>
 </div>
-<img alt="../../_images/157f544a2933f2d33e125892c5349e28b60a0bf7ac7ea18a89013f77ad6962b0.png" src="../../_images/157f544a2933f2d33e125892c5349e28b60a0bf7ac7ea18a89013f77ad6962b0.png" />
+<img alt="../../_images/1dc15172ea3a35d260a2f674ed7bc5f1ad1d8311fb03e0e33566d10a8641a8c1.png" src="../../_images/1dc15172ea3a35d260a2f674ed7bc5f1ad1d8311fb03e0e33566d10a8641a8c1.png" />
 </div>
 </div>
 <h2 id="larger-problem">Larger Problem<a class="headerlink" href="#larger-problem" title="Link to this heading">¶</a></h2>
@@ -1045,9 +1045,9 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4360/3060736572.py:4: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4135/3060736572.py:4: FutureWarning: The 'voronoi' function is considered private and will be removed in a future release.
   results = voronoi(points)
-/home/runner/micromamba/envs/docs/lib/python3.14/site-packages/libpysal/cg/voronoi.py:67: FutureWarning: The &#39;voronoi_regions&#39; function is considered private and will be removed in a future release.
+/home/runner/micromamba/envs/docs/lib/python3.14/site-packages/libpysal/cg/voronoi.py:67: FutureWarning: The 'voronoi_regions' function is considered private and will be removed in a future release.
   vor = voronoi_regions(Voronoi(points), radius=radius)
 </code></pre></div>
 </div>
@@ -1060,7 +1060,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4360/2901581476.py:1: FutureWarning: The &#39;voronoi&#39; function is considered private and will be removed in a future release.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4135/2901581476.py:1: FutureWarning: The 'voronoi' function is considered private and will be removed in a future release.
   regions, vertices = voronoi(points)
 </code></pre></div>
 </div>
@@ -1073,9 +1073,9 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4360/980072883.py:1: FutureWarning: The &#39;as_gdf&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/tmp/ipykernel_4135/980072883.py:1: FutureWarning: The 'as_gdf' parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
   regions_df, points_df = voronoi_frames(points)
-/tmp/ipykernel_4360/980072883.py:1: FutureWarning: The &#39;return_input&#39; parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
+/tmp/ipykernel_4135/980072883.py:1: FutureWarning: The 'return_input' parameter currently defaults to True but will default to False in a future release. Set it explicitly to avoid this warning.
   regions_df, points_df = voronoi_frames(points)
 </code></pre></div>
 </div>
@@ -1084,30 +1084,30 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">points_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">points_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='x', ylabel='y'&gt;
 </code></pre></div>
 </div>
-<img alt="../../_images/2bfa5bf8a13ff0a05d6f54ab2482d24484914f4189d415b11f193ff30cdcfac6.png" src="../../_images/2bfa5bf8a13ff0a05d6f54ab2482d24484914f4189d415b11f193ff30cdcfac6.png" />
+<img alt="../../_images/d9875ab18266a14ba32ac0063afc604f855e818af9f025a6227ba4a4b85c0dd0.png" src="../../_images/d9875ab18266a14ba32ac0063afc604f855e818af9f025a6227ba4a4b85c0dd0.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">regions_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">points_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">regions_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">points_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: &gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;Axes: xlabel='x', ylabel='y'&gt;
 </code></pre></div>
 </div>
-<img alt="../../_images/4f613ddca3c48b1f7f0b69d12e775e710d91efebc4d33a70ea11add832384924.png" src="../../_images/4f613ddca3c48b1f7f0b69d12e775e710d91efebc4d33a70ea11add832384924.png" />
+<img alt="../../_images/46ea4c22faa300059dd621d98a356ff863eabed38c4c0e07957391678ae37e5e.png" src="../../_images/46ea4c22faa300059dd621d98a356ff863eabed38c4c0e07957391678ae37e5e.png" />
 </div>
 </div>
 <h2 id="trimming">Trimming<a class="headerlink" href="#trimming" title="Link to this heading">¶</a></h2>
@@ -1131,17 +1131,17 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">regions_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="n">points_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">regions_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">points_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">minx</span><span class="p">,</span> <span class="n">maxx</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">miny</span><span class="p">,</span> <span class="n">maxy</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;buffer: </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">, n: </span><span class="si">{</span><span class="n">n_points</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"buffer: </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">, n: </span><span class="si">{</span><span class="n">n_points</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../../_images/1d7cc82b334d906b12e01f236138e6e7deb346b6e0c86a00e0a3d2e0dc7e2358.png" src="../../_images/1d7cc82b334d906b12e01f236138e6e7deb346b6e0c86a00e0a3d2e0dc7e2358.png" />
+<img alt="../../_images/60b03ca67c296844d086d6351866f21e17c6a311e0150d94d2a0273c4d80c6bc.png" src="../../_images/60b03ca67c296844d086d6351866f21e17c6a311e0150d94d2a0273c4d80c6bc.png" />
 </div>
 </div>
 <h2 id="voronoi-weights">Voronoi Weights<a class="headerlink" href="#voronoi-weights" title="Link to this heading">¶</a></h2>

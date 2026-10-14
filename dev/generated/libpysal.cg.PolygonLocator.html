@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1823,7 +1823,7 @@
 <dl class="field-list simple">
 <dt class="field-odd" id="libpysal.cg.PolygonLocator-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.PolygonLocator-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="libpysal.cg.PolygonLocator.__init__.polygons"><span class="sig-name descname">polygons</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></span></span><a class="headerlink" href="#libpysal.cg.PolygonLocator.__init__.polygons" title="Permalink to this definition">¶</a></dt><dd><p>A list of polygons to index.</p>
+<dt id="libpysal.cg.PolygonLocator.__init__.polygons"><span class="sig-name descname">polygons</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a></span></span><a class="headerlink" href="#libpysal.cg.PolygonLocator.__init__.polygons" title="Permalink to this definition">¶</a></dt><dd><p>A list of polygons to index.</p>
 </dd>
 </dl>
 </dd>
@@ -1871,7 +1871,7 @@
 </dl>
 </dd>
 <dt class="field-even" id="libpysal.cg.PolygonLocator.contains_point-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.PolygonLocator.contains_point-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a> of polygons containing point</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)">list</a> of polygons containing point</p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>
@@ -1932,7 +1932,7 @@ polygon is not empty and is equal to the area of the polygon</p>
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.cg.PolygonLocator.nearest">
-<span class="sig-name descname"><span class="pre">nearest</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.nearest.query_point" title="libpysal.cg.PolygonLocator.nearest.query_point (Python parameter)"><span class="n"><span class="pre">query_point</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.nearest.rule" title="libpysal.cg.PolygonLocator.nearest.rule (Python parameter) — vertex -- measures distance between vertices and query_point centroid -- measures distance between centroid and query_point edge   -- measures the distance between edges and query_point"><span class="n"><span class="pre">rule</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;vertex&#39;</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/main/libpysal/cg/locators.py#L682-L708"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.nearest" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">nearest</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.nearest.query_point" title="libpysal.cg.PolygonLocator.nearest.query_point (Python parameter)"><span class="n"><span class="pre">query_point</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.nearest.rule" title="libpysal.cg.PolygonLocator.nearest.rule (Python parameter) — vertex -- measures distance between vertices and query_point centroid -- measures distance between centroid and query_point edge   -- measures the distance between edges and query_point"><span class="n"><span class="pre">rule</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">'vertex'</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/main/libpysal/cg/locators.py#L682-L708"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.nearest" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the nearest polygon indexed to a query point based on
 various rules.</p>
 <p>nearest(Polygon) -&gt; Polygon</p>
@@ -1954,7 +1954,7 @@ edge   – measures the distance between edges and query_point</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">p2</span> <span class="o">=</span> <span class="n">Polygon</span><span class="p">([</span><span class="n">Point</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span> <span class="n">Point</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pl</span> <span class="o">=</span> <span class="n">PolygonLocator</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span> <span class="n">n</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
-<span class="gp">... </span><span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;future test: str(min(n.vertices())) == (0.0, 1.0)&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">"future test: str(min(n.vertices())) == (0.0, 1.0)"</span><span class="p">)</span>
 <span class="go">future test: str(min(n.vertices())) == (0.0, 1.0)</span>
 </code></pre></div>
 </div>
@@ -2001,7 +2001,7 @@ polygon is not empty and is no larger than the area of the polygon</p>
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.cg.PolygonLocator.proximity">
-<span class="sig-name descname"><span class="pre">proximity</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.proximity.origin" title="libpysal.cg.PolygonLocator.proximity.origin (Python parameter)"><span class="n"><span class="pre">origin</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.proximity.r" title="libpysal.cg.PolygonLocator.proximity.r (Python parameter)"><span class="n"><span class="pre">r</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.proximity.rule" title="libpysal.cg.PolygonLocator.proximity.rule (Python parameter) — vertex -- measures distance between vertices and query_point centroid -- measures distance between centroid and query_point edge   -- measures the distance between edges and query_point"><span class="n"><span class="pre">rule</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;vertex&#39;</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/main/libpysal/cg/locators.py#L777-L806"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.proximity" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">proximity</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.proximity.origin" title="libpysal.cg.PolygonLocator.proximity.origin (Python parameter)"><span class="n"><span class="pre">origin</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.proximity.r" title="libpysal.cg.PolygonLocator.proximity.r (Python parameter)"><span class="n"><span class="pre">r</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.PolygonLocator.proximity.rule" title="libpysal.cg.PolygonLocator.proximity.rule (Python parameter) — vertex -- measures distance between vertices and query_point centroid -- measures distance between centroid and query_point edge   -- measures the distance between edges and query_point"><span class="n"><span class="pre">rule</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">'vertex'</span></code></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/main/libpysal/cg/locators.py#L777-L806"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.PolygonLocator.proximity" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the indexed polygons located within some distance of an
 origin point based on various rules.</p>
 <p>proximity(Polygon, number) -&gt; Polygon list</p>
@@ -2027,7 +2027,7 @@ edge   – measures the distance between edges and query_point</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">len</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">proximity</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="mi">2</span><span class="p">))</span>
 <span class="gp">... </span><span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;future test: len(pl.proximity(Point((0, 0)), 2)) == 2&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"future test: len(pl.proximity(Point((0, 0)), 2)) == 2"</span><span class="p">)</span>
 <span class="go">future test: len(pl.proximity(Point((0, 0)), 2)) == 2</span>
 </code></pre></div>
 </div>

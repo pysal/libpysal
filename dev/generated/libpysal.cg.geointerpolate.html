@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1691,14 +1691,14 @@ two points on a sphere also known as a way point in great circle navigation.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="libpysal.cg.geointerpolate-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.geointerpolate-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="libpysal.cg.geointerpolate.p0"><span class="sig-name descname">p0</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></span></span><a class="headerlink" href="#libpysal.cg.geointerpolate.p0" title="Permalink to this definition">¶</a></dt><dd><p>The first point decimal degrees.</p>
+<dt id="libpysal.cg.geointerpolate.p0"><span class="sig-name descname">p0</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)">tuple</a></span></span><a class="headerlink" href="#libpysal.cg.geointerpolate.p0" title="Permalink to this definition">¶</a></dt><dd><p>The first point decimal degrees.</p>
 </dd>
-<dt id="libpysal.cg.geointerpolate.p1"><span class="sig-name descname">p1</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></span></span><a class="headerlink" href="#libpysal.cg.geointerpolate.p1" title="Permalink to this definition">¶</a></dt><dd><p>The second point decimal degrees.</p>
+<dt id="libpysal.cg.geointerpolate.p1"><span class="sig-name descname">p1</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)">tuple</a></span></span><a class="headerlink" href="#libpysal.cg.geointerpolate.p1" title="Permalink to this definition">¶</a></dt><dd><p>The second point decimal degrees.</p>
 </dd>
-<dt id="libpysal.cg.geointerpolate.t"><span class="sig-name descname">t</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></span></span><a class="headerlink" href="#libpysal.cg.geointerpolate.t" title="Permalink to this definition">¶</a></dt><dd><p>The proportion along great circle distance between <code class="docutils literal notranslate"><span class="pre">p0</span></code>
+<dt id="libpysal.cg.geointerpolate.t"><span class="sig-name descname">t</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)">float</a></span></span><a class="headerlink" href="#libpysal.cg.geointerpolate.t" title="Permalink to this definition">¶</a></dt><dd><p>The proportion along great circle distance between <code class="docutils literal notranslate"><span class="pre">p0</span></code>
 and <code class="docutils literal notranslate"><span class="pre">p1</span></code> (e.g., <span class="math notranslate nohighlight">\(\mathtt{t}=0.5\)</span> would find the mid-point).</p>
 </dd>
-<dt id="libpysal.cg.geointerpolate.lonx"><span class="sig-name descname">lonx</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></span></span><a class="headerlink" href="#libpysal.cg.geointerpolate.lonx" title="Permalink to this definition">¶</a></dt><dd><p>The method to assess the order of the coordinates.
+<dt id="libpysal.cg.geointerpolate.lonx"><span class="sig-name descname">lonx</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)">bool</a></span></span><a class="headerlink" href="#libpysal.cg.geointerpolate.lonx" title="Permalink to this definition">¶</a></dt><dd><p>The method to assess the order of the coordinates.
 <code class="docutils literal notranslate"><span class="pre">True</span></code> for (lon,lat); <code class="docutils literal notranslate"><span class="pre">False</span></code> for (lat,lon).
 Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
 </dd>
@@ -1709,7 +1709,7 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 default or (lat-lon) if <code class="docutils literal notranslate"><span class="pre">lonx</span></code> is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </dd>
 <dt class="field-odd" id="libpysal.cg.geointerpolate-return-type">Return type<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.geointerpolate-return-type" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.15)">tuple</a></p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>

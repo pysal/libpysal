@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=d127c87d" />
@@ -974,14 +974,14 @@ format using <code class="docutils literal notranslate"><span class="pre">xarray
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># -&gt; returns a xarray.Dataset object</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">tutorial</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="s2">&quot;air_temperature.nc&quot;</span><span class="p">)</span>
-<span class="n">da</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;air&quot;</span><span class="p">]</span>  <span class="c1"># we&#39;ll use the &quot;air&quot; data variable for further analysis</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">tutorial</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span><span class="s2">"air_temperature.nc"</span><span class="p">)</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"air"</span><span class="p">]</span>  <span class="c1"># we'll use the "air" data variable for further analysis</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;xarray.DataArray &#39;air&#39; (time: 2920, lat: 25, lon: 53)&gt; Size: 31MB
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;xarray.DataArray 'air' (time: 2920, lat: 25, lon: 53)&gt; Size: 31MB
 [3869000 values with dtype=float64]
 Coordinates:
   * time     (time) datetime64[ns] 23kB 2013-01-01 ... 2014-12-31T18:00:00
@@ -1008,7 +1008,7 @@ Attributes:
 <p>We’ll now group <code class="docutils literal notranslate"><span class="pre">da</span></code> by month and take average over the <code class="docutils literal notranslate"><span class="pre">time</span></code> dimension</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">da</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;time.month&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">da</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"time.month"</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>  <span class="c1"># as a result time dim is replaced by month</span>
 </code></pre></div>
 </div>
@@ -1024,20 +1024,20 @@ Attributes:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># let&#39;s plot over month, each facet will represent</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># let's plot over month, each facet will represent</span>
 <span class="c1"># the mean air temperature in a given month.</span>
 <span class="n">da</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">col</span><span class="o">=</span><span class="s2">&quot;month&quot;</span><span class="p">,</span>
+    <span class="n">col</span><span class="o">=</span><span class="s2">"month"</span><span class="p">,</span>
     <span class="n">col_wrap</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;xarray.plot.facetgrid.FacetGrid at 0x7f9a0c368590&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;xarray.plot.facetgrid.FacetGrid at 0x7f0e04377a10&gt;
 </code></pre></div>
 </div>
-<img alt="../../_images/350bf9744c16da3c9a27ea66d58c16b6f2e28affa96b798db5b9f6e0d20ea66a.png" src="../../_images/350bf9744c16da3c9a27ea66d58c16b6f2e28affa96b798db5b9f6e0d20ea66a.png" />
+<img alt="../../_images/a07a738b4bba550b029e7f3188c22dfd36c5ca89078b985b5aae65a8bb7039fa.png" src="../../_images/a07a738b4bba550b029e7f3188c22dfd36c5ca89078b985b5aae65a8bb7039fa.png" />
 </div>
 </div>
 <p>We can use <code class="docutils literal notranslate"><span class="pre">from_xarray</span></code> method from the contiguity classes like <code class="docutils literal notranslate"><span class="pre">Rook</span></code> and <code class="docutils literal notranslate"><span class="pre">Queen</span></code>, and also from <code class="docutils literal notranslate"><span class="pre">KNN</span></code>.</p>
@@ -1045,11 +1045,11 @@ Attributes:
 <p><strong>Weight builders (<code class="docutils literal notranslate"><span class="pre">from_xarray</span></code>, <code class="docutils literal notranslate"><span class="pre">da2W</span></code>, <code class="docutils literal notranslate"><span class="pre">da2WSP</span></code>) can recognise dimensions belonging to this list <code class="docutils literal notranslate"><span class="pre">[band,</span> <span class="pre">time,</span> <span class="pre">lat,</span> <span class="pre">y,</span> <span class="pre">lon,</span> <span class="pre">x]</span></code>, if any of the dimension in the <code class="docutils literal notranslate"><span class="pre">DataArray</span></code> does not belong to the mentioned list then we need to pass a dictionary (specifying that dimension’s name) to the weight builder.</strong></p>
 <p>e.g. <code class="docutils literal notranslate"><span class="pre">dims</span></code> dictionary:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">da</span><span class="o">.</span><span class="n">dims</span>                  <span class="c1"># none of the dimension belong to the default dimension list</span>
-<span class="go">(&#39;year&#39;, &#39;height&#39;, &#39;width&#39;)</span>
+<span class="go">('year', 'height', 'width')</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">coords_labels</span> <span class="o">=</span> <span class="p">{</span>                 <span class="c1"># dimension values should be properly aligned with the following keys</span>
-<span class="go">        &quot;z_label&quot;: &quot;year&quot;,</span>
-<span class="go">        &quot;y_label&quot;: &quot;height&quot;,</span>
-<span class="go">        &quot;x_label&quot;: &quot;width&quot;</span>
+<span class="go">        "z_label": "year",</span>
+<span class="go">        "y_label": "height",</span>
+<span class="go">        "x_label": "width"</span>
 <span class="go">    }</span>
 </code></pre></div>
 </div>
@@ -1058,16 +1058,16 @@ Attributes:
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">coords_labels</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="c1"># since month does not belong to the default list we</span>
 <span class="c1"># need to pass it using a dictionary</span>
-<span class="n">coords_labels</span><span class="p">[</span><span class="s2">&quot;z_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;month&quot;</span>
+<span class="n">coords_labels</span><span class="p">[</span><span class="s2">"z_label"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"month"</span>
 <span class="n">w_queen</span> <span class="o">=</span> <span class="n">Queen</span><span class="o">.</span><span class="n">from_xarray</span><span class="p">(</span>
     <span class="n">da</span><span class="p">,</span> <span class="n">z_value</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">coords_labels</span><span class="o">=</span><span class="n">coords_labels</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>  <span class="c1"># We&#39;ll use data from 12th layer (in our case layer=month)</span>
+<span class="p">)</span>  <span class="c1"># We'll use data from 12th layer (in our case layer=month)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>/home/runner/micromamba/envs/docs/lib/python3.14/site-packages/libpysal/weights/contiguity.py:615: UserWarning: You are trying to build a full W object from xarray.DataArray (raster) object. This computation can be very slow and not scale well. It is recommended, if possible, to instead build WSP object, which is more efficient and faster. You can do this by using da2WSP method.
-  w = da2W(da, &quot;queen&quot;, z_value, coords_labels, k, include_nodata, **kwargs)
+  w = da2W(da, "queen", z_value, coords_labels, k, include_nodata, **kwargs)
 </code></pre></div>
 </div>
 </div>
@@ -1085,7 +1085,7 @@ Attributes:
             (12, 75.0, 205.0),
             (12, 75.0, 207.5),
             (12, 75.0, 210.0)],
-           names=[&#39;month&#39;, &#39;lat&#39;, &#39;lon&#39;])
+           names=['month', 'lat', 'lon'])
 </code></pre></div>
 </div>
 </div>
@@ -1145,10 +1145,10 @@ Coordinates:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;matplotlib.collections.QuadMesh at 0x7f99824b9a90&gt;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>&lt;matplotlib.collections.QuadMesh at 0x7f0d7b954410&gt;
 </code></pre></div>
 </div>
-<img alt="../../_images/952c6a2a03e6068aac421dbc620a17088f2b5f9b21cd7c6846fbb2347207cd8d.png" src="../../_images/952c6a2a03e6068aac421dbc620a17088f2b5f9b21cd7c6846fbb2347207cd8d.png" />
+<img alt="../../_images/59c271872521d22fb5656281b781db8051348172936ba58b24626215022dc6f4.png" src="../../_images/59c271872521d22fb5656281b781db8051348172936ba58b24626215022dc6f4.png" />
 </div>
 </div>
 <h3 id="using-local-netcdf-dataset">Using local <code class="docutils literal notranslate"><span class="pre">NetCDF</span></code> dataset<a class="headerlink" href="#using-local-netcdf-dataset" title="Link to this heading">¶</a></h3>
@@ -1158,9 +1158,9 @@ Coordinates:
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-    <span class="s2">&quot;https://archive.unidata.ucar.edu/software/netcdf/examples/ECMWF_ERA-40_subset.nc&quot;</span>
+    <span class="s2">"https://archive.unidata.ucar.edu/software/netcdf/examples/ECMWF_ERA-40_subset.nc"</span>
 <span class="p">)</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;ECMWF_ERA-40_subset.nc&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"ECMWF_ERA-40_subset.nc"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 </code></pre></div>
 </div>
@@ -1170,7 +1170,7 @@ Coordinates:
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># Lets load a netCDF Surface dataset</span>
 <span class="n">ds</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_dataset</span><span class="p">(</span>
-    <span class="s2">&quot;ECMWF_ERA-40_subset.nc&quot;</span>
+    <span class="s2">"ECMWF_ERA-40_subset.nc"</span>
 <span class="p">)</span>  <span class="c1"># After loading netCDF dataset we obtained a xarray.Dataset object</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>  <span class="c1"># This Dataset object containes several data variables</span>
 </code></pre></div>
@@ -1209,14 +1209,14 @@ Attributes:
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="c1"># this will give us the required DataArray with p2t</span>
 <span class="c1"># (2 metre temperature) data variable</span>
-<span class="n">da</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;p2t&quot;</span><span class="p">]</span>
-<span class="n">da</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;time.day&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">"p2t"</span><span class="p">]</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"time.day"</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>(&#39;day&#39;, &#39;latitude&#39;, &#39;longitude&#39;)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><code>('day', 'latitude', 'longitude')
 </code></pre></div>
 </div>
 </div>
@@ -1226,9 +1226,9 @@ Attributes:
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">coords_labels</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">coords_labels</span><span class="p">[</span><span class="s2">&quot;y_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;latitude&quot;</span>
-<span class="n">coords_labels</span><span class="p">[</span><span class="s2">&quot;x_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;longitude&quot;</span>
-<span class="n">coords_labels</span><span class="p">[</span><span class="s2">&quot;z_label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;day&quot;</span>
+<span class="n">coords_labels</span><span class="p">[</span><span class="s2">"y_label"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"latitude"</span>
+<span class="n">coords_labels</span><span class="p">[</span><span class="s2">"x_label"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"longitude"</span>
+<span class="n">coords_labels</span><span class="p">[</span><span class="s2">"z_label"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"day"</span>
 <span class="n">w_rook</span> <span class="o">=</span> <span class="n">Rook</span><span class="o">.</span><span class="n">from_xarray</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">z_value</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">coords_labels</span><span class="o">=</span><span class="n">coords_labels</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
 </div>

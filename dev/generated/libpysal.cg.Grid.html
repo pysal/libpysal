@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1945,8 +1945,8 @@
 </dl>
 <p class="example rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
-<span class="go">&#39;A&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
+<span class="go">'A'</span>
 </code></pre></div>
 </div>
 </dd></dl>
@@ -1966,16 +1966,16 @@
 </dl>
 <p class="example rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
-<span class="go">&#39;A&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
-<span class="go">&#39;B&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
+<span class="go">'A'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
+<span class="go">'B'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="go">[&#39;A&#39;]</span>
+<span class="go">['A']</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="go">[&#39;B&#39;]</span>
+<span class="go">['B']</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
-<span class="go">[&#39;A&#39;, &#39;B&#39;]</span>
+<span class="go">['A', 'B']</span>
 </code></pre></div>
 </div>
 </dd></dl>
@@ -2002,14 +2002,14 @@
 </dl>
 <p class="example rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
-<span class="go">&#39;A&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
-<span class="go">&#39;B&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
+<span class="go">'A'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
+<span class="go">'B'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
-<span class="go">&#39;A&#39;</span>
+<span class="go">'A'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)))</span>
-<span class="go">&#39;B&#39;</span>
+<span class="go">'B'</span>
 </code></pre></div>
 </div>
 </dd></dl>
@@ -2032,16 +2032,16 @@ within a specified distance of a point.</p>
 </dl>
 <p class="example rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
-<span class="go">&#39;A&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
-<span class="go">&#39;B&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
+<span class="go">'A'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)))</span>
+<span class="go">'B'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">proximity</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">[&#39;A&#39;]</span>
+<span class="go">['A']</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">proximity</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)),</span> <span class="mf">3.0</span><span class="p">)</span>
-<span class="go">[&#39;B&#39;]</span>
+<span class="go">['B']</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">proximity</span><span class="p">(</span><span class="n">Point</span><span class="p">((</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span> <span class="mf">4.0</span><span class="p">))</span>
-<span class="go">[&#39;A&#39;, &#39;B&#39;]</span>
+<span class="go">['A', 'B']</span>
 </code></pre></div>
 </div>
 </dd></dl>
@@ -2063,10 +2063,10 @@ within a specified distance of a point.</p>
 </dl>
 <p class="example rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
-<span class="go">&#39;A&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
-<span class="go">&#39;A&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
+<span class="go">'A'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">'A'</span><span class="p">,</span> <span class="n">Point</span><span class="p">((</span><span class="mf">4.2</span><span class="p">,</span> <span class="mf">8.7</span><span class="p">)))</span>
+<span class="go">'A'</span>
 </code></pre></div>
 </div>
 </dd></dl>

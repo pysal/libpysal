@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1585,7 +1585,7 @@ row-standardize it (note that these weights will stay when we clip the
 object, but they will not neccesarily represent a row-standardization
 anymore):</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">w1</span> <span class="o">=</span> <span class="n">lat2W</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">rook</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w1</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w1</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">'R'</span>
 </code></pre></div>
 </div>
 <p>We will clip that geography assuming observations 0, 2, 3 and 4 belong to
@@ -1593,12 +1593,12 @@ one group and 1, 5 belong to another group and we don’t want both groups
 to interact with each other in our weights (i.e. w_ij = 0 if i and j in
 different groups). For that, we use the following method:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">block_weights</span><span class="p">([</span><span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r2&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r1&#39;</span><span class="p">,</span> <span class="s1">&#39;r2&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span> <span class="o">=</span> <span class="n">libpysal</span><span class="o">.</span><span class="n">weights</span><span class="o">.</span><span class="n">block_weights</span><span class="p">([</span><span class="s1">'r1'</span><span class="p">,</span> <span class="s1">'r2'</span><span class="p">,</span> <span class="s1">'r1'</span><span class="p">,</span> <span class="s1">'r1'</span><span class="p">,</span> <span class="s1">'r1'</span><span class="p">,</span> <span class="s1">'r2'</span><span class="p">])</span>
 </code></pre></div>
 </div>
 <p>To illustrate that w2 will only be considered as binary even when the
 object passed is not, we can row-standardize it</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">&#39;R&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">w2</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s1">'R'</span>
 </code></pre></div>
 </div>
 <p>The clipped object <code class="docutils literal notranslate"><span class="pre">wc</span></code> will contain only the spatial queen
