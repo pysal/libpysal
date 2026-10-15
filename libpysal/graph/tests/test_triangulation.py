@@ -300,6 +300,36 @@ def test_coplanar_jitter_voronoi(stores, stores_unique):
     assert unique_heads.shape[0] == 3360
 
 
+def test_coplanar_clique_connects_all_coincident_points():
+    # three coincident points at the origin, plus four outlying points
+    coords = np.array(
+        [[0, 0], [0, 0], [0, 0], [1, 0.1], [0.35, 1.1], [-1, 0.45], [0.1, -1.05]]
+    )
+    df = geopandas.GeoDataFrame(geometry=geopandas.points_from_xy(*coords.T))
+
+    heads, tails, _ = _delaunay(df, coplanar="clique")
+    adjacency = np.zeros((7, 7), dtype=bool)
+    adjacency[heads, tails] = True
+
+    # the coincident points form a clique, not a star around the first of them,
+    # so they share every neighbor and cannot differ in cardinality
+    np.testing.assert_array_equal(adjacency[:3, :3], ~np.eye(3, dtype=bool))
+    np.testing.assert_array_equal(adjacency.sum(axis=1)[:3], np.full(3, 6))
+
+    # two adjacent sites carrying three points each: the sites are neighbors,
+    # so every point on one neighbors every point on the other
+    coords = np.array(
+        [[0, 0], [0, 0], [0, 0], [1, 0], [1, 0], [1, 0], [0.5, 1.2], [0.5, -1.2]]
+    )
+    df = geopandas.GeoDataFrame(geometry=geopandas.points_from_xy(*coords.T))
+
+    heads, tails, _ = _delaunay(df, coplanar="clique")
+    adjacency = np.zeros((8, 8), dtype=bool)
+    adjacency[heads, tails] = True
+
+    np.testing.assert_array_equal(adjacency[:3, 3:6], np.ones((3, 3), dtype=bool))
+
+
 class TestCoplanar:
     def setup_method(self):
         self.geom = [
