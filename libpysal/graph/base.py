@@ -1514,8 +1514,9 @@ class Graph(SetOpsMixin):
             only euclidean, minkowski, and manhattan/cityblock distances are admitted.
         solver : solver from pulp (default: None)
             a solver defined by the pulp optimization library. If no solver is
-            provided, pulp's default solver will be used. This is generally
-            pulp.COIN(), but this may vary depending on your configuration.
+            provided, SciPy's mixed-integer linear programming solver is used.
+            PuLP is required for an explicit solver or if SciPy optimization
+            fails and the existing PuLP solver is used as a fallback.
         allow_partial_match : bool (default: False)
             whether to allow for partial matching. A partial match may have
             a weight between zero and one, while a "full" match (by default)
