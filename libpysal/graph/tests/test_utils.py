@@ -3,13 +3,14 @@
 import geodatasets
 import geopandas
 import numpy
+import pandas
 import pytest
 import shapely
 
 from libpysal.graph._contiguity import _VALID_GEOMETRY_TYPES as contiguity_types
 from libpysal.graph._kernel import _VALID_GEOMETRY_TYPES as kernel_types
 from libpysal.graph._triangulation import _VALID_GEOMETRY_TYPES as triang_types
-from libpysal.graph._utils import _validate_geometry_input
+from libpysal.graph._utils import _induce_cliques, _validate_geometry_input
 
 
 @pytest.fixture(scope="session")
@@ -155,6 +156,58 @@ def test_validate_raises(
         _validate_geometry_input(
             numpy.arange(20).reshape(-1, 2), valid_geometry_types=contiguity_types
         )
+
+
+def test_induce_cliques_dtype():
+    adj = pandas.DataFrame(
+        {
+            "focal": {
+                0: "Staten Island",
+                1: "Queens",
+                2: "Queens",
+                3: "Queens",
+                4: "Brooklyn",
+                5: "Brooklyn",
+                6: "Manhattan",
+                7: "Manhattan",
+                8: "Manhattan",
+                9: "Bronx",
+                10: "Bronx",
+            },
+            "neighbor": {
+                0: "Staten Island",
+                1: "Brooklyn",
+                2: "Manhattan",
+                3: "Bronx",
+                4: "Queens",
+                5: "Manhattan",
+                6: "Queens",
+                7: "Brooklyn",
+                8: "Bronx",
+                9: "Queens",
+                10: "Manhattan",
+            },
+            "weight": {
+                0: 0,
+                1: 1,
+                2: 1,
+                3: 1,
+                4: 1,
+                5: 1,
+                6: 1,
+                7: 1,
+                8: 1,
+                9: 1,
+                10: 1,
+            },
+        }
+    )
+    ind = _induce_cliques(
+        adj,
+        coplanar=[],
+        nearest=[],
+    )
+    pandas.testing.assert_series_equal(adj.dtypes, ind.dtypes)
 
 
 def fetch_map_string(m):

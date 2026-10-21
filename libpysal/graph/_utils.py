@@ -123,6 +123,11 @@ def _induce_cliques(adjtable, coplanar, nearest, fill_value=1):
         ],
         ignore_index=True,
     )
+
+    # # otherwise this might end as object dtypes after concat
+    for col in adjtable.columns:
+        adjtable_filled[col] = adjtable_filled[col].astype(adjtable[col].dtype)
+
     return adjtable_filled
 
 
