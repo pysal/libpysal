@@ -126,6 +126,8 @@ def build_travel_graph(
         ),
         coplanar=coplanar,
         nearest=nearest,
+        # observations snapped to the same network node are zero cost apart
+        fill_value=0,
     )
     # reorder, drop induced dupes, and return
     adj_cliques = (
