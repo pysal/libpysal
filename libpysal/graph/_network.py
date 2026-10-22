@@ -1,3 +1,4 @@
+import geopandas as gpd
 import numpy as np
 
 from ._kernel import _lps_kernel
@@ -105,6 +106,8 @@ def build_travel_graph(
     pandas.Series
         adjacency formatted as multiindexed (focal, neighbor) series
     """
+    if isinstance(df, gpd.GeoSeries):
+        df = df.to_frame("geometry")
     df = df.copy()
     _validate_geometry_input(df.geometry, ids=None, valid_geometry_types="Point")
     df["node_ids"] = network.get_node_ids(
@@ -126,6 +129,8 @@ def build_travel_graph(
         ),
         coplanar=coplanar,
         nearest=nearest,
+        # observations snapped to the same network node are zero cost apart
+        fill_value=0,
     )
     # reorder, drop induced dupes, and return
     adj_cliques = (

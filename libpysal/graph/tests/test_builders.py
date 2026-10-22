@@ -654,3 +654,24 @@ class TestTravelNetwork:
             ),
         )
         assert g.n == self.df.shape[0]
+
+    def test_build_travel_network_series(self):
+        g = graph.Graph.build_travel_cost(self.df.geometry, self.network, 500)
+        assert_array_almost_equal(
+            g.adjacency.head(10).to_numpy(),
+            np.array(
+                [
+                    418.28601074,
+                    228.23899841,
+                    196.0269928,
+                    0.0,
+                    341.73498535,
+                    478.47799683,
+                    298.91699219,
+                    445.60501099,
+                    174.64199829,
+                    0.0,
+                ]
+            ),
+        )
+        assert g.n == self.df.shape[0]
