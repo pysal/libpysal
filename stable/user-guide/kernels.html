@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -980,14 +980,14 @@ truncated at the bandwidth.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><code><span class="n">functions</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;triangular&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;parabolic&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;bisquare&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;tricube&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cosine&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;exponential&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;boxcar&quot;</span><span class="p">,</span>
+    <span class="s2">"triangular"</span><span class="p">,</span>
+    <span class="s2">"parabolic"</span><span class="p">,</span>
+    <span class="s2">"gaussian"</span><span class="p">,</span>
+    <span class="s2">"bisquare"</span><span class="p">,</span>
+    <span class="s2">"tricube"</span><span class="p">,</span>
+    <span class="s2">"cosine"</span><span class="p">,</span>
+    <span class="s2">"exponential"</span><span class="p">,</span>
+    <span class="s2">"boxcar"</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># bandwidth</span>
@@ -998,10 +998,10 @@ truncated at the bandwidth.</p>
     <span class="n">k</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">fn</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span> <span class="o">/</span> <span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">fn</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$z = d / h$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$K(z)$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Kernel shapes&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"$z = d / h$"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"$K(z)$"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Kernel shapes"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -1010,14 +1010,14 @@ truncated at the bandwidth.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/9d433e446f68427ca39316f9cbbfa6c56f287a58d86580b3abab109a38a3b10a.png" src="../_images/9d433e446f68427ca39316f9cbbfa6c56f287a58d86580b3abab109a38a3b10a.png" />
+<img alt="../_images/f48790c911e094d83b67f189d91d8e5ee679a2a1da3913ba6014373aa3b8773b.png" src="../_images/f48790c911e094d83b67f189d91d8e5ee679a2a1da3913ba6014373aa3b8773b.png" />
 </div>
 </div>
 <h2 id="exploring-alternative-kernels-and-bandwidths">Exploring alternative kernels and bandwidths<a class="headerlink" href="#exploring-alternative-kernels-and-bandwidths" title="Link to this heading">¶</a></h2>
 <p>You can repeat the previous steps using different kernel functions and bandwidth strategies to see how they affect the spatial lag.</p>
 <p>For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">w_gauss_fixed</span> <span class="o">=</span> <span class="n">Kernel</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">)</span>
-<span class="n">w_gauss_fixed</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><code><span class="n">w_gauss_fixed</span> <span class="o">=</span> <span class="n">Kernel</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="s2">"gaussian"</span><span class="p">)</span>
+<span class="n">w_gauss_fixed</span><span class="o">.</span><span class="n">transform</span> <span class="o">=</span> <span class="s2">"r"</span>
 <span class="n">lag_gauss</span> <span class="o">=</span> <span class="n">lag_spatial</span><span class="p">(</span><span class="n">w_gauss_fixed</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
 <span class="c1"># Plot `lag_gauss` and compare.</span>
@@ -1033,8 +1033,8 @@ truncated at the bandwidth.</p>
 <h3 id="bandwidth">Bandwidth<a class="headerlink" href="#bandwidth" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code> parameter controls the spatial scale of the kernel. In the notation used earlier, the
 kernel is evaluated on the rescaled distance</p>
-<div class="amsmath math notranslate nohighlight" id="equation-c97505d5-49a3-4f1b-9f10-b294f262a810">
-<span class="eqno">(1)<a class="headerlink" href="#equation-c97505d5-49a3-4f1b-9f10-b294f262a810" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-2627f15d-0dc2-4577-a111-bfab862dcbbe">
+<span class="eqno">(1)<a class="headerlink" href="#equation-2627f15d-0dc2-4577-a111-bfab862dcbbe" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 z = \frac{d}{h},
 \end{equation}\]</div>
 <p>where <code class="docutils literal notranslate"><span class="pre">h</span></code> is the bandwidth. Smaller bandwidths produce more localized weights (steeper decay), while
@@ -1047,12 +1047,12 @@ larger bandwidths produce broader, smoother influence functions.</p>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">bandwidths</span><span class="p">:</span>
-    <span class="n">k_vals</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;triangular&quot;</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_vals</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;h = </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">k_vals</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">"triangular"</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_vals</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"h = </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Distance d&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Kernel weight K(d; h)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Effect of bandwidth on the triangular kernel&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Distance d"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Kernel weight K(d; h)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Effect of bandwidth on the triangular kernel"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -1061,7 +1061,7 @@ larger bandwidths produce broader, smoother influence functions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/9183130dd4fd64db43f979e919029c3c9a367389b836d1692fbf54eb21779a8f.png" src="../_images/9183130dd4fd64db43f979e919029c3c9a367389b836d1692fbf54eb21779a8f.png" />
+<img alt="../_images/f89deb60ac8e57bbb5e51a02cb5e9fe32955993bb781f71a6774755207f68940.png" src="../_images/f89deb60ac8e57bbb5e51a02cb5e9fe32955993bb781f71a6774755207f68940.png" />
 </div>
 </div>
 <h3 id="decay">Decay<a class="headerlink" href="#decay" title="Link to this heading">¶</a></h3>
@@ -1081,12 +1081,12 @@ volume-preserving probability distributions.</p>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">dec</span> <span class="ow">in</span> <span class="n">decays</span><span class="p">:</span>
-    <span class="n">k_vals</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">decay</span><span class="o">=</span><span class="n">dec</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_vals</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;decay = </span><span class="si">{</span><span class="n">dec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">k_vals</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">"gaussian"</span><span class="p">,</span> <span class="n">decay</span><span class="o">=</span><span class="n">dec</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_vals</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"decay = </span><span class="si">{</span><span class="n">dec</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Distance d&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Kernel weight K(d; h, decay)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Effect of decay on the Gaussian kernel&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Distance d"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Kernel weight K(d; h, decay)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Effect of decay on the Gaussian kernel"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -1095,7 +1095,7 @@ volume-preserving probability distributions.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/cf34b7f98bce8cac0283d9ea7a8499b1408b142ce814e02d73d79d6d475d8d4f.png" src="../_images/cf34b7f98bce8cac0283d9ea7a8499b1408b142ce814e02d73d79d6d475d8d4f.png" />
+<img alt="../_images/148a55ee4db2d68d3b70a7db0c79b7f6aed1e3a4fcedca2a065b4e3e86a16a05.png" src="../_images/148a55ee4db2d68d3b70a7db0c79b7f6aed1e3a4fcedca2a065b4e3e86a16a05.png" />
 </div>
 </div>
 <h3 id="taper">Taper<a class="headerlink" href="#taper" title="Link to this heading">¶</a></h3>
@@ -1113,20 +1113,20 @@ while still preserving the basic shape of the kernel within the bandwidth.</p>
 <span class="n">h</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">c</span> <span class="o">=</span> <span class="mf">1.5</span>
 
-<span class="n">k_notaper</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">k_taper</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">k_taper_custom</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+<span class="n">k_notaper</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">"gaussian"</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">k_taper</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">"gaussian"</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">k_taper_custom</span> <span class="o">=</span> <span class="n">kernels</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">"gaussian"</span><span class="p">,</span> <span class="n">taper</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_notaper</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;taper = False&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_taper</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;taper = True&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_taper_custom</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;taper = 1.5&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_notaper</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"taper = False"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_taper</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"taper = True"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">k_taper_custom</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"taper = 1.5"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">":"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Distance d&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Kernel weight K(d; h)&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Effect of tapering on the Gaussian kernel&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Distance d"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Kernel weight K(d; h)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Effect of tapering on the Gaussian kernel"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -1135,7 +1135,7 @@ while still preserving the basic shape of the kernel within the bandwidth.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/4ab90ac0092c004d74527814b7d478834c30bbbe874f046b84bab4595e9a39e8.png" src="../_images/4ab90ac0092c004d74527814b7d478834c30bbbe874f046b84bab4595e9a39e8.png" />
+<img alt="../_images/cfef4844c0fc93245f20c68cc2ab66baa2441f16c5ea771b018177222a04c73d.png" src="../_images/cfef4844c0fc93245f20c68cc2ab66baa2441f16c5ea771b018177222a04c73d.png" />
 </div>
 </div>
 

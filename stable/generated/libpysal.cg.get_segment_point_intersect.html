@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1757,7 +1757,7 @@
 <h1 id="libpysal-cg-get-segment-point-intersect">libpysal.cg.get_segment_point_intersect<a class="headerlink" href="#libpysal-cg-get-segment-point-intersect" title="Link to this heading">¶</a></h1>
 <dl class="py function objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.cg.get_segment_point_intersect">
-<span class="sig-prename descclassname"><span class="pre">libpysal.cg.</span></span><span class="sig-name descname"><span class="pre">get_segment_point_intersect</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.get_segment_point_intersect.seg" title="libpysal.cg.get_segment_point_intersect.seg (Python parameter) — A segment to check for an intersection."><span class="n"><span class="pre">seg</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.get_segment_point_intersect.pt" title="libpysal.cg.get_segment_point_intersect.pt (Python parameter) — A point to check seg for an intersection."><span class="n"><span class="pre">pt</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.0/libpysal/cg/standalone.py#L334-L377"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.get_segment_point_intersect" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">libpysal.cg.</span></span><span class="sig-name descname"><span class="pre">get_segment_point_intersect</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.get_segment_point_intersect.seg" title="libpysal.cg.get_segment_point_intersect.seg (Python parameter) — A segment to check for an intersection."><span class="n"><span class="pre">seg</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.get_segment_point_intersect.pt" title="libpysal.cg.get_segment_point_intersect.pt (Python parameter) — A point to check seg for an intersection."><span class="n"><span class="pre">pt</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.1/libpysal/cg/standalone.py#L334-L377"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.get_segment_point_intersect" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the intersection of a segment and point.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="libpysal.cg.get_segment_point_intersect-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.get_segment_point_intersect-parameters" title="Permalink to this headline">¶</a></dt>
@@ -1780,7 +1780,7 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pt</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">i</span> <span class="o">=</span> <span class="n">get_segment_point_intersect</span><span class="p">(</span><span class="n">seg</span><span class="p">,</span> <span class="n">pt</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-<span class="go">&#39;(0.0, 5.0)&#39;</span>
+<span class="go">'(0.0, 5.0)'</span>
 </code></pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">pt2</span> <span class="o">=</span> <span class="n">Point</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>

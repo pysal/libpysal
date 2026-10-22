@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1677,11 +1677,11 @@
 <h1 id="libpysal-cg-line">libpysal.cg.Line<a class="headerlink" href="#libpysal-cg-line" title="Link to this heading">¶</a></h1>
 <dl class="py class objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.cg.Line">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">libpysal.cg.</span></span><span class="sig-name descname"><span class="pre">Line</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.Line.__init__.m" title="libpysal.cg.Line.__init__.m (Python parameter) — The slope of the line."><span class="n"><span class="pre">m</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.Line.__init__.b" title="libpysal.cg.Line.__init__.b (Python parameter) — The y-intercept of the line."><span class="n"><span class="pre">b</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.0/libpysal/cg/shapes.py#L792-L870"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.Line" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">libpysal.cg.</span></span><span class="sig-name descname"><span class="pre">Line</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.Line.__init__.m" title="libpysal.cg.Line.__init__.m (Python parameter) — The slope of the line."><span class="n"><span class="pre">m</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.Line.__init__.b" title="libpysal.cg.Line.__init__.b (Python parameter) — The y-intercept of the line."><span class="n"><span class="pre">b</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.1/libpysal/cg/shapes.py#L792-L870"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.Line" title="Link to this definition">¶</a></dt>
 <dd><p>Geometric representation of line objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="libpysal.cg.Line-raises">Raises<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.Line-raises" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ArithmeticError" title="(in Python v3.14)"><strong>ArithmeticError</strong></a> – Raised when infinity is passed in as the slope.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ArithmeticError" title="(in Python v3.15)"><strong>ArithmeticError</strong></a> – Raised when infinity is passed in as the slope.</p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>
@@ -1718,7 +1718,7 @@
 </table>
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.cg.Line.x">
-<span class="sig-name descname"><span class="pre">x</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.Line.x.y" title="libpysal.cg.Line.x.y (Python parameter) — The y-value at which to compute x."><span class="n"><span class="pre">y</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.0/libpysal/cg/shapes.py#L827-L850"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.Line.x" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">x</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.Line.x.y" title="libpysal.cg.Line.x.y (Python parameter) — The y-value at which to compute x."><span class="n"><span class="pre">y</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.1/libpysal/cg/shapes.py#L827-L850"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.Line.x" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the <span class="math notranslate nohighlight">\(x\)</span>-value of the line at a particular <span class="math notranslate nohighlight">\(y\)</span>-value.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="libpysal.cg.Line.x-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.Line.x-parameters" title="Permalink to this headline">¶</a></dt>
@@ -1728,7 +1728,7 @@
 </dl>
 </dd>
 <dt class="field-even" id="libpysal.cg.Line.x-raises">Raises<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.Line.x-raises" title="Permalink to this headline">¶</a></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ArithmeticError" title="(in Python v3.14)"><strong>ArithmeticError</strong></a> – Raised when <code class="docutils literal notranslate"><span class="pre">0.</span></code> is passed in as the slope.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ArithmeticError" title="(in Python v3.15)"><strong>ArithmeticError</strong></a> – Raised when <code class="docutils literal notranslate"><span class="pre">0.</span></code> is passed in as the slope.</p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>
@@ -1741,7 +1741,7 @@
 
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.cg.Line.y">
-<span class="sig-name descname"><span class="pre">y</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.Line.y.x" title="libpysal.cg.Line.y.x (Python parameter) — The x-value at which to compute y."><span class="n"><span class="pre">x</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.0/libpysal/cg/shapes.py#L852-L870"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.Line.y" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">y</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.cg.Line.y.x" title="libpysal.cg.Line.y.x (Python parameter) — The x-value at which to compute y."><span class="n"><span class="pre">x</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.1/libpysal/cg/shapes.py#L852-L870"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.cg.Line.y" title="Link to this definition">¶</a></dt>
 <dd><p>Returns the <span class="math notranslate nohighlight">\(y\)</span>-value of the line at a particular <span class="math notranslate nohighlight">\(x\)</span>-value.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="libpysal.cg.Line.y-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#libpysal.cg.Line.y-parameters" title="Permalink to this headline">¶</a></dt>

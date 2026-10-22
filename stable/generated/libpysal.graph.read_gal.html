@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1197,14 +1197,14 @@
 <h1 id="libpysal-graph-read-gal">libpysal.graph.read_gal<a class="headerlink" href="#libpysal-graph-read-gal" title="Link to this heading">¶</a></h1>
 <dl class="py function objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.graph.read_gal">
-<span class="sig-prename descclassname"><span class="pre">libpysal.graph.</span></span><span class="sig-name descname"><span class="pre">read_gal</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.graph.read_gal.path" title="libpysal.graph.read_gal.path (Python parameter) — path to a file"><span class="n"><span class="pre">path</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.0/libpysal/graph/base.py#L3178-L3199"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.graph.read_gal" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">libpysal.graph.</span></span><span class="sig-name descname"><span class="pre">read_gal</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.graph.read_gal.path" title="libpysal.graph.read_gal.path (Python parameter) — path to a file"><span class="n"><span class="pre">path</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.1/libpysal/graph/base.py#L3160-L3181"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.graph.read_gal" title="Link to this definition">¶</a></dt>
 <dd><p>Read Graph from a GAL file</p>
 <p>The reader tries to infer the dtype of IDs. In case of unsuccessful
 casting to int, it will fall back to string.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="libpysal.graph.read_gal-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#libpysal.graph.read_gal-parameters" title="Permalink to this headline">¶</a></dt>
 <dd class="field-odd"><dl class="simple api-field highlight">
-<dt id="libpysal.graph.read_gal.path"><span class="sig-name descname">path</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></span></span><a class="headerlink" href="#libpysal.graph.read_gal.path" title="Permalink to this definition">¶</a></dt><dd><p>path to a file</p>
+<dt id="libpysal.graph.read_gal.path"><span class="sig-name descname">path</span><span class="p"> : </span><span class="desctype"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)">str</a></span></span><a class="headerlink" href="#libpysal.graph.read_gal.path" title="Permalink to this definition">¶</a></dt><dd><p>path to a file</p>
 </dd>
 </dl>
 </dd>
@@ -1216,7 +1216,7 @@ casting to int, it will fall back to string.</p>
 </dd>
 </dl>
 <p class="example rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s2">&quot;contiguity.gal&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s2">"contiguity.gal"</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </dd></dl>

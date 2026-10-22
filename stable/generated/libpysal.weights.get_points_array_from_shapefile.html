@@ -42,7 +42,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74c816e3f9967dd6e.min.css?v=6cfe2491" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.6efbe22605a23fcd6.min.css?v=b2ceb110" />
         <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
         <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
         <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=d127c87d" />
@@ -1637,7 +1637,7 @@
 <h1 id="libpysal-weights-get-points-array-from-shapefile">libpysal.weights.get_points_array_from_shapefile<a class="headerlink" href="#libpysal-weights-get-points-array-from-shapefile" title="Link to this heading">¶</a></h1>
 <dl class="py function objdesc">
 <dt class="sig sig-object highlight py" id="libpysal.weights.get_points_array_from_shapefile">
-<span class="sig-prename descclassname"><span class="pre">libpysal.weights.</span></span><span class="sig-name descname"><span class="pre">get_points_array_from_shapefile</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.weights.get_points_array_from_shapefile.shapefile" title="libpysal.weights.get_points_array_from_shapefile.shapefile (Python parameter) — name of a shape file including suffix"><span class="n"><span class="pre">shapefile</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.0/libpysal/weights/util.py#L1056-L1103"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.weights.get_points_array_from_shapefile" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">libpysal.weights.</span></span><span class="sig-name descname"><span class="pre">get_points_array_from_shapefile</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="#libpysal.weights.get_points_array_from_shapefile.shapefile" title="libpysal.weights.get_points_array_from_shapefile.shapefile (Python parameter) — name of a shape file including suffix"><span class="n"><span class="pre">shapefile</span></span></a></em></span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/pysal/libpysal/blob/v4.15.1/libpysal/weights/util.py#L1056-L1103"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libpysal.weights.get_points_array_from_shapefile" title="Link to this definition">¶</a></dt>
 <dd><p>Gets a data array of x and y coordinates from a given shapefile.</p>
 <dl class="field-list simple">
 <dt class="field-odd" id="libpysal.weights.get_points_array_from_shapefile-parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#libpysal.weights.get_points_array_from_shapefile-parameters" title="Permalink to this headline">¶</a></dt>
@@ -1662,7 +1662,7 @@ this function returns x and y coordinates of the polygons’ centroids</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">libpysal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">libpysal.weights.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_points_array_from_shapefile</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xy</span> <span class="o">=</span> <span class="n">get_points_array_from_shapefile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;juvenile.shp&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'juvenile.shp'</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xy</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
 <span class="go">array([[94., 93.],</span>
@@ -1672,7 +1672,7 @@ this function returns x and y coordinates of the polygons’ centroids</p>
 </div>
 <p>Polygon shapefile</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">xy</span> <span class="o">=</span> <span class="n">get_points_array_from_shapefile</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">&#39;columbus.shp&#39;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">libpysal</span><span class="o">.</span><span class="n">examples</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="s1">'columbus.shp'</span><span class="p">)</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xy</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
 <span class="go">array([[ 8.82721847, 14.36907602],</span>
