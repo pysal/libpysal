@@ -1,0 +1,31 @@
+﻿libpysal.cg.LineSegment
+=======================
+
+.. currentmodule:: libpysal.cg
+
+.. autoclass:: LineSegment
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LineSegment.get_swap
+      ~LineSegment.intersect
+      ~LineSegment.is_ccw
+      ~LineSegment.is_cw
+      ~LineSegment.sw_ccw
+   
+
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~LineSegment.bounding_box
+      ~LineSegment.len
+      ~LineSegment.line
+      ~LineSegment.p1
+      ~LineSegment.p2
+   

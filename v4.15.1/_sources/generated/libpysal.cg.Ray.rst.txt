@@ -1,0 +1,11 @@
+﻿libpysal.cg.Ray
+===============
+
+.. currentmodule:: libpysal.cg
+
+.. autoclass:: Ray
+
+   
+   
+
+   

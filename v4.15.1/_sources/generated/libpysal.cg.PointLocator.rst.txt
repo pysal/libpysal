@@ -1,0 +1,21 @@
+﻿libpysal.cg.PointLocator
+========================
+
+.. currentmodule:: libpysal.cg
+
+.. autoclass:: PointLocator
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PointLocator.nearest
+      ~PointLocator.overlapping
+      ~PointLocator.polygon
+      ~PointLocator.proximity
+      ~PointLocator.region
+   
+
+   
