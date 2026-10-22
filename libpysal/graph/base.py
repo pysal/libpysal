@@ -1035,25 +1035,7 @@ class Graph(SetOpsMixin):
                 decay=decay,
             )
 
-        adjacency = pd.DataFrame.from_dict(
-            {"focal": head, "neighbor": tail, "weight": weight}
-        ).set_index("focal")
-
-        # drop diagonal
-        counts = adjacency.index.value_counts()
-        no_isolates = counts[counts > 1]
-        adjacency = adjacency[
-            ~(
-                adjacency.index.isin(no_isolates.index)
-                & (adjacency.index == adjacency.neighbor)
-            )
-        ]
-        # set isolates to 0 - distance band should never contain self-weight
-        adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
-
-        return cls.from_arrays(
-            adjacency.index.values, adjacency.neighbor.values, adjacency.weight.values
-        )
+        return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_fuzzy_contiguity(
