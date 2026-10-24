@@ -3030,7 +3030,9 @@ class Graph(SetOpsMixin):
 
         Weight values do not affect the calculations, only adjacency does.
 
-        Returns numpy.nan for all isolates.
+        Returns numpy.nan for all isolates. If quantile filtering removes all
+        values from a neighborhood, its count, sum, and nunique are zero and
+        its other statistics are numpy.nan.
 
         The numba package is used extensively in this function
         to accelerate the computation of statistics.
@@ -3074,6 +3076,9 @@ class Graph(SetOpsMixin):
             grouper = _percentile_filtration_grouper(y, self._adjacency.index, q=q)
 
         stat_ = _compute_stats(grouper, statistics)
+        empty = ~np.isin(np.arange(self.n), stat_.index)
+        stat_ = stat_.reindex(np.arange(self.n))
+        stat_.loc[empty, stat_.columns.intersection(["count", "sum", "nunique"])] = 0
 
         stat_.index = self.unique_ids
         if isinstance(stat_, pd.Series):
