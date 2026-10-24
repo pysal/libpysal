@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import pytest
 
 from libpysal import graph
@@ -95,3 +96,22 @@ class TestLag:
         # test equality to 1d
         for i in range(2):
             np.testing.assert_array_equal(self.gc.lag(ys[:, i]), lag[:, i])
+
+
+@pytest.mark.parametrize("ids", [["z", "a", "m"], [20, 3, 10]])
+@pytest.mark.parametrize("as_series", [False, True])
+def test_categorical_lag_node_order(ids, as_series):
+    g = graph.Graph.from_dicts({ids[0]: [ids[1]], ids[1]: [ids[2]], ids[2]: [ids[0]]})
+    values = np.array(["red", "blue", "green"])
+    if as_series:
+        values = pd.Series(values, index=ids)
+    np.testing.assert_array_equal(g.lag(values), ["blue", "green", "red"])
+
+
+def test_categorical_lag_tryself_node_order():
+    g = graph.Graph.from_dicts(
+        {"z": ["a", "m"], "a": ["z", "b"], "m": ["b", "z"], "b": ["m", "a"]}
+    )
+    values = pd.Series(["red", "red", "blue", "blue"], index=g.unique_ids)
+    # Every node has a tie, and its own label always resolves it.
+    np.testing.assert_array_equal(g.lag(values, ties="tryself"), values)
