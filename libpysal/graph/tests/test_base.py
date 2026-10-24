@@ -1610,3 +1610,26 @@ class TestBase:
         assert isinstance(self.g_int.summary(), graph.GraphSummary)
         assert isinstance(self.g_str.summary(), graph.GraphSummary)
         assert isinstance(self.g_str_unodered.summary(), graph.GraphSummary)
+
+
+@pytest.mark.parametrize("q", [(0, 100), (25, 75)])
+@pytest.mark.parametrize("all_missing", [False, True])
+def test_describe_empty_filtered_neighborhood(q, all_missing):
+    g = graph.Graph.from_dicts({"z": ["a"], "a": ["m"], "m": ["z"], "i": []})
+    values = np.full(4, np.nan) if all_missing else np.array([1.0, np.nan, 3.0, 4.0])
+    expected = g.describe(values)
+    result = g.describe(values, q=q)
+    pd.testing.assert_frame_equal(result, expected, check_dtype=False)
+
+
+@pytest.mark.parametrize("statistics", [None, ["mean"], ["count", "sum", "nunique"]])
+def test_describe_empty_quantile_interval(statistics):
+    g = graph.Graph.from_dicts(
+        {"z": ["a", "b", "c", "d"], "a": ["b"], "b": ["c"], "c": ["d"], "d": ["a"]}
+    )
+    values = [10.0, 1.0, 2.0, 3.0, 4.0]
+    expected = g.describe(values, statistics=statistics)
+    expected.loc["z"] = np.nan
+    expected.loc["z", expected.columns.intersection(["count", "sum", "nunique"])] = 0
+    result = g.describe(values, q=(45, 55), statistics=statistics)
+    pd.testing.assert_frame_equal(result, expected, check_dtype=False)
