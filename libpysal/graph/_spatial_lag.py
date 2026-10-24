@@ -155,9 +155,13 @@ def _categorical(graph, y, ties):
     # there are no ties
     gb = df.groupby(by=["focal"])
     if ties == "random" or ties == "raise":
-        return gb.apply(_get_categorical_lag).values
+        return gb.apply(_get_categorical_lag).reindex(graph.unique_ids).values
     elif ties == "tryself" or ties == "raise":
-        return gb.apply(_get_categorical_lag, ties="tryself").values
+        return (
+            gb.apply(_get_categorical_lag, ties="tryself")
+            .reindex(graph.unique_ids)
+            .values
+        )
     else:
         raise ValueError(
             f"Received option ties='{ties}', but only options "
