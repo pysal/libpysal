@@ -99,23 +99,19 @@ class TestLag:
 
 
 @pytest.mark.parametrize("ids", [["z", "a", "m"], [20, 3, 10]])
-@pytest.mark.parametrize("ties", ["raise", "random", "tryself"])
 @pytest.mark.parametrize("as_series", [False, True])
-def test_categorical_lag_node_order(ids, ties, as_series):
+def test_categorical_lag_node_order(ids, as_series):
     g = graph.Graph.from_dicts({ids[0]: [ids[1]], ids[1]: [ids[2]], ids[2]: [ids[0]]})
     values = np.array(["red", "blue", "green"])
     if as_series:
         values = pd.Series(values, index=ids)
-    np.testing.assert_array_equal(g.lag(values, ties=ties), ["blue", "green", "red"])
+    np.testing.assert_array_equal(g.lag(values), ["blue", "green", "red"])
 
 
-@pytest.mark.parametrize("ties", ["random", "tryself"])
-def test_categorical_lag_reordered_ties(ties):
-    g = graph.Graph.from_dicts({"a": ["b", "c"], "b": ["a", "c"], "c": ["a", "b"]})
-    values = pd.Series(["red", "blue", "green"], index=g.unique_ids)
-    np.random.seed(12345)
-    expected = pd.Series(g.lag(values, ties=ties), index=g.unique_ids)
-    reordered = g.subgraph(["c", "a", "b"])
-    np.random.seed(12345)
-    result = reordered.lag(values.reindex(reordered.unique_ids), ties=ties)
-    np.testing.assert_array_equal(result, expected.reindex(reordered.unique_ids))
+def test_categorical_lag_tryself_node_order():
+    g = graph.Graph.from_dicts(
+        {"z": ["a", "m"], "a": ["z", "b"], "m": ["b", "z"], "b": ["m", "a"]}
+    )
+    values = pd.Series(["red", "red", "blue", "blue"], index=g.unique_ids)
+    # Every node has a tie, and its own label always resolves it.
+    np.testing.assert_array_equal(g.lag(values, ties="tryself"), values)

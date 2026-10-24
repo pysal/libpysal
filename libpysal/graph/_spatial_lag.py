@@ -140,7 +140,11 @@ def _categorical(graph, y, ties):
     df["own_label"] = y.loc[graph.adjacency.index.get_level_values(0)].values
     df["neighbor_idx"] = df.index.get_level_values(1)
     df["focal_idx"] = df.index.get_level_values(0)
-    gb = df.groupby(["focal", "neighbor_label"]).count().groupby(level="focal")
+    gb = (
+        df.groupby(["focal", "neighbor_label"], sort=False)
+        .count()
+        .groupby(level="focal", sort=False)
+    )
     n_ties = gb.apply(_check_ties).sum()
     if n_ties and ties == "raise":
         raise ValueError(
@@ -153,15 +157,11 @@ def _categorical(graph, y, ties):
         )
     # either there are ties and random|tryself specified or
     # there are no ties
-    gb = df.groupby(by=["focal"])
+    gb = df.groupby(by=["focal"], sort=False)
     if ties == "random" or ties == "raise":
-        return gb.apply(_get_categorical_lag).reindex(graph.unique_ids).values
+        return gb.apply(_get_categorical_lag).values
     elif ties == "tryself" or ties == "raise":
-        return (
-            gb.apply(_get_categorical_lag, ties="tryself")
-            .reindex(graph.unique_ids)
-            .values
-        )
+        return gb.apply(_get_categorical_lag, ties="tryself").values
     else:
         raise ValueError(
             f"Received option ties='{ties}', but only options "
