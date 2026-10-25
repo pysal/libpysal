@@ -12,7 +12,6 @@ For completeness, we need to test a shuffled dataframe
 import geodatasets
 import geopandas
 import numpy
-import pandas
 import pytest
 import shapely
 
