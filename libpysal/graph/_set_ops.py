@@ -109,7 +109,7 @@ class SetOpsMixin:
         """
         from .base import Graph
 
-        if not (self.unique_ids == right.unique_ids).all():
+        if not self.unique_ids.symmetric_difference(right.unique_ids).empty:
             raise ValueError(
                 "Cannot do union of Graphs that are "
                 "based on different sets of unique IDs."
