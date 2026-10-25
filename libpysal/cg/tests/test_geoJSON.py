@@ -12,7 +12,7 @@ class TesttestMultiPloygon:
 
         """
 
-        shp = FileIO(pysal_examples.get_path("NAT.shp"), "r")
+        shp = FileIO(pysal_examples.get_path("natregimes.shp"), "r")
         multipolygons = [p for p in shp if len(p.parts) > 1]
         for poly in multipolygons:
             json = poly.__geo_interface__

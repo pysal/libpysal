@@ -1035,25 +1035,7 @@ class Graph(SetOpsMixin):
                 decay=decay,
             )
 
-        adjacency = pd.DataFrame.from_dict(
-            {"focal": head, "neighbor": tail, "weight": weight}
-        ).set_index("focal")
-
-        # drop diagonal
-        counts = adjacency.index.value_counts()
-        no_isolates = counts[counts > 1]
-        adjacency = adjacency[
-            ~(
-                adjacency.index.isin(no_isolates.index)
-                & (adjacency.index == adjacency.neighbor)
-            )
-        ]
-        # set isolates to 0 - distance band should never contain self-weight
-        adjacency.loc[~adjacency.index.isin(no_isolates.index), "weight"] = 0
-
-        return cls.from_arrays(
-            adjacency.index.values, adjacency.neighbor.values, adjacency.weight.values
-        )
+        return cls.from_arrays(head, tail, weight)
 
     @classmethod
     def build_fuzzy_contiguity(
@@ -3048,7 +3030,9 @@ class Graph(SetOpsMixin):
 
         Weight values do not affect the calculations, only adjacency does.
 
-        Returns numpy.nan for all isolates.
+        Returns numpy.nan for all isolates. If quantile filtering removes all
+        values from a neighborhood, its count, sum, and nunique are zero and
+        its other statistics are numpy.nan.
 
         The numba package is used extensively in this function
         to accelerate the computation of statistics.
@@ -3092,6 +3076,9 @@ class Graph(SetOpsMixin):
             grouper = _percentile_filtration_grouper(y, self._adjacency.index, q=q)
 
         stat_ = _compute_stats(grouper, statistics)
+        empty = ~np.isin(np.arange(self.n), stat_.index)
+        stat_ = stat_.reindex(np.arange(self.n))
+        stat_.loc[empty, stat_.columns.intersection(["count", "sum", "nunique"])] = 0
 
         stat_.index = self.unique_ids
         if isinstance(stat_, pd.Series):

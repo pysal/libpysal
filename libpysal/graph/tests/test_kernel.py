@@ -15,6 +15,7 @@ import geopandas
 import numpy as np
 import pandas as pd
 import pytest
+from scipy import sparse, spatial
 from shapely import Point
 
 from libpysal.graph import Graph
@@ -716,3 +717,29 @@ def test_gaussian_taper_sparse_path_matches_dense():
     np.testing.assert_array_almost_equal(
         np.sort(sparse_weights), np.sort(dense_weights)
     )
+
+
+def test_precomputed_coincident():
+    # three coincident points at the origin, plus four outlying points
+    coords = np.array(
+        [[0, 0], [0, 0], [0, 0], [1, 0.1], [0.35, 1.1], [-1, 0.45], [0.1, -1.05]]
+    )
+    tree = spatial.KDTree(coords)
+    sp = sparse.csr_array(tree.sparse_distance_matrix(tree, 10))
+    head, _, _ = _kernel(
+        sp,
+        bandwidth=5,
+        metric="precomputed",
+        kernel="exponential",
+        exclude_self_weights=True,
+    )
+    np.testing.assert_array_equal(head, np.repeat(np.arange(7), 6))
+
+    head, _, _ = _kernel(
+        sp,
+        bandwidth=5,
+        metric="precomputed",
+        kernel="exponential",
+        exclude_self_weights=False,
+    )
+    np.testing.assert_array_equal(head, np.repeat(np.arange(7), 7))
