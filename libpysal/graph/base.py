@@ -729,7 +729,7 @@ class Graph(SetOpsMixin):
         """
         ids = _evaluate_index(regimes)
 
-        return cls.from_dicts(_block_contiguity(regimes, ids=ids))
+        return cls.from_sparse(_block_contiguity(regimes), ids=ids)
 
     @classmethod
     def build_contiguity(cls, geometry, rook=True, by_perimeter=False, strict=False):
