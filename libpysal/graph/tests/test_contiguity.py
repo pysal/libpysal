@@ -256,28 +256,21 @@ def test_correctness_vertex_set_contiguity_distinct():
 )
 def test_block_contiguity(regimes):
     neighbors = _block_contiguity(regimes)
-    wn = {
-        0: [1],
-        1: [0],
-        2: [3],
-        3: [2],
-        4: [5, 8],
-        5: [4, 8],
-        6: [7],
-        7: [6],
-        8: [4, 5],
-        9: [],
-    }
-    assert {f: n.tolist() for f, n in neighbors.items()} == wn
-
-    ids = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
-    neighbors = _block_contiguity(regimes, ids=ids)
-    wn_str = {ids[f]: [ids[o] for o in n] for f, n in wn.items()}
-    assert {f: n.tolist() for f, n in neighbors.items()} == wn_str
-
-    regimes = pandas.Series(regimes, index=ids)
-    neighbors = _block_contiguity(regimes)
-    assert {f: n.tolist() for f, n in neighbors.items()} == wn_str
+    expected = numpy.array(
+        [
+            [False, True, False, False, False, False, False, False, False, False],
+            [True, False, False, False, False, False, False, False, False, False],
+            [False, False, False, True, False, False, False, False, False, False],
+            [False, False, True, False, False, False, False, False, False, False],
+            [False, False, False, False, False, True, False, False, True, False],
+            [False, False, False, False, True, False, False, False, True, False],
+            [False, False, False, False, False, False, False, True, False, False],
+            [False, False, False, False, False, False, True, False, False, False],
+            [False, False, False, False, True, True, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False],
+        ]
+    )
+    numpy.testing.assert_array_equal(neighbors.todense(), expected)
 
 
 @pytest.mark.network

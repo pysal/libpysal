@@ -4,6 +4,7 @@ import geopandas
 import numpy
 import pandas
 import shapely
+from scipy import sparse
 
 from ._utils import _neighbor_dict_to_edges, _resolve_islands, _validate_geometry_input
 
@@ -206,7 +207,7 @@ def _perimeter_weights(geoms, heads, tails):
     return shapely.length(intersection)
 
 
-def _block_contiguity(regimes, ids=None):
+def _block_contiguity(regimes):
     """Construct spatial weights for regime neighbors.
 
     Block contiguity structures are relevant when defining neighbor relations
@@ -218,23 +219,19 @@ def _block_contiguity(regimes, ids=None):
     ----------
     regimes : list-like
         list-like of regimes. If pandas.Series, its index is used to encode Graph
-    ids : list-like, optional
-        ordered sequence of IDs for the observations to be used as an index, by default
-        None. If ``regimes`` is not a pandas.Series and ids=None, range index is used.
 
     Returns
     -------
     dict
         dictionary of neighbors
     """
-    regimes = pandas.Series(regimes, index=ids)
-    rids = regimes.unique()
-    neighbors = {}
-    for rid in rids:
-        members = regimes.index[regimes == rid].values
-        for member in members:
-            neighbors[member] = members[members != member]
-    return neighbors
+    regimes = pandas.Series(regimes)
+    dummies = sparse.csr_array(pandas.get_dummies(regimes, sparse=True).sparse.to_coo())
+    sp = dummies.dot(dummies.T)
+    sp.setdiag(0)
+    sp.eliminate_zeros()
+
+    return sp
 
 
 def _fuzzy_contiguity(

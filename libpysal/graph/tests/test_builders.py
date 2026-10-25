@@ -120,12 +120,15 @@ class TestContiguity:
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
 
         regimes = pd.Series(
-            regimes, index=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
+            regimes, index=["f", "g", "h", "i", "j", "a", "b", "c", "d", "e", ]
         )
         g = graph.Graph.build_block_contiguity(regimes)
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["focal"])
         assert pd.api.types.is_string_dtype(g._adjacency.index.dtypes["neighbor"])
         assert pd.api.types.is_numeric_dtype(g._adjacency.dtype)
+
+        pd.testing.assert_index_equal(regimes.index, g.unique_ids)
+
 
     def test_fuzzy_contiguity_intids(self):
         g = graph.Graph.build_fuzzy_contiguity(self.gdf)
