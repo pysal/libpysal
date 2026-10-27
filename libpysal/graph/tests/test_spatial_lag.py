@@ -1,7 +1,11 @@
+from collections import Counter
+
+import geopandas as gpd
 import numpy as np
+import pandas as pd
 import pytest
 
-from libpysal import graph
+from libpysal import examples, graph
 from libpysal.graph._spatial_lag import _lag_spatial
 from libpysal.weights import lat2W
 
@@ -95,3 +99,78 @@ class TestLag:
         # test equality to 1d
         for i in range(2):
             np.testing.assert_array_equal(self.gc.lag(ys[:, i]), lag[:, i])
+
+
+@pytest.mark.parametrize("ids", [["z", "a", "m"], [20, 3, 10]])
+@pytest.mark.parametrize("as_series", [False, True])
+def test_categorical_lag_node_order(ids, as_series):
+    g = graph.Graph.from_dicts({ids[0]: [ids[1]], ids[1]: [ids[2]], ids[2]: [ids[0]]})
+    values = np.array(["red", "blue", "green"])
+    if as_series:
+        values = pd.Series(values, index=ids)
+    np.testing.assert_array_equal(g.lag(values), ["blue", "green", "red"])
+
+
+def test_categorical_lag_tryself_node_order():
+    g = graph.Graph.from_dicts(
+        {"z": ["a", "m"], "a": ["z", "b"], "m": ["b", "z"], "b": ["m", "a"]}
+    )
+    values = pd.Series(["red", "red", "blue", "blue"], index=g.unique_ids)
+    # Every node has a tie, and its own label always resolves it.
+    np.testing.assert_array_equal(g.lag(values, ties="tryself"), values)
+
+
+@pytest.fixture(
+    scope="module",
+    params=[
+        ("us48.shp", "STATE_NAME", "SUB_REGION"),
+        ("columbus.shp", "NEIGNO", "NSA"),
+    ],
+    ids=["us48", "columbus"],
+)
+def geographic_categories(request):
+    filename, id_column, category = request.param
+    frame = gpd.read_file(examples.get_path(filename)).set_index(id_column)
+    return frame, category
+
+
+@pytest.mark.parametrize("order", ["original", "sorted", "reversed"])
+@pytest.mark.parametrize("kind", ["queen", "knn1", "knn5"])
+@pytest.mark.parametrize("ties", ["raise", "random", "tryself"])
+def test_categorical_lag_geographic(geographic_categories, order, kind, ties):
+    frame, category = geographic_categories
+    if order == "sorted":
+        frame = frame.sort_index()
+    elif order == "reversed":
+        frame = frame.iloc[::-1]
+    if kind == "queen":
+        g = graph.Graph.build_contiguity(frame, rook=False)
+    else:
+        g = graph.Graph.build_knn(frame.geometry.centroid, k=int(kind[-1]))
+    np.testing.assert_array_equal(g.unique_ids, frame.index)
+    values = frame[category].astype(str)
+
+    # Count labels per node independently of the grouped categorical reduction.
+    modes = {}
+    for node in g.unique_ids:
+        neighbors = g.neighbors[node] or (node,)
+        counts = Counter(values.loc[list(neighbors)])
+        modes[node] = {
+            label for label, count in counts.items() if count == max(counts.values())
+        }
+    n_ties = sum(len(labels) > 1 for labels in modes.values())
+    if ties == "raise" and n_ties:
+        with pytest.raises(ValueError, match=f"There are {n_ties} ties"):
+            g.lag(values, ties=ties)
+        return
+
+    result = g.lag(values, ties=ties)
+    assert result.shape == (len(values),)
+    for node, label in zip(g.unique_ids, result, strict=True):
+        assert label in modes[node]
+        if (
+            ties == "tryself"
+            and node not in g.neighbors[node]
+            and values.loc[node] in modes[node]
+        ):
+            assert label == values.loc[node]
