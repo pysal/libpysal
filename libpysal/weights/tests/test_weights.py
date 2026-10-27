@@ -408,6 +408,37 @@ class TestW:
         f, ax = self.w.plot(df)
         assert len(ax.collections) == 1
 
+    @pytest.mark.parametrize("ids", [[0, 1, 2, 3], ["a", "b", "c", "island"]])
+    @pytest.mark.parametrize("indexed_on", [None, "node_id"])
+    @pytest.mark.parametrize("symmetric", [False, True])
+    def test_plot_unique_edges(self, ids, indexed_on, symmetric):
+        plt = pytest.importorskip("matplotlib.pyplot")
+        neighbors = {ids[0]: [ids[0], ids[1]], ids[1]: [ids[2]], ids[2]: [], ids[3]: []}
+        if symmetric:
+            neighbors[ids[1]].append(ids[0])
+            neighbors[ids[2]].append(ids[1])
+        w = W(neighbors, silence_warnings=True)
+        gdf = geopandas.GeoDataFrame(
+            {"node_id": ids},
+            geometry=[*geopandas.points_from_xy([0, 1, 2], [0, 0, 0]), None],
+            index=ids if indexed_on is None else [10, 20, 30, 40],
+        )
+        f, ax = w.plot(gdf, indexed_on=indexed_on, edge_kws={"alpha": 0.5})
+        try:
+            assert len(ax.lines) == 3
+            segments = {
+                frozenset(zip(line.get_xdata(), line.get_ydata(), strict=True))
+                for line in ax.lines
+            }
+            assert segments == {
+                frozenset({(0, 0)}),
+                frozenset({(0, 0), (1, 0)}),
+                frozenset({(1, 0), (2, 0)}),
+            }
+            assert all(line.get_alpha() == 0.5 for line in ax.lines)
+        finally:
+            plt.close(f)
+
     def test_to_sparse(self):
         sparse = self.w_islands.to_sparse()
         np.testing.assert_array_equal(sparse.data, [1, 1, 1, 1, 0])
