@@ -4,6 +4,9 @@ on:
     branches: [main]
   schedule:
     - cron: "0 0 * * 1,4"
+  pull_request:
+    branches:
+      - "*"
   workflow_dispatch:
     inputs:
       version:
