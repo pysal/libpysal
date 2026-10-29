@@ -230,7 +230,6 @@ class GraphSummary:
         self.trace_gtg_gg = self.diag_gtg_gg.sum()
 
     def __repr__(self):
-        n_asymmetries = f"{self.n_asymmetries:>12.0f}" if self.asymmetries else "NA"
         return f"""Graph Summary Statistics
 {"=" * 24}
 Graph indexed by:
@@ -242,7 +241,7 @@ Graph indexed by:
 {"Number of isolates:":<50}{self.n_isolates:12.0f}
 {"Number of non-zero edges:":<50}{self.nonzero:>12.0f}
 {"Percentage of non-zero edges:":<50}{self.pct_nonzero:>11.2f}%
-{"Number of asymmetries:":<50}{n_asymmetries}
+{"Number of asymmetries:":<50}{self.n_asymmetries:>12.0f}
 {"-" * 62}
 Cardinalities
 {"=" * 62}
@@ -272,7 +271,6 @@ Traces
 """  # noqa: E501
 
     def _repr_html_(self):
-        n_asymmetries = f"{self.n_asymmetries:12.0f}" if self.asymmetries else "NA"
         return f"""
             <table>
                 <caption>Graph Summary Statistics</caption>
@@ -302,7 +300,7 @@ Traces
                 </tr>
                 <tr>
                     <td>Number of asymmetries:</td>
-                    <td>{n_asymmetries}</td>
+                    <td>{self.n_asymmetries:12.0f}</td>
                 </tr>
             </table>
             <table>
