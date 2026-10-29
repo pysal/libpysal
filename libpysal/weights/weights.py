@@ -1435,6 +1435,7 @@ class W:
         else:
             edge_kws = {"color": color}
 
+        seen = set()
         for idx, neighbors in self.neighbors.items():
             if idx in self.islands:
                 continue
@@ -1446,15 +1447,14 @@ class W:
             centroids = gdf.loc[neighbors].centroid
             centroids = np.stack([centroids.x, centroids.y], axis=1)
             focal = np.hstack(gdf.loc[idx].geometry.centroid.xy)
-            seen = set()
             for nidx, neighbor in zip(neighbors, centroids, strict=True):
                 if (idx, nidx) in seen:
                     continue
                 ax.plot(
                     *list(zip(focal, neighbor, strict=True)), marker=None, **edge_kws
                 )
-                seen.update((idx, nidx))
-                seen.update((nidx, idx))
+                seen.add((idx, nidx))
+                seen.add((nidx, idx))
         centroids = gdf.centroid
         ax.scatter(centroids.x, centroids.y, **node_kws)
         return f, ax
