@@ -162,4 +162,4 @@ class TestSphere:
 
         pts = [shape.centroid for shape in self.shapes]
         pts = list(map(sphere.toXYZ, pts))
-        assert sphere.brute_knn(pts, 4, "xyz") == pytest.approx(w2)
+        assert sphere.brute_knn(pts, 4, "xyz") == w2
