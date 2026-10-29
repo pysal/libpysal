@@ -35,6 +35,8 @@ jobs:
             mesa-geo
             spvcm
             neatnet
+            gwlearn
+            spatialml
           include: >-
             mapclassify
           install: >-
@@ -53,10 +55,10 @@ jobs:
             fast_hdbscan
             numba
           installation_command: >-
-              git config --global --add safe.directory /github/workspace;
-              pip install pulp -U --force-reinstall;
-              pip install -e .;
-              python -c 'import libpysal; libpysal.examples.fetch_all()';
+            git config --global --add safe.directory /github/workspace;
+            pip install pulp<4 --force-reinstall;
+            pip install -e .;
+            python -c 'import libpysal; libpysal.examples.fetch_all()';
           fail_on_failure: true
           xfail: >-
             mgwr
