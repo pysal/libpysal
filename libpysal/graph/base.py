@@ -2617,9 +2617,7 @@ class Graph(SetOpsMixin):
         """Convert Graph to a ``networkx`` graph.
 
         If Graph is symmetric, returns ``nx.Graph``, otherwise returns a ``nx.DiGraph``.
-        Nodes follow the order of :attr:`unique_ids`. Isolates become nodes without
-        edges rather than the zero-weight self-loops used to encode them in the
-        adjacency.
+        Nodes follow the order of :attr:`unique_ids`.
 
         Returns
         -------
