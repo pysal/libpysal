@@ -2175,37 +2175,20 @@ class Graph(SetOpsMixin):
                 dtype=self._adjacency.index.dtypes["focal"],
             )
         else:
-            i2id = dict(
-                zip(np.arange(self.unique_ids.shape[0]), self.unique_ids, strict=True)
-            )
-            focal, neighbor = np.nonzero(wd)
-            dtype = (
-                self._adjacency.index.dtypes["focal"]
-                if self._adjacency.index.dtypes["focal"] != "str"
-                else "object"
-            )
-            focal = focal.astype(dtype)
-            neighbor = neighbor.astype(dtype)
-            for i in i2id:
-                focal[focal == i] = i2id[i]
-                neighbor[neighbor == i] = i2id[i]
+            focal, neighbor = ids
             ijs = pd.Series(
-                neighbor, index=pd.Index(focal, name="focal"), name="neighbor"
+                self.unique_ids.take(neighbor),
+                index=pd.Index(self.unique_ids.take(focal), name="focal"),
+                name="neighbor",
             ).sort_index()
             return ijs
 
-    def summary(self, asymmetries=False):
+    def summary(self, asymmetries=None):
         """Summary of the Graph properties
 
         Returns a :class:`GraphSummary` object with the statistical attributes
         summarising the Graph and its basic properties. See the docstring of the
         :class:`GraphSummary` for details and all the available attributes.
-
-        Parameters
-        ----------
-        asymmetries : bool
-            whether to compute ``n_asymmetries``, which is considerably more expensive
-            than the other attributes. By default False.
 
         Returns
         -------

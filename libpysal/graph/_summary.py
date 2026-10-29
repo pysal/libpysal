@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 
 
@@ -162,16 +164,21 @@ class GraphSummary:
     20
     """
 
-    def __init__(self, graph, asymmetries=False):
+    def __init__(self, graph, asymmetries=None):
         """Create GraphSummary
 
         Parameters
         ----------
         graph : Graph
-        asymmetries : bool
-            whether to compute ``n_asymmetries``, which is considerably more expensive
-            than the other attributes. By default False.
         """
+        if asymmetries is not None:
+            warnings.warn(
+                "`asymmetries` keyword is deprecated and will be removed. "
+                "Number of asymmetries is now computed by default.",
+                FutureWarning,
+                stacklevel=3,
+            )
+
         self._graph = graph
         self.asymmetries = asymmetries
 
@@ -185,8 +192,7 @@ class GraphSummary:
         self.pct_nonzero = self._graph.pct_nonzero
 
         # intrinsic assymetries
-        if asymmetries:
-            self.n_asymmetries = len(self._graph.asymmetry())
+        self.n_asymmetries = len(self._graph.asymmetry())
 
         # statistics of cardinalities
         card_stats = self._graph.cardinalities.describe()
