@@ -665,6 +665,54 @@ class TestBase:
         ):
             graph.Graph.from_networkx(nxg, weight="nonexistent_weight")
 
+    def test_to_networkx_isolates(self):
+        nx = pytest.importorskip("networkx")
+
+        # symmetric graph with the isolate "d"
+        g = graph.Graph.from_dicts({"c": ["a"], "a": ["c", "b"], "b": ["a"], "d": []})
+        nxg = g.to_networkx()
+        assert not nxg.is_directed()
+        assert list(nxg.nodes) == ["c", "a", "b", "d"]
+        assert list(nx.isolates(nxg)) == ["d"]
+        assert nx.number_of_selfloops(nxg) == 0
+        assert nxg.number_of_edges() == 2
+
+        # asymmetric graph where "c" has no outgoing link but is a neighbor of "b"
+        g = graph.Graph.from_arrays(
+            ["a", "b", "c", "d"], ["b", "c", "c", "d"], [0.5, 2.0, 0, 0]
+        )
+        nxg = g.to_networkx()
+        assert isinstance(nxg, nx.DiGraph)
+        assert list(nxg.nodes) == ["a", "b", "c", "d"]
+        assert list(nxg.edges(data="weight")) == [("a", "b", 0.5), ("b", "c", 2.0)]
+        assert list(nx.isolates(nxg)) == ["d"]
+        assert nxg.out_degree("c") == 0
+
+    def test_to_networkx_self_weights(self):
+        pytest.importorskip("networkx")
+
+        g = graph.Graph.from_dicts({"a": ["b"], "b": ["a"]}).assign_self_weight(0.5)
+        nxg = g.to_networkx()
+        assert sorted(nxg.edges(data="weight")) == [
+            ("a", "a", 0.5),
+            ("a", "b", 1),
+            ("b", "b", 0.5),
+        ]
+
+    def test_networkx_roundtrip(self):
+        pytest.importorskip("networkx")
+
+        # unsorted ids, weights and the isolate "d"; "b" is the first neighbor
+        # listed, but "a" comes before it in unique_ids
+        g = graph.Graph.from_arrays(
+            ["c", "a", "b", "b", "d"],
+            ["b", "b", "c", "a", "d"],
+            [1.5, 2.0, 1.5, 2.0, 0],
+        )
+        roundtrip = graph.Graph.from_networkx(g.to_networkx(), weight="weight")
+        assert roundtrip.equals(g)
+        pd.testing.assert_index_equal(roundtrip.unique_ids, g.unique_ids)
+
     @pytest.mark.parametrize("y", [3, 5])
     @pytest.mark.parametrize("id_type", ["int", "str"])
     @pytest.mark.parametrize("rook", [True, False])

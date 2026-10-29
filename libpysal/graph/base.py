@@ -2617,6 +2617,9 @@ class Graph(SetOpsMixin):
         """Convert Graph to a ``networkx`` graph.
 
         If Graph is symmetric, returns ``nx.Graph``, otherwise returns a ``nx.DiGraph``.
+        Nodes follow the order of :attr:`unique_ids`. Isolates become nodes without
+        edges rather than the zero-weight self-loops used to encode them in the
+        adjacency.
 
         Returns
         -------
@@ -2646,15 +2649,22 @@ class Graph(SetOpsMixin):
         except ImportError:
             raise ImportError("NetworkX is required.") from None
 
-        graph_type = nx.Graph if self.asymmetry().empty else nx.DiGraph
+        nx_graph = nx.Graph() if self.asymmetry().empty else nx.DiGraph()
 
-        return nx.from_pandas_edgelist(
-            self._adjacency.reset_index(),
-            source="focal",
-            target="neighbor",
-            edge_attr="weight",
-            create_using=graph_type,
+        # adding nodes before edges keeps the order of unique_ids and keeps isolates
+        nx_graph.add_nodes_from(self.unique_ids)
+
+        # the self-loop of an isolate is a placeholder, not a link to itself
+        adjacency = self._adjacency.drop(self.isolates)
+        nx_graph.add_weighted_edges_from(
+            zip(
+                adjacency.index.get_level_values("focal").tolist(),
+                adjacency.index.get_level_values("neighbor").tolist(),
+                adjacency.tolist(),
+                strict=True,
+            )
         )
+        return nx_graph
 
     def plot(
         self,
