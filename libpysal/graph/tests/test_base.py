@@ -670,7 +670,12 @@ class TestBase:
 
         # symmetric graph with the isolate "d"
         g = graph.Graph.from_dicts({"c": ["a"], "a": ["c", "b"], "b": ["a"], "d": []})
+        adjacency = g._adjacency.copy()
         nxg = g.to_networkx()
+        # the Graph itself keeps the zero-weight self-loop encoding the isolate
+        pd.testing.assert_series_equal(g._adjacency, adjacency)
+        assert g._adjacency[("d", "d")] == 0
+        assert list(g.isolates) == ["d"]
         assert not nxg.is_directed()
         assert list(nxg.nodes) == ["c", "a", "b", "d"]
         assert list(nx.isolates(nxg)) == ["d"]
