@@ -11,8 +11,7 @@ class TestSummary:
     def setup_method(self):
         self.nybb = geopandas.read_file(geodatasets.get_path("nybb"))
         self.G = graph.Graph.build_contiguity(self.nybb)
-        self.summary = self.G.summary(True)
-        self.no_asymmetries = self.G.summary()
+        self.summary = self.G.summary()
 
     def test_exactness(self):
         assert self.summary.n_nodes == 5
@@ -201,7 +200,6 @@ G'G + GG:                                                   20
 
         assert self.summary._repr_html_() == expected
 
-    def test_no_asymmetries(self):
-        assert not hasattr(self.no_asymmetries, "n_asymmetries")
-        _ = self.no_asymmetries.__repr__()
-        _ = self.no_asymmetries._repr_html_()
+    def test_asymmetries_warning(self):
+        with pytest.warns(FutureWarning, match="`asymmetries` keyword is deprecated"):
+            self.G.summary(asymmetries=True)

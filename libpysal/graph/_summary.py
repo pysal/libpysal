@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 
 
@@ -162,16 +164,21 @@ class GraphSummary:
     20
     """
 
-    def __init__(self, graph, asymmetries=False):
+    def __init__(self, graph, asymmetries=None):
         """Create GraphSummary
 
         Parameters
         ----------
         graph : Graph
-        asymmetries : bool
-            whether to compute ``n_asymmetries``, which is considerably more expensive
-            than the other attributes. By default False.
         """
+        if asymmetries is not None:
+            warnings.warn(
+                "`asymmetries` keyword is deprecated and will be removed. "
+                "Number of asymmetries is now computed by default.",
+                FutureWarning,
+                stacklevel=3,
+            )
+
         self._graph = graph
         self.asymmetries = asymmetries
 
@@ -185,8 +192,7 @@ class GraphSummary:
         self.pct_nonzero = self._graph.pct_nonzero
 
         # intrinsic assymetries
-        if asymmetries:
-            self.n_asymmetries = len(self._graph.asymmetry())
+        self.n_asymmetries = len(self._graph.asymmetry())
 
         # statistics of cardinalities
         card_stats = self._graph.cardinalities.describe()
@@ -224,7 +230,6 @@ class GraphSummary:
         self.trace_gtg_gg = self.diag_gtg_gg.sum()
 
     def __repr__(self):
-        n_asymmetries = f"{self.n_asymmetries:>12.0f}" if self.asymmetries else "NA"
         return f"""Graph Summary Statistics
 {"=" * 24}
 Graph indexed by:
@@ -236,7 +241,7 @@ Graph indexed by:
 {"Number of isolates:":<50}{self.n_isolates:12.0f}
 {"Number of non-zero edges:":<50}{self.nonzero:>12.0f}
 {"Percentage of non-zero edges:":<50}{self.pct_nonzero:>11.2f}%
-{"Number of asymmetries:":<50}{n_asymmetries}
+{"Number of asymmetries:":<50}{self.n_asymmetries:>12.0f}
 {"-" * 62}
 Cardinalities
 {"=" * 62}
@@ -266,7 +271,6 @@ Traces
 """  # noqa: E501
 
     def _repr_html_(self):
-        n_asymmetries = f"{self.n_asymmetries:12.0f}" if self.asymmetries else "NA"
         return f"""
             <table>
                 <caption>Graph Summary Statistics</caption>
@@ -296,7 +300,7 @@ Traces
                 </tr>
                 <tr>
                     <td>Number of asymmetries:</td>
-                    <td>{n_asymmetries}</td>
+                    <td>{self.n_asymmetries:12.0f}</td>
                 </tr>
             </table>
             <table>
