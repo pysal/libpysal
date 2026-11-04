@@ -240,29 +240,29 @@ Graph indexed by:
 {"-" * 62}
 Cardinalities
 {"=" * 62}
-{"Mean:":<20}{self.cardinalities_mean:>9.0f}    {"25%:":<20}{self.cardinalities_25:>9.0f}
-{"Standard deviation:":<20}{self.cardinalities_std:>9.0f}    {"50%:":<20}{self.cardinalities_50:>9.0f}
+{"Mean:":<20}{self.cardinalities_mean:>9.2f}    {"25%:":<20}{self.cardinalities_25:>9.0f}
+{"Standard deviation:":<20}{self.cardinalities_std:>9.2f}    {"50%:":<20}{self.cardinalities_50:>9.0f}
 {"Min:":<20}{self.cardinalities_min:>9.0f}    {"75%:":<20}{self.cardinalities_75:>9.0f}
 {"Max:":<20}{self.cardinalities_max:>9.0f}
 {"-" * 62}
 Weights
 {"=" * 62}
-{"Mean:":<20}{self.weights_mean:>9.0f}    {"25%:":<20}{self.weights_25:>9.0f}
-{"Standard deviation:":<20}{self.weights_std:>9.0f}    {"50%:":<20}{self.weights_50:>9.0f}
-{"Min:":<20}{self.weights_min:>9.0f}    {"75%:":<20}{self.weights_75:>9.0f}
-{"Max:":<20}{self.weights_max:>9.0f}
+{"Mean:":<20}{self.weights_mean:>9.3f}    {"25%:":<20}{self.weights_25:>9.3f}
+{"Standard deviation:":<20}{self.weights_std:>9.3f}    {"50%:":<20}{self.weights_50:>9.3f}
+{"Min:":<20}{self.weights_min:>9.3f}    {"75%:":<20}{self.weights_75:>9.3f}
+{"Max:":<20}{self.weights_max:>9.3f}
 {"-" * 62}
 Sum of weights
 {"=" * 62}
-{"S0:":<50}{self.s0:>12.0f}
-{"S1:":<50}{self.s1:>12.0f}
-{"S2:":<50}{self.s2:>12.0f}
+{"S0:":<50}{self.s0:>12.3f}
+{"S1:":<50}{self.s1:>12.3f}
+{"S2:":<50}{self.s2:>12.3f}
 {"-" * 62}
 Traces
 {"=" * 62}
-{"GG:":<50}{self.trace_g2:>12.0f}
-{"G'G:":<50}{self.trace_gtg:>12.0f}
-{"G'G + GG:":<50}{self.trace_gtg_gg:>12.0f}
+{"GG:":<50}{self.trace_g2:>12.3f}
+{"G'G:":<50}{self.trace_gtg:>12.3f}
+{"G'G + GG:":<50}{self.trace_gtg_gg:>12.3f}
 """  # noqa: E501
 
     def _repr_html_(self):
@@ -303,13 +303,13 @@ Traces
                 <caption>Cardinalities</caption>
                 <tr>
                     <td>Mean:</td>
-                    <td>{self.cardinalities_mean:9.0f}</td>
+                    <td>{self.cardinalities_mean:9.2f}</td>
                     <td>25%:</td>
                     <td>{self.cardinalities_25:9.0f}</td>
                 </tr>
                 <tr>
                     <td>Standard deviation:</td>
-                    <td>{self.cardinalities_std:9.0f}</td>
+                    <td>{self.cardinalities_std:9.2f}</td>
                     <td>50%</td>
                     <td>{self.cardinalities_50:9.0f}
                     <td>
@@ -329,45 +329,45 @@ Traces
                 <caption>Weights</caption>
                 <tr>
                     <td>Mean:</td>
-                    <td>{self.weights_mean:9.0f}</td>
+                    <td>{self.weights_mean:9.3f}</td>
                     <td>25%:</td>
-                    <td>{self.weights_25:9.0f}</td>
+                    <td>{self.weights_25:9.3f}</td>
                 </tr>
                 <tr>
                     <td>Standard deviation:</td>
-                    <td>{self.weights_std:9.0f}</td>
+                    <td>{self.weights_std:9.3f}</td>
                     <td>50%</td>
-                    <td>{self.weights_50:9.0f}
+                    <td>{self.weights_50:9.3f}
                 <tr>
                     <td>Min:</td>
-                    <td>{self.weights_min:9.0f}</td>
+                    <td>{self.weights_min:9.3f}</td>
                     <td>75%:</td>
-                    <td>{self.weights_75:9.0f}</td>
+                    <td>{self.weights_75:9.3f}</td>
                 </tr>
                 <tr>
                     <td>Max:</td>
-                    <td>{self.weights_max:9.0f}</td>
+                    <td>{self.weights_max:9.3f}</td>
                 </tr>
             </table>
             <table>
                 <caption>Sum of weights and Traces</caption>
                 <tr>
                     <td>S0:</td>
-                    <td>{self.s0:12.0f}</td>
+                    <td>{self.s0:12.3f}</td>
                     <td>GG:</td>
-                    <td>{self.trace_g2:12.0f}</td>
+                    <td>{self.trace_g2:12.3f}</td>
                 </tr>
                 <tr>
                     <td>S1:</td>
-                    <td>{self.s1:12.0f}</td>
+                    <td>{self.s1:12.3f}</td>
                     <td>G'G:</td>
-                    <td>{self.trace_gtg:12.0f}</td>
+                    <td>{self.trace_gtg:12.3f}</td>
                 </tr>
                 <tr>
                     <td>S3:</td>
-                    <td>{self.s2:12.0f}</td>
+                    <td>{self.s2:12.3f}</td>
                     <td>G'G + GG:</td>
-                    <td>{self.trace_gtg_gg:12.0f}</td>
+                    <td>{self.trace_gtg_gg:12.3f}</td>
                 </tr>
             </table>
             <div>
