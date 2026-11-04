@@ -23,6 +23,10 @@ __pycache__
 
 # virtual environment
 venv/
+.venv/
+
+# Editor settings
+.vscode/
 
 # Installer logs
 pip-log.txt
