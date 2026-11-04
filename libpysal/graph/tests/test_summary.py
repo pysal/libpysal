@@ -64,29 +64,29 @@ Number of asymmetries:                                       0
 --------------------------------------------------------------
 Cardinalities
 ==============================================================
-Mean:                       2    25%:                        2
-Standard deviation:         1    50%:                        2
+Mean:                    2.00    25%:                        2
+Standard deviation:      1.22    50%:                        2
 Min:                        0    75%:                        3
 Max:                        3
 --------------------------------------------------------------
 Weights
 ==============================================================
-Mean:                       1    25%:                        1
-Standard deviation:         0    50%:                        1
-Min:                        1    75%:                        1
-Max:                        1
+Mean:                   1.000    25%:                    1.000
+Standard deviation:     0.000    50%:                    1.000
+Min:                    1.000    75%:                    1.000
+Max:                    1.000
 --------------------------------------------------------------
 Sum of weights
 ==============================================================
-S0:                                                         10
-S1:                                                         20
-S2:                                                        104
+S0:                                                     10.000
+S1:                                                     20.000
+S2:                                                    104.000
 --------------------------------------------------------------
 Traces
 ==============================================================
-GG:                                                         10
-G'G:                                                        10
-G'G + GG:                                                   20
+GG:                                                     10.000
+G'G:                                                    10.000
+G'G + GG:                                               20.000
 """
         assert self.summary.__repr__() == expected
 
@@ -127,13 +127,13 @@ G'G + GG:                                                   20
                 <caption>Cardinalities</caption>
                 <tr>
                     <td>Mean:</td>
-                    <td>        2</td>
+                    <td>     2.00</td>
                     <td>25%:</td>
                     <td>        2</td>
                 </tr>
                 <tr>
                     <td>Standard deviation:</td>
-                    <td>        1</td>
+                    <td>     1.22</td>
                     <td>50%</td>
                     <td>        2
                     <td>
@@ -153,45 +153,45 @@ G'G + GG:                                                   20
                 <caption>Weights</caption>
                 <tr>
                     <td>Mean:</td>
-                    <td>        1</td>
+                    <td>    1.000</td>
                     <td>25%:</td>
-                    <td>        1</td>
+                    <td>    1.000</td>
                 </tr>
                 <tr>
                     <td>Standard deviation:</td>
-                    <td>        0</td>
+                    <td>    0.000</td>
                     <td>50%</td>
-                    <td>        1
+                    <td>    1.000
                 <tr>
                     <td>Min:</td>
-                    <td>        1</td>
+                    <td>    1.000</td>
                     <td>75%:</td>
-                    <td>        1</td>
+                    <td>    1.000</td>
                 </tr>
                 <tr>
                     <td>Max:</td>
-                    <td>        1</td>
+                    <td>    1.000</td>
                 </tr>
             </table>
             <table>
                 <caption>Sum of weights and Traces</caption>
                 <tr>
                     <td>S0:</td>
-                    <td>          10</td>
+                    <td>      10.000</td>
                     <td>GG:</td>
-                    <td>          10</td>
+                    <td>      10.000</td>
                 </tr>
                 <tr>
                     <td>S1:</td>
-                    <td>          20</td>
+                    <td>      20.000</td>
                     <td>G'G:</td>
-                    <td>          10</td>
+                    <td>      10.000</td>
                 </tr>
                 <tr>
                     <td>S3:</td>
-                    <td>         104</td>
+                    <td>     104.000</td>
                     <td>G'G + GG:</td>
-                    <td>          20</td>
+                    <td>      20.000</td>
                 </tr>
             </table>
             <div>
