@@ -362,7 +362,7 @@ def _voronoi(coordinates, coplanar, clip="bounding_box", rook=True):
         the index of the input. Do not use this argument directly unless you intend
         to set the indices separately from your input data. Otherwise, use
         data.set_index(ids) to ensure ordering is respected. If None, then the index
-    clip : str (default: 'bbox')
+    clip : str (default: 'bounding_box')
         An overloaded option about how to clip the voronoi cells passed to
         ``libpysal.cg.voronoi_frames()``.
         Default is ``'bounding_box'``. Options are as follows.

@@ -1556,7 +1556,7 @@ class Graph(SetOpsMixin):
         kernel : str, optional
             kernel function to use in order to weight the output graph. See
             :meth:`Graph.build_kernel` for details. By default "boxcar"
-        clip : str (default: 'bbox')
+        clip : str (default: 'bounding_box')
             Clipping method when ``method="voronoi"``. Ignored otherwise.
             Default is ``'bounding_box'``. Options are as follows.
 
