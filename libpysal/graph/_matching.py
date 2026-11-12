@@ -46,7 +46,7 @@ def _spatial_matching(
         is provided, the .geometry attribute is used. If a numpy.ndarray with
         a geometry dtype is used, then the coordinates are extracted and
         used. If none, matches are made within `x`.
-    n_matches : int (default: None)
+    n_matches : int (default: 5)
         number of matches
     metric : string or callable (default: 'euclidean')
         distance function to apply over the input coordinates. Supported options
