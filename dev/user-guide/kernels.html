@@ -918,52 +918,38 @@
 <h2 id="available-kernels">Available Kernels<a class="headerlink" href="#available-kernels" title="Link to this heading">¶</a></h2>
 <p>For a distance (d) and bandwidth (h), kernels are evaluated on the rescaled distance</p>
 <div class="math notranslate nohighlight">
-\[
-z = \frac{d}{h}, \quad K(z)
-\]</div>
+\[z = \frac{d}{h}, \quad K(z)\]</div>
 <p>The following kernel functions are implemented using one-dimensional definitions with <span class="math notranslate nohighlight">\(K(z)=0\)</span> outside the stated support:</p>
 <ul class="simple">
 <li><p><strong>Triangular</strong> (“triangle”)</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[
-  K(z) = 1 - |z|, \quad |z| \le 1.
-\]</div>
+\[  K(z) = 1 - |z|, \quad |z| \le 1.\]</div>
 <ul class="simple">
 <li><p><strong>Uniform</strong> (“boxcar”)</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[
-  K(z) = \frac{1}{2}, \quad |z| \le 1.
-\]</div>
+\[  K(z) = \frac{1}{2}, \quad |z| \le 1.\]</div>
 <ul class="simple">
 <li><p><strong>Quadratic</strong> (Epanechnikov / “parabolic”)</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[
-  K(z) = \frac{3}{4}(1 - z^2), \quad |z| \le 1.
-\]</div>
+\[  K(z) = \frac{3}{4}(1 - z^2), \quad |z| \le 1.\]</div>
 <ul class="simple">
 <li><p><strong>Quartic</strong> (biweight / “bisquare”)</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[
-  K(z) = \frac{15}{16}(1 - z^2)^2, \quad |z| \le 1.
-\]</div>
+\[  K(z) = \frac{15}{16}(1 - z^2)^2, \quad |z| \le 1.\]</div>
 <ul class="simple">
 <li><p><strong>Tricube</strong> (“tricube”)</p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[
-  K(z) = \frac{70}{81}(1 - |z|^3)^3, \quad |z| \le 1.
-\]</div>
+\[  K(z) = \frac{70}{81}(1 - |z|^3)^3, \quad |z| \le 1.\]</div>
 <ul class="simple">
 <li><p><strong>Gaussian</strong></p></li>
 </ul>
 <div class="math notranslate nohighlight">
-\[
-  K(z) = (2\pi)^{-1/2} \exp\left(-\frac{z^2}{2}\right), \quad z \in \mathbb{R}.
-\]</div>
+\[  K(z) = (2\pi)^{-1/2} \exp\left(-\frac{z^2}{2}\right), \quad z \in \mathbb{R}.\]</div>
 <p>The helpers in <code class="docutils literal notranslate"><span class="pre">kernels.py</span></code> adopt the same functional forms, but add optional arguments such as
 <code class="docutils literal notranslate"><span class="pre">decay</span></code> and <code class="docutils literal notranslate"><span class="pre">taper</span></code> to control how quickly weights decline with distance and whether the kernel is
 truncated at the bandwidth.</p>
@@ -1033,8 +1019,8 @@ truncated at the bandwidth.</p>
 <h3 id="bandwidth">Bandwidth<a class="headerlink" href="#bandwidth" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code> parameter controls the spatial scale of the kernel. In the notation used earlier, the
 kernel is evaluated on the rescaled distance</p>
-<div class="amsmath math notranslate nohighlight" id="equation-3ba97505-9114-4b48-aa1a-90fa02731d1d">
-<span class="eqno">(1)<a class="headerlink" href="#equation-3ba97505-9114-4b48-aa1a-90fa02731d1d" title="Permalink to this equation">¶</a></span>\[\begin{equation}
+<div class="amsmath math notranslate nohighlight" id="equation-17355ea1-cf28-4416-9a33-1933bc313b03">
+<span class="eqno">(1)<a class="headerlink" href="#equation-17355ea1-cf28-4416-9a33-1933bc313b03" title="Permalink to this equation">¶</a></span>\[\begin{equation}
 z = \frac{d}{h},
 \end{equation}\]</div>
 <p>where <code class="docutils literal notranslate"><span class="pre">h</span></code> is the bandwidth. Smaller bandwidths produce more localized weights (steeper decay), while
