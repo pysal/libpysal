@@ -90,7 +90,7 @@ html_theme_options = {
     },
     "site_url": "https://pysal.org/libpysal",
     "repo_url": "https://github.com/pysal/libpysal/",
-    "edit_uri": "blob/main/docs",
+    "edit_uri": "blob/main/docs/source",
     "repo_name": "pysal/libpysal",
     "features": [
         # "navigation.expand",
