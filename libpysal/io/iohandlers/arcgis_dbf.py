@@ -1,7 +1,5 @@
 # ruff: noqa: N802, N803, N806, N815
 
-from ...weights.util import remap_ids
-from ...weights.weights import W
 from .. import fileio
 
 __author__ = "Myunghwa Hwang <mhwang4@gmail.com>"
@@ -158,6 +156,8 @@ class ArcGISDbfIO(fileio.FileIO):
             neighbors[i].append(j)
             self.pos = self.file.pos
 
+        from ...weights.weights import W
+
         w = W(neighbors, weights)
 
         return w
@@ -225,6 +225,9 @@ class ArcGISDbfIO(fileio.FileIO):
         """
 
         self._complain_ifclosed(self.closed)
+
+        from ...weights.util import remap_ids
+        from ...weights.weights import W
 
         if issubclass(type(obj), W):
             self.file.header = [self.varName, "NID", "WEIGHT"]
