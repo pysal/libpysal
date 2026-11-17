@@ -122,6 +122,7 @@ new Graph class from W should see the
 | [`from_arrays`](#libpysal.graph.Graph.from_arrays)                         | builtins.method |
 | [`from_dense`](#libpysal.graph.Graph.from_dense)                           | builtins.method |
 | [`from_dicts`](#libpysal.graph.Graph.from_dicts)                           | builtins.method |
+| [`from_lattice`](#libpysal.graph.Graph.from_lattice)                       | builtins.method |
 | [`from_weights_dict`](#libpysal.graph.Graph.from_weights_dict)             | builtins.method |
 | [`generate_da`](#libpysal.graph.Graph.generate_da)                         | builtins.method |
 | [`higher_order`](#libpysal.graph.Graph.higher_order)                       | builtins.method |
