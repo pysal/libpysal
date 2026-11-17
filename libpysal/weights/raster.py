@@ -176,7 +176,7 @@ def nodata_from_attrs(attrs):
     candidates = ["_FillValue", "missing_value", "fill_value", "nodata", "nodatavals"]
     for i in candidates:
         if i in attrs:
-            if isinstance(i, tuple):
+            if isinstance(attrs[i], tuple):
                 return attrs[i][0]
             else:
                 return attrs[i]
@@ -353,11 +353,30 @@ def _da2wsp(
     ser = da.to_series()
     dtype = np.int32 if (shape[0] * shape[1]) < 46340**2 else np.int64
     nodata = get_nodata(da)
-    if nodata is not None:
-        mask = (ser != nodata).to_numpy()
+
+    values = ser.to_numpy()
+    mask = None
+
+    # Handle NaN masking for float rasters (explicit or implicit nodata)
+    # We check if nodata is None (implicit) or a nan (explicit)
+    # This handles both python float('nan') and numpy scalar np.nan
+    is_nan_nodata = False
+    if nodata is None or (
+        isinstance(nodata, (float, np.floating)) and np.isnan(nodata)
+    ):
+        is_nan_nodata = True
+
+    if np.issubdtype(values.dtype, np.floating) and is_nan_nodata:
+        # We cannot use `values != nodata` when nodata is np.nan because
+        # np.nan != np.nan is True, which fails to mask the nodata values.
+        mask = ~np.isnan(values)
+    else:
+        mask = values != nodata
+
+    if mask is not None:
         ids = np.where(mask)[0]
         id_map = _idmap(ids, mask, dtype)
-        ser = ser[ser != nodata]
+        ser = ser[mask]
     else:
         ids = np.arange(len(ser), dtype=dtype)
         id_map = ids.copy()
@@ -393,7 +412,7 @@ def _da2wsp(
     else:
         # Fallback method to build sparse matrix
         sw = lat2SW(*shape, criterion)
-        if "nodatavals" in da.attrs and da.attrs["nodatavals"]:
+        if mask is not None:
             sw = sw[mask]
             sw = sw[:, mask]
         return sw, ser

@@ -105,3 +105,99 @@ class Testraster:
         )
         w = Queen.from_xarray(da)
         assert w.n == 97232
+
+
+class TestNodata:
+    def setup_method(self):
+        self.xr = pytest.importorskip("xarray")
+
+    def test_nan_nodata_float_raster_not_masked(self):
+        """
+        Float rasters with NaN nodata should exclude NaN cells from contiguity,
+        but current logic does not mask them since `ser != np.nan` is always True.
+        """
+        data = np.array([[1.0, 1.0, 1.0], [1.0, np.nan, 1.0], [1.0, 1.0, 1.0]])
+        da = self.xr.DataArray(data, dims=("y", "x"))
+
+        # Expected: center NaN pixel excluded -> 8 valid cells
+        # Actual (current bug): NaN is not masked ->
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 8
+
+    def test_rio_nodata(self):
+        """
+        Raster with da.rio.nodata should be correctly masked.
+        This guards existing behavior for rioxarray.
+        """
+        pytest.importorskip("rioxarray")
+        import rioxarray  # noqa: F401
+
+        data = np.array([[1, 1, 1], [1, -9999, 1], [1, 1, 1]])
+        # xarray with rioxarray needs coords to be valid usually
+        # for some ops, but write_nodata might be fine
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        da = da.rio.write_nodata(-9999)
+
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 8
+
+    def test_attrs_nodata(self):
+        """
+        Raster with da.attrs['nodatavals'] should be correctly masked.
+        This guards backward compatibility.
+        """
+        data = np.array([[1, 1, 1], [1, -1, 1], [1, 1, 1]], dtype=int)
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        da.attrs["nodatavals"] = (-1,)
+
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 8
+
+    def test_no_nodata(self):
+        """
+        Raster without nodata should include all pixels.
+        """
+        data = np.array([[1.0, 1.0, 1.0], [1.0, 2.0, 1.0], [1.0, 1.0, 1.0]])
+        da = self.xr.DataArray(data, dims=("y", "x"))
+
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 9
+
+    def test_nan_nodata_numpy_scalar(self):
+        """
+        Verify that using a numpy scalar nan (e.g. np.float32(np.nan))
+        also triggers the correct masking.
+        """
+        data = np.array([[1.0, 1.0, 1.0], [1.0, np.nan, 1.0], [1.0, 1.0, 1.0]])
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        # Set nodata to a numpy scalar nan
+        da.attrs["nodatavals"] = (np.float32(np.nan),)
+
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 8
+
+    def test_all_nan_raster(self):
+        """
+        Verify that an all-NaN raster results in an empty weights object
+        With n=0.
+        """
+        data = np.full((3, 3), np.nan)
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        da.attrs["nodatavals"] = (np.nan,)
+
+        wsp = raster.da2WSP(da)
+        assert wsp.n == 0
+        assert wsp.sparse.nnz == 0
+
+    def test_infinite_values(self):
+        """
+        Verify that infinite values are treated as valid data (not masked out)
+        as long as nodata is NaN.
+        """
+        data = np.array([[1.0, np.inf, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]])
+        da = self.xr.DataArray(data, dims=("y", "x"))
+        da.attrs["nodatavals"] = (np.nan,)
+
+        wsp = raster.da2WSP(da)
+        # All 9 cells are valid (infinity is valid data)
+        assert wsp.n == 9
