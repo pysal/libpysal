@@ -34,4 +34,5 @@ dependencies:
   - xarray
   - pip
   - pip:
-    - pulp<4
+    - pulp
+    - highspy

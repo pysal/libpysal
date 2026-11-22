@@ -115,3 +115,13 @@ def test_returns_mip():
             simple, n_matches=6, return_mip=True, solver=default_solver
         )
     assert mip.sol_status == -1
+
+
+def test_infeasible_problem_returns_arrays():
+    # a pulp 4 solver can leave no selected match behind for an infeasible
+    # problem, which used to break the unpacking of the resulting edge triple
+    with pytest.warns(UserWarning, match="Problem is Infeasible"):
+        heads, tails, weights = _spatial_matching(
+            simple, n_matches=6, solver=default_solver
+        )
+    assert heads.size == tails.size == weights.size
