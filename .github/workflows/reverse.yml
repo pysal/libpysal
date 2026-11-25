@@ -56,7 +56,7 @@ jobs:
             numba
           installation_command: >-
             git config --global --add safe.directory /github/workspace;
-            pip install pulp<4 --force-reinstall;
+            pip install 'pulp<4' --force-reinstall;
             pip install -e .;
             python -c 'import libpysal; libpysal.examples.fetch_all()';
           fail_on_failure: true
