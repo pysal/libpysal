@@ -15,9 +15,7 @@ from scipy.spatial import KDTree
 from shapely.geometry.base import BaseGeometry
 
 from ..common import requires
-from ..io.fileio import FileIO
 from .set_operations import w_subset
-from .weights import WSP, W
 
 try:
     import geopandas  # noqa: F401 -- needed to determine availability
@@ -137,6 +135,8 @@ def hexLat2W(nrows=5, ncols=5, **kwargs):
                     w[i] = w.get(i, []) + jne
                     w[i] = w.get(i, []) + jnw
 
+    from .weights import W
+
     return W(w, **kwargs)
 
 
@@ -229,6 +229,8 @@ def lat2W(nrows=5, ncols=5, rook=True, id_type="int", **kwargs):
             alt_weights[key] = weights[i]
         w = alt_w
         weights = alt_weights
+    from .weights import W
+
     return W(w, weights, ids=ids, id_order=ids[:], **kwargs)
 
 
@@ -286,6 +288,8 @@ def block_weights(regimes, ids=None, sparse=False, **kwargs):
         members = npnz(regimes == rid)[0]
         for member in members:
             neighbors[member] = members[npnz(members != member)[0]].tolist()
+    from .weights import WSP, W
+
     w = W(neighbors, **kwargs)
     if ids is not None:
         w.remap_ids(ids)
@@ -497,6 +501,8 @@ def higher_order_sp(
     ... }
     True
     """
+    from .weights import WSP, W
+
     id_order = None
     if issubclass(type(w), W) or isinstance(w, W):
         if np.unique(np.hstack(list(w.weights.values()))) == np.array([1.0]):
@@ -533,6 +539,8 @@ def higher_order_sp(
 
     if not diagonal:
         sk = {(i, j) for i, j in sk if i != j}
+
+    from .weights import W
 
     if id_order:
         d = {i: [] for i in id_order}
@@ -758,6 +766,8 @@ def full2W(m, ids=None, **kwargs):
         if ids:
             ngh = [ids[j] for j in ngh]
         neighbors[i] = ngh
+    from .weights import W
+
     return W(neighbors, weights, id_order=ids, **kwargs)
 
 
@@ -816,6 +826,8 @@ def WSP2W(wsp, **kwargs):
         weights[oid] = data[start:end].tolist()
         start = end
     ids = copy.copy(wsp.id_order)
+    from .weights import W
+
     w = W(neighbors, weights, ids, **kwargs)
     w._sparse = copy.deepcopy(wsp.sparse)
     w._cache["sparse"] = w._sparse
@@ -885,6 +897,8 @@ def fill_diagonal(w, val=1.0, wsp=False):
         w_new.setdiag([val] * w.n)
     else:
         raise Exception("Invalid value passed to diagonal")
+    from .weights import WSP
+
     w_out = WSP(w_new, copy.copy(w.id_order))
     if wsp:
         return w_out
@@ -930,6 +944,8 @@ def remap_ids(w, old2new, id_order=[], **kwargs):  # noqa: B006
     >>> w_new.neighbors['a']
     ['c', 'b']
     """
+
+    from .weights import W
 
     if not isinstance(w, W):
         raise Exception("w must be a spatial weights object")
@@ -991,6 +1007,8 @@ def get_ids(in_shps, idVariable):
     4    5
     Name: POLYID, dtype: int64
     """
+
+    from ..io.fileio import FileIO
 
     try:
         if isinstance(in_shps, str):
@@ -1097,6 +1115,8 @@ def get_points_array_from_shapefile(shapefile):
            [ 8.33265837, 14.03162401],
            [ 9.01226541, 13.81971908]])
     """
+
+    from ..io.fileio import FileIO
 
     f = FileIO(shapefile)
     data = get_points_array(f)
@@ -1340,6 +1360,8 @@ def attach_islands(w, w_knn1, **kwargs):
             weights[island] = [1.0]
             neighbors[nb] = neighbors[nb] + [island]
             weights[nb] = weights[nb] + [1.0]
+        from .weights import W
+
         return W(neighbors, weights, id_order=w.id_order, **kwargs)
 
 
@@ -1461,6 +1483,8 @@ def nonplanar_neighbors(w, geodataframe, tolerance=0.001, **kwargs):
                     if island not in joins[neighbor]:
                         fixes[neighbor].append(island)
                         joins[neighbor].append(island)
+
+    from .weights import W
 
     w = W(joins, **kwargs)
     w.non_planar_joins = fixes
@@ -1601,6 +1625,8 @@ def fuzzy_contiguity(
         gdf.set_geometry(old_geometry_name, inplace=True)
         if drop:
             gdf.drop(columns=["_buffer"], inplace=True)
+
+    from .weights import W
 
     return W(neighbors, **kwargs)
 
