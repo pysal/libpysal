@@ -88,12 +88,17 @@ class TestVoronoi:
         )
         expected = gpd.GeoSeries.from_wkt(
             [
-                "POLYGON ((0.5 0.95, 0.5 0, 0 0, 0 1, 0.5 0.95))",
-                "POLYGON ((0.5 0.05, 0.5 1, 1 1, 1 0, 0.5 0.05))",
+                "POLYGON ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))",
+                "POLYGON ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))",
             ],
             crs="EPSG:3857",
         )
-        assert_geoseries_equal(geoms.simplify(0.1), expected, check_less_precise=True)
+        # normalize before simplify, the ring start point depends on GEOS version
+        assert_geoseries_equal(
+            shapely.normalize(geoms.normalize().simplify(0.1)),
+            shapely.normalize(expected),
+            check_less_precise=True,
+        )
 
     def test_from_lines_raises_when_line_disappears(self):
         lines = gpd.GeoSeries(
