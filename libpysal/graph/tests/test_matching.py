@@ -137,3 +137,10 @@ def test_infeasible_without_solution():
             solver=pulp.getSolver("HiGHS", msg=False),
         )
     assert heads.size == tails.size == weights.size == 0
+
+
+def test_no_solver_available(monkeypatch):
+    monkeypatch.setattr(pulp, "LpSolverDefault", None, raising=False)
+    monkeypatch.setattr(pulp, "listSolvers", lambda **_: [])
+    with pytest.raises(ImportError, match="requires a pulp solver"):
+        _spatial_matching(simple, n_matches=2)
