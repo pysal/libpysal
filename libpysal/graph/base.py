@@ -1497,7 +1497,9 @@ class Graph(SetOpsMixin):
         solver : solver from pulp (default: None)
             a solver defined by the pulp optimization library. If no solver is
             provided, pulp's default solver will be used. This is generally
-            pulp.COIN(), but this may vary depending on your configuration.
+            pulp.COIN() with pulp < 4. pulp 4 no longer bundles a solver, so
+            the first available solver is used, such as HiGHS from the
+            highspy package.
         allow_partial_match : bool (default: False)
             whether to allow for partial matching. A partial match may have
             a weight between zero and one, while a "full" match (by default)

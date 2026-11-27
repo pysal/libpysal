@@ -56,7 +56,9 @@ def _spatial_matching(
     solver : solver from pulp (default: None)
         a solver defined by the pulp optimization library. If no solver is
         provided, pulp's default solver will be used. This is generally
-        pulp.COIN(), but this may vary depending on your configuration.
+        pulp.COIN() with pulp < 4. pulp 4 no longer bundles a solver, so
+        the first available solver is used, such as HiGHS from the
+        highspy package.
     return_mip : bool (default: False)
         whether or not to return the instance of the pulp.LpProblem. By
         default, the problem is not returned to the user.
@@ -108,11 +110,13 @@ def _spatial_matching(
 
     mp = pulp.LpProblem("optimal-neargraph", sense=pulp.LpMinimize)
     # a match is as binary decision variable, connecting observation i to observation j
-    match_vars = pulp.LpVariable.dicts(
+    match_vars = _add_variable_dicts(
+        pulp,
+        mp,
         "match",
+        indices=list(zip(row, col, strict=True)),
         lowBound=0,
         upBound=1,
-        indices=zip(row, col, strict=True),
         cat="Continuous" if allow_partial_match else "Binary",
     )
     # we want to minimize the geographic distance of links in the graph
@@ -145,17 +149,20 @@ def _spatial_matching(
                 ]
             )
             sense = int(not allow_partial_match)
-        mp += pulp.LpConstraint(summand, sense=sense, rhs=n_matches)
+        mp += summand >= n_matches if sense == 1 else summand == n_matches
     if match_between:  # but, we may choose to ignore some sources
         for i in range(n_sources):
             summand = pulp.lpSum([match_vars[j, i] for j in range(n_targets)])
-            mp += pulp.LpConstraint(summand, sense=-1, rhs=n_matches)
+            mp += summand <= n_matches
 
-    status = mp.solve(solver)
+    result = mp.solve(_default_solver(pulp) if solver is None else solver)
+    # pulp 4 returns a solve report instead of the integer status code
+    status = int(getattr(result, "status", result))
 
     if (status != 1) & (not allow_partial_match):
+        status_name = getattr(result, "status_str", None) or pulp.LpStatus[status]
         warnings.warn(
-            f"Problem is {pulp.LpStatus[status]}, so edge weights may be non-integer!",
+            f"Problem is {status_name}, so edge weights may be non-integer!",
             stacklevel=2,
         )
 
@@ -165,8 +172,33 @@ def _spatial_matching(
     if not match_between:
         edges.extend([(*tuple(reversed(edge[:-1])), edge[-1]) for edge in edges])
 
-    heads, tails, weights = map(numpy.asarray, zip(*sorted(edges), strict=True))
+    if edges:
+        heads, tails, weights = map(numpy.asarray, zip(*sorted(edges), strict=True))
+    else:
+        # solvers such as HiGHS return no solution at all for infeasible problems
+        heads = tails = numpy.array([], dtype=int)
+        weights = numpy.array([], dtype=float)
 
     if return_mip:
         return x_ids[heads], y_ids[tails], weights, mp
     return x_ids[heads], y_ids[tails], weights
+
+
+def _add_variable_dicts(pulp, problem, name, indices, **kwargs):
+    # pulp 4 creates variables through the problem and removed LpVariable.dicts
+    if hasattr(problem, "add_variable_dicts"):
+        return problem.add_variable_dicts(name, indices, **kwargs)
+    return pulp.LpVariable.dicts(name, indices=indices, **kwargs)
+
+
+def _default_solver(pulp):
+    # pulp 4 no longer bundles CBC, so it may have no default solver at all
+    if getattr(pulp, "LpSolverDefault", None) is not None:
+        return None
+    available = pulp.listSolvers(onlyAvailable=True)
+    if not available:
+        raise ImportError(
+            "spatial matching requires a pulp solver, but none is available. "
+            "Install one, for example `pip install highspy`."
+        )
+    return pulp.getSolver(available[0])
