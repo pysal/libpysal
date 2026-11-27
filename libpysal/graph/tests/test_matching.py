@@ -108,10 +108,39 @@ def test_returns_mip():
     *computed, mip = _spatial_matching(
         simple, n_matches=4, return_mip=True, solver=default_solver
     )
-    assert mip.sol_status == 1
+    assert isinstance(mip, pulp.LpProblem)
     assert mip.objective.value() > 0
     with pytest.warns(UserWarning, match="Problem is Infeasible"):
         *computed, mip = _spatial_matching(
             simple, n_matches=6, return_mip=True, solver=default_solver
         )
-    assert mip.sol_status == -1
+    assert isinstance(mip, pulp.LpProblem)
+
+
+def test_default_solver():
+    heads, tails, weights = _spatial_matching(simple, n_matches=2)
+    expected = _spatial_matching(simple, n_matches=2, solver=default_solver)
+    np.testing.assert_array_equal(heads, expected[0])
+    np.testing.assert_array_equal(tails, expected[1])
+    np.testing.assert_array_almost_equal(weights, expected[2])
+
+
+@pytest.mark.skipif(
+    "HiGHS" not in pulp.listSolvers(onlyAvailable=True), reason="needs HiGHS"
+)
+def test_infeasible_without_solution():
+    with pytest.warns(UserWarning, match="Problem is Infeasible"):
+        heads, tails, weights = _spatial_matching(
+            simple,
+            bipartite[:2],
+            n_matches=3,
+            solver=pulp.getSolver("HiGHS", msg=False),
+        )
+    assert heads.size == tails.size == weights.size == 0
+
+
+def test_no_solver_available(monkeypatch):
+    monkeypatch.setattr(pulp, "LpSolverDefault", None, raising=False)
+    monkeypatch.setattr(pulp, "listSolvers", lambda **_: [])
+    with pytest.raises(ImportError, match="requires a pulp solver"):
+        _spatial_matching(simple, n_matches=2)
